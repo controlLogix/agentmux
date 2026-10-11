@@ -1,0 +1,137 @@
+{
+  "status": "original-calibration-task-pass-with-cleanup-record-gap",
+  "candidateCommit": "36cc149a774d823716c81d7b5443b852cb0c63d1",
+  "originalChecks": {
+    "E1_all_top_done": true,
+    "E2_no_dead_delivery": true,
+    "E3_no_failed_bell": true,
+    "E4_no_blocked_or_died": true,
+    "E5_all_acked": true,
+    "E6_verified": true
+  },
+  "errorFree": true,
+  "automaticModalHandling": [
+    [
+      {
+        "kind": "trust",
+        "keys": [
+          "Enter"
+        ]
+      }
+    ]
+  ],
+  "extraEnters": 1,
+  "manualInputProvided": false,
+  "records": [
+    {
+      "name": "tests",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/venv/bin/python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "cwd": "/mnt/c/Users/RYANHE~1/AppData/Local/Temp/agentmux original calibration MCP retry d25f60ab89ac46afb6d60a5284ccdebb/original demo repos/calc",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": "test_add (test_calc.T.test_add) ... ok\ntest_mean (test_calc.T.test_mean) ... ok\ntest_median_empty (test_calc.T.test_median_empty) ... ok\ntest_median_even (test_calc.T.test_median_even) ... ok\ntest_median_odd (test_calc.T.test_median_odd) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.000s\n\nOK\n"
+    },
+    {
+      "name": "empty-input-check",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/venv/bin/python",
+        "-c",
+        "from calc import median\ntry: median([])\nexcept ValueError: print(\"empty input raises ValueError\")\nelse: raise AssertionError(\"median accepted empty input\")"
+      ],
+      "cwd": "/mnt/c/Users/RYANHE~1/AppData/Local/Temp/agentmux original calibration MCP retry d25f60ab89ac46afb6d60a5284ccdebb/original demo repos/calc",
+      "exitCode": 0,
+      "stdout": "empty input raises ValueError\n",
+      "stderr": ""
+    },
+    {
+      "name": "git-head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/mnt/c/Users/RYANHE~1/AppData/Local/Temp/agentmux original calibration MCP retry d25f60ab89ac46afb6d60a5284ccdebb/original demo repos/calc",
+      "exitCode": 0,
+      "stdout": "e33bd02f11a64f4f072ac9988c7b93984c9c7449\n",
+      "stderr": ""
+    },
+    {
+      "name": "git-show",
+      "argv": [
+        "git",
+        "show",
+        "--format=fuller",
+        "--stat",
+        "HEAD"
+      ],
+      "cwd": "/mnt/c/Users/RYANHE~1/AppData/Local/Temp/agentmux original calibration MCP retry d25f60ab89ac46afb6d60a5284ccdebb/original demo repos/calc",
+      "exitCode": 0,
+      "stdout": "commit e33bd02f11a64f4f072ac9988c7b93984c9c7449\nAuthor:     hubdemo <hubdemo@localhost>\nAuthorDate: Sun Oct 11 18:35:55 2026 -0400\nCommit:     hubdemo <hubdemo@localhost>\nCommitDate: Sun Oct 11 18:35:55 2026 -0400\n\n    add median\n\n calc/__init__.py   | 11 +++++++++++\n tests/test_calc.py | 12 +++++++++++-\n 2 files changed, 22 insertions(+), 1 deletion(-)\n",
+      "stderr": ""
+    },
+    {
+      "name": "git-status",
+      "argv": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "cwd": "/mnt/c/Users/RYANHE~1/AppData/Local/Temp/agentmux original calibration MCP retry d25f60ab89ac46afb6d60a5284ccdebb/original demo repos/calc",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "name": "git-diff",
+      "argv": [
+        "git",
+        "diff",
+        "HEAD"
+      ],
+      "cwd": "/mnt/c/Users/RYANHE~1/AppData/Local/Temp/agentmux original calibration MCP retry d25f60ab89ac46afb6d60a5284ccdebb/original demo repos/calc",
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "sourceReferences": 67,
+  "sourceUnchanged": true,
+  "privateRuntimeProcessesRemaining": [],
+  "tokenFilesRemaining": [],
+  "knownWindowsJob": {
+    "jobUid": "925c7a3e-0a43-4502-9e38-0b49532429f3",
+    "parentPid": 21732
+  },
+  "finalSupervisorRecordPresent": false,
+  "windowsConfigBytesUnchanged": null,
+  "windowsJobActiveProcesses": null,
+  "privatePaneLogSha256": "2944781aacd4e25a4f343280ad1b9e30911bf52d999a2b8cce0028115db90114",
+  "limitations": [
+    "Task execution and E1-E6 passed; final exact job accounting and config byte comparison are missing.",
+    "Known Windows parent absence does not replace exact job accounting.",
+    "Other team, crossrepo and swarm scenarios have not passed.",
+    "No personal profile/session logs or model pane reasoning are included in this compact proof."
+  ],
+  "artifacts": [
+    {
+      "path": "original-score-compact.json",
+      "sha256": "4ba6e2418eec297020778a29d8f376a4392c763e73e215cd8c37209ca8751550"
+    },
+    {
+      "path": "compact-output/calc/__init__.py",
+      "sha256": "fb7e662e2f4b4fe4d4e779a65f72f358b9fee62daf23f9560687c8717c29274a"
+    },
+    {
+      "path": "compact-output/tests/test_calc.py",
+      "sha256": "9b16f90cb920577a46887691faf7fd2c0f1540233b6347aa384175bfc9dc2c8d"
+    }
+  ]
+}

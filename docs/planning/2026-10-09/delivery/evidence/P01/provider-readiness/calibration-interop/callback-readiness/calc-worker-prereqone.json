@@ -1,0 +1,78 @@
+{
+  "argv": [
+    "C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux calibration readiness 296d26db665349dd9441ebb6f8591886\\windows-worker.py",
+    "C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux calibration readiness 296d26db665349dd9441ebb6f8591886\\calc-worker-prereqone.json",
+    "C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux calibration readiness 296d26db665349dd9441ebb6f8591886\\callback bin",
+    "W-ZBSZ4FMYTC",
+    "W-GDYXMY7SPA"
+  ],
+  "cwd": "C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux calibration readiness 296d26db665349dd9441ebb6f8591886\\original demo repos\\calc",
+  "userProfile": "C:\\Users\\RyanHelms",
+  "context": {
+    "AGENTMUX_WINDOWS_CALLBACK": "1",
+    "AGENTMUX_AGENT": "calc-worker-prereqone",
+    "AGENTMUX_HUB_URL": "tcp://127.0.0.1:54517",
+    "AGENTMUX_HUB_TOKEN_FILE": "\\\\wsl.localhost\\Ubuntu-26.04\\home\\ryan\\.cache\\agentmux-governance\\calib-readiness-ex021jtx\\state\\repos\\calc\\agents\\worker-prereqone\\run\\token",
+    "AGENTMUX_WSL_DISTRO": "Ubuntu-26.04",
+    "AGENTMUX_WSL_BIN": "/home/ryan/.cache/agentmux-governance/calib-readiness-ex021jtx/snapshot/agentmux.sh",
+    "AGENTMUX_WSL_CWD": "/mnt/c/Users/RYANHE~1/AppData/Local/Temp/agentmux calibration readiness 296d26db665349dd9441ebb6f8591886/original demo repos/calc",
+    "AGENTMUX_HOME": "\\\\wsl.localhost\\Ubuntu-26.04\\home\\ryan\\.cache\\agentmux-governance\\calib-readiness-ex021jtx\\state",
+    "TMUX_TMPDIR": "\\\\wsl.localhost\\Ubuntu-26.04\\home\\ryan\\.cache\\agentmux-governance\\calib-readiness-ex021jtx"
+  },
+  "inlineTokenPresent": false,
+  "calls": [
+    {
+      "argv": [
+        "C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux calibration readiness 296d26db665349dd9441ebb6f8591886\\callback bin\\agentmux.cmd",
+        "hub",
+        "whoami"
+      ],
+      "command": "cmd.exe /d /s /c \"\"C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux calibration readiness 296d26db665349dd9441ebb6f8591886\\callback bin\\agentmux.cmd\" hub whoami\"",
+      "exitCode": 0,
+      "stdout": "calc-worker-prereqone  repo=calc role=worker cli=shell state=starting\neligible: agent:calc-worker-prereqone, role:calc/worker, role:*/worker\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux calibration readiness 296d26db665349dd9441ebb6f8591886\\callback bin\\agentmux.cmd",
+        "hub",
+        "done",
+        "W-GDYXMY7SPA",
+        "--result",
+        "wrong synthetic worker"
+      ],
+      "command": "cmd.exe /d /s /c \"\"C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux calibration readiness 296d26db665349dd9441ebb6f8591886\\callback bin\\agentmux.cmd\" hub done W-GDYXMY7SPA --result \"wrong synthetic worker\"\"",
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "agentmux hub release: W-GDYXMY7SPA is held by None, not calc-worker-prereqone\n"
+    },
+    {
+      "argv": [
+        "C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux calibration readiness 296d26db665349dd9441ebb6f8591886\\callback bin\\agentmux.cmd",
+        "hub",
+        "--json",
+        "claim",
+        "W-ZBSZ4FMYTC"
+      ],
+      "command": "cmd.exe /d /s /c \"\"C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux calibration readiness 296d26db665349dd9441ebb6f8591886\\callback bin\\agentmux.cmd\" hub --json claim W-ZBSZ4FMYTC\"",
+      "exitCode": 0,
+      "stdout": "{\n  \"claimed\": {\n    \"id\": \"W-ZBSZ4FMYTC\",\n    \"parent_id\": null,\n    \"task_key\": null,\n    \"repo\": \"calc\",\n    \"target\": \"agent:calc-worker-prereqone\",\n    \"target_kind\": \"agent\",\n    \"title\": \"Synthetic Windows callback prerequisite\",\n    \"body\": null,\n    \"created_by\": \"virtual:operator\",\n    \"requirements\": null,\n    \"priority\": 100,\n    \"state\": \"claimed\",\n    \"claimed_by\": \"calc-worker-prereqone\",\n    \"lease_until\": \"2026-10-11T22:31:32.394Z\",\n    \"attempts\": 1,\n    \"max_attempts\": 3,\n    \"result\": null,\n    \"blocked_reason\": null,\n    \"created\": \"2026-10-11T22:11:29.361Z\",\n    \"updated\": \"2026-10-11T22:11:32.394Z\",\n    \"origin\": null,\n    \"origin_peer\": null,\n    \"fed_flags\": null\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux calibration readiness 296d26db665349dd9441ebb6f8591886\\callback bin\\agentmux.cmd",
+        "hub",
+        "done",
+        "W-ZBSZ4FMYTC",
+        "--result",
+        "Synthetic Windows callback prerequisite complete"
+      ],
+      "command": "cmd.exe /d /s /c \"\"C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux calibration readiness 296d26db665349dd9441ebb6f8591886\\callback bin\\agentmux.cmd\" hub done W-ZBSZ4FMYTC --result \"Synthetic Windows callback prerequisite complete\"\"",
+      "exitCode": 0,
+      "stdout": "W-ZBSZ4FMYTC -> done\n",
+      "stderr": ""
+    }
+  ],
+  "passed": true
+}

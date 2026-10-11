@@ -1,0 +1,117 @@
+{
+  "scope": "Terminal review of the root-authorized early abort after actual TERM startup failure.",
+  "status": "early-aborted-startup-failure-with-original-failed-score",
+  "attemptResultSha256": "ae9e98d218c480a6acc93e0e5f345588a79d4261d79abed7612a5c0bbb678f35",
+  "actualChecks": {
+    "E1_all_top_done": false,
+    "E2_no_dead_delivery": true,
+    "E3_no_failed_bell": true,
+    "E4_no_blocked_or_died": false,
+    "E5_all_acked": false,
+    "E6_verified": false
+  },
+  "errorFree": false,
+  "claims": 0,
+  "sourceUnchanged": true,
+  "privateLinuxRuntimeProcessesRemaining": [
+    {
+      "pid": 17401,
+      "argv": [
+        "python3",
+        "/home/ryan/.cache/agentmux-governance/original-calib-rg2ug_jp/snapshot/taskmgmt/courier.py",
+        "--watch"
+      ]
+    }
+  ],
+  "tokenFilesRemaining": [],
+  "windowsActiveProcesses": 0,
+  "windowsConfigBytesUnchanged": true,
+  "gitEvidence": {
+    "calc": {
+      "log": {
+        "argv": [
+          "git",
+          "log",
+          "--oneline",
+          "-5"
+        ],
+        "exitCode": 0,
+        "stdout": "f3afe6f initial calc\n",
+        "stderr": ""
+      },
+      "status": {
+        "argv": [
+          "git",
+          "status",
+          "--porcelain"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "diff": {
+        "argv": [
+          "git",
+          "diff",
+          "HEAD"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    "report": {
+      "log": {
+        "argv": [
+          "git",
+          "log",
+          "--oneline",
+          "-5"
+        ],
+        "exitCode": 0,
+        "stdout": "ddf2f02 initial report\n",
+        "stderr": ""
+      },
+      "status": {
+        "argv": [
+          "git",
+          "status",
+          "--porcelain"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "diff": {
+        "argv": [
+          "git",
+          "diff",
+          "HEAD"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    }
+  },
+  "limitations": [
+    "No task inference or task fulfillment was observed; no provider network telemetry was captured.",
+    "Root cancellation caused the subsequent terminal-gone event; original blocked modal preceded cancellation.",
+    "Harness exit0 and supervisor passed=true do not mean calibration passed."
+  ],
+  "signalNotSent": "Verified runner PID17050 was already absent before the requested SIGINT, so no process was signaled.",
+  "history": [
+    {
+      "sha256": "76f6c012458f63a6a72e60200bed9e819b8022037e1c488c6ef23a0a5cba776b",
+      "note": "Initial terminal audit found a live private courier; preserved above."
+    }
+  ],
+  "finalCleanupAudit": {
+    "courierCleanupReport": "/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux original calibration b9a895d39b07416f8d98025d127f414f/courier-cleanup.json",
+    "courierCleanupSha256": "ce27a28e4ae519117f33a81a90184ea95912cbd9158fdd6844d8c2d968564ade",
+    "privateCourierPid17401Exists": false,
+    "tokensRemaining": [],
+    "note": "Exact original courier stop succeeded; PID disappeared on subsequent check. Historical residue remains recorded.",
+    "verifiedTokenStateDirectory": "/home/ryan/.cache/agentmux-governance/original-calib-rg2ug_jp/state"
+  }
+}

@@ -1,0 +1,11 @@
+--- old/codex-fixture.py
++++ new/codex-fixture.py
+@@ -6,7 +6,7 @@
+ agent=os.environ['AGENTMUX_AGENT'];assert re.fullmatch(r'[a-z0-9_-]+',agent)
+ assert sys.argv[1:]==['--no-daemon','--dangerously-bypass-approvals-and-sandbox'],sys.argv[1:]
+ root=P(manifest['ntfsFixture'])/'windows-supervisors'/agent;root.mkdir(parents=True,exist_ok=False)
+-source=P('/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-calib-supervisor-f5e9adc41b3949e788a8b7096c47dd99/supervisor.py');assert hashlib.sha256(source.read_bytes()).hexdigest()=='dd3ef6e2fc01c07472570df04f78b5cd0f308cd92ccf82e29fbc88e236d0eb83';shutil.copyfile(source,root/'supervisor.py')
++source=P('/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-mcp-override-probe-ef9edb64c6804e9d928a88a4780fe0ca/supervisor-bare-mcp.py');assert hashlib.sha256(source.read_bytes()).hexdigest()=='6d7d50e7ced210fa09d6f9cfadf0bb977f76d8d624b3c041ab250ccb18ea1240';shutil.copyfile(source,root/'supervisor.py')
+ def win(value):return subprocess.check_output(['wslpath','-w',value],text=True).strip()
+ keys=['AGENTMUX_WINDOWS_CALLBACK','AGENTMUX_AGENT','AGENTMUX_HUB_URL','AGENTMUX_WSL_DISTRO','AGENTMUX_WSL_BIN','AGENTMUX_WSL_CWD','AGENTMUX_SOCKET','AGENTMUX_HOME','AGENTMUX_HUB_TOKEN_FILE','TMUX_TMPDIR'];paths={'AGENTMUX_HOME','AGENTMUX_HUB_TOKEN_FILE','TMUX_TMPDIR','AGENTMUX_REPO'}
+ context={key:os.environ[key] for key in keys}

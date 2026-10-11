@@ -1,0 +1,254 @@
+{
+  "scope": "One original Codex calibration attempt, unchanged scenario and E1-E6.",
+  "commit": "36cc149a774d823716c81d7b5443b852cb0c63d1",
+  "originalCommand": [
+    "/home/ryan/.cache/agentmux-governance/venv/bin/python",
+    "/home/ryan/.cache/agentmux-governance/original-calib-xwz_zfks/snapshot/hub/demo/orchestrate.py",
+    "calib",
+    "--timeout-min",
+    "8"
+  ],
+  "outerTimeoutSeconds": 840,
+  "originalDrainSeconds": 120,
+  "modelAttemptAuthorized": true,
+  "cleanup": {
+    "supervisors": [
+      {
+        "path": "/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux original calibration TERM retry a06988fc16c443bf8c988ca64e975078/windows-supervisors/calc-worker-codex_1828",
+        "launchResult": {
+          "jobUid": "8256b149-89ff-4ab3-af85-c7420cb2ecd2",
+          "originalArgv": [
+            "C:\\nvm4w\\nodejs\\node.exe",
+            "C:\\nvm4w\\nodejs\\node_modules\\@openai\\codex\\bin\\codex.js",
+            "--no-daemon",
+            "--dangerously-bypass-approvals-and-sandbox"
+          ],
+          "argv": [
+            "C:\\nvm4w\\nodejs\\node.exe",
+            "C:\\nvm4w\\nodejs\\node_modules\\@openai\\codex\\bin\\codex.js",
+            "--no-daemon",
+            "--dangerously-bypass-approvals-and-sandbox",
+            "-c",
+            "mcp_servers.\"agent-browser\".enabled=false",
+            "-c",
+            "mcp_servers.\"aks-mcp\".enabled=false",
+            "-c",
+            "mcp_servers.\"atlassian\".enabled=false",
+            "-c",
+            "mcp_servers.\"cloudflare\".enabled=false",
+            "-c",
+            "mcp_servers.\"codegraph\".enabled=false",
+            "-c",
+            "mcp_servers.\"github\".enabled=false",
+            "-c",
+            "mcp_servers.\"infisical\".enabled=false",
+            "-c",
+            "mcp_servers.\"node_repl\".enabled=false",
+            "-c",
+            "mcp_servers.\"openseo\".enabled=false",
+            "-c",
+            "features.hooks=false",
+            "-c",
+            "features.codex_hooks=false",
+            "-c",
+            "features.plugin_hooks=false",
+            "-c",
+            "features.plugins=false",
+            "-c",
+            "features.apps=false",
+            "-c",
+            "features.connectors=false",
+            "-c",
+            "notify=[]",
+            "-c",
+            "history.persistence=\"none\"",
+            "-c",
+            "sqlite_home=\"C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Temp\\\\agentmux original calibration TERM retry a06988fc16c443bf8c988ca64e975078\\\\windows-supervisors\\\\calc-worker-codex_1828\\\\sqlite\"",
+            "-c",
+            "log_dir=\"C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Temp\\\\agentmux original calibration TERM retry a06988fc16c443bf8c988ca64e975078\\\\windows-supervisors\\\\calc-worker-codex_1828\\\\logs\"",
+            "-c",
+            "developer_instructions=\"Work only in this private calibration repository: C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Temp\\\\agentmux original calibration TERM retry a06988fc16c443bf8c988ca64e975078\\\\original demo repos\\\\calc. Use only its files and the assigned Agentmux hub callbacks through agentmux.cmd. Do not inspect or modify other repositories, credentials, client settings or user files. Preserve the original calibration task and return its requested evidence.\"",
+            "-c",
+            "shell_environment_policy.set={\"AGENTMUX_WINDOWS_CALLBACK\"=\"1\",\"AGENTMUX_AGENT\"=\"calc-worker-codex_1828\",\"AGENTMUX_HUB_URL\"=\"tcp://127.0.0.1:46413\",\"AGENTMUX_WSL_DISTRO\"=\"Ubuntu-26.04\",\"AGENTMUX_WSL_BIN\"=\"/home/ryan/.cache/agentmux-governance/original-calib-xwz_zfks/snapshot/agentmux.sh\",\"AGENTMUX_WSL_CWD\"=\"/mnt/c/Users/RYANHE~1/AppData/Local/Temp/agentmux original calibration TERM retry a06988fc16c443bf8c988ca64e975078/original demo repos/calc\",\"AGENTMUX_SOCKET\"=\"agentmux\",\"AGENTMUX_HOME\"=\"\\\\\\\\wsl.localhost\\\\Ubuntu-26.04\\\\home\\\\ryan\\\\.cache\\\\agentmux-governance\\\\original-calib-xwz_zfks\\\\state\",\"AGENTMUX_HUB_TOKEN_FILE\"=\"\\\\\\\\wsl.localhost\\\\Ubuntu-26.04\\\\home\\\\ryan\\\\.cache\\\\agentmux-governance\\\\original-calib-xwz_zfks\\\\state\\\\repos\\\\calc\\\\agents\\\\worker-codex_1828\\\\run\\\\token\",\"TMUX_TMPDIR\"=\"\\\\\\\\wsl.localhost\\\\Ubuntu-26.04\\\\home\\\\ryan\\\\.cache\\\\agentmux-governance\\\\original-calib-xwz_zfks\",\"AGENTMUX_REPO\"=\"\\\\\\\\wsl.localhost\\\\Ubuntu-26.04\\\\home\\\\ryan\\\\.cache\\\\agentmux-governance\\\\original-calib-xwz_zfks\\\\snapshot\",\"GIT_CONFIG_COUNT\"=\"2\",\"GIT_CONFIG_KEY_0\"=\"user.name\",\"GIT_CONFIG_VALUE_0\"=\"hubdemo\",\"GIT_CONFIG_KEY_1\"=\"user.email\",\"GIT_CONFIG_VALUE_1\"=\"hubdemo@localhost\",\"PATH\"=\"C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Temp\\\\agentmux original calibration TERM retry a06988fc16c443bf8c988ca64e975078\\\\callback bin;C:\\\\Users\\\\RyanHelms\\\\.cache\\\\codex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell;C:\\\\Users\\\\RyanHelms\\\\.codex\\\\tmp\\\\arg0\\\\codex-arg0qlsDgo;C:\\\\Users\\\\RyanHelms\\\\.cache\\\\codex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\libheif\\\\libheif\\\\bin;C:\\\\Users\\\\RyanHelms\\\\.cache\\\\codex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\jxrlib\\\\jxrlib\\\\bin;C:\\\\Users\\\\RyanHelms\\\\.cache\\\\codex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\poppler\\\\Library\\\\bin;C:\\\\Users\\\\RyanHelms\\\\.cache\\\\codex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\bin\\\\override;C:\\\\Program Files\\\\Microsoft SDKs\\\\Azure\\\\CLI2\\\\wbin;C:\\\\Program Files\\\\glzr.io\\\\GlazeWM\\\\\\\\cli;C:\\\\windows\\\\system32;C:\\\\windows;C:\\\\windows\\\\System32\\\\Wbem;C:\\\\windows\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\;C:\\\\windows\\\\System32\\\\OpenSSH\\\\;C:\\\\Program Files (x86)\\\\NVIDIA Corporation\\\\PhysX\\\\Common;C:\\\\Program Files\\\\dotnet\\\\;C:\\\\Program Files\\\\NVIDIA Corporation\\\\NVIDIA app\\\\NvDLISR;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\nvm;C:\\\\nvm4w\\\\nodejs;C:\\\\Program Files\\\\Microsoft VS Code\\\\bin;C:\\\\Program Files (x86)\\\\CODESYS\\\\APInstaller\\\\;C:\\\\Program Files\\\\gsudo\\\\Current;C:\\\\Program Files\\\\starship\\\\bin\\\\;C:\\\\Program Files\\\\glzr.io\\\\Zebar\\\\;C:\\\\Program Files (x86)\\\\cloudflared\\\\;C:\\\\Program Files\\\\nodejs\\\\;C:\\\\Program Files\\\\YASB\\\\;C:\\\\Program Files\\\\GitHub CLI\\\\;C:\\\\Program Files\\\\Go\\\\bin;C:\\\\Program Files\\\\Git\\\\cmd;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python314\\\\Scripts\\\\;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python314\\\\;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Launcher\\\\;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\Scripts\\\\;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\;C:\\\\Users\\\\RyanHelms\\\\.kimi-code\\\\bin;C:\\\\Users\\\\RyanHelms\\\\.grok\\\\bin;C:\\\\Users\\\\RyanHelms\\\\.cache\\\\codex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\powershell;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\atomic-agent;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Programs\\\\orca\\\\resources\\\\bin;C:\\\\Users\\\\RyanHelms\\\\.dotnet\\\\tools;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\junegunn.fzf_Microsoft.Winget.Source_8wekyb3d8bbwe;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\jqlang.jq_Microsoft.Winget.Source_8wekyb3d8bbwe;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\sharkdp.bat_Microsoft.Winget.Source_8wekyb3d8bbwe\\\\bat-v0.26.1-x86_64-pc-windows-msvc;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\eza-community.eza_Microsoft.Winget.Source_8wekyb3d8bbwe;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\ajeetdsouza.zoxide_Microsoft.Winget.Source_8wekyb3d8bbwe;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\dandavison.delta_Microsoft.Winget.Source_8wekyb3d8bbwe\\\\delta-0.19.2-x86_64-pc-windows-msvc;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Roaming\\\\npm;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\Casey.Just_Microsoft.Winget.Source_8wekyb3d8bbwe;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\koalaman.shellcheck_Microsoft.Winget.Source_8wekyb3d8bbwe;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\Hashicorp.Terraform_Microsoft.Winget.Source_8wekyb3d8bbwe;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\jedisct1.minisign_Microsoft.Winget.Source_8wekyb3d8bbwe\\\\minisign-win64\\\\x86_64;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\FiloSottile.mkcert_Microsoft.Winget.Source_8wekyb3d8bbwe;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\sharkdp.fd_Microsoft.Winget.Source_8wekyb3d8bbwe\\\\fd-v10.5.0-x86_64-pc-windows-msvc;C:\\\\Users\\\\RyanHelms\\\\go\\\\bin;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\Helm.Helm_Microsoft.Winget.Source_8wekyb3d8bbwe\\\\windows-amd64;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\PowerToys\\\\DSCModules\\\\;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Links;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Programs\\\\DockerDesktop\\\\resources\\\\bin;C:\\\\Program Files (x86)\\\\Nmap;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\infisical.infisical_Microsoft.Winget.Source_8wekyb3d8bbwe;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Nvidia Corporation\\\\Personal AI Router\\\\bin;C:\\\\Users\\\\RyanHelms\\\\.lmstudio\\\\bin;C:\\\\Users\\\\RyanHelms\\\\.cache\\\\codex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\bin\\\\fallback;C:\\\\Users\\\\RyanHelms\\\\.cache\\\\codex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\node\\\\bin;C:\\\\Users\\\\RyanHelms\\\\.cache\\\\codex-runtimes\\\\codex-primary-runtime\\\\dependencies\\\\native\\\\git\\\\cmd;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\OpenAI\\\\Codex\\\\bin\\\\441edec208d1681c;C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\OpenAI\\\\Codex\\\\bin\\\\9691020b546a15b2\"}"
+          ],
+          "passed": true,
+          "events": [
+            {
+              "action": "Create private job",
+              "elapsedSeconds": 0.0005
+            },
+            {
+              "action": "Set kill-on-close",
+              "elapsedSeconds": 0.0008
+            },
+            {
+              "action": "Duplicate hStdInput",
+              "elapsedSeconds": 0.0011
+            },
+            {
+              "action": "Duplicate hStdOutput",
+              "elapsedSeconds": 0.0011
+            },
+            {
+              "action": "Duplicate hStdError",
+              "elapsedSeconds": 0.0011
+            },
+            {
+              "action": "Create suspended Codex with inherited console",
+              "elapsedSeconds": 0.0386
+            },
+            {
+              "action": "Assign before resume",
+              "elapsedSeconds": 0.0387
+            },
+            {
+              "action": "Stop any remaining processes in this exact job",
+              "elapsedSeconds": 0.3735
+            },
+            {
+              "action": "Read exact parent exit",
+              "elapsedSeconds": 0.3736
+            },
+            {
+              "action": "Read job process accounting",
+              "elapsedSeconds": 0.3736
+            }
+          ],
+          "terminalReason": "natural-exit",
+          "usesInheritedWindowsCodexHome": false,
+          "parentPid": 44336,
+          "handles": {
+            "job": 500,
+            "parent": 436,
+            "thread": 444
+          },
+          "exitCode": 1,
+          "jobAccounting": {
+            "TotalProcesses": 2,
+            "ActiveProcesses": 0,
+            "TotalTerminatedProcesses": 0
+          },
+          "windowsConfigBytesUnchanged": true,
+          "elapsedSeconds": 0.3742
+        }
+      }
+    ],
+    "harnessExited": true,
+    "hub-stop": {
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/venv/bin/python",
+        "/home/ryan/.cache/agentmux-governance/original-calib-xwz_zfks/snapshot/hub/cli.py",
+        "stop"
+      ],
+      "exitCode": 0,
+      "stdout": "hub stopping\n",
+      "stderr": ""
+    },
+    "courier-stop": {
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/original-calib-xwz_zfks/snapshot/agentmux.sh",
+        "courier",
+        "stop"
+      ],
+      "exitCode": 0,
+      "stdout": "stopped courier (pid 31389)\n",
+      "stderr": ""
+    },
+    "tmux-kill": {
+      "argv": [
+        "tmux",
+        "-L",
+        "agentmux",
+        "kill-server"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "no server running on /home/ryan/.cache/agentmux-governance/original-calib-xwz_zfks/tmux-1000/agentmux\n"
+    },
+    "tmux-verify": {
+      "argv": [
+        "tmux",
+        "-L",
+        "agentmux",
+        "list-sessions"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "no server running on /home/ryan/.cache/agentmux-governance/original-calib-xwz_zfks/tmux-1000/agentmux\n"
+    },
+    "tokenFilesRemoved": 2
+  },
+  "errors": [],
+  "harnessExitCode": 1,
+  "originalReports": [],
+  "gitEvidence": {
+    "calc": {
+      "log": {
+        "argv": [
+          "git",
+          "log",
+          "--oneline",
+          "-5"
+        ],
+        "exitCode": 0,
+        "stdout": "f070d90 initial calc\n",
+        "stderr": ""
+      },
+      "status": {
+        "argv": [
+          "git",
+          "status",
+          "--porcelain"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "diff": {
+        "argv": [
+          "git",
+          "diff",
+          "HEAD"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    "report": {
+      "log": {
+        "argv": [
+          "git",
+          "log",
+          "--oneline",
+          "-5"
+        ],
+        "exitCode": 0,
+        "stdout": "57e160d initial report\n",
+        "stderr": ""
+      },
+      "status": {
+        "argv": [
+          "git",
+          "status",
+          "--porcelain"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "diff": {
+        "argv": [
+          "git",
+          "diff",
+          "HEAD"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    }
+  },
+  "sourceUnchanged": true,
+  "elapsedSeconds": 6.923180862999288
+}

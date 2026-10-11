@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "scope": "Synthetic TERM propagation through tmux and Windows Job Object console supervisor only.",
+  "cases": [
+    {
+      "case": "default",
+      "linuxTERM": "tmux-256color",
+      "windowsTERM": "dumb",
+      "windowsPid": 38896,
+      "WSLENV": "",
+      "argv": [
+        "/mnt/c/Users/RyanHelms/AppData/Local/Programs/Python/Python314/python.exe",
+        "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-term-boundary-02a947edcbd54ca6ae25d05af0d54bac\\console-supervisor.py",
+        "default-request.json"
+      ],
+      "command": "printf \"%s\" \"$TERM\" > /mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-term-boundary-02a947edcbd54ca6ae25d05af0d54bac/default-linux-term.txt; export WSLENV=''; cd /mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-term-boundary-02a947edcbd54ca6ae25d05af0d54bac; /mnt/c/Users/RyanHelms/AppData/Local/Programs/Python/Python314/python.exe 'C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-term-boundary-02a947edcbd54ca6ae25d05af0d54bac\\console-supervisor.py' default-request.json; echo $? > /mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-term-boundary-02a947edcbd54ca6ae25d05af0d54bac/default.exit; sleep 20",
+      "supervisorExit": 0
+    },
+    {
+      "case": "forward",
+      "linuxTERM": "tmux-256color",
+      "windowsTERM": "tmux-256color",
+      "windowsPid": 71244,
+      "WSLENV": "TERM/w",
+      "argv": [
+        "/mnt/c/Users/RyanHelms/AppData/Local/Programs/Python/Python314/python.exe",
+        "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-term-boundary-02a947edcbd54ca6ae25d05af0d54bac\\console-supervisor.py",
+        "forward-request.json"
+      ],
+      "command": "printf \"%s\" \"$TERM\" > /mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-term-boundary-02a947edcbd54ca6ae25d05af0d54bac/forward-linux-term.txt; export WSLENV=TERM/w; cd /mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-term-boundary-02a947edcbd54ca6ae25d05af0d54bac; /mnt/c/Users/RyanHelms/AppData/Local/Programs/Python/Python314/python.exe 'C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-term-boundary-02a947edcbd54ca6ae25d05af0d54bac\\console-supervisor.py' forward-request.json; echo $? > /mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-term-boundary-02a947edcbd54ca6ae25d05af0d54bac/forward.exit; sleep 20",
+      "supervisorExit": 0
+    }
+  ],
+  "noRealClientOrModel": true,
+  "elapsedSeconds": 0.9801,
+  "limit": "This proves TERM propagation only. It does not prove that actual Codex startup will bypass its dumb-terminal modal or pass calibration."
+}

@@ -1,0 +1,37 @@
+{
+  "scope": "Read-only event and result fields from the actual private hub; no database, tokens, messages or model reasoning copied.",
+  "events": [
+    {
+      "seq": 12,
+      "at": "2026-10-11T22:35:09.514Z",
+      "entity": "delivery",
+      "entity_id": "01M4PHJB19EGKR5DXXN48AR09C>calc-worker-codex_1833",
+      "event": "acked",
+      "actor": null
+    },
+    {
+      "seq": 14,
+      "at": "2026-10-11T22:35:19.230Z",
+      "entity": "work",
+      "entity_id": "W-F4X9393DDA",
+      "event": "claimed",
+      "actor": "calc-worker-codex_1833"
+    },
+    {
+      "seq": 15,
+      "at": "2026-10-11T22:36:04.136Z",
+      "entity": "work",
+      "entity_id": "W-F4X9393DDA",
+      "event": "done",
+      "actor": "calc-worker-codex_1833"
+    }
+  ],
+  "workResult": {
+    "id": "W-F4X9393DDA",
+    "state": "done",
+    "claimed_by": "calc-worker-codex_1833",
+    "attempts": 1,
+    "result": "Added calc.median with empty-input ValueError, sorted odd-length selection, and even-length middle-value averaging. Added odd, even, and empty tests. Verified 5 tests pass via PYTHONPATH=. python tests/test_calc.py. Committed as e33bd02 (add median); worktree clean."
+  },
+  "producerSha256": "1e8756d443fc821b8884c6eafc70431545dd77b9e9f13d527bca00933cf34008"
+}

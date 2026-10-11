@@ -1,0 +1,22 @@
+--- failed/codex-fixture.py
++++ fresh/codex-fixture.py
+@@ -20,5 +20,9 @@
+ request={'originalArgs':sys.argv[1:],'cwd':win(os.getcwd()),'helperDirectory':manifest['helperDirectory'],'callbackEnvironment':context,'additionalMcpNames':[]}
+ (root/'input-request.json').write_text(json.dumps(request,indent=2)+'\n')
+ py='/mnt/c/Users/RyanHelms/AppData/Local/Programs/Python/Python314/python.exe';supervisor=win(str(root/'supervisor.py'))
++# Forward the actual tmux pane TERM through WSL interop; do not invent a terminal.
++term=os.environ.get('TERM','');assert term and term!='dumb',term
++entries=[x for x in os.environ.get('WSLENV','').split(':') if x and x.split('/',1)[0]!='TERM']
++os.environ['WSLENV']=':'.join(entries+['TERM/w'])
+ r=subprocess.run([py,supervisor,'--prepare',win(str(root/'input-request.json'))]);assert r.returncode==0
+ os.execv(py,[py,supervisor,'--run'])--- failed/run-calib.py
++++ fresh/run-calib.py
+@@ -27,7 +27,7 @@
+   try:proc.wait(timeout=5)
+   except subprocess.TimeoutExpired:os.killpg(proc.pid,signal.SIGKILL);proc.wait(timeout=5);report['cleanup']['harnessExactGroupForceKill']=True
+  report['cleanup']['harnessExited']=proc is not None and proc.poll() is not None
+- for name,args in [('hub-stop',[py,str(native/'hub/cli.py'),'stop']),('tmux-kill',['tmux','-L','agentmux','kill-server']),('tmux-verify',['tmux','-L','agentmux','list-sessions'])]:
++ for name,args in [('hub-stop',[py,str(native/'hub/cli.py'),'stop']),('courier-stop',[str(native/'agentmux.sh'),'courier','stop']),('tmux-kill',['tmux','-L','agentmux','kill-server']),('tmux-verify',['tmux','-L','agentmux','list-sessions'])]:
+   try:
+    p=subprocess.run(args,env=env,capture_output=True,text=True,timeout=15);report['cleanup'][name]={'argv':args,'exitCode':p.returncode,'stdout':p.stdout,'stderr':p.stderr}
+   except Exception as e:report['cleanup'][name]={'failure':repr(e)}

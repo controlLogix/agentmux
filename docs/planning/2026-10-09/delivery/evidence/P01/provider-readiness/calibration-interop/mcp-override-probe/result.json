@@ -1,0 +1,47 @@
+{
+  "scope": "Synthetic private Windows config; installed CLI config listing only. No personal config/auth access, model inference or MCP server execution.",
+  "records": [
+    {
+      "case": "quoted",
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "C:\\nvm4w\\nodejs\\node_modules\\@openai\\codex\\bin\\codex.js",
+        "-c",
+        "mcp_servers.\"agent-browser\".enabled=false",
+        "mcp",
+        "list",
+        "--json"
+      ],
+      "exitCode": 1,
+      "stderr": "Error: failed to load bootstrap configuration\n\nCaused by:\n    invalid transport\n    in `mcp_servers.\"agent-browser\"`\n    \n",
+      "namesAndEnabled": []
+    },
+    {
+      "case": "bare",
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "C:\\nvm4w\\nodejs\\node_modules\\@openai\\codex\\bin\\codex.js",
+        "-c",
+        "mcp_servers.agent-browser.enabled=false",
+        "mcp",
+        "list",
+        "--json"
+      ],
+      "exitCode": 0,
+      "stderr": "",
+      "namesAndEnabled": [
+        {
+          "name": "agent-browser",
+          "enabled": false
+        }
+      ]
+    }
+  ],
+  "syntheticConfigSha256": "5606943b47f5233623416c43398a83f1736762e494c87df9d2e7513503226a3d",
+  "sourceHashes": {
+    "C:\\nvm4w\\nodejs\\node.exe": "3602f2bb1a10f2cbab4c36886218a33c1ab3db87290e73b033c46c77147d0237",
+    "C:\\nvm4w\\nodejs\\node_modules\\@openai\\codex\\bin\\codex.js": "61b0194f3bb6534439c8d26a3ed57d0805f84b884588b761795323eeb92fcf70",
+    "C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux-mcp-override-probe-ef9edb64c6804e9d928a88a4780fe0ca\\probe.py": "180b98c36d41fd841cb8b52b1bd0c826a93d035b2c76ecae3b674b47f6815f30"
+  },
+  "passed": true
+}

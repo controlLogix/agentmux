@@ -1,0 +1,63 @@
+{
+  "run": "20261011-181922-calib",
+  "scenario": "calib",
+  "started": "2026-10-11T18:19:22-0400",
+  "agents": [
+    "calc-worker-codex_1819"
+  ],
+  "work": [
+    {
+      "id": "W-AX841R4J0X",
+      "parent_id": null,
+      "target": "role:calc/worker",
+      "title": "Add calc.median",
+      "state": "ready",
+      "claimed_by": null,
+      "attempts": 0,
+      "result": null
+    }
+  ],
+  "errors": [
+    "bell calc-worker-codex_1819 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-worker-codex_1819 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-worker-codex_1819 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-worker-codex_1819 blocked: modal unknown: unrecognized prompt: needs a person",
+    "agent calc-worker-codex_1819 blocked: {\"from\":\"ready\",\"note\":\"modal unknown: unrecognized prompt: needs a person\"}",
+    "agent calc-worker-codex_1819 dead: {\"from\":\"blocked\",\"note\":\"terminal gone\"}",
+    "delivery 01M4PGSFEMDG7B62SZSNKEAJPS>calc-worker-codex_1819 ended queued"
+  ],
+  "timeline": [
+    "18:19:32 spawned calc-worker-codex_1819 (codex) %0",
+    "18:19:32 posted W-AX841R4J0X -> role:calc/worker: Add calc.median",
+    "18:19:32 W-AX841R4J0X ready by -",
+    "18:19:52 AGENT calc-worker-codex_1819 blocked: modal unknown: unrecognized prompt: needs a person",
+    "18:21:52 AGENT calc-worker-codex_1819 dead: terminal gone",
+    "18:21:52 an agent died; stopping early (the run is already not error-free)",
+    "18:21:52 cancelled unfinished W-AX841R4J0X"
+  ],
+  "verify": "calc.median check failed: k (most recent call last):\n  File \"<string>\", line 1, in <module>\n    from calc import median; assert median([3,1,2])==2 and median([1,2,3,4])==2.5\n    ^^^^^^^^^^^^^^^^^^^^^^^\nImportError: cannot import name 'median' from 'calc' (/mnt/c/Users/RYANHE~1/AppData/Local/Temp/agentmux original calibration b9a895d39b07416f8d98025d127f414f/original demo repos/calc/calc/__init__.py). Did you mean: 'mean'?\n",
+  "checks": {
+    "E1_all_top_done": false,
+    "E2_no_dead_delivery": true,
+    "E3_no_failed_bell": true,
+    "E4_no_blocked_or_died": false,
+    "E5_all_acked": false,
+    "E6_verified": false
+  },
+  "error_free": false,
+  "stats": {
+    "deliveries": 1,
+    "acked": 0,
+    "bells": {
+      "blocked": 4,
+      "deferred": 2
+    },
+    "modal_answers": [],
+    "extra_enters": 0,
+    "work_items": 1,
+    "duration_s": 140
+  },
+  "pane_tails": {
+    "calc-worker-codex_1819": "no server running on /home/ryan/.cache/agentmux-governance/original-calib-rg2ug_jp/tmux-1000/agentmux"
+  }
+}

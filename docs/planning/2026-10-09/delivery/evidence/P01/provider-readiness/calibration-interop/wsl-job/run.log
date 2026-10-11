@@ -1,0 +1,105 @@
+{
+  "scope": "WSL/tmux-launched synthetic Windows processes only.",
+  "passed": true,
+  "argv": [
+    "C:\\Users\\RyanHelms\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
+    "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-wsl-job-351571061b144f89a2540eb8ba8258df\\synthetic.py",
+    "parent"
+  ],
+  "cwd": "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-wsl-job-351571061b144f89a2540eb8ba8258df",
+  "events": [
+    {
+      "action": "Create unnamed job",
+      "elapsedSeconds": 0.0001
+    },
+    {
+      "action": "Set kill-on-close",
+      "elapsedSeconds": 0.0002
+    },
+    {
+      "action": "Create suspended parent",
+      "elapsedSeconds": 0.037
+    },
+    {
+      "action": "Assign parent before resume",
+      "elapsedSeconds": 0.0371
+    },
+    {
+      "action": "Open exact child handle",
+      "elapsedSeconds": 0.5954
+    },
+    {
+      "action": "parent membership",
+      "elapsedSeconds": 0.5955
+    },
+    {
+      "action": "child membership",
+      "elapsedSeconds": 0.5955
+    },
+    {
+      "action": "Terminate fixture job after cancellation file",
+      "elapsedSeconds": 0.6493
+    },
+    {
+      "action": "parent exit",
+      "elapsedSeconds": 0.6548
+    },
+    {
+      "action": "child exit",
+      "elapsedSeconds": 0.6549
+    }
+  ],
+  "cancelMethod": "Only this fixture cancel.request file triggers TerminateJobObject.",
+  "limits": [
+    "This fixture supervisor is not product code.",
+    "No real provider, auth, model or hub callback was invoked.",
+    "WSLENV propagation proves only the explicitly named synthetic values."
+  ],
+  "parent": {
+    "pid": 67356,
+    "parentPid": 55140,
+    "cwd": "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-wsl-job-351571061b144f89a2540eb8ba8258df",
+    "argv": [
+      "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-wsl-job-351571061b144f89a2540eb8ba8258df\\synthetic.py",
+      "parent"
+    ],
+    "environment": {
+      "AGENTMUX_WSL_DISTRO": "Ubuntu-26.04",
+      "AGENTMUX_WSL_CWD": "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-wsl-job-351571061b144f89a2540eb8ba8258df",
+      "AGENTMUX_HUB_URL": "tcp://127.0.0.1:9",
+      "AGENTMUX_FIXTURE_MARKER": "synthetic-job-only"
+    },
+    "childPid": 39792
+  },
+  "child": {
+    "pid": 39792,
+    "parentPid": 67356,
+    "cwd": "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-wsl-job-351571061b144f89a2540eb8ba8258df",
+    "argv": [
+      "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-wsl-job-351571061b144f89a2540eb8ba8258df\\synthetic.py",
+      "child"
+    ],
+    "environment": {
+      "AGENTMUX_WSL_DISTRO": "Ubuntu-26.04",
+      "AGENTMUX_WSL_CWD": "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-wsl-job-351571061b144f89a2540eb8ba8258df",
+      "AGENTMUX_HUB_URL": "tcp://127.0.0.1:9",
+      "AGENTMUX_FIXTURE_MARKER": "synthetic-job-only"
+    }
+  },
+  "handles": {
+    "job": 428,
+    "parent": 496,
+    "thread": 504,
+    "child": 168
+  },
+  "parentAfter": {
+    "waitResult": 0,
+    "exitCode": 83
+  },
+  "childAfter": {
+    "waitResult": 0,
+    "exitCode": 83
+  },
+  "elapsedSeconds": 0.6553,
+  "scriptSha256": "1f4d6cb21f524eb9a25966315b9f1f7779225dd439555985dcdf616059eab5f7"
+}

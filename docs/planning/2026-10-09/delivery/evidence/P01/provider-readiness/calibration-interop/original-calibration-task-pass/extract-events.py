@@ -1,0 +1,6 @@
+import pathlib,json,sqlite3,hashlib
+root=pathlib.Path(__file__).resolve().parent;m=json.loads((root/'fixture.json').read_text());db=pathlib.Path(m['state'])/'hub/hub.db';connection=sqlite3.connect(db.as_uri()+'?mode=ro',uri=True);connection.row_factory=sqlite3.Row
+work='W-F4X9393DDA';agent='calc-worker-codex_1833'
+events=[dict(row) for row in connection.execute('SELECT seq,at,entity,entity_id,event,actor FROM events WHERE (entity = ? AND entity_id = ? AND event IN (?,?)) OR (entity = ? AND event = ?) ORDER BY seq',('work',work,'claimed','done','delivery','acked'))]
+result=dict(connection.execute('SELECT id,state,claimed_by,attempts,result FROM work_items WHERE id=?',(work,)).fetchone());connection.close();assert result['state']=='done' and result['claimed_by']==agent;assert any(e['event']=='claimed' and e['actor']==agent for e in events);assert any(e['event']=='done' and e['actor']==agent for e in events)
+out={'scope':'Read-only event and result fields from the actual private hub; no database, tokens, messages or model reasoning copied.','events':events,'workResult':result,'producerSha256':hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()};(root/'callback-evidence.json').write_text(json.dumps(out,indent=2)+'\n');print(json.dumps(out))

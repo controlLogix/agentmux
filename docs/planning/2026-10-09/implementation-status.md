@@ -25,7 +25,7 @@ Branch: `feat/agentmux-platform-rearchitecture`. No phase or merge approval is i
 ## Current work and blockers
 
 - **P01-T04 — in_progress:** Establish per-phase evidence records, dependency gates, migration fixtures, and security/quality regression jobs.
-  Reason: The four required real-provider repetitions (calib/team/crossrepo/swarm) remain unrun. Grok Windows-owned authentication is unavailable and a credential source is requested. Native file links failed WinError1314; a synthetic whole-profile junction now passes 16 persistence checks but shares session/log state. Generic NTFS file/cwd/tool interoperability and native Windows Job Object descendant cleanup passed; actual client session attribution, tool/callback routing and WSL/tmux provider containment still require qualification. No fake worker or reduced provider mix can substitute.
+  Reason: Original calibration task passed E1-E6 with actual Windows Codex, five tests, empty-input verification and clean add-median commit. Final supervisor reporting was lost during tmux teardown: exact job accounting and Windows config comparison remain unavailable for that run. First scored failure and second unscored startup failure are preserved. Team/crossrepo/swarm still require an available Windows-owned Grok credential source. Explicit historical baseline/target E1-E6 comparison for all four scenarios, including calibration, and actual supported-host requirements remain open; no phase gate or P06 client integration is accepted.
 
 ## P00. Scope, baseline, and architecture decisions
 

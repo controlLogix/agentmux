@@ -1,0 +1,59 @@
+{
+  "run": "20261011-183300-calib",
+  "scenario": "calib",
+  "started": "2026-10-11T18:33:00-0400",
+  "agents": [
+    "calc-worker-codex_1833"
+  ],
+  "work": [
+    {
+      "id": "W-F4X9393DDA",
+      "parent_id": null,
+      "target": "role:calc/worker",
+      "title": "Add calc.median",
+      "state": "done",
+      "claimed_by": "calc-worker-codex_1833",
+      "attempts": 1,
+      "result": "Added calc.median with empty-input ValueError, sorted odd-length selection, and even-length middle-value averaging. Added odd, even, and empty tests. Verified 5 tests pass via PYTHONPATH=. python tests/test_calc.py. Committed as e33bd02 (add median); worktree clean."
+    }
+  ],
+  "errors": [],
+  "timeline": [
+    "18:33:06 spawned calc-worker-codex_1833 (codex) %0",
+    "18:33:06 posted W-F4X9393DDA -> role:calc/worker: Add calc.median",
+    "18:33:06 W-F4X9393DDA ready by -",
+    "18:35:27 W-F4X9393DDA claimed by calc-worker-codex_1833",
+    "18:36:07 W-F4X9393DDA done by calc-worker-codex_1833"
+  ],
+  "checks": {
+    "E1_all_top_done": true,
+    "E2_no_dead_delivery": true,
+    "E3_no_failed_bell": true,
+    "E4_no_blocked_or_died": true,
+    "E5_all_acked": true,
+    "E6_verified": true
+  },
+  "verify": "calc: tests pass, median ok; log: e33bd02 add median",
+  "error_free": true,
+  "stats": {
+    "deliveries": 1,
+    "acked": 1,
+    "bells": {
+      "deferred": 4,
+      "submitted": 1
+    },
+    "modal_answers": [
+      [
+        {
+          "kind": "trust",
+          "keys": [
+            "Enter"
+          ]
+        }
+      ]
+    ],
+    "extra_enters": 1,
+    "work_items": 1,
+    "duration_s": 181
+  }
+}

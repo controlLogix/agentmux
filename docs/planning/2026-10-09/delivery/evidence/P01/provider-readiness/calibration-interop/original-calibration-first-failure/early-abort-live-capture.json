@@ -1,0 +1,76 @@
+{
+  "captureScope": "Read-only state before root-authorized early abort of TERM startup failure.",
+  "commands": [
+    {
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/venv/bin/python",
+        "/home/ryan/.cache/agentmux-governance/original-calib-rg2ug_jp/snapshot/hub/cli.py",
+        "--json",
+        "status"
+      ],
+      "exitCode": 0,
+      "stdout": "{\n  \"agents\": [\n    {\n      \"session\": \"calc-worker-codex_1819\",\n      \"cli\": \"codex\",\n      \"state\": \"blocked\",\n      \"state_note\": \"modal unknown: unrecognized prompt: needs a person\",\n      \"last_output\": \"2026-10-11T22:19:34.233Z\",\n      \"last_bell\": null\n    }\n  ],\n  \"deliveries\": {\n    \"queued\": 2\n  },\n  \"work\": {\n    \"ready\": 1\n  },\n  \"dead\": [],\n  \"repos\": [\n    \"calc\",\n    \"report\"\n  ],\n  \"teams\": []\n}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/venv/bin/python",
+        "/home/ryan/.cache/agentmux-governance/original-calib-rg2ug_jp/snapshot/hub/cli.py",
+        "--json",
+        "work",
+        "list"
+      ],
+      "exitCode": 0,
+      "stdout": "[\n  {\n    \"id\": \"W-AX841R4J0X\",\n    \"parent_id\": null,\n    \"task_key\": null,\n    \"repo\": \"calc\",\n    \"target\": \"role:calc/worker\",\n    \"target_kind\": \"role\",\n    \"title\": \"Add calc.median\",\n    \"body\": \"In the calc repo checkout, add a function median(xs) to calc/__init__.py (raise ValueError on empty input; average the two middle values for even length). Add tests for odd, even and empty input to tests/test_calc.py. Run the tests. Commit with message 'add median'.\",\n    \"created_by\": \"virtual:operator\",\n    \"requirements\": null,\n    \"priority\": 100,\n    \"state\": \"ready\",\n    \"claimed_by\": null,\n    \"lease_until\": null,\n    \"attempts\": 0,\n    \"max_attempts\": 3,\n    \"result\": null,\n    \"blocked_reason\": null,\n    \"created\": \"2026-10-11T22:19:32.195Z\",\n    \"updated\": \"2026-10-11T22:19:32.195Z\",\n    \"origin\": null,\n    \"origin_peer\": null,\n    \"fed_flags\": null\n  }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/venv/bin/python",
+        "/home/ryan/.cache/agentmux-governance/original-calib-rg2ug_jp/snapshot/hub/cli.py",
+        "--json",
+        "events",
+        "--since",
+        "0"
+      ],
+      "exitCode": 0,
+      "stdout": "[\n  {\n    \"seq\": 1,\n    \"at\": \"2026-10-11T22:19:28.663Z\",\n    \"entity\": \"agent\",\n    \"entity_id\": \"calc-worker-codex_1819\",\n    \"event\": \"registered\",\n    \"actor\": null,\n    \"detail\": \"{\\\"cli\\\": \\\"codex\\\", \\\"handle\\\": null}\"\n  },\n  {\n    \"seq\": 2,\n    \"at\": \"2026-10-11T22:19:32.180Z\",\n    \"entity\": \"delivery\",\n    \"entity_id\": \"01M4PGSFEMDG7B62SZSNKEAJPS>calc-worker-codex_1819\",\n    \"event\": \"queued\",\n    \"actor\": null,\n    \"detail\": null\n  },\n  {\n    \"seq\": 3,\n    \"at\": \"2026-10-11T22:19:32.195Z\",\n    \"entity\": \"work\",\n    \"entity_id\": \"W-AX841R4J0X\",\n    \"event\": \"ready\",\n    \"actor\": \"virtual:operator\",\n    \"detail\": \"{\\\"target\\\":\\\"role:calc/worker\\\"}\"\n  },\n  {\n    \"seq\": 4,\n    \"at\": \"2026-10-11T22:19:32.732Z\",\n    \"entity\": \"bell\",\n    \"entity_id\": \"calc-worker-codex_1819\",\n    \"event\": \"deferred\",\n    \"actor\": \"hub\",\n    \"detail\": \"{\\\"outcome\\\": \\\"deferred\\\", \\\"reason\\\": \\\"booting\\\", \\\"stages\\\": {\\\"resolved\\\": \\\"ok\\\", \\\"mode\\\": \\\"ok\\\", \\\"ready\\\": \\\"booting\\\"}, \\\"modal_answers\\\": [], \\\"enters\\\": 0, \\\"elapsed_ms\\\": 9}\"\n  },\n  {\n    \"seq\": 5,\n    \"at\": \"2026-10-11T22:19:37.238Z\",\n    \"entity\": \"bell\",\n    \"entity_id\": \"calc-worker-codex_1819\",\n    \"event\": \"deferred\",\n    \"actor\": \"hub\",\n    \"detail\": \"{\\\"outcome\\\": \\\"deferred\\\", \\\"reason\\\": \\\"booting\\\", \\\"stages\\\": {\\\"resolved\\\": \\\"ok\\\", \\\"mode\\\": \\\"ok\\\", \\\"ready\\\": \\\"booting\\\"}, \\\"modal_answers\\\": [], \\\"enters\\\": 0, \\\"elapsed_ms\\\": 11}\"\n  },\n  {\n    \"seq\": 6,\n    \"at\": \"2026-10-11T22:19:37.248Z\",\n    \"entity\": \"agent\",\n    \"entity_id\": \"calc-worker-codex_1819\",\n    \"event\": \"ready\",\n    \"actor\": null,\n    \"detail\": \"{\\\"from\\\":\\\"starting\\\",\\\"note\\\":null}\"\n  },\n  {\n    \"seq\": 7,\n    \"at\": \"2026-10-11T22:19:42.497Z\",\n    \"entity\": \"bell\",\n    \"entity_id\": \"calc-worker-codex_1819\",\n    \"event\": \"blocked\",\n    \"actor\": \"hub\",\n    \"detail\": \"{\\\"outcome\\\": \\\"blocked\\\", \\\"reason\\\": \\\"modal unknown: unrecognized prompt: needs a person\\\", \\\"stages\\\": {\\\"resolved\\\": \\\"ok\\\", \\\"mode\\\": \\\"ok\\\", \\\"modal\\\": \\\"unknown\\\"}, \\\"modal_answers\\\": [], \\\"enters\\\": 0, \\\"elapsed_ms\\\": 762}\"\n  },\n  {\n    \"seq\": 8,\n    \"at\": \"2026-10-11T22:19:42.498Z\",\n    \"entity\": \"agent\",\n    \"entity_id\": \"calc-worker-codex_1819\",\n    \"event\": \"blocked\",\n    \"actor\": null,\n    \"detail\": \"{\\\"from\\\":\\\"ready\\\",\\\"note\\\":\\\"modal unknown: unrecognized prompt: needs a person\\\"}\"\n  },\n  {\n    \"seq\": 9,\n    \"at\": \"2026-10-11T22:19:42.498Z\",\n    \"entity\": \"delivery\",\n    \"entity_id\": \"01M4PGSSH26V239DPXD9S1Z1T8>virtual:operator\",\n    \"event\": \"queued\",\n    \"actor\": null,\n    \"detail\": null\n  },\n  {\n    \"seq\": 10,\n    \"at\": \"2026-10-11T22:20:13.913Z\",\n    \"entity\": \"bell\",\n    \"entity_id\": \"calc-worker-codex_1819\",\n    \"event\": \"blocked\",\n    \"actor\": \"hub\",\n    \"detail\": \"{\\\"outcome\\\": \\\"blocked\\\", \\\"reason\\\": \\\"modal unknown: unrecognized prompt: needs a person\\\", \\\"stages\\\": {\\\"resolved\\\": \\\"ok\\\", \\\"mode\\\": \\\"ok\\\", \\\"modal\\\": \\\"unknown\\\"}, \\\"modal_answers\\\": [], \\\"enters\\\": 0, \\\"elapsed_ms\\\": 643}\"\n  },\n  {\n    \"seq\": 11,\n    \"at\": \"2026-10-11T22:20:45.475Z\",\n    \"entity\": \"bell\",\n    \"entity_id\": \"calc-worker-codex_1819\",\n    \"event\": \"blocked\",\n    \"actor\": \"hub\",\n    \"detail\": \"{\\\"outcome\\\": \\\"blocked\\\", \\\"reason\\\": \\\"modal unknown: unrecognized prompt: needs a person\\\", \\\"stages\\\": {\\\"resolved\\\": \\\"ok\\\", \\\"mode\\\": \\\"ok\\\", \\\"modal\\\": \\\"unknown\\\"}, \\\"modal_answers\\\": [], \\\"enters\\\": 0, \\\"elapsed_ms\\\": 660}\"\n  },\n  {\n    \"seq\": 12,\n    \"at\": \"2026-10-11T22:21:16.992Z\",\n    \"entity\": \"bell\",\n    \"entity_id\": \"calc-worker-codex_1819\",\n    \"event\": \"blocked\",\n    \"actor\": \"hub\",\n    \"detail\": \"{\\\"outcome\\\": \\\"blocked\\\", \\\"reason\\\": \\\"modal unknown: unrecognized prompt: needs a person\\\", \\\"stages\\\": {\\\"resolved\\\": \\\"ok\\\", \\\"mode\\\": \\\"ok\\\", \\\"modal\\\": \\\"unknown\\\"}, \\\"modal_answers\\\": [], \\\"enters\\\": 0, \\\"elapsed_ms\\\": 641}\"\n  }\n]\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "tmux",
+        "-L",
+        "agentmux",
+        "capture-pane",
+        "-p",
+        "-J",
+        "-t",
+        "calc-worker-codex_1819"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"preparedOnly\": true, \"jobUid\": \"bfc29cc6-2dbd-45a3-8c82-72e4183e9059\", \"mcpNames\": [\"agent-browser\", \"aks-mcp\", \"atlassian\", \"cloudflare\", \"codegraph\", \"github\", \"infisical\", \"node_repl\", \"openseo\"], \"overrideCount\": 21}\nWARNING: TERM is set to \"dumb\". Codex's interactive TUI may not work in this terminal.\nContinue anyway? [y/N]: \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+      "stderr": ""
+    }
+  ],
+  "verifiedProcesses": [
+    {
+      "pid": 17050,
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/venv/bin/python",
+        "/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux original calibration b9a895d39b07416f8d98025d127f414f/run-calib.py",
+        "--run-authorized"
+      ]
+    },
+    {
+      "pid": 17074,
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/venv/bin/python",
+        "/home/ryan/.cache/agentmux-governance/original-calib-rg2ug_jp/snapshot/hub/demo/orchestrate.py",
+        "calib",
+        "--timeout-min",
+        "8"
+      ]
+    }
+  ]
+}

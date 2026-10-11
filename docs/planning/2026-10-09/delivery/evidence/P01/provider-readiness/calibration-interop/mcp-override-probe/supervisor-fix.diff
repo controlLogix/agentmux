@@ -1,0 +1,12 @@
+--- original/supervisor.py
++++ fixed/supervisor.py
+@@ -62,7 +62,8 @@
+     del config
+     argv=[str(NODE),str(CODEX),*req['originalArgs']]
+     overrides=[]
+-    for name in sorted(names):overrides.append('mcp_servers.'+toml_string(name)+'.enabled=false')
++    assert all(name and all(char in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-' for char in name) for name in names), 'MCP names must support the installed CLI dotted-key syntax'
++    for name in sorted(names):overrides.append('mcp_servers.'+name+'.enabled=false')
+     overrides += ['features.'+name+'=false' for name in ['hooks','codex_hooks','plugin_hooks','plugins','apps','connectors']]
+     sqlite=root/'sqlite';logs=root/'logs';sqlite.mkdir(exist_ok=True);logs.mkdir(exist_ok=True)
+     overrides += ['notify=[]','history.persistence="none"','sqlite_home='+toml_string(str(sqlite)),'log_dir='+toml_string(str(logs))]
