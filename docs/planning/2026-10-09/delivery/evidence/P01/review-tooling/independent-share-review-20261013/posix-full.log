@@ -1,0 +1,267 @@
+v22.22.1
+TAP version 13
+# Subtest: missing identity setup writes repo-local Git config only; direct saves use Git identity and detect conflicts
+ok 1 - missing identity setup writes repo-local Git config only; direct saves use Git identity and detect conflicts
+  ---
+  duration_ms: 475.195401
+  type: 'test'
+  ...
+# Subtest: effective global Git identity works without modifying configuration
+ok 2 - effective global Git identity works without modifying configuration
+  ---
+  duration_ms: 114.491193
+  type: 'test'
+  ...
+# Subtest: local token, Origin and Host protect operations; served page alone enables same-origin saves
+ok 3 - local token, Origin and Host protect operations; served page alone enables same-origin saves
+  ---
+  duration_ms: 59.294139
+  type: 'test'
+  ...
+# Subtest: malformed and oversized HTTP writes leave existing notes and Git settings intact
+ok 4 - malformed and oversized HTTP writes leave existing notes and Git settings intact
+  ---
+  duration_ms: 166.727209
+  type: 'test'
+  ...
+# Subtest: configured traversal and a directory link outside the repository are rejected
+ok 5 - configured traversal and a directory link outside the repository are rejected
+  ---
+  duration_ms: 50.423562
+  type: 'test'
+  ...
+# Switched to a new branch 'feat/agentmux-platform-rearchitecture'
+# Subtest: replacing the notes folder with a link cannot expose or overwrite another folder
+ok 6 - replacing the notes folder with a link cannot expose or overwrite another folder
+  ---
+  duration_ms: 142.841978
+  type: 'test'
+  ...
+# Switched to a new branch 'feat/agentmux-platform-rearchitecture'
+# Subtest: sharing commits and pushes only own notes, preserves unrelated staging, and is repeatable
+ok 7 - sharing commits and pushes only own notes, preserves unrelated staging, and is repeatable
+  ---
+  duration_ms: 1049.464953
+  type: 'test'
+  ...
+# Switched to a new branch 'other-branch'
+# Switched to a new branch 'feat/agentmux-platform-rearchitecture'
+# Subtest: sharing refuses unrelated outgoing commits and the wrong branch before committing
+ok 8 - sharing refuses unrelated outgoing commits and the wrong branch before committing
+  ---
+  duration_ms: 512.479966
+  type: 'test'
+  ...
+# Switched to a new branch 'feat/agentmux-platform-rearchitecture'
+# Subtest: a failed push leaves an own-only commit that Share notes can retry without another commit
+ok 9 - a failed push leaves an own-only commit that Share notes can retry without another commit
+  ---
+  duration_ms: 1003.380531
+  type: 'test'
+  ...
+# Switched to a new branch 'feat/agentmux-platform-rearchitecture'
+# Subtest: sharing refuses a stale note revision and remote changes without committing or merging
+ok 10 - sharing refuses a stale note revision and remote changes without committing or merging
+  ---
+  duration_ms: 453.783487
+  type: 'test'
+  ...
+# Switched to a new branch 'feat/agentmux-platform-rearchitecture'
+# Subtest: commit hooks remain active and rejected commits do not push
+ok 11 - commit hooks remain active and rejected commits do not push
+  ---
+  duration_ms: 397.118286
+  type: 'test'
+  ...
+# Switched to a new branch 'feat/agentmux-platform-rearchitecture'
+# Subtest: different or multiple push destinations are rejected without committing
+ok 12 - different or multiple push destinations are rejected without committing
+  ---
+  duration_ms: 445.937086
+  type: 'test'
+  ...
+# Switched to a new branch 'feat/agentmux-platform-rearchitecture'
+# Subtest: a hook that replaces only staged notes cannot publish different feedback
+ok 13 - a hook that replaces only staged notes cannot publish different feedback
+  ---
+  duration_ms: 800.218121
+  type: 'test'
+  ...
+# Switched to a new branch 'feat/agentmux-platform-rearchitecture'
+# Subtest: Git URL rewrite rules cannot redirect the explicit share destination
+ok 14 - Git URL rewrite rules cannot redirect the explicit share destination
+  ---
+  duration_ms: 460.992724
+  type: 'test'
+  ...
+# Subtest: a hook cannot replace valid Unicode notes with invalid UTF-8 bytes
+ok 15 - a hook cannot replace valid Unicode notes with invalid UTF-8 bytes
+  ---
+  duration_ms: 919.309432
+  type: 'test'
+  ...
+# Subtest: new export uses reviewer filename, metadata and exact note values; draft survives attachment again
+ok 16 - new export uses reviewer filename, metadata and exact note values; draft survives attachment again
+  ---
+  duration_ms: 24.221529
+  type: 'test'
+  ...
+# Subtest: invalid or cancelled imports do not change draft; earlier versions retain attribution
+ok 17 - invalid or cancelled imports do not change draft; earlier versions retain attribution
+  ---
+  duration_ms: 2.211302
+  type: 'test'
+  ...
+# Subtest: reads shared feedback as literal text without replacing a draft until requested
+ok 18 - reads shared feedback as literal text without replacing a draft until requested
+  ---
+  duration_ms: 0.876224
+  type: 'test'
+  ...
+# Subtest: legacy drafts are preserved with unknown version; blocked storage still permits file import and export
+ok 19 - legacy drafts are preserved with unknown version; blocked storage still permits file import and export
+  ---
+  duration_ms: 1.374475
+  type: 'test'
+  ...
+# Subtest: imported reviewer identity survives edits, draft restoration and export
+ok 20 - imported reviewer identity survives edits, draft restoration and export
+  ---
+  duration_ms: 3.744277
+  type: 'test'
+  ...
+# Subtest: an explicit reviewer switch clears imported identity and uses the new reviewer filename
+ok 21 - an explicit reviewer switch clears imported identity and uses the new reviewer filename
+  ---
+  duration_ms: 3.202539
+  type: 'test'
+  ...
+# Subtest: combined controllers warn through debounce and pending writes, then save newer edits with Git identity
+ok 22 - combined controllers warn through debounce and pending writes, then save newer edits with Git identity
+  ---
+  duration_ms: 12.61775
+  type: 'test'
+  ...
+# Subtest: Markdown round trip preserves Unicode, code fences, headings, whitespace and empty notes
+ok 23 - Markdown round trip preserves Unicode, code fences, headings, whitespace and empty notes
+  ---
+  duration_ms: 7.573791
+  type: 'test'
+  ...
+# Subtest: old document versions remain attributed and other documents are rejected
+ok 24 - old document versions remain attributed and other documents are rejected
+  ---
+  duration_ms: 1.120659
+  type: 'test'
+  ...
+# Subtest: rejects unsupported format, duplicate, missing, unknown and overlong sections before import
+ok 25 - rejects unsupported format, duplicate, missing, unknown and overlong sections before import
+  ---
+  duration_ms: 0.687044
+  type: 'test'
+  ...
+# Subtest: safe filenames and distinct document draft keys
+ok 26 - safe filenames and distinct document draft keys
+  ---
+  duration_ms: 0.818797
+  type: 'test'
+  ...
+# Subtest: Git identity initializes readonly UI and saves notes without an export
+ok 27 - Git identity initializes readonly UI and saves notes without an export
+  ---
+  duration_ms: 49.254413
+  type: 'test'
+  ...
+# Subtest: missing Git identity locks editing and sets repository identity through the helper
+ok 28 - missing Git identity locks editing and sets repository identity through the helper
+  ---
+  duration_ms: 1.794499
+  type: 'test'
+  ...
+# Subtest: edits during an in-flight write are serialized after its acknowledgment; unsaved edits warn before leaving
+ok 29 - edits during an in-flight write are serialized after its acknowledgment; unsaved edits warn before leaving
+  ---
+  duration_ms: 1.557237
+  type: 'test'
+  ...
+# Subtest: a revision conflict keeps draft text and stops further automatic overwrites
+ok 30 - a revision conflict keeps draft text and stops further automatic overwrites
+  ---
+  duration_ms: 2.067012
+  type: 'test'
+  ...
+# Subtest: temporary failures retry without another edit or export
+ok 31 - temporary failures retry without another edit or export
+  ---
+  duration_ms: 1.677631
+  type: 'test'
+  ...
+# Subtest: a version-only browser change is recoverable even when note text is identical
+ok 32 - a version-only browser change is recoverable even when note text is identical
+  ---
+  duration_ms: 4.636718
+  type: 'test'
+  ...
+# Subtest: Share notes saves pending text first and shares only the acknowledged revision
+ok 33 - Share notes saves pending text first and shares only the acknowledged revision
+  ---
+  duration_ms: 5.296607
+  type: 'test'
+  ...
+# Subtest: Share notes never sends a failed or conflicted save
+ok 34 - Share notes never sends a failed or conflicted save
+  ---
+  duration_ms: 1.533541
+  type: 'test'
+  ...
+# Subtest: Share notes waits for an in-flight save and freezes editing until sharing finishes
+ok 35 - Share notes waits for an in-flight save and freezes editing until sharing finishes
+  ---
+  duration_ms: 2.094561
+  type: 'test'
+  ...
+# Subtest: a temporary save failure during Share notes retains the automatic retry
+ok 36 - a temporary save failure during Share notes retains the automatic retry
+  ---
+  duration_ms: 1.606627
+  type: 'test'
+  ...
+# Subtest: write lock excludes a second process and is released automatically when the owner exits
+ok 37 - write lock excludes a second process and is released automatically when the owner exits
+  ---
+  duration_ms: 307.990051
+  type: 'test'
+  ...
+# Subtest: resetting an accepted lock connection has an error handler
+ok 38 - resetting an accepted lock connection has an error handler
+  ---
+  duration_ms: 22.015835
+  type: 'test'
+  ...
+# Subtest: literal template markers and script tags in feedback survive packaging without becoming scripts
+ok 39 - literal template markers and script tags in feedback survive packaging without becoming scripts
+  ---
+  duration_ms: 689.876822
+  type: 'test'
+  ...
+# Subtest: feedback-only changes retain document version; layout source changes create a new version
+ok 40 - feedback-only changes retain document version; layout source changes create a new version
+  ---
+  duration_ms: 1899.943397
+  type: 'test'
+  ...
+# Subtest: package has exact original images, logo and source plan with no external resources
+ok 41 - package has exact original images, logo and source plan with no external resources
+  ---
+  duration_ms: 732.486417
+  type: 'test'
+  ...
+1..41
+# tests 41
+# suites 0
+# pass 41
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7487.000384

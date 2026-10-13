@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: non-string manifest identifiers are rejected rather than coerced into valid IDs
+not ok 1 - non-string manifest identifiers are rejected rather than coerced into valid IDs
+  ---
+  duration_ms: 687.129841
+  type: 'test'
+  location: '/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-id-negative-drrusqr4/inbox-boundaries.test.mjs:90:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(result.warnings.some(value => value.startsWith('Invalid review manifest:')))
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-id-negative-drrusqr4/inbox-boundaries.test.mjs:97:14)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2982.347796

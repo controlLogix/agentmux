@@ -1,0 +1,43 @@
+✔ missing identity setup writes repo-local Git config only; direct saves use Git identity and detect conflicts (5752.8152ms)
+✔ effective global Git identity works without modifying configuration (1615.5753ms)
+✔ local token, Origin and Host protect operations; served page alone enables same-origin saves (588.7421ms)
+✔ malformed and oversized HTTP writes leave existing notes and Git settings intact (2112.1964ms)
+✔ configured traversal and a directory link outside the repository are rejected (673.0973ms)
+Switched to a new branch 'feat/agentmux-platform-rearchitecture'
+✔ replacing the notes folder with a link cannot expose or overwrite another folder (1628.3715ms)
+Switched to a new branch 'feat/agentmux-platform-rearchitecture'
+✔ sharing commits and pushes only own notes, preserves unrelated staging, and is repeatable (21705.5878ms)
+Switched to a new branch 'other-branch'
+Switched to a new branch 'feat/agentmux-platform-rearchitecture'
+✔ sharing refuses unrelated outgoing commits and the wrong branch before committing (8097.7829ms)
+Switched to a new branch 'feat/agentmux-platform-rearchitecture'
+✔ a failed push leaves an own-only commit that Share notes can retry without another commit (24606.1683ms)
+Switched to a new branch 'feat/agentmux-platform-rearchitecture'
+✔ sharing refuses a stale note revision and remote changes without committing or merging (10145.651ms)
+Switched to a new branch 'feat/agentmux-platform-rearchitecture'
+✔ commit hooks remain active and rejected commits do not push (15898.4332ms)
+Switched to a new branch 'feat/agentmux-platform-rearchitecture'
+✔ different or multiple push destinations are rejected without committing (9769.0666ms)
+Switched to a new branch 'feat/agentmux-platform-rearchitecture'
+✔ a hook that replaces only staged notes cannot publish different feedback (17222.2573ms)
+Switched to a new branch 'feat/agentmux-platform-rearchitecture'
+✔ Git URL rewrite rules cannot redirect the explicit share destination (5875.8467ms)
+✔ a hook cannot replace valid Unicode notes with invalid UTF-8 bytes (10487.6981ms)
+✔ Git identity initializes readonly UI and saves notes without an export (26.7794ms)
+✔ missing Git identity locks editing and sets repository identity through the helper (1.1127ms)
+✔ edits during an in-flight write are serialized after its acknowledgment; unsaved edits warn before leaving (2.2514ms)
+✔ a revision conflict keeps draft text and stops further automatic overwrites (0.744ms)
+✔ temporary failures retry without another edit or export (0.871ms)
+✔ a version-only browser change is recoverable even when note text is identical (1.2253ms)
+✔ Share notes saves pending text first and shares only the acknowledged revision (3.1134ms)
+✔ Share notes never sends a failed or conflicted save (2.1347ms)
+✔ Share notes waits for an in-flight save and freezes editing until sharing finishes (1.1924ms)
+✔ a temporary save failure during Share notes retains the automatic retry (1.1215ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 136407.1645
