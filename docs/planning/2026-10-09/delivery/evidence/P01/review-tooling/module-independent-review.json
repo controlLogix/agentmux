@@ -1,0 +1,88 @@
+{
+  "date": "2026-10-13T17:05:05.683349+00:00",
+  "scope": "Read-only independent .mjs coverage guard review and cloned metadata negative fixtures. No repository edits.",
+  "currentCheck": {
+    "ok": true,
+    "baselineFiles": 338,
+    "additionalFiles": 125,
+    "components": 95,
+    "behaviorChecks": 206,
+    "baselineGroups": 37,
+    "phaseCriteria": 99,
+    "failureScenarios": 62,
+    "errors": [],
+    "assurance": "Checks planning coverage and references only; does not prove semantic completeness or execute runtime tests."
+  },
+  "negativeFixtures": [
+    {
+      "case": "missing-module",
+      "accepted": false,
+      "errors": [
+        "Surface inventory is incomplete or contains duplicate paths"
+      ]
+    },
+    {
+      "case": "stale-module",
+      "accepted": false,
+      "errors": [
+        "Surface inventory stale; review source changes: docs/reviews/open.mjs"
+      ]
+    },
+    {
+      "case": "duplicate-module",
+      "accepted": false,
+      "errors": [
+        "Surface inventory is incomplete or contains duplicate paths"
+      ]
+    }
+  ],
+  "priorRowsPreservedExactly": true,
+  "priorHistoryPreservedAsPrefix": true,
+  "eligibleModulePaths": [
+    ".bytedesk/design-patterns/check.mjs",
+    "docs/reviews/check.mjs",
+    "docs/reviews/open.mjs",
+    "docs/reviews/src/features/local-review.mjs",
+    "docs/reviews/src/features/notes-controller.mjs",
+    "docs/reviews/src/features/notes-format.mjs",
+    "docs/reviews/src/features/notes-local.mjs",
+    "docs/reviews/src/features/notes-lock.mjs"
+  ],
+  "moduleOwners": {
+    ".bytedesk/design-patterns/check.mjs": [
+      "REPO-02"
+    ],
+    "docs/reviews/check.mjs": [
+      "REPO-10"
+    ],
+    "docs/reviews/open.mjs": [
+      "REPO-10"
+    ],
+    "docs/reviews/src/features/local-review.mjs": [
+      "REPO-10"
+    ],
+    "docs/reviews/src/features/notes-controller.mjs": [
+      "REPO-10"
+    ],
+    "docs/reviews/src/features/notes-format.mjs": [
+      "REPO-10"
+    ],
+    "docs/reviews/src/features/notes-local.mjs": [
+      "REPO-10"
+    ],
+    "docs/reviews/src/features/notes-lock.mjs": [
+      "REPO-10"
+    ]
+  },
+  "sourceHashes": {
+    "verify-component-coverage.py": "6d53d1fbb4e93892029c2ebee3cf07b6c666b7336c0ac1a1a72f9120a70d1c54",
+    "source-surface-index.json": "abb2e9afccfa313f316dc888e696bd04abd20abe9cef3be6eef3eefb1c1bee40"
+  },
+  "limits": [
+    "File/hash/ownership checks do not validate declaration/path completeness or dynamic behaviors.",
+    "Tests are excluded only from non-test surface rows; their files remain owned in component inventory.",
+    "Existing /test substring filter can exclude additional implementation paths; no such missing current module found.",
+    "Initial external fixture lacked verification-matrix.md and stopped before any negative check; corrected fixture includes both required Markdown sources."
+  ],
+  "metadataNote": "notes-local.mjs has literal API calls to /api/session, /api/identity and /api/notes while its httpPathLiterals row is empty. Server local-review.mjs endpoint list is correct."
+}

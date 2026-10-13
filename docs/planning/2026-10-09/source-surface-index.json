@@ -4,6 +4,97 @@
   "method": "Mechanical declarations and literal HTTP paths from owned non-vendor source; not a full dynamic call graph or proof of public API completeness. CLI subcommands, dynamic routes, configuration and events also require the component behavior review.",
   "files": [
     {
+      "path": ".bytedesk/design-patterns/check.mjs",
+      "componentIds": [
+        "REPO-02"
+      ],
+      "workingFileSha256": "a11c0d2c942662114c95f001ac38aae879b7e1165b25ad43ab07a93be1513180",
+      "declarations": [
+        {
+          "name": "VERSION",
+          "line": 9,
+          "kind": "javascript-export-binding"
+        },
+        {
+          "name": "STORE",
+          "line": 11,
+          "kind": "javascript-export-binding"
+        },
+        {
+          "name": "RULES",
+          "line": 12,
+          "kind": "javascript-export-binding"
+        },
+        {
+          "name": "sha",
+          "line": 21,
+          "kind": "javascript-export-binding"
+        },
+        {
+          "name": "git",
+          "line": 23,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "rootPath",
+          "line": 26,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "safeFile",
+          "line": 32,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "files",
+          "line": 44,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "digest",
+          "line": 47,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "json",
+          "line": 61,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "text",
+          "line": 62,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "registry",
+          "line": 63,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "at",
+          "line": 69,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "ancestor",
+          "line": 72,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "check",
+          "line": 75,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "options",
+          "line": 247,
+          "kind": "javascript-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P01 module ownership and literal exported functions reviewed; dynamic callbacks and behavior require component checks, not this mechanical index."
+    },
+    {
       "path": "add-allow-rule.py",
       "componentIds": [
         "HAR-04"
@@ -5176,6 +5267,276 @@
       ],
       "httpPathLiterals": [],
       "reviewStatus": "owned-by-component; maintainers must review behavioral completeness before P00 exit"
+    },
+    {
+      "path": "docs/reviews/check.mjs",
+      "componentIds": [
+        "REPO-10"
+      ],
+      "workingFileSha256": "0928b06ca247eb3c2a8c0c6dd514f6d590e37cd28688bd50643ff52b1d8d1b10",
+      "declarations": [],
+      "httpPathLiterals": [],
+      "reviewStatus": "P01 module ownership and literal exported functions reviewed; dynamic callbacks and behavior require component checks, not this mechanical index."
+    },
+    {
+      "path": "docs/reviews/open.mjs",
+      "componentIds": [
+        "REPO-10"
+      ],
+      "workingFileSha256": "e7a1959e5a522ae7153757394edd93d95bb22d736cace9bde4d1682da71d31f0",
+      "declarations": [
+        {
+          "name": "source",
+          "line": 14,
+          "kind": "javascript-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P01 module ownership and literal exported functions reviewed; dynamic callbacks and behavior require component checks, not this mechanical index."
+    },
+    {
+      "path": "docs/reviews/src/features/local-review.mjs",
+      "componentIds": [
+        "REPO-10"
+      ],
+      "workingFileSha256": "e5195f79ce523638e93762ab4003d4167153bd26bb05cdcd4ba890ef1f26b3d7",
+      "declarations": [
+        {
+          "name": "createLocalReview",
+          "line": 14,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "inside",
+          "line": 21,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "setting",
+          "line": 31,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "identity",
+          "line": 34,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "current",
+          "line": 55,
+          "kind": "javascript-function"
+        }
+      ],
+      "httpPathLiterals": [
+        "/",
+        "/api/session",
+        "/api/identity",
+        "/api/notes"
+      ],
+      "reviewStatus": "P01 module ownership and literal exported functions reviewed; dynamic callbacks and behavior require component checks, not this mechanical index."
+    },
+    {
+      "path": "docs/reviews/src/features/notes-controller.mjs",
+      "componentIds": [
+        "REPO-10"
+      ],
+      "workingFileSha256": "a2a400672df0c0f565480309486fe27c315f24bbe3ec648f639c494cd8c7e435",
+      "declarations": [
+        {
+          "name": "attachReviewNotes",
+          "line": 5,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "reflectVersion",
+          "line": 48,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "probeStorage",
+          "line": 54,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "setStatus",
+          "line": 65,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "setSaved",
+          "line": 71,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "clock",
+          "line": 75,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "hasText",
+          "line": 79,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "reflect",
+          "line": 83,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "snapshot",
+          "line": 95,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "rememberReviewer",
+          "line": 103,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "saveDraft",
+          "line": 110,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "restore",
+          "line": 134,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "buildMarkdown",
+          "line": 179,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "showExport",
+          "line": 183,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "download",
+          "line": 191,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "applyImported",
+          "line": 213,
+          "kind": "javascript-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P01 module ownership and literal exported functions reviewed; dynamic callbacks and behavior require component checks, not this mechanical index."
+    },
+    {
+      "path": "docs/reviews/src/features/notes-format.mjs",
+      "componentIds": [
+        "REPO-10"
+      ],
+      "workingFileSha256": "5e79b3bce9581d2580a133f9f9688cd710e64cce5b822a6aa26fce46b7ef01fb",
+      "declarations": [
+        {
+          "name": "MAX_NOTE",
+          "line": 2,
+          "kind": "javascript-export-binding"
+        },
+        {
+          "name": "MAX_FILE",
+          "line": 3,
+          "kind": "javascript-export-binding"
+        },
+        {
+          "name": "validateDocument",
+          "line": 7,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "reviewerSlug",
+          "line": 21,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "draftKey",
+          "line": 31,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "notesFilename",
+          "line": 36,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "validateNotes",
+          "line": 41,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "exportMarkdown",
+          "line": 59,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "importMarkdown",
+          "line": 76,
+          "kind": "javascript-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P01 module ownership and literal exported functions reviewed; dynamic callbacks and behavior require component checks, not this mechanical index."
+    },
+    {
+      "path": "docs/reviews/src/features/notes-local.mjs",
+      "componentIds": [
+        "REPO-10"
+      ],
+      "workingFileSha256": "d50e7519f9a327798c11d26ca9f9adb94851458b7908bec48e7968c46104c374",
+      "declarations": [
+        {
+          "name": "attachLocalReview",
+          "line": 4,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "api",
+          "line": 23,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "flush",
+          "line": 31,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "changed",
+          "line": 57,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "initialize",
+          "line": 66,
+          "kind": "javascript-function"
+        }
+      ],
+      "httpPathLiterals": [
+        "/api/session",
+        "/api/identity",
+        "/api/notes"
+      ],
+      "reviewStatus": "P01 module ownership and literal exported functions reviewed; dynamic callbacks and behavior require component checks, not this mechanical index."
+    },
+    {
+      "path": "docs/reviews/src/features/notes-lock.mjs",
+      "componentIds": [
+        "REPO-10"
+      ],
+      "workingFileSha256": "99dd07b7feed289961e1819a23a0f6baabee84ed820217cc0a1eed4bd28bd859",
+      "declarations": [
+        {
+          "name": "acquireNotesLock",
+          "line": 7,
+          "kind": "javascript-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P01 module ownership and literal exported functions reviewed; dynamic callbacks and behavior require component checks, not this mechanical index."
     },
     {
       "path": "enter-key.sh",
@@ -16127,6 +16488,22 @@
         }
       ],
       "sourceCommit": "837cfd0459b1ec0e720dcc88bd3486ceff329758"
+    },
+    {
+      "date": "2026-10-13T16:59:53.605764+00:00",
+      "actor": "Codex",
+      "reason": "Extend the current source-surface guard to .mjs implementation modules; exclude .test.mjs fixtures. Existing rows, baseline blobs and historical acceptance are preserved.",
+      "addedPaths": [
+        ".bytedesk/design-patterns/check.mjs",
+        "docs/reviews/check.mjs",
+        "docs/reviews/open.mjs",
+        "docs/reviews/src/features/local-review.mjs",
+        "docs/reviews/src/features/notes-controller.mjs",
+        "docs/reviews/src/features/notes-format.mjs",
+        "docs/reviews/src/features/notes-local.mjs",
+        "docs/reviews/src/features/notes-lock.mjs"
+      ],
+      "sourceCommit": "74bee2b6c759f96135f024b2810d6dbcbb517a9e"
     }
   ]
 }

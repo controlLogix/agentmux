@@ -1,0 +1,78 @@
+{
+  "date": "2026-10-13T17:08:03.019640+00:00",
+  "path": "hub/tests/test_hub_offline.py",
+  "refs": {
+    "accepted": "f19c6473d56335b8eeb28704b02895b9d9ab7fcc",
+    "previousReviewed": "7a7d47ae6830f86b8fed318ee64da6a5aac52701",
+    "newTests": "171eb1f8d9254a043e9e2c0598c19fb6a12136c1",
+    "pushedFailed": "74bee2b6c759f96135f024b2810d6dbcbb517a9e",
+    "currentHead": "74bee2b6c759f96135f024b2810d6dbcbb517a9e"
+  },
+  "sourceSha256": {
+    "accepted": "9c86f65a2b76af8b304a65816c6b6a66defec22d85f4fbfc92a3313a92304e70",
+    "previousReviewed": "56fb5359476f012c1a7170829d2d56771c1bd42ba63834e07c9660407495338e",
+    "newTests": "8d32fdb7e227963d4f6ec866ea26bedb1c6d80dc15d557421652935ccd21ed27",
+    "pushedFailed": "8d32fdb7e227963d4f6ec866ea26bedb1c6d80dc15d557421652935ccd21ed27",
+    "currentHead": "8d32fdb7e227963d4f6ec866ea26bedb1c6d80dc15d557421652935ccd21ed27",
+    "working": "8d32fdb7e227963d4f6ec866ea26bedb1c6d80dc15d557421652935ccd21ed27"
+  },
+  "counts": {
+    "accepted": {
+      "testMethods": 59,
+      "assertCalls": 154,
+      "assertStatements": 0
+    },
+    "previousReviewed": {
+      "testMethods": 62,
+      "assertCalls": 160,
+      "assertStatements": 0
+    },
+    "newTests": {
+      "testMethods": 65,
+      "assertCalls": 168,
+      "assertStatements": 0
+    },
+    "pushedFailed": {
+      "testMethods": 65,
+      "assertCalls": 168,
+      "assertStatements": 0
+    },
+    "currentHead": {
+      "testMethods": 65,
+      "assertCalls": 168,
+      "assertStatements": 0
+    },
+    "working": {
+      "testMethods": 65,
+      "assertCalls": 168,
+      "assertStatements": 0
+    }
+  },
+  "addedMethods": [
+    "Deliver.test_windows_claude_busy_prompt_defers_notice",
+    "Deliver.test_windows_claude_choice_is_not_an_idle_prompt",
+    "Deliver.test_windows_claude_idle_hint_receives_notice"
+  ],
+  "removedMethods": [],
+  "modifiedExistingMethods": [],
+  "entirePreviousModuleAstRetainedAfterRemovingOnlyNewMethods": true,
+  "currentGitAndWorkingBytesIdentical": true,
+  "addedMethodsSource": {
+    "Deliver.test_windows_claude_idle_hint_receives_notice": "def test_windows_claude_idle_hint_receives_notice(self):\n        # Observed native Windows Claude prompt, not a permission menu.\n        self.p = profiles.get(\"claude\")\n        self.t.add(\"a\", '>\\u00a0Try \"edit <filepath>\"\\n  bypass permissions on')\n        rc = self.run_line(\"a\")\n        self.assertEqual(rc.outcome, \"submitted\", rc.as_dict())\n        self.assertEqual(self.keys(\"a\")[0], \"C-u\")\n        self.assertTrue(any(kind == \"text\" and \"[hub]\" in text\n                            for _, kind, text in self.t.sent))",
+    "Deliver.test_windows_claude_choice_is_not_an_idle_prompt": "def test_windows_claude_choice_is_not_an_idle_prompt(self):\n        self.p = profiles.get(\"claude\")\n        for choice in (\"> 1. No, exit\", \"> Yes\", \"> No\"):\n            with self.subTest(choice=choice):\n                self.t = FakeTransport()\n                self.t.add(\"a\", choice)\n                self.assertFalse(self.p.is_ready(choice))\n                rc = self.run_line(\"a\")\n                self.assertEqual(rc.outcome, \"blocked\", rc.as_dict())\n                self.assertEqual(self.t.sent, [])",
+    "Deliver.test_windows_claude_busy_prompt_defers_notice": "def test_windows_claude_busy_prompt_defers_notice(self):\n        self.p = profiles.get(\"claude\")\n        self.t.add(\"a\", \"Working (12s \u00b7 esc to interrupt)\\n>\\u00a0\")\n        rc = self.run_line(\"a\")\n        self.assertEqual(rc.outcome, \"deferred\", rc.as_dict())\n        self.assertEqual(self.t.sent, [])"
+  },
+  "replacementProposal": {
+    "path": "hub/tests/test_hub_offline.py",
+    "originalSha256": "9c86f65a2b76af8b304a65816c6b6a66defec22d85f4fbfc92a3313a92304e70",
+    "replacementSha256": "8d32fdb7e227963d4f6ec866ea26bedb1c6d80dc15d557421652935ccd21ed27",
+    "reviewer": "Codex",
+    "reviewedAt": "2026-10-13",
+    "reason": "Exact prior reviewed module AST retained; adds three native Windows Claude delivery regressions covering ASCII/NBSP idle hint delivery, numbered/Yes/No menu rejection with zero input, and busy deferral with zero input. No existing tests or assertions modified.",
+    "preserveHistory": "Append the complete previous replacement record and this source-bound review to history before changing the current replacement pointer. Retain acceptedCommit/files and previous evidence."
+  },
+  "limits": [
+    "Static exact AST retention establishes no existing source assertion was altered; it does not independently run or qualify native provider behavior.",
+    "Original baseline-to-previous-reviewed changes remain attributed to prior reviewed evidence; not erased or reaccepted here."
+  ]
+}

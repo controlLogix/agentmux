@@ -101,7 +101,7 @@ def check(root=ROOT, here=HERE):
     if not load("gate-record.template.json").get("componentPreservation"):
         errors.append("Gate record lacks component preservation evidence fields")
     surface = load("source-surface-index.json")
-    expected_surface = {f for f in listed if Path(f).suffix in (".py", ".sh", ".js", ".ts", ".cmd") and "/vendor/" not in f and "/test" not in f and not f.startswith(("analysis/", "orchtest/"))}
+    expected_surface = {f for f in listed if Path(f).suffix in (".py", ".sh", ".js", ".mjs", ".ts", ".cmd") and not f.endswith(".test.mjs") and "/vendor/" not in f and "/test" not in f and not f.startswith(("analysis/", "orchtest/"))}
     surface_paths = [r["path"] for r in surface["files"]]
     if set(surface_paths) != expected_surface or len(surface_paths) != len(set(surface_paths)):
         errors.append("Surface inventory is incomplete or contains duplicate paths")

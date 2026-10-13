@@ -1,0 +1,48 @@
+{
+  "reviewedAt": "2026-10-13T17:00:51.827826+00:00",
+  "sourceCommit": "74bee2b6c759f96135f024b2810d6dbcbb517a9e",
+  "scope": "P01 extension of source-surface verification to .mjs implementations; prior records preserved.",
+  "candidateResult": {
+    "ok": true,
+    "baselineFiles": 338,
+    "additionalFiles": 125,
+    "components": 95,
+    "behaviorChecks": 206,
+    "baselineGroups": 37,
+    "phaseCriteria": 99,
+    "failureScenarios": 62,
+    "errors": [],
+    "assurance": "Checks planning coverage and references only; does not prove semantic completeness or execute runtime tests."
+  },
+  "negativeFixtures": [
+    {
+      "fixture": "missing-module",
+      "accepted": false,
+      "errors": [
+        "Surface inventory is incomplete or contains duplicate paths"
+      ]
+    },
+    {
+      "fixture": "stale-module",
+      "accepted": false,
+      "errors": [
+        "Surface inventory stale; review source changes: docs/reviews/open.mjs"
+      ]
+    },
+    {
+      "fixture": "duplicate-module",
+      "accepted": false,
+      "errors": [
+        "Surface inventory is incomplete or contains duplicate paths"
+      ]
+    }
+  ],
+  "existingRowsPreservedExactly": true,
+  "sourceHashes": {
+    "verify-component-coverage.py": "6d53d1fbb4e93892029c2ebee3cf07b6c666b7336c0ac1a1a72f9120a70d1c54",
+    "source-surface-index.json": "abb2e9afccfa313f316dc888e696bd04abd20abe9cef3be6eef3eefb1c1bee40"
+  },
+  "limitations": [
+    "Checks file ownership and current bytes; does not prove dynamic API completeness or runtime acceptance."
+  ]
+}

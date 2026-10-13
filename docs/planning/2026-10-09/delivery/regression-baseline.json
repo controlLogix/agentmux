@@ -167,11 +167,11 @@
     "hub/tests/test_hub_offline.py": {
       "path": "hub/tests/test_hub_offline.py",
       "originalSha256": "9c86f65a2b76af8b304a65816c6b6a66defec22d85f4fbfc92a3313a92304e70",
-      "replacementSha256": "56fb5359476f012c1a7170829d2d56771c1bd42ba63834e07c9660407495338e",
+      "replacementSha256": "8d32fdb7e227963d4f6ec866ea26bedb1c6d80dc15d557421652935ccd21ed27",
       "reviewer": "Codex",
-      "reviewedAt": "2026-10-09",
-      "reason": "All original methods retained; adds address form, malformed identity and per-part length regressions.",
-      "evidence": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/repair-review.md"
+      "reviewedAt": "2026-10-13T17:10:22.905967+00:00",
+      "reason": "Exact previous module AST retained; adds three Windows Claude idle, menu and busy delivery guards. Nineteen affected tests passed; baseline assertion-removal detection remains required.",
+      "evidence": "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/regression-independent-review.json"
     },
     "tests/contracts/README.md": {
       "path": "tests/contracts/README.md",
@@ -266,6 +266,29 @@
         "reason": "Retains prior contract requirements and documents original full hub qualification with pinned NSC.",
         "evidence": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/repair-review.md"
       }
+    },
+    {
+      "date": "2026-10-13T17:10:22.905967+00:00",
+      "reviewer": "Codex",
+      "reason": "Add three reviewed native Windows Claude delivery guards; exact prior module AST retained and no assertions weakened.",
+      "path": "hub/tests/test_hub_offline.py",
+      "previousReviewedReplacement": {
+        "path": "hub/tests/test_hub_offline.py",
+        "originalSha256": "9c86f65a2b76af8b304a65816c6b6a66defec22d85f4fbfc92a3313a92304e70",
+        "replacementSha256": "56fb5359476f012c1a7170829d2d56771c1bd42ba63834e07c9660407495338e",
+        "reviewer": "Codex",
+        "reviewedAt": "2026-10-09",
+        "reason": "All original methods retained; adds address form, malformed identity and per-part length regressions.",
+        "evidence": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/repair-review.md"
+      },
+      "previousReviewedSourceCommit": "7a7d47ae6830f86b8fed318ee64da6a5aac52701",
+      "candidateSourceCommit": "171eb1f8d9254a043e9e2c0598c19fb6a12136c1",
+      "addedTestMethods": [
+        "Deliver.test_windows_claude_busy_prompt_defers_notice",
+        "Deliver.test_windows_claude_choice_is_not_an_idle_prompt",
+        "Deliver.test_windows_claude_idle_hint_receives_notice"
+      ],
+      "independentEvidence": "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/regression-independent-review.json"
     }
   ]
 }

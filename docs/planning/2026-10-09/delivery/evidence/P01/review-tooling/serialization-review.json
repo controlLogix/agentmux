@@ -1,0 +1,88 @@
+{
+  "reviewedAt": "2026-10-13T17:08:18.200622+00:00",
+  "sourceCommit": "74bee2b6c759f96135f024b2810d6dbcbb517a9e",
+  "failureRuns": {
+    "contracts": "https://github.com/controlLogix/agentmux/actions/runs/38434189564",
+    "patterns": "https://github.com/controlLogix/agentmux/actions/runs/38434189377"
+  },
+  "cause": "Owned planning metadata was written with Windows CRLF; Git attributes normalize tracked text to LF. Stored byte hashes then disagreed on native CI.",
+  "targetedWorkingSerializationChanges": [
+    {
+      "path": ".bytedesk/design-patterns/review.json",
+      "beforeSha256": "68988d5fbafd556c21a091170505741c19bdeb2d07a9cd208e87b0f51a95d6e8",
+      "afterSha256": "cf02108dd642788c2a78de0ee3a92d5c668710535f000e3eda14318d918378f6",
+      "jsonValuesUnchanged": true
+    },
+    {
+      "path": "docs/planning/2026-10-09/component-audit-repository.json",
+      "beforeSha256": "e14d1ac94fec670077f407ebc8eaa63807dee4432c69a9b008f219701fc2a693",
+      "afterSha256": "d4c182ce171e89ea03b5e0e72184d17f37c9f8cd9671b04e55e06f631208a8bc",
+      "jsonValuesUnchanged": true
+    },
+    {
+      "path": "docs/planning/2026-10-09/component-inventory.json",
+      "beforeSha256": "10a2a061383530c77d20640128b4d066bc46b86776c79a45a5f0e8f9c1afedef",
+      "afterSha256": "9cea33dc8e85d928878268c6900b8b45d21aae293b7e8880bc1ac3cc7e8b6908",
+      "jsonValuesUnchanged": true
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/tasks.json",
+      "beforeSha256": "ba19fd649af7d49c889ddb34180ea2eea5aec547c867d377eae14d54b6249307",
+      "afterSha256": "1a446b8ad3c951f2511d47ab31c04d3b15fda852dcfcdb0fe1e8c75a79c8261b",
+      "jsonValuesUnchanged": true
+    },
+    {
+      "path": "docs/planning/2026-10-09/review-site/README.md",
+      "beforeSha256": "213816f7104ea95f2f01a8eae9aa066bf69bd14472a24856d1b9c102054ae79a",
+      "afterSha256": "3702d8ed5b1e35f68637ebc404429cc0d3a757c3274ed73c8d6017fca18de50e",
+      "jsonValuesUnchanged": false
+    },
+    {
+      "path": "docs/planning/2026-10-09/review-site/verification.json",
+      "beforeSha256": "82fb02430dc63c34f6d4407ee334635cb3c348e4df52f97b854a91b9c32be990",
+      "afterSha256": "d5b29ea56f6a90560a60ae7b087eff361048ea73d74709f7f4238853fcfca674",
+      "jsonValuesUnchanged": true
+    },
+    {
+      "path": "docs/planning/2026-10-09/source-surface-index.json",
+      "beforeSha256": "abb2e9afccfa313f316dc888e696bd04abd20abe9cef3be6eef3eefb1c1bee40",
+      "afterSha256": "4fd8302fe5da933e46e4eeef6dcbda060e9f75cd51d916a1dc138048d4990204",
+      "jsonValuesUnchanged": true
+    }
+  ],
+  "sourceHashChanges": {
+    "component-inventory.json": {
+      "previous": "10a2a061383530c77d20640128b4d066bc46b86776c79a45a5f0e8f9c1afedef",
+      "current": "9cea33dc8e85d928878268c6900b8b45d21aae293b7e8880bc1ac3cc7e8b6908"
+    },
+    "component-audit-repository.json": {
+      "previous": "e14d1ac94fec670077f407ebc8eaa63807dee4432c69a9b008f219701fc2a693",
+      "current": "d4c182ce171e89ea03b5e0e72184d17f37c9f8cd9671b04e55e06f631208a8bc"
+    }
+  },
+  "repair": "Write current owned text with explicit LF, retain parsed JSON values and prior hashes, compute current hashes from the actual canonical bytes. Historical raw evidence and binary files are untouched.",
+  "limitations": [
+    "Native CI must rerun on the pushed candidate.",
+    "Stale reviewed regression replacement is independently reviewed before any update.",
+    "Original TEAM failure causes and full P01 acceptance remain open."
+  ],
+  "focusedVerification": [
+    {
+      "command": "python docs/planning/2026-10-09/delivery/track.py check",
+      "exitCode": 0
+    },
+    {
+      "command": "python -m unittest discover -s docs/planning/2026-10-09/delivery -p test_track.py -v",
+      "exitCode": 0,
+      "tests": 22,
+      "failed": 0,
+      "durationSeconds": 0.328
+    },
+    {
+      "command": "python docs/planning/2026-10-09/delivery/check_regressions.py --self-test",
+      "exitCode": 0,
+      "files": 105,
+      "assertionRemovalDetected": true
+    }
+  ]
+}

@@ -54,3 +54,7 @@ These fields are minimum structural checks, not substitutes for inspecting real 
 Material implementation changes require reviewing affected completed tasks and evidence. Reopen affected tasks and downstream gates together before resuming; the checker refuses a done dependent with an incomplete predecessor. Existing governance repairs and fast-test tooling remain reusable historical evidence, not automatic phase passes. Missing host/vendor/provider evidence stays open.
 
 Use the [fast local test workflow](../../../LOCAL_TESTING.md): focused tests while editing, then affected suites and complete required gates on stable candidates. No runtime test is necessary merely to render a status page.
+
+## Tracked text and byte-bound evidence
+
+Write current tracked text with LF line endings, matching the repository Git attributes. When writing text from Python on Windows, use `encoding="utf-8", newline="\n"`, or write explicit UTF-8 bytes. Compute source hashes after that serialization and check staged bytes before a push. Otherwise a locally passing hash can fail when Git normalizes the file for a native runner. Preserve raw historical evidence and binary files exactly; their scoped Git attributes take precedence. Do not normalize evidence to hide drift or refresh a reviewed hash without reviewing the change.
