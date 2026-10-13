@@ -359,7 +359,7 @@ Contracts and failure scenarios can be tested before business plugins grow.
 
 ### P01-T01: Publish language-neutral command/event schemas and compatibility rules with organization, project, task, delegation, attempt, operation, schema version, and trace identifiers.
 
-**Status:** verification. **Owner:** Codex.
+**Status:** done. **Owner:** Codex.
 
 **Dependencies:** P00-GATE, P01-T08.
 
@@ -393,9 +393,9 @@ Contracts and failure scenarios can be tested before business plugins grow.
 4. Run FAIL-42, FAIL-43 and FAIL-47 with real JetStream. Record which server/API/SDK capabilities provide each guarantee, including batch behavior and authoritative read freshness.
 5. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
 
-**Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/payload-storage-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/model-leaf-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/recovery-ci-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/P01-T01.json
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/payload-storage-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/model-leaf-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/recovery-ci-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/P01-T01.json, docs/planning/2026-10-09/delivery/evidence/P01/P01-T01-acceptance-d3f8d9d.json
 
-**Commits:** 7ef00dcb299c100d6dda45bfffa2b4e127345a50, f19c6473d56335b8eeb28704b02895b9d9ab7fcc, a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41
+**Commits:** 7ef00dcb299c100d6dda45bfffa2b4e127345a50, f19c6473d56335b8eeb28704b02895b9d9ab7fcc, a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41, d3f8d9d240c84d77865f73935f5fe8cf2a3974de
 
 
 <a id="P01-T02"></a>
@@ -616,7 +616,7 @@ Contracts and failure scenarios can be tested before business plugins grow.
 
 ### P01-T07: Build a bounded NATS persistence spike before production storage code: one owning task record, persistent operation identity, conditional competing writes, complete provenance/effect intent, lost acknowledgments and replay
 
-**Status:** verification. **Owner:** Codex.
+**Status:** done. **Owner:** Codex.
 
 **Dependencies:** P00-GATE, P01-T08.
 
@@ -651,9 +651,9 @@ Contracts and failure scenarios can be tested before business plugins grow.
 4. Run FAIL-42, FAIL-43 and FAIL-47 with real JetStream. Record which server/API/SDK capabilities provide each guarantee, including batch behavior and authoritative read freshness.
 5. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
 
-**Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/payload-storage-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/recovery-ci-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/controlled-storage-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/parent-change-review.json, docs/planning/2026-10-09/delivery/evidence/P01/incoming-storage/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/incoming-storage-negative/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/backup-boundary/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/P01-T07-acceptance.json
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/payload-storage-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/recovery-ci-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/controlled-storage-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/parent-change-review.json, docs/planning/2026-10-09/delivery/evidence/P01/incoming-storage/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/incoming-storage-negative/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/backup-boundary/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/P01-T07-acceptance.json, docs/planning/2026-10-09/delivery/evidence/P01/P01-T07-acceptance-d3f8d9d.json
 
-**Commits:** 7ef00dcb299c100d6dda45bfffa2b4e127345a50, f19c6473d56335b8eeb28704b02895b9d9ab7fcc, a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41, 00353fd0ccb0b4ce34cb4eb45549703430af30d1, 9647b4240a43c60c246512efa1553e8f4cb58530
+**Commits:** 7ef00dcb299c100d6dda45bfffa2b4e127345a50, f19c6473d56335b8eeb28704b02895b9d9ab7fcc, a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41, 00353fd0ccb0b4ce34cb4eb45549703430af30d1, 9647b4240a43c60c246512efa1553e8f4cb58530, d3f8d9d240c84d77865f73935f5fe8cf2a3974de
 
 
 <a id="P01-T08"></a>
@@ -700,7 +700,7 @@ Contracts and failure scenarios can be tested before business plugins grow.
 
 ### P01-GATE: Verify and accept P01
 
-**Status:** blocked. **Owner:** Codex.
+**Status:** done. **Owner:** Codex.
 
 **Dependencies:** P01-T01, P01-T02, P01-T03, P01-T04, P01-T05, P01-T06, P01-T07, P01-T08.
 
@@ -740,11 +740,9 @@ Contracts and failure scenarios can be tested before business plugins grow.
 5. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
 6. For WSL-CLIENT-01, record direct Windows and WSL-resolved client identity/version, configuration ownership and observed interop failures without copying credentials. Keep platform-runtime tests distinct from Windows-client transport tests; identify P06-owned qualification gaps.
 
-**Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/P01-GATE-acceptance.json
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/P01-GATE-acceptance.json, docs/planning/2026-10-09/delivery/evidence/P01/P01-GATE-acceptance-d3f8d9d.json
 
-**Commits:** 0fd64326b9621163b5b550f6419d21e1007b56d3
-
-**Blocker:** Acceptance at 9db01f2 is historical and superseded by a confirmed omission: accepted P00 L04 explicitly requires the P01 status-response schema and success/failure fixtures, but only the status-query request exists. Complete that contract and re-review affected evidence; separately audit S03 completion-reserve proof against P01/P04 ownership.
+**Commits:** 0fd64326b9621163b5b550f6419d21e1007b56d3, d3f8d9d240c84d77865f73935f5fe8cf2a3974de
 
 ## P02. Protected boot and the NATS foundation
 

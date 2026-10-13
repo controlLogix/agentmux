@@ -1694,7 +1694,7 @@
           "text": "Publish language-neutral command/event schemas and compatibility rules with organization, project, task, delegation, attempt, operation, schema version, and trace identifiers."
         }
       ],
-      "status": "verification",
+      "status": "done",
       "owner": "Codex",
       "dependsOn": [
         "P00-GATE",
@@ -1734,12 +1734,14 @@
         "docs/planning/2026-10-09/delivery/evidence/P01/payload-storage-checkpoint.md",
         "docs/planning/2026-10-09/delivery/evidence/P01/model-leaf-checkpoint.md",
         "docs/planning/2026-10-09/delivery/evidence/P01/recovery-ci-checkpoint.md",
-        "docs/planning/2026-10-09/delivery/evidence/P01/P01-T01.json"
+        "docs/planning/2026-10-09/delivery/evidence/P01/P01-T01.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/P01-T01-acceptance-d3f8d9d.json"
       ],
       "commits": [
         "7ef00dcb299c100d6dda45bfffa2b4e127345a50",
         "f19c6473d56335b8eeb28704b02895b9d9ab7fcc",
-        "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41"
+        "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+        "d3f8d9d240c84d77865f73935f5fe8cf2a3974de"
       ],
       "blocker": null,
       "history": [
@@ -1810,6 +1812,13 @@
           "from": "in_progress",
           "to": "verification",
           "note": "Repaired L04 schema/fixtures and reply registry pass full52 cross-language tests on stable WSL source; independent nine-case findings reproduced then closed. Original payload assertions and signed-recipient boundaries retained. Corrected native candidate qualification and gate review pending."
+        },
+        {
+          "at": "2026-10-13T19:53:57.411760+00:00",
+          "actor": "Codex",
+          "from": "verification",
+          "to": "done",
+          "note": "Codex accepts all five criteria on exact remote d3f8d9d with current nativeLinux/macOS and WSL full52 results, repaired independent findings and preserved original assertions. Phase gate remains separate."
         }
       ],
       "phaseCriteria": [
@@ -2871,7 +2880,7 @@
           "text": "Build a bounded NATS persistence spike before production storage code: one owning task record, persistent operation identity, conditional competing writes, complete provenance/effect intent, lost acknowledgments and replay. Exercise single-record commits and any required atomic batch inside one stream."
         }
       ],
-      "status": "verification",
+      "status": "done",
       "owner": "Codex",
       "dependsOn": [
         "P00-GATE",
@@ -2916,14 +2925,16 @@
         "docs/planning/2026-10-09/delivery/evidence/P01/incoming-storage/archive.json",
         "docs/planning/2026-10-09/delivery/evidence/P01/incoming-storage-negative/archive.json",
         "docs/planning/2026-10-09/delivery/evidence/P01/backup-boundary/archive.json",
-        "docs/planning/2026-10-09/delivery/evidence/P01/P01-T07-acceptance.json"
+        "docs/planning/2026-10-09/delivery/evidence/P01/P01-T07-acceptance.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/P01-T07-acceptance-d3f8d9d.json"
       ],
       "commits": [
         "7ef00dcb299c100d6dda45bfffa2b4e127345a50",
         "f19c6473d56335b8eeb28704b02895b9d9ab7fcc",
         "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
         "00353fd0ccb0b4ce34cb4eb45549703430af30d1",
-        "9647b4240a43c60c246512efa1553e8f4cb58530"
+        "9647b4240a43c60c246512efa1553e8f4cb58530",
+        "d3f8d9d240c84d77865f73935f5fe8cf2a3974de"
       ],
       "blocker": null,
       "history": [
@@ -3011,6 +3022,13 @@
           "from": "in_progress",
           "to": "verification",
           "note": "All27 real JetStream storage cases pass on stable WSL source, including preserved original20 and seven capacity/reserve cases. Independent review and actual bypass mutation inspected; production multi-task policy remains P04. Corrected native candidate qualification and gate review pending."
+        },
+        {
+          "at": "2026-10-13T19:53:58.014975+00:00",
+          "actor": "Codex",
+          "from": "verification",
+          "to": "done",
+          "note": "Codex accepts all five criteria on exact remote d3f8d9d with full27 real-broker results on nativeLinux/macOS and WSL, reserve failure controls, independent review and retained original20cases. Production policy remains P04; phase gate remains separate."
         }
       ],
       "phaseCriteria": [
@@ -3278,7 +3296,7 @@
           "text": "The existing regression assertions are retained or mapped to equivalent assertions. Characterization fixtures capture each affected behavior before refactoring; a deliberately removed assertion, missing component, or unapproved retirement prevents progression."
         }
       ],
-      "status": "blocked",
+      "status": "done",
       "owner": "Codex",
       "dependsOn": [
         "P01-T01",
@@ -3332,12 +3350,14 @@
         }
       ],
       "evidence": [
-        "docs/planning/2026-10-09/delivery/evidence/P01/P01-GATE-acceptance.json"
+        "docs/planning/2026-10-09/delivery/evidence/P01/P01-GATE-acceptance.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/P01-GATE-acceptance-d3f8d9d.json"
       ],
       "commits": [
-        "0fd64326b9621163b5b550f6419d21e1007b56d3"
+        "0fd64326b9621163b5b550f6419d21e1007b56d3",
+        "d3f8d9d240c84d77865f73935f5fe8cf2a3974de"
       ],
-      "blocker": "Acceptance at 9db01f2 is historical and superseded by a confirmed omission: accepted P00 L04 explicitly requires the P01 status-response schema and success/failure fixtures, but only the status-query request exists. Complete that contract and re-review affected evidence; separately audit S03 completion-reserve proof against P01/P04 ownership.",
+      "blocker": null,
       "history": [
         {
           "at": "2026-10-09T20:55:01.988777+00:00",
@@ -3457,6 +3477,13 @@
           "from": "done",
           "to": "blocked",
           "note": "Acceptance at 9db01f2 is historical and superseded by a confirmed omission: accepted P00 L04 explicitly requires the P01 status-response schema and success/failure fixtures, but only the status-query request exists. Complete that contract and re-review affected evidence; separately audit S03 completion-reserve proof against P01/P04 ownership."
+        },
+        {
+          "at": "2026-10-13T19:55:25.491888+00:00",
+          "actor": "Codex",
+          "from": "blocked",
+          "to": "done",
+          "note": "Codex accepts corrected P01 on remotely verified d3f8d9d: complete L04 and S03 obligations, current native Linux/macOS and WSL evidence, all 37 component checks, failure/rollback review and local governance pass. Historical earlier acceptance is superseded. Commit, push and verify this gate record before resuming P02; no merge."
         }
       ],
       "phaseCriteria": [
@@ -35017,6 +35044,30 @@
       "to": "verification",
       "note": "All27 real JetStream storage cases pass on stable WSL source, including preserved original20 and seven capacity/reserve cases. Independent review and actual bypass mutation inspected; production multi-task policy remains P04. Corrected native candidate qualification and gate review pending.",
       "taskId": "P01-T07"
+    },
+    {
+      "at": "2026-10-13T19:53:57.411760+00:00",
+      "actor": "Codex",
+      "from": "verification",
+      "to": "done",
+      "note": "Codex accepts all five criteria on exact remote d3f8d9d with current nativeLinux/macOS and WSL full52 results, repaired independent findings and preserved original assertions. Phase gate remains separate.",
+      "taskId": "P01-T01"
+    },
+    {
+      "at": "2026-10-13T19:53:58.014975+00:00",
+      "actor": "Codex",
+      "from": "verification",
+      "to": "done",
+      "note": "Codex accepts all five criteria on exact remote d3f8d9d with full27 real-broker results on nativeLinux/macOS and WSL, reserve failure controls, independent review and retained original20cases. Production policy remains P04; phase gate remains separate.",
+      "taskId": "P01-T07"
+    },
+    {
+      "at": "2026-10-13T19:55:25.491888+00:00",
+      "actor": "Codex",
+      "from": "blocked",
+      "to": "done",
+      "note": "Codex accepts corrected P01 on remotely verified d3f8d9d: complete L04 and S03 obligations, current native Linux/macOS and WSL evidence, all 37 component checks, failure/rollback review and local governance pass. Historical earlier acceptance is superseded. Commit, push and verify this gate record before resuming P02; no merge.",
+      "taskId": "P01-GATE"
     }
   ],
   "deliveryGovernance": {

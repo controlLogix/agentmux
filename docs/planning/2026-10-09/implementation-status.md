@@ -7,7 +7,7 @@ Branch: `feat/agentmux-platform-rearchitecture`. No phase or merge approval is i
 | Phase | Planned | Ready | In progress | Blocked | Verification | Done | Gate |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
 | P00 | 0 | 0 | 0 | 0 | 0 | 8 | done |
-| P01 | 0 | 0 | 0 | 1 | 2 | 6 | blocked |
+| P01 | 0 | 0 | 0 | 0 | 0 | 9 | done |
 | P02 | 8 | 0 | 0 | 0 | 0 | 0 | planned |
 | P03 | 8 | 0 | 0 | 0 | 0 | 0 | planned |
 | P04 | 8 | 0 | 0 | 0 | 0 | 0 | planned |
@@ -24,10 +24,6 @@ Branch: `feat/agentmux-platform-rearchitecture`. No phase or merge approval is i
 
 ## Current work and blockers
 
-- **P01-T01 — verification:** Publish language-neutral command/event schemas and compatibility rules with organization, project, task, delegation, attempt, operation, schema version, and trace identifiers.
-- **P01-T07 — verification:** Build a bounded NATS persistence spike before production storage code: one owning task record, persistent operation identity, conditional competing writes, complete provenance/effect intent, lost acknowledgments and replay
-- **P01-GATE — blocked:** Verify and accept P01
-  Reason: Acceptance at 9db01f2 is historical and superseded by a confirmed omission: accepted P00 L04 explicitly requires the P01 status-response schema and success/failure fixtures, but only the status-query request exists. Complete that contract and re-review affected evidence; separately audit S03 completion-reserve proof against P01/P04 ownership.
 
 ## P00. Scope, baseline, and architecture decisions
 
@@ -50,15 +46,15 @@ Contracts and failure scenarios can be tested before business plugins grow.
 
 | Task | Status | Owner | Scope |
 | --- | --- | --- | --- |
-| [P01-T01](delivery/task-details.md#P01-T01) | verification | Codex | Publish language-neutral command/event schemas and compatibility rules with organization, project, task, delegation, attempt, operation, schema version, and trace identifiers. |
+| [P01-T01](delivery/task-details.md#P01-T01) | done | Codex | Publish language-neutral command/event schemas and compatibility rules with organization, project, task, delegation, attempt, operation, schema version, and trace identifiers. |
 | [P01-T02](delivery/task-details.md#P01-T02) | done | Codex | Create reusable contract fixtures and controllable fake workers/providers plus real NATS integration environments for CI. |
 | [P01-T03](delivery/task-details.md#P01-T03) | done | Codex | Specify lifecycle, delivery acknowledgment, idempotency, deadline, cancellation, approval, and unavailable/unknown result semantics. |
 | [P01-T04](delivery/task-details.md#P01-T04) | done | Codex | Establish per-phase evidence records, dependency gates, migration fixtures, and security/quality regression jobs. |
 | [P01-T05](delivery/task-details.md#P01-T05) | done | Codex | Build an early two-hub contract spike with separate broker accounts and a leaf link |
 | [P01-T06](delivery/task-details.md#P01-T06) | done | Codex | Preserve and extend the verified repairs for the six baseline findings |
-| [P01-T07](delivery/task-details.md#P01-T07) | verification | Codex | Build a bounded NATS persistence spike before production storage code: one owning task record, persistent operation identity, conditional competing writes, complete provenance/effect intent, lost acknowledgments and replay |
+| [P01-T07](delivery/task-details.md#P01-T07) | done | Codex | Build a bounded NATS persistence spike before production storage code: one owning task record, persistent operation identity, conditional competing writes, complete provenance/effect intent, lost acknowledgments and replay |
 | [P01-T08](delivery/task-details.md#P01-T08) | done | Codex | Apply ADD-01 and the component preservation matrix to every changed source file and affected caller |
-| [P01-GATE](delivery/task-details.md#P01-GATE) | blocked | Codex | Verify and accept P01 |
+| [P01-GATE](delivery/task-details.md#P01-GATE) | done | Codex | Verify and accept P01 |
 
 ## P02. Protected boot and the NATS foundation
 

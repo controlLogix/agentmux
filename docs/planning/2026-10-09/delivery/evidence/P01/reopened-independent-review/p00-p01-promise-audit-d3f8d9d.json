@@ -1,0 +1,482 @@
+{
+  "candidateCommit": "d3f8d9d240c84d77865f73935f5fe8cf2a3974de",
+  "reviewedAt": "2026-10-13T19:39:33.894336+00:00",
+  "reviewer": "Codex bounded independent audit",
+  "decision": "no-additional-specific-P01-promise-omission-found",
+  "phaseAccepted": false,
+  "scope": "Finite explicit P01-before-gate promises in accepted P00 D/S/L decisions and0.1 contract README; no later production requirements added.",
+  "requirements": [
+    {
+      "id": "D01",
+      "source": "delivery/decisions/runtime-and-deployment.md:19",
+      "promise": "Complete shared schemas and required SDK features with independent implementations.",
+      "evidenceAndLimits": "Current full52: Conformance schema examples/required fields; Payloads registry and full signed-envelope admission; independent Python/TypeScript clients. Both promoted SDK sources and all registered schemas bind candidate. Storage APIs separately qualified with real broker."
+    },
+    {
+      "id": "S02-tokens",
+      "source": "delivery/decisions/storage-contract.md:19",
+      "promise": "Validate allowed subject token syntax and real broker permissions.",
+      "evidenceAndLimits": "Common opaque identifier rules and malformed/wildcard/context negatives in full52; unchanged leaf real credential filtering, outside-scope storage and unrelated-account denials with positive delivery controls. Exact production kernel/account layout remains P02/P04."
+    },
+    {
+      "id": "S02-atomic",
+      "source": "delivery/decisions/storage-contract.md:34",
+      "promise": "Qualify conditional same-stream batches and final acknowledgment; no cross-resource transaction claim.",
+      "evidenceAndLimits": "Current full27 original storage cases: staging has no partial records; gaps, stale revision and interleaved commit reject; restart of uncommitted batch; lost-final-ack recovery after dedup expiry; cross-stream/KV/object/tool unsupported capability denial."
+    },
+    {
+      "id": "S02-canonical",
+      "source": "delivery/decisions/storage-contract.md:38",
+      "promise": "Canonical bytes, duplicate-key rejection and independent signature verification.",
+      "evidenceAndLimits": "Current full52 Conformance independent canonical vectors, strict parser, Unicode/number boundaries, both-direction signatures and outer-envelope tampering negatives."
+    },
+    {
+      "id": "S03-interruptions",
+      "source": "delivery/decisions/storage-contract.md:52",
+      "promise": "Exercise interruption before commit, after commit and before projection update.",
+      "evidenceAndLimits": "Current full27 incoming creation explicitly injects state/attribution/claim construction failures before publish and caller failure after commit in each language. Absence before commit, complete retained single record after commit and idempotent reread are asserted. Stale-KV fixture pauses projection updates after a newer owner commit, asserts source cursor lag, rejects stale CAS, rereads authority with both clients and rechecks policy. This exercises the bounded protocol states together; it does not implement production configuration/registry owners or rebuild the projection. P04-T02/T06 explicitly own production import/replay/checkpoint/projection rebuild."
+    },
+    {
+      "id": "S03-reserve",
+      "source": "delivery/decisions/storage-contract.md:54",
+      "promise": "Prove application completion/reconciliation reserve.",
+      "evidenceAndLimits": "Current full27 adds seven real-broker cases: scaled70/85 thresholds, independent owner CAS race, body and physical record-slot reserve allocated on acceptance, final/reconcile admission, explicit exhaustion, restart/replay, physical headroom, same-oracle bypass refusal and external mutated default-bypass negative. P01 proves mechanism. Starting10/100GiB metadata and20/500GiB artifact proposals are not measured capacities; S05:75 assigns exact quotas/versions/RPO/RTO to P12. P04 owns production multi-task enforcement."
+    },
+    {
+      "id": "S05-storage",
+      "source": "delivery/decisions/storage-contract.md:75",
+      "promise": "P01-T07 competing writes, changed retries, lost acknowledgments, beyond-dedup recovery and state-plus-intent atomicity.",
+      "evidenceAndLimits": "Current full27 retains original twenty: one complete state/provenance/effect record, one conditional winner, changed digest refusal, older operation reconciliation after newer writes/restart/dedup expiry, real lost-ack reads, retained history gap refusal."
+    },
+    {
+      "id": "L04-status",
+      "source": "delivery/decisions/startup-contract.md:50",
+      "promise": "Publish field schema and success/failure fixtures.",
+      "evidenceAndLimits": "Candidate startup-status-observation schema, registered reply and7 StartupStatus tests in full52 cover six dispositions, required nested fields, counts/cursors, forbidden inventory, future service honesty, local start/reuse identity/context/endpoint and observed link timestamp/age. Both actual CLI closure probes reject nine first-review defects. Runtime readiness/auth/filtering remains P02 and later consumers."
+    },
+    {
+      "id": "contract-signing",
+      "source": "delivery/contracts/README.md:36",
+      "promise": "Signing/verification and replay boundaries in independent implementations.",
+      "evidenceAndLimits": "Full52 signed-envelope/recovery deadline and current fixture authorization cases; unchanged signed-leaf Python offer -> TypeScript verification, signed decisions/results -> Python verification, changed digest replay and validly signed wrong work identities. Fixture enrollment/key/grant configuration explicitly bounded; actual issuer enrollment/rotation P04."
+    },
+    {
+      "id": "contract-JCS",
+      "source": "delivery/contracts/README.md:40",
+      "promise": "Actual serializers using shared and independent vectors.",
+      "evidenceAndLimits": "Conformance literal canonical bytes, Unicode and safe integers, duplicate escaped keys/strict UTF8, both-language signature verification. Covered current full52 and unchanged historical implementations."
+    },
+    {
+      "id": "contract-registry",
+      "source": "delivery/contracts/README.md:46",
+      "promise": "Registered versioned domain schema before execution, closed boundaries, unknown/major refusal.",
+      "evidenceAndLimits": "Registry now has11 closed payload contracts; full52 all entries, missing/unknown fields, kind/major/service refusals and payload/context binding. State extension slots remain domain-specific production owners, not permission to execute unchecked production state."
+    },
+    {
+      "id": "contract-context-lifecycle",
+      "source": "delivery/contracts/README.md:80",
+      "promise": "Runtime schema selection, negotiation, authenticated context construction, scoped SDK interfaces and lifecycle behavior.",
+      "evidenceAndLimits": "P01 executable SDK boundary: full-envelope verified claims constructed only after signature/payload/context/audience checks; context/manifest/nesting validation with scope/grant containment; registered major selection/refusal; five executable models and ordered histories. Signed leaf provides actual scoped transport plus fixture owner checks. Full process constructors/dependency lifetimes remain explicitly P03 in runtime decision:81; production login/enrollment P04. This mapping does not claim full production plugin SDK or dynamic permission services."
+    },
+    {
+      "id": "acceptance-twohub",
+      "source": "delivery/decisions/acceptance.md:24",
+      "promise": "Canonical bytes/signatures/SDK compatibility/competing writes/two-hub contract behavior before gate.",
+      "evidenceAndLimits": "Current full52/full27 and historical unchanged real two-broker leaf/signed-leaf tests; receiver/origin separate stores, disconnect/restart, reserved work retained, reconciliation and origin-only acceptance. Candidate native CI reruns pending; historical signed-leaf registry/README deltas are retained explicitly, not called exact full current execution."
+    },
+    {
+      "id": "D06-summary",
+      "source": "delivery/decisions/runtime-and-deployment.md:81",
+      "promise": "Executable contracts and persistence behavior in P01.",
+      "evidenceAndLimits": "The preceding bounded contract/model/storage/leaf mappings cover P01. This does not promote P02 boot, P03 process lifecycle, P04 domain production authority or P12 scale/durability to P01 promises."
+    }
+  ],
+  "exactP01SourceLines": [
+    {
+      "path": "delivery/decisions/acceptance.md",
+      "line": 10,
+      "text": "- Caller binding: an enrolled ingress signs canonical claims; domain owners verify identity, scope, content, audience and current grants. Plain caller identity references were rejected as insufficient proof. JCS avoids an ad hoc serialization format. Cross-language cryptographic tests remain mandatory P01 work."
+    },
+    {
+      "path": "delivery/decisions/acceptance.md",
+      "line": 24,
+      "text": "| Canonical bytes, real signatures, SDK compatibility, competing writes and two-hub contract behavior | P01 before its gate |"
+    },
+    {
+      "path": "delivery/decisions/acceptance.md",
+      "line": 34,
+      "text": "Missing implementation environments remain qualification gaps. They do not establish a pass and cannot be waived at those phases. The P00 deliverable is the reviewed contract and assigned verification; no unresolved design choice above prevents P01 from starting after the gate."
+    },
+    {
+      "path": "delivery/decisions/runtime-and-deployment.md",
+      "line": 19,
+      "text": "P01 must prove the complete shared schemas and required SDK features with independent implementations. If a client lacks a storage feature, the owning service can expose the required domain contract over NATS; ordinary plugin authors need not recreate raw JetStream transaction logic. Do not silently emulate an unproven storage guarantee."
+    },
+    {
+      "path": "delivery/decisions/runtime-and-deployment.md",
+      "line": 81,
+      "text": "P00 review must accept or revise D01-D06 and the linked storage/startup records. Record alternatives and reasons, including any changed platform/capacity target. P01 verifies executable contracts and persistence behavior; P02 proves boot; P03 proves nesting and context; P04 proves identities/state/execution separation. Later provider, hardware and market decisions have named phase deadlines and cannot be hidden in a release claim. Codex records the engineering review and advancement decision; this recommendation itself does not pass a phase gate. No Ryan/Nick delivery approval is required."
+    },
+    {
+      "path": "delivery/decisions/storage-contract.md",
+      "line": 3,
+      "text": "Status: detailed recommendation for Codex P00 review. Ryan approved NATS-backed shared authority; the concrete layout and operating profiles below still require review and P01/P04/P10/P12 qualification. No authoritative SQL exception is proposed."
+    },
+    {
+      "path": "delivery/decisions/storage-contract.md",
+      "line": 19,
+      "text": "Use one complete append-only record for a domain transition. Partition its subject by schema major version, organization, project, owner domain and entity ID. For example, `amx.v1.o.<org>.p.<project>.ledger.task.<taskId>` is a proposed logical subject; P01 must validate allowed token syntax and the real broker permission set. Identifiers are generated opaque tokens, never unchecked user strings inserted into a subject."
+    },
+    {
+      "path": "delivery/decisions/storage-contract.md",
+      "line": 34,
+      "text": "A transition's state, provenance, outcome and effect intent fit in one record. Where a domain genuinely needs multiple atomic records, use a qualified same-stream atomic batch only after P01 proves the required conditional-write combination and final acknowledgment behavior. If that combination is unavailable, redesign the bounded aggregate or review an explicit alternative; do not replace it with sequential puts. No transaction is claimed across streams, accounts, hubs, object uploads or external actions."
+    },
+    {
+      "path": "delivery/decisions/storage-contract.md",
+      "line": 38,
+      "text": "P00 selects RFC 8785 JCS with the restrictions and signed-ingress boundary in [the contract package](../contracts/README.md). P01 must qualify canonical bytes, duplicate-key rejection and signature verification in independent SDKs. The runtime spike's equal decoded JSON remains interoperability evidence only; it does not prove that byte or identity contract."
+    },
+    {
+      "path": "delivery/decisions/storage-contract.md",
+      "line": 52,
+      "text": "Configuration and registry decision revision: the earlier draft proposed KV CAS with separately retained ledger history, leaving a crash window between two writes. That choice is superseded. The owner conditionally appends the complete transition to its ledger, then updates the KV projection. A crash before the append leaves no accepted change; a crash after it is recovered by replaying the same committed revision. Missing or conflicting projection history marks the view stale and triggers rebuild. Multi-entity changes still use explicit owner operations and recovery states; no cross-stream transaction is implied. This uses the existing single-record ownership contract rather than adding a second authority. P01/P04 must exercise interruption before commit, after commit and before projection update."
+    },
+    {
+      "path": "delivery/decisions/storage-contract.md",
+      "line": 54,
+      "text": "Initial capacity fixture: 10 GiB authoritative metadata and 20 GiB artifact allowance for solo; 100 GiB metadata and 500 GiB artifacts for team, sized on the declared disk with headroom for replicas, snapshots and temporary copies. Warn at 70%, stop new bulk admissions at 85%, and preserve a separately budgeted completion/reconciliation reserve. P01/P04 must prove how the application enforces that reserve; a full stream cannot be assumed to accept final results. The quotas are qualification starting points, not purchase recommendations or measured capacity."
+    },
+    {
+      "path": "delivery/decisions/storage-contract.md",
+      "line": 75,
+      "text": "P01-T07 must prove competing conditional writes, changed-payload retries, lost acknowledgments, recovery beyond the deduplication window and state-plus-intent atomicity. P04-T02/T06 must prove authority restrictions, import/replay, checkpoint integrity and projection rebuild. P10-T04/T08 must prove disconnected reservations, selective replication gaps and old-origin restore. P12 must qualify the exact sync/replica/storage versions, quotas, backup/restore and published RPO/RTO. The existing AMX-BASE regressions remain assigned by the [baseline reconciliation](../evidence/P00/baseline-findings.md)."
+    },
+    {
+      "path": "delivery/decisions/startup-contract.md",
+      "line": 50,
+      "text": "P01 will publish a schema for this field contract and success/failure fixtures. Required envelope fields: `schemaVersion`, `observationId`, `observedAt`, `sourceRevision`, `startupAttemptId`, `disposition` (`started`, `reused`, `starting`, `remote`, `unconfigured`, `failed`), authenticated caller scope and an explicit error list."
+    },
+    {
+      "path": "delivery/contracts/README.md",
+      "line": 3,
+      "text": "This package defines the proposed language-neutral contracts for P01 implementation. The schema version is `0.1.0`. Passing these fixtures validates draft shapes and selected state transitions; it does not establish production security, broker permissions, persistence or platform support."
+    },
+    {
+      "path": "delivery/contracts/README.md",
+      "line": 36,
+      "text": "A delegated receiving hub authenticates its partner agreement and validates original actor/grant provenance before issuing a local attestation. Copying an attestation to another payload, command, owner or hub fails. A valid retry still passes the owner's durable operation-ID check. An expired request needs newly authenticated admission with the same business identity, never an automatic new task. Replies and events carry equivalent source binding; correlation alone is not authentication. A later event uses its own bounded operation context and the original causation/task references, so reporting completed work does not reuse an expired command deadline or create another execution. P01 proves signing/verification and replay boundaries in independent implementations; P04 proves credential enrollment, issuer rotation and revocation."
+    },
+    {
+      "path": "delivery/contracts/README.md",
+      "line": 40,
+      "text": "Use RFC 8785 JCS, encoded as UTF-8, for signed claims and payload hashing. Reject duplicate keys before ordinary object decoding, invalid Unicode and non-finite numbers. Preserve Unicode strings without normalization. Revision/counter integers stay within the existing safe-integer range; exact decimals or larger integers use domain-defined strings. These rules follow the [JCS specification](https://www.rfc-editor.org/rfc/rfc8785); P01 must qualify actual serializers with shared and independent vectors."
+    },
+    {
+      "path": "delivery/contracts/README.md",
+      "line": 46,
+      "text": "Schemas use closed objects at infrastructure boundaries. Domain `payload` and `state` fields are extension points: P01 must select a registered, versioned domain schema before execution. Unknown commands and unsupported major versions fail explicitly. Minor compatibility needs producer/consumer fixtures before publication. The initial draft uses stable three-part versions; prerelease and build metadata are not yet supported."
+    },
+    {
+      "path": "delivery/contracts/README.md",
+      "line": 80,
+      "text": "P01 must prove runtime schema selection, negotiation, authenticated context construction, scoped SDK interfaces and lifecycle behavior. P02/P04 must prove actual broker isolation, domain authorization, durable ownership and recovery. P05/P10 must prove concurrency, cancellation, delegation and disconnect behavior against real processes. Migration owners must exercise source-to-target, restart and rollback fixtures. The model examples are intentionally bounded and are not exhaustive state-space exploration."
+    }
+  ],
+  "executionReportBindings": [
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/startup-status-root-integration/full-reviewed.json",
+      "sha256": "b82ba02fff67e206d56a84614f2853c038eab841f68cc5324dbcb229903198a6",
+      "sourceCommit": "9db01f2d2ff6656d3f2c7fd8f9567fb421104605",
+      "testsRun": 52,
+      "caseCount": 0,
+      "exitCode": 0,
+      "status": null,
+      "matchingSourceCount": 57,
+      "changedSources": [],
+      "meaning": "current working-source qualification matched to committed candidate"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/storage-capacity-qualification/final/storage-result.json",
+      "sha256": "2f23372aebba42bd6cb5689328d33329eb8514f7feaf9e219328354c8089c71e",
+      "sourceCommit": "9db01f2d2ff6656d3f2c7fd8f9567fb421104605",
+      "testsRun": null,
+      "caseCount": 27,
+      "exitCode": null,
+      "status": "passed",
+      "matchingSourceCount": 11,
+      "changedSources": [],
+      "meaning": "current working-source qualification matched to committed candidate"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/contracts.json",
+      "sha256": "9af20837769aad78dceeb94823fc3cb03664707e0f87f3353c6d689396ce8d63",
+      "sourceCommit": "0fd64326b9621163b5b550f6419d21e1007b56d3",
+      "testsRun": 45,
+      "caseCount": 0,
+      "exitCode": 0,
+      "status": null,
+      "matchingSourceCount": 51,
+      "changedSources": [
+        {
+          "path": "contracts/v1/registry.json",
+          "testedSha256": "63bdf935623f4b2925592d09a923a5120966b37a33059d9d54aacacce930dc9f",
+          "candidateSha256": "a574e1dd54fec0d1b55df50c4ff1b604e0eac1d2eb4c23b7c914f68674eb6381"
+        },
+        {
+          "path": "tests/contracts/test_payloads.py",
+          "testedSha256": "80b273a16da8050565a320d63e2828cec903fc77f584e228e862b4e736dc38ef",
+          "candidateSha256": "ac6a7e41e1430cdbe283c24d4041e55dcd4be8a7858b5843cb959330c8f9f38c"
+        },
+        {
+          "path": "tests/contracts/vectors/payload-examples.json",
+          "testedSha256": "565db177e76f5cef9ef748a7a3ac0482da138908760d00bae92e61b1e164d4a7",
+          "candidateSha256": "f882c2c3188cddf3c6a7ecafa14e29cb50a2c03e2da351a6e2d1a3d3c496be41"
+        }
+      ],
+      "meaning": "historical execution; only unchanged listed inputs reusable; changed/additive registry/README requires candidate requalification"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/macos/contracts.json",
+      "sha256": "ffbd917e7e824bba79818ad2cea9d5edd12a1e86abe01e1c0df3c0f51f2761fc",
+      "sourceCommit": "0fd64326b9621163b5b550f6419d21e1007b56d3",
+      "testsRun": 45,
+      "caseCount": 0,
+      "exitCode": 0,
+      "status": null,
+      "matchingSourceCount": 51,
+      "changedSources": [
+        {
+          "path": "contracts/v1/registry.json",
+          "testedSha256": "63bdf935623f4b2925592d09a923a5120966b37a33059d9d54aacacce930dc9f",
+          "candidateSha256": "a574e1dd54fec0d1b55df50c4ff1b604e0eac1d2eb4c23b7c914f68674eb6381"
+        },
+        {
+          "path": "tests/contracts/test_payloads.py",
+          "testedSha256": "80b273a16da8050565a320d63e2828cec903fc77f584e228e862b4e736dc38ef",
+          "candidateSha256": "ac6a7e41e1430cdbe283c24d4041e55dcd4be8a7858b5843cb959330c8f9f38c"
+        },
+        {
+          "path": "tests/contracts/vectors/payload-examples.json",
+          "testedSha256": "565db177e76f5cef9ef748a7a3ac0482da138908760d00bae92e61b1e164d4a7",
+          "candidateSha256": "f882c2c3188cddf3c6a7ecafa14e29cb50a2c03e2da351a6e2d1a3d3c496be41"
+        }
+      ],
+      "meaning": "historical execution; only unchanged listed inputs reusable; changed/additive registry/README requires candidate requalification"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/leaf-result.json",
+      "sha256": "3c2b36085ab927bd23e8ab311f07bb35f6f17b8b701b4902e83ff20b54113906",
+      "sourceCommit": "0fd64326b9621163b5b550f6419d21e1007b56d3",
+      "testsRun": null,
+      "caseCount": 11,
+      "exitCode": 0,
+      "status": {
+        "domains": [
+          "ORIGIN",
+          "RECEIVER"
+        ],
+        "executions": 1,
+        "inputUnchanged": true,
+        "originState": "accepted",
+        "receiverState": "completion_reported"
+      },
+      "matchingSourceCount": 4,
+      "changedSources": [],
+      "meaning": "historical execution; only unchanged listed inputs reusable; changed/additive registry/README requires candidate requalification"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/macos/leaf-result.json",
+      "sha256": "c139d8537be454cdc4baefad559dda3a46bbf5cf5570f8f705c2f5dc80f40e4d",
+      "sourceCommit": "0fd64326b9621163b5b550f6419d21e1007b56d3",
+      "testsRun": null,
+      "caseCount": 11,
+      "exitCode": 0,
+      "status": {
+        "domains": [
+          "ORIGIN",
+          "RECEIVER"
+        ],
+        "executions": 1,
+        "inputUnchanged": true,
+        "originState": "accepted",
+        "receiverState": "completion_reported"
+      },
+      "matchingSourceCount": 4,
+      "changedSources": [],
+      "meaning": "historical execution; only unchanged listed inputs reusable; changed/additive registry/README requires candidate requalification"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/signed-leaf-result.json",
+      "sha256": "f1121921cbf4fec48d1217352346665657512e6a29ae555c2897e466dce9e9ff",
+      "sourceCommit": "0fd64326b9621163b5b550f6419d21e1007b56d3",
+      "testsRun": null,
+      "caseCount": 19,
+      "exitCode": 0,
+      "status": null,
+      "matchingSourceCount": 47,
+      "changedSources": [
+        {
+          "path": "contracts/v1/README.md",
+          "testedSha256": "4b959c625695c8380883d68a851dec7c88fd7b53d6a891c872da49a851de068c",
+          "candidateSha256": "61e61a80f72f24aa51f68d1b57de5aae98260d71bf240b53858ec0ae724fd0d4"
+        },
+        {
+          "path": "contracts/v1/registry.json",
+          "testedSha256": "63bdf935623f4b2925592d09a923a5120966b37a33059d9d54aacacce930dc9f",
+          "candidateSha256": "a574e1dd54fec0d1b55df50c4ff1b604e0eac1d2eb4c23b7c914f68674eb6381"
+        },
+        {
+          "path": "tests/contracts/vectors/payload-examples.json",
+          "testedSha256": "565db177e76f5cef9ef748a7a3ac0482da138908760d00bae92e61b1e164d4a7",
+          "candidateSha256": "f882c2c3188cddf3c6a7ecafa14e29cb50a2c03e2da351a6e2d1a3d3c496be41"
+        }
+      ],
+      "meaning": "historical execution; only unchanged listed inputs reusable; changed/additive registry/README requires candidate requalification"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/macos/signed-leaf-result.json",
+      "sha256": "2fac17562cd7e5bf2fa557173ffd4e6045a3c68dc0d5f46500601f656506476f",
+      "sourceCommit": "0fd64326b9621163b5b550f6419d21e1007b56d3",
+      "testsRun": null,
+      "caseCount": 19,
+      "exitCode": 0,
+      "status": null,
+      "matchingSourceCount": 47,
+      "changedSources": [
+        {
+          "path": "contracts/v1/README.md",
+          "testedSha256": "4b959c625695c8380883d68a851dec7c88fd7b53d6a891c872da49a851de068c",
+          "candidateSha256": "61e61a80f72f24aa51f68d1b57de5aae98260d71bf240b53858ec0ae724fd0d4"
+        },
+        {
+          "path": "contracts/v1/registry.json",
+          "testedSha256": "63bdf935623f4b2925592d09a923a5120966b37a33059d9d54aacacce930dc9f",
+          "candidateSha256": "a574e1dd54fec0d1b55df50c4ff1b604e0eac1d2eb4c23b7c914f68674eb6381"
+        },
+        {
+          "path": "tests/contracts/vectors/payload-examples.json",
+          "testedSha256": "565db177e76f5cef9ef748a7a3ac0482da138908760d00bae92e61b1e164d4a7",
+          "candidateSha256": "f882c2c3188cddf3c6a7ecafa14e29cb50a2c03e2da351a6e2d1a3d3c496be41"
+        }
+      ],
+      "meaning": "historical execution; only unchanged listed inputs reusable; changed/additive registry/README requires candidate requalification"
+    }
+  ],
+  "sourceBindings": [
+    {
+      "path": "docs/planning/2026-10-09/delivery/decisions/acceptance.md",
+      "candidateSha256": "b687a0353d20cb76244ce4c72f21661ce9f1808f74043d3a2b6b979b6dfdab59",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/decisions/runtime-and-deployment.md",
+      "candidateSha256": "146ab3da80d6c97c3d8d05478f47cb5a5ae84cdfaee8502612602ff565410a98",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/decisions/storage-contract.md",
+      "candidateSha256": "19bb201cc3ffdc6d4e19213faee99ed584179d2fa0f34bbefb0371146e728fab",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/decisions/startup-contract.md",
+      "candidateSha256": "2c86650ad04978106ff011827c55708a7f02238f112177cefd4629ee857dc127",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/contracts/README.md",
+      "candidateSha256": "e38dd56d704cdc9a3196fbfa0dc23da25cc3deb77e25ca9eed83d6de9f1dd98b",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "contracts/v1/registry.json",
+      "candidateSha256": "a574e1dd54fec0d1b55df50c4ff1b604e0eac1d2eb4c23b7c914f68674eb6381",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "contracts/v1/schemas/common.schema.json",
+      "candidateSha256": "65e1c256048e311da082a59a592ad2291740863807cebe12f96ecd20f3192ddb",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "contracts/v1/schemas/startup-status-observation.schema.json",
+      "candidateSha256": "d4f6f50bd1adc03ffc5fd904e61ce723646624a7357e83595bf6e818f12bf0a0",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "sdk/python/agentmux_contracts/validation.py",
+      "candidateSha256": "54b3e233ab3cc3e6f3350872897fd3f2b5ba651f6a9c26741e367af017030242",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "sdk/python/agentmux_contracts/attestation.py",
+      "candidateSha256": "d7bb81a998c2b3e243177a000f94f97e19dad54ff89090d22c41103a991dc70b",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "sdk/typescript/src/index.ts",
+      "candidateSha256": "7ef0e8f0663e03073b6ba1e558f95f2e745562a409e8ac3b6e3facfeea643a52",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "tests/contracts/test_conformance.py",
+      "candidateSha256": "a1cde5fd3745899e5b062b3f3784be2ed531b170c46f0848bf469099450d7959",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "tests/contracts/test_payloads.py",
+      "candidateSha256": "ac6a7e41e1430cdbe283c24d4041e55dcd4be8a7858b5843cb959330c8f9f38c",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "tests/contracts/test_state_models.py",
+      "candidateSha256": "33eb6bcbcc5242ee361aa203e966e33bd1395199f1264f7803e96e0dc75198b3",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "tests/contracts/test_recovery.py",
+      "candidateSha256": "6020bf7e88896d4847b625483678982f1e91bc636083cefb3cea9e0055bebe23",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "tests/contracts/test_semantics.py",
+      "candidateSha256": "e83efa3a548185d8022ac74906dffaa6a62e8bfae5a72c41ba7233f0f50cde65",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "tests/contracts/test_startup_status.py",
+      "candidateSha256": "36f41f63a231f8f1eeafdb09e5b9e01d09528a57bc6fd0533ade3739df705de0",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "tests/storage/run.py",
+      "candidateSha256": "e68dd05cf34b505a212d170b0777c9fc2bbe46edcfc324ec6242fae00c17010f",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "tests/storage/capacity.py",
+      "candidateSha256": "1c1e38b65bd635c91b5aeaa831a94c594184f375a7c8dc3ce17bd0b42c03fab6",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "tests/leaf/run.py",
+      "candidateSha256": "17fdaf80d25955643c23c246d7477f3324a62cb152bc1ec358416c4914d77063",
+      "workingMatchesCandidate": true
+    },
+    {
+      "path": "tests/leaf/signed_run.py",
+      "candidateSha256": "240042e1494a2065a8cd5849f0150aa52937e460a22f7e53225cd10cab31ba6d",
+      "workingMatchesCandidate": true
+    }
+  ],
+  "remaining": [
+    "Actual corrected-candidate native Linux/macOS CI is running and not accepted by this audit. Archive and independently review its exact artifacts, checks, versions, logs, cleanup and source maps.",
+    "Final criterion-level task/gate acceptance, source-aware reuse, preservation/governance and remote-candidate review remain root responsibilities."
+  ],
+  "patternCheck": {
+    "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+    "ok": true
+  },
+  "operations": "Read-only sources/reports/git blobs, no providers/Docker/config/live state edits. Only this new report written."
+}
