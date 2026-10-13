@@ -1,0 +1,87 @@
+{
+  "recordedAt": "2026-10-13T18:17:40.032536+00:00",
+  "sourceCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+  "sourceBinding": "Commit is the checkout base; sourceHashes identify the exact working files exercised, including uncommitted planning changes.",
+  "sourceHashes": {
+    "component-inventory.json": "d7928d042bbb16a63535e7e25fc144b2f53e717d080b86b53f9663a15374531a",
+    "phases.json": "882de6f13f309b878ebd8898ba73ab05fe94dc68ec517b311054f2a99f3102f7",
+    "implementation-plan.md": "ec6e308cdc95e5ed08c63c09b010398ab8b103dcab4a26227413609c7943ef71",
+    "verification-matrix.json": "516813fd034d6c73b4b0d6f9eaaf4b1b54798828e137336324605d0b956085bc",
+    "verification-matrix.md": "a3886e28443e9d627400c8551fe1902523d82e085a41aa2ef7605b26f35b5ddf",
+    "gate-record.template.json": "e159239e862cb4faa2d864ab71df4695eb99487613720fd56526ea9c1acc3019",
+    "source-surface-index.json": "3120e97fa381d8045be78d0109ebfdcf2519ab62e75514f6628659c8118aa6d6",
+    "component-audit-harness.json": "c7e1dd0f2bedf0f6d65ea7445d4c6e2fa3c28a2f6c06bc9a967db8dc048c8fdc",
+    "component-audit-hub.json": "f9f0719be9be08faf53b079b4bd967578d011e064d77b71045e4adcca1c4ae94",
+    "component-audit-dashboard.json": "a406607c28ee44054de9dc5f3b40b4b7e7d6e4e7989d29666fe09adb4904741f",
+    "component-audit-repository.json": "67447fae9d7d14b76400dba5ce3b74f35800ff4b8625d9fe7367ffa4869d4ffc",
+    "verify-component-coverage.py": "6d53d1fbb4e93892029c2ebee3cf07b6c666b7336c0ac1a1a72f9120a70d1c54"
+  },
+  "harnessSha256": "bfb0d6d522a2642126d4b373a1760f56c9380cebf8f2c1e58b6f97e04b743955",
+  "command": "python docs/planning/2026-10-09/delivery/evidence/P00/check_preservation.py",
+  "environment": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.14.7 (tags/v3.14.7:823f032, Aug  5 2026, 10:51:32) [MSC v.1944 64 bit (AMD64)]"
+  },
+  "exitCode": 0,
+  "baseline": {
+    "ok": true,
+    "baselineFiles": 338,
+    "additionalFiles": 132,
+    "components": 95,
+    "behaviorChecks": 208,
+    "baselineGroups": 37,
+    "phaseCriteria": 99,
+    "failureScenarios": 62,
+    "errors": [],
+    "assurance": "Checks planning coverage and references only; does not prove semantic completeness or execute runtime tests."
+  },
+  "cases": [
+    {
+      "scenarioId": "FAIL-49",
+      "status": "passed",
+      "mutation": "Remove VERSION from copied inventory while leaving its source and component owner intact.",
+      "requiredRejection": "New/unmapped source or missing inventory file: ['VERSION']",
+      "actualResult": {
+        "ok": false,
+        "baselineFiles": 338,
+        "additionalFiles": 131,
+        "components": 95,
+        "behaviorChecks": 208,
+        "baselineGroups": 37,
+        "phaseCriteria": 99,
+        "failureScenarios": 62,
+        "errors": [
+          "Inventory/manifest mismatch: ['VERSION']",
+          "New/unmapped source or missing inventory file: ['VERSION']",
+          "Baseline blob inventory differs from the pinned commit"
+        ],
+        "assurance": "Checks planning coverage and references only; does not prove semantic completeness or execute runtime tests."
+      }
+    },
+    {
+      "scenarioId": "FAIL-53",
+      "status": "passed",
+      "mutation": "Change HAR-01 to replace in the copied manifest without a replacement reason.",
+      "requiredRejection": "HAR-01: replacement requires a reason",
+      "actualResult": {
+        "ok": false,
+        "baselineFiles": 338,
+        "additionalFiles": 132,
+        "components": 95,
+        "behaviorChecks": 208,
+        "baselineGroups": 37,
+        "phaseCriteria": 99,
+        "failureScenarios": 62,
+        "errors": [
+          "HAR-01: replacement requires a reason"
+        ],
+        "assurance": "Checks planning coverage and references only; does not prove semantic completeness or execute runtime tests."
+      }
+    }
+  ],
+  "limitations": [
+    "Static coverage guards only; these checks do not execute migration or prove runtime behavior preservation.",
+    "Codex must inspect behavior, alternatives and full authorized scope. A nonempty replacement reason alone cannot authorize a capability reduction.",
+    "Later-phase FAIL-49 and FAIL-53 runtime comparisons remain required; these are P00 structural negative checks."
+  ]
+}

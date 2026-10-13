@@ -1,6 +1,12 @@
 # Review notes shared through Git
 
-Keep one Markdown file per reviewer and document. The live launcher reads your Git name and email and saves your notes directly into your repository file as you type. No export or import is required for normal use. Commits and pushes remain explicit Git actions.
+## Open the review inbox with Claude or Codex
+
+Use `$review-inbox` in Codex or `/review-inbox` in Claude Code, or ask “List recent shared notes and open the review I select.” The shared skill lives in `.agents/skills/review-inbox`; Claude’s `.claude/skills/review-inbox` entry point loads that same workflow. Restart or reload the agent session if it has not discovered newly added skills.
+
+The skill checks branch history, lists recent nonempty notes and configured work submissions, and waits for your choice if there are several. It then uses the correct branch or a safe worktree, starts that checkout’s review server and opens its browser URL. It preserves local changes and distinguishes shared submissions, local drafts and recorded replies. Unknown reply status means the questions still need inspection, not that no reply exists. It never shares notes or marks a review answered just because you opened it.
+
+Keep one Markdown file per reviewer and document. The live launcher reads your Git name and email and saves your notes directly into your repository file as you type. Choose **Share notes** to commit and push your own file. No export or Git commands are required to send your feedback.
 
 ## Automatic saving with Git identity
 
@@ -30,16 +36,9 @@ git pull --ff-only
 
 1. Start `node docs/reviews/open.mjs` and open its local URL.
 2. Write notes. Wait for **Saved to …/nick.md** or **…/ryan.md** before closing.
-3. Validate the note files. Commit only your own notes and push:
+3. Choose **Share notes**. It waits for the latest save, commits only your own file and pushes to the shared feature branch. The page confirms the commit after checking the remote. Other staged files and Nick or Ryan’s separate file are not included. Git hooks and signing checks still apply.
 
-```text
-node docs/reviews/check.mjs agentmux-visual-review
-git add docs/reviews/agentmux-visual-review/notes/nick.md
-git commit -m "docs: add Nick's visual review notes"
-git push origin feat/agentmux-platform-rearchitecture
-```
-
-Ryan uses `ryan.md` and a matching commit message. If a push is rejected because the branch advanced, fetch and reconcile the new commits before pushing; do not force-push. Follow repository checks and review rules for each commit. Committing feedback does not pass a phase gate.
+Sharing stops if the branch has unrelated unpublished commits, unresolved conflicts, or new remote changes that need reconciliation. It also rejects Git URL rewrite rules, different or multiple fetch/push destinations, and a committed note blob that differs from the confirmed save, apart from Windows line endings. Ask Codex to update or reconcile the repository in that case. It never pulls, rebases, stashes, force-pushes or merges automatically. A failed push leaves your notes committed locally; use **Share notes** again after resolving the connection or branch problem. Repeated successful sharing without edits does not create another commit. Git sign-in must already work without an interactive terminal prompt. Committing feedback does not pass a phase gate or approve implementation.
 
 After the other person pushes, pull and either:
 
@@ -64,7 +63,7 @@ Notes use fenced text blocks so code, Markdown headings and trailing whitespace 
 
 Create `docs/reviews/<document-id>/review.json`, `document-version.json` and `notes/<reviewer>.md`. Give each document a stable ID and stable section IDs; changing the document ID starts a separate review. For an incompatible section change, use a new document ID or explicitly migrate old notes instead of silently dropping sections.
 
-Set `artifactPath`, `notesPath` and optionally `buildScript` to repository-relative paths in `review.json`. `node docs/reviews/open.mjs <document-id>` launches the same identity and automatic-save workflow for that document. Its page must include the local identity controls shown in the current template. The standalone build remains self-contained and makes no requests; only the live-served copy receives the loopback session token and allows same-origin connections.
+Set `artifactPath`, `notesPath` and optionally `buildScript` to repository-relative paths in `review.json`. Optional `shareRemote` and `shareBranch` select the sharing destination; defaults are `origin` and `feat/agentmux-platform-rearchitecture`. This review must remain on that feature branch. `node docs/reviews/open.mjs <document-id>` launches the same identity, automatic-save and sharing workflow for that document. Its page must include the local identity controls and a hidden `notes-share` button shown in the current template. Standalone copies keep that button hidden and cannot commit or push. Only the live-served copy receives the loopback session token and allows same-origin connections.
 
 Reuse these feature modules:
 

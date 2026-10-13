@@ -1,0 +1,39 @@
+{
+  "reviewer": "Codex independent subagent",
+  "reviewedAtUtc": "2026-10-13T18:09:48.668668+00:00",
+  "scope": "Read-only instruction/security review of four untracked current skill files. Skill was not invoked.",
+  "sourceHashes": {
+    ".agents/skills/review-inbox/SKILL.md": "52365361184c8285b8aedcecf70daa2a6f57b960dae569e360f6542a47e01cfb",
+    ".agents/skills/review-inbox/references/workflow.md": "5dfff825be4b76b927cb89ad990f18f8e3bd95a71b73eacd3ebb42eb4c921f03",
+    ".agents/skills/review-inbox/agents/openai.yaml": "c302020127f957837c10b6681b8eb0bfdbf965f7bc31f6ec491c4ae6b7bc32d4",
+    ".claude/skills/review-inbox/SKILL.md": "d56ecc1c4ea8a44ae5606d48d44834a85f0e878384df66b93eefab625136f67c"
+  },
+  "decision": "Instruction prose has no identified security blocker; package is incomplete and executable discovery behavior is unqualified.",
+  "findings": [
+    {
+      "priority": "P1",
+      "title": "Required scanner is missing",
+      "path": ".agents/skills/review-inbox/SKILL.md",
+      "detail": "Find and choose step3 requires scripts/inbox.mjs; no such file exists in the reviewed package. The script-free four-file package cannot perform its documented workflow. Do not stage or advertise complete behavior before implementation/source/test review.",
+      "missingAtReview": true
+    }
+  ],
+  "securityReview": [
+    "Effective Git identity is attribution, not authentication; discovery does not change identity.",
+    "Fetch is separate, failures remain cached, and credential URLs/raw transport errors must not be printed.",
+    "Commit/manifest/note text is untrusted; scanner/buildScript data cannot authorize arbitrary execution.",
+    "Multiple selections require user choice; list-only requests stop.",
+    "Workspace selection preserves dirty/occupied branches, follows host access rules and retains feature-branch restriction.",
+    "Server reuse requires owned identity/source matching; no unknown listener kills or browser-denial bypass.",
+    "Opening does not create reply receipts, click Share notes, commit or push; separate user response/share request is required.",
+    "Reply receipts bind exact submission commits and version attribution; opening/worker completion/acceptance is not proof of answered questions."
+  ],
+  "coverageOwnershipNeeded": [
+    "Register notes discovery/scanner and reply receipt semantics under REPO-10 or an explicitly linked delivery-tool child owner. Add checks without weakening REPO-10-C01 through C05.",
+    "Register shared and Claude skill entrypoints in repository instructions/source surfaces. Actual supported-host loading remains with the applicable repository-instructions qualification owner; no new native host gate is inferred here.",
+    "Before accepting scanner claims, test bounded history/ref grouping, empty/invalid notes, drafts, workPaths confinement, stale/cached warnings and exact reply receipt selection without launching AI clients."
+  ],
+  "executedTests": [],
+  "modelsOrProvidersLaunched": false,
+  "sourceEdited": false
+}

@@ -1,0 +1,184 @@
+{
+  "reviewer": "Codex independent subagent",
+  "reviewedAtUtc": "2026-10-13T18:08:23.442645+00:00",
+  "sourceCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+  "comparisonBase": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+  "candidateState": "Reviewed uncommitted ten-file sharing and presentation change; concurrent tracker and evidence writes remain owned by parent.",
+  "decision": "No remaining actionable implementation finding in reviewed source; phase gate not accepted.",
+  "tests": [
+    {
+      "command": [
+        "node",
+        "--test",
+        "docs/reviews/src/features/local-review.test.mjs",
+        "docs/reviews/src/features/notes-local.test.mjs"
+      ],
+      "startedAtUtc": "2026-10-13T18:04:35.401648+00:00",
+      "finishedAtUtc": "2026-10-13T18:06:51.944738+00:00",
+      "exitCode": 0,
+      "reasonForRepeat": "Capture complete raw stdout/stderr for requested independent evidence. Initial identical selection passed25tests.",
+      "testsPassed": 25,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 136407.1645,
+      "nodeVersion": "v24.19.0",
+      "rawLog": "windows-focused.log",
+      "rawLogSha256": "3ab9e80421c6cf661c88b851e03e36c502d453091a8beab12d160f3688a32a8e"
+    },
+    {
+      "command": [
+        "wsl",
+        "-d",
+        "Ubuntu-26.04",
+        "--",
+        "bash",
+        "-lc",
+        "cd /mnt/c/Users/RyanHelms/GitHub/agentmux && node --version && node --test docs/reviews/src/features/*.test.mjs"
+      ],
+      "startedAtUtc": "2026-10-13T18:04:54.067523+00:00",
+      "finishedAtUtc": "2026-10-13T18:05:02.097529+00:00",
+      "exitCode": 0,
+      "reasonForRepeat": "Capture complete raw stdout/stderr for requested independent evidence. Initial identical selection passed41tests.",
+      "testsPassed": 41,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 7487.000384,
+      "nodeVersion": "v22.22.1",
+      "rawLog": "posix-full.log",
+      "rawLogSha256": "b392ebcdef982c4154e02f858743f74febf3cccc48e105a8259eb2cc3d255cbf"
+    }
+  ],
+  "initialIndependentRuns": {
+    "windows": {
+      "passed": 25,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 126545.2104
+    },
+    "nativePosix": {
+      "passed": 41,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 10188.881743
+    }
+  },
+  "sourceBinding": {
+    "before": "tested-source-before.json",
+    "beforeSha256": "03bd6a236245ebbbcd91cc76a314f847178aa4da5683b3a91b399caf230ffb9e",
+    "after": "tested-source-after.json",
+    "afterSha256": "03bd6a236245ebbbcd91cc76a314f847178aa4da5683b3a91b399caf230ffb9e",
+    "fileCount": 43,
+    "changedDuringLoggedTests": []
+  },
+  "checks": [
+    {
+      "command": [
+        "node",
+        "docs/reviews/check.mjs"
+      ],
+      "exitCode": 0,
+      "rawLog": "notes-check.log",
+      "rawLogSha256": "95b4d97cbeea87d896cb8362ea07690a3d5042c8aabc34b13ca7932954f7a4b4"
+    },
+    {
+      "command": [
+        "node",
+        ".bytedesk/design-patterns/check.mjs",
+        "check",
+        "--root",
+        "."
+      ],
+      "exitCode": 1,
+      "rawLog": "pattern-check.log",
+      "rawLogSha256": "0cf96b65d3074adcad4ba573a97a862254fddbe4f35fef24a9e798b93e1e123c"
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exitCode": 0,
+      "rawLog": "diff-check.log",
+      "rawLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "apiAudit": {
+    "path": "api-surface-audit.json",
+    "sha256": "998b9f3529f6cbeb032f1c02eaa06fcf9fb87b6dce30782cddc673ef77afc128",
+    "includesShareEndpoint": true,
+    "sourceSurfaceFindingResolved": true
+  },
+  "REPO10Coverage": {
+    "C01": "Native POSIX controller/format tests preserve text/version/identity, legacy drafts and filenames. Parent current Windows44 suite covers unchanged modules separately.",
+    "C02": "Independent Windows/POSIX actual disposable Git/HTTP tests verify effective identity, local-only setup, confined saves and stale-revision refusal.",
+    "C03": "Independent Windows/POSIX tests retain Host/Origin/token, linked path, malformed and oversized refusal checks.",
+    "C04": "Independent POSIX full locks/controller/local tests and Windows affected local tests verify pending-edit serialization, conflicts and retries; sharing waits for acknowledged saves.",
+    "C05": "Independent native POSIX packaging verifies embedded exact images/logo/plan, escaping and version rules. Saved HTML/report hash and size and generated document version matched."
+  },
+  "HAR23Coverage": {
+    "sourceChangedAgainstBase": false,
+    "existingPackageHashCount": 22,
+    "currentHashMismatches": [],
+    "checksPreserved": [
+      "HAR-23-C01",
+      "HAR-23-C02",
+      "HAR-23-C03"
+    ],
+    "note": "This change does not replace existing plugin qualification evidence or claim later supported-host/P06 acceptance.",
+    "historicalHashDifferences": [
+      "hooks/agentmux-hook.sh",
+      "tests/test_hook_mcp.py"
+    ],
+    "supersedingEvidence": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/plugin-restoration/metadata-fastpath-parent-review.json",
+      "sha256": "88004e1e4ce6e0d02ea69f22bf985cce3e0d9f18adc5230c36a6ce42c056976a",
+      "exactCurrentHashMatches": {
+        "hooks/agentmux-hook.sh": true,
+        "tests/test_hook_mcp.py": true
+      },
+      "sourceHashes": {
+        "hooks/agentmux-hook.sh": "f7eb3a8cfc2c20ad17736f06b338117ee7a168b10efd216bd473ca430735f1e3",
+        "tests/test_hook_mcp.py": "4958ec86dd04441885763ad85c86aa6850a2242099b30c761196671706b2fd30"
+      }
+    }
+  },
+  "securityReview": [
+    "Explicit Share notes action only; local token/Host/Origin and Git identity/revision checks still apply.",
+    "Only own-note commits and matching saved/committed bytes are pushed; unrelated staging and other notes are preserved.",
+    "Direct single remote, no Git URL rewrites, ordinary exact-candidate branch push, remote commit verification, hooks/signing retained.",
+    "No automatic pull, merge, rebase, stash, force push, merge approval or phase approval."
+  ],
+  "remainingBeforeP01Gate": [
+    "Complete current P01-T04 preservation/criterion evidence on the stable candidate under current qualification ownership.",
+    "Parent reviews concurrent tracker/surface/pattern changes and refreshes global pattern attestation after all reviewed source is stable; current pattern check remains stale.",
+    "Complete required P01 gate matrix and Codex acceptance record, commit/push only feature branch candidate and verify exact remote commit.",
+    "Parent reviews/registers the now-present repaired scanner and C06 offline evidence; C07 installed-host assertions remain planned P06 with original scope preserved."
+  ],
+  "limitations": [
+    "Real browser rendering/interactions remain unverified following tool policy rejection; no bypass attempted.",
+    "Native macOS execution is not claimed or introduced as a new P01 requirement.",
+    "Sequential concurrent evidence edits are outside this ten-file implementation review.",
+    "No AI clients or models launched; Git pushes in tests use disposable local bare repositories only."
+  ],
+  "repositorySourceEditedByReviewer": false,
+  "priorRootReviewPreserved": {
+    "path": "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/root-review.json",
+    "sha256": "811fb362d6d752cb59b31410b19d97cbb535a99f5aa39b6218c82ba2b8b488be"
+  },
+  "phaseAccepted": false,
+  "additionalSkillReview": {
+    "path": "skills-readonly-review.json",
+    "sha256": "4c705a84a19a917dee027464eb78caa772a78d77648dc7db9da8ff5f79de8879",
+    "instructionProseReviewed": true,
+    "scannerMissingAtReview": true,
+    "packageAccepted": "Exact current source/offline behavior reviewed; installed-host workflow remains planned P06.",
+    "followup": "scanner-repair-review.json",
+    "followupSha256": "c498e5d5812db79891663d77f2ebecb01be7a52e1fa2ba09336e54ef75a262d4",
+    "scannerNowPresent": true,
+    "offlineScannerTestsPassed": 12,
+    "finalFollowup": "scanner-final-review.json",
+    "finalFollowupSha256": "5b1a9e3887555ff0b1c03d23e0ab006f3a2ffe55e73d0c70895f0b566f8f68e7",
+    "workingTreeMatchesTestedSnapshot": true
+  }
+}

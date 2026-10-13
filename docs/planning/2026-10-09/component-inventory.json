@@ -116,6 +116,48 @@
       ]
     },
     {
+      "path": ".agents/skills/review-inbox/SKILL.md",
+      "baselineBlob": null,
+      "componentIds": [
+        "REPO-10"
+      ]
+    },
+    {
+      "path": ".agents/skills/review-inbox/agents/openai.yaml",
+      "baselineBlob": null,
+      "componentIds": [
+        "REPO-10"
+      ]
+    },
+    {
+      "path": ".agents/skills/review-inbox/references/workflow.md",
+      "baselineBlob": null,
+      "componentIds": [
+        "REPO-10"
+      ]
+    },
+    {
+      "path": ".agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs",
+      "baselineBlob": null,
+      "componentIds": [
+        "REPO-10"
+      ]
+    },
+    {
+      "path": ".agents/skills/review-inbox/scripts/inbox.mjs",
+      "baselineBlob": null,
+      "componentIds": [
+        "REPO-10"
+      ]
+    },
+    {
+      "path": ".agents/skills/review-inbox/scripts/inbox.test.mjs",
+      "baselineBlob": null,
+      "componentIds": [
+        "REPO-10"
+      ]
+    },
+    {
       "path": ".bytedesk/design-patterns/README.md",
       "baselineBlob": "6aadee49adacc81e5aa7b66c2814a06608dbc83c",
       "componentIds": [
@@ -197,6 +239,13 @@
       "baselineBlob": null,
       "componentIds": [
         "REPO-01"
+      ]
+    },
+    {
+      "path": ".claude/skills/review-inbox/SKILL.md",
+      "baselineBlob": null,
+      "componentIds": [
+        "REPO-10"
       ]
     },
     {
@@ -1881,6 +1930,13 @@
       ]
     },
     {
+      "path": "docs/reviews/review-inbox-verification.json",
+      "baselineBlob": null,
+      "componentIds": [
+        "REPO-10"
+      ]
+    },
+    {
       "path": "docs/reviews/src/features/local-review.mjs",
       "baselineBlob": null,
       "componentIds": [
@@ -3458,6 +3514,55 @@
         "docs/reviews/src/features/packaging.test.mjs"
       ],
       "note": "Existing pinned baseline blobs and history are preserved."
+    },
+    {
+      "date": "2026-10-13T18:12:46.758717+00:00",
+      "reviewer": "Codex",
+      "scope": "Own the new review-inbox scanner and shared Claude/Codex skill under existing REPO-10 delivery tooling. P01 qualifies offline discovery and skill contracts; P06 qualifies the promised installed-host opening workflow. Preserve current assertions and history; no execution or phase acceptance claimed.",
+      "addedFiles": [
+        ".agents/skills/review-inbox/SKILL.md",
+        ".agents/skills/review-inbox/agents/openai.yaml",
+        ".agents/skills/review-inbox/references/workflow.md",
+        ".agents/skills/review-inbox/scripts/inbox.mjs",
+        ".claude/skills/review-inbox/SKILL.md"
+      ],
+      "sourceHashes": {
+        ".agents/skills/review-inbox/SKILL.md": "52365361184c8285b8aedcecf70daa2a6f57b960dae569e360f6542a47e01cfb",
+        ".agents/skills/review-inbox/agents/openai.yaml": "c302020127f957837c10b6681b8eb0bfdbf965f7bc31f6ec491c4ae6b7bc32d4",
+        ".agents/skills/review-inbox/references/workflow.md": "5dfff825be4b76b927cb89ad990f18f8e3bd95a71b73eacd3ebb42eb4c921f03",
+        ".agents/skills/review-inbox/scripts/inbox.mjs": "21c61bc7691afa5704066f04a44b0eb6857d25b0e848e9ac856725ced2036687",
+        ".claude/skills/review-inbox/SKILL.md": "d56ecc1c4ea8a44ae5606d48d44834a85f0e878384df66b93eefab625136f67c"
+      }
+    },
+    {
+      "date": "2026-10-13T18:13:20.353848+00:00",
+      "reviewer": "Codex",
+      "scope": "Add the concurrently introduced isolated review-inbox scanner regression fixture to existing REPO-10-C06 ownership; source producer retains implementation ownership and tests are not yet accepted.",
+      "addedFiles": [
+        ".agents/skills/review-inbox/scripts/inbox.test.mjs"
+      ]
+    },
+    {
+      "date": "2026-10-13T18:16:38.685948+00:00",
+      "reviewer": "Codex",
+      "scope": "Own the producer-authorized review-inbox boundary regressions and record the inspected scanner controls: disable optional Git index locks, use literal pathspecs, enumerate configured notes independently. Preserve original tests and prior surface hashes; execution evidence and independent acceptance remain separate.",
+      "addedFiles": [
+        ".agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs"
+      ]
+    },
+    {
+      "date": "2026-10-13T18:29:58.029951+00:00",
+      "reviewer": "Codex",
+      "scope": "Register the current review-inbox verification artifact and inspect final scanner/skill surfaces. Preserve tested-old versus current-new provenance and original criteria; root independently reviews immutable Windows/POSIX execution evidence before any passing claim.",
+      "addedFiles": [
+        "docs/reviews/review-inbox-verification.json"
+      ],
+      "inspectedSourceHashes": {
+        ".agents/skills/review-inbox/scripts/inbox.mjs": "d9646e1a713340b7db00be60f3505d067bb9d1d4c03adaab4b867e16e160b10e",
+        ".agents/skills/review-inbox/SKILL.md": "e67de77914e48c2ec6e58ab75d2d902a8bfa4fc7ac220b10ca4fc85563baf3c0",
+        ".agents/skills/review-inbox/references/workflow.md": "4f5fc7db9dc928365798357aa17abaf87719098802a88a3b3e6cc2dae81170e7",
+        "docs/reviews/review-inbox-verification.json": "eadc96d7d9b4d67613b343f435e60a07d7b27929ef1a671ec65523c82d5ef42f"
+      }
     }
   ]
 }

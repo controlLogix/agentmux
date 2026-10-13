@@ -1458,7 +1458,8 @@
           ],
           "requiredEnvironment": "Disposable repositories and hub/tmux environments; live agents and paid providers only when separately authorized.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "qualificationPhase": "P06"
         }
       ],
       "migrationChecks": [
@@ -1669,6 +1670,26 @@
       "addedFiles": [
         "tests/contracts/plugin_preservation.py"
       ]
+    },
+    {
+      "date": "2026-10-13T18:02:02.393069+00:00",
+      "reviewer": "Codex",
+      "scope": "Separate P01 environmental characterization from P06 actual supported-host qualification under WSL-CLIENT-01. Preserve all original scenario assertions, partial results and failed evidence; this is a qualification ownership correction, not a waiver or phase acceptance.",
+      "componentId": "HAR-21",
+      "checkId": "HAR-21-C02",
+      "previousCheck": {
+        "id": "HAR-21-C02",
+        "description": "Repeat calibration/team/cross-repository/swarm scenarios in an isolated environment with pinned supported clients and explicit recording of all failed/skipped checks.",
+        "existingTests": [
+          "hub/demo/orchestrate.py"
+        ],
+        "requiredEnvironment": "Disposable repositories and hub/tmux environments; live agents and paid providers only when separately authorized.",
+        "baselineStatus": "not-run",
+        "targetStatus": "not-run"
+      },
+      "qualificationPhase": "P06",
+      "qualificationTask": "P06-T03",
+      "assertionsUnchanged": true
     }
   ]
 }

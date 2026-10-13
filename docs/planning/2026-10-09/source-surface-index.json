@@ -4,6 +4,32 @@
   "method": "Mechanical declarations and literal HTTP paths from owned non-vendor source; not a full dynamic call graph or proof of public API completeness. CLI subcommands, dynamic routes, configuration and events also require the component behavior review.",
   "files": [
     {
+      "path": ".agents/skills/review-inbox/scripts/inbox.mjs",
+      "componentIds": [
+        "REPO-10"
+      ],
+      "workingFileSha256": "d9646e1a713340b7db00be60f3505d067bb9d1d4c03adaab4b867e16e160b10e",
+      "declarations": [
+        {
+          "name": "scanInbox",
+          "line": 11,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "reply",
+          "line": 40,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "add",
+          "line": 84,
+          "kind": "javascript-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "REPO-10 offline Git scanner surface and explicit scanInbox export inspected; P01 scanner/skill contract and P06 installed opening behavior remain unqualified until reviewed evidence."
+    },
+    {
       "path": ".bytedesk/design-patterns/check.mjs",
       "componentIds": [
         "REPO-02"
@@ -5299,7 +5325,7 @@
       "componentIds": [
         "REPO-10"
       ],
-      "workingFileSha256": "e5195f79ce523638e93762ab4003d4167153bd26bb05cdcd4ba890ef1f26b3d7",
+      "workingFileSha256": "727fe3e68439678b12e330a594e2867b3a7d079a736dd87f9785c79c188f195c",
       "declarations": [
         {
           "name": "createLocalReview",
@@ -5325,15 +5351,21 @@
           "name": "current",
           "line": 55,
           "kind": "javascript-function"
+        },
+        {
+          "name": "share",
+          "line": 63,
+          "kind": "javascript-function"
         }
       ],
       "httpPathLiterals": [
         "/",
         "/api/session",
         "/api/identity",
-        "/api/notes"
+        "/api/notes",
+        "/api/share"
       ],
-      "reviewStatus": "P01 module ownership and literal exported functions reviewed; dynamic callbacks and behavior require component checks, not this mechanical index."
+      "reviewStatus": "P01 REPO-10 module ownership, named function declarations and literal HTTP endpoints reviewed for the current share addition. Exact source hashes identify the reviewed surface; runtime security and Git side effects require separate component evidence."
     },
     {
       "path": "docs/reviews/src/features/notes-controller.mjs",
@@ -5487,7 +5519,7 @@
       "componentIds": [
         "REPO-10"
       ],
-      "workingFileSha256": "d50e7519f9a327798c11d26ca9f9adb94851458b7908bec48e7968c46104c374",
+      "workingFileSha256": "08e40e6704d42ccf7ce23a8289ee3f20df5bfafeae72d27ca1ce8df0fd07b0eb",
       "declarations": [
         {
           "name": "attachLocalReview",
@@ -5496,31 +5528,32 @@
         },
         {
           "name": "api",
-          "line": 23,
+          "line": 27,
           "kind": "javascript-function"
         },
         {
           "name": "flush",
-          "line": 31,
+          "line": 35,
           "kind": "javascript-function"
         },
         {
           "name": "changed",
-          "line": 57,
+          "line": 62,
           "kind": "javascript-function"
         },
         {
           "name": "initialize",
-          "line": 66,
+          "line": 71,
           "kind": "javascript-function"
         }
       ],
       "httpPathLiterals": [
         "/api/session",
         "/api/identity",
-        "/api/notes"
+        "/api/notes",
+        "/api/share"
       ],
-      "reviewStatus": "P01 module ownership and literal exported functions reviewed; dynamic callbacks and behavior require component checks, not this mechanical index."
+      "reviewStatus": "P01 REPO-10 module ownership, named function declarations and literal HTTP endpoints reviewed for the current share addition. Exact source hashes identify the reviewed surface; runtime security and Git side effects require separate component evidence."
     },
     {
       "path": "docs/reviews/src/features/notes-lock.mjs",
@@ -16504,6 +16537,328 @@
         "docs/reviews/src/features/notes-lock.mjs"
       ],
       "sourceCommit": "74bee2b6c759f96135f024b2810d6dbcbb517a9e"
+    },
+    {
+      "date": "2026-10-13T18:05:52.488844+00:00",
+      "actor": "Codex",
+      "reason": "Reconcile the reviewed REPO-10 share source surface with its existing owner. Add /api/share and current named declarations without claiming runtime acceptance; preserve both previous rows and source hashes.",
+      "sourceCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+      "changedRows": [
+        {
+          "path": "docs/reviews/src/features/local-review.mjs",
+          "previous": {
+            "path": "docs/reviews/src/features/local-review.mjs",
+            "componentIds": [
+              "REPO-10"
+            ],
+            "workingFileSha256": "e5195f79ce523638e93762ab4003d4167153bd26bb05cdcd4ba890ef1f26b3d7",
+            "declarations": [
+              {
+                "name": "createLocalReview",
+                "line": 14,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "inside",
+                "line": 21,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "setting",
+                "line": 31,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "identity",
+                "line": 34,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "current",
+                "line": 55,
+                "kind": "javascript-function"
+              }
+            ],
+            "httpPathLiterals": [
+              "/",
+              "/api/session",
+              "/api/identity",
+              "/api/notes"
+            ],
+            "reviewStatus": "P01 module ownership and literal exported functions reviewed; dynamic callbacks and behavior require component checks, not this mechanical index."
+          },
+          "current": {
+            "path": "docs/reviews/src/features/local-review.mjs",
+            "componentIds": [
+              "REPO-10"
+            ],
+            "workingFileSha256": "727fe3e68439678b12e330a594e2867b3a7d079a736dd87f9785c79c188f195c",
+            "declarations": [
+              {
+                "name": "createLocalReview",
+                "line": 14,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "inside",
+                "line": 21,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "setting",
+                "line": 31,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "identity",
+                "line": 34,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "current",
+                "line": 55,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "share",
+                "line": 63,
+                "kind": "javascript-function"
+              }
+            ],
+            "httpPathLiterals": [
+              "/",
+              "/api/session",
+              "/api/identity",
+              "/api/notes",
+              "/api/share"
+            ],
+            "reviewStatus": "P01 REPO-10 module ownership, named function declarations and literal HTTP endpoints reviewed for the current share addition. Exact source hashes identify the reviewed surface; runtime security and Git side effects require separate component evidence."
+          }
+        },
+        {
+          "path": "docs/reviews/src/features/notes-local.mjs",
+          "previous": {
+            "path": "docs/reviews/src/features/notes-local.mjs",
+            "componentIds": [
+              "REPO-10"
+            ],
+            "workingFileSha256": "d50e7519f9a327798c11d26ca9f9adb94851458b7908bec48e7968c46104c374",
+            "declarations": [
+              {
+                "name": "attachLocalReview",
+                "line": 4,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "api",
+                "line": 23,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "flush",
+                "line": 31,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "changed",
+                "line": 57,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "initialize",
+                "line": 66,
+                "kind": "javascript-function"
+              }
+            ],
+            "httpPathLiterals": [
+              "/api/session",
+              "/api/identity",
+              "/api/notes"
+            ],
+            "reviewStatus": "P01 module ownership and literal exported functions reviewed; dynamic callbacks and behavior require component checks, not this mechanical index."
+          },
+          "current": {
+            "path": "docs/reviews/src/features/notes-local.mjs",
+            "componentIds": [
+              "REPO-10"
+            ],
+            "workingFileSha256": "08e40e6704d42ccf7ce23a8289ee3f20df5bfafeae72d27ca1ce8df0fd07b0eb",
+            "declarations": [
+              {
+                "name": "attachLocalReview",
+                "line": 4,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "api",
+                "line": 27,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "flush",
+                "line": 35,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "changed",
+                "line": 62,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "initialize",
+                "line": 71,
+                "kind": "javascript-function"
+              }
+            ],
+            "httpPathLiterals": [
+              "/api/session",
+              "/api/identity",
+              "/api/notes",
+              "/api/share"
+            ],
+            "reviewStatus": "P01 REPO-10 module ownership, named function declarations and literal HTTP endpoints reviewed for the current share addition. Exact source hashes identify the reviewed surface; runtime security and Git side effects require separate component evidence."
+          }
+        }
+      ]
+    },
+    {
+      "date": "2026-10-13T18:12:46.758717+00:00",
+      "actor": "Codex",
+      "reason": "Own the new review-inbox scanner and shared Claude/Codex skill under existing REPO-10 delivery tooling. P01 qualifies offline discovery and skill contracts; P06 qualifies the promised installed-host opening workflow. Preserve current assertions and history; no execution or phase acceptance claimed.",
+      "addedPaths": [
+        ".agents/skills/review-inbox/scripts/inbox.mjs"
+      ],
+      "sourceCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535"
+    },
+    {
+      "date": "2026-10-13T18:16:38.685948+00:00",
+      "actor": "Codex",
+      "reason": "Own the producer-authorized review-inbox boundary regressions and record the inspected scanner controls: disable optional Git index locks, use literal pathspecs, enumerate configured notes independently. Preserve original tests and prior surface hashes; execution evidence and independent acceptance remain separate.",
+      "changedRows": [
+        {
+          "path": ".agents/skills/review-inbox/scripts/inbox.mjs",
+          "previous": {
+            "path": ".agents/skills/review-inbox/scripts/inbox.mjs",
+            "componentIds": [
+              "REPO-10"
+            ],
+            "workingFileSha256": "21c61bc7691afa5704066f04a44b0eb6857d25b0e848e9ac856725ced2036687",
+            "declarations": [
+              {
+                "name": "scanInbox",
+                "line": 11,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "reply",
+                "line": 38,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "add",
+                "line": 73,
+                "kind": "javascript-function"
+              }
+            ],
+            "httpPathLiterals": [],
+            "reviewStatus": "REPO-10 offline Git scanner surface and explicit scanInbox export inspected; P01 scanner/skill contract and P06 installed opening behavior remain unqualified until reviewed evidence."
+          },
+          "current": {
+            "path": ".agents/skills/review-inbox/scripts/inbox.mjs",
+            "componentIds": [
+              "REPO-10"
+            ],
+            "workingFileSha256": "df950427227a60eedbfd2360423e1a163d4fb3c116bdf8e9ad71f21e80494901",
+            "declarations": [
+              {
+                "name": "scanInbox",
+                "line": 11,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "reply",
+                "line": 38,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "add",
+                "line": 76,
+                "kind": "javascript-function"
+              }
+            ],
+            "httpPathLiterals": [],
+            "reviewStatus": "REPO-10 offline Git scanner surface and explicit scanInbox export inspected; P01 scanner/skill contract and P06 installed opening behavior remain unqualified until reviewed evidence."
+          }
+        }
+      ]
+    },
+    {
+      "date": "2026-10-13T18:29:58.029951+00:00",
+      "actor": "Codex",
+      "reason": "Register the current review-inbox verification artifact and inspect final scanner/skill surfaces. Preserve tested-old versus current-new provenance and original criteria; root independently reviews immutable Windows/POSIX execution evidence before any passing claim.",
+      "changedRows": [
+        {
+          "path": ".agents/skills/review-inbox/scripts/inbox.mjs",
+          "previous": {
+            "path": ".agents/skills/review-inbox/scripts/inbox.mjs",
+            "componentIds": [
+              "REPO-10"
+            ],
+            "workingFileSha256": "df950427227a60eedbfd2360423e1a163d4fb3c116bdf8e9ad71f21e80494901",
+            "declarations": [
+              {
+                "name": "scanInbox",
+                "line": 11,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "reply",
+                "line": 38,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "add",
+                "line": 76,
+                "kind": "javascript-function"
+              }
+            ],
+            "httpPathLiterals": [],
+            "reviewStatus": "REPO-10 offline Git scanner surface and explicit scanInbox export inspected; P01 scanner/skill contract and P06 installed opening behavior remain unqualified until reviewed evidence."
+          },
+          "current": {
+            "path": ".agents/skills/review-inbox/scripts/inbox.mjs",
+            "componentIds": [
+              "REPO-10"
+            ],
+            "workingFileSha256": "d9646e1a713340b7db00be60f3505d067bb9d1d4c03adaab4b867e16e160b10e",
+            "declarations": [
+              {
+                "name": "scanInbox",
+                "line": 11,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "reply",
+                "line": 40,
+                "kind": "javascript-function"
+              },
+              {
+                "name": "add",
+                "line": 84,
+                "kind": "javascript-function"
+              }
+            ],
+            "httpPathLiterals": [],
+            "reviewStatus": "REPO-10 offline Git scanner surface and explicit scanInbox export inspected; P01 scanner/skill contract and P06 installed opening behavior remain unqualified until reviewed evidence."
+          }
+        }
+      ],
+      "inspectedSourceHashes": {
+        ".agents/skills/review-inbox/scripts/inbox.mjs": "d9646e1a713340b7db00be60f3505d067bb9d1d4c03adaab4b867e16e160b10e",
+        ".agents/skills/review-inbox/SKILL.md": "e67de77914e48c2ec6e58ab75d2d902a8bfa4fc7ac220b10ca4fc85563baf3c0",
+        ".agents/skills/review-inbox/references/workflow.md": "4f5fc7db9dc928365798357aa17abaf87719098802a88a3b3e6cc2dae81170e7",
+        "docs/reviews/review-inbox-verification.json": "eadc96d7d9b4d67613b343f435e60a07d7b27929ef1a671ec65523c82d5ef42f"
+      }
     }
   ]
 }

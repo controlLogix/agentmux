@@ -12,7 +12,7 @@ class Element {
 function setup({ configured = true, conflict = false, hold = false, transient = false, draft = null, recover = false } = {}) {
   const previous = { window: globalThis.window, fetch: globalThis.fetch };
   const elements = new Map(['git-identity-panel', 'reviewer-name', 'notes-local-fact', 'git-name', 'git-email',
-    'git-identity-current', 'notes-git-path', 'git-identity-save', 'lede', 'save', 'download', 'show'].map(id => [id, new Element()]));
+    'git-identity-current', 'notes-git-path', 'git-identity-save', 'notes-share', 'lede', 'save', 'download', 'show'].map(id => [id, new Element()]));
   const field = new Element(); const timers = new Map(), events = new Map(), calls = []; let next = 0, release;
   const identity = { configured, name: configured ? 'Ryan Helms' : '', email: configured ? 'ryan@example.test' : '', filename: 'ryan.md' };
   const state = { version: documentData.version, name: '', saved: '', status: '' };
@@ -23,6 +23,7 @@ function setup({ configured = true, conflict = false, hold = false, transient = 
     if (path === '/api/session') return response({ identity, revision: 'start', record: null });
     const body = JSON.parse(options.body); calls.push({ path, body });
     if (path === '/api/identity') { Object.assign(identity, { configured: true, ...body }); return response({ configured: true }); }
+    if (path === '/api/share') return response({ commit: 'a'.repeat(40), message: 'Your notes were committed and pushed.' });
     if (conflict) return response({ error: 'File changed' }, 409);
     if (transient && calls.filter(call => call.path === '/api/notes').length === 1) return response({ error: 'Temporary failure' }, 503);
     if (hold && calls.filter(call => call.path === '/api/notes').length === 1) return await new Promise(done => { release = () => done(response({ revision: 'next-1', filename: 'ryan.md' })); });
@@ -97,4 +98,55 @@ test('a version-only browser change is recoverable even when note text is identi
   const h = setup({ draft, recover: true });
   try { await h.ready(); assert.equal(h.state.version, oldVersion); assert.equal(h.calls[0].body.record.documentVersion, oldVersion); }
   finally { h.close(); }
+});
+
+test('Share notes saves pending text first and shares only the acknowledged revision', async () => {
+  const h = setup();
+  try {
+    await h.ready(); h.field.value = 'Latest feedback'; h.changed();
+    await h.elements.get('notes-share').click();
+    assert.deepEqual(h.calls.map(call => call.path), ['/api/notes', '/api/share']);
+    assert.equal(h.calls[1].body.revision, 'next-1');
+    assert.match(h.state.status, /committed and pushed/);
+    await h.elements.get('notes-share').click();
+    assert.equal(h.calls.filter(call => call.path === '/api/notes').length, 1);
+  } finally { h.close(); }
+});
+
+test('Share notes never sends a failed or conflicted save', async () => {
+  const h = setup({ conflict: true });
+  try {
+    await h.ready(); h.field.value = 'Keep this'; h.changed();
+    await h.elements.get('notes-share').click();
+    assert.deepEqual(h.calls.map(call => call.path), ['/api/notes']);
+    assert.equal(h.field.value, 'Keep this'); assert.equal(h.field.disabled, false);
+  } finally { h.close(); }
+});
+
+test('Share notes waits for an in-flight save and freezes editing until sharing finishes', async () => {
+  const h = setup({ hold: true });
+  try {
+    await h.ready(); h.field.value = 'First'; h.changed();
+    const pending = h.tick(); await h.ready();
+    h.field.value = 'Latest'; h.changed();
+    const sharing = h.elements.get('notes-share').click(); await h.ready();
+    assert.equal(h.field.disabled, true);
+    assert.equal(h.calls.filter(call => call.path === '/api/share').length, 0);
+    h.release(); await pending; await sharing;
+    assert.equal(h.calls.filter(call => call.path === '/api/notes').length, 2);
+    assert.equal(h.calls.at(-1).path, '/api/share');
+    assert.equal(h.calls.at(-1).body.revision, 'next-2');
+    assert.equal(h.field.disabled, false);
+  } finally { h.close(); }
+});
+
+test('a temporary save failure during Share notes retains the automatic retry', async () => {
+  const h = setup({ transient: true });
+  try {
+    await h.ready(); h.field.value = 'Retry me'; h.changed();
+    await h.elements.get('notes-share').click();
+    assert.equal(h.calls.length, 1); assert.equal(h.calls[0].path, '/api/notes');
+    await h.tick(); assert.equal(h.calls.length, 2);
+    assert.equal(h.calls[1].path, '/api/notes'); assert.match(h.state.saved, /Saved to/);
+  } finally { h.close(); }
 });

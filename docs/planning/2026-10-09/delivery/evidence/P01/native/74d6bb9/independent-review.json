@@ -1,0 +1,1408 @@
+{
+  "candidate": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+  "runId": 38437406104,
+  "reviewMethod": "Read-only downloaded JSON, report links, exact candidate Git blobs, workflow and runner source. No suites rerun.",
+  "limitations": [
+    "Native CI only; no WSL, native Windows, providers, browsers or phase acceptance.",
+    "Leaf generic WSL limitation label is stale; actual environment identifies native hosts.",
+    "Negative admission deliberately uses historical a2e9ee6 fixture evidence.",
+    "GitHub ZIP digest is advertised provenance, not independently downloaded ZIP verification.",
+    "docs/reviews HTTP/controller/browser checks are not included in this CI runner."
+  ],
+  "environments": {
+    "ubuntu": {
+      "jobId": 115434888210,
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python": "3.14.8",
+      "node": "v22.21.1",
+      "npm": "10.9.4",
+      "sourceCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+      "sourceHashCount": 252,
+      "sourceMapCount": 10,
+      "sourceHashMismatches": [],
+      "reportLinksMatched": true,
+      "checks": [
+        {
+          "name": "locked-python-dependencies",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "/home/runner/work/agentmux/agentmux/sdk/python/requirements.lock",
+            "-r",
+            "/home/runner/work/agentmux/agentmux/hub/requirements.lock"
+          ],
+          "exitCode": 0,
+          "seconds": 4.173
+        },
+        {
+          "name": "contracts-dependencies",
+          "command": [
+            "npm",
+            "ci",
+            "--ignore-scripts",
+            "--no-audit",
+            "--no-fund"
+          ],
+          "exitCode": 0,
+          "seconds": 1.116
+        },
+        {
+          "name": "contracts-build",
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exitCode": 0,
+          "seconds": 0.616
+        },
+        {
+          "name": "storage-dependencies",
+          "command": [
+            "npm",
+            "ci",
+            "--ignore-scripts",
+            "--no-audit",
+            "--no-fund"
+          ],
+          "exitCode": 0,
+          "seconds": 0.816
+        },
+        {
+          "name": "storage-build",
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exitCode": 0,
+          "seconds": 0.617
+        },
+        {
+          "name": "python-sdk-units",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "sdk/python/tests",
+            "-v"
+          ],
+          "exitCode": 0,
+          "seconds": 0.866
+        },
+        {
+          "name": "typescript-sdk-units",
+          "command": [
+            "npm",
+            "test"
+          ],
+          "exitCode": 0,
+          "seconds": 0.767
+        },
+        {
+          "name": "cross-language-contracts",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "tests/contracts/run.py",
+            "--evidence",
+            "/home/runner/work/_temp/agentmux-evidence/contracts.json"
+          ],
+          "exitCode": 0,
+          "seconds": 26.17
+        },
+        {
+          "name": "conformance-evidence-admission",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "docs/planning/2026-10-09/delivery/check_conformance_evidence.py",
+            "--report",
+            "/home/runner/work/_temp/agentmux-evidence/contracts.json",
+            "--candidate",
+            "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+            "--environment",
+            "linux",
+            "--evidence",
+            "/home/runner/work/_temp/agentmux-evidence/conformance-admission.json"
+          ],
+          "exitCode": 0,
+          "seconds": 0.114
+        },
+        {
+          "name": "conformance-evidence-negative-checks",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "docs/planning/2026-10-09/delivery/test_conformance_evidence.py",
+            "--evidence",
+            "/home/runner/work/_temp/agentmux-evidence/conformance-admission-negative.json"
+          ],
+          "exitCode": 0,
+          "seconds": 0.815
+        },
+        {
+          "name": "negative-contract-fixture",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "tests/contracts/ci.py",
+            "--negative-fixture",
+            "--evidence",
+            "/home/runner/work/_temp/agentmux-evidence"
+          ],
+          "exitCode": 0,
+          "seconds": 0.615
+        },
+        {
+          "name": "storage",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "tests/storage/run.py"
+          ],
+          "exitCode": 0,
+          "seconds": 7.08
+        },
+        {
+          "name": "leaf",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "tests/leaf/run.py"
+          ],
+          "exitCode": 0,
+          "seconds": 2.52
+        },
+        {
+          "name": "leaf/signed",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "tests/leaf/signed_run.py"
+          ],
+          "exitCode": 0,
+          "seconds": 11.19
+        },
+        {
+          "name": "original-hub-full-profile",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "-m",
+            "hub.tests.run_local",
+            "--profile",
+            "full"
+          ],
+          "exitCode": 0,
+          "seconds": 61.443
+        },
+        {
+          "name": "original-hub-evidence",
+          "exitCode": 0
+        },
+        {
+          "name": "maintained-plugin-preservation",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "tests/contracts/plugin_preservation.py",
+            "--evidence",
+            "/home/runner/work/_temp/agentmux-evidence/plugin-preservation.json"
+          ],
+          "exitCode": 0,
+          "seconds": 8.032
+        },
+        {
+          "name": "platform-placement-contract",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "tests/platform",
+            "-p",
+            "test_*.py",
+            "-v"
+          ],
+          "exitCode": 0,
+          "seconds": 0.164
+        },
+        {
+          "name": "windows-callback-contract",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "-m",
+            "unittest",
+            "hub.tests.test_windows_callbacks",
+            "-v"
+          ],
+          "exitCode": 0,
+          "seconds": 0.415
+        },
+        {
+          "name": "tracker-tests",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "docs/planning/2026-10-09/delivery",
+            "-p",
+            "test_track.py",
+            "-v"
+          ],
+          "exitCode": 0,
+          "seconds": 0.315
+        },
+        {
+          "name": "regression-preservation",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "docs/planning/2026-10-09/delivery/check_regressions.py",
+            "--self-test"
+          ],
+          "exitCode": 0,
+          "seconds": 0.114
+        },
+        {
+          "name": "component-preservation",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "docs/planning/2026-10-09/verify-component-coverage.py"
+          ],
+          "exitCode": 0,
+          "seconds": 0.114
+        },
+        {
+          "name": "pattern-review",
+          "command": [
+            "node",
+            ".bytedesk/design-patterns/check.mjs",
+            "check",
+            "--root",
+            "."
+          ],
+          "exitCode": 0,
+          "seconds": 0.315
+        }
+      ],
+      "fileHashes": {
+        "ci-result.json": "0a7443ce8a49f7c82bba0d2c544455d7e165546ec2ff1dc994d8968a9a62f069",
+        "conformance-admission-negative.json": "791ba33b6219c9baddc1cc7c07f887f49ad7d03133a7d9df053252acec1c80da",
+        "conformance-admission.json": "29d23efe935fcada3618639fa325b949db92243149e304f7886534c042f22bb1",
+        "contracts.json": "5d897bff2dec08dc1d176debeb63b93b78df31f1dfe15b87f7063f5f1a7a5c7d",
+        "hub-full-result.json": "107edf0c087f15a13da04919d95ee9c217b51766f317f816af0e529ab88d40da",
+        "leaf-result.json": "a2df72ab1701b0c72d91e8f0c63c5194c54ebd22f43a3e027c29d60ab3cd8f3f",
+        "negative-fixture.json": "6ac8f9b1e5fc4b740828137fe8c93338734626414e682a502073a0ba5425c7e8",
+        "plugin-preservation.json": "2274aef6dd3add4f1c93e9fb5ac50f5dd3f57d3461a318f9f13921a579629763",
+        "plugin-preservation.log": "b7193fdfc3c7886a1480ee451f063057d03fa8e3e33d9aabdf357d26c716b4a5",
+        "signed-leaf-result.json": "7f8c99645d3d6ef3bcdb2f24b670110739618e1dfa7bea8dc7cbf5237679fbc6",
+        "storage-result.json": "58fefe1c910d70141be52842ad044c9cc4e2d704895d795e43478c8ae5cd9cc4"
+      },
+      "broker": {
+        "version": "nats-server: v2.15.0",
+        "archiveUrl": "https://github.com/nats-io/nats-server/releases/download/v2.15.0/nats-server-v2.15.0-linux-amd64.tar.gz",
+        "checksumUrl": "https://github.com/nats-io/nats-server/releases/download/v2.15.0/SHA256SUMS",
+        "archiveSha256": "5d2c51caca950333aba84911df7d377f826f3a59ec36061c6539105084f65c92",
+        "binarySha256": "387ce54e7a0a249d877a579ed641d715bab047d7e061bfa42b4d07f6a0401341",
+        "checksumVerified": true
+      },
+      "nsc": {
+        "version": "nsc version 2.15.0",
+        "archiveUrl": "https://github.com/nats-io/nsc/releases/download/v2.15.0/nsc-linux-amd64.zip",
+        "checksumUrl": "https://github.com/nats-io/nsc/releases/download/v2.15.0/SHA256SUMS-nsc.txt",
+        "archiveSha256": "7d55eda757dc9f233675a3038fcf8779bcda99753b1603f7009fc8537e126b7e",
+        "binarySha256": "4463d74efd49f0027a74fb6600714a3d972031985e9a2b4f7e3e3681af215a56",
+        "checksumVerified": true
+      },
+      "reports": {
+        "ci-result.json": {
+          "exitCode": 0,
+          "limits": [
+            "Native host execution only; this is not WSL proof or phase approval.",
+            "Broker fixtures do not establish production enrollment or final bilateral release acceptance."
+          ],
+          "sourceCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+          "sourceUnchangedDuringRun": true
+        },
+        "conformance-admission-negative.json": {
+          "candidateCommit": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+          "testsRun": 12,
+          "failures": 0,
+          "errors": 0,
+          "skips": 0,
+          "exitCode": 0,
+          "inputsUnchangedDuringRun": true,
+          "limits": [
+            "Deliberate in-memory evidence mutations against archived native and working reports.",
+            "This proves conformance evidence rejection, not other suite acceptance or phase approval."
+          ]
+        },
+        "conformance-admission.json": {
+          "candidateCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+          "exitCode": 0,
+          "errors": [],
+          "limits": [
+            "Conformance-format evidence admission only; not authenticity proof, other suite acceptance or phase approval.",
+            "Compiled hashes record tested output identity; this tool does not rebuild or authenticate binaries.",
+            "Candidate comparison reads committed Git blobs, never working-tree files."
+          ]
+        },
+        "contracts.json": {
+          "sourceCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+          "sourceUnchangedDuringRun": true,
+          "environment": {
+            "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+            "harnessPython": "3.14.8",
+            "clientPython": "Python 3.14.8",
+            "node": "v22.21.1"
+          },
+          "exitCode": 0,
+          "testsRun": 45,
+          "failures": 0,
+          "errors": 0,
+          "skips": 0,
+          "limitations": [
+            "Local subprocess protocol, schema, canonical-byte and signature fixtures only; no live NATS, enrollment, current-grant lookup or production authorization qualification.",
+            "Ephemeral test signing seeds and request bodies are not stored in this record.",
+            "Strict raw UTF-8 is tested at the CLI byte boundary. Payload-size unit checks belong to each SDK because nested JSON escaping changes outer CLI frame size.",
+            "A passing local environment does not qualify unexecuted macOS, CI, provider or terminal environments."
+          ]
+        },
+        "hub-full-result.json": {
+          "status": "passed",
+          "tests": 132,
+          "failures": [],
+          "skips": []
+        },
+        "leaf-result.json": {
+          "cases": [
+            {
+              "name": "authenticated_leaf_transfers_scoped_command",
+              "status": "passed"
+            },
+            {
+              "name": "leaf_credentials_filter_both_directions_independently_of_client_permissions",
+              "status": "passed"
+            },
+            {
+              "name": "receiver_bridge_cannot_publish_outside_scope_or_access_owner_storage",
+              "status": "passed"
+            },
+            {
+              "name": "unrelated_account_isolated_with_positive_delivery_control",
+              "status": "passed"
+            },
+            {
+              "name": "receiver_acceptance_durable_before_lost_ack_origin_remains_unknown",
+              "status": "passed"
+            },
+            {
+              "name": "offline_receiver_retains_reservation_and_completes_only_read_only_scope",
+              "status": "passed"
+            },
+            {
+              "name": "receiver_restart_retains_independent_ledger_and_result",
+              "status": "passed"
+            },
+            {
+              "name": "origin_restart_retains_reservation_and_ledgers_are_distinct",
+              "status": "passed"
+            },
+            {
+              "name": "leaf_reconciliation_resolves_lost_acceptance_and_rejects_changed_digest_without_reexecution",
+              "status": "passed"
+            },
+            {
+              "name": "actual_offer_replay_recomputes_digest_and_preserves_single_execution",
+              "status": "passed"
+            },
+            {
+              "name": "retained_result_crosses_reconnected_leaf_and_only_origin_owner_accepts",
+              "status": "passed"
+            }
+          ],
+          "environment": {
+            "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+            "python": "3.14.8"
+          },
+          "limitations": [
+            "Local WSL loopback fixture; not production federation, TLS, enrollment, OIDC, dynamic grants or final bilateral release proof.",
+            "A narrow fixture protocol models reservation and acceptance; no production SDK, ingress signature or full contract compatibility is claimed.",
+            "Single-node independent stores and graceful process restarts; no R3, power-loss, network adversary or host-failure durability claim.",
+            "Static broker account permissions are real; offline scope checks and origin acceptance are explicit fixture logic."
+          ],
+          "sourceCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+          "cleanupComplete": true,
+          "exitCode": 0,
+          "sourceUnchangedDuringRun": true
+        },
+        "negative-fixture.json": {
+          "status": "passed",
+          "limits": [
+            "Isolated negative check; no fixture or SDK source was changed."
+          ]
+        },
+        "plugin-preservation.json": {
+          "exitCode": 0,
+          "limits": [
+            "Offline plugin compatibility, not provider inference or native Windows hook qualification."
+          ],
+          "sourceUnchangedDuringRun": true,
+          "tests": 36
+        },
+        "signed-leaf-result.json": {
+          "cases": [
+            {
+              "name": "deny_malformed_before_owner_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "deny_invalid-utf8_before_owner_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "deny_unknown-contract_before_owner_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "deny_wrong-audience_before_owner_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "deny_tampered-payload_before_owner_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "deny_expired_before_owner_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "python_signed_offer_typescript_verified_before_durable_acceptance",
+              "status": "passed"
+            },
+            {
+              "name": "signed_decision_loss_offline_read_and_separate_restart_recovery",
+              "status": "passed"
+            },
+            {
+              "name": "owner_rejects_signed_decision_taskId_mismatch_before_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "owner_rejects_signed_decision_delegationId_mismatch_before_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "owner_rejects_signed_decision_attemptId_mismatch_before_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "signed_replay_reconciles_lost_decision_and_rejects_changed_digest_without_execution",
+              "status": "passed"
+            },
+            {
+              "name": "python_rejects_tampered_result_before_origin_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "owner_rejects_signed_result_executorHubId_mismatch_before_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "owner_rejects_signed_result_taskId_mismatch_before_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "owner_rejects_signed_result_delegationId_mismatch_before_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "owner_rejects_signed_result_attemptId_mismatch_before_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "owner_rejects_signed_result_repositoryRevision_mismatch_before_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "typescript_signed_report_python_verified_then_origin_explicitly_accepts",
+              "status": "passed"
+            }
+          ],
+          "limits": [
+            "Static pre-enrolled fixture keys and scope, not production enrollment, OIDC, dynamic grants, TLS or a plugin runtime.",
+            "Real Ed25519/JCS SDK admission and NATS leaf bytes; owner policy and acceptance remain explicit fixture code.",
+            "Graceful local broker restarts with independent single-node stores, not R3 or final bilateral release acceptance."
+          ],
+          "sourceCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+          "exitCode": 0,
+          "sourceUnchangedDuringRun": true,
+          "cleanupComplete": true
+        },
+        "storage-result.json": {
+          "status": "passed",
+          "cases": [
+            {
+              "id": "complete-state-provenance-effect-record",
+              "passed": true,
+              "sequence": 1
+            },
+            {
+              "id": "conditional-two-language-race",
+              "passed": true,
+              "winnerSequence": 2,
+              "loserApiCodes": [
+                10071
+              ]
+            },
+            {
+              "id": "authoritative-latest-read-both-clients",
+              "passed": true,
+              "sequence": 2
+            },
+            {
+              "id": "conditional-winner-only-dispatches-once",
+              "passed": true,
+              "scenario": "FAIL-06",
+              "winnerOperation": "ts-contender",
+              "providerAdmissions": 1,
+              "providerCompletions": 1,
+              "boundary": "real owner reservation; in-memory dispatch deduplication only"
+            },
+            {
+              "id": "lost-puback-reconciles-after-restart-and-dedup-expiry",
+              "passed": true,
+              "recoveredSequence": 3,
+              "laterSequence": 4
+            },
+            {
+              "id": "changed-digest-replay-rejected-both-clients",
+              "passed": true
+            },
+            {
+              "id": "python-atomic-batch-no-partial-before-commit",
+              "passed": true,
+              "openingAck": {
+                "stagingHeaders": {}
+              },
+              "commitAck": {
+                "stream": "LEDGER",
+                "seq": 6,
+                "batch": "batch-one",
+                "count": 2
+              }
+            },
+            {
+              "id": "atomic-gap-rejects-without-partial-records",
+              "passed": true,
+              "apiCode": 10176
+            },
+            {
+              "id": "uncommitted-batch-remains-absent-after-restart",
+              "passed": true
+            },
+            {
+              "id": "typescript-native-atomic-batch",
+              "passed": true,
+              "ack": {
+                "sequence": 8,
+                "stream": "LEDGER",
+                "batch": "J5WIcPCMk2o18HnsAnx4Pl",
+                "count": 2,
+                "committed": true
+              }
+            },
+            {
+              "id": "atomic-batch-stale-subject-condition-rejected",
+              "passed": true,
+              "apiCode": 10071
+            },
+            {
+              "id": "atomic-condition-rechecked-after-interleaved-commit",
+              "passed": true,
+              "apiCode": 10071
+            },
+            {
+              "id": "typescript-raw-batch-gap-rejected",
+              "passed": true,
+              "apiCode": 10176
+            },
+            {
+              "id": "cross-stream-atomic-transaction-rejected",
+              "passed": true,
+              "apiCode": 10176
+            },
+            {
+              "id": "lost-final-batch-ack-reconciles-after-restart-and-dedup-expiry",
+              "passed": true,
+              "scenario": "FAIL-42",
+              "records": 2,
+              "duplicateWindowSeconds": 0.2,
+              "waitSeconds": 0.3,
+              "retryApiCode": 10071
+            },
+            {
+              "id": "stale-kv-projection-requires-owner-and-policy-revalidation",
+              "passed": true,
+              "scenario": "FAIL-43",
+              "projectionSequence": 12,
+              "ownerSequence": 13,
+              "policyRevision": 2
+            },
+            {
+              "id": "fixture-capability-rejects-cross-stream-kv-object-tool-atomicity",
+              "passed": true,
+              "scenario": "FAIL-47",
+              "rejectedResourceKinds": [
+                "stream-record",
+                "kv",
+                "object-upload",
+                "external-tool"
+              ],
+              "boundary": "fixture admission only; no production plugin registry"
+            },
+            {
+              "id": "incoming-creation-atomic-with-attribution-claim-python",
+              "passed": true,
+              "scenario": "FAIL-08",
+              "baselineFinding": "AMX-BASE-002",
+              "injectedBoundaries": [
+                "state",
+                "attribution",
+                "claim",
+                "after-commit"
+              ],
+              "recordsAdded": 1,
+              "claimIntents": 1,
+              "boundary": "fixture complete-record construction; no production authorization or dispatch"
+            },
+            {
+              "id": "incoming-creation-atomic-with-attribution-claim-typescript",
+              "passed": true,
+              "scenario": "FAIL-08",
+              "baselineFinding": "AMX-BASE-002",
+              "injectedBoundaries": [
+                "state",
+                "attribution",
+                "claim",
+                "after-commit"
+              ],
+              "recordsAdded": 1,
+              "claimIntents": 1,
+              "boundary": "fixture complete-record construction; no production authorization or dispatch"
+            },
+            {
+              "id": "retention-hole-requires-reconciliation",
+              "passed": true
+            }
+          ],
+          "sourceCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+          "limits": [
+            "One file-backed R1 broker on the recorded host platform; no R3, network partition or power-loss qualification.",
+            "Fixture owners use trusted synthetic provenance; no authentication/permission or production domain owner claim.",
+            "Lost acknowledgment is deliberately omitted by the publisher; restart is graceful SIGTERM, not a power failure.",
+            "Retained-history scans are fixture implementations bounded to 10000 messages, not production indexes.",
+            "Atomic persistence does not make external effects, projections, streams or hubs transactional."
+          ]
+        }
+      }
+    },
+    "macos": {
+      "jobId": 115434888029,
+      "platform": "macOS-15.7.9-arm64-arm-64bit-Mach-O",
+      "python": "3.14.8",
+      "node": "v22.21.1",
+      "npm": "10.9.4",
+      "sourceCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+      "sourceHashCount": 252,
+      "sourceMapCount": 10,
+      "sourceHashMismatches": [],
+      "reportLinksMatched": true,
+      "checks": [
+        {
+          "name": "locked-python-dependencies",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "/Users/runner/work/agentmux/agentmux/sdk/python/requirements.lock",
+            "-r",
+            "/Users/runner/work/agentmux/agentmux/hub/requirements.lock"
+          ],
+          "exitCode": 0,
+          "seconds": 5.093
+        },
+        {
+          "name": "contracts-dependencies",
+          "command": [
+            "npm",
+            "ci",
+            "--ignore-scripts",
+            "--no-audit",
+            "--no-fund"
+          ],
+          "exitCode": 0,
+          "seconds": 1.18
+        },
+        {
+          "name": "contracts-build",
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exitCode": 0,
+          "seconds": 0.637
+        },
+        {
+          "name": "storage-dependencies",
+          "command": [
+            "npm",
+            "ci",
+            "--ignore-scripts",
+            "--no-audit",
+            "--no-fund"
+          ],
+          "exitCode": 0,
+          "seconds": 0.783
+        },
+        {
+          "name": "storage-build",
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exitCode": 0,
+          "seconds": 0.54
+        },
+        {
+          "name": "python-sdk-units",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "sdk/python/tests",
+            "-v"
+          ],
+          "exitCode": 0,
+          "seconds": 0.55
+        },
+        {
+          "name": "typescript-sdk-units",
+          "command": [
+            "npm",
+            "test"
+          ],
+          "exitCode": 0,
+          "seconds": 0.636
+        },
+        {
+          "name": "cross-language-contracts",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "tests/contracts/run.py",
+            "--evidence",
+            "/Users/runner/work/_temp/agentmux-evidence/contracts.json"
+          ],
+          "exitCode": 0,
+          "seconds": 23.906
+        },
+        {
+          "name": "conformance-evidence-admission",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "docs/planning/2026-10-09/delivery/check_conformance_evidence.py",
+            "--report",
+            "/Users/runner/work/_temp/agentmux-evidence/contracts.json",
+            "--candidate",
+            "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+            "--environment",
+            "macos",
+            "--evidence",
+            "/Users/runner/work/_temp/agentmux-evidence/conformance-admission.json"
+          ],
+          "exitCode": 0,
+          "seconds": 0.139
+        },
+        {
+          "name": "conformance-evidence-negative-checks",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "docs/planning/2026-10-09/delivery/test_conformance_evidence.py",
+            "--evidence",
+            "/Users/runner/work/_temp/agentmux-evidence/conformance-admission-negative.json"
+          ],
+          "exitCode": 0,
+          "seconds": 1.072
+        },
+        {
+          "name": "negative-contract-fixture",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "tests/contracts/ci.py",
+            "--negative-fixture",
+            "--evidence",
+            "/Users/runner/work/_temp/agentmux-evidence"
+          ],
+          "exitCode": 0,
+          "seconds": 0.569
+        },
+        {
+          "name": "storage",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "tests/storage/run.py"
+          ],
+          "exitCode": 0,
+          "seconds": 5.674
+        },
+        {
+          "name": "leaf",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "tests/leaf/run.py"
+          ],
+          "exitCode": 0,
+          "seconds": 2.847
+        },
+        {
+          "name": "leaf/signed",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "tests/leaf/signed_run.py"
+          ],
+          "exitCode": 0,
+          "seconds": 8.91
+        },
+        {
+          "name": "original-hub-full-profile",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "-m",
+            "hub.tests.run_local",
+            "--profile",
+            "full"
+          ],
+          "exitCode": 0,
+          "seconds": 79.358
+        },
+        {
+          "name": "original-hub-evidence",
+          "exitCode": 0
+        },
+        {
+          "name": "maintained-plugin-preservation",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "tests/contracts/plugin_preservation.py",
+            "--evidence",
+            "/Users/runner/work/_temp/agentmux-evidence/plugin-preservation.json"
+          ],
+          "exitCode": 0,
+          "seconds": 57.506
+        },
+        {
+          "name": "platform-placement-contract",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "tests/platform",
+            "-p",
+            "test_*.py",
+            "-v"
+          ],
+          "exitCode": 0,
+          "seconds": 0.193
+        },
+        {
+          "name": "windows-callback-contract",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "-m",
+            "unittest",
+            "hub.tests.test_windows_callbacks",
+            "-v"
+          ],
+          "exitCode": 0,
+          "seconds": 0.477
+        },
+        {
+          "name": "tracker-tests",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "docs/planning/2026-10-09/delivery",
+            "-p",
+            "test_track.py",
+            "-v"
+          ],
+          "exitCode": 0,
+          "seconds": 0.389
+        },
+        {
+          "name": "regression-preservation",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "docs/planning/2026-10-09/delivery/check_regressions.py",
+            "--self-test"
+          ],
+          "exitCode": 0,
+          "seconds": 0.262
+        },
+        {
+          "name": "component-preservation",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "docs/planning/2026-10-09/verify-component-coverage.py"
+          ],
+          "exitCode": 0,
+          "seconds": 0.25
+        },
+        {
+          "name": "pattern-review",
+          "command": [
+            "node",
+            ".bytedesk/design-patterns/check.mjs",
+            "check",
+            "--root",
+            "."
+          ],
+          "exitCode": 0,
+          "seconds": 0.911
+        }
+      ],
+      "fileHashes": {
+        "ci-result.json": "7707f7af9d04807d0eecea671c4666ae7dd01aaceff8a11844c0d53135bf2e2a",
+        "conformance-admission-negative.json": "d64c1feea5cb08ca34d9a27ea71d27b4458e89ff1fe03abdee91f59080b8e338",
+        "conformance-admission.json": "1eb047723eec9e066e5cfd070ca9ba6c71d0747e6d3c01deb0b6ad9477cea55b",
+        "contracts.json": "35b81f4e0050a55ac8fe17fbc80fda5b2f6d269e6d87dcc1fb2f9cd955223716",
+        "hub-full-result.json": "f4c5044272e811fee3a918a187babdb2097c9fff867c7e8616512787b1bfec74",
+        "leaf-result.json": "78f400635e4f518201db02e7f22c6e5954e98c2ac0df57c330dbe3b8b9933198",
+        "negative-fixture.json": "6ac8f9b1e5fc4b740828137fe8c93338734626414e682a502073a0ba5425c7e8",
+        "plugin-preservation.json": "1f91a3cd19891cfc5e48587baa443d63259ec3a49084ea3c1e3abcd191efafed",
+        "plugin-preservation.log": "9d4889d4f6b0ec8e125ca6f66614821b68e4879b298369c9821dcaf55f928db8",
+        "signed-leaf-result.json": "c1a116a43d1c33a53b4fbb3d1f70ee397a333da5c3bd54ee616f7ae22e2f6def",
+        "storage-result.json": "71fdbe2869a46100e3c7a136cf89397fd86e2cbff0557d0cdb4aa645fd249520"
+      },
+      "broker": {
+        "version": "nats-server: v2.15.0",
+        "archiveUrl": "https://github.com/nats-io/nats-server/releases/download/v2.15.0/nats-server-v2.15.0-darwin-arm64.tar.gz",
+        "checksumUrl": "https://github.com/nats-io/nats-server/releases/download/v2.15.0/SHA256SUMS",
+        "archiveSha256": "e1c4e22d70bd44abfa0bcb3c16f7cf0c66f648c2e728c58924e8a1ce88913cc8",
+        "binarySha256": "5bc802f2d8216bb05415df93bb7dc30bf818a8284c745919b3bdb524032fcb10",
+        "checksumVerified": true
+      },
+      "nsc": {
+        "version": "nsc version 2.15.0",
+        "archiveUrl": "https://github.com/nats-io/nsc/releases/download/v2.15.0/nsc-darwin-arm64.zip",
+        "checksumUrl": "https://github.com/nats-io/nsc/releases/download/v2.15.0/SHA256SUMS-nsc.txt",
+        "archiveSha256": "18ef004eded116886607c3797aa7170624b38ab7eb4b0bce0586c30a5ab811c5",
+        "binarySha256": "6c9c449fdfa3c0151fcb8066effe1be45e0f94d9561b5ea2d8caf34ed0cf1981",
+        "checksumVerified": true
+      },
+      "reports": {
+        "ci-result.json": {
+          "exitCode": 0,
+          "limits": [
+            "Native host execution only; this is not WSL proof or phase approval.",
+            "Broker fixtures do not establish production enrollment or final bilateral release acceptance."
+          ],
+          "sourceCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+          "sourceUnchangedDuringRun": true
+        },
+        "conformance-admission-negative.json": {
+          "candidateCommit": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+          "testsRun": 12,
+          "failures": 0,
+          "errors": 0,
+          "skips": 0,
+          "exitCode": 0,
+          "inputsUnchangedDuringRun": true,
+          "limits": [
+            "Deliberate in-memory evidence mutations against archived native and working reports.",
+            "This proves conformance evidence rejection, not other suite acceptance or phase approval."
+          ]
+        },
+        "conformance-admission.json": {
+          "candidateCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+          "exitCode": 0,
+          "errors": [],
+          "limits": [
+            "Conformance-format evidence admission only; not authenticity proof, other suite acceptance or phase approval.",
+            "Compiled hashes record tested output identity; this tool does not rebuild or authenticate binaries.",
+            "Candidate comparison reads committed Git blobs, never working-tree files."
+          ]
+        },
+        "contracts.json": {
+          "sourceCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+          "sourceUnchangedDuringRun": true,
+          "environment": {
+            "platform": "macOS-15.7.9-arm64-arm-64bit-Mach-O",
+            "harnessPython": "3.14.8",
+            "clientPython": "Python 3.14.8",
+            "node": "v22.21.1"
+          },
+          "exitCode": 0,
+          "testsRun": 45,
+          "failures": 0,
+          "errors": 0,
+          "skips": 0,
+          "limitations": [
+            "Local subprocess protocol, schema, canonical-byte and signature fixtures only; no live NATS, enrollment, current-grant lookup or production authorization qualification.",
+            "Ephemeral test signing seeds and request bodies are not stored in this record.",
+            "Strict raw UTF-8 is tested at the CLI byte boundary. Payload-size unit checks belong to each SDK because nested JSON escaping changes outer CLI frame size.",
+            "A passing local environment does not qualify unexecuted macOS, CI, provider or terminal environments."
+          ]
+        },
+        "hub-full-result.json": {
+          "status": "passed",
+          "tests": 132,
+          "failures": [],
+          "skips": []
+        },
+        "leaf-result.json": {
+          "cases": [
+            {
+              "name": "authenticated_leaf_transfers_scoped_command",
+              "status": "passed"
+            },
+            {
+              "name": "leaf_credentials_filter_both_directions_independently_of_client_permissions",
+              "status": "passed"
+            },
+            {
+              "name": "receiver_bridge_cannot_publish_outside_scope_or_access_owner_storage",
+              "status": "passed"
+            },
+            {
+              "name": "unrelated_account_isolated_with_positive_delivery_control",
+              "status": "passed"
+            },
+            {
+              "name": "receiver_acceptance_durable_before_lost_ack_origin_remains_unknown",
+              "status": "passed"
+            },
+            {
+              "name": "offline_receiver_retains_reservation_and_completes_only_read_only_scope",
+              "status": "passed"
+            },
+            {
+              "name": "receiver_restart_retains_independent_ledger_and_result",
+              "status": "passed"
+            },
+            {
+              "name": "origin_restart_retains_reservation_and_ledgers_are_distinct",
+              "status": "passed"
+            },
+            {
+              "name": "leaf_reconciliation_resolves_lost_acceptance_and_rejects_changed_digest_without_reexecution",
+              "status": "passed"
+            },
+            {
+              "name": "actual_offer_replay_recomputes_digest_and_preserves_single_execution",
+              "status": "passed"
+            },
+            {
+              "name": "retained_result_crosses_reconnected_leaf_and_only_origin_owner_accepts",
+              "status": "passed"
+            }
+          ],
+          "environment": {
+            "platform": "macOS-15.7.9-arm64-arm-64bit-Mach-O",
+            "python": "3.14.8"
+          },
+          "limitations": [
+            "Local WSL loopback fixture; not production federation, TLS, enrollment, OIDC, dynamic grants or final bilateral release proof.",
+            "A narrow fixture protocol models reservation and acceptance; no production SDK, ingress signature or full contract compatibility is claimed.",
+            "Single-node independent stores and graceful process restarts; no R3, power-loss, network adversary or host-failure durability claim.",
+            "Static broker account permissions are real; offline scope checks and origin acceptance are explicit fixture logic."
+          ],
+          "sourceCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+          "cleanupComplete": true,
+          "exitCode": 0,
+          "sourceUnchangedDuringRun": true
+        },
+        "negative-fixture.json": {
+          "status": "passed",
+          "limits": [
+            "Isolated negative check; no fixture or SDK source was changed."
+          ]
+        },
+        "plugin-preservation.json": {
+          "exitCode": 0,
+          "limits": [
+            "Offline plugin compatibility, not provider inference or native Windows hook qualification."
+          ],
+          "sourceUnchangedDuringRun": true,
+          "tests": 36
+        },
+        "signed-leaf-result.json": {
+          "cases": [
+            {
+              "name": "deny_malformed_before_owner_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "deny_invalid-utf8_before_owner_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "deny_unknown-contract_before_owner_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "deny_wrong-audience_before_owner_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "deny_tampered-payload_before_owner_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "deny_expired_before_owner_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "python_signed_offer_typescript_verified_before_durable_acceptance",
+              "status": "passed"
+            },
+            {
+              "name": "signed_decision_loss_offline_read_and_separate_restart_recovery",
+              "status": "passed"
+            },
+            {
+              "name": "owner_rejects_signed_decision_taskId_mismatch_before_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "owner_rejects_signed_decision_delegationId_mismatch_before_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "owner_rejects_signed_decision_attemptId_mismatch_before_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "signed_replay_reconciles_lost_decision_and_rejects_changed_digest_without_execution",
+              "status": "passed"
+            },
+            {
+              "name": "python_rejects_tampered_result_before_origin_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "owner_rejects_signed_result_executorHubId_mismatch_before_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "owner_rejects_signed_result_taskId_mismatch_before_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "owner_rejects_signed_result_delegationId_mismatch_before_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "owner_rejects_signed_result_attemptId_mismatch_before_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "owner_rejects_signed_result_repositoryRevision_mismatch_before_mutation",
+              "status": "passed"
+            },
+            {
+              "name": "typescript_signed_report_python_verified_then_origin_explicitly_accepts",
+              "status": "passed"
+            }
+          ],
+          "limits": [
+            "Static pre-enrolled fixture keys and scope, not production enrollment, OIDC, dynamic grants, TLS or a plugin runtime.",
+            "Real Ed25519/JCS SDK admission and NATS leaf bytes; owner policy and acceptance remain explicit fixture code.",
+            "Graceful local broker restarts with independent single-node stores, not R3 or final bilateral release acceptance."
+          ],
+          "sourceCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+          "exitCode": 0,
+          "sourceUnchangedDuringRun": true,
+          "cleanupComplete": true
+        },
+        "storage-result.json": {
+          "status": "passed",
+          "cases": [
+            {
+              "id": "complete-state-provenance-effect-record",
+              "passed": true,
+              "sequence": 1
+            },
+            {
+              "id": "conditional-two-language-race",
+              "passed": true,
+              "winnerSequence": 2,
+              "loserApiCodes": [
+                10071
+              ]
+            },
+            {
+              "id": "authoritative-latest-read-both-clients",
+              "passed": true,
+              "sequence": 2
+            },
+            {
+              "id": "conditional-winner-only-dispatches-once",
+              "passed": true,
+              "scenario": "FAIL-06",
+              "winnerOperation": "ts-contender",
+              "providerAdmissions": 1,
+              "providerCompletions": 1,
+              "boundary": "real owner reservation; in-memory dispatch deduplication only"
+            },
+            {
+              "id": "lost-puback-reconciles-after-restart-and-dedup-expiry",
+              "passed": true,
+              "recoveredSequence": 3,
+              "laterSequence": 4
+            },
+            {
+              "id": "changed-digest-replay-rejected-both-clients",
+              "passed": true
+            },
+            {
+              "id": "python-atomic-batch-no-partial-before-commit",
+              "passed": true,
+              "openingAck": {
+                "stagingHeaders": {}
+              },
+              "commitAck": {
+                "stream": "LEDGER",
+                "seq": 6,
+                "batch": "batch-one",
+                "count": 2
+              }
+            },
+            {
+              "id": "atomic-gap-rejects-without-partial-records",
+              "passed": true,
+              "apiCode": 10176
+            },
+            {
+              "id": "uncommitted-batch-remains-absent-after-restart",
+              "passed": true
+            },
+            {
+              "id": "typescript-native-atomic-batch",
+              "passed": true,
+              "ack": {
+                "sequence": 8,
+                "stream": "LEDGER",
+                "batch": "b9AwObZHgR28FP2hNvKsab",
+                "count": 2,
+                "committed": true
+              }
+            },
+            {
+              "id": "atomic-batch-stale-subject-condition-rejected",
+              "passed": true,
+              "apiCode": 10071
+            },
+            {
+              "id": "atomic-condition-rechecked-after-interleaved-commit",
+              "passed": true,
+              "apiCode": 10071
+            },
+            {
+              "id": "typescript-raw-batch-gap-rejected",
+              "passed": true,
+              "apiCode": 10176
+            },
+            {
+              "id": "cross-stream-atomic-transaction-rejected",
+              "passed": true,
+              "apiCode": 10176
+            },
+            {
+              "id": "lost-final-batch-ack-reconciles-after-restart-and-dedup-expiry",
+              "passed": true,
+              "scenario": "FAIL-42",
+              "records": 2,
+              "duplicateWindowSeconds": 0.2,
+              "waitSeconds": 0.3,
+              "retryApiCode": 10071
+            },
+            {
+              "id": "stale-kv-projection-requires-owner-and-policy-revalidation",
+              "passed": true,
+              "scenario": "FAIL-43",
+              "projectionSequence": 12,
+              "ownerSequence": 13,
+              "policyRevision": 2
+            },
+            {
+              "id": "fixture-capability-rejects-cross-stream-kv-object-tool-atomicity",
+              "passed": true,
+              "scenario": "FAIL-47",
+              "rejectedResourceKinds": [
+                "stream-record",
+                "kv",
+                "object-upload",
+                "external-tool"
+              ],
+              "boundary": "fixture admission only; no production plugin registry"
+            },
+            {
+              "id": "incoming-creation-atomic-with-attribution-claim-python",
+              "passed": true,
+              "scenario": "FAIL-08",
+              "baselineFinding": "AMX-BASE-002",
+              "injectedBoundaries": [
+                "state",
+                "attribution",
+                "claim",
+                "after-commit"
+              ],
+              "recordsAdded": 1,
+              "claimIntents": 1,
+              "boundary": "fixture complete-record construction; no production authorization or dispatch"
+            },
+            {
+              "id": "incoming-creation-atomic-with-attribution-claim-typescript",
+              "passed": true,
+              "scenario": "FAIL-08",
+              "baselineFinding": "AMX-BASE-002",
+              "injectedBoundaries": [
+                "state",
+                "attribution",
+                "claim",
+                "after-commit"
+              ],
+              "recordsAdded": 1,
+              "claimIntents": 1,
+              "boundary": "fixture complete-record construction; no production authorization or dispatch"
+            },
+            {
+              "id": "retention-hole-requires-reconciliation",
+              "passed": true
+            }
+          ],
+          "sourceCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+          "limits": [
+            "One file-backed R1 broker on the recorded host platform; no R3, network partition or power-loss qualification.",
+            "Fixture owners use trusted synthetic provenance; no authentication/permission or production domain owner claim.",
+            "Lost acknowledgment is deliberately omitted by the publisher; restart is graceful SIGTERM, not a power failure.",
+            "Retained-history scans are fixture implementations bounded to 10000 messages, not production indexes.",
+            "Atomic persistence does not make external effects, projections, streams or hubs transactional."
+          ]
+        }
+      }
+    }
+  }
+}

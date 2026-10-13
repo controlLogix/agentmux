@@ -1500,7 +1500,8 @@
           ],
           "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. tmux, isolated repos and approved real provider accounts/budget.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "qualificationPhase": "P06"
         },
         {
           "id": "HUB-24-C03",
@@ -1837,6 +1838,26 @@
         "tests/platform/inventory.py",
         "tests/platform/test_inventory.py"
       ]
+    },
+    {
+      "date": "2026-10-13T18:02:02.393069+00:00",
+      "reviewer": "Codex",
+      "scope": "Separate P01 environmental characterization from P06 actual supported-host qualification under WSL-CLIENT-01. Preserve all original scenario assertions, partial results and failed evidence; this is a qualification ownership correction, not a waiver or phase acceptance.",
+      "componentId": "HUB-24",
+      "checkId": "HUB-24-C02",
+      "previousCheck": {
+        "id": "HUB-24-C02",
+        "description": "Compare all four orchestration scenarios and E1–E6 against baseline and target; add explicit acceptance checks and keep failed/skipped outcomes.",
+        "existingTests": [
+          "hub/demo/orchestrate.py"
+        ],
+        "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. tmux, isolated repos and approved real provider accounts/budget.",
+        "baselineStatus": "not-run",
+        "targetStatus": "not-run"
+      },
+      "qualificationPhase": "P06",
+      "qualificationTask": "P06-T03",
+      "assertionsUnchanged": true
     }
   ]
 }

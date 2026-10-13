@@ -1,7 +1,40 @@
 {
-  "reviewer": "Codex; P01 source coverage and CI metadata repair review, phase remains open",
-  "sourceDigest": "f77ed6bb25b298ee069a8a6fbac216d35adf04892de1b555727b7d9635d94cf1",
+  "reviewer": "Codex; combined P01 source review, phase acceptance pending",
+  "sourceDigest": "3bed30d9fa4b487f84a43af82e3709c223771412d1233cd3cdbd50e8d953ce79",
   "incrementalReviews": [
+    {
+      "date": "2026-10-13",
+      "scope": "Universal Claude/Codex review inbox skill",
+      "reviewer": "Codex; independent forward-test and source review completed",
+      "sourceDigestRefreshed": false,
+      "evidence": [
+        ".agents/skills/review-inbox/SKILL.md",
+        ".agents/skills/review-inbox/scripts/inbox.mjs",
+        ".agents/skills/review-inbox/scripts/inbox.test.mjs",
+        ".agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs",
+        ".claude/skills/review-inbox/SKILL.md",
+        "docs/reviews/review-inbox-verification.json"
+      ],
+      "rationale": "Reviewed the shared vendor-neutral skill, thin Claude entry point, manifest and reply conventions, read-only Git scanner and disposable tests. Discovery preserves branch/index/config state, respects literal paths, rejects redirect environments and malformed configuration, groups refs without losing per-branch versions/reply status, distinguishes local drafts from shared submissions, and reports limits. Commit dates sort by actual time with separate author dates. Explicit receipts bind to exact submissions; absence is unknown, not proof of unanswered work. The skill waits for selection, follows repository-owned branch rules, preserves dirty/occupied workspaces and does not reuse an unverified listener. Existing launchers and host tools perform selected worktree/server/browser preparation; no hidden commits, pushes, phase acceptance or implementation authority is added. Both entry points passed skill validation and twelve native Windows fixture tests passed. Independent forward-testing produced the required selection question and all reported source findings were closed. Actual worktree/server/browser operation and native non-Windows behavior remain unqualified. Concurrent delivery changes and Share notes reviews remain with their owning reviews; the global source digest is deliberately not refreshed. No new GoF/EIP pattern or registered runtime relationship is introduced."
+    },
+    {
+      "date": "2026-10-13",
+      "scope": "Explicit sharing of current reviewer's Git notes",
+      "reviewer": "Codex; focused independent review completed",
+      "previousSourceDigest": "f77ed6bb25b298ee069a8a6fbac216d35adf04892de1b555727b7d9635d94cf1",
+      "sourceDigestRefreshed": false,
+      "reviewedCandidateDigest": "d031652c44529bbf2b63750696ec7a7dfec7b5fd16d60f828f9277fcb8dfc98c",
+      "globalReviewPending": "Another task changed component audits, delivery tracking and native P01 evidence during the final check. The global digest remains at its prior review; this scoped review does not accept those concurrent changes.",
+      "evidence": [
+        "docs/planning/2026-10-09/review-site/share-verification.json",
+        "docs/reviews/src/features/local-review.mjs",
+        "docs/reviews/src/features/local-review.test.mjs",
+        "docs/reviews/src/features/notes-local.mjs",
+        "docs/reviews/src/features/notes-local.test.mjs",
+        "docs/planning/2026-10-09/review-site/src/pages/review.template.html"
+      ],
+      "rationale": "Inspected the complete change set from the clean previously reviewed checkout. The explicit live-only button saves the latest draft, locks note edits while sharing, checks Git identity and file revision, commits only the own note path, preserves unrelated staging, and pushes an exact candidate to the configured feature ref without force or tags. It rejects unrelated outgoing history, merges, conflicts, remote divergence, ambiguous destinations and URL rewriting. Committed bytes must match the confirmed file except CRLF normalization. Hooks remain active. OS-owned locks serialize helper writes and sharing; immutable candidate push and remote confirmation distinguish saved, committed and shared states. Five independent findings were repaired and covered by regressions. All forty-four tests passed using disposable local Git repositories and remotes; no current notes, identity or actual remote was mutated by verification. Rebuilt assets and source version passed packaging checks, inline scripts compiled, live HTTP page/session returned 200. Browser rendering remains unverified. Existing state and service code stays in features, presentation remains page-owned, and Scene remains pure. No new GoF/EIP pattern, registered relationship, runtime product behavior or phase acceptance is introduced. No merge or release is authorized. Prior review history remains intact."
+    },
     {
       "date": "2026-10-13",
       "scope": "Automatic Git identity and repository notes saving",
@@ -753,6 +786,23 @@
         "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-terminal-diagnostics/claude-ui-label-provenance.json"
       ],
       "rationale": "Actual Ubuntu/macOS CI exposed Windows CRLF planning hashes and a stale active regression replacement. Reviewed current text is serialized LF according to Git attributes; parsed JSON values and old hashes/history are preserved. All twenty-two tracker tests pass. Independent and root AST comparisons prove all previous regression methods unchanged; only three already-reviewed prompt tests were added. The old replacement is retained before the active pointer changes; all 105 retained regression files and assertion-removal self-test pass. The source-surface guard now covers eight owned .mjs implementations, including literal client API paths. Prior rows and ownership/history are unchanged; missing/stale/duplicate module fixtures fail. Program-byte label provenance is diagnostic only and never permits prompt answers. There is no new GoF/EIP architecture relationship, source authority, production behavior, scope reduction or phase acceptance. Native CI must rerun on this candidate, and original provider failures remain open. The external observer is not approved for model use until its independent findings are resolved."
+    },
+    {
+      "date": "2026-10-13T18:38:47.594918+00:00",
+      "scope": "Combined P01 candidate: reviewed notes sharing and offline review-inbox scanner, current ownership/inventory and source evidence; phase acceptance pending.",
+      "reviewer": "Codex",
+      "previousSourceDigest": "f77ed6bb25b298ee069a8a6fbac216d35adf04892de1b555727b7d9635d94cf1",
+      "reviewedCandidateDigest": "3bed30d9fa4b487f84a43af82e3709c223771412d1233cd3cdbd50e8d953ce79",
+      "sourceDigestRefreshed": true,
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/qualification-ownership-root-review-20261013.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/74d6bb9/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/wsl-native-74d6bb9/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/independent-share-review-20261013/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/independent-share-review-20261013/scanner-root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/criterion-aggregation-draft-20261013.json"
+      ],
+      "rationale": "Root inspected changed implementation, all new scanner assertions, shared/Claude instruction contracts and source metadata. Explicit sharing retains scoped writes, hooks, ordinary exact-candidate push and denial boundaries. Offline discovery disables index refresh, uses literal paths, validates IDs, enumerates independent notes paths, preserves per-ref versions/replies and isolates Git redirect variables. Native Windows/POSIX source-bound checks and focused negative/supplemental cases pass. All previous checks, registry/diagram/remediation history and phase requirements remain. Original provider failures remain partial P06 qualification; no installed-host or phase pass is inferred. Page composition and feature services retain their existing boundaries; scanner is a procedural Git query utility, with no new selected GoF/EIP pattern or changed registered runtime relationship. Reviewed current plan serialization, source ownership and immutable test-snapshot policy without narrowing scope. Historical source/report limitations remain visible; new acceptance and remote evidence are still required."
     }
   ],
   "rules": {

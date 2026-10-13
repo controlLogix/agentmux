@@ -1,0 +1,109 @@
+{
+  "reviewer": "Codex independent subagent",
+  "reviewedAtUtc": "2026-10-13T18:18:50.145659+00:00",
+  "scope": "Root-authorized small scanner repairs and isolated offline fixtures only. No skill invocation, live review server, network, AI provider or current repository Git mutation.",
+  "initialScannerSha256": "21c61bc7691afa5704066f04a44b0eb6857d25b0e848e9ac856725ced2036687",
+  "sourceHashStableAcrossReadAndBeforeEdit": true,
+  "finalScannerSha256": null,
+  "sourceHashes": {
+    ".agents/skills/review-inbox/SKILL.md": "52365361184c8285b8aedcecf70daa2a6f57b960dae569e360f6542a47e01cfb",
+    ".agents/skills/review-inbox/references/workflow.md": "5dfff825be4b76b927cb89ad990f18f8e3bd95a71b73eacd3ebb42eb4c921f03",
+    ".agents/skills/review-inbox/agents/openai.yaml": "c302020127f957837c10b6681b8eb0bfdbf965f7bc31f6ec491c4ae6b7bc32d4",
+    ".claude/skills/review-inbox/SKILL.md": "d56ecc1c4ea8a44ae5606d48d44834a85f0e878384df66b93eefab625136f67c",
+    ".agents/skills/review-inbox/scripts/inbox.mjs": "2b83b9a6aa52f176bf706a291c53adf60f2932bdd0b23e7ea4849c3780f65e2e",
+    ".agents/skills/review-inbox/scripts/inbox.test.mjs": "2fe531799418f68949eaeb1a8774dacfaa581b6294f1cd4f43da46932f3733f6",
+    ".agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs": "951346095c311b9140a2081ea852e9c55f54caae599a5345b178694678601f6f",
+    "docs/reviews/README.md": "7a8976343370e20de33c36246e8797204aa89ca90c4a53c8db2a97901de7cfb6"
+  },
+  "findings": [
+    {
+      "id": "scanner-optional-locks",
+      "previous": "Read-only claim did not disable optional index refresh.",
+      "resolution": "Every scanner Git command uses --no-optional-locks. Real fixture keeps index bytes unchanged after tracked-file metadata changes; control ordinary status changes index bytes.",
+      "status": "resolved"
+    },
+    {
+      "id": "scanner-literal-paths",
+      "previous": "Normal Git pathspec parsing could widen literal workPaths/reviewsDir.",
+      "resolution": "Every scanner Git command uses --literal-pathspecs. Wildcard work and manifest paths do not select matching unrelated paths.",
+      "status": "resolved"
+    },
+    {
+      "id": "scanner-notes-enumeration",
+      "previous": "Notes outside reviewsDir were silently omitted.",
+      "resolution": "Enumerate each validated notesPath independently, preserving documented repository-relative scope and explicit read-failure warning. Committed notes and local draft fixture pass.",
+      "status": "resolved"
+    }
+  ],
+  "tests": [
+    {
+      "command": "node --test .agents/skills/review-inbox/scripts/inbox.test.mjs .agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs",
+      "environment": "Windows Node24.19.0; disposable local Git repos only",
+      "exitCode": 0,
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 55787.0638,
+      "rawToolCapturedOutput": "scanner-windows.log",
+      "rawLogSha256": "ad576829b102e50016fe8b513933f26fa9671bbba446b3dfa7f3b4f239c4a754"
+    },
+    {
+      "command": "GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL=/dev/null node --test .agents/skills/review-inbox/scripts/inbox.test.mjs .agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs",
+      "environment": "WSL Ubuntu-26.04 native POSIX Node22.22.1; disposable local Git repos only",
+      "exitCode": 0,
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 3915.633734,
+      "rawToolCapturedOutput": "scanner-posix.log",
+      "rawLogSha256": "3f0f4bea67d4c6009c9761bec32d7344e23958fb32d527252c64d42bb9b666ba"
+    }
+  ],
+  "coverage": [
+    "Index preservation with nonvacuous ordinary-status control",
+    "Literal workPaths and reviewsDir; notes directories outside manifest directory",
+    "Manifest truncation explicitly warns",
+    "Duplicate refs grouped, nonempty notes/work separated from placeholders and drafts",
+    "Git identity attribution, document-version comparison, exact-commit reply receipt and missing-response refusal",
+    "Invalid path and age-window refusal"
+  ],
+  "historyPreserved": [
+    "skills-readonly-review.json retains initial absent-file finding. Scanner was supplied later; the original finding is historical, not deleted.",
+    "Original tested-source-before.json and tested-source-after.json remain unchanged; later README addition is documentation-only followup in this record.",
+    "Existing inbox.test.mjs was preserved; additional assertions live only in inbox-boundaries.test.mjs."
+  ],
+  "documentationFollowup": {
+    "path": "docs/reviews/README.md",
+    "currentSha256": "7a8976343370e20de33c36246e8797204aa89ca90c4a53c8db2a97901de7cfb6",
+    "review": "New inbox section describes intended guided selection/opening and authorization limits. It contains no explicit claim of passed installed Claude/Codex qualification. Offline fixtures cannot prove installed-host discovery/opening.",
+    "behaviorSourceEdited": false
+  },
+  "ownership": {
+    "offline": "REPO-10-C06 / P01-T04",
+    "installedHost": "REPO-10-C07 / planned P06-T03",
+    "metadataOwner": "p01_shared_doc_review; parent owns combined tracking/review",
+    "originalFiveChecksPreserved": true
+  },
+  "decision": "Original three repairs pass seven fixtures on df950. Concurrent behavior change requires source-bound followup tests before current candidate acceptance.",
+  "remainingAssertions": [
+    "Planned actual installed Claude/Codex skill discovery, appropriate existing worktree selection, verified server ownership/readiness, browser opening under host policy, and no unintended share/reply action.",
+    "Branch-head truncation and unreadable-branch/manifest warning variants are not individually exercised by the seven current fixtures; preserve these limits in current assertions."
+  ],
+  "phaseAccepted": false,
+  "commitOrPushPerformed": false,
+  "sourceEditsByReviewer": [
+    ".agents/skills/review-inbox/scripts/inbox.mjs",
+    ".agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs"
+  ],
+  "testedScannerSha256": "df950427227a60eedbfd2360423e1a163d4fb3c116bdf8e9ad71f21e80494901",
+  "currentScannerSha256AtFollowup": "2b83b9a6aa52f176bf706a291c53adf60f2932bdd0b23e7ea4849c3780f65e2e",
+  "testsApplyToCurrentSource": false,
+  "concurrentChange": {
+    "changes": [
+      "Warn on unreadable/unsupported nonempty note files instead of silent omission.",
+      "Retain document versions by ref; mixed versions no longer claim a single current version.",
+      "Original test file gained one branch-version regression."
+    ],
+    "state": "Read reviewed; eight combined fixtures scheduled; no overwrite of concurrent changes."
+  }
+}

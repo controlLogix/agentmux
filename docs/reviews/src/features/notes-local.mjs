@@ -5,6 +5,10 @@ export function attachLocalReview(data, hooks, root = document) {
   const $ = selector => root.querySelector(selector);
   let ready = false, revision = null, identity, sequence = 0, savedSequence = 0;
   let timer, writing = false, stopped = false, failures = 0;
+  let sharing = false;
+  const waiting = [];
+  const shareButton = $('#notes-share');
+  if (shareButton) { shareButton.hidden = false; shareButton.disabled = true; }
   const fields = Array.from(root.querySelectorAll('textarea[data-note]'));
   const panel = $('#git-identity-panel');
   const lock = value => fields.forEach(field => { field.disabled = value; });
@@ -17,8 +21,8 @@ export function attachLocalReview(data, hooks, root = document) {
     if (button) button.hidden = true;
   }
   root.querySelector('[data-action="save"]').textContent = 'Save notes now';
-  $('#notes-local-fact').textContent = 'Notes are saved to the repository on this computer. They are not sent to an external service.';
-  root.querySelector('.notes__lede').textContent = 'Your Git identity is used automatically. Notes save into your own repository file as you type. Commit and push that file when you want to share it.';
+  $('#notes-local-fact').textContent = 'Notes save locally as you type. Share notes sends only your notes to this repository’s Git remote. Feedback is not approval to implement or merge.';
+  root.querySelector('.notes__lede').textContent = 'Your Git identity is used automatically. Notes save into your own repository file as you type. Choose Share notes to commit and push them.';
 
   async function api(path, body) {
     const response = await fetch(path, { method: body === undefined ? 'GET' : 'POST',
@@ -40,7 +44,7 @@ export function attachLocalReview(data, hooks, root = document) {
       savedSequence = attempt;
       failures = 0;
       hooks.setSaved('Saved to ' + data.notesPath + '/' + result.filename + ' at ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '.');
-      hooks.setStatus('Notes saved automatically. Commit and push your note file to share them.', 'ok');
+      hooks.setStatus('Notes saved automatically. Choose Share notes when you want to send them.', 'ok');
     } catch (error) {
       const transient = !error.status || error.status >= 500 || [408, 423, 429].includes(error.status);
       failures++;
@@ -50,12 +54,13 @@ export function attachLocalReview(data, hooks, root = document) {
       if (!stopped) timer = window.setTimeout(flush, Math.min(1000 * 2 ** (failures - 1), 10000));
     } finally {
       writing = false;
+      waiting.splice(0).forEach(done => done());
       // Queue newer edits only after this write acknowledges its file revision.
       if (!stopped && savedSequence !== sequence && savedSequence === attempt) void flush();
     }
   }
   function changed() {
-    if (!ready) return;
+    if (!ready || sharing) return;
     hooks.setIdentity(identity);
     failures = 0;
     sequence++;
@@ -78,7 +83,7 @@ export function attachLocalReview(data, hooks, root = document) {
       revision = session.revision;
       hooks.setIdentity(identity);
       $('#git-identity-current').textContent = 'Git identity: ' + identity.name + ' <' + identity.email + '>';
-      $('#notes-git-path').textContent = 'Automatically saved to ' + data.notesPath + '/' + identity.filename + '. Commit and push this file to share your changes.';
+      $('#notes-git-path').textContent = 'Automatically saved to ' + data.notesPath + '/' + identity.filename + '. Share notes commits and pushes only this file.';
       const empty = { format: 'agentmux-review-notes', schemaVersion: 1, documentId: data.document.id,
         documentVersion: data.document.version, reviewer: identity.name, exportedAt: new Date().toISOString(),
         notes: Object.fromEntries(data.document.sections.map(section => [section.id, ''])) };
@@ -97,6 +102,7 @@ export function attachLocalReview(data, hooks, root = document) {
       } catch { /* Repository saving still works when browser draft storage is unavailable. */ }
       hooks.setIdentity(identity);
       ready = true;
+      if (shareButton) shareButton.disabled = false;
       lock(false);
       hooks.setStatus('Git identity detected. Your notes will save automatically to the repository.', 'ok');
       hooks.setSaved('Repository notes loaded.');
@@ -109,8 +115,34 @@ export function attachLocalReview(data, hooks, root = document) {
       await initialize();
     } catch (error) { hooks.setStatus(error.message, 'warn'); }
   });
+  shareButton?.addEventListener('click', async () => {
+    if (!ready || sharing) return;
+    sharing = true;
+    const controls = Array.from(root.querySelectorAll('#notes button, #notes input, textarea[data-note]'));
+    const disabled = controls.map(control => control.disabled);
+    controls.forEach(control => { control.disabled = true; });
+    shareButton.disabled = true;
+    window.clearTimeout(timer);
+    try {
+      while (writing) await new Promise(done => waiting.push(done));
+      if (stopped) throw new Error('Resolve the save error and reload before sharing. Your draft is preserved.');
+      // Save even an untouched draft so the server has a file and a confirmed revision.
+      if (revision === null && savedSequence === sequence) sequence++;
+      await flush();
+      if (writing || savedSequence !== sequence) throw new Error('Your latest notes were not saved. Nothing was shared; retry after the save succeeds.');
+      window.clearTimeout(timer);
+      hooks.setStatus('Sharing your notes…', 'ok');
+      const result = await api('/api/share', { revision, identity: { name: identity.name, email: identity.email } });
+      hooks.setStatus(result.message + ' Commit ' + result.commit.slice(0, 12) + '. Feedback is not implementation or merge approval.', 'ok');
+    } catch (error) { hooks.setStatus(error.message, 'warn'); }
+    finally {
+      sharing = false;
+      controls.forEach((control, index) => { control.disabled = disabled[index]; });
+      shareButton.disabled = false;
+    }
+  });
   window.addEventListener('beforeunload', event => {
-    if (savedSequence === sequence) return;
+    if (!sharing && savedSequence === sequence) return;
     event.preventDefault(); event.returnValue = '';
   });
   void initialize();

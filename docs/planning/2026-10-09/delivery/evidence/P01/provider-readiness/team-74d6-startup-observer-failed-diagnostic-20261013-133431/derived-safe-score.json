@@ -1,0 +1,70 @@
+{
+  "run": "20261013-133431-team",
+  "scenario": "team",
+  "started": "2026-10-13T13:34:31-0400",
+  "agents": [
+    "calc-lead-claude_1334",
+    "calc-worker-codex_1334",
+    "calc-reviewer-grok_1334"
+  ],
+  "checks": {
+    "E1_all_top_done": false,
+    "E2_no_dead_delivery": false,
+    "E3_no_failed_bell": false,
+    "E4_no_blocked_or_died": false,
+    "E5_all_acked": false,
+    "E6_verified": true
+  },
+  "error_free": false,
+  "stats": {
+    "deliveries": 4,
+    "acked": 3,
+    "bells": {
+      "deferred": 10,
+      "failed": 1,
+      "submitted": 15
+    },
+    "modal_answers": [
+      [
+        {
+          "kind": "trust",
+          "keys": [
+            "Down",
+            "Enter"
+          ]
+        }
+      ],
+      [
+        {
+          "kind": "trust",
+          "keys": [
+            "Enter"
+          ]
+        }
+      ]
+    ],
+    "extra_enters": 3,
+    "work_items": 2,
+    "duration_s": 1533
+  },
+  "workMetadata": [
+    {
+      "id": "W-TNXQAZCDYP",
+      "parent_id": null,
+      "target": "team:calc/t_1334",
+      "state": "waiting_children",
+      "claimed_by": "calc-lead-claude_1334",
+      "attempts": 1
+    },
+    {
+      "id": "W-9MYXB01MTH",
+      "parent_id": "W-TNXQAZCDYP",
+      "target": "role:team:calc/t_1334/worker",
+      "state": "done",
+      "claimed_by": "calc-worker-codex_1334",
+      "attempts": 1
+    }
+  ],
+  "scope": "Derived safe score. Checks and recorded states are unchanged; private panes, task conversation/results and verification text are omitted.",
+  "passingQualification": false
+}

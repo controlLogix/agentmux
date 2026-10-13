@@ -1,0 +1,347 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewer": "Codex bounded independent audit",
+  "auditedAtUtc": "2026-10-13T18:19:37.5860103+00:00",
+  "candidateCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+  "candidateState": "The committed runtime has current native and WSL evidence. Review helpers, skills, scanner, scope records and evidence aggregation are still changing in the working tree.",
+  "decision": "P01-T04 and P01-GATE are not accepted by this audit. Remaining requirements are listed explicitly; failed original scenarios remain failed.",
+  "scope": "Read-only criterion, failure and component completeness review. Only this new evidence record is written. No tracker, source, profile, client or model changes.",
+  "remainingRequirements": [
+    {
+      "id": "scanner",
+      "checks": [
+        "REPO-10-C06"
+      ],
+      "status": "open-focused-repair",
+      "required": "Finish the scanner repair and independently review actual Windows and native POSIX disposable offline Git results. Include inbox.test.mjs and inbox-boundaries.test.mjs, malformed and unsafe refusal, history bounds, duplicates, attribution, drafts, reply receipts, unknown states and repository/config/index/ref preservation. Review shared and Claude skill/reference/YAML metadata, cached-history limits, untrusted content and separate write authorization.",
+      "source": "docs/planning/2026-10-09/component-audit-repository.json",
+      "limits": "No network, model, real reviewer notes or browser is needed for this P01 check. Existing five sharing checks do not accept the new scanner."
+    },
+    {
+      "id": "task-aggregation",
+      "checks": [
+        "P01-T04-AC01",
+        "P01-T04-AC02",
+        "P01-T04-AC03",
+        "P01-T04-AC04"
+      ],
+      "status": "pending-root-aggregation",
+      "required": "Write the candidate-bound T04 acceptance record with each criterion and its reviewed evidence. Attach HAR-23-C01 through C03 and REPO-10-C01 through C06, environmental ownership/inventory and honest interop findings. Include baseline/candidate assertion preservation, migration/recovery/security boundaries, commands, actual environments, failures and privacy limits. Review source-equivalent reuse against the final candidate rather than treating old reports as new runs."
+    },
+    {
+      "id": "governance",
+      "status": "open-source-freshness",
+      "required": "After source and scope stabilize, review new entry points and skills, refresh source-surface/module records and the pattern attestation, and run the required tracking, component coverage, regression retention and governance checks with current source bindings and required negative cases.",
+      "observedPatternCheck": {
+        "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+        "exitCode": 1,
+        "error": "Review is stale or missing: inspect changes and refresh sourceDigest",
+        "interpretation": "Current freshness blocker; no attestation was changed by this audit."
+      }
+    },
+    {
+      "id": "gate-and-remote",
+      "status": "pending-root-review",
+      "required": "Aggregate P01-AC01 through AC06 and P01-GATE-AC01 through AC08, all eight assigned failure scenarios, and every P01-owned component check. Record reviewed migration, preservation, gain and rollback evidence. Codex must approve the stable candidate, commit and push only the feature branch, verify its remote commit, and record the dated advancement decision and gate. No merge is authorized."
+    }
+  ],
+  "currentEvidence": [
+    {
+      "record": "native/74d6bb9/root-review.json",
+      "finding": "Exact 74d6 Linux and macOS native CI evidence: each has 23 checks, 252 source hashes and six source maps; hub full profile passes 132 tests. Native results do not qualify Windows-owned AI terminals or the phase by themselves."
+    },
+    {
+      "record": "wsl-native-74d6bb9/root-review.json",
+      "finding": "Current exact 74d6 full hub profile passes 132 tests in WSL Linux on native Linux filesystem. Actual runtime evidence closes the earlier current-full-profile gap. It does not substitute for Windows-client transport evidence."
+    },
+    {
+      "record": "review-tooling/independent-share-review-20261013/root-review.json",
+      "finding": "REPO-10-C01 through C05 reviewed passed: Windows affected tests 25 and POSIX full feature tests 41, no failures or skips. Root verified 42 of 43 tested files unchanged; the README-only follow-up was separately reviewed. This accepts sharing/notes scope only; scanner findings remain open. Real browser and native macOS helper execution are not newly invented P01 gates."
+    },
+    {
+      "record": "plugin-restoration/metadata-fastpath-parent-review.json",
+      "finding": "Earlier package evidence has two superseded file hashes. Reviewed hook and test replacements match the 74d6 Git blobs and native plugin-preservation source hashes; the current native CI covers those replacements. Keep both historical and replacement records rather than claiming the old package map is current."
+    },
+    {
+      "record": "provider-readiness/team-74d6-startup-observer-failed-diagnostic-20261013-133431/root-review.json",
+      "finding": "Original TEAM diagnostic remains E1 false, E2 false, E3 false, E4 false, E5 false, E6 true. Completed child work and failed bell, cancellation, cleanup and false configuration-byte comparisons are preserved. This is characterization, not passing supported-host qualification."
+    }
+  ],
+  "sourceEquivalentReuse": [
+    {
+      "record": "wsl-contract-source-reuse-74d6.json",
+      "historicalRecord": "conformance-reviewed/contracts.json",
+      "finding": "Historical actual 09fe9 WSL command passed 45 tests. Root verified 52 of 53 source pins equal 74d6 Git blobs. Only tests/contracts/ci.py changed; historical tests/contracts/run.py does not invoke it. Current CI wrapper is separately covered by native 23-check evidence.",
+      "limit": "Reuse unchanged contract execution only. Do not rewrite the historical report, call it a current run, or submit it as a fully current source-manifest admission."
+    },
+    {
+      "record": "incoming-storage/storage-result.json",
+      "finding": "Historical actual native-filesystem WSL storage run passes 20 cases; this audit compared all ten sourceSha256 entries to 74d6 Git blobs and found ten matches. Current native storage records separately pass those cases.",
+      "limit": "Bounded persistence capability evidence, not production storage, external-effect atomicity, power-loss qualification or Windows AI client transport."
+    },
+    {
+      "records": [
+        "signed-leaf-result.json",
+        "leaf-result.json"
+      ],
+      "finding": "Historical actual WSL signed-leaf 50 of 50 and leaf four of four tested source hashes match 74d6 Git blobs. Preserve their historical candidate and environment identities."
+    },
+    {
+      "record": "conformance-result.json",
+      "finding": "Early d337 conformance report has eleven changed core SDK/runtime files; it is historical only and is not current source-equivalent reuse."
+    },
+    {
+      "record": "preservation/acceptance-map.json",
+      "finding": "Historical map records 26 qualified and two partial checks. The partial original terminal scenarios have explicit P06 qualification ownership. Filter current qualification owner and inspect assertion/source mappings; do not silently count all 28 as current P01 acceptance."
+    }
+  ],
+  "failureMapping": [
+    {
+      "id": "FAIL-05",
+      "evidence": [
+        "native/74d6bb9/linux/contracts.json",
+        "native/74d6bb9/linux/signed-leaf-result.json",
+        "native/74d6bb9/macos/contracts.json"
+      ],
+      "requirement": "Review invalid subject/account/schema/type/signature refusal and quarantine boundaries."
+    },
+    {
+      "id": "FAIL-06",
+      "evidence": [
+        "native/74d6bb9/linux/storage-result.json",
+        "incoming-storage/storage-result.json"
+      ],
+      "case": "conditional-winner-only-dispatches-once"
+    },
+    {
+      "id": "FAIL-08",
+      "evidence": [
+        "native/74d6bb9/linux/storage-result.json",
+        "native/74d6bb9/linux/contracts.json"
+      ],
+      "requirement": "Review committed replay and both language incoming-creation attribution/claim cases."
+    },
+    {
+      "id": "FAIL-42",
+      "evidence": [
+        "native/74d6bb9/linux/storage-result.json",
+        "incoming-storage-negative/archive.json"
+      ],
+      "requirement": "Complete atomic batch, lost final acknowledgment reconciliation and negative partial-publication refusal."
+    },
+    {
+      "id": "FAIL-43",
+      "evidence": [
+        "native/74d6bb9/linux/storage-result.json"
+      ],
+      "case": "stale-kv-projection-requires-owner-and-policy-revalidation"
+    },
+    {
+      "id": "FAIL-47",
+      "evidence": [
+        "native/74d6bb9/linux/storage-result.json"
+      ],
+      "case": "fixture-capability-rejects-cross-stream-kv-object-tool-atomicity"
+    },
+    {
+      "id": "FAIL-49",
+      "evidence": [
+        "preservation/preservation-negative-results.json",
+        "regression-retention-result.json",
+        "review-tooling/surface-module-coverage.json",
+        "review-tooling/module-independent-review.json"
+      ],
+      "requirement": "Review deliberately removed assertions, missing components and unapproved retirement refusal against final source."
+    },
+    {
+      "id": "FAIL-54",
+      "evidence": [
+        "native/74d6bb9/linux/conformance-admission-negative.json",
+        "native/74d6bb9/macos/conformance-admission-negative.json"
+      ],
+      "requirement": "Review twelve admission refusals including stale/missing hashes, skips and wrong environments; retain honest reuse and fixture limits."
+    }
+  ],
+  "laterPhaseRequirements": {
+    "qualificationPhase": "P06",
+    "checks": [
+      "HAR-21-C02",
+      "HUB-24-C02",
+      "REPO-10-C07"
+    ],
+    "preservedRequirement": "Actual original scenarios and installed supported-host workflow remain required later, with their original assertions and failure evidence. P01 contract/runtime and metadata evidence does not accept them.",
+    "noNewGate": "Do not require another TEAM/model attempt, browser host workflow or native macOS review-helper run to close this bounded P01 audit."
+  },
+  "sourceBindings": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "97a1da4151e3ef28575cfa70b486434c6a3fe91da7994ab5bfa47cbec67a7197",
+      "bytes": 4027
+    },
+    {
+      "path": ".claude/rules/plain-language.md",
+      "sha256": "7e2b8b6b328a83559342b7a4569f5fb9252699917ec5a7b7451dfd238b184a50",
+      "bytes": 4432
+    },
+    {
+      "path": "docs/LOCAL_TESTING.md",
+      "sha256": "096f19986e17985a49be76be18df4fb0ed3cd6be6ee259ec7519bf3d9ed5b10c",
+      "bytes": 5671
+    },
+    {
+      "path": "docs/planning/2026-10-09/phases.json",
+      "sha256": "882de6f13f309b878ebd8898ba73ab05fe94dc68ec517b311054f2a99f3102f7",
+      "bytes": 97875
+    },
+    {
+      "path": "docs/planning/2026-10-09/verification-matrix.json",
+      "sha256": "516813fd034d6c73b4b0d6f9eaaf4b1b54798828e137336324605d0b956085bc",
+      "bytes": 25840
+    },
+    {
+      "path": "docs/planning/2026-10-09/component-audit-harness.json",
+      "sha256": "c7e1dd0f2bedf0f6d65ea7445d4c6e2fa3c28a2f6c06bc9a967db8dc048c8fdc",
+      "bytes": 97354
+    },
+    {
+      "path": "docs/planning/2026-10-09/component-audit-hub.json",
+      "sha256": "f9f0719be9be08faf53b079b4bd967578d011e064d77b71045e4adcca1c4ae94",
+      "bytes": 103544
+    },
+    {
+      "path": "docs/planning/2026-10-09/component-audit-repository.json",
+      "sha256": "67447fae9d7d14b76400dba5ce3b74f35800ff4b8625d9fe7367ffa4869d4ffc",
+      "bytes": 39134
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/README.md",
+      "sha256": "735a209b18665a4f13f8188d22c9bf870d3d38d13e3141f5d127d7b4f55a3711",
+      "bytes": 8518
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/tasks.json",
+      "sha256": "04e20f38ae473fcffa38df1b3a773e7e765c4e455aa47071233024623d467d82",
+      "bytes": 1905689
+    },
+    {
+      "path": "docs/planning/2026-10-09/gate-record.template.json",
+      "sha256": "e159239e862cb4faa2d864ab71df4695eb99487613720fd56526ea9c1acc3019",
+      "bytes": 4116
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/74d6bb9/root-review.json",
+      "sha256": "4d639be60aca8873edf2e539d2e2460dd7e5ef084ec719c65856b7551f931869",
+      "bytes": 6235
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/74d6bb9/independent-review.json",
+      "sha256": "8bb8f34bde6e1ccdc58a6ca69a6d024d92073c1acd1b291ba44ead73ec8de2a8",
+      "bytes": 52596
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/wsl-native-74d6bb9/root-review.json",
+      "sha256": "d34cc0994724533fe3699097e6f04151c6ca69b3578cc00cc2038bcf56a0ba21",
+      "bytes": 1501
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/wsl-native-74d6bb9/qualification.json",
+      "sha256": "f240be64adb1cc98ad8516cad4c31d2c2dac46749bc9afafdd55a00380ad4655",
+      "bytes": 284031
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/wsl-contract-source-reuse-74d6.json",
+      "sha256": "abbde0560590f2685bfde6e0f915724111d8892bc80eafb3d9fdfd7b840509a3",
+      "bytes": 7938
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/independent-share-review-20261013/root-review.json",
+      "sha256": "7f05ea29b694b03038679f267c2768c69b73bc89315d49daab8efd1960b9363a",
+      "bytes": 4757
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/independent-share-review-20261013/independent-review.json",
+      "sha256": "d02b721d58f4320b7308d751a9affd89e1612a77d5ba283250a57fcf846a4e49",
+      "bytes": 7973
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/plugin-restoration/metadata-fastpath-parent-review.json",
+      "sha256": "88004e1e4ce6e0d02ea69f22bf985cce3e0d9f18adc5230c36a6ce42c056976a",
+      "bytes": 9028
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/incoming-storage/storage-result.json",
+      "sha256": "fe9f7df341e295f078eb7b80ee2fd6f5fb7c8a513bbcac0a3e270198941f68db",
+      "bytes": 6822
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/incoming-storage-negative/archive.json",
+      "sha256": "58eb047e3524e3d6986b55ac882c0b6309e28f524c1ef61eb2b4f7137d42d494",
+      "bytes": 484
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/signed-leaf-result.json",
+      "sha256": "f9fcb43caec13df61a1e05a6307581a0f7989c7beba0ee0ab9d2505ab0b2f9c6",
+      "bytes": 15767
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/leaf-result.json",
+      "sha256": "277e37e705738bc581c39b651620fed2bc7639d7c6d507211480d851ef5ba805",
+      "bytes": 3204
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/conformance-result.json",
+      "sha256": "e9a1de2c232bb69ab83ba9fca406a40fe7881cee4915ce82c588ff8c7e0da8d3",
+      "bytes": 68494
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/acceptance-map.json",
+      "sha256": "c999508707e2a85ef6048f9b09968f20caaa0a72dbeed44465993f6028ccfbfa",
+      "bytes": 372971
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/preservation-negative-results.json",
+      "sha256": "72a5ac7e9d6b302e1a64cab54a734937bc72815eb471cc2ceb01558107ae19a8",
+      "bytes": 4399
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/regression-retention-result.json",
+      "sha256": "6bdd717da10e4ad744aa3a978d7e5190da9d1cde0c37886822347e2377cf697c",
+      "bytes": 783
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/surface-module-coverage.json",
+      "sha256": "2d6cbee80c4fdd46163f644ebc94e758ed3e24c0b59233c254f3a300d4c8fb66",
+      "bytes": 1546
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/module-independent-review.json",
+      "sha256": "2f9641bd8e0da7850a4355f2d0b4f24863ced5cd33fe8201e7fdbfe89f4c2b97",
+      "bytes": 3051
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/74d6bb9/linux/storage-result.json",
+      "sha256": "58fefe1c910d70141be52842ad044c9cc4e2d704895d795e43478c8ae5cd9cc4",
+      "bytes": 6805
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/74d6bb9/linux/conformance-admission-negative.json",
+      "sha256": "791ba33b6219c9baddc1cc7c07f887f49ad7d03133a7d9df053252acec1c80da",
+      "bytes": 1306
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/74d6bb9/macos/conformance-admission-negative.json",
+      "sha256": "d64c1feea5cb08ca34d9a27ea71d27b4458e89ff1fe03abdee91f59080b8e338",
+      "bytes": 1319
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/wsl-inventory/validation.json",
+      "sha256": "53d0a28015f7154dce2d861dc19f8e80aa56f104f08676077b6bf8c174a9f35b",
+      "bytes": 158
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-74d6-startup-observer-failed-diagnostic-20261013-133431/root-review.json",
+      "sha256": "5e404998cbc44a0b04c2157cf1aa360c659e4d7b616d9cdc6dde3320496cd28f",
+      "bytes": 1591
+    }
+  ]
+}

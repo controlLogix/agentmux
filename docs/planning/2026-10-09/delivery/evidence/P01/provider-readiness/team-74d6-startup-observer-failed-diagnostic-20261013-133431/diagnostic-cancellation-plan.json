@@ -1,0 +1,99 @@
+{
+  "scope": "Prepared exact x554wvqi diagnostic cancellation only. Not executed. Original failed score and completed child work must be preserved.",
+  "atUtc": "2026-10-13T17:55:06.169939+00:00",
+  "sourceCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+  "rootAuthorizationPending": true,
+  "ownedRunnerHandle": 47689,
+  "actors": [
+    {
+      "actor": "calc-lead-claude_1334",
+      "folder": "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux original TEAM startup observer prepared x554wvqi\\windows-supervisors\\calc-lead-claude_1334",
+      "jobUid": "b007b7ec-d34d-4425-b81d-6e6917b5f4ca",
+      "parentPid": 59104,
+      "observerPid": 72752,
+      "readySha256": "bef9a363ae0f9c7547fa2a7f5968bdb477e9c4448b98f168352133ac42c068a3"
+    },
+    {
+      "actor": "calc-reviewer-grok_1334",
+      "folder": "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux original TEAM startup observer prepared x554wvqi\\windows-supervisors\\calc-reviewer-grok_1334",
+      "jobUid": "9d5485c8-ffd4-4db8-a88e-b01ccbc58348",
+      "parentPid": 68940,
+      "observerPid": 69964,
+      "readySha256": "6d8bade3a92de46cca07a52538b644235083ae848fcd2eb25f513a903c274583"
+    },
+    {
+      "actor": "calc-worker-codex_1334",
+      "folder": "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux original TEAM startup observer prepared x554wvqi\\windows-supervisors\\calc-worker-codex_1334",
+      "jobUid": "79cf50d1-64f3-4b75-8fd5-3ac5045db6e4",
+      "parentPid": 28652,
+      "observerPid": 48692,
+      "readySha256": "ea1616f35df0697d20f7ea3777c2cdf1e03abfdf4f9f1d862000afab0218dda1"
+    }
+  ],
+  "currentStateGuard": {
+    "work": [
+      {
+        "id": "W-TNXQAZCDYP",
+        "parent_id": null,
+        "state": "waiting_children",
+        "claimed_by": "calc-lead-claude_1334",
+        "attempts": 1,
+        "updated": "2026-10-13T17:35:18.750Z"
+      },
+      {
+        "id": "W-9MYXB01MTH",
+        "parent_id": "W-TNXQAZCDYP",
+        "state": "done",
+        "claimed_by": "calc-worker-codex_1334",
+        "attempts": 1,
+        "updated": "2026-10-13T17:36:05.079Z"
+      }
+    ],
+    "claimEvents": [
+      {
+        "seq": 27,
+        "at": "2026-10-13T17:35:06.712Z",
+        "entity_id": "W-TNXQAZCDYP",
+        "event": "claimed",
+        "actor": "calc-lead-claude_1334"
+      },
+      {
+        "seq": 36,
+        "at": "2026-10-13T17:35:27.372Z",
+        "entity_id": "W-9MYXB01MTH",
+        "event": "claimed",
+        "actor": "calc-worker-codex_1334"
+      }
+    ],
+    "latestWorkEvent": [
+      {
+        "seq": 38,
+        "at": "2026-10-13T17:36:05.079Z",
+        "entity_id": "W-9MYXB01MTH",
+        "event": "done"
+      }
+    ]
+  },
+  "executionPreconditions": [
+    "Root approves this exact plan hash.",
+    "Recheck the exact same two claim events and work states: topwaiting_children, implementationchilddone. If any new claim, reviewer child, active child or work progress appears, refuse cancellation.",
+    "Recheck every exact launch-ready hash/jobUid/parentPid/observerPid and absence of existing result/cancel request before any write."
+  ],
+  "steps": [
+    "Write only cancel.request in each listed exact supervisor folder. Do not send pane keys.",
+    "Let each unchanged supervisor and independent observer clean up its own exact named job and record configuration byte comparisons.",
+    "Let the unchanged original harness observe terminal death, preserve completed child work, score genuine E1\u2013E6 and cancel only unfinished work.",
+    "Poll owned47689; let its original normal runner perform private hub/courier/tmux/token cleanup.",
+    "Bind original raw report externally and a separately labeled safe derived score; preserve exact job accounting, config comparisons, native residual observations and all startup/post-start diagnostics."
+  ],
+  "originalLimitsUnchanged": {
+    "scenarioSeconds": 1800,
+    "drainSeconds": 120,
+    "outerSeconds": 2700
+  },
+  "classification": "Failed original diagnostic; never error-free acceptance.",
+  "executed": false,
+  "paneInput": false,
+  "broadProcessKilling": false,
+  "retry": false
+}

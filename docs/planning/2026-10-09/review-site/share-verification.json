@@ -1,0 +1,60 @@
+{
+  "checkedOn": "2026-10-13",
+  "reviewer": "Codex",
+  "scope": "Explicit Git sharing for document review notes only; no platform phase acceptance.",
+  "tests": {
+    "command": "node --test docs/reviews/src/features/*.test.mjs docs/planning/2026-10-09/review-site/src/components/organisms/Scene/Scene.test.mjs",
+    "environment": "Native Windows Node and disposable Git repositories with local bare remotes",
+    "passed": 44,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 100146.571
+  },
+  "coverage": [
+    "Latest draft is saved before sharing, including an in-flight write",
+    "Only the detected reviewer's note file is committed",
+    "Unrelated staged files remain staged and other reviewer files remain local",
+    "Unrelated outgoing commits, wrong branch, stale revision and remote divergence are rejected",
+    "Commit hooks remain active; hook rejection never pushes",
+    "Committed notes match the confirmed save, allowing only CRLF normalization",
+    "Hook changes to staged text or invalid UTF-8 are rejected before pushing",
+    "Different or multiple destinations and Git URL rewrites are rejected",
+    "Failed pushes can retry without a duplicate commit",
+    "Repeated sharing without edits does not create another commit",
+    "Transient autosave failures preserve retry scheduling",
+    "Existing identity, draft, Markdown, lock and embedded asset checks remain passing"
+  ],
+  "sourceHashes": {
+    "docs/reviews/src/features/local-review.mjs": "727fe3e68439678b12e330a594e2867b3a7d079a736dd87f9785c79c188f195c",
+    "docs/reviews/src/features/local-review.test.mjs": "a51d1adc6a9aa784cab79997fa745f6593e72301fe517b397a556ee00e71aea7",
+    "docs/reviews/src/features/notes-local.mjs": "08e40e6704d42ccf7ce23a8289ee3f20df5bfafeae72d27ca1ce8df0fd07b0eb",
+    "docs/reviews/src/features/notes-local.test.mjs": "f841df676067fb95a5c421def7bda62422f78e6e1f4460eddbfb4d6ded4c9100",
+    "docs/planning/2026-10-09/review-site/src/pages/review.template.html": "5cbf78350a9204e4efae824bfa7ba3bf96adabee8e2ecac13c45c819e6a3866d"
+  },
+  "artifact": {
+    "bytes": 12997651,
+    "sha256": "00af63bd57eb447149d58c5b54130d6ddf3e2decc8b9266c44d7b6af927819d4",
+    "documentVersion": "sha256:a7af7783050d9de3dd213650b23a8dadf15db560e54d2e8d5f1d2df1fc56c17e",
+    "pageStatus": 200,
+    "sessionStatus": 200,
+    "notesFilename": "ryan.md",
+    "shareButtonPresent": true,
+    "inlineScriptsCompile": true,
+    "notesChecker": "Both reviewer files valid; earlier version attribution preserved"
+  },
+  "independentReview": {
+    "agentId": "01a13663-27d4-7250-ba33-43266d930c69",
+    "result": "All five reported findings repaired and closed by source inspection. Regression tests passed in the parent run.",
+    "limitations": "Independent reviewer did not execute backend Git fixtures. Browser rendering and native macOS behavior remain unverified."
+  },
+  "actualRepositoryNotesChangedByTests": false,
+  "actualRepositoryGitIdentityChangedByTests": false,
+  "actualRemotePushPerformedByTests": false,
+  "repositoryPatternCheck": {
+    "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+    "ok": false,
+    "error": "Review is stale or missing: inspect changes and refresh sourceDigest",
+    "reason": "Concurrent delivery audit, tracking and native P01 evidence changes require their owning review. The notes-tool review does not accept those changes or update the global digest."
+  },
+  "sharingAuthorization": "An explicit Share notes click is required. Notes remain feedback, not implementation, merge or release approval."
+}

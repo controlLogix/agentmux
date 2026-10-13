@@ -1,0 +1,122 @@
+{
+  "reviewer": "Codex independent subagent",
+  "reviewedAtUtc": "2026-10-13T18:35:48.051307+00:00",
+  "scope": "Supplemental REPO-10-C06 mixed reply assertion only; no whole-suite repeat or source edits.",
+  "decision": "New mixed-reply fixture passes both supported offline environments. Baseline twelve results plus this new assertion cover thirteen scenarios; no single thirteen-case run claimed.",
+  "baselineEvidence": {
+    "path": "scanner-final-review.json",
+    "sha256": "5b1a9e3887555ff0b1c03d23e0ab006f3a2ffe55e73d0c70895f0b566f8f68e7",
+    "preservedUnmodified": true,
+    "testsPassedPerEnvironment": 12
+  },
+  "snapshotEvidence": {
+    "path": "scanner-mixed-reply-snapshot.json",
+    "sha256": "f79ccb39dfdb65c8ce0747c652514fe70af9f14adbbfbf1ca87d3ff8346c0f92",
+    "readOnly": true,
+    "priorFiveBoundaryTestBytesPreserved": true
+  },
+  "sourceHashes": {
+    "inbox.mjs": "d9646e1a713340b7db00be60f3505d067bb9d1d4c03adaab4b867e16e160b10e",
+    "inbox.test.mjs": "d1c314c195f85ab26c10b4d63a318ce1b321b8c517fde421b6fc480e3abf6651",
+    "inbox-boundaries.test.mjs": "02c20748a6754e2f15a6d7170f31995fadb95274339fd4333b35ae2b5a89f157"
+  },
+  "tests": [
+    {
+      "command": [
+        "node",
+        "--test",
+        "--test-name-pattern=reply disagreement",
+        "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-scanner-mixed-reply-hf8_wdjv\\inbox-boundaries.test.mjs"
+      ],
+      "startedAtUtc": "2026-10-13T18:34:24.100691+00:00",
+      "finishedAtUtc": "2026-10-13T18:34:31.159292+00:00",
+      "exitCode": 0,
+      "snapshotHashesBefore": {
+        "inbox.mjs": "d9646e1a713340b7db00be60f3505d067bb9d1d4c03adaab4b867e16e160b10e",
+        "inbox.test.mjs": "d1c314c195f85ab26c10b4d63a318ce1b321b8c517fde421b6fc480e3abf6651",
+        "inbox-boundaries.test.mjs": "02c20748a6754e2f15a6d7170f31995fadb95274339fd4333b35ae2b5a89f157"
+      },
+      "snapshotHashesAfter": {
+        "inbox.mjs": "d9646e1a713340b7db00be60f3505d067bb9d1d4c03adaab4b867e16e160b10e",
+        "inbox.test.mjs": "d1c314c195f85ab26c10b4d63a318ce1b321b8c517fde421b6fc480e3abf6651",
+        "inbox-boundaries.test.mjs": "02c20748a6754e2f15a6d7170f31995fadb95274339fd4333b35ae2b5a89f157"
+      },
+      "workingTreeHashesAfter": {
+        "inbox.mjs": "d9646e1a713340b7db00be60f3505d067bb9d1d4c03adaab4b867e16e160b10e",
+        "inbox.test.mjs": "d1c314c195f85ab26c10b4d63a318ce1b321b8c517fde421b6fc480e3abf6651",
+        "inbox-boundaries.test.mjs": "02c20748a6754e2f15a6d7170f31995fadb95274339fd4333b35ae2b5a89f157"
+      },
+      "environment": "native Windows Node24.19.0",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 6938.0364,
+      "rawLog": "scanner-mixed-reply-windows.log",
+      "rawLogSha256": "f10b106151c578145b309d591f18099360b8e31ba7c89943f6df56579ecf4af7"
+    },
+    {
+      "command": [
+        "wsl",
+        "-d",
+        "Ubuntu-26.04",
+        "--",
+        "bash",
+        "-lc",
+        "GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL=/dev/null node --test '--test-name-pattern=reply disagreement' /mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-scanner-mixed-reply-hf8_wdjv/inbox-boundaries.test.mjs"
+      ],
+      "startedAtUtc": "2026-10-13T18:34:24.100785+00:00",
+      "finishedAtUtc": "2026-10-13T18:34:34.658486+00:00",
+      "exitCode": 0,
+      "snapshotHashesBefore": {
+        "inbox.mjs": "d9646e1a713340b7db00be60f3505d067bb9d1d4c03adaab4b867e16e160b10e",
+        "inbox.test.mjs": "d1c314c195f85ab26c10b4d63a318ce1b321b8c517fde421b6fc480e3abf6651",
+        "inbox-boundaries.test.mjs": "02c20748a6754e2f15a6d7170f31995fadb95274339fd4333b35ae2b5a89f157"
+      },
+      "snapshotHashesAfter": {
+        "inbox.mjs": "d9646e1a713340b7db00be60f3505d067bb9d1d4c03adaab4b867e16e160b10e",
+        "inbox.test.mjs": "d1c314c195f85ab26c10b4d63a318ce1b321b8c517fde421b6fc480e3abf6651",
+        "inbox-boundaries.test.mjs": "02c20748a6754e2f15a6d7170f31995fadb95274339fd4333b35ae2b5a89f157"
+      },
+      "workingTreeHashesAfter": {
+        "inbox.mjs": "d9646e1a713340b7db00be60f3505d067bb9d1d4c03adaab4b867e16e160b10e",
+        "inbox.test.mjs": "d1c314c195f85ab26c10b4d63a318ce1b321b8c517fde421b6fc480e3abf6651",
+        "inbox-boundaries.test.mjs": "02c20748a6754e2f15a6d7170f31995fadb95274339fd4333b35ae2b5a89f157"
+      },
+      "environment": "WSL native POSIX Node22.22.1",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 1444.206064,
+      "rawLog": "scanner-mixed-reply-posix.log",
+      "rawLogSha256": "5c366d11d1a7c8d0a7f76408432a3a2db7e7bc298006bb05d598b8b0f4dc8b8d"
+    }
+  ],
+  "currentWorkingTreeHashes": {
+    "inbox.mjs": "d9646e1a713340b7db00be60f3505d067bb9d1d4c03adaab4b867e16e160b10e",
+    "inbox.test.mjs": "d1c314c195f85ab26c10b4d63a318ce1b321b8c517fde421b6fc480e3abf6651",
+    "inbox-boundaries.test.mjs": "02c20748a6754e2f15a6d7170f31995fadb95274339fd4333b35ae2b5a89f157"
+  },
+  "workingTreeMatchesSnapshot": true,
+  "receiptRefReview": [
+    "One original nonempty note is committed; both refs retain that exact submission commit.",
+    "Pending receipt is committed and retained at refs/remotes/origin/pending.",
+    "Current local branch updates the same exact-commit receipt to answered with finite date, responder email and an existing committed response path.",
+    "Scanner reads each head separately and merges identical document/kind/path/submission identities. Both valid receipt states remain in replyByRef, and replyStatus becomes mixed.",
+    "Response note is a separate candidate; the assertion selects the original submitted note by its path and verifies its exact commit, two refs and both receipt states.",
+    "Receipt status is recorded-reply metadata, not proof of a semantic answer, implementation acceptance, merge authorization or a network publication."
+  ],
+  "ownedHandles": {
+    "windows": "completed; command exit0",
+    "nativePosix": "77959 completed; command exit0"
+  },
+  "modelsOrServersLaunched": false,
+  "networkCalls": false,
+  "sourceEdited": false,
+  "commitOrPushPerformed": false,
+  "phaseAccepted": false,
+  "patternCheckAtReview": {
+    "exitCode": 1,
+    "error": "Review is stale or missing: inspect changes and refresh sourceDigest",
+    "owner": "Parent refresh after complete source/evidence review."
+  }
+}

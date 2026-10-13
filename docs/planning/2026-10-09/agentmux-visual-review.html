@@ -646,6 +646,7 @@ img{break-inside:avoid}
         </div>
         <noscript><p class="notes__noscript">Scripts are turned off. You can read the whole review and type in the boxes, but this page cannot save or download notes. Copy your notes into an email to Ryan before you close the page.</p></noscript>
         <div class="notes__actions" data-js-only hidden>
+          <button type="button" class="btn btn--primary" id="notes-share" hidden>Share notes</button>
           <button type="button" class="btn btn--primary" data-action="download">Download notes (.md)</button>
           <button type="button" class="btn" data-action="save">Save draft in this browser</button>
           <button type="button" class="btn" data-action="show">Show notes as text</button>
@@ -732,7 +733,7 @@ img{break-inside:avoid}
   </div>
 </dialog>
 
-<script type="application/json" id="review-data">{"document":{"id":"agentmux-visual-review","title":"Agentmux visual review","version":"sha256:dff25f77cddf582b9853dd1dd6ee68dcead61ca691b9e80e588fe9102b8c8420","sections":[{"id":"01-workspace-and-terminal","title":"01 · Workspace and AI terminal","question":"Can you follow the terminal request through assigned work and waiting tasks while still finding the existing dashboard views and actions you use?"},{"id":"02-planning-and-board","title":"02 · Planning and the task board","question":"Does the plan make dependencies, approval state and the next step clear without losing existing board controls or task history?"},{"id":"03-agent-conversations","title":"03 · Agent collaboration and evidence","question":"Can you distinguish an agent's report from verified evidence, understand the block and tell which messages the current user may see?"},{"id":"04-connected-hubs","title":"04 · Connected teams and routing decisions","question":"Are ownership, reserved work and unknown progress clear, and does the design explain Jev's advisory role and what happens when it abstains or is unavailable?"},{"id":"05-review-and-acceptance","title":"05 · Result review and acceptance","question":"Can you distinguish worker completion, evidence review and origin acceptance, and which dashboard review actions should be available through authorized services?"},{"id":"06-plugins-and-industrial-tools","title":"06 · Plugin tools and industrial operations","question":"Are package relationships and read-only permissions clear, including the separate authorization and environment checks needed before equipment changes?"},{"id":"global","title":"Overall notes","question":"Do the scenes keep worker completion, evidence, result submission and origin acceptance clearly separate? Note anything that blurs them, and any other overall feedback."}]},"reviewers":[{"id":"nick","name":"Nick Klute"},{"id":"ryan","name":"Ryan Helms"}],"notesPath":"docs/reviews/agentmux-visual-review/notes","legacyDraftKey":"agentmux.visual-review.2026-10-09.notes.v1","legacyReviewId":"agentmux-visual-review-2026-10-09","committedNotes":[{"format":"agentmux-review-notes","schemaVersion":1,"documentId":"agentmux-visual-review","documentVersion":"sha256:21d50a8a450cefca5bfd3b81931df8d7293e7b89fd9535e3cd81cf7560e93adb","reviewer":"Nick Klute","exportedAt":"2026-10-13T15:09:47Z","notes":{"01-workspace-and-terminal":"","02-planning-and-board":"","03-agent-conversations":"","04-connected-hubs":"","05-review-and-acceptance":"","06-plugins-and-industrial-tools":"","global":""}},{"format":"agentmux-review-notes","schemaVersion":1,"documentId":"agentmux-visual-review","documentVersion":"sha256:21d50a8a450cefca5bfd3b81931df8d7293e7b89fd9535e3cd81cf7560e93adb","reviewer":"Ryan Helms","exportedAt":"2026-10-13T15:09:47Z","notes":{"01-workspace-and-terminal":"","02-planning-and-board":"","03-agent-conversations":"","04-connected-hubs":"","05-review-and-acceptance":"","06-plugins-and-industrial-tools":"","global":""}}]}</script>
+<script type="application/json" id="review-data">{"document":{"id":"agentmux-visual-review","title":"Agentmux visual review","version":"sha256:a7af7783050d9de3dd213650b23a8dadf15db560e54d2e8d5f1d2df1fc56c17e","sections":[{"id":"01-workspace-and-terminal","title":"01 · Workspace and AI terminal","question":"Can you follow the terminal request through assigned work and waiting tasks while still finding the existing dashboard views and actions you use?"},{"id":"02-planning-and-board","title":"02 · Planning and the task board","question":"Does the plan make dependencies, approval state and the next step clear without losing existing board controls or task history?"},{"id":"03-agent-conversations","title":"03 · Agent collaboration and evidence","question":"Can you distinguish an agent's report from verified evidence, understand the block and tell which messages the current user may see?"},{"id":"04-connected-hubs","title":"04 · Connected teams and routing decisions","question":"Are ownership, reserved work and unknown progress clear, and does the design explain Jev's advisory role and what happens when it abstains or is unavailable?"},{"id":"05-review-and-acceptance","title":"05 · Result review and acceptance","question":"Can you distinguish worker completion, evidence review and origin acceptance, and which dashboard review actions should be available through authorized services?"},{"id":"06-plugins-and-industrial-tools","title":"06 · Plugin tools and industrial operations","question":"Are package relationships and read-only permissions clear, including the separate authorization and environment checks needed before equipment changes?"},{"id":"global","title":"Overall notes","question":"Do the scenes keep worker completion, evidence, result submission and origin acceptance clearly separate? Note anything that blurs them, and any other overall feedback."}]},"reviewers":[{"id":"nick","name":"Nick Klute"},{"id":"ryan","name":"Ryan Helms"}],"notesPath":"docs/reviews/agentmux-visual-review/notes","legacyDraftKey":"agentmux.visual-review.2026-10-09.notes.v1","legacyReviewId":"agentmux-visual-review-2026-10-09","committedNotes":[{"format":"agentmux-review-notes","schemaVersion":1,"documentId":"agentmux-visual-review","documentVersion":"sha256:21d50a8a450cefca5bfd3b81931df8d7293e7b89fd9535e3cd81cf7560e93adb","reviewer":"Nick Klute","exportedAt":"2026-10-13T15:09:47Z","notes":{"01-workspace-and-terminal":"","02-planning-and-board":"","03-agent-conversations":"","04-connected-hubs":"","05-review-and-acceptance":"","06-plugins-and-industrial-tools":"","global":""}},{"format":"agentmux-review-notes","schemaVersion":1,"documentId":"agentmux-visual-review","documentVersion":"sha256:21d50a8a450cefca5bfd3b81931df8d7293e7b89fd9535e3cd81cf7560e93adb","reviewer":"Ryan Helms","exportedAt":"2026-10-13T15:09:47Z","notes":{"01-workspace-and-terminal":"","02-planning-and-board":"","03-agent-conversations":"","04-connected-hubs":"","05-review-and-acceptance":"","06-plugins-and-industrial-tools":"","global":""}}]}</script>
 <script>
 const ReviewNotes = (() => {
 // Shared offline notes format. File access and page state belong to its callers.
@@ -841,6 +842,10 @@ function attachLocalReview(data, hooks, root = document) {
   const $ = selector => root.querySelector(selector);
   let ready = false, revision = null, identity, sequence = 0, savedSequence = 0;
   let timer, writing = false, stopped = false, failures = 0;
+  let sharing = false;
+  const waiting = [];
+  const shareButton = $('#notes-share');
+  if (shareButton) { shareButton.hidden = false; shareButton.disabled = true; }
   const fields = Array.from(root.querySelectorAll('textarea[data-note]'));
   const panel = $('#git-identity-panel');
   const lock = value => fields.forEach(field => { field.disabled = value; });
@@ -853,8 +858,8 @@ function attachLocalReview(data, hooks, root = document) {
     if (button) button.hidden = true;
   }
   root.querySelector('[data-action="save"]').textContent = 'Save notes now';
-  $('#notes-local-fact').textContent = 'Notes are saved to the repository on this computer. They are not sent to an external service.';
-  root.querySelector('.notes__lede').textContent = 'Your Git identity is used automatically. Notes save into your own repository file as you type. Commit and push that file when you want to share it.';
+  $('#notes-local-fact').textContent = 'Notes save locally as you type. Share notes sends only your notes to this repository’s Git remote. Feedback is not approval to implement or merge.';
+  root.querySelector('.notes__lede').textContent = 'Your Git identity is used automatically. Notes save into your own repository file as you type. Choose Share notes to commit and push them.';
 
   async function api(path, body) {
     const response = await fetch(path, { method: body === undefined ? 'GET' : 'POST',
@@ -876,7 +881,7 @@ function attachLocalReview(data, hooks, root = document) {
       savedSequence = attempt;
       failures = 0;
       hooks.setSaved('Saved to ' + data.notesPath + '/' + result.filename + ' at ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '.');
-      hooks.setStatus('Notes saved automatically. Commit and push your note file to share them.', 'ok');
+      hooks.setStatus('Notes saved automatically. Choose Share notes when you want to send them.', 'ok');
     } catch (error) {
       const transient = !error.status || error.status >= 500 || [408, 423, 429].includes(error.status);
       failures++;
@@ -886,12 +891,13 @@ function attachLocalReview(data, hooks, root = document) {
       if (!stopped) timer = window.setTimeout(flush, Math.min(1000 * 2 ** (failures - 1), 10000));
     } finally {
       writing = false;
+      waiting.splice(0).forEach(done => done());
       // Queue newer edits only after this write acknowledges its file revision.
       if (!stopped && savedSequence !== sequence && savedSequence === attempt) void flush();
     }
   }
   function changed() {
-    if (!ready) return;
+    if (!ready || sharing) return;
     hooks.setIdentity(identity);
     failures = 0;
     sequence++;
@@ -914,7 +920,7 @@ function attachLocalReview(data, hooks, root = document) {
       revision = session.revision;
       hooks.setIdentity(identity);
       $('#git-identity-current').textContent = 'Git identity: ' + identity.name + ' <' + identity.email + '>';
-      $('#notes-git-path').textContent = 'Automatically saved to ' + data.notesPath + '/' + identity.filename + '. Commit and push this file to share your changes.';
+      $('#notes-git-path').textContent = 'Automatically saved to ' + data.notesPath + '/' + identity.filename + '. Share notes commits and pushes only this file.';
       const empty = { format: 'agentmux-review-notes', schemaVersion: 1, documentId: data.document.id,
         documentVersion: data.document.version, reviewer: identity.name, exportedAt: new Date().toISOString(),
         notes: Object.fromEntries(data.document.sections.map(section => [section.id, ''])) };
@@ -933,6 +939,7 @@ function attachLocalReview(data, hooks, root = document) {
       } catch { /* Repository saving still works when browser draft storage is unavailable. */ }
       hooks.setIdentity(identity);
       ready = true;
+      if (shareButton) shareButton.disabled = false;
       lock(false);
       hooks.setStatus('Git identity detected. Your notes will save automatically to the repository.', 'ok');
       hooks.setSaved('Repository notes loaded.');
@@ -945,8 +952,34 @@ function attachLocalReview(data, hooks, root = document) {
       await initialize();
     } catch (error) { hooks.setStatus(error.message, 'warn'); }
   });
+  shareButton?.addEventListener('click', async () => {
+    if (!ready || sharing) return;
+    sharing = true;
+    const controls = Array.from(root.querySelectorAll('#notes button, #notes input, textarea[data-note]'));
+    const disabled = controls.map(control => control.disabled);
+    controls.forEach(control => { control.disabled = true; });
+    shareButton.disabled = true;
+    window.clearTimeout(timer);
+    try {
+      while (writing) await new Promise(done => waiting.push(done));
+      if (stopped) throw new Error('Resolve the save error and reload before sharing. Your draft is preserved.');
+      // Save even an untouched draft so the server has a file and a confirmed revision.
+      if (revision === null && savedSequence === sequence) sequence++;
+      await flush();
+      if (writing || savedSequence !== sequence) throw new Error('Your latest notes were not saved. Nothing was shared; retry after the save succeeds.');
+      window.clearTimeout(timer);
+      hooks.setStatus('Sharing your notes…', 'ok');
+      const result = await api('/api/share', { revision, identity: { name: identity.name, email: identity.email } });
+      hooks.setStatus(result.message + ' Commit ' + result.commit.slice(0, 12) + '. Feedback is not implementation or merge approval.', 'ok');
+    } catch (error) { hooks.setStatus(error.message, 'warn'); }
+    finally {
+      sharing = false;
+      controls.forEach((control, index) => { control.disabled = disabled[index]; });
+      shareButton.disabled = false;
+    }
+  });
   window.addEventListener('beforeunload', event => {
-    if (savedSequence === sequence) return;
+    if (!sharing && savedSequence === sequence) return;
     event.preventDefault(); event.returnValue = '';
   });
   void initialize();

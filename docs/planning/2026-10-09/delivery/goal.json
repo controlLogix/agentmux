@@ -47,6 +47,12 @@
       "reason": "User reiterates Windows-owned client symlinks and shared auth/config/installations.",
       "previousObjective": "Autonomously implement the complete docs/planning/2026-10-09/implementation-plan.md, P00 through P14, preserving existing functionality and all acceptance requirements. Maintain detailed epics, tasks, implementation steps, acceptance criteria, status and evidence in delivery/tasks.json using delivery/track.py; repository files replace Atlassian, Rovo and Jira. Resume the earliest incomplete phase, delegate independent work to subagents only within that phase, and have Codex review actual results. Use focused local test/debug/fix cycles, then pass the required phase verification, commit and push to feat/agentmux-platform-rearchitecture, and verify the remote commit before advancing. Complete all phases and prove safe bilateral orchestration between independently enrolled real hubs, including automatic Docker Compose startup/reuse and origin-owned result acceptance. Record final Codex acceptance and verify the final branch push without requiring Ryan or Nick. Do not merge. Apply WSL-CLIENT-01: Windows owns Windows-installed AI clients, updates, authentication and configuration; WSL launchers invoke the same installation while Agentmux runtime, Docker Compose and tmux remain Linux-based. Qualify version/update parity, paths, callbacks and isolated concurrent sessions with actual-host evidence and no credential copying.",
       "scopeLimit": "Clarifies WSL-CLIENT-01; no later-phase implementation or acceptance."
+    },
+    {
+      "date": "2026-10-13T18:37:49.959005+00:00",
+      "actor": "Codex",
+      "reason": "Improve iteration speed and source fidelity during concurrent review-tool edits; scope, all phases, phase gates and final real-hub acceptance remain unchanged.",
+      "addedExecutionPolicy": "When concurrent edits occur, qualify an immutable source snapshot with before/after hashes, then compare the final working and staged bytes. Preserve newer work and historical failures. Recheck affected changes rather than repeating unrelated suites against a moving checkout."
     }
   ],
   "executionPolicy": [
@@ -57,6 +63,7 @@
     "Update task status, blockers and evidence as work changes. Preserve IDs and history; regenerate task views after a coherent set of updates. Rebuild presentations only when their source changes and at review checkpoints.",
     "Batch independent reads and checks. Keep edits, dependent operations and state updates ordered. Prefer actual implementation and defect resolution over repeated status narration or planning churn.",
     "At each phase gate, review full scope, preservation, failure/recovery and supported-environment evidence. Commit, push and verify the candidate before starting the next phase. Keep unresolved findings explicit.",
-    "At final acceptance, verify every required deliverable, real-hub bilateral execution, unchanged non-destructive inputs, correlated results and artifacts, final remote commit and clean worktree. Never substitute mocks or reduced scope for required proof."
+    "At final acceptance, verify every required deliverable, real-hub bilateral execution, unchanged non-destructive inputs, correlated results and artifacts, final remote commit and clean worktree. Never substitute mocks or reduced scope for required proof.",
+    "When concurrent edits occur, qualify an immutable source snapshot with before/after hashes, then compare the final working and staged bytes. Preserve newer work and historical failures. Recheck affected changes rather than repeating unrelated suites against a moving checkout."
   ]
 }

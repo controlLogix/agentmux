@@ -1,6 +1,6 @@
 # Share the visual review with Nick
 
-For development, run `node docs/reviews/open.mjs` and open its local URL. The live page reads your effective Git name and email, asks to set missing identity for this repository, and saves notes directly into your own Markdown file. No manual export is needed. Leave the launcher running while reviewing. Commit and push the saved file to share it. See the [automatic Git notes workflow](../../../reviews/README.md).
+For development, run `node docs/reviews/open.mjs` and open its local URL. The live page reads your effective Git name and email, asks to set missing identity for this repository, and saves notes directly into your own Markdown file. Leave the launcher running while reviewing. Choose **Share notes** to commit and push only your file, with no manual export or Git commands. See the [automatic Git notes workflow](../../../reviews/README.md) for failure handling and safety limits.
 
 Send **[agentmux-visual-review.html](../agentmux-visual-review.html)**. It is about 13 MB and contains all six concept images, explanations, review questions, styling, scripts and a downloadable copy of the implementation plan. Nick does not need this repository or any other file to read the visual review.
 
@@ -15,6 +15,8 @@ Browser drafts stay on the reviewer's computer until exported. Browser draft sto
 These are concept images with sample data. Review notes do not approve implementation, a phase gate or a merge.
 
 ## Design and checks
+
+The **Share notes** update passed 44 focused tests, including real commits and pushes to disposable local Git remotes. All independent review findings were repaired. See [sharing verification](share-verification.json). No tests changed your real notes, Git identity or remote branch. The live helper has been restarted with the new button; reload its page.
 
 Claude Opus 5.5 authored the original layout, styling, scene renderer, image viewer and local notes interactions through the user-requested Ubuntu WSL terminal. Codex prepared the content, packaged the embedded assets and added the reusable Git notes workflow. See [design provenance](design-provenance.json) for attribution and the integration corrections.
 

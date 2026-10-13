@@ -1,0 +1,71 @@
+{
+  "reviewer": "Codex independent subagent",
+  "reviewedAtUtc": "2026-10-13T18:06:23.121990+00:00",
+  "candidateBase": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+  "module": "docs/reviews/src/features/local-review.mjs",
+  "componentId": "REPO-10",
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/",
+      "authority": "Exact loopback Host, permitted Origin, cross-site denial; serves session token only to the local page.",
+      "effect": "Serve built review with live bridge; only live copy enables same-origin connections."
+    },
+    {
+      "method": "GET",
+      "path": "/api/session",
+      "authority": "Loopback Host/Origin and per-process X-Review-Token.",
+      "effect": "Read effective Git identity and own notes."
+    },
+    {
+      "method": "POST",
+      "path": "/api/identity",
+      "authority": "Same loopback/token authority; JSON size/type/value bounds; refuses replacing existing configured identity.",
+      "effect": "Set only repo-local missing or invalid Git name/email."
+    },
+    {
+      "method": "POST",
+      "path": "/api/notes",
+      "authority": "Same loopback/token authority; effective identity, confined assigned path, current revision and process-held file lock.",
+      "effect": "Atomic own-note save; rejects stale identity/revision, linked paths and oversized payloads."
+    },
+    {
+      "method": "POST",
+      "path": "/api/share",
+      "authority": "Explicit UI click; same loopback/token authority; effective identity, saved revision, file/repository locks, configured branch, direct single matching Git fetch/push URL and bounded outgoing commit validation.",
+      "effect": "Fetch destination; commit only own note; byte-check saved versus committed note allowing CRLF normalization; ordinary explicit-candidate branch push; verify remote commit. No pull, rebase, stash, force push, merge or release."
+    }
+  ],
+  "surfaceFinding": {
+    "status": "resolved-by-owning-writer",
+    "path": "docs/planning/2026-10-09/source-surface-index.json",
+    "sha256": "7d8d730fec183a6bf32dfa31626d8cb509ce76f8d8ec729eb31388bfd88444ae",
+    "resolution": "Actual current entries include /api/share, share declaration, matching tested module hashes and retained prior surface history."
+  },
+  "limits": [
+    "Git and helper locks cannot prevent every external Git writer; detected HEAD/identity/revision changes refuse sharing.",
+    "Source event tests do not prove real browser rendering or interaction. No restriction bypass.",
+    "Standalone copies retain hidden share button and network restrictions.",
+    "Sharing notes is feedback, not implementation, phase, merge or release approval."
+  ],
+  "sourceHashes": {
+    "docs/reviews/src/features/local-review.mjs": "727fe3e68439678b12e330a594e2867b3a7d079a736dd87f9785c79c188f195c",
+    "docs/reviews/src/features/notes-local.mjs": "08e40e6704d42ccf7ce23a8289ee3f20df5bfafeae72d27ca1ce8df0fd07b0eb",
+    "docs/reviews/src/features/local-review.test.mjs": "a51d1adc6a9aa784cab79997fa745f6593e72301fe517b397a556ee00e71aea7",
+    "docs/reviews/src/features/notes-local.test.mjs": "f841df676067fb95a5c421def7bda62422f78e6e1f4460eddbfb4d6ded4c9100"
+  },
+  "priorRootReviewPreserved": {
+    "path": "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/root-review.json",
+    "sha256": "811fb362d6d752cb59b31410b19d97cbb535a99f5aa39b6218c82ba2b8b488be"
+  },
+  "repositorySourceEditedByReviewer": false,
+  "modelsOrProvidersLaunched": false,
+  "actualRemotePushedByTests": false,
+  "findingHistory": [
+    {
+      "status": "open-at-review",
+      "path": "docs/planning/2026-10-09/source-surface-index.json",
+      "detail": "Current local-review.mjs and notes-local.mjs entries retain previous hashes/declarations and omit /api/share. Owner must refresh current source/API entries and retain original endpoint/criterion history."
+    }
+  ]
+}

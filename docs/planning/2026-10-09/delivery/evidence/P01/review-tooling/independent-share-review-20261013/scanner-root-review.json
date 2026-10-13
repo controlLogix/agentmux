@@ -1,0 +1,39 @@
+{
+  "reviewer": "Codex",
+  "reviewedAt": "2026-10-13T18:37:49.937905+00:00",
+  "sourceCommit": "74d6bb9fa1375763517494b0cc2c361f5b6d7535",
+  "candidateState": "Reviewed working source on this commit; exact current source hashes recorded.",
+  "componentCheck": "REPO-10-C06",
+  "decision": "passed for offline scanner and instruction-contract scope",
+  "baselineTests": {
+    "windows": 12,
+    "nativePosix": 12,
+    "evidence": "scanner-final-review.json",
+    "sha256": "5b1a9e3887555ff0b1c03d23e0ab006f3a2ffe55e73d0c70895f0b566f8f68e7"
+  },
+  "supplementalTests": {
+    "windows": 1,
+    "nativePosix": 1,
+    "evidence": "scanner-mixed-reply-review.json",
+    "sha256": "1ba9eeccff08d2d2d0b71e94c1b0f62e0f8bb83006867191ff4075b0aec1ad67"
+  },
+  "existingBoundaryBytesPreserved": true,
+  "negativeRegression": "Copied prior ID guard fails the selected fixture; current guard passes. No live source mutated by the negative case.",
+  "sourceHashes": {
+    "inbox.mjs": "d9646e1a713340b7db00be60f3505d067bb9d1d4c03adaab4b867e16e160b10e",
+    "inbox.test.mjs": "d1c314c195f85ab26c10b4d63a318ce1b321b8c517fde421b6fc480e3abf6651",
+    "inbox-boundaries.test.mjs": "02c20748a6754e2f15a6d7170f31995fadb95274339fd4333b35ae2b5a89f157"
+  },
+  "skillSourceHashes": {
+    ".agents/skills/review-inbox/SKILL.md": "e67de77914e48c2ec6e58ab75d2d902a8bfa4fc7ac220b10ca4fc85563baf3c0",
+    ".agents/skills/review-inbox/references/workflow.md": "4f5fc7db9dc928365798357aa17abaf87719098802a88a3b3e6cc2dae81170e7",
+    ".agents/skills/review-inbox/agents/openai.yaml": "c302020127f957837c10b6681b8eb0bfdbf965f7bc31f6ec491c4ae6b7bc32d4",
+    ".claude/skills/review-inbox/SKILL.md": "d56ecc1c4ea8a44ae5606d48d44834a85f0e878384df66b93eefab625136f67c"
+  },
+  "review": "Root inspected actual source, all fixture assertions, logs/bindings and shared/Claude/YAML/reference contracts. Selected immutable test results preserve index/config/refs, literal paths, IDs, cached versions, drafts and pending/answered/mixed reply states. Scanner performs no network or writing operation.",
+  "limits": [
+    "12 baseline cases plus1 supplement on each host; no single13-case run claimed.",
+    "Branch-head truncation/unreadable-branch variants reviewed in source; not individually executed by these fixtures.",
+    "Installed-host loading/opening/server/browser qualification remains REPO-10-C07 in P06; no phase approval."
+  ]
+}

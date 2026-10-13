@@ -1,4 +1,4 @@
-// Local repository access for the review page. Never commits or pushes changes.
+// Local repository access. Sharing requires an explicit request from the review page.
 import { createServer } from 'node:http';
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync, renameSync, unlinkSync, existsSync, realpathSync } from 'node:fs';
@@ -16,7 +16,7 @@ export function createLocalReview({ repoRoot, config, document, html, gitEnv = p
     typeof person.id !== 'string' || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(person.id) || typeof person.name !== 'string')) throw new Error('Invalid review configuration.');
   const canonical = path => realpathSync.native(path);
   const root = canonical(repoRoot);
-  const git = args => execFileSync('git', ['-C', root, ...args], { encoding: 'utf8', env: gitEnv, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+  const git = args => execFileSync('git', ['-C', root, ...args], { encoding: 'utf8', env: { ...gitEnv, GIT_TERMINAL_PROMPT: '0' }, timeout: 30000, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] }).trim();
   if (relative(root, canonical(git(['rev-parse', '--show-toplevel']))) !== '') throw new Error('Use the Git repository root.');
   function inside(path) {
     const target = resolve(root, path);
@@ -60,6 +60,75 @@ export function createLocalReview({ repoRoot, config, document, html, gitEnv = p
     if (bytes && bytes.length > MAX_FILE) throw fail(400, 'Existing notes exceed 2 MB.');
     return { path, revision: bytes ? hash(bytes) : null, record: bytes ? importMarkdown(bytes.toString('utf8'), document) : null };
   }
+  async function share(person, body) {
+    const branch = config.shareBranch || 'feat/agentmux-platform-rearchitecture';
+    const remote = config.shareRemote || 'origin';
+    if (!/^[a-zA-Z0-9][a-zA-Z0-9/._-]*$/.test(branch) || !/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(remote)) throw fail(400, 'Invalid sharing configuration.');
+    const state = current(person);
+    const releaseFile = await acquireNotesLock(state.path);
+    let releaseRepo;
+    let committed = false;
+    try {
+      releaseRepo = await acquireNotesLock(resolve(root, git(['rev-parse', '--git-common-dir'])));
+      const path = relative(root, state.path).replaceAll('\\', '/');
+      const check = () => {
+        const latest = identity();
+        if (latest.email !== person.email || latest.name !== person.name || latest.id !== person.id || current(person).revision !== body.revision || !state.record) throw fail(409, 'Your notes or Git identity changed. Reload before sharing.');
+        if (git(['symbolic-ref', '--quiet', '--short', 'HEAD']) !== branch) throw fail(409, 'Open the review on ' + branch + ' before sharing.');
+        for (const name of ['MERGE_HEAD', 'CHERRY_PICK_HEAD', 'REVERT_HEAD', 'rebase-merge', 'rebase-apply']) {
+          if (existsSync(resolve(root, git(['rev-parse', '--git-path', name])))) throw fail(409, 'Finish the current Git merge or rebase before sharing.');
+        }
+        if (git(['ls-files', '--unmerged'])) throw fail(409, 'Resolve Git conflicts before sharing.');
+      };
+      check();
+      const before = git(['rev-parse', 'HEAD']);
+      let destination;
+      let rewrites = '';
+      try { rewrites = git(['config', '--name-only', '--get-regexp', '^url\\..*\\.(insteadof|pushinsteadof)$']); }
+      catch (error) { if (error.status !== 1) throw error; }
+      // Passing a resolved URL back to Git can apply another rewrite, including push-only rules.
+      if (rewrites) throw fail(409, 'Sharing does not support Git URL rewrite rules. Ask Codex to configure a direct, matching fetch and push destination.');
+      try {
+        const fetchUrls = git(['remote', 'get-url', '--all', remote]).split('\n');
+        const pushUrls = git(['remote', 'get-url', '--push', '--all', remote]).split('\n');
+        if (fetchUrls.length !== 1 || pushUrls.length !== 1 || fetchUrls[0] !== pushUrls[0] || !pushUrls[0] || pushUrls[0].startsWith('-')) throw new Error('Ambiguous destination');
+        destination = pushUrls[0];
+      } catch { throw fail(409, 'Sharing needs one matching Git fetch and push destination. Ask Codex to check this repository’s remote configuration.'); }
+      try { git(['fetch', '--no-tags', '--no-recurse-submodules', destination, 'refs/heads/' + branch]); }
+      catch { throw fail(502, 'Could not read the shared branch. Check your Git connection and sign-in, then try Share notes again.'); }
+      const base = git(['rev-parse', 'FETCH_HEAD']);
+      const outgoing = head => {
+        try { git(['merge-base', '--is-ancestor', base, head]); }
+        catch { throw fail(409, 'The shared branch has changes you do not have. Update the repository before sharing; your notes remain saved.'); }
+        for (const commit of git(['rev-list', base + '..' + head]).split('\n').filter(Boolean)) {
+          const parents = git(['rev-list', '--parents', '-n', '1', commit]).split(' ');
+          const paths = git(['diff-tree', '--no-commit-id', '--name-only', '-r', '-z', commit]).split('\0').filter(Boolean);
+          if (parents.length !== 2 || paths.length !== 1 || paths[0] !== path || git(['show', '-s', '--format=%ae', commit]).toLowerCase() !== person.email.toLowerCase()) throw fail(409, 'Sharing would also push other work. Share notes stopped without pushing. Ask Codex to publish or reconcile that work first.');
+        }
+      };
+      outgoing(before); check();
+      if (git(['rev-parse', 'HEAD']) !== before) throw fail(409, 'The branch changed while sharing. Try again.');
+      const dirty = git(['status', '--porcelain', '--', path]);
+      if (dirty) {
+        if (!git(['ls-files', '--', path])) git(['add', '--', path]);
+        try { git(['commit', '--only', '-m', 'Review notes: ' + config.id + ' by ' + person.name, '--', path]); committed = true; }
+        catch { throw fail(409, 'Git did not confirm the notes commit. A hook or signing check may have blocked it. Notes remain saved; check the repository before trying again.'); }
+      }
+      const candidate = git(['rev-parse', 'HEAD']);
+      outgoing(candidate); check();
+      const blob = execFileSync('git', ['-C', root, 'show', candidate + ':' + path], { env: gitEnv, windowsHide: true, timeout: 30000, maxBuffer: MAX_FILE * 2, stdio: ['ignore', 'pipe', 'pipe'] });
+      // Git may normalize Windows line endings; all other saved bytes must match.
+      const normalized = bytes => Buffer.from(Array.from(bytes).filter((byte, index) => byte !== 13 || bytes[index + 1] !== 10));
+      if (!normalized(blob).equals(normalized(readFileSync(state.path)))) throw fail(409, 'The committed notes differ from your confirmed save. Nothing was pushed. Ask Codex to check Git hooks or file filters before sharing.');
+      if (candidate !== base) {
+        try { git(['-c', 'push.followTags=false', '-c', 'remote.' + remote + '.mirror=false', 'push', '--no-mirror', '--no-follow-tags', '--recurse-submodules=no', destination, candidate + ':refs/heads/' + branch]); }
+        catch { throw fail(502, 'Notes are committed locally, but the push was not confirmed. Check your connection or whether the shared branch changed, then try Share notes again.'); }
+      }
+      const published = git(['ls-remote', '--heads', destination, 'refs/heads/' + branch]).split(/\s/)[0];
+      if (published !== candidate) throw fail(502, 'The remote did not confirm this notes commit. Notes remain saved locally. Try Share notes again.');
+      return { commit: candidate, filename: person.filename, message: candidate === base ? 'Your notes are already shared.' : 'Your notes were committed and pushed.', committed };
+    } finally { if (releaseRepo) await releaseRepo(); await releaseFile(); }
+  }
   const token = randomBytes(32).toString('hex');
   let origin;
   const server = createServer(async (request, response) => {
@@ -85,7 +154,7 @@ export function createLocalReview({ repoRoot, config, document, html, gitEnv = p
         const notes = person.configured ? current(person) : { revision: null, record: null };
         send(200, { identity: person, revision: notes.revision, record: notes.record }); return;
       }
-      if (request.method !== 'POST' || !['/api/identity', '/api/notes'].includes(request.url)) throw fail(404, 'Unknown review operation.');
+      if (request.method !== 'POST' || !['/api/identity', '/api/notes', '/api/share'].includes(request.url)) throw fail(404, 'Unknown review operation.');
       if (!request.headers['content-type']?.startsWith('application/json')) throw fail(415, 'Send JSON.');
       let bytes = 0; const chunks = [];
       for await (const chunk of request) { bytes += chunk.length; if (bytes > MAX_FILE) throw fail(413, 'Notes exceed 2 MB.'); chunks.push(chunk); }
@@ -103,6 +172,7 @@ export function createLocalReview({ repoRoot, config, document, html, gitEnv = p
       const person = identity();
       if (!person.configured) throw fail(409, 'Set your Git name and email first.');
       if (body.identity?.email !== person.email || body.identity?.name !== person.name) throw fail(409, 'Git identity changed. Reload before saving notes.');
+      if (request.url === '/api/share') { send(200, await share(person, body)); return; }
       const record = { ...body.record, reviewer: person.name, reviewerEmail: person.email, reviewerId: person.id };
       let text; try { text = exportMarkdown(record, document); } catch (error) { throw fail(400, error.message); }
       const state = current(person);

@@ -487,7 +487,15 @@
         "docs/reviews/src/features/notes-local.test.mjs",
         "docs/reviews/src/features/notes-lock.mjs",
         "docs/reviews/src/features/notes-lock.test.mjs",
-        "docs/reviews/src/features/packaging.test.mjs"
+        "docs/reviews/src/features/packaging.test.mjs",
+        ".agents/skills/review-inbox/SKILL.md",
+        ".agents/skills/review-inbox/agents/openai.yaml",
+        ".agents/skills/review-inbox/references/workflow.md",
+        ".agents/skills/review-inbox/scripts/inbox.mjs",
+        ".claude/skills/review-inbox/SKILL.md",
+        ".agents/skills/review-inbox/scripts/inbox.test.mjs",
+        ".agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs",
+        "docs/reviews/review-inbox-verification.json"
       ],
       "role": "tooling",
       "baselineGroups": [],
@@ -500,7 +508,8 @@
       "reusePlan": "Preserve standalone review and existing notes; qualify the optional repository helper as delivery tooling.",
       "enhancements": [
         "Preserve reviewer identity across import, restore and export.",
-        "Verify confined writes, failed-save recovery and competing writers without changing product runtime scope."
+        "Verify confined writes, failed-save recovery and competing writers without changing product runtime scope.",
+        "Add read-only Git review-inbox discovery and a shared skill for explicit selection and isolated review opening without treating notes, replies or opening as implementation approval."
       ],
       "replacementReason": null,
       "behaviorChecks": [
@@ -557,6 +566,27 @@
           "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
           "baselineStatus": "not-run",
           "targetStatus": "not-run"
+        },
+        {
+          "id": "REPO-10-C06",
+          "description": "Verify offline review-inbox discovery across local and cached remote refs: valid nonempty notes and configured work paths, duplicate grouping, versions and Git attribution, local drafts, explicit reply receipts and unknown/mixed states. Reject unsafe paths/arguments and malformed input, report bounded/truncated history honestly, and prove repository/config/index/ref preservation. Review shared/Claude entry points and agent metadata for selection, cached-history labeling, untrusted-content handling and separate write authorization.",
+          "existingTests": [
+            ".agents/skills/review-inbox/scripts/inbox.test.mjs",
+            ".agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs"
+          ],
+          "requiredEnvironment": "Disposable offline Git repositories on Windows and native POSIX; credential-free scanner invocation and shared skill/reference/YAML inspection. No network, models, real reviewer notes or browser needed.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P01"
+        },
+        {
+          "id": "REPO-10-C07",
+          "description": "Qualify the promised review-inbox opening workflow in each supported installed Claude Code/Codex host: explicit selection, latest selected branch head/version, safe reuse or isolated workspace, documented owned server, verified page/session and browser opening. Preserve dirty/occupied branches, unknown listeners and settings; honor cached/fetch errors and browser denials. Opening never writes notes, records answers, commits, pushes or authorizes implementation without a separate request.",
+          "existingTests": [],
+          "requiredEnvironment": "Actual supported installed agent hosts and disposable review repositories/workspaces; owned loopback server and supported browser tool. Keep unsupported host/transport behavior explicit.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P06"
         }
       ],
       "migrationChecks": [
@@ -606,6 +636,180 @@
         "docs/reviews/src/features/packaging.test.mjs"
       ],
       "note": "Append five checks owned by P01-T04. Proposed test claims do not establish acceptance."
+    },
+    {
+      "date": "2026-10-13T18:12:46.758717+00:00",
+      "reviewer": "Codex",
+      "scope": "Own the new review-inbox scanner and shared Claude/Codex skill under existing REPO-10 delivery tooling. P01 qualifies offline discovery and skill contracts; P06 qualifies the promised installed-host opening workflow. Preserve current assertions and history; no execution or phase acceptance claimed.",
+      "componentId": "REPO-10",
+      "addedFiles": [
+        ".agents/skills/review-inbox/SKILL.md",
+        ".agents/skills/review-inbox/agents/openai.yaml",
+        ".agents/skills/review-inbox/references/workflow.md",
+        ".agents/skills/review-inbox/scripts/inbox.mjs",
+        ".claude/skills/review-inbox/SKILL.md"
+      ],
+      "previousComponent": {
+        "id": "REPO-10",
+        "name": "Delivery review notes and local repository helper",
+        "files": [
+          "docs/reviews/.gitattributes",
+          "docs/reviews/agentmux-visual-review/document-version.json",
+          "docs/reviews/agentmux-visual-review/notes/nick.md",
+          "docs/reviews/agentmux-visual-review/notes/ryan.md",
+          "docs/reviews/agentmux-visual-review/README.md",
+          "docs/reviews/agentmux-visual-review/review.json",
+          "docs/reviews/check.mjs",
+          "docs/reviews/open.mjs",
+          "docs/reviews/README.md",
+          "docs/reviews/src/features/local-review.mjs",
+          "docs/reviews/src/features/local-review.test.mjs",
+          "docs/reviews/src/features/notes-controller.mjs",
+          "docs/reviews/src/features/notes-controller.test.mjs",
+          "docs/reviews/src/features/notes-format.mjs",
+          "docs/reviews/src/features/notes-format.test.mjs",
+          "docs/reviews/src/features/notes-local.mjs",
+          "docs/reviews/src/features/notes-local.test.mjs",
+          "docs/reviews/src/features/notes-lock.mjs",
+          "docs/reviews/src/features/notes-lock.test.mjs",
+          "docs/reviews/src/features/packaging.test.mjs"
+        ],
+        "role": "tooling",
+        "baselineGroups": [],
+        "ownerPhase": "P01",
+        "disposition": "extend",
+        "currentBehavior": [
+          "Standalone review notes support import, draft restore and export.",
+          "An optional loopback helper uses Git identity and saves reviewer notes with revision checks and process-held locks."
+        ],
+        "reusePlan": "Preserve standalone review and existing notes; qualify the optional repository helper as delivery tooling.",
+        "enhancements": [
+          "Preserve reviewer identity across import, restore and export.",
+          "Verify confined writes, failed-save recovery and competing writers without changing product runtime scope."
+        ],
+        "replacementReason": null,
+        "behaviorChecks": [
+          {
+            "id": "REPO-10-C01",
+            "description": "Preserve text, version and reviewer identity through standalone import/edit/restore/export, reset identity only on author switch; keep legacy drafts and known reviewer filenames.",
+            "existingTests": [
+              "docs/reviews/src/features/notes-controller.test.mjs",
+              "docs/reviews/src/features/notes-format.test.mjs"
+            ],
+            "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+            "baselineStatus": "not-run",
+            "targetStatus": "not-run"
+          },
+          {
+            "id": "REPO-10-C02",
+            "description": "Use effective Git identity; configure only repo-local name/email; confine writes to assigned notes files and reject stale identity/revision.",
+            "existingTests": [
+              "docs/reviews/src/features/local-review.test.mjs"
+            ],
+            "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+            "baselineStatus": "not-run",
+            "targetStatus": "not-run"
+          },
+          {
+            "id": "REPO-10-C03",
+            "description": "Reject foreign Host/Origin/missing token, links escaping notes/repository, malformed/oversized payloads; rejected writes preserve existing data.",
+            "existingTests": [
+              "docs/reviews/src/features/local-review.test.mjs"
+            ],
+            "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+            "baselineStatus": "not-run",
+            "targetStatus": "not-run"
+          },
+          {
+            "id": "REPO-10-C04",
+            "description": "Lock competing writers, release locks on process exit, retain pending edits/conflict drafts and warn before delayed/unconfirmed saves; retry temporary failures.",
+            "existingTests": [
+              "docs/reviews/src/features/notes-lock.test.mjs",
+              "docs/reviews/src/features/notes-local.test.mjs",
+              "docs/reviews/src/features/notes-controller.test.mjs"
+            ],
+            "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+            "baselineStatus": "not-run",
+            "targetStatus": "not-run"
+          },
+          {
+            "id": "REPO-10-C05",
+            "description": "Escape feedback, preserve exact assets/plan, keep stable source-version rules and standalone network restrictions, generate matching HTML/report/version.",
+            "existingTests": [
+              "docs/reviews/src/features/packaging.test.mjs",
+              "docs/reviews/src/features/notes-format.test.mjs"
+            ],
+            "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+            "baselineStatus": "not-run",
+            "targetStatus": "not-run"
+          }
+        ],
+        "migrationChecks": [
+          "Preserve existing reviewer notes, known filenames and legacy browser drafts.",
+          "Keep pinned P00 source blobs and historical acceptance intact.",
+          "Do not treat review tooling as an Agentmux runtime service or P06 acceptance."
+        ],
+        "limitations": [
+          "Browser rendering and current full check evidence remain open until independently reviewed."
+        ]
+      },
+      "addedChecks": [
+        "REPO-10-C06",
+        "REPO-10-C07"
+      ]
+    },
+    {
+      "date": "2026-10-13T18:13:20.353848+00:00",
+      "reviewer": "Codex",
+      "scope": "Add the concurrently introduced isolated review-inbox scanner regression fixture to existing REPO-10-C06 ownership; source producer retains implementation ownership and tests are not yet accepted.",
+      "addedFiles": [
+        ".agents/skills/review-inbox/scripts/inbox.test.mjs"
+      ],
+      "previousCheck": {
+        "id": "REPO-10-C06",
+        "description": "Verify offline review-inbox discovery across local and cached remote refs: valid nonempty notes and configured work paths, duplicate grouping, versions and Git attribution, local drafts, explicit reply receipts and unknown/mixed states. Reject unsafe paths/arguments and malformed input, report bounded/truncated history honestly, and prove repository/config/index/ref preservation. Review shared/Claude entry points and agent metadata for selection, cached-history labeling, untrusted-content handling and separate write authorization.",
+        "existingTests": [],
+        "requiredEnvironment": "Disposable offline Git repositories on Windows and native POSIX; credential-free scanner invocation and shared skill/reference/YAML inspection. No network, models, real reviewer notes or browser needed.",
+        "baselineStatus": "not-run",
+        "targetStatus": "not-run",
+        "qualificationPhase": "P01"
+      },
+      "qualificationCheck": "REPO-10-C06"
+    },
+    {
+      "date": "2026-10-13T18:16:38.685948+00:00",
+      "reviewer": "Codex",
+      "scope": "Own the producer-authorized review-inbox boundary regressions and record the inspected scanner controls: disable optional Git index locks, use literal pathspecs, enumerate configured notes independently. Preserve original tests and prior surface hashes; execution evidence and independent acceptance remain separate.",
+      "addedFiles": [
+        ".agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs"
+      ],
+      "previousCheck": {
+        "id": "REPO-10-C06",
+        "description": "Verify offline review-inbox discovery across local and cached remote refs: valid nonempty notes and configured work paths, duplicate grouping, versions and Git attribution, local drafts, explicit reply receipts and unknown/mixed states. Reject unsafe paths/arguments and malformed input, report bounded/truncated history honestly, and prove repository/config/index/ref preservation. Review shared/Claude entry points and agent metadata for selection, cached-history labeling, untrusted-content handling and separate write authorization.",
+        "existingTests": [
+          ".agents/skills/review-inbox/scripts/inbox.test.mjs"
+        ],
+        "requiredEnvironment": "Disposable offline Git repositories on Windows and native POSIX; credential-free scanner invocation and shared skill/reference/YAML inspection. No network, models, real reviewer notes or browser needed.",
+        "baselineStatus": "not-run",
+        "targetStatus": "not-run",
+        "qualificationPhase": "P01"
+      }
+    },
+    {
+      "date": "2026-10-13T18:29:58.029951+00:00",
+      "reviewer": "Codex",
+      "scope": "Register the current review-inbox verification artifact and inspect final scanner/skill surfaces. Preserve tested-old versus current-new provenance and original criteria; root independently reviews immutable Windows/POSIX execution evidence before any passing claim.",
+      "componentId": "REPO-10",
+      "addedFiles": [
+        "docs/reviews/review-inbox-verification.json"
+      ],
+      "inspectedSourceHashes": {
+        ".agents/skills/review-inbox/scripts/inbox.mjs": "d9646e1a713340b7db00be60f3505d067bb9d1d4c03adaab4b867e16e160b10e",
+        ".agents/skills/review-inbox/SKILL.md": "e67de77914e48c2ec6e58ab75d2d902a8bfa4fc7ac220b10ca4fc85563baf3c0",
+        ".agents/skills/review-inbox/references/workflow.md": "4f5fc7db9dc928365798357aa17abaf87719098802a88a3b3e6cc2dae81170e7",
+        "docs/reviews/review-inbox-verification.json": "eadc96d7d9b4d67613b343f435e60a07d7b27929ef1a671ec65523c82d5ef42f"
+      },
+      "contractReview": "Shared workflow still requires explicit selection, latest branch/source version, isolated safe workspace, verified owned server and supported browser. Date ordering, authoredAt and per-ref version clarifications remain inside C06; installed opening remains C07/P06. No new scope or acceptance claim."
     }
   ]
 }

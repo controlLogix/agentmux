@@ -1,0 +1,66 @@
+{
+  "checkedOn": "2026-10-13",
+  "scope": "Shared Claude Code and Codex review-inbox skill; not product delivery acceptance.",
+  "entryPoints": {
+    "codex": ".agents/skills/review-inbox/SKILL.md",
+    "claude": ".claude/skills/review-inbox/SKILL.md",
+    "sharedWorkflow": "Claude loads the canonical Codex-compatible skill and its resources; no duplicated workflow."
+  },
+  "tests": {
+    "command": "node --test .agents/skills/review-inbox/scripts/*.test.mjs",
+    "environment": "Native Windows Node with disposable Git repositories",
+    "passed": 12,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 67662.3687,
+    "coverage": [
+      "Multiple submissions and duplicate ref grouping",
+      "Empty placeholders excluded and local drafts reported separately",
+      "Exact-submission response receipts and new unanswered revisions",
+      "Path validation, literal Git path matching and external notes directories",
+      "Malformed work configuration and non-string document IDs rejected",
+      "History window and manifest truncation warnings",
+      "Branch-specific document versions retained",
+      "Commit date ordering across timezone offsets and separate author dates",
+      "Git files, branch, config and raw index bytes preserved",
+      "Case-insensitive Git redirect environment isolation and isolated fixtures"
+    ]
+  },
+  "skillValidation": {
+    "command": "python -X utf8 C:/Users/RyanHelms/.codex/skills/.system/skill-creator/scripts/quick_validate.py <skill-directory>",
+    "canonical": "passed",
+    "claudeEntryPoint": "passed"
+  },
+  "sourceHashes": {
+    ".agents/skills/review-inbox/SKILL.md": "e67de77914e48c2ec6e58ab75d2d902a8bfa4fc7ac220b10ca4fc85563baf3c0",
+    ".agents/skills/review-inbox/scripts/inbox.mjs": "d9646e1a713340b7db00be60f3505d067bb9d1d4c03adaab4b867e16e160b10e",
+    ".agents/skills/review-inbox/scripts/inbox.test.mjs": "d1c314c195f85ab26c10b4d63a318ce1b321b8c517fde421b6fc480e3abf6651",
+    ".agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs": "c1ceccbf5edec9c08f56adc73b8ac2ef17da82e108008f808badeeff93fb48d5",
+    ".agents/skills/review-inbox/references/workflow.md": "4f5fc7db9dc928365798357aa17abaf87719098802a88a3b3e6cc2dae81170e7",
+    ".agents/skills/review-inbox/agents/openai.yaml": "c302020127f957837c10b6681b8eb0bfdbf965f7bc31f6ec491c4ae6b7bc32d4",
+    ".claude/skills/review-inbox/SKILL.md": "d56ecc1c4ea8a44ae5606d48d44834a85f0e878384df66b93eefab625136f67c"
+  },
+  "independentForwardTest": {
+    "agentId": "01a1367b-be11-7533-9d14-acd891722035",
+    "scenario": "Two recent submissions, a dirty current checkout and another chat's unverified worktree/server",
+    "outcome": "Asked which review to open, preserved edits and refused to reuse the unverified workspace/server. All reported implementation and portability findings closed after fixes."
+  },
+  "actualRepositoryDiscovery": {
+    "networkFetchPerformed": false,
+    "sharedNonemptyNotesFound": 0,
+    "localDraftsFound": 0,
+    "warnings": 0,
+    "gitMutationsPerformed": false
+  },
+  "limitations": [
+    "Actual worktree creation, selected-branch launcher startup and browser opening were not executed during skill creation. They remain host-agent workflow steps when the user selects a review.",
+    "Native macOS/Linux operation and live discovery by restarted Claude/Codex sessions have not been exercised.",
+    "Reply status records an explicit receipt, not semantic proof that every question was answered or permission to implement."
+  ],
+  "repositoryPatternCheck": {
+    "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+    "ok": false,
+    "error": "Review is stale or missing: inspect changes and refresh sourceDigest",
+    "reason": "Concurrent delivery and review-tool changes require their owning complete source review. This scoped skill review does not refresh the global digest."
+  }
+}

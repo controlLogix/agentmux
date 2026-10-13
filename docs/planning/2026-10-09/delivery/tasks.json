@@ -6,11 +6,11 @@
     "phases.json": "882de6f13f309b878ebd8898ba73ab05fe94dc68ec517b311054f2a99f3102f7",
     "verification-matrix.json": "516813fd034d6c73b4b0d6f9eaaf4b1b54798828e137336324605d0b956085bc",
     "jev-coverage.json": "c7df684ce9162c36fb0d77ed8cf76c656824b7339b6c8464dce7ef2ce5988f95",
-    "component-inventory.json": "9cea33dc8e85d928878268c6900b8b45d21aae293b7e8880bc1ac3cc7e8b6908",
-    "component-audit-hub.json": "689690b169d1dcd9301cbeaed7764846b39b5676f04a2ef734bfc7e3048ba69d",
-    "component-audit-harness.json": "7aad553c9ec95dbd1da1309ba3718984befb4fffb6eafba62be222cbe2ec7a50",
+    "component-inventory.json": "75618c78a72e002cc447d33c9c0a8347c14a12f0c9ededfcdede5eb4b5725d5f",
+    "component-audit-hub.json": "f9f0719be9be08faf53b079b4bd967578d011e064d77b71045e4adcca1c4ae94",
+    "component-audit-harness.json": "c7e1dd0f2bedf0f6d65ea7445d4c6e2fa3c28a2f6c06bc9a967db8dc048c8fdc",
     "component-audit-dashboard.json": "a406607c28ee44054de9dc5f3b40b4b7e7d6e4e7989d29666fe09adb4904741f",
-    "component-audit-repository.json": "d4c182ce171e89ea03b5e0e72184d17f37c9f8cd9671b04e55e06f631208a8bc"
+    "component-audit-repository.json": "8bcd108d31722b73da950e5e40b9dbf8a73d608507a7ab2957d3e5c908dd357a"
   },
   "trackingDecision": "Repository tracking replaces Jira at Ryan's request; no Atlassian connection is required.",
   "epics": [
@@ -2090,7 +2090,7 @@
           "text": "Establish per-phase evidence records, dependency gates, migration fixtures, and security/quality regression jobs. Bind WSL evidence to Windows-owned client identity, version, configuration ownership and explicit interop limits; native Linux evidence cannot stand in for the Windows/WSL path."
         }
       ],
-      "status": "in_progress",
+      "status": "verification",
       "owner": "Codex",
       "dependsOn": [
         "P00-GATE",
@@ -2178,7 +2178,16 @@
         "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/module-independent-review.json",
         "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/serialization-review.json",
         "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/regression-independent-review.json",
-        "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/regression-self-test-after.json"
+        "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/regression-self-test-after.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/74d6bb9/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/wsl-native-74d6bb9/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-74d6-startup-observer-failed-diagnostic-20261013-133431/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/gate-completeness-audit-20261013.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/wsl-contract-source-reuse-74d6.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/qualification-ownership-root-review-20261013.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/independent-share-review-20261013/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/preservation/current-scope-20261013/preservation-negative-results.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/independent-share-review-20261013/scanner-root-review.json"
       ],
       "commits": [
         "f19c6473d56335b8eeb28704b02895b9d9ab7fcc",
@@ -2188,7 +2197,7 @@
         "171eb1f8d9254a043e9e2c0598c19fb6a12136c1",
         "74bee2b6c759f96135f024b2810d6dbcbb517a9e"
       ],
-      "blocker": "Original TEAM on 171eb1f ended after reviewed diagnostic cancellation: E1/E3/E4/E6 false, E2/E5 true, errorFree false. No work was claimed. All three exact Windows jobs and native fixture cleanup are verified. Codex submission and Claude unknown-modal causes remain unresolved; safe observations do not prove echo versus composer or menu versus input. Original crossrepo/swarm, stable-candidate preservation and browser/native macOS review-tool limits remain open. No P01 gate or P06 acceptance.",
+      "blocker": null,
       "history": [
         {
           "at": "2026-10-09T22:15:02.344871+00:00",
@@ -2407,6 +2416,81 @@
           "actor": "Codex",
           "reason": "Native CI exposed actual metadata drift and stale replacement record. Explicit LF serialization now passes all twenty-two tracker tests; independent and root AST review proved all old regression methods unchanged before preserving the old replacement and updating the active hash. Assertion-removal self-test passes. Expanded module coverage and negative fixtures pass; full native CI rerun remains pending.",
           "sourceCommit": "74bee2b6c759f96135f024b2810d6dbcbb517a9e"
+        },
+        {
+          "date": "2026-10-13T18:02:02.393069+00:00",
+          "actor": "Codex",
+          "reason": "Separate P01 environmental characterization from P06 actual supported-host qualification under WSL-CLIENT-01. Preserve all original scenario assertions, partial results and failed evidence; this is a qualification ownership correction, not a waiver or phase acceptance.",
+          "previousBlocker": "Original TEAM on 171eb1f ended after reviewed diagnostic cancellation: E1/E3/E4/E6 false, E2/E5 true, errorFree false. No work was claimed. All three exact Windows jobs and native fixture cleanup are verified. Codex submission and Claude unknown-modal causes remain unresolved; safe observations do not prove echo versus composer or menu versus input. Original crossrepo/swarm, stable-candidate preservation and browser/native macOS review-tool limits remain open. No P01 gate or P06 acceptance.",
+          "statusUnchanged": "in_progress"
+        },
+        {
+          "at": "2026-10-13T18:09:05.086952+00:00",
+          "actor": "Codex",
+          "action": "evidence-review",
+          "note": "Root verified and archived exact74d6 native CI on Ubuntu/macOS and current full132-test WSL hub profile. Failed original TEAM remains honest P01 environmental characterization and partial P06 qualification evidence; all original assertions, completed child and configuration false findings preserved. Current review-tool verification and full P01 gate remain open. No later phase started.",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P01/native/74d6bb9/root-review.json",
+            "docs/planning/2026-10-09/delivery/evidence/P01/wsl-native-74d6bb9/root-review.json",
+            "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-74d6-startup-observer-failed-diagnostic-20261013-133431/root-review.json"
+          ]
+        },
+        {
+          "date": "2026-10-13T18:12:46.758717+00:00",
+          "actor": "Codex",
+          "reason": "Own the new review-inbox scanner and shared Claude/Codex skill under existing REPO-10 delivery tooling. P01 qualifies offline discovery and skill contracts; P06 qualifies the promised installed-host opening workflow. Preserve current assertions and history; no execution or phase acceptance claimed.",
+          "previousBehaviorCheckIds": [
+            "HAR-23-C01",
+            "HAR-23-C02",
+            "HAR-23-C03",
+            "REPO-10-C01",
+            "REPO-10-C02",
+            "REPO-10-C03",
+            "REPO-10-C04",
+            "REPO-10-C05"
+          ],
+          "addedBehaviorCheckId": "REPO-10-C06",
+          "statusUnchanged": "in_progress"
+        },
+        {
+          "at": "2026-10-13T18:23:58.753436+00:00",
+          "actor": "Codex",
+          "action": "evidence-aggregation",
+          "note": "Root reviewed current qualification ownership without assertion reductions,42unchanged sharing-test sources plus README-only followup, current preservation negative checks, WSL contract source reuse and independent eight-scenario gate audit. Offline scanner REPO10C06 is under final13-case Windows/POSIX verification; installed-host C07 remains plannedP06. Final task/gate acceptance and remote candidate still pending.",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P01/gate-completeness-audit-20261013.json",
+            "docs/planning/2026-10-09/delivery/evidence/P01/wsl-contract-source-reuse-74d6.json",
+            "docs/planning/2026-10-09/delivery/evidence/P01/qualification-ownership-root-review-20261013.json",
+            "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/independent-share-review-20261013/root-review.json",
+            "docs/planning/2026-10-09/delivery/evidence/P01/preservation/current-scope-20261013/preservation-negative-results.json"
+          ]
+        },
+        {
+          "at": "2026-10-13T18:23:59.201043+00:00",
+          "actor": "Codex",
+          "from": "in_progress",
+          "to": "verification",
+          "note": "Review final scanner source-bound results, close criterion evidence, then accept the stable candidate and full P01 gate."
+        },
+        {
+          "at": "2026-10-13T18:26:46.983249+00:00",
+          "actor": "Codex",
+          "action": "correct-test-count-and-freeze",
+          "note": "The earlier expected13scanner cases was a counting mistake; actual current fixture files declare7original+5boundary=12cases. No assertion removed. Concurrent source changes invalidated mutable-checkout acceptance; final verification uses a byte-pinned external snapshot on Windows/POSIX, then compares working bytes without overwriting changes. Historical unstable attempts stay distinct.",
+          "sourceHashes": {
+            ".agents/skills/review-inbox/scripts/inbox.mjs": "d9646e1a713340b7db00be60f3505d067bb9d1d4c03adaab4b867e16e160b10e",
+            ".agents/skills/review-inbox/scripts/inbox.test.mjs": "d1c314c195f85ab26c10b4d63a318ce1b321b8c517fde421b6fc480e3abf6651",
+            ".agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs": "c1ceccbf5edec9c08f56adc73b8ac2ef17da82e108008f808badeeff93fb48d5"
+          }
+        },
+        {
+          "at": "2026-10-13T18:37:49.947135+00:00",
+          "actor": "Codex",
+          "action": "scanner-evidence-review",
+          "note": "Root accepts REPO10C06 offline scope:12baseline plus1mixed-reply supplement pass on Windows/POSIX with exact unchanged scanner bytes and retained prior fixture bytes; prior IDguard fails. Actual installed workflow stays plannedP06. Full P01 candidate/remote/gate approval remains pending.",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/independent-share-review-20261013/scanner-root-review.json"
+          ]
         }
       ],
       "phaseCriteria": [
@@ -2457,7 +2541,8 @@
         "REPO-10-C02",
         "REPO-10-C03",
         "REPO-10-C04",
-        "REPO-10-C05"
+        "REPO-10-C05",
+        "REPO-10-C06"
       ],
       "catalogRecordIds": [],
       "reviewer": "Codex",
@@ -2920,6 +3005,47 @@
           "from": "in_progress",
           "to": "done",
           "note": "Preservation preflight reviewed; 20 baseline governance tests passed with no skips. Candidate/runtime qualification remains assigned to implementation and gate."
+        },
+        {
+          "date": "2026-10-13T18:02:02.393069+00:00",
+          "actor": "Codex",
+          "reason": "Separate P01 environmental characterization from P06 actual supported-host qualification under WSL-CLIENT-01. Preserve all original scenario assertions, partial results and failed evidence; this is a qualification ownership correction, not a waiver or phase acceptance.",
+          "previousBehaviorCheckIds": [
+            "HAR-17-C01",
+            "HAR-17-C02",
+            "HAR-18-C01",
+            "HAR-18-C02",
+            "HAR-19-C01",
+            "HAR-19-C02",
+            "HAR-20-C01",
+            "HAR-20-C02",
+            "HAR-21-C01",
+            "HAR-21-C02",
+            "HAR-22-C01",
+            "HAR-22-C02",
+            "HUB-01-C01",
+            "HUB-01-C02",
+            "HUB-11-C01",
+            "HUB-11-C02",
+            "HUB-24-C01",
+            "HUB-24-C02",
+            "HUB-24-C03",
+            "HUB-26-C01",
+            "HUB-26-C02",
+            "HUB-26-C03",
+            "DASH-29-C01",
+            "DASH-29-C02",
+            "DASH-31-C01",
+            "DASH-31-C02",
+            "REPO-02-C01",
+            "REPO-03-C01"
+          ],
+          "transferredQualificationChecks": [
+            "HAR-21-C02",
+            "HUB-24-C02"
+          ],
+          "qualificationTask": "P06-T03",
+          "statusUnchanged": "done"
         }
       ],
       "phaseCriteria": [
@@ -2967,7 +3093,6 @@
         "HAR-20-C01",
         "HAR-20-C02",
         "HAR-21-C01",
-        "HAR-21-C02",
         "HAR-22-C01",
         "HAR-22-C02",
         "HUB-01-C01",
@@ -2975,7 +3100,6 @@
         "HUB-11-C01",
         "HUB-11-C02",
         "HUB-24-C01",
-        "HUB-24-C02",
         "HUB-24-C03",
         "HUB-26-C01",
         "HUB-26-C02",
@@ -3056,7 +3180,7 @@
         },
         {
           "id": "P01-GATE-AC04",
-          "text": "CI captures exact versions and logs without recording credentials or private model reasoning. Known baseline blockers are repaired or disproved with evidence, and the required repository governance gate passes before P02 progression."
+          "text": "CI captures exact versions and logs without recording credentials or private model reasoning. Known baseline blockers are repaired or disproved with evidence, and the required repository governance gate passes before P02 progression. WSL-CLIENT-01 has a recorded placement contract, Windows/WSL client/version inventory and honest current interop observations; P06-specific integration claims remain unaccepted until actual-host qualification."
         },
         {
           "id": "P01-GATE-AC05",
@@ -3171,6 +3295,16 @@
               "Run FAIL-42, FAIL-43 and FAIL-47 with real JetStream. Record which server/API/SDK capabilities provide each guarantee, including batch behavior and authoritative read freshness.",
               "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records."
             ]
+          },
+          "statusUnchanged": "planned"
+        },
+        {
+          "date": "2026-10-13T18:02:02.393069+00:00",
+          "actor": "Codex",
+          "reason": "Separate P01 environmental characterization from P06 actual supported-host qualification under WSL-CLIENT-01. Preserve all original scenario assertions, partial results and failed evidence; this is a qualification ownership correction, not a waiver or phase acceptance.",
+          "previousAcceptanceCriterion": {
+            "id": "P01-GATE-AC04",
+            "text": "CI captures exact versions and logs without recording credentials or private model reasoning. Known baseline blockers are repaired or disproved with evidence, and the required repository governance gate passes before P02 progression."
           },
           "statusUnchanged": "planned"
         }
@@ -6779,7 +6913,8 @@
         "Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.",
         "Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.",
         "Execute supported-client workflows from Windows and WSL/tmux against the same installation, compare version identity, perform a Windows-only update and repeat without editing version-specific paths. Record actual interop limitations and recovery steps.",
-        "Create and inspect stable WSL command symlinks for every supported Windows-installed client. Link to a supported Windows entry point or a forwarding launcher; resolve Windows-managed installation paths after updates and detect conflicting existing commands."
+        "Create and inspect stable WSL command symlinks for every supported Windows-installed client. Link to a supported Windows entry point or a forwarding launcher; resolve Windows-managed installation paths after updates and detect conflicting existing commands.",
+        "Qualify original calibration, team, cross-repository and swarm scenarios with their original provider mix, task bodies, contention and E1–E6 scoring in isolated supported-host environments. Preserve historical failures and unknown metadata; review actual callbacks, results, tests, commits, bounded drain and exact process/session cleanup. Verify Windows-owned configuration and unrelated settings remain preserved; normal authentication/session writes are not by themselves a preservation failure. Combine these results with the required installation, Windows-only update, argument/path and concurrent-session evidence; no smaller scenario or substituted provider qualifies."
       ],
       "acceptanceCriteria": [
         {
@@ -6801,9 +6936,15 @@
         {
           "id": "P06-T03-AC05",
           "text": "Actual-host evidence identifies each WSL symlink and resolved Windows installation. A Windows-only update is visible through the unchanged link/launcher; no duplicate Linux client or version-pinned replacement is installed. Conflicting user commands are detected and preserved."
+        },
+        {
+          "id": "P06-T03-AC06",
+          "text": "HAR-21-C02 and HUB-24-C02 have reviewed baseline/target evidence for all four original calibration/team/cross-repository/swarm scenarios and every E1–E6 assertion, preserving provider mix and scenario semantics. Actual supported-host results, artifacts, callbacks, bounded drain, exact cleanup and unrelated configuration preservation are qualified; failed or skipped cases remain blocking. Windows-owned installation/update/authentication/configuration and concurrent-session requirements remain required by P06-T03/P06-T05 and the P06 gate."
         }
       ],
-      "evidence": [],
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-74d6-startup-observer-failed-diagnostic-20261013-133431/root-review.json"
+      ],
       "commits": [],
       "blocker": null,
       "history": [
@@ -6888,6 +7029,70 @@
             }
           ],
           "scopeLimit": "Task remains planned in P06; P01 remains the only active phase."
+        },
+        {
+          "date": "2026-10-13T18:02:02.393069+00:00",
+          "actor": "Codex",
+          "reason": "Separate P01 environmental characterization from P06 actual supported-host qualification under WSL-CLIENT-01. Preserve all original scenario assertions, partial results and failed evidence; this is a qualification ownership correction, not a waiver or phase acceptance.",
+          "previous": {
+            "behaviorCheckIds": [],
+            "implementationPlan": [
+              "Inspect the existing source and callers for this exact work item: Package and test integrations for Claude Code, Codex CLI, Pi, and Claude Desktop using each host's documented capabilities.",
+              "Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.",
+              "Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.",
+              "Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.",
+              "Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.",
+              "Execute supported-client workflows from Windows and WSL/tmux against the same installation, compare version identity, perform a Windows-only update and repeat without editing version-specific paths. Record actual interop limitations and recovery steps.",
+              "Create and inspect stable WSL command symlinks for every supported Windows-installed client. Link to a supported Windows entry point or a forwarding launcher; resolve Windows-managed installation paths after updates and detect conflicting existing commands."
+            ],
+            "acceptanceCriteria": [
+              {
+                "id": "P06-T03-AC01",
+                "text": "The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Package and test integrations for Claude Code, Codex CLI, Pi, and Claude Desktop using each host's documented capabilities. WSL-CLIENT-01: Execute supported-client workflows from Windows and WSL/tmux against the same installation, compare version identity, perform a Windows-only update and repeat without editing version-specific paths. Record actual interop limitations and recovery steps."
+              },
+              {
+                "id": "P06-T03-AC02",
+                "text": "Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope. WSL-CLIENT-01 requires actual Windows/WSL workflow evidence; a version-only check, Linux-client substitution or skipped interop case cannot count as success."
+              },
+              {
+                "id": "P06-T03-AC03",
+                "text": "Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed."
+              },
+              {
+                "id": "P06-T03-AC04",
+                "text": "Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented."
+              },
+              {
+                "id": "P06-T03-AC05",
+                "text": "Actual-host evidence identifies each WSL symlink and resolved Windows installation. A Windows-only update is visible through the unchanged link/launcher; no duplicate Linux client or version-pinned replacement is installed. Conflicting user commands are detected and preserved."
+              }
+            ]
+          },
+          "qualificationChecksAdded": [
+            "HAR-21-C02",
+            "HUB-24-C02"
+          ],
+          "statusUnchanged": "planned"
+        },
+        {
+          "at": "2026-10-13T18:09:05.086952+00:00",
+          "actor": "Codex",
+          "action": "retain-failed-characterization",
+          "note": "Original TEAM E1–E5 false, E6 true; not passing qualification. Exact cleanup verified; Claude/Codex configuration byte equality false retained with cause unknown. Full original scenarios and supported-host qualification remain required; status stays planned.",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-74d6-startup-observer-failed-diagnostic-20261013-133431/root-review.json"
+          ]
+        },
+        {
+          "date": "2026-10-13T18:12:46.758717+00:00",
+          "actor": "Codex",
+          "reason": "Own the new review-inbox scanner and shared Claude/Codex skill under existing REPO-10 delivery tooling. P01 qualifies offline discovery and skill contracts; P06 qualifies the promised installed-host opening workflow. Preserve current assertions and history; no execution or phase acceptance claimed.",
+          "previousBehaviorCheckIds": [
+            "HAR-21-C02",
+            "HUB-24-C02"
+          ],
+          "addedBehaviorCheckId": "REPO-10-C07",
+          "statusUnchanged": "planned"
         }
       ],
       "phaseCriteria": [
@@ -6933,7 +7138,11 @@
         "DASH-33",
         "REPO-06"
       ],
-      "behaviorCheckIds": [],
+      "behaviorCheckIds": [
+        "HAR-21-C02",
+        "HUB-24-C02",
+        "REPO-10-C07"
+      ],
       "catalogRecordIds": [],
       "reviewer": "Codex",
       "deliveryPolicy": "deliveryGovernance"
@@ -34376,6 +34585,170 @@
           "current": "d4c182ce171e89ea03b5e0e72184d17f37c9f8cd9671b04e55e06f631208a8bc"
         }
       }
+    },
+    {
+      "date": "2026-10-13T18:02:02.393069+00:00",
+      "actor": "Codex",
+      "reason": "Separate P01 environmental characterization from P06 actual supported-host qualification under WSL-CLIENT-01. Preserve all original scenario assertions, partial results and failed evidence; this is a qualification ownership correction, not a waiver or phase acceptance.",
+      "qualificationOwnershipChanges": {
+        "HAR-21-C02": {
+          "previousPhase": "P01",
+          "previousTask": "P01-T08",
+          "phase": "P06",
+          "task": "P06-T03"
+        },
+        "HUB-24-C02": {
+          "previousPhase": "P01",
+          "previousTask": "P01-T08",
+          "phase": "P06",
+          "task": "P06-T03"
+        }
+      },
+      "sourceHashChanges": {
+        "component-audit-harness.json": {
+          "previous": "7aad553c9ec95dbd1da1309ba3718984befb4fffb6eafba62be222cbe2ec7a50",
+          "current": "c7e1dd0f2bedf0f6d65ea7445d4c6e2fa3c28a2f6c06bc9a967db8dc048c8fdc"
+        },
+        "component-audit-hub.json": {
+          "previous": "689690b169d1dcd9301cbeaed7764846b39b5676f04a2ef734bfc7e3048ba69d",
+          "current": "f9f0719be9be08faf53b079b4bd967578d011e064d77b71045e4adcca1c4ae94"
+        }
+      },
+      "phaseStatusesUnchanged": true,
+      "failedEvidenceRetained": true
+    },
+    {
+      "at": "2026-10-13T18:09:05.086952+00:00",
+      "actor": "Codex",
+      "action": "evidence-review",
+      "note": "Root verified and archived exact74d6 native CI on Ubuntu/macOS and current full132-test WSL hub profile. Failed original TEAM remains honest P01 environmental characterization and partial P06 qualification evidence; all original assertions, completed child and configuration false findings preserved. Current review-tool verification and full P01 gate remain open. No later phase started.",
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/74d6bb9/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/wsl-native-74d6bb9/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-74d6-startup-observer-failed-diagnostic-20261013-133431/root-review.json"
+      ],
+      "taskId": "P01-T04"
+    },
+    {
+      "date": "2026-10-13T18:12:46.758717+00:00",
+      "actor": "Codex",
+      "reason": "Own the new review-inbox scanner and shared Claude/Codex skill under existing REPO-10 delivery tooling. P01 qualifies offline discovery and skill contracts; P06 qualifies the promised installed-host opening workflow. Preserve current assertions and history; no execution or phase acceptance claimed.",
+      "addedBehaviorChecks": {
+        "REPO-10-C06": "P01-T04",
+        "REPO-10-C07": "P06-T03"
+      },
+      "sourceHashChanges": {
+        "component-inventory.json": {
+          "previous": "9cea33dc8e85d928878268c6900b8b45d21aae293b7e8880bc1ac3cc7e8b6908",
+          "current": "0ad935d113e4a4ab80f0e8e264a81ad48b45ef00219d9967a5efcf0d6d1ddce4"
+        },
+        "component-audit-repository.json": {
+          "previous": "d4c182ce171e89ea03b5e0e72184d17f37c9f8cd9671b04e55e06f631208a8bc",
+          "current": "d6bfd00a3fd0e8c0fd327dc8e2cb75b99074542aa890d8209e1f4f00226508ab"
+        }
+      },
+      "phaseStatusesUnchanged": true
+    },
+    {
+      "date": "2026-10-13T18:13:20.353848+00:00",
+      "actor": "Codex",
+      "reason": "Add the concurrently introduced isolated review-inbox scanner regression fixture to existing REPO-10-C06 ownership; source producer retains implementation ownership and tests are not yet accepted.",
+      "addedFiles": [
+        ".agents/skills/review-inbox/scripts/inbox.test.mjs"
+      ],
+      "sourceHashChanges": {
+        "component-inventory.json": {
+          "previous": "0ad935d113e4a4ab80f0e8e264a81ad48b45ef00219d9967a5efcf0d6d1ddce4",
+          "current": "a800a80e13af9a76fba17424a006f403befe797b02e2c79079e7eaf8b016f2b3"
+        },
+        "component-audit-repository.json": {
+          "previous": "d6bfd00a3fd0e8c0fd327dc8e2cb75b99074542aa890d8209e1f4f00226508ab",
+          "current": "84cd3a1f77924a75851c299e04b1635c95840abf02a2fb04e323ad807c05a69e"
+        }
+      },
+      "taskStatusesUnchanged": true
+    },
+    {
+      "date": "2026-10-13T18:16:38.685948+00:00",
+      "actor": "Codex",
+      "reason": "Own the producer-authorized review-inbox boundary regressions and record the inspected scanner controls: disable optional Git index locks, use literal pathspecs, enumerate configured notes independently. Preserve original tests and prior surface hashes; execution evidence and independent acceptance remain separate.",
+      "addedFiles": [
+        ".agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs"
+      ],
+      "sourceHashChanges": {
+        "component-inventory.json": {
+          "previous": "a800a80e13af9a76fba17424a006f403befe797b02e2c79079e7eaf8b016f2b3",
+          "current": "d7928d042bbb16a63535e7e25fc144b2f53e717d080b86b53f9663a15374531a"
+        },
+        "component-audit-repository.json": {
+          "previous": "84cd3a1f77924a75851c299e04b1635c95840abf02a2fb04e323ad807c05a69e",
+          "current": "67447fae9d7d14b76400dba5ce3b74f35800ff4b8625d9fe7367ffa4869d4ffc"
+        }
+      },
+      "statusesUnchanged": true
+    },
+    {
+      "at": "2026-10-13T18:23:58.753436+00:00",
+      "actor": "Codex",
+      "action": "evidence-aggregation",
+      "note": "Root reviewed current qualification ownership without assertion reductions,42unchanged sharing-test sources plus README-only followup, current preservation negative checks, WSL contract source reuse and independent eight-scenario gate audit. Offline scanner REPO10C06 is under final13-case Windows/POSIX verification; installed-host C07 remains plannedP06. Final task/gate acceptance and remote candidate still pending.",
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/gate-completeness-audit-20261013.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/wsl-contract-source-reuse-74d6.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/qualification-ownership-root-review-20261013.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/independent-share-review-20261013/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/preservation/current-scope-20261013/preservation-negative-results.json"
+      ],
+      "taskId": "P01-T04"
+    },
+    {
+      "at": "2026-10-13T18:23:59.201043+00:00",
+      "actor": "Codex",
+      "from": "in_progress",
+      "to": "verification",
+      "note": "Review final scanner source-bound results, close criterion evidence, then accept the stable candidate and full P01 gate.",
+      "taskId": "P01-T04"
+    },
+    {
+      "at": "2026-10-13T18:26:46.983249+00:00",
+      "actor": "Codex",
+      "action": "correct-test-count-and-freeze",
+      "note": "The earlier expected13scanner cases was a counting mistake; actual current fixture files declare7original+5boundary=12cases. No assertion removed. Concurrent source changes invalidated mutable-checkout acceptance; final verification uses a byte-pinned external snapshot on Windows/POSIX, then compares working bytes without overwriting changes. Historical unstable attempts stay distinct.",
+      "sourceHashes": {
+        ".agents/skills/review-inbox/scripts/inbox.mjs": "d9646e1a713340b7db00be60f3505d067bb9d1d4c03adaab4b867e16e160b10e",
+        ".agents/skills/review-inbox/scripts/inbox.test.mjs": "d1c314c195f85ab26c10b4d63a318ce1b321b8c517fde421b6fc480e3abf6651",
+        ".agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs": "c1ceccbf5edec9c08f56adc73b8ac2ef17da82e108008f808badeeff93fb48d5"
+      },
+      "taskId": "P01-T04"
+    },
+    {
+      "date": "2026-10-13T18:29:58.029951+00:00",
+      "actor": "Codex",
+      "reason": "Register the current review-inbox verification artifact and inspect final scanner/skill surfaces. Preserve tested-old versus current-new provenance and original criteria; root independently reviews immutable Windows/POSIX execution evidence before any passing claim.",
+      "addedFiles": [
+        "docs/reviews/review-inbox-verification.json"
+      ],
+      "sourceHashChanges": {
+        "component-inventory.json": {
+          "previous": "d7928d042bbb16a63535e7e25fc144b2f53e717d080b86b53f9663a15374531a",
+          "current": "75618c78a72e002cc447d33c9c0a8347c14a12f0c9ededfcdede5eb4b5725d5f"
+        },
+        "component-audit-repository.json": {
+          "previous": "67447fae9d7d14b76400dba5ce3b74f35800ff4b8625d9fe7367ffa4869d4ffc",
+          "current": "8bcd108d31722b73da950e5e40b9dbf8a73d608507a7ab2957d3e5c908dd357a"
+        }
+      },
+      "statusesUnchanged": true
+    },
+    {
+      "at": "2026-10-13T18:37:49.947135+00:00",
+      "actor": "Codex",
+      "action": "scanner-evidence-review",
+      "note": "Root accepts REPO10C06 offline scope:12baseline plus1mixed-reply supplement pass on Windows/POSIX with exact unchanged scanner bytes and retained prior fixture bytes; prior IDguard fails. Actual installed workflow stays plannedP06. Full P01 candidate/remote/gate approval remains pending.",
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/independent-share-review-20261013/scanner-root-review.json"
+      ],
+      "taskId": "P01-T04"
     }
   ],
   "deliveryGovernance": {

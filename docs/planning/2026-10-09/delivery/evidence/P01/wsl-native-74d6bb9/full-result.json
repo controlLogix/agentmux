@@ -1,0 +1,109 @@
+{
+  "selection": [
+    "hub.tests.test_local_runner",
+    "hub.tests.test_governance",
+    "hub.tests.test_fed_unit",
+    "hub.tests.test_hub_offline",
+    "hub.tests.test_nats_federation",
+    "hub.tests.test_fed_live"
+  ],
+  "profile": "full",
+  "status": "passed",
+  "tests": 132,
+  "seconds": 66.282,
+  "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+  "failures": [],
+  "retry": [],
+  "skips": [],
+  "expectedFailures": [],
+  "slowest": [
+    {
+      "test": "hub.tests.test_fed_live.Fed.test_z_kill_switch_revoke_and_resume",
+      "seconds": 5.7141
+    },
+    {
+      "test": "hub.tests.test_hub_offline.MenuByLabel.test_missing_safe_option_blocks",
+      "seconds": 4.806
+    },
+    {
+      "test": "hub.tests.test_hub_offline.Deliver.test_placeholder_gets_second_enter",
+      "seconds": 4.3067
+    },
+    {
+      "test": "hub.tests.test_hub_offline.Deliver.test_update_modal_answered_safely",
+      "seconds": 4.0545
+    },
+    {
+      "test": "hub.tests.test_hub_offline.MenuByLabel.test_trust_selects_yes_even_when_no_is_preselected",
+      "seconds": 4.0041
+    },
+    {
+      "test": "hub.tests.test_fed_live.Fed.test_p2_federated_work_is_done_exactly_once_and_comes_home",
+      "seconds": 2.6831
+    },
+    {
+      "test": "hub.tests.test_nats_federation.TwoNodes.test_federated_role_item_claimed_exactly_once",
+      "seconds": 2.6113
+    },
+    {
+      "test": "hub.tests.test_hub_offline.Deliver.test_copy_mode_left_first",
+      "seconds": 2.5257
+    },
+    {
+      "test": "hub.tests.test_hub_offline.Deliver.test_hint_text_cleared_first",
+      "seconds": 2.5031
+    },
+    {
+      "test": "hub.tests.test_hub_offline.Deliver.test_windows_claude_idle_hint_receives_notice",
+      "seconds": 2.5029
+    }
+  ],
+  "sourceSha256": {
+    "hub/__init__.py": "2fa2e5fedd0cf0b155aca3ec64c7f0ae8241f7806272c9f1828e280730e1fcfe",
+    "hub/bridge.py": "c129386a37e88f8f4f94ebb0247ce39d09638f7e734f8741050de4ecaec5eb2c",
+    "hub/cli.py": "276e8311b0cbd683e3c123ff327cfd4664fa8ef55882ef94ad89e50a6ecc0efb",
+    "hub/deliver.py": "c39ab9062b797bf7fc2d2769f8d92c4ba57b9e6fdfe7159323e9d9e99c825f48",
+    "hub/demo/orchestrate.py": "9e389a227a1407f7aedfe7462a89b88ec1e3e5506d4cf0c0d8b1f7c3c96a2451",
+    "hub/demo/scoreboard.py": "a88cb21230061659b518aa4025fc0bf18f74611ee2967e5d8d66a2090bc1fb59",
+    "hub/fed/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "hub/fed/admin.py": "ce6b0b048a4fcaa5e0b4432ed920ba587bad21d54cb2a84187a09e5022a2b74a",
+    "hub/fed/config.py": "9fa43b51291d4d41df9ee4bfb66bd40c8c19e6e40473d1e3b8cff5390e31b1a4",
+    "hub/fed/conn.py": "7c4d226c777256c2228ec76254aca526039d7c7c5dc4fb7c61933816397f9bab",
+    "hub/fed/demo.py": "7d5e1d4b86650e1f6c5faaf812b751ce61d457a1f445e71345a9a2cde6f266d7",
+    "hub/fed/envelope.py": "328d418cfd6517956237cddd3b1c5a4f5221cbd4789a3939b400753808fc91d2",
+    "hub/fed/guard.py": "34a4347534eda49fbea2d9facf5e0bb8bf01abc602a28d2dba74b2e98377660f",
+    "hub/fed/hooks/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "hub/fed/hooks/privileged_gate.py": "6f3feee0cd7ae1680fe356a31ccdd28bcb475e59f38f9ae101e889e496c031fd",
+    "hub/fed/ledger.py": "057de84ff7dfd884f34180dfb7dac98811790be54b3b0ad6d0f85fc62a05dd99",
+    "hub/fed/mcp.py": "9e69ab50195d64c5a8454138cc767be74888eb54b750c22b97ac4ed113e8c188",
+    "hub/fed/plugin.py": "aeaf58efd3e369ccac5c7605976bc3183599a1b88bd825680d9ef727df44aea2",
+    "hub/fed/plugins/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "hub/fed/plugins/board.py": "4e5ef514e1334d7fd7856f13f334931f00cd3510614d51f23b143dda23f2a5b6",
+    "hub/fed/plugins/code.py": "4c2b560cc136212fba9cf3d524eb14b4941b4fa10cf147bff11dad8859e6dfc9",
+    "hub/fed/plugins/knowledge.py": "95dd53657b6c52b61dcc8f7718579cdee18c5ecdec9026e360292fdecd142e85",
+    "hub/fed/plugins/messages.py": "e3f8f29fd1c8bb72fdd401f42f75f8438cc289c39053528d82e1c6c9156b5c09",
+    "hub/fed/plugins/work.py": "d52f850b230f1af473e239933114f1566f0e6f792d6e91d749a5b43ee47cbb49",
+    "hub/fed/policy.py": "0e3ef8d016aea2df561b95bf68d2116482684e5a08f71b17dc58a1c2d9e5623c",
+    "hub/fed/redact.py": "65be8b5a3381f73c80e6c2723ec165de6c3dcb2b0b0cd34632be4b832d4d19a4",
+    "hub/fed/runtime.py": "b4f0a9a57bc5ba1a6895955c91625e6188b40206d35f628d7756e3ddefb89661",
+    "hub/names.py": "21dd001491fac1e4ecb2df1fa339d30aff7f29f33fb4f6cb9ab9ca9ea4d5635d",
+    "hub/profiles.py": "9da12247e93748ada1b94758e4e51a2842ddde92b0d76467a8ae99d6f0cd45dd",
+    "hub/receipts.py": "29e9f7f270006d34197e56b119844247ce5c09f9d8493ed3e99c3f04def2ef2d",
+    "hub/server.py": "8f4de71e0885b395d058b7dd88cfd740fdffd8a986f6a58ae8cc5b115dca2153",
+    "hub/store.py": "1f6a22f5ea5cc3d24b343e5f1c764974409640dd84aacd66cda565ba80b6cc58",
+    "hub/tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "hub/tests/fedharness.py": "8224930dcc0a031e9333b4f5781f1c0990a3a46f929a9808acc5566deea5595d",
+    "hub/tests/run_local.py": "2a3f9f0082084bc9e8a082381a0067da5f5f8350451f0f05cb504fee4702b172",
+    "hub/tests/test_fed_live.py": "af39ed93f205952f90a9975a7ed7381a7560ee8e0e4278dee220a57b08ad3b0c",
+    "hub/tests/test_fed_unit.py": "b5753215fef5705fdb829078730e5fb14e12bc4c1ec040870e84ff2603772adf",
+    "hub/tests/test_governance.py": "67348cc4c748e9bbdd93286808c770622f9c563addf3fb6c78b84a4090f1648d",
+    "hub/tests/test_hub_offline.py": "8d32fdb7e227963d4f6ec866ea26bedb1c6d80dc15d557421652935ccd21ed27",
+    "hub/tests/test_local_runner.py": "e183314d0397b4ca4fa302fad5afda0aab47985bc2f0ce1140c9dcf6e9f2dc35",
+    "hub/tests/test_nats_federation.py": "d73d7b00e3e7a06037623d07fc30f3ee7b9dbb580d9fd5c79f2e0675f376226c",
+    "hub/tests/test_windows_callbacks.py": "a25340865b551ae290bd5302159dff365f58129947023608b6f6123bc092e4f0",
+    "hub/transport.py": "e33439c76982486f64a985875659420f9b27d7369de4ff24755ff09ddcd59768",
+    "hub/requirements.txt": "bfe65214b3b18cdebdcbb560111113489b4a8bbc5f84b9905a2e5d0edc362b2a",
+    "hub/requirements.lock": "3ed79db16ab9b01c1c4f1b2b99443b8952579abd8a85fd38e60aff8c1baa2420"
+  },
+  "phaseGatePassed": false
+}
