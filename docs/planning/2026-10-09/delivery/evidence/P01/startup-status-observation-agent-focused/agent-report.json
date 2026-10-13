@@ -1,0 +1,91 @@
+{
+  "recordedAtUtc": "2026-10-13T19:24:25.774037+00:00",
+  "sourceCommit": "9db01f2d2ff6656d3f2c7fd8f9567fb421104605",
+  "status": "focused-checks-passed-independent-and-full-review-pending",
+  "ownedSourceBindings": [
+    {
+      "path": "contracts/v1/schemas/startup-status-observation.schema.json",
+      "sha256": "3fe5d4900854da724af16382756df43b43d0c8f822f4dcc081d93554b897d216",
+      "bytes": 33525,
+      "LF": true,
+      "matchesFocusedReport": true
+    },
+    {
+      "path": "tests/contracts/test_startup_status.py",
+      "sha256": "c7a94161e75d7e87e91d5fc87fcb9269681bcf1bb1088d60893a7894a4fafe13",
+      "bytes": 8590,
+      "LF": true,
+      "matchesFocusedReport": true
+    },
+    {
+      "path": "tests/contracts/vectors/startup-status-examples.json",
+      "sha256": "88005f4fe5581769fa60b0a17bbe2511cc70c16a6c0e1d51d02fb53187db1451",
+      "bytes": 36431,
+      "LF": true,
+      "matchesFocusedReport": true
+    }
+  ],
+  "command": "AGENTMUX_CONTRACT_TS_CLI=/home/ryan/.cache/agentmux-governance/typescript-sdk/dist/cli.js /home/ryan/.cache/agentmux-governance/p01-contracts-python/bin/python tests/contracts/run.py --match StartupStatus --evidence <external-output>",
+  "actualEnvironment": {
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "harnessPython": "3.14.4",
+    "clientPython": "Python 3.14.4",
+    "node": "v22.22.1"
+  },
+  "testsRun": 7,
+  "exitCode": 0,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "sourceUnchangedDuringRun": true,
+  "typescriptBuildAllSourcesMatch": true,
+  "typescriptBuildUnchangedDuringRun": true,
+  "sourceMirrorMatchedBeforeAndAfter": true,
+  "sourceMirrorUnchanged": true,
+  "sdkCodeChanged": false,
+  "schemaLoading": "Both actual independent SDK CLIs load the new schema through existing generic schema validation. No SDK bypass or runtime boot.",
+  "fixtures": {
+    "count": 13,
+    "dispositions": [
+      "started",
+      "reused",
+      "starting",
+      "remote",
+      "unconfigured",
+      "failed"
+    ],
+    "linkStates": [
+      "connected",
+      "disconnected",
+      "stale",
+      "unknown",
+      "not_configured"
+    ],
+    "inventoryStates": [
+      "known",
+      "unavailable",
+      "forbidden"
+    ],
+    "scope": "Synthetic shape and honest unknown/unavailable observations only."
+  },
+  "existingAssertions": "No existing assertion edited or removed by this agent. Root owns registry/payload/README integration and necessary existing reply-case generalization.",
+  "initialFailure": {
+    "record": "setup-failed-result.json",
+    "reason": "Selected general Python environment lacked jsonschema; seven tests failed setup before schema admission. Correct prepared pinned contract environment then passed same selection.",
+    "retained": true
+  },
+  "concurrentRunLimit": "One root full run overlapped a final honesty correction after initial stable notification. Root retains that result as diagnostic; it is not unchanged-source acceptance. Owned files are now frozen.",
+  "limits": [
+    "Timestamp references follow common lexical schema; no calendar validity, actual observation freshness, caller authentication or current grants are established.",
+    "Schema rejects private field names and credential-bearing endpoint shapes. Runtime status owner must redact every allowed display/error string and filter entries/counts to authenticated scope; schema alone cannot prove no disclosure.",
+    "Connected transport is not federation/application readiness or approved trust. Unimplemented services and unknown counts remain unavailable/null.",
+    "Focused seven tests are not full P01 conformance, platform CI, runtime/P02 boot or phase acceptance. Independent review and root integration/full/CI checks remain required."
+  ],
+  "patternCheck": {
+    "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+    "exitCode": 1,
+    "error": "Review is stale or missing: inspect changes and refresh sourceDigest",
+    "attestationChanged": false
+  },
+  "phaseAccepted": false
+}

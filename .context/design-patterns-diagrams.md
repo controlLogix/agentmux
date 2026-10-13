@@ -554,3 +554,21 @@ flowchart LR
 ```
 
 Unrelated shell commands bypass external processing. Current runtime identity, checksum and approval checks remain authoritative. The restored host hook adds the live-definition check; direct dashboard HTTP mutation does not enforce that check and remains a documented limitation. The source locations are plugins/agentmux-orchestration/lib, bin/agentmux-plugin and skills/agent-config/scripts/runtime.py. Independent compatibility review qualifies only recorded behavior; no historical source equivalence or P06 framework acceptance is asserted.
+
+## P01 recovered contract and capacity fixtures
+
+These are isolated qualification paths. They do not connect the legacy hub to the new protected kernel or implement production storage policy.
+
+```mermaid
+flowchart LR
+  Query[Existing scoped status query] --> Observation[PLAN-08 L04 observation reply]
+  Observation --> Python[Independent Python validator]
+  Observation --> TypeScript[Independent TypeScript validator]
+  Bulk[Fixture bulk admission] --> Guard[Persisted budget and reserved record slots]
+  Final[Final and reconciliation records] --> Guard
+  Guard --> CAS[PLAN-09 conditional complete record append]
+  CAS --> Ledger[(Disposable retained JetStream ledger)]
+  Ledger --> Replay[PLAN-10 operation lookup after restart]
+```
+
+The status schema preserves unavailable and forbidden states; its runtime producer remains later work. Capacity fixtures use one task aggregate and conservative stream framing headroom. An unguarded writer control shows why a full stream cannot promise final-result admission.

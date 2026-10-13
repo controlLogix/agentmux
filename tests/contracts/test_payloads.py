@@ -70,7 +70,8 @@ class Payloads(unittest.TestCase):
             for field, value in [('contractId', 'not-registered'), ('contractMajor', 99),
                                  ('kind', 'event' if self.payloads[name]['kind'] != 'event' else 'command')]:
                 invalid = self.envelope(name); invalid[field] = value; cases.append((name + ':' + field, invalid))
-            if name != 'operation-outcome':
+            # Replies target their signed recipient, rather than a fixed owner.
+            if self.payloads[name]['kind'] != 'reply':
                 invalid = self.envelope(name); invalid['destinationServiceId'] = 'wrong-service'
                 cases.append((name + ':service', invalid))
         self.check_cases(cases)
@@ -118,6 +119,8 @@ class Payloads(unittest.TestCase):
         for signer, verifier in (self.clients, list(reversed(self.clients))):
             cases = []
             valid = self.envelope('task-inspect'); cases.append(('registered-positive', valid, True))
+            for name in ('operation-outcome', 'startup-status-observation'):
+                cases.append((name + ':signed-recipient', self.envelope(name), True))
             unknown = self.envelope('task-inspect'); unknown['contractId'] = 'not-registered'; cases.append(('unknown-contract', unknown, False))
             confused = self.envelope('delivery-receipt'); confused['payload']['status'] = 'accepted'; cases.append(('confused-receipt', confused, False))
             canonical = signer.many([{'op': 'canonical', 'value': e['payload']} for _, e, _ in cases])
@@ -133,6 +136,15 @@ class Payloads(unittest.TestCase):
                 envelope['ingressAttestation']['signature'] = self.accepted(signature)
                 requests.append({'op': 'verifyEnvelope', 'envelope': envelope, 'publicKeyHex': self.public,
                                  'expectedAudience': envelope['ingressAttestation']['claims']['audience'], 'now': wire.NOW})
+            # Each new reply retains the same signed-recipient refusal boundary.
+            for label, envelope, allowed in list(cases):
+                if allowed and envelope['kind'] == 'reply':
+                    requests.append({'op': 'verifyEnvelope', 'envelope': envelope,
+                                     'publicKeyHex': self.public,
+                                     'expectedAudience': {'hubId': envelope['destinationHubId'],
+                                                          'serviceId': 'different-recipient'},
+                                     'now': wire.NOW})
+                    cases.append((label + ':wrong-recipient', envelope, False))
             for (label, _, allowed), response in zip(cases, verifier.many(requests)):
                 with self.subTest(signer=signer.language, verifier=verifier.language, case=label):
                     if allowed:

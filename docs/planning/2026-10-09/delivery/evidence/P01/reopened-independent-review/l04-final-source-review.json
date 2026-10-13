@@ -1,0 +1,49 @@
+{
+  "decision": "no-remaining-blocking-source-finding-in-L04-slice",
+  "closureEvidence": "l04-closure-probes.json",
+  "closureSha256": "cd926820f96a129b3ff4d4ce0352dd3d947ab5eb40235a01fd601a7352efb6aa",
+  "review": [
+    "All nine originally accepted deficient observations now rejected by both real CLIs; before/after source hashes stable.",
+    "Successful start/reuse requires known instance/profile/Compose/context/endpoint even when degraded; failure/unconfigured unknown values remain allowed.",
+    "Observed connected/disconnected/stale hub entries require timestamp and age; explicit unknown/not-configured retain legitimate null state.",
+    "Required envelope, caller, privacy, unknown/zero and unavailable-service shape boundaries retained.",
+    "New registry reply is integrated with existing payload fixtures. Only kind reply is exempt from fixed destination owner test, matching prior operation-outcome behavior.",
+    "Both existing operation-outcome and new startup-status-observation get signed-recipient positives and wrong-recipient negatives in both signer/verifier directions. No SDK security implementation weakened.",
+    "Reopened task criteria and history recover exact accepted promises without resetting prior passing results."
+  ],
+  "limits": "Runtime identity, scope filtering, display/error redaction and freshness remain status-owner enforcement. Calendar validation follows existing common lexical schema. Full stable contracts and native qualification remain gate requirements.",
+  "sourceBindings": [
+    {
+      "path": "contracts/v1/registry.json",
+      "sha256": "a574e1dd54fec0d1b55df50c4ff1b604e0eac1d2eb4c23b7c914f68674eb6381"
+    },
+    {
+      "path": "tests/contracts/test_payloads.py",
+      "sha256": "ac6a7e41e1430cdbe283c24d4041e55dcd4be8a7858b5843cb959330c8f9f38c"
+    },
+    {
+      "path": "tests/contracts/vectors/payload-examples.json",
+      "sha256": "f882c2c3188cddf3c6a7ecafa14e29cb50a2c03e2da351a6e2d1a3d3c496be41"
+    },
+    {
+      "path": "contracts/v1/schemas/startup-status-observation.schema.json",
+      "sha256": "d4f6f50bd1adc03ffc5fd904e61ce723646624a7357e83595bf6e818f12bf0a0"
+    },
+    {
+      "path": "tests/contracts/test_startup_status.py",
+      "sha256": "36f41f63a231f8f1eeafdb09e5b9e01d09528a57bc6fd0533ade3739df705de0"
+    },
+    {
+      "path": "tests/contracts/vectors/startup-status-examples.json",
+      "sha256": "fb300723bd8e9c3026b6a8b3e59e55248133d037d6591bdd0e44d6b95a797457"
+    }
+  ],
+  "patternCheck": {
+    "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+    "ok": false,
+    "errors": [
+      "Review is stale or missing: inspect changes and refresh sourceDigest"
+    ]
+  },
+  "phaseAccepted": false
+}

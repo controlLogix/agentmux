@@ -359,7 +359,7 @@ Contracts and failure scenarios can be tested before business plugins grow.
 
 ### P01-T01: Publish language-neutral command/event schemas and compatibility rules with organization, project, task, delegation, attempt, operation, schema version, and trace identifiers.
 
-**Status:** done. **Owner:** Codex.
+**Status:** verification. **Owner:** Codex.
 
 **Dependencies:** P00-GATE, P01-T08.
 
@@ -370,6 +370,7 @@ Contracts and failure scenarios can be tested before business plugins grow.
 3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
 4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
 5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+6. Publish and qualify the accepted L04 startup-status observation response through both independent SDKs. Include success/failure fixtures, caller scope, unavailable fields, observed zero counts, and known/unavailable/forbidden hub inventories; reject inconsistent and leaking shapes. Runtime status production remains P02 and later owning phases.
 
 **Deliverables**
 
@@ -382,6 +383,7 @@ Contracts and failure scenarios can be tested before business plugins grow.
 2. P01-T01-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
 3. P01-T01-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
 4. P01-T01-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+5. P01-T01-AC05: The accepted L04 response schema and success/failure fixtures pass both independent Python and TypeScript clients. Required fields, closed objects, honest unknown/unavailable states, observed zero values and forbidden hub inventory are covered by positive and negative checks. This does not claim a running status service.
 
 **Verification**
 
@@ -614,7 +616,7 @@ Contracts and failure scenarios can be tested before business plugins grow.
 
 ### P01-T07: Build a bounded NATS persistence spike before production storage code: one owning task record, persistent operation identity, conditional competing writes, complete provenance/effect intent, lost acknowledgments and replay
 
-**Status:** done. **Owner:** Codex.
+**Status:** verification. **Owner:** Codex.
 
 **Dependencies:** P00-GATE, P01-T08.
 
@@ -626,6 +628,7 @@ Contracts and failure scenarios can be tested before business plugins grow.
 4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
 5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
 6. Preserve the assertions assigned to this task for AMX-BASE-002 in delivery/evidence/P00/baseline-findings.md. Re-run or port the actual fixtures at the changed authority boundary; preserve explicitly open broader acceptance requirements.
+7. Qualify the accepted S03 completion/reconciliation reserve in a bounded real JetStream application fixture. Persist budget and operation outcomes, deny bulk at the admission ceiling under competing owners, preserve admitted completion/reconciliation capacity through restart/replay, and report exhausted broker capacity honestly. Keep production enforcement assigned to P04.
 
 **Deliverables**
 
@@ -638,6 +641,7 @@ Contracts and failure scenarios can be tested before business plugins grow.
 2. P01-T07-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
 3. P01-T07-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
 4. P01-T07-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+5. P01-T07-AC05: A real JetStream fixture proves S03 bulk admission and a separately budgeted completion/reconciliation reserve under competing admissions, restart and idempotent replay. Explicit broker exhaustion cannot report committed work. A bypass negative control fails the reserve invariant. Record physical framing/headroom and single-node fixture limits; production enforcement remains required in P04.
 
 **Verification**
 
@@ -696,7 +700,7 @@ Contracts and failure scenarios can be tested before business plugins grow.
 
 ### P01-GATE: Verify and accept P01
 
-**Status:** done. **Owner:** Codex.
+**Status:** blocked. **Owner:** Codex.
 
 **Dependencies:** P01-T01, P01-T02, P01-T03, P01-T04, P01-T05, P01-T06, P01-T07, P01-T08.
 
@@ -739,6 +743,8 @@ Contracts and failure scenarios can be tested before business plugins grow.
 **Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/P01-GATE-acceptance.json
 
 **Commits:** 0fd64326b9621163b5b550f6419d21e1007b56d3
+
+**Blocker:** Acceptance at 9db01f2 is historical and superseded by a confirmed omission: accepted P00 L04 explicitly requires the P01 status-response schema and success/failure fixtures, but only the status-query request exists. Complete that contract and re-review affected evidence; separately audit S03 completion-reserve proof against P01/P04 ownership.
 
 ## P02. Protected boot and the NATS foundation
 

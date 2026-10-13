@@ -1,0 +1,164 @@
+{
+  "reviewedAt": "2026-10-13T19:25:03.964133+00:00",
+  "scope": "Read-only L04 schema/fixture and reopened task ownership review",
+  "decision": "changes-required",
+  "taskCorrection": "P01-T01/T07 AC05 and implementation steps recover accepted L04/S03; prior values and passing evidence remain in history. P01 gate blocked and P02 parked correctly.",
+  "findings": [
+    {
+      "id": "L04-REVIEW-01",
+      "requirement": "startup-contract.md L04 instance identity/profile/context/endpoint on successful local start and reuse",
+      "observed": "Both real clients admit null Compose project, context display name, context fingerprint and endpoint for started/reused ready examples.",
+      "minimalCorrection": "Require known local start/reuse identity/context/endpoint values; retain nullable failure/unconfigured and remote distinctions. Add targeted negative fixtures."
+    },
+    {
+      "id": "L04-REVIEW-02",
+      "requirement": "startup-contract.md L04 each visible entry reports observation timestamp/age",
+      "observed": "Connected fixture admits observedAt null and ageSeconds null in both clients.",
+      "minimalCorrection": "Require paired actual timestamp/age for observed connected/disconnected/stale link states; preserve explicitly unknown/not-configured null observations. Add targeted negatives."
+    }
+  ],
+  "positiveReview": [
+    "All six dispositions represented; errors mandatory for failed/unconfigured.",
+    "Unknown counts/cursors use null and known zero requires observation.",
+    "Hidden inventory disallows entries/totals; future service unavailability cannot claim ready.",
+    "Closed nested shapes and endpoint forms reject explicit credential fields/userinfo/query/file endpoints.",
+    "Descriptions correctly defer actual identity authentication, authorization, freshness and string redaction to runtime owner; lexical timestamp validation is not a runtime defect.",
+    "Registry now exposes a reply contract, distinct from request-only status-query."
+  ],
+  "probe": {
+    "command": "PowerShell synthetic JSON pipeline to wsl --exec /home/ryan/.cache/agentmux-governance/p01-contracts-python/bin/python -; test_conformance.Client python/typescript",
+    "typescriptCLI": "/home/ryan/.cache/agentmux-governance/typescript-sdk/dist/cli.js",
+    "sessionId": 98257,
+    "exitCode": 0,
+    "clientResults": {
+      "python": [
+        {
+          "case": "started_null_profileId",
+          "accepted": false
+        },
+        {
+          "case": "started_null_composeProject",
+          "accepted": true
+        },
+        {
+          "case": "started_null_contextDisplayName",
+          "accepted": true
+        },
+        {
+          "case": "started_null_contextFingerprint",
+          "accepted": true
+        },
+        {
+          "case": "started_null_endpoint",
+          "accepted": true
+        },
+        {
+          "case": "reused_null_profileId",
+          "accepted": false
+        },
+        {
+          "case": "reused_null_composeProject",
+          "accepted": true
+        },
+        {
+          "case": "reused_null_contextDisplayName",
+          "accepted": true
+        },
+        {
+          "case": "reused_null_contextFingerprint",
+          "accepted": true
+        },
+        {
+          "case": "reused_null_endpoint",
+          "accepted": true
+        },
+        {
+          "case": "connected_null_time_age",
+          "accepted": true
+        }
+      ],
+      "typescript": [
+        {
+          "case": "started_null_profileId",
+          "accepted": false
+        },
+        {
+          "case": "started_null_composeProject",
+          "accepted": true
+        },
+        {
+          "case": "started_null_contextDisplayName",
+          "accepted": true
+        },
+        {
+          "case": "started_null_contextFingerprint",
+          "accepted": true
+        },
+        {
+          "case": "started_null_endpoint",
+          "accepted": true
+        },
+        {
+          "case": "reused_null_profileId",
+          "accepted": false
+        },
+        {
+          "case": "reused_null_composeProject",
+          "accepted": true
+        },
+        {
+          "case": "reused_null_contextDisplayName",
+          "accepted": true
+        },
+        {
+          "case": "reused_null_contextFingerprint",
+          "accepted": true
+        },
+        {
+          "case": "reused_null_endpoint",
+          "accepted": true
+        },
+        {
+          "case": "connected_null_time_age",
+          "accepted": true
+        }
+      ]
+    },
+    "scope": "11 admission probes per client, in-memory synthetic mutations only; no full suite repeated"
+  },
+  "sourceBindings": [
+    {
+      "path": "contracts/v1/schemas/startup-status-observation.schema.json",
+      "sha256": "3fe5d4900854da724af16382756df43b43d0c8f822f4dcc081d93554b897d216"
+    },
+    {
+      "path": "tests/contracts/test_startup_status.py",
+      "sha256": "c7a94161e75d7e87e91d5fc87fcb9269681bcf1bb1088d60893a7894a4fafe13"
+    },
+    {
+      "path": "tests/contracts/vectors/startup-status-examples.json",
+      "sha256": "88005f4fe5581769fa60b0a17bbe2511cc70c16a6c0e1d51d02fb53187db1451"
+    },
+    {
+      "path": "contracts/v1/registry.json",
+      "sha256": "a574e1dd54fec0d1b55df50c4ff1b604e0eac1d2eb4c23b7c914f68674eb6381"
+    },
+    {
+      "path": "tests/contracts/test_payloads.py",
+      "sha256": "ac6a7e41e1430cdbe283c24d4041e55dcd4be8a7858b5843cb959330c8f9f38c"
+    },
+    {
+      "path": "tests/contracts/vectors/payload-examples.json",
+      "sha256": "f882c2c3188cddf3c6a7ecafa14e29cb50a2c03e2da351a6e2d1a3d3c496be41"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/tasks.json",
+      "sha256": "a1c9195990f7120e5d6bdad182f05adeba99583dd594c4f1edf516fe2e876f00"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/reopened-approved-obligations-20261013.json",
+      "sha256": "e51d441dd1f5126e58583ea92892a76e1289c197a28366398778d7620798604c"
+    }
+  ],
+  "limitations": "Current working bytes captured immediately after probes; no immutable-copy claim. Windows Python dependencies and default cached governance venv were unavailable; actual prepared SDK paths used successfully. No source/tracker edits. Full integration/native evidence still belongs to corrected gate."
+}

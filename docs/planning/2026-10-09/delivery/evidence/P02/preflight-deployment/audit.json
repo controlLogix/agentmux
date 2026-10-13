@@ -1,0 +1,567 @@
+{
+  "reviewedAt": "2026-10-13T19:09:16.527988+00:00",
+  "reviewer": "Codex delegated deployment preflight",
+  "phase": "P02",
+  "taskId": "P02-T06",
+  "sourceCommit": "9db01f2d2ff6656d3f2c7fd8f9567fb421104605",
+  "acceptedP01Candidate": "0fd64326b9621163b5b550f6419d21e1007b56d3",
+  "acceptedP01GateRecordCommit": "9db01f2d2ff6656d3f2c7fd8f9567fb421104605",
+  "implementationStarted": false,
+  "phaseAccepted": false,
+  "sources": [
+    {
+      "path": "agentmux.sh",
+      "componentIds": [
+        "HAR-01",
+        "HAR-02",
+        "HAR-03",
+        "HAR-09",
+        "HAR-10",
+        "HAR-11",
+        "HAR-12",
+        "HAR-13"
+      ],
+      "baselineBlob": "d984e2799cbc3eb9f3313ef9db1bab06862d9d7f",
+      "workingSha256": "310d538866f29478ef01bfd77c782dd62ead2a09eb1a244fe890bf96b1b36867",
+      "candidateBlobSha256": "310d538866f29478ef01bfd77c782dd62ead2a09eb1a244fe890bf96b1b36867",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "agentmux.cmd",
+      "componentIds": [
+        "HAR-05"
+      ],
+      "baselineBlob": "81a2ac7ab03b1eec962aa2f095a5795f42824830",
+      "workingSha256": "c870282fc53288bd1576a8f1331474fa98ed99ec76940b4105465fb060bae777",
+      "candidateBlobSha256": "c870282fc53288bd1576a8f1331474fa98ed99ec76940b4105465fb060bae777",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "agentmux_windows.py",
+      "componentIds": [
+        "HAR-05",
+        "HUB-04"
+      ],
+      "baselineBlob": null,
+      "workingSha256": "d8d579d0a63306d71337024798db188eea309f19e2debd8694cda161ca2eb17b",
+      "candidateBlobSha256": "d8d579d0a63306d71337024798db188eea309f19e2debd8694cda161ca2eb17b",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "install.sh",
+      "componentIds": [
+        "HAR-05"
+      ],
+      "baselineBlob": "4323a0796cfb57eabc800b1ecd7f31397f7bd5a6",
+      "workingSha256": "035fb7eb674e909d174469c3b8d65b5eba4085acac99599ea9a1a8f8e689216c",
+      "candidateBlobSha256": "035fb7eb674e909d174469c3b8d65b5eba4085acac99599ea9a1a8f8e689216c",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "deploy/nats/up.sh",
+      "componentIds": [
+        "HUB-23"
+      ],
+      "baselineBlob": "9c24fc99bea99c92c05211dea098df6373ef3200",
+      "workingSha256": "aa4c52213550ab7cc7e9255252084a264083c6ea0fd0db9cb5e7bbea38475ac5",
+      "candidateBlobSha256": "aa4c52213550ab7cc7e9255252084a264083c6ea0fd0db9cb5e7bbea38475ac5",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "deploy/nats/values.yaml",
+      "componentIds": [
+        "HUB-23"
+      ],
+      "baselineBlob": "e4bbce9f7ba6a28582e62182c491cf15c16e686d",
+      "workingSha256": "8afb6be9be88e6c69bed06402f5b8672af5114e7c79f618525b668deaf2118d7",
+      "candidateBlobSha256": "8afb6be9be88e6c69bed06402f5b8672af5114e7c79f618525b668deaf2118d7",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "deploy/nats/kind.yaml",
+      "componentIds": [
+        "HUB-23"
+      ],
+      "baselineBlob": "c5909230fe07b2ad67be43101f3812938e631c10",
+      "workingSha256": "66f7618104590cdf153a717ecba701e96a3b36a4e22ed52fb77ade322c8808ff",
+      "candidateBlobSha256": "66f7618104590cdf153a717ecba701e96a3b36a4e22ed52fb77ade322c8808ff",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "deploy/nats/nodeport.yaml",
+      "componentIds": [
+        "HUB-23"
+      ],
+      "baselineBlob": "5f65cac0d94576c62cd0070d9683050461a55c81",
+      "workingSha256": "d0f24cc7d224bbad2c86971ad31ab956b8a8dc7a920ca0cad673afc53e6d1778",
+      "candidateBlobSha256": "d0f24cc7d224bbad2c86971ad31ab956b8a8dc7a920ca0cad673afc53e6d1778",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "deploy/nats/circle.sh",
+      "componentIds": [
+        "HUB-23"
+      ],
+      "baselineBlob": "26ccb1d054047caf97cc5b1bcd98daef768e8098",
+      "workingSha256": "184c3f8e5b99a7b8106aab7d204e35a388c1b0c180d8c32ed08376ac8160c4fc",
+      "candidateBlobSha256": "184c3f8e5b99a7b8106aab7d204e35a388c1b0c180d8c32ed08376ac8160c4fc",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "deploy/nats/demo.sh",
+      "componentIds": [
+        "HUB-25"
+      ],
+      "baselineBlob": "add6bd920f1e1711368fed904c18a4cfa7c3d8d2",
+      "workingSha256": "e97c8a20b3f15619161e672d3d6776b9ca9e4f8b43cdd5b6c80f6bae6f912f65",
+      "candidateBlobSha256": "e97c8a20b3f15619161e672d3d6776b9ca9e4f8b43cdd5b6c80f6bae6f912f65",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "hub/cli.py",
+      "componentIds": [
+        "HUB-04"
+      ],
+      "baselineBlob": "8a2b5152855edce45eb72e458ca50306376109ee",
+      "workingSha256": "276e8311b0cbd683e3c123ff327cfd4664fa8ef55882ef94ad89e50a6ecc0efb",
+      "candidateBlobSha256": "276e8311b0cbd683e3c123ff327cfd4664fa8ef55882ef94ad89e50a6ecc0efb",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "hub/server.py",
+      "componentIds": [
+        "HUB-02"
+      ],
+      "baselineBlob": "ab634b853f8bacab44dcef07869d78eea971732e",
+      "workingSha256": "8f4de71e0885b395d058b7dd88cfd740fdffd8a986f6a58ae8cc5b115dca2153",
+      "candidateBlobSha256": "8f4de71e0885b395d058b7dd88cfd740fdffd8a986f6a58ae8cc5b115dca2153",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "hub/bridge.py",
+      "componentIds": [
+        "HUB-08"
+      ],
+      "baselineBlob": "24eea5aac99d4f6d2f2e2808b45ec43278d67294",
+      "workingSha256": "c129386a37e88f8f4f94ebb0247ce39d09638f7e734f8741050de4ecaec5eb2c",
+      "candidateBlobSha256": "c129386a37e88f8f4f94ebb0247ce39d09638f7e734f8741050de4ecaec5eb2c",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "hub/fed/conn.py",
+      "componentIds": [
+        "HUB-15"
+      ],
+      "baselineBlob": "fb33282796232a70705b24aa7fc3a934a159596c",
+      "workingSha256": "7c4d226c777256c2228ec76254aca526039d7c7c5dc4fb7c61933816397f9bab",
+      "candidateBlobSha256": "7c4d226c777256c2228ec76254aca526039d7c7c5dc4fb7c61933816397f9bab",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "hub/fed/admin.py",
+      "componentIds": [
+        "HUB-15"
+      ],
+      "baselineBlob": "c23737fc691a02f729402162361761dd6ec4a9ec",
+      "workingSha256": "ce6b0b048a4fcaa5e0b4432ed920ba587bad21d54cb2a84187a09e5022a2b74a",
+      "candidateBlobSha256": "ce6b0b048a4fcaa5e0b4432ed920ba587bad21d54cb2a84187a09e5022a2b74a",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "hub/fed/runtime.py",
+      "componentIds": [
+        "HUB-10"
+      ],
+      "baselineBlob": "632943031c39b2a8a599cdf8535732c0c8dfe70a",
+      "workingSha256": "b4f0a9a57bc5ba1a6895955c91625e6188b40206d35f628d7756e3ddefb89661",
+      "candidateBlobSha256": "b4f0a9a57bc5ba1a6895955c91625e6188b40206d35f628d7756e3ddefb89661",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "hub/tests/fedharness.py",
+      "componentIds": [
+        "HUB-26"
+      ],
+      "baselineBlob": "ce60c978b1c80caf8470de37206b89fc84401b40",
+      "workingSha256": "8224930dcc0a031e9333b4f5781f1c0990a3a46f929a9808acc5566deea5595d",
+      "candidateBlobSha256": "8224930dcc0a031e9333b4f5781f1c0990a3a46f929a9808acc5566deea5595d",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "hub/tests/test_fed_live.py",
+      "componentIds": [
+        "HUB-26"
+      ],
+      "baselineBlob": "6f91fc97f788b5e2fc4de3fd84c9730e587eb44b",
+      "workingSha256": "af39ed93f205952f90a9975a7ed7381a7560ee8e0e4278dee220a57b08ad3b0c",
+      "candidateBlobSha256": "af39ed93f205952f90a9975a7ed7381a7560ee8e0e4278dee220a57b08ad3b0c",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "hub/tests/test_windows_callbacks.py",
+      "componentIds": [
+        "HUB-26"
+      ],
+      "baselineBlob": null,
+      "workingSha256": "a25340865b551ae290bd5302159dff365f58129947023608b6f6123bc092e4f0",
+      "candidateBlobSha256": "a25340865b551ae290bd5302159dff365f58129947023608b6f6123bc092e4f0",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "tests/platform/inventory.py",
+      "componentIds": [
+        "HUB-26"
+      ],
+      "baselineBlob": null,
+      "workingSha256": "351e8104436491dd70a399b0c7344f87423315e0322832730d938bcab36f4edf",
+      "candidateBlobSha256": "351e8104436491dd70a399b0c7344f87423315e0322832730d938bcab36f4edf",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "tests/platform/test_inventory.py",
+      "componentIds": [
+        "HUB-26"
+      ],
+      "baselineBlob": null,
+      "workingSha256": "40011ee2ad6a0bb939b7861fb1ab7dfa1128afcebc27a3bfa1fa66dd4ad69726",
+      "candidateBlobSha256": "40011ee2ad6a0bb939b7861fb1ab7dfa1128afcebc27a3bfa1fa66dd4ad69726",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "tests/platform/README.md",
+      "componentIds": [
+        "HUB-26"
+      ],
+      "baselineBlob": null,
+      "workingSha256": "f2bdeab08eb628e36b56c9976144ec05da4f3c526e8fefe17847e26598056418",
+      "candidateBlobSha256": "f2bdeab08eb628e36b56c9976144ec05da4f3c526e8fefe17847e26598056418",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "plugins/agentmux-orchestration/hooks/hooks.json",
+      "componentIds": [
+        "HAR-23"
+      ],
+      "baselineBlob": null,
+      "workingSha256": "30da11b86abf4eae47e1010f0b3a268f5b8e15567e8dc5b1ccd681b1c6be2869",
+      "candidateBlobSha256": "30da11b86abf4eae47e1010f0b3a268f5b8e15567e8dc5b1ccd681b1c6be2869",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "plugins/agentmux-orchestration/hooks/agentmux-hook.sh",
+      "componentIds": [
+        "HAR-23"
+      ],
+      "baselineBlob": null,
+      "workingSha256": "f7eb3a8cfc2c20ad17736f06b338117ee7a168b10efd216bd473ca430735f1e3",
+      "candidateBlobSha256": "f7eb3a8cfc2c20ad17736f06b338117ee7a168b10efd216bd473ca430735f1e3",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    },
+    {
+      "path": "dashboard/server.py",
+      "componentIds": [
+        "DASH-02"
+      ],
+      "baselineBlob": "4c241ca26c59ed5ffc2aa23aa6f1c7bbb461188a",
+      "workingSha256": "856adec15cbb491e3fae11ef71bd39105c16d888fea389154fe8e4c85a01bc68",
+      "candidateBlobSha256": "856adec15cbb491e3fae11ef71bd39105c16d888fea389154fe8e4c85a01bc68",
+      "sameBlobAtAcceptedP01Candidate": true,
+      "workingBytesEqualCommit": true,
+      "workingLfNormalizedEqualCommit": true
+    }
+  ],
+  "p01NativeSourceEquivalentPaths": [
+    "agentmux.sh",
+    "agentmux.cmd",
+    "agentmux_windows.py",
+    "deploy/nats/circle.sh",
+    "hub/cli.py",
+    "hub/server.py",
+    "hub/bridge.py",
+    "hub/fed/conn.py",
+    "hub/fed/admin.py",
+    "hub/fed/runtime.py",
+    "hub/tests/fedharness.py",
+    "hub/tests/test_fed_live.py",
+    "hub/tests/test_windows_callbacks.py",
+    "tests/platform/inventory.py",
+    "tests/platform/test_inventory.py",
+    "tests/platform/README.md",
+    "plugins/agentmux-orchestration/hooks/hooks.json",
+    "plugins/agentmux-orchestration/hooks/agentmux-hook.sh"
+  ],
+  "decisionHashes": {
+    "delivery/decisions/acceptance.md": "b687a0353d20cb76244ce4c72f21661ce9f1808f74043d3a2b6b979b6dfdab59",
+    "delivery/decisions/runtime-and-deployment.md": "146ab3da80d6c97c3d8d05478f47cb5a5ae84cdfaee8502612602ff565410a98",
+    "delivery/decisions/startup-contract.md": "2c86650ad04978106ff011827c55708a7f02238f112177cefd4629ee857dc127",
+    "delivery/decisions/storage-contract.md": "19bb201cc3ffdc6d4e19213faee99ed584179d2fa0f34bbefb0371146e728fab"
+  },
+  "deploymentPathsPresent": {
+    "deploy/nats": true,
+    "deploy/compose": false,
+    "platform/launcher": false
+  },
+  "dockerObservations": {
+    "windows": {
+      "cliAvailable": true,
+      "clientVersion": "29.8.0",
+      "serverVersion": "29.8.0",
+      "composeVersion": "v5.5.1",
+      "desktopVersion": "4.92.0 (240144)",
+      "context": "desktop-linux",
+      "endpointKind": "local Windows named pipe",
+      "serverOs": "linux",
+      "serverArch": "amd64",
+      "commands": [
+        "Get-Command docker",
+        "docker --version",
+        "docker compose version",
+        "docker context show",
+        "docker context ls --format <name/current/endpoint>",
+        "docker version --format <JSON>"
+      ],
+      "changesPerformed": false
+    },
+    "wsl": {
+      "distribution": "Ubuntu-26.04",
+      "resolvedCommandKind": "Windows Docker Desktop PATH stub",
+      "usableDockerCli": false,
+      "usableCompose": false,
+      "daemonQualification": "not-established",
+      "commands": [
+        "wsl -d Ubuntu-26.04 -- bash -lc <read-only docker version/compose/context/server probes>",
+        "wsl -d Ubuntu-26.04 --exec /usr/bin/timeout 20 /bin/bash --noprofile --norc -c <same bounded probes>"
+      ],
+      "resultExitCode": 1,
+      "diagnostic": "The command docker could not be found in this WSL 2 distro; activate WSL integration in Docker Desktop settings.",
+      "changesPerformed": false
+    }
+  },
+  "qualificationGaps": [
+    "Docker integration in the selected WSL distribution is unavailable; Windows engine connectivity cannot establish WSL Compose support.",
+    "Compose v5.5.1 is observed, while the decision document lists v5.6.0 as a candidate; pin/qualify the actual selected version and image digests deliberately. No version upgrade was performed.",
+    "No Compose configuration, fixed protected assembly, ownership labels, context-bound profile or LOCAL-01 state machine currently exists.",
+    "No real Compose startup, reuse, crash, port-conflict, persistent volume or native macOS/Linux Docker test was run in this preflight."
+  ],
+  "failuresRequired": [
+    {
+      "id": "FAIL-55",
+      "scenario": "Cold launch with no selected instance, then warm launch from another project directory",
+      "oracle": "One owned Compose project reaches actual service and application readiness; the next launch reuses its identity and volumes unchanged. Both display the same scoped status schema.",
+      "phases": [
+        "P02",
+        "P06",
+        "P12"
+      ],
+      "status": "not-run"
+    },
+    {
+      "id": "FAIL-56",
+      "scenario": "Two terminals or WSL sessions start together; startup owner crashes mid-boot",
+      "oracle": "One startup owner and one selected instance; waiting callers receive bounded progress or failure. Stale ownership recovery cannot create duplicate stacks or trust an unrelated PID.",
+      "phases": [
+        "P02",
+        "P06",
+        "P12"
+      ],
+      "status": "not-run"
+    },
+    {
+      "id": "FAIL-57",
+      "scenario": "Docker or Compose absent, daemon unavailable, permission denied or image pull fails",
+      "oracle": "Bounded actionable diagnostics; no false readiness, privileged installation, secret leakage or retry storm. A later corrected launch can recover without losing data.",
+      "phases": [
+        "P02",
+        "P06",
+        "P12"
+      ],
+      "status": "not-run"
+    },
+    {
+      "id": "FAIL-58",
+      "scenario": "Wrong Docker context, another user instance, occupied endpoint or incompatible running release",
+      "oracle": "Reject ambiguous or unauthorized attachment; identify selected context and safe next action. Do not start a shadow stack, mutate a remote daemon, silently upgrade or delete volumes.",
+      "phases": [
+        "P02",
+        "P06",
+        "P12"
+      ],
+      "status": "not-run"
+    },
+    {
+      "id": "FAIL-59",
+      "scenario": "Partially started or unhealthy stack; readiness timeout; restart after persistent data was written",
+      "oracle": "Report the failing service and observed readiness state. Compatible owned recovery retains instance identity and durable data; unsafe recovery stops for a deliberate action. Running containers alone never qualify success.",
+      "phases": [
+        "P02",
+        "P12"
+      ],
+      "status": "not-run"
+    }
+  ],
+  "criteria": [
+    {
+      "id": "P02-AC01",
+      "text": "macOS, Linux, and WSL installations boot without an LLM or hosted Jev connection."
+    },
+    {
+      "id": "P02-AC02",
+      "text": "An outside plugin can subscribe only to permitted kernel information and cannot publish commands or writes into the kernel."
+    },
+    {
+      "id": "P02-AC03",
+      "text": "Bad configuration, occupied ports, unavailable broker, and failed protected plugin produce actionable bounded failures."
+    },
+    {
+      "id": "P02-AC04",
+      "text": "Surrounding plugin failure does not corrupt boot state. Ordinary runtime communication uses NATS after bootstrap."
+    },
+    {
+      "id": "P02-AC05",
+      "text": "The existing launcher, environment selection and failure diagnostics remain available while the new boot path is opt-in. Both paths pass their defined startup and shutdown comparisons without sharing ownership of a live task."
+    },
+    {
+      "id": "P02-AC06",
+      "text": "LOCAL-01 cold launch starts the selected local Compose stack and waits for broker persistence and application readiness. Warm launch reuses the same instance without recreation or lost state. macOS, Linux and WSL fixtures pass without an LLM or Jev."
+    },
+    {
+      "id": "P02-AC07",
+      "text": "Simultaneous launches and a crashed startup owner converge on one owned instance. Wrong Docker context, conflicting ports, incompatible versions and partial startup produce bounded, specific diagnostics without deleting volumes, starting a shadow stack or attaching to another user."
+    },
+    {
+      "id": "P02-AC08",
+      "text": "The same versioned status response follows successful start and reuse. It includes instance identity/version, selected profile and endpoint, readiness, persistence health and authorized hub information with freshness. Missing or unimplemented services are labeled unavailable, never healthy."
+    }
+  ],
+  "preservationDecisions": [
+    {
+      "paths": [
+        "agentmux.sh",
+        "agentmux.cmd",
+        "agentmux_windows.py",
+        "install.sh",
+        "hub/cli.py"
+      ],
+      "decision": "retain/wrap",
+      "why": "Keep public harness commands, environment selection, interpreter/callback validation and legacy startup diagnostics. Add explicit opt-in platform path; no automatic cutover or SQLite migration in P02."
+    },
+    {
+      "paths": [
+        "deploy/nats/up.sh",
+        "deploy/nats/values.yaml",
+        "deploy/nats/kind.yaml",
+        "deploy/nats/nodeport.yaml",
+        "deploy/nats/circle.sh",
+        "deploy/nats/demo.sh"
+      ],
+      "decision": "retain as explicit legacy administration",
+      "why": "kind/Helm deployment and circle enrollment remain available; never invoke these ambient-context mutation paths from automatic Compose startup."
+    },
+    {
+      "paths": [
+        "hub/fed/conn.py",
+        "hub/fed/admin.py",
+        "hub/fed/runtime.py"
+      ],
+      "decision": "retain legacy layout; add separately versioned target profile",
+      "why": "Current AM_MSG age14d/AM_WORK workqueue30d/AM_SHARE365d, discard-old and KV board16/presence90s are not target owner-ledger authority. Provision updates existing streams and does not reconcile existing KV policies; avoid routine changes to live legacy resources."
+    },
+    {
+      "paths": [
+        "deploy/compose",
+        "platform/launcher",
+        "platform/kernel"
+      ],
+      "decision": "add isolated infrastructure foundation",
+      "why": "Explicit context/profile identity, digest-pinned NATS resources, protected internal account/permissions, status export, R1 file persistence and OS-held startup lock; surrounding application authority stays outside kernel."
+    }
+  ],
+  "recommendedSlicesAfterPreflight": [
+    {
+      "tasks": [
+        "P02-T01",
+        "P02-T02",
+        "P02-T03"
+      ],
+      "scope": "Fixed protected assembly, NATS account/subject boundaries, exported readiness and unauthorized-client tests. Agree versioned status contract before bootstrap wiring."
+    },
+    {
+      "tasks": [
+        "P02-T05"
+      ],
+      "scope": "Pinned Compose/NATS config and local/team connection profiles, explicit domain/limits/persistent volumes; no business-data cutover, automatic Helm deployment or one-laptop R3 promise."
+    },
+    {
+      "tasks": [
+        "P02-T04",
+        "P02-T07"
+      ],
+      "scope": "Context-bound enrolled profile, advisory lock and bounded bootstrap/doctor; identity/authenticated reuse, readiness and persistent-data recovery through real isolated Compose fixtures. Integrate only after dependency contracts are stable."
+    }
+  ],
+  "privacy": [
+    "No Docker config/auth files, certificates, signing seeds, client credentials or container environments were read.",
+    "No docker info, container listings, unrelated workload metadata, live business records or model prompts were collected.",
+    "Published Docker context contains only a local endpoint category; user-specific executable paths are omitted."
+  ],
+  "limitations": [
+    "Read-only source and environment characterization, not runtime or P02 acceptance.",
+    "P01 proves retained source-equivalent test cases only; it does not prove prospective Docker/Compose/kernel behavior.",
+    "Two read-only WSL probes were used; initial tool latency included WSL startup, so no latency target is claimed.",
+    "Host launch hooks and actual installed terminal workflows remain P06; real scoped hub federation remains P10; production topology/disaster recovery remains P12."
+  ],
+  "requiredPatternCheck": {
+    "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+    "exitCode": 1,
+    "error": "Review is stale or missing: inspect changes and refresh sourceDigest",
+    "scope": "Preflight does not refresh global review attestation or claim completion while this gate fails."
+  }
+}

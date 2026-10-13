@@ -1,0 +1,3121 @@
+{
+  "schemaVersion": "1.0.0",
+  "recordedAtUtc": "2026-10-13T19:12:21.611464+00:00",
+  "phase": "P02",
+  "taskId": "P02-T06",
+  "sourceCommit": "9db01f2d2ff6656d3f2c7fd8f9567fb421104605",
+  "branch": "feat/agentmux-platform-rearchitecture",
+  "status": "preflight-recommendations-review-pending",
+  "preflightAccepted": false,
+  "phaseAccepted": false,
+  "scope": "Read-only kernel/legacy preservation audit. New evidence only; no source/tracker/profile edits, boot changes, provider/model/auth commands or test service launches.",
+  "authoritativePreflightCriteria": [
+    {
+      "id": "P02-T06-AC01",
+      "text": "Every phase-owned component and affected cross-phase caller has a recorded scope, existing behavior and owner; no changed source is unmapped."
+    },
+    {
+      "id": "P02-T06-AC02",
+      "text": "Baseline evidence distinguishes passing, failing, unavailable and historical results. Any gap that prevents a safe planned change remains blocking."
+    },
+    {
+      "id": "P02-T06-AC03",
+      "text": "Reuse and migration decisions name alternatives, preserved IDs/assertions and rollback boundaries; required approval exists before any capability reduction."
+    },
+    {
+      "id": "P02-T06-AC04",
+      "text": "Candidate comparison, added-functionality and migration fixtures are assigned to implementation and phase verification tasks. This preflight does not claim that future candidate tests already passed."
+    }
+  ],
+  "authoritativeP02Criteria": [
+    {
+      "id": "P02-AC01",
+      "text": "macOS, Linux, and WSL installations boot without an LLM or hosted Jev connection."
+    },
+    {
+      "id": "P02-AC02",
+      "text": "An outside plugin can subscribe only to permitted kernel information and cannot publish commands or writes into the kernel."
+    },
+    {
+      "id": "P02-AC03",
+      "text": "Bad configuration, occupied ports, unavailable broker, and failed protected plugin produce actionable bounded failures."
+    },
+    {
+      "id": "P02-AC04",
+      "text": "Surrounding plugin failure does not corrupt boot state. Ordinary runtime communication uses NATS after bootstrap."
+    },
+    {
+      "id": "P02-AC05",
+      "text": "The existing launcher, environment selection and failure diagnostics remain available while the new boot path is opt-in. Both paths pass their defined startup and shutdown comparisons without sharing ownership of a live task."
+    },
+    {
+      "id": "P02-AC06",
+      "text": "LOCAL-01 cold launch starts the selected local Compose stack and waits for broker persistence and application readiness. Warm launch reuses the same instance without recreation or lost state. macOS, Linux and WSL fixtures pass without an LLM or Jev."
+    },
+    {
+      "id": "P02-AC07",
+      "text": "Simultaneous launches and a crashed startup owner converge on one owned instance. Wrong Docker context, conflicting ports, incompatible versions and partial startup produce bounded, specific diagnostics without deleting volumes, starting a shadow stack or attaching to another user."
+    },
+    {
+      "id": "P02-AC08",
+      "text": "The same versioned status response follows successful start and reuse. It includes instance identity/version, selected profile and endpoint, readiness, persistence health and authorized hub information with freshness. Missing or unimplemented services are labeled unavailable, never healthy."
+    }
+  ],
+  "authoritativeHUB15": {
+    "id": "HUB-15",
+    "name": "NATS connection, storage layout and administration API",
+    "files": [
+      "hub/fed/conn.py",
+      "hub/fed/admin.py"
+    ],
+    "role": "runtime",
+    "baselineGroups": [
+      "BASE-13",
+      "BASE-16",
+      "BASE-36"
+    ],
+    "ownerPhase": "P02",
+    "disposition": "extend",
+    "currentBehavior": [
+      "Uses lazy nats-py loading, credential files, optional custom CA, explicit connection timeout/retry policy and bounded close handling.",
+      "Declares AM_MSG, AM_WORK and AM_SHARE retention, duplicate window, am_board revision history and expiring am_presence.",
+      "Provisioning creates/updates file-backed replicated streams and creates missing KV buckets; admin push publishes account JWT changes through the system account."
+    ],
+    "reusePlan": "Reuse the supported client wrapper, central layout declaration and provisioning entry points. Version storage profiles and make new lifecycle/authorization limits explicit.",
+    "enhancements": [
+      "Add local/team/independent-domain profiles and qualify required NATS APIs in P01 before production use.",
+      "Add storage limits, freshness, checkpoint, backup and artifact contracts under STATE-01."
+    ],
+    "replacementReason": null,
+    "behaviorChecks": [
+      {
+        "id": "HUB-15-C01",
+        "description": "Provision an isolated installation twice; verify exact stream subjects, retention, replicas, duplicate window and KV history/TTL, then compare the approved target profile.",
+        "existingTests": [
+          "hub/tests/test_fed_live.py"
+        ],
+        "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores.",
+        "baselineStatus": "not-run",
+        "targetStatus": "not-run"
+      },
+      {
+        "id": "HUB-15-C02",
+        "description": "Test absent dependencies, wrong CA/endpoint, missing credentials, revoked account and interrupted provisioning with bounded and actionable failure.",
+        "existingTests": [
+          "hub/tests/test_fed_live.py"
+        ],
+        "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores. TLS and system-account test credentials.",
+        "baselineStatus": "not-run",
+        "targetStatus": "not-run"
+      }
+    ],
+    "migrationChecks": [
+      "Capture old stream/consumer/bucket names, policies, revisions and outstanding work before changing layouts.",
+      "Do not let a routine upgrade alter retention or replicas without recorded migration/recovery evidence.",
+      "Existing KV buckets are not automatically reconciled by provision; detect policy differences explicitly.",
+      "Never run test reset or stream deletion against customer data."
+    ],
+    "limitations": [
+      "Current layout has no Object Store, independent domain configuration or complete storage qualification.",
+      "Pinning a server/client version does not prove atomicity, durability or recovery promises."
+    ]
+  },
+  "patternContext": [
+    {
+      "id": "FED-01",
+      "status": "applied",
+      "catalog": "eip",
+      "pattern": "Messaging Bridge",
+      "source": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessagingBridge.html",
+      "how": "Each hub's local messaging (hub.db messages/work_items) is bridged to NATS subjects: TM-218's core-NATS Bridge for one operator's nodes, and EP-032's Federation runtime (JetStream) for other people's hubs.",
+      "why": "Agents keep the local hub protocol; crossing to another hub or person must not change how an agent posts or claims.",
+      "tradeoffs": "Two bridges coexist (single-operator nats_url and cross-user federation). Simpler alternative: one shared broker for every hub, rejected because it removes local offline operation and per-person trust.",
+      "locations": [
+        {
+          "path": "hub/bridge.py",
+          "symbol": "Bridge"
+        },
+        {
+          "path": "hub/fed/runtime.py",
+          "symbol": "Federation"
+        }
+      ],
+      "verificationEvidence": [
+        "hub/tests/test_fed_live.py",
+        "hub/tests/test_nats_federation.py"
+      ],
+      "decisionEvidence": [
+        "docs/FEDERATION.md"
+      ]
+    },
+    {
+      "id": "FED-02",
+      "status": "applied",
+      "catalog": "eip",
+      "pattern": "Transactional Client",
+      "source": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/TransactionalClient.html",
+      "how": "Work offer creation, incoming attribution/request, origin reservation/grant and result staging each have one SQLite commit boundary. Store migration 5 records a durable return obligation with terminal state; the work plugin retries staging it into the existing NATS outbox.",
+      "why": "A crash must never publish something that did not happen or lose something that did (FEDERATION.md 8).",
+      "tradeoffs": "At-least-once on the wire, so receivers must be idempotent (FED-04). Alternative: publish directly from the verb, rejected - loses messages on disconnect. The additional claim/grant exchange costs a round trip; new execution waits for its origin. Granted work stays reserved through disconnection.",
+      "locations": [
+        {
+          "path": "hub/fed/runtime.py",
+          "symbol": "Federation.stage"
+        },
+        {
+          "path": "hub/fed/ledger.py",
+          "symbol": "outbox_add"
+        },
+        {
+          "path": "hub/store.py",
+          "symbol": "Store._outbox"
+        },
+        {
+          "path": "hub/fed/plugins/work.py",
+          "symbol": "Work"
+        },
+        {
+          "path": "hub/store.py",
+          "symbol": "MIGRATIONS"
+        }
+      ],
+      "verificationEvidence": [
+        "hub/tests/test_fed_live.py",
+        "hub/tests/test_governance.py"
+      ],
+      "decisionEvidence": [
+        "docs/FEDERATION.md",
+        "docs/planning/2026-10-09/governance-repairs.md"
+      ]
+    },
+    {
+      "id": "FED-03",
+      "status": "applied",
+      "catalog": "eip",
+      "pattern": "Guaranteed Delivery",
+      "source": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/GuaranteedMessaging.html",
+      "how": "AM_MSG, AM_WORK and AM_SHARE are file-backed JetStream streams (R3 on the cluster) with a 2-minute duplicate window; messages to an offline peer wait in the stream.",
+      "why": "Interview requirement F7: things sent while a peer is offline drain when it reconnects.",
+      "tradeoffs": "Needs the cluster's storage and an admin to provision streams. Alternative: core NATS plus local outboxes only, rejected - nothing survives the receiver being offline.",
+      "locations": [
+        {
+          "path": "hub/fed/conn.py",
+          "symbol": "STREAMS"
+        },
+        {
+          "path": "hub/fed/admin.py",
+          "symbol": "provision"
+        }
+      ],
+      "verificationEvidence": [
+        "hub/tests/test_fed_live.py"
+      ],
+      "decisionEvidence": [
+        "docs/FEDERATION.md"
+      ]
+    },
+    {
+      "id": "FED-04",
+      "status": "applied",
+      "catalog": "eip",
+      "pattern": "Idempotent Receiver",
+      "source": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/IdempotentReceiver.html",
+      "how": "Incoming work also deduplicates by origin peer, origin node and immutable offer ID inside its owning transaction. A selected execution/grant and stable result ID survive retries beyond the broker deduplication window.",
+      "why": "JetStream redelivers after ack_wait and the outbox is at-least-once (FED-02).",
+      "tradeoffs": "fed_seen grows with traffic (pruning is future work). Alternative: exactly-once publishing, not available end to end. Broker acknowledgment alone cannot prevent duplicate execution across consumers; the origin grant is required before readiness.",
+      "locations": [
+        {
+          "path": "hub/fed/runtime.py",
+          "symbol": "Federation.receive"
+        },
+        {
+          "path": "hub/fed/ledger.py",
+          "symbol": "seen"
+        },
+        {
+          "path": "hub/fed/plugins/work.py",
+          "symbol": "Work"
+        }
+      ],
+      "verificationEvidence": [
+        "hub/tests/test_fed_live.py",
+        "hub/tests/test_governance.py"
+      ],
+      "decisionEvidence": [
+        "docs/FEDERATION.md",
+        "docs/planning/2026-10-09/governance-repairs.md"
+      ]
+    },
+    {
+      "id": "FED-15",
+      "status": "applied",
+      "catalog": "eip",
+      "pattern": "Messaging Gateway",
+      "source": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessagingGateway.html",
+      "how": "Agents never see NATS: the CLI (agentmux hub fed ...) and the stdio MCP server expose verbs generated from one registry and call the hub socket. The existing Windows launcher forwards explicit agent hub commands into the selected WSL distribution and binary. Per-pane token files identify callbacks to the existing loopback TCP hub; callback admission validates explicit selection and scoped home before launch and forbids lifecycle verbs before side effects. A maintained legacy orchestration package is now planned under plugins/agentmux-orchestration: installed skills select the existing runtime through an explicit binding; roster MCP translates read calls to existing dashboard endpoints. Pre-tool checks preserve current product policy as defense in depth. No package location is marked applied before implementation and review. The maintained legacy package now applies the planned gateway at plugins/agentmux-orchestration/bin/agentmux-plugin and lib: bounded GET-only dashboard access, newline roster JSON-RPC, and conservative pre-tool observations. skills/agent-config/scripts/runtime.py forwards a declared command allowlist into the explicitly selected existing runtime using literal argv. Its nine guides preserve existing workflow contracts. Native Windows hook integration remains P06-unqualified.",
+      "why": "Interview F10: CLI canonical, thin MCP wrapper. Windows-owned clients cannot retain Linux process ancestry when returning through WSL, so authenticated per-agent gateway context is required to preserve existing hub identity. Original external plugin source is missing, leaving20baseline tests skipped; current source contracts and nine historical workflow names support an explicitly maintained replacement. The original external package was unavailable; maintained source restores the existing observable client workflows without duplicating runtime business rules.",
+      "tradeoffs": "The MCP server is hand-written (A18). Alternative: agents use nats directly, rejected - would bypass identity and guardrails. An explicit callback context and Windows Python 3 dependency add setup work; normal operator defaults remain separate. A direct unauthenticated callback or ancestry fallback is simpler but loses agent identity. Tests qualify bounded launcher arguments and real local agent tokens; automatic provider forwarding and authenticated concurrent provider workflows remain unqualified. Recovery is not claimed. Vendoring preserves reviewed command workflows but adds hook/parser, packaging and provenance maintenance; leaving the package external is simpler but currently prevents required preservation checks. Hooks do not replace authoritative runtime authorization or provide complete shell containment. This is newly maintained replacement source with unknown original prose/metadata; unchanged twenty compatibility tests alone cannot prove historical parity. Additional real runtime, path/parser, HTTP and protocol checks are required. The live-definition hook has a preflight race and is absent from direct HTTP mutation enforcement; neither hooks nor this unauthenticated legacy API are production authorization.",
+      "locations": [
+        {
+          "path": "hub/fed/mcp.py",
+          "symbol": "handle"
+        },
+        {
+          "path": "hub/cli.py",
+          "symbol": "fed_main"
+        },
+        {
+          "path": "agentmux_windows.py",
+          "symbol": "command"
+        },
+        {
+          "path": "hub/cli.py",
+          "symbol": "main"
+        },
+        {
+          "path": "agentmux.sh",
+          "symbol": "cmd_spawn"
+        },
+        {
+          "path": "hub/server.py",
+          "symbol": "Hub.spawn"
+        },
+        {
+          "path": "plugins/agentmux-orchestration/bin/agentmux-plugin",
+          "symbol": "main"
+        },
+        {
+          "path": "plugins/agentmux-orchestration/lib/gateway.py",
+          "symbol": "read"
+        },
+        {
+          "path": "plugins/agentmux-orchestration/lib/roster_mcp.py",
+          "symbol": "serve"
+        },
+        {
+          "path": "plugins/agentmux-orchestration/lib/policy.py",
+          "symbol": "shell"
+        },
+        {
+          "path": "plugins/agentmux-orchestration/skills/agent-config/scripts/runtime.py",
+          "symbol": "main"
+        },
+        {
+          "path": "plugins/agentmux-orchestration/lib/policy.py",
+          "symbol": "edit"
+        }
+      ],
+      "verificationEvidence": [
+        "hub/tests/test_fed_unit.py",
+        "hub/tests/test_windows_callbacks.py",
+        "docs/planning/2026-10-09/delivery/evidence/P01/windows-callback-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/plugin-restoration/parent-review.json"
+      ],
+      "decisionEvidence": [
+        "docs/FEDERATION.md"
+      ]
+    },
+    {
+      "id": "FED-17",
+      "status": "applied",
+      "catalog": "dofactory",
+      "pattern": "Facade",
+      "source": "https://www.dofactory.com/net/facade-design-pattern",
+      "how": "Plugins get the runtime as ctx: publish/stage, db, kv, policy, post_local, sender_of. They never touch the connection, so every publish passes the guard.",
+      "why": "Interview F9: plugins extend capabilities without bypassing guardrails.",
+      "tradeoffs": "ctx is wide; a plugin can still read any hub table. Alternative: per-plugin capability objects, possible if third-party plugins appear.",
+      "locations": [
+        {
+          "path": "hub/fed/runtime.py",
+          "symbol": "Federation"
+        },
+        {
+          "path": "hub/fed/plugin.py",
+          "symbol": "Plugin"
+        }
+      ],
+      "verificationEvidence": [
+        "hub/tests/test_fed_live.py"
+      ],
+      "decisionEvidence": [
+        "docs/FEDERATION.md"
+      ]
+    },
+    {
+      "id": "PLAN-01",
+      "status": "planned",
+      "catalog": "dofactory",
+      "pattern": "Abstract Factory",
+      "source": "https://www.dofactory.com/net/abstract-factory-design-pattern",
+      "how": "Create approved families of scoped service clients when constructing a plugin in each SDK. Proposed location: docs/planning/2026-10-09/implementation-plan.md, P03. Implementation locations will be recorded when implemented.",
+      "why": "Independent SDKs must receive compatible service contracts and explicit lifetimes.",
+      "tradeoffs": "A hand-written factory is simpler initially; factory APIs add abstraction and must not become a global service locator.",
+      "locations": [],
+      "verificationEvidence": [],
+      "decisionEvidence": [
+        "docs/planning/2026-10-09/implementation-plan.md",
+        "docs/planning/2026-10-09/phases.json"
+      ]
+    },
+    {
+      "id": "PLAN-03",
+      "status": "planned",
+      "catalog": "dofactory",
+      "pattern": "Composite",
+      "source": "https://www.dofactory.com/net/composite-design-pattern",
+      "how": "Leaf plugins and assemblies expose the same declared lifecycle/inspection component contract. Represent nesting with private-child ownership and independent-child references kept distinct, with explicit instance lifecycles and all inter-plugin calls over NATS. Proposed location: docs/planning/2026-10-09/implementation-plan.md, P03. Implementation locations will be recorded when implemented. P00 proposes fixed protected assembly membership and separately supervised processes, with explicit private-child ownership and independent child references for ordinary packages; see delivery/decisions/runtime-and-deployment.md. Process overhead remains to be measured. This is a recommendation pending P00 review.",
+      "why": "Assemblies must install and operate together without erasing independent child identity.",
+      "tradeoffs": "A flat dependency list is simpler; nesting increases lifecycle/version resolution complexity and must not imply inherited authority.",
+      "locations": [],
+      "verificationEvidence": [],
+      "decisionEvidence": [
+        "docs/planning/2026-10-09/implementation-plan.md",
+        "docs/planning/2026-10-09/phases.json",
+        "docs/planning/2026-10-09/delivery/decisions/README.md"
+      ]
+    },
+    {
+      "id": "PLAN-04",
+      "status": "planned",
+      "catalog": "dofactory",
+      "pattern": "Facade",
+      "source": "https://www.dofactory.com/net/facade-design-pattern",
+      "how": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented. P00 proposes Python and TypeScript SDK clients that construct scoped domain service handles rather than expose unrestricted storage administration; see delivery/decisions/runtime-and-deployment.md and storage-contract.md. This is a recommendation pending P00 review.",
+      "why": "Plugin authors need common logging, config and approved services without coupling to implementations.",
+      "tradeoffs": "Direct shared-runtime access is simpler but violates the accepted scopes. Narrow clients add schema/version maintenance; typed handles alone do not sandbox trusted native plugins.",
+      "locations": [],
+      "verificationEvidence": [],
+      "decisionEvidence": [
+        "docs/planning/2026-10-09/implementation-plan.md",
+        "docs/planning/2026-10-09/phases.json",
+        "docs/planning/2026-10-09/delivery/decisions/README.md",
+        "docs/planning/2026-10-09/delivery/contracts/README.md"
+      ]
+    },
+    {
+      "id": "PLAN-05",
+      "status": "planned",
+      "catalog": "dofactory",
+      "pattern": "Observer",
+      "source": "https://www.dofactory.com/net/observer-design-pattern",
+      "how": "Deliver approved kernel information and versioned status updates over NATS subscriptions. Proposed location: docs/planning/2026-10-09/implementation-plan.md, P02, P07. Implementation locations will be recorded when implemented. P00 proposes exported kernel information in a separate account, consumed by ordinary status services without a kernel command path; see delivery/decisions/storage-contract.md. This is a recommendation pending P00 review.",
+      "why": "Outside plugins need readiness information while kernel writes remain disallowed.",
+      "tradeoffs": "Polling snapshots is simpler; subscriptions require replay/snapshot gap handling and bounded slow consumers.",
+      "locations": [],
+      "verificationEvidence": [],
+      "decisionEvidence": [
+        "docs/planning/2026-10-09/implementation-plan.md",
+        "docs/planning/2026-10-09/phases.json",
+        "docs/planning/2026-10-09/delivery/decisions/README.md",
+        "docs/planning/2026-10-09/delivery/contracts/README.md"
+      ]
+    },
+    {
+      "id": "PLAN-07",
+      "status": "planned",
+      "catalog": "eip",
+      "pattern": "Message Bus",
+      "source": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/MessageBus.html",
+      "how": "Carry all inter-plugin communication on versioned NATS subjects and schemas. Proposed location: docs/planning/2026-10-09/implementation-plan.md, P01â€“P12. Implementation locations will be recorded when implemented. P00 proposes NATS for every inter-plugin exchange across the fixed protected assembly and ordinary scoped accounts. A bounded three-language request/reply spike proves client interoperability only; it does not qualify lifecycle, security or persistence. See delivery/spikes/runtime/comparison-result.json. This is a recommendation pending P00 review. A P01 fixture now links two independently stored NATS domains through dedicated federation accounts and restricted leaf credentials. Actual commands and observations traverse only the approved subjects; unrelated account and subject traffic is denied. This qualifies static broker boundaries on loopback, not production enrollment, TLS or dynamic trust agreements. The additional signed leaf fixture transports versioned delegation-offer, delegation-decision and execution-report envelopes through the same restricted NATS link. It checks byte preservation and receiving SDK admission before fixture owner mutation. Transport tests use real local brokers and fixed test trust; production hub connection management remains planned.",
+      "why": "Accepted requirement mandates NATS locally and across connected systems.",
+      "tradeoffs": "Direct local calls are simpler/faster but contradict scope; message contracts add latency, retry, schema and operational cost.",
+      "locations": [
+        {
+          "path": "tests/leaf/run.py",
+          "symbol": "Broker"
+        },
+        {
+          "path": "tests/leaf/signed_run.py",
+          "symbol": "transfer"
+        }
+      ],
+      "verificationEvidence": [
+        "docs/planning/2026-10-09/delivery/spikes/runtime/comparison-result.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/leaf-result.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/leaf-denial-negative.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/signed-leaf-result.json"
+      ],
+      "decisionEvidence": [
+        "docs/planning/2026-10-09/implementation-plan.md",
+        "docs/planning/2026-10-09/phases.json",
+        "docs/planning/2026-10-09/delivery/decisions/README.md",
+        "docs/planning/2026-10-09/delivery/contracts/README.md"
+      ]
+    },
+    {
+      "id": "PLAN-08",
+      "status": "applied",
+      "catalog": "eip",
+      "pattern": "Canonical Data Model",
+      "source": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/CanonicalDataModel.html",
+      "how": "The separate contracts/v1 package defines closed versioned infrastructure and domain payload schemas. registry.json binds ten contract IDs to their major version, message kind, payload schema and destination service. Independent Python and TypeScript SDK validation checks those bindings, payload/context identity agreement and explicit semantic invariants for manifests, protected assembly, contexts, owner records and attestations. Full envelope verification validates the registered payload plus RFC 8785 payload bytes, Ed25519 claims, signed audience and every duplicated envelope field. The legacy runtime does not import this package. Enrolled-key resolution, live grants, authoritative domain state schemas and full plugin runtime integration remain separate obligations; validated structure and signatures do not authorize execution. P01 now also promotes five lifecycle tables with 68 unchanged edges. Independent Python and TypeScript pure evaluators bind owner snapshot, requested revision, actor evidence and required guard evidence before proposing the next state. Cancellation remains explicit through uncertain execution. These supplied fixture observations are not authenticated authority and the evaluator does not persist, deduplicate or execute work. Ordered recovery fixtures compare full outputs and canonical digests from both SDKs. A separate signed leaf fixture signs offers with Python and decisions/results with TypeScript, then verifies them in the other SDK after transport. Fixture keys are resolved from an explicit issuer/key/revision map and time comes from a trusted test clock. Successful envelope verification still requires the fixture owner to match the retained reservation; five validly signed result mismatches test that separate boundary. Native CI invokes the same conformance harness and deliberately removes a required field from a copied positive fixture, requiring both SDK assertions to fail without changing repository fixtures. Deterministic fake worker/provider fixtures now separate provider execution from callback observation using a manual clock. Explicit delayed, reordered, dropped and cancelled responses exercise unknown outcomes and reconciliation without external tools. These controls are test infrastructure, not production plugin lifecycle or authorization.",
+      "why": "Client/provider diversity must not obscure ownership or schema compatibility.",
+      "tradeoffs": "Pairwise translation is simpler for two plugins; shared contracts require coordinated version evolution and independent conformance tests. Closed registration makes unsupported commands explicit, but every added domain operation needs a reviewed schema and mapping. Semantic invariants cannot all be expressed by JSON Schema and therefore require matching language implementations. Content-bound validator caches avoid repeated compilation while hashing current schema bytes prevents stale reuse; neither caches nor a supplied valid signature establish authority.",
+      "locations": [
+        {
+          "path": "contracts/v1/schemas/message-envelope.schema.json",
+          "symbol": "message-envelope"
+        },
+        {
+          "path": "sdk/python/agentmux_contracts/wire.py",
+          "symbol": "canonical_bytes"
+        },
+        {
+          "path": "sdk/typescript/src/index.ts",
+          "symbol": "canonicalBytes"
+        },
+        {
+          "path": "contracts/v1/registry.json",
+          "symbol": "contracts"
+        },
+        {
+          "path": "sdk/python/agentmux_contracts/validation.py",
+          "symbol": "validate_payload"
+        },
+        {
+          "path": "sdk/python/agentmux_contracts/validation.py",
+          "symbol": "semantic_errors"
+        },
+        {
+          "path": "sdk/python/agentmux_contracts/attestation.py",
+          "symbol": "verify_envelope"
+        },
+        {
+          "path": "sdk/typescript/src/index.ts",
+          "symbol": "validatePayload"
+        },
+        {
+          "path": "sdk/typescript/src/index.ts",
+          "symbol": "verifyEnvelope"
+        },
+        {
+          "path": "sdk/python/agentmux_contracts/state_models.py",
+          "symbol": "evaluate_transition"
+        },
+        {
+          "path": "sdk/typescript/src/state-models.ts",
+          "symbol": "evaluateTransition"
+        },
+        {
+          "path": "tests/contracts/test_recovery.py",
+          "symbol": "FixtureOwner.both"
+        },
+        {
+          "path": "tests/leaf/signed_run.py",
+          "symbol": "Contracts.verify"
+        },
+        {
+          "path": "tests/contracts/ci.py",
+          "symbol": "negative_fixture"
+        },
+        {
+          "path": "tests/contracts/fake_execution.py",
+          "symbol": "FakeProvider"
+        },
+        {
+          "path": "tests/contracts/fake_execution.py",
+          "symbol": "FakeWorker"
+        }
+      ],
+      "verificationEvidence": [
+        "tests/contracts/test_conformance.py",
+        "sdk/python/tests/test_contracts.py",
+        "sdk/typescript/src/test.ts",
+        "tests/contracts/test_payloads.py",
+        "tests/contracts/test_semantics.py",
+        "tests/contracts/test_state_models.py",
+        "docs/planning/2026-10-09/delivery/evidence/P01/recovery-conformance-result.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/signed-leaf-result.json",
+        "tests/contracts/test_fake_execution.py"
+      ],
+      "decisionEvidence": [
+        "docs/planning/2026-10-09/implementation-plan.md",
+        "docs/planning/2026-10-09/phases.json",
+        "docs/planning/2026-10-09/delivery/decisions/README.md",
+        "docs/planning/2026-10-09/delivery/contracts/README.md",
+        "contracts/v1/README.md"
+      ]
+    },
+    {
+      "id": "PLAN-14",
+      "status": "planned",
+      "catalog": "eip",
+      "pattern": "Control Bus",
+      "source": "https://www.enterpriseintegrationpatterns.com/patterns/messaging/ControlBus.html",
+      "how": "Expose surrounding runtime operations for allowed drain, pause, cancellation and recovery over authorized NATS contracts. Proposed location: docs/planning/2026-10-09/implementation-plan.md, P03, P05, P07, P10. Implementation locations will be recorded when implemented. LOCAL-01 startup reads scoped instance/hub status after readiness; P10 supplies real hub observations. Starting local infrastructure before NATS exists remains a bounded host bootstrap operation, not a kernel command channel. P00 proposes one authorized instance/work/partner status contract for terminal and dashboard clients; local pre-broker Compose startup is the bounded infrastructure exception. See delivery/decisions/startup-contract.md. This is a recommendation pending P00 review.",
+      "why": "Operators need observable action control without opening protected kernel command channels.",
+      "tradeoffs": "Local shell procedures are simpler but harder to govern; controls need authority, durable intent and honest unknown outcomes. Cached status must disclose age and unavailable services; it cannot authorize work, widen hub trust or prove partner capacity.",
+      "locations": [],
+      "verificationEvidence": [],
+      "decisionEvidence": [
+        "docs/planning/2026-10-09/implementation-plan.md",
+        "docs/planning/2026-10-09/phases.json",
+        "docs/planning/2026-10-09/delivery/decisions/README.md",
+        "docs/planning/2026-10-09/delivery/contracts/README.md"
+      ]
+    }
+  ],
+  "callerSearch": {
+    "method": "Tracked source files outside docs/analysis; exact regex class and line numbers retained, no source text copied. Explicit core sources, contracts, instructions and approved decisions also inspected.",
+    "patterns": {
+      "legacy-entrypoint": "hub/(?:cli|server)\\.py|hub\\.cli|hub\\.server",
+      "legacy-socket": "hub\\.sock|HUBDIR|hub\\.pid",
+      "NATS-layout": "conn\\.(?:connect|STREAMS|BUCKETS)|hub\\.fed\\.admin|admin\\.provision",
+      "runtime-context": "ctx\\.(?:store|db|kv|publish|stage|post_local)|hub\\.fed\\.plugin",
+      "terminal-transport": "TmuxTransport|FakeTransport|from hub\\.transport"
+    },
+    "results": [
+      {
+        "path": "agentmux.sh",
+        "matches": {
+          "legacy-entrypoint": [
+            108,
+            1053,
+            1708,
+            3044
+          ],
+          "legacy-socket": [
+            1703
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "dashboard/fed_panel.py",
+        "matches": {
+          "legacy-socket": [
+            60
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "dashboard/hub_panel.py",
+        "matches": {
+          "legacy-socket": [
+            57
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "dashboard/test_fed_panel.py",
+        "matches": {
+          "legacy-socket": [
+            26
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "dashboard/test_frontend_tabs.sh",
+        "matches": {
+          "runtime-context": [
+            307,
+            314,
+            315,
+            323,
+            345
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "dashboard/test_hub_panel.py",
+        "matches": {
+          "legacy-socket": [
+            58,
+            181
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "deploy/nats/circle.sh",
+        "matches": {
+          "NATS-layout": [
+            76,
+            112
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "deploy/nats/demo.sh",
+        "matches": {
+          "legacy-entrypoint": [
+            22,
+            51
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "hub/cli.py",
+        "matches": {
+          "legacy-socket": [
+            3,
+            23
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "hub/demo/orchestrate.py",
+        "matches": {
+          "legacy-entrypoint": [
+            28
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "hub/fed/admin.py",
+        "matches": {
+          "NATS-layout": [
+            3,
+            4,
+            22,
+            25,
+            37,
+            56,
+            66
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "hub/fed/demo.py",
+        "matches": {
+          "legacy-socket": [
+            53
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "hub/fed/plugin.py",
+        "matches": {
+          "runtime-context": [
+            6
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "hub/fed/plugins/board.py",
+        "matches": {
+          "runtime-context": [
+            17,
+            18,
+            74,
+            95,
+            115,
+            123,
+            124,
+            126,
+            129,
+            130,
+            155,
+            185,
+            189,
+            206,
+            267,
+            273,
+            276,
+            281,
+            282,
+            284,
+            300,
+            303,
+            308,
+            309,
+            313,
+            315,
+            318
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "hub/fed/plugins/code.py",
+        "matches": {
+          "runtime-context": [
+            15,
+            64,
+            90,
+            122,
+            123,
+            125,
+            135,
+            149,
+            151,
+            155,
+            167,
+            168,
+            169,
+            175,
+            180
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "hub/fed/plugins/knowledge.py",
+        "matches": {
+          "runtime-context": [
+            13,
+            63,
+            64,
+            67,
+            72,
+            83,
+            85,
+            90,
+            92,
+            122,
+            131,
+            136,
+            143,
+            144,
+            146,
+            149
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "hub/fed/plugins/messages.py",
+        "matches": {
+          "runtime-context": [
+            15,
+            57,
+            73,
+            96,
+            99
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "hub/fed/plugins/work.py",
+        "matches": {
+          "runtime-context": [
+            20,
+            117,
+            118,
+            128,
+            130,
+            131,
+            132,
+            136,
+            140,
+            141,
+            160,
+            162,
+            165,
+            170,
+            187,
+            191,
+            198,
+            229,
+            231,
+            240,
+            243,
+            250,
+            253,
+            260,
+            265,
+            268,
+            270,
+            276,
+            277,
+            288,
+            298,
+            305,
+            306,
+            317,
+            323,
+            332,
+            333,
+            346,
+            348,
+            349,
+            357,
+            358,
+            361,
+            365,
+            368
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "hub/fed/policy.py",
+        "matches": {
+          "legacy-entrypoint": [
+            18
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "hub/fed/runtime.py",
+        "matches": {
+          "NATS-layout": [
+            194
+          ],
+          "runtime-context": [
+            17,
+            65
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "hub/server.py",
+        "matches": {
+          "legacy-entrypoint": [
+            3
+          ],
+          "legacy-socket": [
+            40,
+            41,
+            114,
+            115,
+            118,
+            133,
+            137,
+            317,
+            624,
+            893,
+            935
+          ],
+          "terminal-transport": [
+            36,
+            119
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "hub/tests/fedharness.py",
+        "matches": {
+          "legacy-socket": [
+            198
+          ],
+          "NATS-layout": [
+            123,
+            135,
+            137
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "hub/tests/test_fed_live.py",
+        "matches": {
+          "NATS-layout": [
+            94,
+            115,
+            159,
+            180
+          ],
+          "runtime-context": [
+            78
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "hub/tests/test_governance.py",
+        "matches": {
+          "runtime-context": [
+            156,
+            160,
+            165,
+            173,
+            178,
+            186,
+            189,
+            190,
+            193,
+            198,
+            201,
+            203,
+            205,
+            207,
+            214,
+            220,
+            226
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "hub/tests/test_hub_offline.py",
+        "matches": {
+          "legacy-socket": [
+            593
+          ],
+          "terminal-transport": [
+            18,
+            305,
+            334,
+            766,
+            790
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "hub/tests/test_nats_federation.py",
+        "matches": {
+          "legacy-socket": [
+            84
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      },
+      {
+        "path": "hub/transport.py",
+        "matches": {
+          "terminal-transport": [
+            7,
+            61,
+            146
+          ]
+        },
+        "meaning": "Static source match, not proof that every branch executes; callers and tests retained."
+      }
+    ],
+    "limits": [
+      "Dynamic user-selected plugin names, installed external packages and external callers cannot be exhaustively resolved by static source search. Add actual new source/callers to ownership before implementation.",
+      "Existing match alone does not assign a new phase or authorize editing its file."
+    ]
+  },
+  "retainedTestAssertions": [
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Names",
+      "method": "test_normalize_and_refuse",
+      "line": 39,
+      "assertionSyntaxCount": 5,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Names",
+      "method": "test_session_roundtrip",
+      "line": 47,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Names",
+      "method": "test_addresses_and_subjects",
+      "line": 54,
+      "assertionSyntaxCount": 4,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Names",
+      "method": "test_all_address_forms_roundtrip",
+      "line": 62,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Names",
+      "method": "test_malformed_addresses_rejected",
+      "line": 80,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Names",
+      "method": "test_session_spellings_enforce_same_length_limits",
+      "line": 92,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Messaging",
+      "method": "test_duplicate_live_name_refused",
+      "line": 110,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Messaging",
+      "method": "test_legacy_names_resolve",
+      "line": 114,
+      "assertionSyntaxCount": 9,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Messaging",
+      "method": "test_courier_kinds_accepted",
+      "line": 128,
+      "assertionSyntaxCount": 0,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Messaging",
+      "method": "test_reregistered_name_does_not_inherit_mail",
+      "line": 132,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Messaging",
+      "method": "test_direct_inbox_ack",
+      "line": 140,
+      "assertionSyntaxCount": 4,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Messaging",
+      "method": "test_idempotent_post",
+      "line": 149,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Messaging",
+      "method": "test_order_preserved",
+      "line": 156,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Messaging",
+      "method": "test_role_broadcast_and_cross_repo_group",
+      "line": 160,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Messaging",
+      "method": "test_unknown_kind_lists_known",
+      "line": 166,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Messaging",
+      "method": "test_no_live_recipient_refused",
+      "line": 171,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Messaging",
+      "method": "test_virtual_operator_inbox",
+      "line": 176,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Messaging",
+      "method": "test_attempts_to_dead",
+      "line": 180,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Messaging",
+      "method": "test_events_tail_returns_newest_oldest_first",
+      "line": 188,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Messaging",
+      "method": "test_fts_and_audit",
+      "line": 201,
+      "assertionSyntaxCount": 6,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Work",
+      "method": "test_first_claim_wins_across_processes",
+      "line": 227,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Work",
+      "method": "test_capacity_and_lease_expiry",
+      "line": 237,
+      "assertionSyntaxCount": 4,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Work",
+      "method": "test_dead_agent_returns_leases",
+      "line": 249,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Work",
+      "method": "test_direct_to_dead_refused",
+      "line": 256,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Work",
+      "method": "test_requirements",
+      "line": 261,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Work",
+      "method": "test_team_lead_decomposes",
+      "line": 269,
+      "assertionSyntaxCount": 7,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Work",
+      "method": "test_cancel_takes_open_children",
+      "line": 286,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Work",
+      "method": "test_path_claims_are_per_repo",
+      "line": 292,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Deliver",
+      "method": "test_clean_submit",
+      "line": 314,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Deliver",
+      "method": "test_windows_claude_idle_hint_receives_notice",
+      "line": 320,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Deliver",
+      "method": "test_windows_claude_choice_is_not_an_idle_prompt",
+      "line": 330,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Deliver",
+      "method": "test_windows_claude_busy_prompt_defers_notice",
+      "line": 341,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Deliver",
+      "method": "test_update_modal_answered_safely",
+      "line": 348,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Deliver",
+      "method": "test_update_banner_is_not_the_update_menu",
+      "line": 364,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Deliver",
+      "method": "test_login_modal_blocks_without_keys",
+      "line": 379,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Deliver",
+      "method": "test_unknown_prompt_blocks",
+      "line": 385,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Deliver",
+      "method": "test_copy_mode_left_first",
+      "line": 391,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Deliver",
+      "method": "test_busy_defers_without_keys",
+      "line": 397,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Deliver",
+      "method": "test_booting_defers",
+      "line": 403,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Deliver",
+      "method": "test_placeholder_gets_second_enter",
+      "line": 409,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Deliver",
+      "method": "test_stale_line_resubmitted_not_retyped",
+      "line": 422,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Deliver",
+      "method": "test_handle_mismatch_refused",
+      "line": 428,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Deliver",
+      "method": "test_hint_text_cleared_first",
+      "line": 434,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "CliReceipts",
+      "method": "test_each_cli_format",
+      "line": 463,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "CliReceipts",
+      "method": "test_assistant_text_and_partial_lines_are_not_receipts",
+      "line": 474,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "CliReceipts",
+      "method": "test_grok_bell_split_across_chunks",
+      "line": 480,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "CliReceipts",
+      "method": "test_hold_alert_fires_once",
+      "line": 486,
+      "assertionSyntaxCount": 4,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "CliReceipts",
+      "method": "test_mark_received",
+      "line": 515,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "BackupsAndRetention",
+      "method": "test_rotation_keeps_newest_and_copy_restores",
+      "line": 531,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "BackupsAndRetention",
+      "method": "test_prune_never_touches_undelivered_mail",
+      "line": 541,
+      "assertionSyntaxCount": 4,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "BackupsAndRetention",
+      "method": "test_migration_takes_a_backup_first",
+      "line": 554,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "ServerAPI",
+      "method": "test_every_write_verb_returns_a_result",
+      "line": 622,
+      "assertionSyntaxCount": 7,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "ServerAPI",
+      "method": "test_unknown_verb_is_an_error_not_null",
+      "line": 636,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "ServerAPI",
+      "method": "test_tcp_requires_a_valid_token",
+      "line": 658,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "ServerAPI",
+      "method": "test_tcp_ignores_as",
+      "line": 664,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "ServerAPI",
+      "method": "test_tcp_post_and_read",
+      "line": 668,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "ServerAPI",
+      "method": "test_retire_courier_imports_only_the_undelivered_backlog_once",
+      "line": 675,
+      "assertionSyntaxCount": 5,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "ServerAPI",
+      "method": "test_agentmux_post_goes_through_the_hub",
+      "line": 697,
+      "assertionSyntaxCount": 4,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "ServerAPI",
+      "method": "test_token_file_is_private",
+      "line": 710,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "ServerAPI",
+      "method": "test_subscribe_streams_new_mail_and_events",
+      "line": 714,
+      "assertionSyntaxCount": 4,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Profiles",
+      "method": "test_claude_idle_prompt_is_not_a_modal",
+      "line": 742,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "Profiles",
+      "method": "test_claude_bypass_consent_answer",
+      "line": 748,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "MenuByLabel",
+      "method": "test_trust_selects_yes_even_when_no_is_preselected",
+      "line": 765,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "MenuByLabel",
+      "method": "test_missing_safe_option_blocks",
+      "line": 789,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_hub_offline.py",
+      "class": "BridgeConnectBounded",
+      "method": "test_silent_endpoint_times_out_instead_of_hanging",
+      "line": 798,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "AuthorizationBinding",
+      "method": "test_work_cannot_enter_through_information_plane",
+      "line": 23,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "AuthorizationBinding",
+      "method": "test_subject_destination_repository_and_role_match",
+      "line": 32,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "BackupIdentity",
+      "method": "test_frozen_clock_keeps_distinct_restorable_snapshots",
+      "line": 55,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "BackupIdentity",
+      "method": "test_second_boundary_uses_one_timestamp_for_backup_rotation",
+      "line": 67,
+      "assertionSyntaxCount": 4,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "BackupIdentity",
+      "method": "test_failed_copy_does_not_publish_or_prune_a_snapshot",
+      "line": 87,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "BackupIdentity",
+      "method": "test_concurrent_stores_do_not_replace_snapshots",
+      "line": 96,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "WorkRecovery",
+      "method": "test_incoming_creation_rolls_back_when_attribution_fails",
+      "line": 171,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "WorkRecovery",
+      "method": "test_same_peer_other_node_is_not_discarded",
+      "line": 180,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "WorkRecovery",
+      "method": "test_wrong_peer_result_does_not_complete_origin",
+      "line": 188,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "WorkRecovery",
+      "method": "test_completion_keeps_durable_return_intent_without_callback",
+      "line": 200,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "WorkProtocol",
+      "method": "test_two_receivers_only_origin_selected_one_becomes_ready",
+      "line": 252,
+      "assertionSyntaxCount": 4,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "WorkProtocol",
+      "method": "test_receive_is_atomic_with_claim_and_retry_after_injected_crash",
+      "line": 263,
+      "assertionSyntaxCount": 5,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "WorkProtocol",
+      "method": "test_completion_recovers_after_restart_and_failed_staging",
+      "line": 273,
+      "assertionSyntaxCount": 5,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "WorkProtocol",
+      "method": "test_result_binds_peer_node_attempt_task_repo_grant_and_evidence",
+      "line": 294,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "WorkProtocol",
+      "method": "test_same_peer_other_node_completes_without_confusing_origin_rows",
+      "line": 312,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "WorkProtocol",
+      "method": "test_origin_reservation_and_grant_rollback_together",
+      "line": 321,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "WorkProtocol",
+      "method": "test_exhausted_lease_also_records_return_obligation",
+      "line": 331,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "WorkProtocol",
+      "method": "test_abrupt_process_exit_after_completion_still_returns_result",
+      "line": 343,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "WorkProtocol",
+      "method": "test_malformed_claim_cannot_reserve_an_origin_task",
+      "line": 357,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "WorkProtocol",
+      "method": "test_late_grant_cannot_revive_cancelled_execution",
+      "line": 367,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_governance.py",
+      "class": "WorkProtocol",
+      "method": "test_legacy_work_stays_quarantined_and_cannot_be_auto_approved",
+      "line": 375,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_governance_same_peer_different_node_round_trip",
+      "line": 59,
+      "assertionSyntaxCount": 6,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_governance_wrong_executor_result_cannot_complete_work",
+      "line": 76,
+      "assertionSyntaxCount": 7,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_governance_v3_offer_isolated_from_legacy_work_consumer",
+      "line": 111,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_p0_connected_and_present",
+      "line": 141,
+      "assertionSyntaxCount": 7,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_p0_server_refuses_spoofed_subject",
+      "line": 155,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_p0_payload_spoof_is_dropped",
+      "line": 173,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_p1_secrets_are_redacted_and_keys_blocked",
+      "line": 191,
+      "assertionSyntaxCount": 8,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_p1_untrusted_peer_is_quarantined_then_approved",
+      "line": 207,
+      "assertionSyntaxCount": 5,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_p1_denied_peer_is_dropped",
+      "line": 222,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_p1_scope_limits_who_a_repo_is_shared_with",
+      "line": 232,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_p1_remote_privileged_work_needs_explicit_approval",
+      "line": 241,
+      "assertionSyntaxCount": 6,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_p2_message_reply_round_trip",
+      "line": 262,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_p2_address_in_the_peers_own_naming",
+      "line": 272,
+      "assertionSyntaxCount": 4,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_p2_role_address_reaches_a_holder",
+      "line": 283,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_p2_federated_work_is_done_exactly_once_and_comes_home",
+      "line": 288,
+      "assertionSyntaxCount": 5,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_p3_shared_board_cas",
+      "line": 312,
+      "assertionSyntaxCount": 6,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_p4_knowledge_explicit_auto_and_search",
+      "line": 349,
+      "assertionSyntaxCount": 4,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_p5_code_share_fetch_verify",
+      "line": 367,
+      "assertionSyntaxCount": 8,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_p6_panel_has_every_plugin",
+      "line": 392,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_live.py",
+      "class": "Fed",
+      "method": "test_z_kill_switch_revoke_and_resume",
+      "line": 398,
+      "assertionSyntaxCount": 9,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_unit.py",
+      "class": "Identity",
+      "method": "test_same_repo_same_rid_whatever_the_url_spelling",
+      "line": 29,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_unit.py",
+      "class": "Identity",
+      "method": "test_local_names_differ_rid_does_not",
+      "line": 35,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_unit.py",
+      "class": "Identity",
+      "method": "test_unshared_and_unmatched",
+      "line": 41,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_unit.py",
+      "class": "Redaction",
+      "method": "test_redacts_known_tokens_and_keeps_the_rest",
+      "line": 48,
+      "assertionSyntaxCount": 7,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_unit.py",
+      "class": "Redaction",
+      "method": "test_blocks_private_keys_and_seeds",
+      "line": 60,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_unit.py",
+      "class": "Redaction",
+      "method": "test_clean_payload_is_untouched",
+      "line": 65,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_unit.py",
+      "class": "Outbound",
+      "method": "test_scope",
+      "line": 74,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_unit.py",
+      "class": "Outbound",
+      "method": "test_redact_block_and_size",
+      "line": 83,
+      "assertionSyntaxCount": 5,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_unit.py",
+      "class": "Inbound",
+      "method": "test_trust_levels",
+      "line": 112,
+      "assertionSyntaxCount": 6,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_unit.py",
+      "class": "Inbound",
+      "method": "test_spoof_self_and_scope",
+      "line": 121,
+      "assertionSyntaxCount": 4,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_unit.py",
+      "class": "Inbound",
+      "method": "test_privileged_work_is_quarantined_even_from_auto",
+      "line": 127,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_unit.py",
+      "class": "Inbound",
+      "method": "test_wrap",
+      "line": 133,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_unit.py",
+      "class": "Config",
+      "method": "test_round_trip",
+      "line": 139,
+      "assertionSyntaxCount": 4,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_unit.py",
+      "class": "Envelope",
+      "method": "test_subjects_refuse_bad_tokens",
+      "line": 155,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_unit.py",
+      "class": "Envelope",
+      "method": "test_validate",
+      "line": 161,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_unit.py",
+      "class": "Mcp",
+      "method": "test_protocol",
+      "line": 181,
+      "assertionSyntaxCount": 8,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_unit.py",
+      "class": "Gate",
+      "method": "test_only_privileged_tools_are_gated",
+      "line": 218,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_fed_unit.py",
+      "class": "Gate",
+      "method": "test_remote_work_blocks_privileged",
+      "line": 224,
+      "assertionSyntaxCount": 4,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_nats_federation.py",
+      "class": "TwoNodes",
+      "method": "test_direct_message_crosses_nodes",
+      "line": 110,
+      "assertionSyntaxCount": 5,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_nats_federation.py",
+      "class": "TwoNodes",
+      "method": "test_federated_role_item_claimed_exactly_once",
+      "line": 121,
+      "assertionSyntaxCount": 8,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_windows_callbacks.py",
+      "class": "CallbackSelection",
+      "method": "test_missing_selection_never_launches",
+      "line": 24,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_windows_callbacks.py",
+      "class": "CallbackSelection",
+      "method": "test_shell_callback_rejection_creates_no_default_or_scoped_state",
+      "line": 39,
+      "assertionSyntaxCount": 4,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_windows_callbacks.py",
+      "class": "CallbackSelection",
+      "method": "test_shell_without_callback_keeps_native_hub_entrypoint",
+      "line": 58,
+      "assertionSyntaxCount": 4,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_windows_callbacks.py",
+      "class": "CallbackSelection",
+      "method": "test_nick_defaults_and_exact_received_arguments",
+      "line": 73,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_windows_callbacks.py",
+      "class": "CallbackSelection",
+      "method": "test_explicit_selection",
+      "line": 78,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_windows_callbacks.py",
+      "class": "CallbackSelection",
+      "method": "test_no_fallback_or_inline_token",
+      "line": 88,
+      "assertionSyntaxCount": 3,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_windows_callbacks.py",
+      "class": "CallbackSelection",
+      "method": "test_lifecycle_rejected_before_local_action",
+      "line": 100,
+      "assertionSyntaxCount": 4,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_windows_callbacks.py",
+      "class": "CallbackSelection",
+      "method": "test_context_only_and_unrelated_wslenv_preserved",
+      "line": 111,
+      "assertionSyntaxCount": 5,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_windows_callbacks.py",
+      "class": "SpawnContext",
+      "method": "test_bad_opt_in_has_no_registration_side_effect",
+      "line": 123,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_windows_callbacks.py",
+      "class": "SpawnContext",
+      "method": "test_two_spawns_get_distinct_token_paths_without_inline_tokens",
+      "line": 146,
+      "assertionSyntaxCount": 6,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "hub/tests/test_windows_callbacks.py",
+      "class": "SpawnContext",
+      "method": "test_native_spawn_drops_stale_worker_but_preserves_explicit_native_context",
+      "line": 160,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "dashboard/test_hub_panel.py",
+      "class": "HubPanelLive",
+      "method": "test_helper_lists_the_work_item_and_its_state",
+      "line": 90,
+      "assertionSyntaxCount": 8,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "dashboard/test_hub_panel.py",
+      "class": "HubPanelLive",
+      "method": "test_helper_work_show_and_filters",
+      "line": 102,
+      "assertionSyntaxCount": 7,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "dashboard/test_hub_panel.py",
+      "class": "HubPanelLive",
+      "method": "test_helper_status_counts_and_events",
+      "line": 112,
+      "assertionSyntaxCount": 8,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "dashboard/test_hub_panel.py",
+      "class": "HubPanelLive",
+      "method": "test_only_read_verbs_can_be_sent",
+      "line": 125,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "dashboard/test_hub_panel.py",
+      "class": "HubPanelLive",
+      "method": "test_http_endpoints_pass_the_hub_through",
+      "line": 132,
+      "assertionSyntaxCount": 9,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "dashboard/test_hub_panel.py",
+      "class": "HubDown",
+      "method": "test_absent_socket_is_a_graceful_503",
+      "line": 170,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "dashboard/test_hub_panel.py",
+      "class": "HubDown",
+      "method": "test_stale_socket_file_is_a_graceful_503",
+      "line": 177,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "dashboard/test_hub_panel.py",
+      "class": "HubDown",
+      "method": "test_http_says_hub_not_running",
+      "line": 187,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "dashboard/test_hub_panel.py",
+      "class": "NeverOpensHubDb",
+      "method": "test_no_sqlite_connect_to_the_hub_database",
+      "line": 208,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "sdk/python/tests/test_contracts.py",
+      "class": "WireTests",
+      "method": "test_duplicate_keys_include_escaped_nested_names",
+      "line": 54,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "sdk/python/tests/test_contracts.py",
+      "class": "WireTests",
+      "method": "test_bad_unicode_and_nonfinite_numbers",
+      "line": 59,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "sdk/python/tests/test_contracts.py",
+      "class": "WireTests",
+      "method": "test_raw_large_integer_is_not_rounded",
+      "line": 65,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "sdk/python/tests/test_contracts.py",
+      "class": "WireTests",
+      "method": "test_rfc_number_and_utf16_ordering",
+      "line": 70,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "sdk/python/tests/test_contracts.py",
+      "class": "WireTests",
+      "method": "test_limits_and_non_json_objects",
+      "line": 75,
+      "assertionSyntaxCount": 4,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "sdk/python/tests/test_contracts.py",
+      "class": "AttestationTests",
+      "method": "test_signed_envelope",
+      "line": 96,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "sdk/python/tests/test_contracts.py",
+      "class": "AttestationTests",
+      "method": "test_signature_and_payload_tampering",
+      "line": 99,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "sdk/python/tests/test_contracts.py",
+      "class": "AttestationTests",
+      "method": "test_expiry_is_exclusive",
+      "line": 111,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "sdk/python/tests/test_contracts.py",
+      "class": "AttestationTests",
+      "method": "test_signed_invalid_issuer_and_lifetime",
+      "line": 115,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "sdk/python/tests/test_contracts.py",
+      "class": "AttestationTests",
+      "method": "test_no_remote_schema_resolution_and_unknown_schema",
+      "line": 128,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "sdk/python/tests/test_contracts.py",
+      "class": "AttestationTests",
+      "method": "test_cli_error_does_not_echo_bad_input",
+      "line": 132,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "sdk/python/tests/test_contracts.py",
+      "class": "AttestationTests",
+      "method": "test_cli_size_limit_excludes_only_line_delimiter",
+      "line": 139,
+      "assertionSyntaxCount": 4,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "sdk/python/tests/test_contracts.py",
+      "class": "AttestationTests",
+      "method": "test_schema_cache_invalidates_changed_bytes_with_same_mtime",
+      "line": 153,
+      "assertionSyntaxCount": 2,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    },
+    {
+      "file": "sdk/python/tests/test_contracts.py",
+      "class": "SemanticTests",
+      "method": "test_cross_field_invariants",
+      "line": 173,
+      "assertionSyntaxCount": 1,
+      "meaning": "Static existing assertion sites; unchanged source preserves full method body. No tests executed."
+    }
+  ],
+  "sourceBindings": [
+    {
+      "path": ".bytedesk/design-patterns/agent-rules.md",
+      "sha256": "e823e071e5ef983300f02cab780b13da1e893620752612a1bdf0fe20532463e6",
+      "bytes": 2003,
+      "committedSha256": "e823e071e5ef983300f02cab780b13da1e893620752612a1bdf0fe20532463e6",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "e823e071e5ef983300f02cab780b13da1e893620752612a1bdf0fe20532463e6",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": ".bytedesk/design-patterns/catalog.json",
+      "sha256": "8f8679535511ac9fd5a380c5d43835e0aabf215a31c44ff53013e205ebc6bb82",
+      "bytes": 31444,
+      "committedSha256": "8f8679535511ac9fd5a380c5d43835e0aabf215a31c44ff53013e205ebc6bb82",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "8f8679535511ac9fd5a380c5d43835e0aabf215a31c44ff53013e205ebc6bb82",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": ".bytedesk/design-patterns/review.json",
+      "sha256": "2e42e729b73c8a18233a384e3f7e618d1532678ff18175c0fbdf26c2ee814554",
+      "bytes": 120293,
+      "committedSha256": "2e42e729b73c8a18233a384e3f7e618d1532678ff18175c0fbdf26c2ee814554",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "76b14d0e64958372230515510cb47440875f0071030385201d81a28b7244d3e5",
+      "workingMatchesP01RuntimeCommit": false
+    },
+    {
+      "path": ".claude/rules/plain-language.md",
+      "sha256": "7e2b8b6b328a83559342b7a4569f5fb9252699917ec5a7b7451dfd238b184a50",
+      "bytes": 4432,
+      "committedSha256": "7e2b8b6b328a83559342b7a4569f5fb9252699917ec5a7b7451dfd238b184a50",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "7e2b8b6b328a83559342b7a4569f5fb9252699917ec5a7b7451dfd238b184a50",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": ".context/design-patterns-diagrams.md",
+      "sha256": "cdf68923355435e7c1028a3c55da4b39735bba48b590f085a2a33136a5cba942",
+      "bytes": 30851,
+      "committedSha256": "cdf68923355435e7c1028a3c55da4b39735bba48b590f085a2a33136a5cba942",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "cdf68923355435e7c1028a3c55da4b39735bba48b590f085a2a33136a5cba942",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": ".context/design-patterns.md",
+      "sha256": "ea5078529559310799bf0588e5e0d2169c36248b51c203f49ec090754da8f14c",
+      "bytes": 128591,
+      "committedSha256": "ea5078529559310799bf0588e5e0d2169c36248b51c203f49ec090754da8f14c",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "ea5078529559310799bf0588e5e0d2169c36248b51c203f49ec090754da8f14c",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "97a1da4151e3ef28575cfa70b486434c6a3fe91da7994ab5bfa47cbec67a7197",
+      "bytes": 4027,
+      "committedSha256": "97a1da4151e3ef28575cfa70b486434c6a3fe91da7994ab5bfa47cbec67a7197",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "97a1da4151e3ef28575cfa70b486434c6a3fe91da7994ab5bfa47cbec67a7197",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "agentmux.cmd",
+      "sha256": "c870282fc53288bd1576a8f1331474fa98ed99ec76940b4105465fb060bae777",
+      "bytes": 183,
+      "committedSha256": "c870282fc53288bd1576a8f1331474fa98ed99ec76940b4105465fb060bae777",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "c870282fc53288bd1576a8f1331474fa98ed99ec76940b4105465fb060bae777",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "agentmux.sh",
+      "sha256": "310d538866f29478ef01bfd77c782dd62ead2a09eb1a244fe890bf96b1b36867",
+      "bytes": 145795,
+      "committedSha256": "310d538866f29478ef01bfd77c782dd62ead2a09eb1a244fe890bf96b1b36867",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "310d538866f29478ef01bfd77c782dd62ead2a09eb1a244fe890bf96b1b36867",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "agentmux_windows.py",
+      "sha256": "d8d579d0a63306d71337024798db188eea309f19e2debd8694cda161ca2eb17b",
+      "bytes": 3717,
+      "committedSha256": "d8d579d0a63306d71337024798db188eea309f19e2debd8694cda161ca2eb17b",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "d8d579d0a63306d71337024798db188eea309f19e2debd8694cda161ca2eb17b",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "contracts/v1/models/state-machines.json",
+      "sha256": "b3de8382ae529d7ccf449f88ee567bd6b267e13d8fc3519c2762be718e1bc10d",
+      "bytes": 22144,
+      "committedSha256": "b3de8382ae529d7ccf449f88ee567bd6b267e13d8fc3519c2762be718e1bc10d",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "b3de8382ae529d7ccf449f88ee567bd6b267e13d8fc3519c2762be718e1bc10d",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "contracts/v1/registry.json",
+      "sha256": "63bdf935623f4b2925592d09a923a5120966b37a33059d9d54aacacce930dc9f",
+      "bytes": 1663,
+      "committedSha256": "63bdf935623f4b2925592d09a923a5120966b37a33059d9d54aacacce930dc9f",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "63bdf935623f4b2925592d09a923a5120966b37a33059d9d54aacacce930dc9f",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "contracts/v1/schemas/operation-context.schema.json",
+      "sha256": "ce6bae5e685687df4ebc581dcbcc2a191bd089739257ad1558fa732a241343f7",
+      "bytes": 3281,
+      "committedSha256": "ce6bae5e685687df4ebc581dcbcc2a191bd089739257ad1558fa732a241343f7",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "ce6bae5e685687df4ebc581dcbcc2a191bd089739257ad1558fa732a241343f7",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "contracts/v1/schemas/plugin-context.schema.json",
+      "sha256": "2976cb2ece3e6572c9428c08e19d3fe442ef5fed17358ae4cefe27f972e06e5c",
+      "bytes": 3108,
+      "committedSha256": "2976cb2ece3e6572c9428c08e19d3fe442ef5fed17358ae4cefe27f972e06e5c",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "2976cb2ece3e6572c9428c08e19d3fe442ef5fed17358ae4cefe27f972e06e5c",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "contracts/v1/schemas/plugin-manifest.schema.json",
+      "sha256": "6514e16035b92ac3edeaf4ea906502ab97c64d5dc2c396f87ab0be723a4163d5",
+      "bytes": 6732,
+      "committedSha256": "6514e16035b92ac3edeaf4ea906502ab97c64d5dc2c396f87ab0be723a4163d5",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "6514e16035b92ac3edeaf4ea906502ab97c64d5dc2c396f87ab0be723a4163d5",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "contracts/v1/schemas/protected-assembly.schema.json",
+      "sha256": "86a2238a6a81ceffcba378a79b3badf752116090faa5fc9428ad962492052148",
+      "bytes": 1721,
+      "committedSha256": "86a2238a6a81ceffcba378a79b3badf752116090faa5fc9428ad962492052148",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "86a2238a6a81ceffcba378a79b3badf752116090faa5fc9428ad962492052148",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "contracts/v1/schemas/status-query.schema.json",
+      "sha256": "1602ff586698c26b8f2cc8ab7be90297cd86dbd0d83c41124421b684707f0a2c",
+      "bytes": 326,
+      "committedSha256": "1602ff586698c26b8f2cc8ab7be90297cd86dbd0d83c41124421b684707f0a2c",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "1602ff586698c26b8f2cc8ab7be90297cd86dbd0d83c41124421b684707f0a2c",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "dashboard/fed_panel.py",
+      "sha256": "da402b49af7e6aeaa626079a2e89e4da814721272b06bf06657d3f69bfab6533",
+      "bytes": 3955,
+      "committedSha256": "da402b49af7e6aeaa626079a2e89e4da814721272b06bf06657d3f69bfab6533",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "da402b49af7e6aeaa626079a2e89e4da814721272b06bf06657d3f69bfab6533",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "dashboard/hub_panel.py",
+      "sha256": "56965bccf820379462748b67a442b5aa9e02375a75e8cc17ceb87a00b68a5297",
+      "bytes": 7318,
+      "committedSha256": "56965bccf820379462748b67a442b5aa9e02375a75e8cc17ceb87a00b68a5297",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "56965bccf820379462748b67a442b5aa9e02375a75e8cc17ceb87a00b68a5297",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "dashboard/server.py",
+      "sha256": "856adec15cbb491e3fae11ef71bd39105c16d888fea389154fe8e4c85a01bc68",
+      "bytes": 127184,
+      "committedSha256": "856adec15cbb491e3fae11ef71bd39105c16d888fea389154fe8e4c85a01bc68",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "856adec15cbb491e3fae11ef71bd39105c16d888fea389154fe8e4c85a01bc68",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "dashboard/test_fed_panel.py",
+      "sha256": "0ffaeda15a8e57a8988a8197b46a300beff6fee54e263aa2d3c81317b9549c87",
+      "bytes": 3853,
+      "committedSha256": "0ffaeda15a8e57a8988a8197b46a300beff6fee54e263aa2d3c81317b9549c87",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "0ffaeda15a8e57a8988a8197b46a300beff6fee54e263aa2d3c81317b9549c87",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "dashboard/test_frontend_tabs.sh",
+      "sha256": "2825e6d88429c16e3b67702966280624526e0f80565fd403058b284f12ed36fc",
+      "bytes": 26262,
+      "committedSha256": "2825e6d88429c16e3b67702966280624526e0f80565fd403058b284f12ed36fc",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "2825e6d88429c16e3b67702966280624526e0f80565fd403058b284f12ed36fc",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "dashboard/test_hub_panel.py",
+      "sha256": "ff063ce7d60ec54b89f3c492983a8f527304024271f6099674e0aa71ba5e130d",
+      "bytes": 9821,
+      "committedSha256": "ff063ce7d60ec54b89f3c492983a8f527304024271f6099674e0aa71ba5e130d",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "ff063ce7d60ec54b89f3c492983a8f527304024271f6099674e0aa71ba5e130d",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "deploy/nats/circle.sh",
+      "sha256": "184c3f8e5b99a7b8106aab7d204e35a388c1b0c180d8c32ed08376ac8160c4fc",
+      "bytes": 5604,
+      "committedSha256": "184c3f8e5b99a7b8106aab7d204e35a388c1b0c180d8c32ed08376ac8160c4fc",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "184c3f8e5b99a7b8106aab7d204e35a388c1b0c180d8c32ed08376ac8160c4fc",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "deploy/nats/demo.sh",
+      "sha256": "e97c8a20b3f15619161e672d3d6776b9ca9e4f8b43cdd5b6c80f6bae6f912f65",
+      "bytes": 2347,
+      "committedSha256": "e97c8a20b3f15619161e672d3d6776b9ca9e4f8b43cdd5b6c80f6bae6f912f65",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "e97c8a20b3f15619161e672d3d6776b9ca9e4f8b43cdd5b6c80f6bae6f912f65",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "deploy/nats/kind.yaml",
+      "sha256": "66f7618104590cdf153a717ecba701e96a3b36a4e22ed52fb77ade322c8808ff",
+      "bytes": 409,
+      "committedSha256": "66f7618104590cdf153a717ecba701e96a3b36a4e22ed52fb77ade322c8808ff",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "66f7618104590cdf153a717ecba701e96a3b36a4e22ed52fb77ade322c8808ff",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "deploy/nats/nodeport.yaml",
+      "sha256": "d0f24cc7d224bbad2c86971ad31ab956b8a8dc7a920ca0cad673afc53e6d1778",
+      "bytes": 449,
+      "committedSha256": "d0f24cc7d224bbad2c86971ad31ab956b8a8dc7a920ca0cad673afc53e6d1778",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "d0f24cc7d224bbad2c86971ad31ab956b8a8dc7a920ca0cad673afc53e6d1778",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "deploy/nats/up.sh",
+      "sha256": "aa4c52213550ab7cc7e9255252084a264083c6ea0fd0db9cb5e7bbea38475ac5",
+      "bytes": 3892,
+      "committedSha256": "aa4c52213550ab7cc7e9255252084a264083c6ea0fd0db9cb5e7bbea38475ac5",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "aa4c52213550ab7cc7e9255252084a264083c6ea0fd0db9cb5e7bbea38475ac5",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "deploy/nats/values.yaml",
+      "sha256": "8afb6be9be88e6c69bed06402f5b8672af5114e7c79f618525b668deaf2118d7",
+      "bytes": 1771,
+      "committedSha256": "8afb6be9be88e6c69bed06402f5b8672af5114e7c79f618525b668deaf2118d7",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "8afb6be9be88e6c69bed06402f5b8672af5114e7c79f618525b668deaf2118d7",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "docs/LOCAL_TESTING.md",
+      "sha256": "096f19986e17985a49be76be18df4fb0ed3cd6be6ee259ec7519bf3d9ed5b10c",
+      "bytes": 5671,
+      "committedSha256": "096f19986e17985a49be76be18df4fb0ed3cd6be6ee259ec7519bf3d9ed5b10c",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "096f19986e17985a49be76be18df4fb0ed3cd6be6ee259ec7519bf3d9ed5b10c",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "docs/planning/2026-10-09/component-audit-dashboard.json",
+      "sha256": "a406607c28ee44054de9dc5f3b40b4b7e7d6e4e7989d29666fe09adb4904741f",
+      "bytes": 112226,
+      "committedSha256": "a406607c28ee44054de9dc5f3b40b4b7e7d6e4e7989d29666fe09adb4904741f",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "a406607c28ee44054de9dc5f3b40b4b7e7d6e4e7989d29666fe09adb4904741f",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "docs/planning/2026-10-09/component-audit-harness.json",
+      "sha256": "c7e1dd0f2bedf0f6d65ea7445d4c6e2fa3c28a2f6c06bc9a967db8dc048c8fdc",
+      "bytes": 97354,
+      "committedSha256": "c7e1dd0f2bedf0f6d65ea7445d4c6e2fa3c28a2f6c06bc9a967db8dc048c8fdc",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "7aad553c9ec95dbd1da1309ba3718984befb4fffb6eafba62be222cbe2ec7a50",
+      "workingMatchesP01RuntimeCommit": false
+    },
+    {
+      "path": "docs/planning/2026-10-09/component-audit-hub.json",
+      "sha256": "f9f0719be9be08faf53b079b4bd967578d011e064d77b71045e4adcca1c4ae94",
+      "bytes": 103544,
+      "committedSha256": "f9f0719be9be08faf53b079b4bd967578d011e064d77b71045e4adcca1c4ae94",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "689690b169d1dcd9301cbeaed7764846b39b5676f04a2ef734bfc7e3048ba69d",
+      "workingMatchesP01RuntimeCommit": false
+    },
+    {
+      "path": "docs/planning/2026-10-09/component-audit-repository.json",
+      "sha256": "8bcd108d31722b73da950e5e40b9dbf8a73d608507a7ab2957d3e5c908dd357a",
+      "bytes": 40542,
+      "committedSha256": "8bcd108d31722b73da950e5e40b9dbf8a73d608507a7ab2957d3e5c908dd357a",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "d4c182ce171e89ea03b5e0e72184d17f37c9f8cd9671b04e55e06f631208a8bc",
+      "workingMatchesP01RuntimeCommit": false
+    },
+    {
+      "path": "docs/planning/2026-10-09/component-preservation.md",
+      "sha256": "78d90630fee589b0c0cfccd9970fecfbdde7cf4981d55eb02028901dadd02adb",
+      "bytes": 286887,
+      "committedSha256": "78d90630fee589b0c0cfccd9970fecfbdde7cf4981d55eb02028901dadd02adb",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "78d90630fee589b0c0cfccd9970fecfbdde7cf4981d55eb02028901dadd02adb",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/decisions/acceptance.md",
+      "sha256": "b687a0353d20cb76244ce4c72f21661ce9f1808f74043d3a2b6b979b6dfdab59",
+      "bytes": 5308,
+      "committedSha256": "b687a0353d20cb76244ce4c72f21661ce9f1808f74043d3a2b6b979b6dfdab59",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "b687a0353d20cb76244ce4c72f21661ce9f1808f74043d3a2b6b979b6dfdab59",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/decisions/runtime-and-deployment.md",
+      "sha256": "146ab3da80d6c97c3d8d05478f47cb5a5ae84cdfaee8502612602ff565410a98",
+      "bytes": 15003,
+      "committedSha256": "146ab3da80d6c97c3d8d05478f47cb5a5ae84cdfaee8502612602ff565410a98",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "146ab3da80d6c97c3d8d05478f47cb5a5ae84cdfaee8502612602ff565410a98",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/decisions/startup-contract.md",
+      "sha256": "2c86650ad04978106ff011827c55708a7f02238f112177cefd4629ee857dc127",
+      "bytes": 12339,
+      "committedSha256": "2c86650ad04978106ff011827c55708a7f02238f112177cefd4629ee857dc127",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "2c86650ad04978106ff011827c55708a7f02238f112177cefd4629ee857dc127",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/decisions/storage-contract.md",
+      "sha256": "19bb201cc3ffdc6d4e19213faee99ed584179d2fa0f34bbefb0371146e728fab",
+      "bytes": 14144,
+      "committedSha256": "19bb201cc3ffdc6d4e19213faee99ed584179d2fa0f34bbefb0371146e728fab",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "19bb201cc3ffdc6d4e19213faee99ed584179d2fa0f34bbefb0371146e728fab",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P00/gate.json",
+      "sha256": "16ef8b66739aa98924ce1dcc24a31496b68c5e498c10286ecda7d570c0933cf3",
+      "bytes": 7658,
+      "committedSha256": "16ef8b66739aa98924ce1dcc24a31496b68c5e498c10286ecda7d570c0933cf3",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "16ef8b66739aa98924ce1dcc24a31496b68c5e498c10286ecda7d570c0933cf3",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/74d6bb9/root-review.json",
+      "sha256": "4d639be60aca8873edf2e539d2e2460dd7e5ef084ec719c65856b7551f931869",
+      "bytes": 6235,
+      "committedSha256": "4d639be60aca8873edf2e539d2e2460dd7e5ef084ec719c65856b7551f931869",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": null,
+      "workingMatchesP01RuntimeCommit": null
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/wsl-contract-source-reuse-74d6.json",
+      "sha256": "abbde0560590f2685bfde6e0f915724111d8892bc80eafb3d9fdfd7b840509a3",
+      "bytes": 7938,
+      "committedSha256": "abbde0560590f2685bfde6e0f915724111d8892bc80eafb3d9fdfd7b840509a3",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": null,
+      "workingMatchesP01RuntimeCommit": null
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/wsl-native-74d6bb9/root-review.json",
+      "sha256": "d34cc0994724533fe3699097e6f04151c6ca69b3578cc00cc2038bcf56a0ba21",
+      "bytes": 1501,
+      "committedSha256": "d34cc0994724533fe3699097e6f04151c6ca69b3578cc00cc2038bcf56a0ba21",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": null,
+      "workingMatchesP01RuntimeCommit": null
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/tasks.json",
+      "sha256": "cd9823442bdab9a5dc5c0e41e13692dfd473097eae50869d6e2781ad8ee80960",
+      "bytes": 1915356,
+      "committedSha256": "9cf2076a38209ecff20c1f304a550615df09f316e7832423c257baa118b57a35",
+      "workingMatchesAuditCommit": false,
+      "git74d6Sha256": "5b9214116def4f87494c431a7011256561fbb8747064264a84256472efdbede9",
+      "workingMatchesP01RuntimeCommit": false
+    },
+    {
+      "path": "docs/planning/2026-10-09/phases.json",
+      "sha256": "882de6f13f309b878ebd8898ba73ab05fe94dc68ec517b311054f2a99f3102f7",
+      "bytes": 97875,
+      "committedSha256": "882de6f13f309b878ebd8898ba73ab05fe94dc68ec517b311054f2a99f3102f7",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "882de6f13f309b878ebd8898ba73ab05fe94dc68ec517b311054f2a99f3102f7",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "docs/planning/2026-10-09/source-surface-index.json",
+      "sha256": "5363356f475e5ff00e56027c37a151c97a38005025c8c967622dcec5e41da8d7",
+      "bytes": 438324,
+      "committedSha256": "5363356f475e5ff00e56027c37a151c97a38005025c8c967622dcec5e41da8d7",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "ece9d46d05c1f3f2606c03714e0d72478934b72a388d064c756cc8e6d015edad",
+      "workingMatchesP01RuntimeCommit": false
+    },
+    {
+      "path": "docs/planning/2026-10-09/verification-matrix.json",
+      "sha256": "516813fd034d6c73b4b0d6f9eaaf4b1b54798828e137336324605d0b956085bc",
+      "bytes": 25840,
+      "committedSha256": "516813fd034d6c73b4b0d6f9eaaf4b1b54798828e137336324605d0b956085bc",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "516813fd034d6c73b4b0d6f9eaaf4b1b54798828e137336324605d0b956085bc",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/bridge.py",
+      "sha256": "c129386a37e88f8f4f94ebb0247ce39d09638f7e734f8741050de4ecaec5eb2c",
+      "bytes": 8487,
+      "committedSha256": "c129386a37e88f8f4f94ebb0247ce39d09638f7e734f8741050de4ecaec5eb2c",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "c129386a37e88f8f4f94ebb0247ce39d09638f7e734f8741050de4ecaec5eb2c",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/cli.py",
+      "sha256": "276e8311b0cbd683e3c123ff327cfd4664fa8ef55882ef94ad89e50a6ecc0efb",
+      "bytes": 24620,
+      "committedSha256": "276e8311b0cbd683e3c123ff327cfd4664fa8ef55882ef94ad89e50a6ecc0efb",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "276e8311b0cbd683e3c123ff327cfd4664fa8ef55882ef94ad89e50a6ecc0efb",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/deliver.py",
+      "sha256": "c39ab9062b797bf7fc2d2769f8d92c4ba57b9e6fdfe7159323e9d9e99c825f48",
+      "bytes": 9098,
+      "committedSha256": "c39ab9062b797bf7fc2d2769f8d92c4ba57b9e6fdfe7159323e9d9e99c825f48",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "c39ab9062b797bf7fc2d2769f8d92c4ba57b9e6fdfe7159323e9d9e99c825f48",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/demo/orchestrate.py",
+      "sha256": "9e389a227a1407f7aedfe7462a89b88ec1e3e5506d4cf0c0d8b1f7c3c96a2451",
+      "bytes": 17332,
+      "committedSha256": "9e389a227a1407f7aedfe7462a89b88ec1e3e5506d4cf0c0d8b1f7c3c96a2451",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "9e389a227a1407f7aedfe7462a89b88ec1e3e5506d4cf0c0d8b1f7c3c96a2451",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/fed/admin.py",
+      "sha256": "ce6b0b048a4fcaa5e0b4432ed920ba587bad21d54cb2a84187a09e5022a2b74a",
+      "bytes": 3226,
+      "committedSha256": "ce6b0b048a4fcaa5e0b4432ed920ba587bad21d54cb2a84187a09e5022a2b74a",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "ce6b0b048a4fcaa5e0b4432ed920ba587bad21d54cb2a84187a09e5022a2b74a",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/fed/config.py",
+      "sha256": "9fa43b51291d4d41df9ee4bfb66bd40c8c19e6e40473d1e3b8cff5390e31b1a4",
+      "bytes": 2348,
+      "committedSha256": "9fa43b51291d4d41df9ee4bfb66bd40c8c19e6e40473d1e3b8cff5390e31b1a4",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "9fa43b51291d4d41df9ee4bfb66bd40c8c19e6e40473d1e3b8cff5390e31b1a4",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/fed/conn.py",
+      "sha256": "7c4d226c777256c2228ec76254aca526039d7c7c5dc4fb7c61933816397f9bab",
+      "bytes": 2307,
+      "committedSha256": "7c4d226c777256c2228ec76254aca526039d7c7c5dc4fb7c61933816397f9bab",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "7c4d226c777256c2228ec76254aca526039d7c7c5dc4fb7c61933816397f9bab",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/fed/demo.py",
+      "sha256": "7d5e1d4b86650e1f6c5faaf812b751ce61d457a1f445e71345a9a2cde6f266d7",
+      "bytes": 19612,
+      "committedSha256": "7d5e1d4b86650e1f6c5faaf812b751ce61d457a1f445e71345a9a2cde6f266d7",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "7d5e1d4b86650e1f6c5faaf812b751ce61d457a1f445e71345a9a2cde6f266d7",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/fed/ledger.py",
+      "sha256": "057de84ff7dfd884f34180dfb7dac98811790be54b3b0ad6d0f85fc62a05dd99",
+      "bytes": 4542,
+      "committedSha256": "057de84ff7dfd884f34180dfb7dac98811790be54b3b0ad6d0f85fc62a05dd99",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "057de84ff7dfd884f34180dfb7dac98811790be54b3b0ad6d0f85fc62a05dd99",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/fed/plugin.py",
+      "sha256": "aeaf58efd3e369ccac5c7605976bc3183599a1b88bd825680d9ef727df44aea2",
+      "bytes": 1754,
+      "committedSha256": "aeaf58efd3e369ccac5c7605976bc3183599a1b88bd825680d9ef727df44aea2",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "aeaf58efd3e369ccac5c7605976bc3183599a1b88bd825680d9ef727df44aea2",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/fed/plugins/board.py",
+      "sha256": "4e5ef514e1334d7fd7856f13f334931f00cd3510614d51f23b143dda23f2a5b6",
+      "bytes": 17079,
+      "committedSha256": "4e5ef514e1334d7fd7856f13f334931f00cd3510614d51f23b143dda23f2a5b6",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "4e5ef514e1334d7fd7856f13f334931f00cd3510614d51f23b143dda23f2a5b6",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/fed/plugins/code.py",
+      "sha256": "4c2b560cc136212fba9cf3d524eb14b4941b4fa10cf147bff11dad8859e6dfc9",
+      "bytes": 9880,
+      "committedSha256": "4c2b560cc136212fba9cf3d524eb14b4941b4fa10cf147bff11dad8859e6dfc9",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "4c2b560cc136212fba9cf3d524eb14b4941b4fa10cf147bff11dad8859e6dfc9",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/fed/plugins/knowledge.py",
+      "sha256": "95dd53657b6c52b61dcc8f7718579cdee18c5ecdec9026e360292fdecd142e85",
+      "bytes": 8621,
+      "committedSha256": "95dd53657b6c52b61dcc8f7718579cdee18c5ecdec9026e360292fdecd142e85",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "95dd53657b6c52b61dcc8f7718579cdee18c5ecdec9026e360292fdecd142e85",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/fed/plugins/messages.py",
+      "sha256": "e3f8f29fd1c8bb72fdd401f42f75f8438cc289c39053528d82e1c6c9156b5c09",
+      "bytes": 5193,
+      "committedSha256": "e3f8f29fd1c8bb72fdd401f42f75f8438cc289c39053528d82e1c6c9156b5c09",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "e3f8f29fd1c8bb72fdd401f42f75f8438cc289c39053528d82e1c6c9156b5c09",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/fed/plugins/work.py",
+      "sha256": "d52f850b230f1af473e239933114f1566f0e6f792d6e91d749a5b43ee47cbb49",
+      "bytes": 21273,
+      "committedSha256": "d52f850b230f1af473e239933114f1566f0e6f792d6e91d749a5b43ee47cbb49",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "d52f850b230f1af473e239933114f1566f0e6f792d6e91d749a5b43ee47cbb49",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/fed/policy.py",
+      "sha256": "0e3ef8d016aea2df561b95bf68d2116482684e5a08f71b17dc58a1c2d9e5623c",
+      "bytes": 3362,
+      "committedSha256": "0e3ef8d016aea2df561b95bf68d2116482684e5a08f71b17dc58a1c2d9e5623c",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "0e3ef8d016aea2df561b95bf68d2116482684e5a08f71b17dc58a1c2d9e5623c",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/fed/runtime.py",
+      "sha256": "b4f0a9a57bc5ba1a6895955c91625e6188b40206d35f628d7756e3ddefb89661",
+      "bytes": 33266,
+      "committedSha256": "b4f0a9a57bc5ba1a6895955c91625e6188b40206d35f628d7756e3ddefb89661",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "b4f0a9a57bc5ba1a6895955c91625e6188b40206d35f628d7756e3ddefb89661",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/names.py",
+      "sha256": "21dd001491fac1e4ecb2df1fa339d30aff7f29f33fb4f6cb9ab9ca9ea4d5635d",
+      "bytes": 4933,
+      "committedSha256": "21dd001491fac1e4ecb2df1fa339d30aff7f29f33fb4f6cb9ab9ca9ea4d5635d",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "21dd001491fac1e4ecb2df1fa339d30aff7f29f33fb4f6cb9ab9ca9ea4d5635d",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/profiles.py",
+      "sha256": "9da12247e93748ada1b94758e4e51a2842ddde92b0d76467a8ae99d6f0cd45dd",
+      "bytes": 9290,
+      "committedSha256": "9da12247e93748ada1b94758e4e51a2842ddde92b0d76467a8ae99d6f0cd45dd",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "9da12247e93748ada1b94758e4e51a2842ddde92b0d76467a8ae99d6f0cd45dd",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/receipts.py",
+      "sha256": "29e9f7f270006d34197e56b119844247ce5c09f9d8493ed3e99c3f04def2ef2d",
+      "bytes": 6020,
+      "committedSha256": "29e9f7f270006d34197e56b119844247ce5c09f9d8493ed3e99c3f04def2ef2d",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "29e9f7f270006d34197e56b119844247ce5c09f9d8493ed3e99c3f04def2ef2d",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/server.py",
+      "sha256": "8f4de71e0885b395d058b7dd88cfd740fdffd8a986f6a58ae8cc5b115dca2153",
+      "bytes": 53685,
+      "committedSha256": "8f4de71e0885b395d058b7dd88cfd740fdffd8a986f6a58ae8cc5b115dca2153",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "8f4de71e0885b395d058b7dd88cfd740fdffd8a986f6a58ae8cc5b115dca2153",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/store.py",
+      "sha256": "1f6a22f5ea5cc3d24b343e5f1c764974409640dd84aacd66cda565ba80b6cc58",
+      "bytes": 48600,
+      "committedSha256": "1f6a22f5ea5cc3d24b343e5f1c764974409640dd84aacd66cda565ba80b6cc58",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "1f6a22f5ea5cc3d24b343e5f1c764974409640dd84aacd66cda565ba80b6cc58",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/tests/fedharness.py",
+      "sha256": "8224930dcc0a031e9333b4f5781f1c0990a3a46f929a9808acc5566deea5595d",
+      "bytes": 9788,
+      "committedSha256": "8224930dcc0a031e9333b4f5781f1c0990a3a46f929a9808acc5566deea5595d",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "8224930dcc0a031e9333b4f5781f1c0990a3a46f929a9808acc5566deea5595d",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/tests/run_local.py",
+      "sha256": "2a3f9f0082084bc9e8a082381a0067da5f5f8350451f0f05cb504fee4702b172",
+      "bytes": 6611,
+      "committedSha256": "2a3f9f0082084bc9e8a082381a0067da5f5f8350451f0f05cb504fee4702b172",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "2a3f9f0082084bc9e8a082381a0067da5f5f8350451f0f05cb504fee4702b172",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/tests/test_fed_live.py",
+      "sha256": "af39ed93f205952f90a9975a7ed7381a7560ee8e0e4278dee220a57b08ad3b0c",
+      "bytes": 25499,
+      "committedSha256": "af39ed93f205952f90a9975a7ed7381a7560ee8e0e4278dee220a57b08ad3b0c",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "af39ed93f205952f90a9975a7ed7381a7560ee8e0e4278dee220a57b08ad3b0c",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/tests/test_fed_unit.py",
+      "sha256": "b5753215fef5705fdb829078730e5fb14e12bc4c1ec040870e84ff2603772adf",
+      "bytes": 12163,
+      "committedSha256": "b5753215fef5705fdb829078730e5fb14e12bc4c1ec040870e84ff2603772adf",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "b5753215fef5705fdb829078730e5fb14e12bc4c1ec040870e84ff2603772adf",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/tests/test_governance.py",
+      "sha256": "67348cc4c748e9bbdd93286808c770622f9c563addf3fb6c78b84a4090f1648d",
+      "bytes": 20734,
+      "committedSha256": "67348cc4c748e9bbdd93286808c770622f9c563addf3fb6c78b84a4090f1648d",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "67348cc4c748e9bbdd93286808c770622f9c563addf3fb6c78b84a4090f1648d",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/tests/test_hub_offline.py",
+      "sha256": "8d32fdb7e227963d4f6ec866ea26bedb1c6d80dc15d557421652935ccd21ed27",
+      "bytes": 41152,
+      "committedSha256": "8d32fdb7e227963d4f6ec866ea26bedb1c6d80dc15d557421652935ccd21ed27",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "8d32fdb7e227963d4f6ec866ea26bedb1c6d80dc15d557421652935ccd21ed27",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/tests/test_nats_federation.py",
+      "sha256": "d73d7b00e3e7a06037623d07fc30f3ee7b9dbb580d9fd5c79f2e0675f376226c",
+      "bytes": 6531,
+      "committedSha256": "d73d7b00e3e7a06037623d07fc30f3ee7b9dbb580d9fd5c79f2e0675f376226c",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "d73d7b00e3e7a06037623d07fc30f3ee7b9dbb580d9fd5c79f2e0675f376226c",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/tests/test_windows_callbacks.py",
+      "sha256": "a25340865b551ae290bd5302159dff365f58129947023608b6f6123bc092e4f0",
+      "bytes": 10003,
+      "committedSha256": "a25340865b551ae290bd5302159dff365f58129947023608b6f6123bc092e4f0",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "a25340865b551ae290bd5302159dff365f58129947023608b6f6123bc092e4f0",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "hub/transport.py",
+      "sha256": "e33439c76982486f64a985875659420f9b27d7369de4ff24755ff09ddcd59768",
+      "bytes": 7952,
+      "committedSha256": "e33439c76982486f64a985875659420f9b27d7369de4ff24755ff09ddcd59768",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "e33439c76982486f64a985875659420f9b27d7369de4ff24755ff09ddcd59768",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "install.sh",
+      "sha256": "035fb7eb674e909d174469c3b8d65b5eba4085acac99599ea9a1a8f8e689216c",
+      "bytes": 8795,
+      "committedSha256": "035fb7eb674e909d174469c3b8d65b5eba4085acac99599ea9a1a8f8e689216c",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "035fb7eb674e909d174469c3b8d65b5eba4085acac99599ea9a1a8f8e689216c",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "sdk/python/agentmux_contracts/validation.py",
+      "sha256": "54b3e233ab3cc3e6f3350872897fd3f2b5ba651f6a9c26741e367af017030242",
+      "bytes": 8236,
+      "committedSha256": "54b3e233ab3cc3e6f3350872897fd3f2b5ba651f6a9c26741e367af017030242",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "54b3e233ab3cc3e6f3350872897fd3f2b5ba651f6a9c26741e367af017030242",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "sdk/python/tests/test_contracts.py",
+      "sha256": "4e27ba59a2704bda976542686f068b03ae0ad20e2d97c3616a9757f977869c16",
+      "bytes": 10511,
+      "committedSha256": "4e27ba59a2704bda976542686f068b03ae0ad20e2d97c3616a9757f977869c16",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "4e27ba59a2704bda976542686f068b03ae0ad20e2d97c3616a9757f977869c16",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "sdk/typescript/src/index.ts",
+      "sha256": "7ef0e8f0663e03073b6ba1e558f95f2e745562a409e8ac3b6e3facfeea643a52",
+      "bytes": 11536,
+      "committedSha256": "7ef0e8f0663e03073b6ba1e558f95f2e745562a409e8ac3b6e3facfeea643a52",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "7ef0e8f0663e03073b6ba1e558f95f2e745562a409e8ac3b6e3facfeea643a52",
+      "workingMatchesP01RuntimeCommit": true
+    },
+    {
+      "path": "sdk/typescript/src/test.ts",
+      "sha256": "e9268a639ff0e6927839d524d1599777f4ab10d21c1fc641299289696aca1564",
+      "bytes": 6516,
+      "committedSha256": "e9268a639ff0e6927839d524d1599777f4ab10d21c1fc641299289696aca1564",
+      "workingMatchesAuditCommit": true,
+      "git74d6Sha256": "e9268a639ff0e6927839d524d1599777f4ab10d21c1fc641299289696aca1564",
+      "workingMatchesP01RuntimeCommit": true
+    }
+  ],
+  "designBoundaries": [
+    "Fixed trusted boot/kernel-lifecycle/internal-communication/exported-status release; exact membership and binary/manifest/API verification before process launch.",
+    "All new inter-plugin communication over NATS; pre-broker configuration/Compose/owned-process supervision is the bounded infrastructure exception.",
+    "System/protected/application accounts separated. External credentials can subscribe only to explicitly exported information, not internal lifecycle/status publication/commands or management APIs.",
+    "Legacy Hub, terminal transports, work/receipts/leases/SQLite/federation/application plugins remain outside protected assembly with distinct ownership.",
+    "Current v1 status-query is request-only; full versioned observation/snapshot/freshness response must be implemented and tested in P02, not inferred from a ping."
+  ],
+  "findings": [
+    {
+      "id": "KERNEL-01",
+      "kind": "design-seam",
+      "finding": "Legacy Hub construction creates database/token/role/directories before main; do not use it for a read-only kernel probe.",
+      "source": [
+        "hub/server.py:113",
+        "hub/server.py:915"
+      ]
+    },
+    {
+      "id": "KERNEL-02",
+      "kind": "preservation-risk",
+      "finding": "Federation configurable plugin membership and broad runtime/store context cannot be reused as the fixed protected assembly or immutable scoped PluginContext.",
+      "source": [
+        "hub/fed/runtime.py:63",
+        "hub/fed/runtime.py:97",
+        "hub/fed/plugin.py:30"
+      ]
+    },
+    {
+      "id": "KERNEL-03",
+      "kind": "existing-provisioning-risk",
+      "finding": "Existing streams are updated automatically; existing KV policy is not reconciled; interruption may leave partial resources and connections are closed only after success. Separate new profile resources and explicit mismatch/migration admission are needed.",
+      "source": [
+        "hub/fed/admin.py:15",
+        "hub/fed/conn.py:17"
+      ]
+    },
+    {
+      "id": "KERNEL-04",
+      "kind": "required-evidence-gap",
+      "finding": "Existing full live suite does not explicitly assert all HUB15 twice-provisioned policy inspection and dependency/CA/endpoint/credential/revocation/interruption negatives. Baseline required before affected provisioning changes.",
+      "source": [
+        "hub/tests/test_fed_live.py",
+        "hub/tests/fedharness.py",
+        "docs/planning/2026-10-09/component-audit-hub.json"
+      ]
+    },
+    {
+      "id": "KERNEL-05",
+      "kind": "runtime-proof-gap",
+      "finding": "SDK protected-membership/capability validation is available, but broker account enforcement, release trust and actual process boot need P02 proof.",
+      "source": [
+        "contracts/v1/schemas/protected-assembly.schema.json",
+        "sdk/python/agentmux_contracts/validation.py:42",
+        "sdk/typescript/src/index.ts:99"
+      ]
+    },
+    {
+      "id": "KERNEL-06",
+      "kind": "ownership-limit",
+      "finding": "P03 ordinary nesting/context, P04 business migration/enrollment, P06 client hooks, P07 UI migration, P10 live partner state and P12 production durability remain later work. P02 must preserve compatible seams and qualify its own boot/platform/account/profile/lock boundaries.",
+      "source": [
+        "docs/planning/2026-10-09/delivery/decisions/acceptance.md",
+        "docs/planning/2026-10-09/delivery/decisions/startup-contract.md"
+      ]
+    }
+  ],
+  "baselineEvidence": {
+    "runtimeReports": [
+      "docs/planning/2026-10-09/delivery/evidence/P01/native/74d6bb9/root-review.json",
+      "docs/planning/2026-10-09/delivery/evidence/P01/wsl-native-74d6bb9/root-review.json"
+    ],
+    "meaning": "Accepted P01 exact-runtime/environment baseline: native Linux/macOS and native-filesystem WSL full132; historical results are not new P02 executions. Source reuse requires exact relevant byte comparison against final P02 candidate.",
+    "HUB15DedicatedBaseline": "not-run-by-this-audit; existing declarations still say baselineStatus not-run and targetStatus not-run. Root must collect/review exact complete policy and negative matrix before affected implementation."
+  },
+  "requiredTestsAndRollback": "recommendations.md contains owner-specific baseline, negative, candidate and rollback matrix; assigned to P02-T01 through T05, T07 and P02-GATE. No future result is called passed.",
+  "patternCheck": {
+    "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+    "exitCode": 1,
+    "ok": false,
+    "error": "Review is stale or missing: inspect changes and refresh sourceDigest",
+    "meaning": "Current scope/source freshness blocker. Attestation unchanged by this audit; preflight is not accepted."
+  },
+  "recommendationsBinding": {
+    "path": "docs/planning/2026-10-09/delivery/evidence/P02/preflight-kernel/recommendations.md",
+    "sha256": "327dc8c000f3147aed600fcdf20a65104acc4e2ce46ec2ee9576f850ebc6ef40",
+    "bytes": 16006
+  },
+  "remainingBeforePreflightAcceptance": [
+    "Root review of intended new source inventory, affected callers, separate ownership, full status/permission contracts, baseline gaps and assigned tests.",
+    "Resolve stale pattern review through normal reviewed-source attestation; do not silence it by editing digest only.",
+    "Collect dedicated HUB15 baseline if an implementation change touches provision/layout/connection semantics; retain actual unavailable/failing environments."
+  ],
+  "noImplementationOrQualificationClaim": true
+}

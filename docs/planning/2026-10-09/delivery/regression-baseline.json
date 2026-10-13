@@ -131,20 +131,20 @@
     "tests/storage/run.py": {
       "path": "tests/storage/run.py",
       "originalSha256": "c0b9ec17212029fdfebf1ac56d4399f71ed4539587234bf3f60ee00017043624",
-      "replacementSha256": "3eb87919f153de49af63839d00dd07305e2a341cad1d965b33c57fbb02d55b55",
+      "replacementSha256": "e68dd05cf34b505a212d170b0777c9fc2bbe46edcfc324ec6242fae00c17010f",
       "reviewer": "Codex",
-      "reviewedAt": "2026-10-09",
-      "reason": "Retains prior 18 cases and assertions; adds complete incoming task/origin/claim construction before one publish, retry recovery and independent reads. Twenty positive cases and partial-publication negative control reviewed.",
-      "evidence": "docs/planning/2026-10-09/delivery/evidence/P01/parent-change-review.json"
+      "reviewedAt": "2026-10-13T19:32:05.290871+00:00",
+      "reason": "Append real S03 capacity qualification and accurately bounded documentation. Original module AST and first20cases match the accepted candidate; all27pass, with actual bypass mutation failure.",
+      "evidence": "docs/planning/2026-10-09/delivery/evidence/P01/storage-capacity-qualification/root-review.json"
     },
     "tests/storage/README.md": {
       "path": "tests/storage/README.md",
       "originalSha256": "ec4d13a2a6cafc9be91cc1b9f64edf48c60ebdaa322b042642fe47e47a18d98c",
-      "replacementSha256": "9655bd9b9e24e5b11b1c6dbeb806e4fe24145647891d45c801c0ee26c98ebe6c",
+      "replacementSha256": "bf485c6073f82d466838b8cefa06d110755bd2fe53a12af0826d6256fc96e7e5",
       "reviewer": "Codex",
-      "reviewedAt": "2026-10-09",
-      "reason": "Preserves existing qualification scope and adds the two bounded incoming-creation fixture cases and limits.",
-      "evidence": "docs/planning/2026-10-09/delivery/evidence/P01/parent-change-review.json"
+      "reviewedAt": "2026-10-13T19:32:05.290871+00:00",
+      "reason": "Append real S03 capacity qualification and accurately bounded documentation. Original module AST and first20cases match the accepted candidate; all27pass, with actual bypass mutation failure.",
+      "evidence": "docs/planning/2026-10-09/delivery/evidence/P01/storage-capacity-qualification/root-review.json"
     },
     "dashboard/test_field_panels.py": {
       "path": "dashboard/test_field_panels.py",
@@ -208,6 +208,24 @@
       "reviewedAt": "2026-10-09",
       "reason": "All original test methods retained; adds deterministic second-boundary rotation regression. Positive backup checks and old-code negative control reviewed.",
       "evidence": "docs/planning/2026-10-09/delivery/evidence/P01/parent-change-review.json"
+    },
+    "tests/contracts/test_payloads.py": {
+      "path": "tests/contracts/test_payloads.py",
+      "originalSha256": "80b273a16da8050565a320d63e2828cec903fc77f584e228e862b4e736dc38ef",
+      "replacementSha256": "ac6a7e41e1430cdbe283c24d4041e55dcd4be8a7858b5843cb959330c8f9f38c",
+      "reviewer": "Codex",
+      "reviewedAt": "2026-10-13T19:31:09.501044+00:00",
+      "reason": "Add L04 reply coverage; all original payloads, assertions and fixed-service refusal semantics retained; both reply signed-recipient boundaries checked.",
+      "evidence": "docs/planning/2026-10-09/delivery/evidence/P01/startup-status-root-integration/root-review.json"
+    },
+    "tests/contracts/vectors/payload-examples.json": {
+      "path": "tests/contracts/vectors/payload-examples.json",
+      "originalSha256": "565db177e76f5cef9ef748a7a3ac0482da138908760d00bae92e61b1e164d4a7",
+      "replacementSha256": "f882c2c3188cddf3c6a7ecafa14e29cb50a2c03e2da351a6e2d1a3d3c496be41",
+      "reviewer": "Codex",
+      "reviewedAt": "2026-10-13T19:31:09.501044+00:00",
+      "reason": "Add L04 reply coverage; all original payloads, assertions and fixed-service refusal semantics retained; both reply signed-recipient boundaries checked.",
+      "evidence": "docs/planning/2026-10-09/delivery/evidence/P01/startup-status-root-integration/root-review.json"
     }
   },
   "history": [
@@ -289,6 +307,34 @@
         "Deliver.test_windows_claude_idle_hint_receives_notice"
       ],
       "independentEvidence": "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/regression-independent-review.json"
+    }
+  ],
+  "reviewHistory": [
+    {
+      "path": "tests/storage/run.py",
+      "previousReplacement": {
+        "path": "tests/storage/run.py",
+        "originalSha256": "c0b9ec17212029fdfebf1ac56d4399f71ed4539587234bf3f60ee00017043624",
+        "replacementSha256": "3eb87919f153de49af63839d00dd07305e2a341cad1d965b33c57fbb02d55b55",
+        "reviewer": "Codex",
+        "reviewedAt": "2026-10-09",
+        "reason": "Retains prior 18 cases and assertions; adds complete incoming task/origin/claim construction before one publish, retry recovery and independent reads. Twenty positive cases and partial-publication negative control reviewed.",
+        "evidence": "docs/planning/2026-10-09/delivery/evidence/P01/parent-change-review.json"
+      },
+      "supersededAt": "2026-10-13T19:32:05.290871+00:00"
+    },
+    {
+      "path": "tests/storage/README.md",
+      "previousReplacement": {
+        "path": "tests/storage/README.md",
+        "originalSha256": "ec4d13a2a6cafc9be91cc1b9f64edf48c60ebdaa322b042642fe47e47a18d98c",
+        "replacementSha256": "9655bd9b9e24e5b11b1c6dbeb806e4fe24145647891d45c801c0ee26c98ebe6c",
+        "reviewer": "Codex",
+        "reviewedAt": "2026-10-09",
+        "reason": "Preserves existing qualification scope and adds the two bounded incoming-creation fixture cases and limits.",
+        "evidence": "docs/planning/2026-10-09/delivery/evidence/P01/parent-change-review.json"
+      },
+      "supersededAt": "2026-10-13T19:32:05.290871+00:00"
     }
   ]
 }

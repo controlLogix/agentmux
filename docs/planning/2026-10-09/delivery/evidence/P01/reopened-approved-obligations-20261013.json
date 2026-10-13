@@ -1,0 +1,38 @@
+{
+  "recordedAt": "2026-10-13T19:18:00.162721+00:00",
+  "reviewer": "Codex",
+  "sourceCommit": "9db01f2d2ff6656d3f2c7fd8f9567fb421104605",
+  "decision": "reopen-P01",
+  "supersedesAcceptanceForAdvancement": "docs/planning/2026-10-09/delivery/evidence/P01/P01-gate-record.json",
+  "findings": [
+    {
+      "id": "P01-OMISSION-L04",
+      "taskId": "P01-T01",
+      "requirement": "Accepted L04 explicitly promises a P01 response schema and success/failure fixtures.",
+      "observed": "Only the status-query request schema exists. Prior contract suite passes do not prove the missing response."
+    },
+    {
+      "id": "P01-OMISSION-S03",
+      "taskId": "P01-T07",
+      "requirement": "Accepted S03 requires P01/P04 proof that application admission preserves a completion/reconciliation reserve.",
+      "observed": "The existing20storage cases do not exercise capacity/reserve admission. P04 production enforcement does not replace P01 fixture proof."
+    }
+  ],
+  "actions": [
+    "Park P02-T06; retain its read-only audits.",
+    "Reopen affected P01 tasks and gate, preserving all historical evidence.",
+    "Add the omitted requirements explicitly to task details.",
+    "Run focused checks, affected stable suites and required native verification; review, commit, push and verify corrected acceptance before P02 resumes."
+  ],
+  "sourceSha256": {
+    "docs/planning/2026-10-09/delivery/decisions/acceptance.md": "b687a0353d20cb76244ce4c72f21661ce9f1808f74043d3a2b6b979b6dfdab59",
+    "docs/planning/2026-10-09/delivery/decisions/startup-contract.md": "2c86650ad04978106ff011827c55708a7f02238f112177cefd4629ee857dc127",
+    "docs/planning/2026-10-09/delivery/decisions/storage-contract.md": "19bb201cc3ffdc6d4e19213faee99ed584179d2fa0f34bbefb0371146e728fab",
+    "contracts/v1/schemas/status-query.schema.json": "1602ff586698c26b8f2cc8ab7be90297cd86dbd0d83c41124421b684707f0a2c",
+    "tests/storage/run.py": "3eb87919f153de49af63839d00dd07305e2a341cad1d965b33c57fbb02d55b55"
+  },
+  "limitations": [
+    "This is a source review and task correction, not evidence that either repair passes.",
+    "Existing passing evidence remains reusable only for unchanged requirements and source inputs."
+  ]
+}

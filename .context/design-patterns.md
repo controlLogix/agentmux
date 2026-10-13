@@ -987,6 +987,10 @@ This registry records how, where, and why approved Dofactory and Enterprise Inte
         {
           "path": "tests/contracts/fake_execution.py",
           "symbol": "FakeWorker"
+        },
+        {
+          "path": "contracts/v1/schemas/startup-status-observation.schema.json",
+          "symbol": "startup-status-observation"
         }
       ],
       "verificationEvidence": [
@@ -1245,6 +1249,18 @@ This registry records how, where, and why approved Dofactory and Enterprise Inte
               "tests/contracts/test_state_models.py"
             ]
           }
+        },
+        {
+          "date": "2026-10-13",
+          "scope": "Recover accepted L04 P01 observation contract",
+          "how": "A closed registered reply uses the existing independent SDK validators and signed-recipient boundary. It distinguishes observed zero, unknown work, visible hub inventories and unavailable services.",
+          "why": "The request-only schema did not fulfill the approved response contract.",
+          "tradeoffs": "A shared wire schema avoids independent terminal/dashboard field meanings but needs versioned compatibility. Simpler alternative: unvalidated display strings; rejected because they cannot preserve unknown/forbidden states. Runtime authentication, filtering and freshness remain owner responsibilities.",
+          "evidence": [
+            "tests/contracts/test_startup_status.py",
+            "tests/contracts/test_payloads.py"
+          ],
+          "qualification": "Focused qualification and independent repair review in progress; no runtime readiness pass."
         }
       ]
     },
@@ -1270,6 +1286,10 @@ This registry records how, where, and why approved Dofactory and Enterprise Inte
         {
           "path": "tests/storage/typescript/src/client.ts",
           "symbol": "execute"
+        },
+        {
+          "path": "tests/storage/capacity.py",
+          "symbol": "CapacityOwner.apply"
         }
       ],
       "verificationEvidence": [
@@ -1351,6 +1371,18 @@ This registry records how, where, and why approved Dofactory and Enterprise Inte
             "how": "Apply a bounded transaction boundary at the owning JetStream record or qualified atomic batch within one stream: state, provenance, operation outcome and recoverable outgoing intent commit together. Consumer acknowledgment, projection updates, cross-stream/hub transfer and external tool actions remain separate recoverable steps. Legacy SQL plus outbox repairs remain relevant to P01 baseline work; STATE-01 supersedes SQL as the preferred new authority. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P01, P04, P05, P10. Implementation locations will be recorded when implemented. P00 prefers one conditional complete entity transition including state, provenance, outcome and effect intent. Same-stream batching requires the P01 SDK/concurrency proof; cross-boundary work remains recoverable. See delivery/decisions/storage-contract.md. This is a recommendation pending P00 review. Configuration and registry changes also commit to their owner ledger first; KV is a cursor-bearing projection, never a second authoritative write. P01 tests/storage/run.py now qualifies this boundary only in disposable fixture owners: Python and TypeScript conditional publishes append a complete state/provenance/effect-intent record, and a two-client race admits one subject revision. Raw Python and native TypeScript atomic batches are exercised on one file-backed R1 stream. Tests reject sequence gaps, stale conditions (including an intervening ordinary commit), uncommitted batches across graceful restart and attempted cross-stream batches. The opening staging reply is not a durable acknowledgment; only a final commit acknowledgment confirms the batch. Production domain owners remain planned for P04/P05/P10; no legacy authority moved. The next bounded storage extension recovers a complete two-record batch after losing its final acknowledgment and restarting beyond the deduplication window. It also rejects fixture capability declarations spanning another stream, KV, object upload or an external tool before dispatch. Production capability registration and staged artifact recovery remain later work.",
             "tradeoffs": "One complete record is simpler than a batch and is preferred when it preserves the invariant. Same-stream atomic batches require pinned server/client qualification and do not create a distributed database/broker/hub/tool transaction. SQL authority is an explicit exception requiring evidence and review. Fixture qualification uses NATS Server 2.15.0 on WSL/Linux only. It does not prove native macOS, replication availability, power-loss durability, account permissions or business-level authorization. Full aggregate records remain preferred over batch coordination. The earlier native-platform exclusion describes the original report. Native macOS and Linux passed the original 14-case suite at a2e9ee6; the additional 18-case candidate needs its own CI evidence. R3 and power-loss remain unqualified."
           }
+        },
+        {
+          "date": "2026-10-13",
+          "scope": "Recover S03 bounded completion reserve qualification",
+          "how": "A complete retained capacity record includes budget allocation and operation outcome. Subject-revision compare-and-append serializes contenders; retained operation lookup prevents duplicate charging after restart.",
+          "why": "Bulk work must not consume separately budgeted completion/reconciliation capacity. Existing storage cases did not exercise that admission guarantee.",
+          "tradeoffs": "Conservative per-record physical slots and two reserved final records sacrifice capacity for an auditable bound. Simpler alternative: payload-only usage thresholds; rejected because record framing and history can consume broker capacity. This single-task fixture does not implement production multi-task policy or disk-failure guarantees.",
+          "evidence": [
+            "tests/storage/capacity.py",
+            "tests/storage/run.py"
+          ],
+          "qualification": "Real-broker fixture qualification pending; production pattern status stays planned."
         }
       ]
     },
@@ -1392,6 +1424,10 @@ This registry records how, where, and why approved Dofactory and Enterprise Inte
         {
           "path": "tests/leaf/signed_run.py",
           "symbol": "exercise"
+        },
+        {
+          "path": "tests/storage/capacity.py",
+          "symbol": "CapacityOwner.replay"
         }
       ],
       "verificationEvidence": [
@@ -1539,6 +1575,18 @@ This registry records how, where, and why approved Dofactory and Enterprise Inte
               "docs/planning/2026-10-09/delivery/evidence/P01/leaf-result.json"
             ]
           }
+        },
+        {
+          "date": "2026-10-13",
+          "scope": "Recover S03 bounded completion reserve qualification",
+          "how": "A complete retained capacity record includes budget allocation and operation outcome. Subject-revision compare-and-append serializes contenders; retained operation lookup prevents duplicate charging after restart.",
+          "why": "Bulk work must not consume separately budgeted completion/reconciliation capacity. Existing storage cases did not exercise that admission guarantee.",
+          "tradeoffs": "Conservative per-record physical slots and two reserved final records sacrifice capacity for an auditable bound. Simpler alternative: payload-only usage thresholds; rejected because record framing and history can consume broker capacity. This single-task fixture does not implement production multi-task policy or disk-failure guarantees.",
+          "evidence": [
+            "tests/storage/capacity.py",
+            "tests/storage/run.py"
+          ],
+          "qualification": "Real-broker fixture qualification pending; production pattern status stays planned."
         }
       ]
     },

@@ -1,0 +1,1364 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:startup-status-observation",
+  "title": "Agentmux startup and status observation v1",
+  "description": "Bounded L04 observation for identical start, reuse and refresh semantics. Supplied identity references and state are not authentication, permission or live readiness proof. The status owner must authenticate and filter every observation; unsupported services report unavailable. No credential, private path or model-reasoning fields are allowed.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "observationId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "observedAt": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+    },
+    "sourceRevision": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+    },
+    "startupAttemptId": {
+      "anyOf": [
+        {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "disposition": {
+      "enum": [
+        "started",
+        "reused",
+        "starting",
+        "remote",
+        "unconfigured",
+        "failed"
+      ]
+    },
+    "caller": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "principalId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "kind": {
+          "enum": [
+            "human",
+            "device",
+            "service",
+            "plugin"
+          ]
+        },
+        "authenticatedIdentityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "scope": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+        }
+      },
+      "required": [
+        "principalId",
+        "kind",
+        "authenticatedIdentityRef",
+        "scope"
+      ]
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "component": {
+            "enum": [
+              "startup",
+              "instance",
+              "persistence",
+              "work",
+              "hubs"
+            ]
+          },
+          "code": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512,
+            "pattern": "^[^\\r\\n\\u0000]+$"
+          },
+          "retryable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "component",
+          "code",
+          "message",
+          "retryable"
+        ]
+      },
+      "maxItems": 32
+    },
+    "instance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "instanceId": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "displayName": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\r\\n\\u0000]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "profileId": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "installedVersion": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/version"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "runningVersion": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/version"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "mode": {
+          "enum": [
+            "local",
+            "remote",
+            "unknown"
+          ]
+        },
+        "composeProject": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "contextDisplayName": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160,
+              "pattern": "^[^\\r\\n\\u0000]+$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "contextFingerprint": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "endpoint": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": "^(https?|nats|tls)://[A-Za-z0-9.\\[\\]:_-]+(/[A-Za-z0-9._~!$&()*+,;=:@%/-]*)?$",
+              "description": "Permitted public endpoint only; no user information, query, fragment or private file path. The authenticated status owner must filter visibility and redact values."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dashboard": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 2048,
+              "pattern": "^(https?|nats|tls)://[A-Za-z0-9.\\[\\]:_-]+(/[A-Za-z0-9._~!$&()*+,;=:@%/-]*)?$",
+              "description": "Permitted public endpoint only; no user information, query, fragment or private file path. The authenticated status owner must filter visibility and redact values."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "readiness": {
+          "enum": [
+            "ready",
+            "degraded",
+            "not_ready",
+            "unknown"
+          ]
+        },
+        "services": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "serviceId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "availability": {
+                "enum": [
+                  "available",
+                  "unavailable",
+                  "unknown",
+                  "forbidden"
+                ]
+              },
+              "unavailableReason": {
+                "anyOf": [
+                  {
+                    "enum": [
+                      "not_implemented",
+                      "not_configured",
+                      "probe_failed",
+                      "forbidden",
+                      "unknown"
+                    ]
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "readiness": {
+                "enum": [
+                  "ready",
+                  "degraded",
+                  "not_ready",
+                  "unknown"
+                ]
+              },
+              "observedAt": {
+                "anyOf": [
+                  {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "sourceRevision": {
+                "anyOf": [
+                  {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "serviceId",
+              "availability",
+              "unavailableReason",
+              "readiness",
+              "observedAt",
+              "sourceRevision"
+            ],
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "availability": {
+                      "enum": [
+                        "available"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "availability"
+                  ]
+                },
+                "then": {
+                  "properties": {
+                    "unavailableReason": {
+                      "type": "null"
+                    },
+                    "observedAt": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+                    },
+                    "sourceRevision": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "availability": {
+                      "enum": [
+                        "unavailable",
+                        "unknown",
+                        "forbidden"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "availability"
+                  ]
+                },
+                "then": {
+                  "properties": {
+                    "unavailableReason": {
+                      "enum": [
+                        "not_implemented",
+                        "not_configured",
+                        "probe_failed",
+                        "forbidden",
+                        "unknown"
+                      ]
+                    },
+                    "readiness": {
+                      "const": "unknown"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "instanceId",
+        "displayName",
+        "profileId",
+        "installedVersion",
+        "runningVersion",
+        "mode",
+        "composeProject",
+        "contextDisplayName",
+        "contextFingerprint",
+        "endpoint",
+        "dashboard",
+        "readiness",
+        "services"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "readiness": {
+                "enum": [
+                  "ready"
+                ]
+              }
+            },
+            "required": [
+              "readiness"
+            ]
+          },
+          "then": {
+            "properties": {
+              "instanceId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "displayName": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "^[^\\r\\n\\u0000]+$"
+              },
+              "profileId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "installedVersion": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/version"
+              },
+              "runningVersion": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/version"
+              },
+              "mode": {
+                "enum": [
+                  "local",
+                  "remote"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "persistence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "availability": {
+          "enum": [
+            "available",
+            "unavailable",
+            "unknown",
+            "forbidden"
+          ]
+        },
+        "backend": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "profile": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "serverId": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "domainId": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "readiness": {
+          "enum": [
+            "ready",
+            "degraded",
+            "not_ready",
+            "unknown"
+          ]
+        },
+        "storagePressure": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "state": {
+              "enum": [
+                "known",
+                "unknown",
+                "unavailable"
+              ]
+            },
+            "percentUsed": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "percentUsed"
+          ],
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "state": {
+                    "enum": [
+                      "known"
+                    ]
+                  }
+                },
+                "required": [
+                  "state"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "percentUsed": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "state": {
+                    "enum": [
+                      "unknown",
+                      "unavailable"
+                    ]
+                  }
+                },
+                "required": [
+                  "state"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "percentUsed": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "replicationHealth": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "state": {
+              "enum": [
+                "healthy",
+                "degraded",
+                "unknown",
+                "unavailable"
+              ]
+            },
+            "replicas": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "state",
+            "replicas"
+          ],
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "state": {
+                    "enum": [
+                      "healthy",
+                      "degraded"
+                    ]
+                  }
+                },
+                "required": [
+                  "state"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "replicas": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 9007199254740991
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "state": {
+                    "enum": [
+                      "unknown",
+                      "unavailable"
+                    ]
+                  }
+                },
+                "required": [
+                  "state"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "replicas": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "observedAt": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "availability",
+        "backend",
+        "profile",
+        "serverId",
+        "domainId",
+        "readiness",
+        "storagePressure",
+        "replicationHealth",
+        "observedAt"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "availability": {
+                "enum": [
+                  "available"
+                ]
+              }
+            },
+            "required": [
+              "availability"
+            ]
+          },
+          "then": {
+            "properties": {
+              "backend": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "profile": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "observedAt": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "availability": {
+                "enum": [
+                  "unavailable",
+                  "unknown",
+                  "forbidden"
+                ]
+              }
+            },
+            "required": [
+              "availability"
+            ]
+          },
+          "then": {
+            "properties": {
+              "readiness": {
+                "const": "unknown"
+              },
+              "serverId": {
+                "type": "null"
+              },
+              "domainId": {
+                "type": "null"
+              },
+              "storagePressure": {
+                "properties": {
+                  "state": {
+                    "enum": [
+                      "unknown",
+                      "unavailable"
+                    ]
+                  }
+                }
+              },
+              "replicationHealth": {
+                "properties": {
+                  "state": {
+                    "enum": [
+                      "unknown",
+                      "unavailable"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "work": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "enum": [
+            "known",
+            "unknown",
+            "unavailable",
+            "forbidden"
+          ]
+        },
+        "active": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "projects": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reserved": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceCursor": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observedAt": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "state",
+        "active",
+        "projects",
+        "reserved",
+        "sourceCursor",
+        "observedAt"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "known"
+                ]
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "active": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+              },
+              "projects": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+              },
+              "reserved": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+              },
+              "sourceCursor": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+              },
+              "observedAt": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "enum": [
+                  "unknown",
+                  "unavailable",
+                  "forbidden"
+                ]
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "active": {
+                "type": "null"
+              },
+              "projects": {
+                "type": "null"
+              },
+              "reserved": {
+                "type": "null"
+              },
+              "sourceCursor": {
+                "type": "null"
+              },
+              "observedAt": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "hubs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "inventoryState": {
+          "enum": [
+            "known",
+            "unavailable",
+            "forbidden"
+          ]
+        },
+        "entries": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "hubId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "displayName": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "^[^\\r\\n\\u0000]+$"
+              },
+              "scope": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+              },
+              "configuredLinkState": {
+                "enum": [
+                  "connected",
+                  "disconnected",
+                  "stale",
+                  "unknown",
+                  "not_configured"
+                ]
+              },
+              "applicationAvailability": {
+                "enum": [
+                  "available",
+                  "unavailable",
+                  "unknown",
+                  "forbidden"
+                ]
+              },
+              "federationReadiness": {
+                "enum": [
+                  "ready",
+                  "degraded",
+                  "not_ready",
+                  "unknown"
+                ]
+              },
+              "trustState": {
+                "enum": [
+                  "approved",
+                  "denied",
+                  "review_required",
+                  "unknown",
+                  "not_configured"
+                ]
+              },
+              "observedAt": {
+                "anyOf": [
+                  {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "ageSeconds": {
+                "anyOf": [
+                  {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "reservationSummary": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "state": {
+                    "enum": [
+                      "known",
+                      "unknown",
+                      "unavailable",
+                      "forbidden"
+                    ]
+                  },
+                  "count": {
+                    "anyOf": [
+                      {
+                        "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "sourceCursor": {
+                    "anyOf": [
+                      {
+                        "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "state",
+                  "count",
+                  "sourceCursor"
+                ],
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "state": {
+                          "enum": [
+                            "known"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "state"
+                      ]
+                    },
+                    "then": {
+                      "properties": {
+                        "count": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+                        },
+                        "sourceCursor": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "if": {
+                      "properties": {
+                        "state": {
+                          "enum": [
+                            "unknown",
+                            "unavailable",
+                            "forbidden"
+                          ]
+                        }
+                      },
+                      "required": [
+                        "state"
+                      ]
+                    },
+                    "then": {
+                      "properties": {
+                        "count": {
+                          "type": "null"
+                        },
+                        "sourceCursor": {
+                          "type": "null"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            "required": [
+              "hubId",
+              "displayName",
+              "scope",
+              "configuredLinkState",
+              "applicationAvailability",
+              "federationReadiness",
+              "trustState",
+              "observedAt",
+              "ageSeconds",
+              "reservationSummary"
+            ],
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "applicationAvailability": {
+                      "enum": [
+                        "unavailable",
+                        "unknown",
+                        "forbidden"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "applicationAvailability"
+                  ]
+                },
+                "then": {
+                  "properties": {
+                    "federationReadiness": {
+                      "const": "unknown"
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "configuredLinkState": {
+                      "enum": [
+                        "unknown",
+                        "not_configured"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "configuredLinkState"
+                  ]
+                },
+                "then": {
+                  "properties": {
+                    "federationReadiness": {
+                      "enum": [
+                        "unknown",
+                        "not_ready"
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "configuredLinkState": {
+                      "enum": [
+                        "connected",
+                        "disconnected",
+                        "stale"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "configuredLinkState"
+                  ]
+                },
+                "then": {
+                  "properties": {
+                    "observedAt": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+                    },
+                    "ageSeconds": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "maxItems": 256
+        }
+      },
+      "required": [
+        "inventoryState",
+        "entries"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "inventoryState": {
+                "enum": [
+                  "unavailable",
+                  "forbidden"
+                ]
+              }
+            },
+            "required": [
+              "inventoryState"
+            ]
+          },
+          "then": {
+            "properties": {
+              "entries": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "observationId",
+    "observedAt",
+    "sourceRevision",
+    "startupAttemptId",
+    "disposition",
+    "caller",
+    "errors",
+    "instance",
+    "persistence",
+    "work",
+    "hubs"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "disposition": {
+            "enum": [
+              "started",
+              "reused"
+            ]
+          }
+        },
+        "required": [
+          "disposition"
+        ]
+      },
+      "then": {
+        "properties": {
+          "instance": {
+            "properties": {
+              "readiness": {
+                "enum": [
+                  "ready",
+                  "degraded"
+                ]
+              },
+              "mode": {
+                "const": "local"
+              },
+              "instanceId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "profileId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "composeProject": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "contextDisplayName": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 160,
+                "pattern": "^[^\\r\\n\\u0000]+$"
+              },
+              "contextFingerprint": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+              },
+              "endpoint": {
+                "type": "string",
+                "maxLength": 2048,
+                "pattern": "^(https?|nats|tls)://[A-Za-z0-9.\\[\\]:_-]+(/[A-Za-z0-9._~!$&()*+,;=:@%/-]*)?$",
+                "description": "Permitted public endpoint only; no user information, query, fragment or private file path. The authenticated status owner must filter visibility and redact values."
+              }
+            }
+          },
+          "startupAttemptId": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "disposition": {
+            "enum": [
+              "starting"
+            ]
+          }
+        },
+        "required": [
+          "disposition"
+        ]
+      },
+      "then": {
+        "properties": {
+          "startupAttemptId": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+          },
+          "instance": {
+            "properties": {
+              "readiness": {
+                "enum": [
+                  "not_ready",
+                  "unknown"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "disposition": {
+            "enum": [
+              "remote"
+            ]
+          }
+        },
+        "required": [
+          "disposition"
+        ]
+      },
+      "then": {
+        "properties": {
+          "instance": {
+            "properties": {
+              "mode": {
+                "const": "remote"
+              },
+              "composeProject": {
+                "type": "null"
+              },
+              "contextDisplayName": {
+                "type": "null"
+              },
+              "contextFingerprint": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "disposition": {
+            "enum": [
+              "unconfigured",
+              "failed"
+            ]
+          }
+        },
+        "required": [
+          "disposition"
+        ]
+      },
+      "then": {
+        "properties": {
+          "instance": {
+            "properties": {
+              "readiness": {
+                "enum": [
+                  "not_ready",
+                  "unknown"
+                ]
+              }
+            }
+          },
+          "errors": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ],
+  "$comment": "Timestamp references follow the existing common lexical schema, not calendar validation or freshness proof. The authenticated status owner must verify caller identity and allowed scope, filter entries and counts, check observation age and redact every allowed display/error string. Schema admission cannot establish those runtime facts."
+}

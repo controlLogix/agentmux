@@ -26,6 +26,7 @@
         "contracts/v1/schemas/plugin-lifecycle.schema.json",
         "contracts/v1/schemas/plugin-manifest.schema.json",
         "contracts/v1/schemas/protected-assembly.schema.json",
+        "contracts/v1/schemas/startup-status-observation.schema.json",
         "contracts/v1/schemas/status-query.schema.json",
         "contracts/v1/schemas/task-inspect.schema.json",
         "contracts/v1/schemas/task-reserve.schema.json",
@@ -67,6 +68,17 @@
             "hub/tests/test_hub_offline.py"
           ],
           "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. Two contract SDKs and isolated NATS.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-01-C03",
+          "description": "Qualify the accepted L04 status observation shape through both independent SDKs, including observed zero versus unknown, caller-scoped visibility, forbidden versus unavailable hub inventory, explicit failures and unsupported-service observations. Wire fixtures do not prove runtime readiness or authorization.",
+          "existingTests": [
+            "tests/contracts/test_startup_status.py",
+            "tests/contracts/test_payloads.py"
+          ],
+          "requiredEnvironment": "Independent Python and TypeScript contract clients on native Linux/macOS and Linux filesystems in WSL.",
           "baselineStatus": "not-run",
           "targetStatus": "not-run"
         }
@@ -123,6 +135,16 @@
             "contracts/v1/models/state-machines.json"
           ],
           "note": "Preserve five P00 tables/68 edges, add explicit cancellation context and test missing guard/role/revision rejection. Leaf fixture does not replace production federation or final bilateral acceptance."
+        },
+        {
+          "date": "2026-10-13T19:21:29.079274+00:00",
+          "reviewer": "Codex",
+          "scope": "Recover omitted accepted P00 L04/S03 qualification",
+          "addedFiles": [
+            "contracts/v1/schemas/startup-status-observation.schema.json"
+          ],
+          "addedBehaviorCheck": "HUB-01-C03",
+          "note": "Original files, checks and history retained. New qualification is pending; no runtime replacement or later-phase pass is implied."
         }
       ]
     },
@@ -1596,6 +1618,7 @@
         "hub/tests/test_hub_offline.py",
         "hub/tests/test_local_runner.py",
         "hub/tests/test_nats_federation.py",
+        "hub/tests/test_windows_callbacks.py",
         "sdk/python/README.md",
         "sdk/python/agentmux_contracts/__init__.py",
         "sdk/python/agentmux_contracts/__main__.py",
@@ -1627,26 +1650,28 @@
         "tests/contracts/test_payloads.py",
         "tests/contracts/test_recovery.py",
         "tests/contracts/test_semantics.py",
+        "tests/contracts/test_startup_status.py",
         "tests/contracts/test_state_models.py",
         "tests/contracts/vectors/payload-examples.json",
         "tests/contracts/vectors/semantic-examples.json",
+        "tests/contracts/vectors/startup-status-examples.json",
         "tests/contracts/vectors/valid-examples.json",
         "tests/leaf/README.md",
         "tests/leaf/run.py",
         "tests/leaf/signed_run.py",
+        "tests/platform/README.md",
+        "tests/platform/fixtures/wsl-inventory.json",
+        "tests/platform/inventory.py",
+        "tests/platform/test_inventory.py",
         "tests/storage/README.md",
+        "tests/storage/capacity.py",
         "tests/storage/python_client.py",
         "tests/storage/run.py",
         "tests/storage/typescript/README.md",
         "tests/storage/typescript/package-lock.json",
         "tests/storage/typescript/package.json",
         "tests/storage/typescript/src/client.ts",
-        "tests/storage/typescript/tsconfig.json",
-        "hub/tests/test_windows_callbacks.py",
-        "tests/platform/inventory.py",
-        "tests/platform/README.md",
-        "tests/platform/test_inventory.py",
-        "tests/platform/fixtures/wsl-inventory.json"
+        "tests/storage/typescript/tsconfig.json"
       ],
       "role": "test-support",
       "baselineGroups": [
@@ -1706,6 +1731,16 @@
             "hub/tests/test_local_runner.py"
           ],
           "requiredEnvironment": "P01 harness validation in disposable local and cluster test installations.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-26-C04",
+          "description": "Qualify the accepted S03 application capacity reserve with a real disposable JetStream fixture: competing bulk admissions, completion/reconciliation headroom, restart/replay, explicit quota exhaustion and a failing bypass control. Preserve all earlier storage assertions. Production policy and physical disk-failure guarantees remain later obligations.",
+          "existingTests": [
+            "tests/storage/run.py"
+          ],
+          "requiredEnvironment": "Pinned real file-backed NATS JetStream on native Linux/macOS and Linux filesystems in WSL; isolated data directories.",
           "baselineStatus": "not-run",
           "targetStatus": "not-run"
         }
@@ -1798,6 +1833,26 @@
             "tests/leaf/run.py"
           ],
           "note": "Preserve five P00 tables/68 edges, add explicit cancellation context and test missing guard/role/revision rejection. Leaf fixture does not replace production federation or final bilateral acceptance."
+        },
+        {
+          "date": "2026-10-13T19:21:29.079274+00:00",
+          "reviewer": "Codex",
+          "scope": "Recover omitted accepted P00 L04/S03 qualification",
+          "addedFiles": [
+            "tests/contracts/test_startup_status.py",
+            "tests/contracts/vectors/startup-status-examples.json"
+          ],
+          "addedBehaviorCheck": "HUB-26-C04",
+          "note": "Original files, checks and history retained. New qualification is pending; no runtime replacement or later-phase pass is implied."
+        },
+        {
+          "date": "2026-10-13T19:26:19.035640+00:00",
+          "reviewer": "Codex",
+          "scope": "S03 reserve fixture ownership",
+          "addedFiles": [
+            "tests/storage/capacity.py"
+          ],
+          "note": "Bounded single-task aggregate admission fixture; existing production and20storage assertions retained. Actual fixture qualification and independent review remain separate evidence."
         }
       ]
     }

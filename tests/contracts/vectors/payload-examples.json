@@ -135,5 +135,93 @@
     "payload": {
       "includeHubs": true
     }
+  },
+  "startup-status-observation": {
+    "kind": "reply",
+    "destinationServiceId": "reply-consumer",
+    "payload": {
+      "schemaVersion": "1.0.0",
+      "observationId": "observation_started",
+      "observedAt": "2026-10-13T12:00:00Z",
+      "sourceRevision": 1,
+      "startupAttemptId": "attempt_1",
+      "disposition": "started",
+      "caller": {
+        "principalId": "fixture_user",
+        "kind": "human",
+        "authenticatedIdentityRef": {
+          "id": "identity_1",
+          "ownerHubId": "fixture_hub",
+          "revision": 1
+        },
+        "scope": {
+          "organizationId": "fixture_org",
+          "projectId": "fixture_project",
+          "workspaceId": null
+        }
+      },
+      "errors": [],
+      "instance": {
+        "instanceId": "fixture_instance",
+        "displayName": "Fixture instance",
+        "profileId": "fixture_profile",
+        "installedVersion": "1.0.0",
+        "runningVersion": "1.0.0",
+        "mode": "local",
+        "composeProject": "fixture_compose",
+        "contextDisplayName": "Approved local fixture",
+        "contextFingerprint": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "endpoint": "nats://127.0.0.1:4222",
+        "dashboard": "http://127.0.0.1:8787/",
+        "readiness": "ready",
+        "services": [
+          {
+            "serviceId": "kernel",
+            "availability": "available",
+            "unavailableReason": null,
+            "readiness": "ready",
+            "observedAt": "2026-10-13T12:00:00Z",
+            "sourceRevision": 1
+          },
+          {
+            "serviceId": "federation",
+            "availability": "unavailable",
+            "unavailableReason": "not_implemented",
+            "readiness": "unknown",
+            "observedAt": null,
+            "sourceRevision": null
+          }
+        ]
+      },
+      "persistence": {
+        "availability": "available",
+        "backend": "jetstream",
+        "profile": "local_durable",
+        "serverId": "fixture_server",
+        "domainId": "fixture_domain",
+        "readiness": "ready",
+        "storagePressure": {
+          "state": "known",
+          "percentUsed": 0
+        },
+        "replicationHealth": {
+          "state": "healthy",
+          "replicas": 1
+        },
+        "observedAt": "2026-10-13T12:00:00Z"
+      },
+      "work": {
+        "state": "known",
+        "active": 0,
+        "projects": 0,
+        "reserved": 0,
+        "sourceCursor": 0,
+        "observedAt": "2026-10-13T12:00:00Z"
+      },
+      "hubs": {
+        "inventoryState": "known",
+        "entries": []
+      }
+    }
   }
 }

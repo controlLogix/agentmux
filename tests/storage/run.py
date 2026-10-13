@@ -499,6 +499,11 @@ async def main():
                                                       'operationId': 'initial', 'payloadDigest': first['operation']['payloadDigest']})
                 require(not missing['ok'] and missing['error'] == 'history_gap', 'history hole was not explicit')
             await case('retention-hole-requires-reconciliation')
+            # S03 fixture stays separate from the original twenty retained cases.
+            from capacity import qualify_capacity
+            capacity_root = Path(temp) / 'capacity'
+            capacity_root.mkdir()
+            await qualify_capacity(Broker, capacity_root, case)
         finally:
             if nc:
                 await nc.close()

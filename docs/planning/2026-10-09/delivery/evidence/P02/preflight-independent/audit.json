@@ -1,0 +1,527 @@
+{
+  "reviewedAt": "2026-10-13T19:18:24.863838+00:00",
+  "reviewer": "Codex independent preflight",
+  "sourceCommit": "9db01f2d2ff6656d3f2c7fd8f9567fb421104605",
+  "decision": "not-approved",
+  "criteria": [
+    {
+      "id": "P02-AC01",
+      "text": "macOS, Linux, and WSL installations boot without an LLM or hosted Jev connection."
+    },
+    {
+      "id": "P02-AC02",
+      "text": "An outside plugin can subscribe only to permitted kernel information and cannot publish commands or writes into the kernel."
+    },
+    {
+      "id": "P02-AC03",
+      "text": "Bad configuration, occupied ports, unavailable broker, and failed protected plugin produce actionable bounded failures."
+    },
+    {
+      "id": "P02-AC04",
+      "text": "Surrounding plugin failure does not corrupt boot state. Ordinary runtime communication uses NATS after bootstrap."
+    },
+    {
+      "id": "P02-AC05",
+      "text": "The existing launcher, environment selection and failure diagnostics remain available while the new boot path is opt-in. Both paths pass their defined startup and shutdown comparisons without sharing ownership of a live task."
+    },
+    {
+      "id": "P02-AC06",
+      "text": "LOCAL-01 cold launch starts the selected local Compose stack and waits for broker persistence and application readiness. Warm launch reuses the same instance without recreation or lost state. macOS, Linux and WSL fixtures pass without an LLM or Jev."
+    },
+    {
+      "id": "P02-AC07",
+      "text": "Simultaneous launches and a crashed startup owner converge on one owned instance. Wrong Docker context, conflicting ports, incompatible versions and partial startup produce bounded, specific diagnostics without deleting volumes, starting a shadow stack or attaching to another user."
+    },
+    {
+      "id": "P02-AC08",
+      "text": "The same versioned status response follows successful start and reuse. It includes instance identity/version, selected profile and endpoint, readiness, persistence health and authorized hub information with freshness. Missing or unimplemented services are labeled unavailable, never healthy."
+    }
+  ],
+  "assignedFailures": [
+    {
+      "id": "FAIL-01",
+      "scenario": "Broker absent, wrong endpoint, invalid credentials, or stale deployment configuration",
+      "oracle": "Boot reports a specific readiness failure; no hidden fallback channel or hosted-model dependency; retry has bounded noise and does not multiply plugin instances.",
+      "phases": [
+        "P02"
+      ],
+      "status": "not-run"
+    },
+    {
+      "id": "FAIL-02",
+      "scenario": "Ordinary plugin publishes to kernel internals or a kernel reply subject",
+      "oracle": "Broker denies it; approved status is readable only at declared scope; service-injection handles do not bypass the boundary. Test exact and wildcard subjects.",
+      "phases": [
+        "P02",
+        "P03"
+      ],
+      "status": "not-run"
+    },
+    {
+      "id": "FAIL-55",
+      "scenario": "Cold launch with no selected instance, then warm launch from another project directory",
+      "oracle": "One owned Compose project reaches actual service and application readiness; the next launch reuses its identity and volumes unchanged. Both display the same scoped status schema.",
+      "phases": [
+        "P02",
+        "P06",
+        "P12"
+      ],
+      "status": "not-run"
+    },
+    {
+      "id": "FAIL-56",
+      "scenario": "Two terminals or WSL sessions start together; startup owner crashes mid-boot",
+      "oracle": "One startup owner and one selected instance; waiting callers receive bounded progress or failure. Stale ownership recovery cannot create duplicate stacks or trust an unrelated PID.",
+      "phases": [
+        "P02",
+        "P06",
+        "P12"
+      ],
+      "status": "not-run"
+    },
+    {
+      "id": "FAIL-57",
+      "scenario": "Docker or Compose absent, daemon unavailable, permission denied or image pull fails",
+      "oracle": "Bounded actionable diagnostics; no false readiness, privileged installation, secret leakage or retry storm. A later corrected launch can recover without losing data.",
+      "phases": [
+        "P02",
+        "P06",
+        "P12"
+      ],
+      "status": "not-run"
+    },
+    {
+      "id": "FAIL-58",
+      "scenario": "Wrong Docker context, another user instance, occupied endpoint or incompatible running release",
+      "oracle": "Reject ambiguous or unauthorized attachment; identify selected context and safe next action. Do not start a shadow stack, mutate a remote daemon, silently upgrade or delete volumes.",
+      "phases": [
+        "P02",
+        "P06",
+        "P12"
+      ],
+      "status": "not-run"
+    },
+    {
+      "id": "FAIL-59",
+      "scenario": "Partially started or unhealthy stack; readiness timeout; restart after persistent data was written",
+      "oracle": "Report the failing service and observed readiness state. Compatible owned recovery retains instance identity and durable data; unsafe recovery stops for a deliberate action. Running containers alone never qualify success.",
+      "phases": [
+        "P02",
+        "P12"
+      ],
+      "status": "not-run"
+    }
+  ],
+  "taskScopeSnapshot": [
+    {
+      "id": "P02-T01",
+      "status": "planned",
+      "scope": [
+        {
+          "id": "P02-W01",
+          "text": "Implement a minimal launcher that establishes the configured NATS substrate and loads the fixed protected boot assembly."
+        }
+      ],
+      "dependsOn": [
+        "P01-GATE",
+        "P02-T06"
+      ],
+      "componentIds": [
+        "HUB-15"
+      ],
+      "behaviorCheckIds": []
+    },
+    {
+      "id": "P02-T02",
+      "status": "planned",
+      "scope": [
+        {
+          "id": "P02-W02",
+          "text": "Implement boot, protected-plugin lifecycle, protected internal communication, and deliberate publication of kernel status."
+        }
+      ],
+      "dependsOn": [
+        "P01-GATE",
+        "P02-T06"
+      ],
+      "componentIds": [
+        "HUB-15"
+      ],
+      "behaviorCheckIds": []
+    },
+    {
+      "id": "P02-T03",
+      "status": "planned",
+      "scope": [
+        {
+          "id": "P02-W03",
+          "text": "Separate protected internal subjects/accounts from exported information and surrounding application services."
+        }
+      ],
+      "dependsOn": [
+        "P01-GATE",
+        "P02-T06"
+      ],
+      "componentIds": [
+        "HUB-15"
+      ],
+      "behaviorCheckIds": []
+    },
+    {
+      "id": "P02-T04",
+      "status": "planned",
+      "scope": [
+        {
+          "id": "P02-W04",
+          "text": "Provide readiness snapshots, bounded startup/shutdown, broker recovery, basic installer/doctor skeleton, and local bootstrap diagnostics."
+        }
+      ],
+      "dependsOn": [
+        "P01-GATE",
+        "P02-T06"
+      ],
+      "componentIds": [
+        "HUB-15"
+      ],
+      "behaviorCheckIds": []
+    },
+    {
+      "id": "P02-T05",
+      "status": "planned",
+      "scope": [
+        {
+          "id": "P02-W05",
+          "text": "Provision the approved local file-backed JetStream profile and team connection profile with explicit storage paths, limits, health and domain settings. Business state ownership stays in surrounding plugins."
+        }
+      ],
+      "dependsOn": [
+        "P01-GATE",
+        "P02-T06"
+      ],
+      "componentIds": [
+        "HUB-15"
+      ],
+      "behaviorCheckIds": []
+    },
+    {
+      "id": "P02-T06",
+      "status": "planned",
+      "scope": [
+        {
+          "id": "P02-W06",
+          "text": "Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation."
+        }
+      ],
+      "dependsOn": [
+        "P01-GATE"
+      ],
+      "componentIds": [
+        "HUB-15"
+      ],
+      "behaviorCheckIds": [
+        "HUB-15-C01",
+        "HUB-15-C02"
+      ]
+    },
+    {
+      "id": "P02-T07",
+      "status": "planned",
+      "scope": [
+        {
+          "id": "P02-W07",
+          "text": "Implement LOCAL-01 bootstrap with pinned Docker Compose configuration, persistent NATS volumes, explicit project identity, bounded health/readiness checks and one startup owner across concurrent terminals. Reuse an authorized compatible healthy instance without recreating it."
+        }
+      ],
+      "dependsOn": [
+        "P01-GATE",
+        "P02-T06"
+      ],
+      "componentIds": [
+        "HUB-15"
+      ],
+      "behaviorCheckIds": []
+    },
+    {
+      "id": "P02-GATE",
+      "status": "planned",
+      "scope": [
+        {
+          "id": "P02-AC01",
+          "text": "macOS, Linux, and WSL installations boot without an LLM or hosted Jev connection."
+        },
+        {
+          "id": "P02-AC02",
+          "text": "An outside plugin can subscribe only to permitted kernel information and cannot publish commands or writes into the kernel."
+        },
+        {
+          "id": "P02-AC03",
+          "text": "Bad configuration, occupied ports, unavailable broker, and failed protected plugin produce actionable bounded failures."
+        },
+        {
+          "id": "P02-AC04",
+          "text": "Surrounding plugin failure does not corrupt boot state. Ordinary runtime communication uses NATS after bootstrap."
+        },
+        {
+          "id": "P02-AC05",
+          "text": "The existing launcher, environment selection and failure diagnostics remain available while the new boot path is opt-in. Both paths pass their defined startup and shutdown comparisons without sharing ownership of a live task."
+        },
+        {
+          "id": "P02-AC06",
+          "text": "LOCAL-01 cold launch starts the selected local Compose stack and waits for broker persistence and application readiness. Warm launch reuses the same instance without recreation or lost state. macOS, Linux and WSL fixtures pass without an LLM or Jev."
+        },
+        {
+          "id": "P02-AC07",
+          "text": "Simultaneous launches and a crashed startup owner converge on one owned instance. Wrong Docker context, conflicting ports, incompatible versions and partial startup produce bounded, specific diagnostics without deleting volumes, starting a shadow stack or attaching to another user."
+        },
+        {
+          "id": "P02-AC08",
+          "text": "The same versioned status response follows successful start and reuse. It includes instance identity/version, selected profile and endpoint, readiness, persistence health and authorized hub information with freshness. Missing or unimplemented services are labeled unavailable, never healthy."
+        }
+      ],
+      "dependsOn": [
+        "P02-T01",
+        "P02-T02",
+        "P02-T03",
+        "P02-T04",
+        "P02-T05",
+        "P02-T06",
+        "P02-T07"
+      ],
+      "componentIds": null,
+      "behaviorCheckIds": []
+    }
+  ],
+  "latestPredecessorStates": {
+    "P01-T01": "in_progress",
+    "P01-T07": "in_progress",
+    "P01-GATE": "blocked",
+    "P02-T06": "planned"
+  },
+  "sourceBindings": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "97a1da4151e3ef28575cfa70b486434c6a3fe91da7994ab5bfa47cbec67a7197",
+      "bytes": 4027
+    },
+    {
+      "path": ".claude/rules/plain-language.md",
+      "sha256": "7e2b8b6b328a83559342b7a4569f5fb9252699917ec5a7b7451dfd238b184a50",
+      "bytes": 4432
+    },
+    {
+      "path": "docs/LOCAL_TESTING.md",
+      "sha256": "096f19986e17985a49be76be18df4fb0ed3cd6be6ee259ec7519bf3d9ed5b10c",
+      "bytes": 5671
+    },
+    {
+      "path": ".bytedesk/design-patterns/agent-rules.md",
+      "sha256": "e823e071e5ef983300f02cab780b13da1e893620752612a1bdf0fe20532463e6",
+      "bytes": 2003
+    },
+    {
+      "path": ".context/design-patterns.md",
+      "sha256": "ea5078529559310799bf0588e5e0d2169c36248b51c203f49ec090754da8f14c",
+      "bytes": 128591
+    },
+    {
+      "path": ".context/design-patterns-diagrams.md",
+      "sha256": "cdf68923355435e7c1028a3c55da4b39735bba48b590f085a2a33136a5cba942",
+      "bytes": 30851
+    },
+    {
+      "path": "contracts/v1/registry.json",
+      "sha256": "63bdf935623f4b2925592d09a923a5120966b37a33059d9d54aacacce930dc9f",
+      "bytes": 1663
+    },
+    {
+      "path": "contracts/v1/schemas/status-query.schema.json",
+      "sha256": "1602ff586698c26b8f2cc8ab7be90297cd86dbd0d83c41124421b684707f0a2c",
+      "bytes": 326
+    },
+    {
+      "path": "contracts/v1/schemas/operation-outcome.schema.json",
+      "sha256": "9f09ed1e73622d5d07e67e863f209a1be0c77fe56d59b20e066d5b5089a9c019",
+      "bytes": 1673
+    },
+    {
+      "path": "contracts/v1/schemas/protected-assembly.schema.json",
+      "sha256": "86a2238a6a81ceffcba378a79b3badf752116090faa5fc9428ad962492052148",
+      "bytes": 1721
+    },
+    {
+      "path": "sdk/python/agentmux_contracts/validation.py",
+      "sha256": "54b3e233ab3cc3e6f3350872897fd3f2b5ba651f6a9c26741e367af017030242",
+      "bytes": 8236
+    },
+    {
+      "path": "sdk/typescript/src/index.ts",
+      "sha256": "7ef0e8f0663e03073b6ba1e558f95f2e745562a409e8ac3b6e3facfeea643a52",
+      "bytes": 11536
+    },
+    {
+      "path": "hub/fed/conn.py",
+      "sha256": "7c4d226c777256c2228ec76254aca526039d7c7c5dc4fb7c61933816397f9bab",
+      "bytes": 2307
+    },
+    {
+      "path": "hub/fed/admin.py",
+      "sha256": "ce6b0b048a4fcaa5e0b4432ed920ba587bad21d54cb2a84187a09e5022a2b74a",
+      "bytes": 3226
+    },
+    {
+      "path": "hub/fed/runtime.py",
+      "sha256": "b4f0a9a57bc5ba1a6895955c91625e6188b40206d35f628d7756e3ddefb89661",
+      "bytes": 33266
+    },
+    {
+      "path": "hub/fed/plugin.py",
+      "sha256": "aeaf58efd3e369ccac5c7605976bc3183599a1b88bd825680d9ef727df44aea2",
+      "bytes": 1754
+    },
+    {
+      "path": "hub/server.py",
+      "sha256": "8f4de71e0885b395d058b7dd88cfd740fdffd8a986f6a58ae8cc5b115dca2153",
+      "bytes": 53685
+    },
+    {
+      "path": "hub/cli.py",
+      "sha256": "276e8311b0cbd683e3c123ff327cfd4664fa8ef55882ef94ad89e50a6ecc0efb",
+      "bytes": 24620
+    },
+    {
+      "path": "hub/bridge.py",
+      "sha256": "c129386a37e88f8f4f94ebb0247ce39d09638f7e734f8741050de4ecaec5eb2c",
+      "bytes": 8487
+    },
+    {
+      "path": "agentmux.sh",
+      "sha256": "310d538866f29478ef01bfd77c782dd62ead2a09eb1a244fe890bf96b1b36867",
+      "bytes": 145795
+    },
+    {
+      "path": "agentmux_windows.py",
+      "sha256": "d8d579d0a63306d71337024798db188eea309f19e2debd8694cda161ca2eb17b",
+      "bytes": 3717
+    },
+    {
+      "path": "install.sh",
+      "sha256": "035fb7eb674e909d174469c3b8d65b5eba4085acac99599ea9a1a8f8e689216c",
+      "bytes": 8795
+    },
+    {
+      "path": "deploy/nats/up.sh",
+      "sha256": "aa4c52213550ab7cc7e9255252084a264083c6ea0fd0db9cb5e7bbea38475ac5",
+      "bytes": 3892
+    },
+    {
+      "path": "deploy/nats/circle.sh",
+      "sha256": "184c3f8e5b99a7b8106aab7d204e35a388c1b0c180d8c32ed08376ac8160c4fc",
+      "bytes": 5604
+    },
+    {
+      "path": "deploy/nats/values.yaml",
+      "sha256": "8afb6be9be88e6c69bed06402f5b8672af5114e7c79f618525b668deaf2118d7",
+      "bytes": 1771
+    },
+    {
+      "path": "hub/tests/fedharness.py",
+      "sha256": "8224930dcc0a031e9333b4f5781f1c0990a3a46f929a9808acc5566deea5595d",
+      "bytes": 9788
+    },
+    {
+      "path": "hub/tests/test_fed_live.py",
+      "sha256": "af39ed93f205952f90a9975a7ed7381a7560ee8e0e4278dee220a57b08ad3b0c",
+      "bytes": 25499
+    },
+    {
+      "path": "tests/storage/run.py",
+      "sha256": "3eb87919f153de49af63839d00dd07305e2a341cad1d965b33c57fbb02d55b55",
+      "bytes": 38808
+    },
+    {
+      "path": "tests/storage/python_client.py",
+      "sha256": "e09951cf4a7237cac16a9b3b2b455dfeecdc3bd904e575343412d471561865c6",
+      "bytes": 3301
+    },
+    {
+      "path": "tests/storage/typescript/src/client.ts",
+      "sha256": "9087215cf5266e2a12e44dee4edd1ed3192d5c94813e65443c8e152b0c0ac43a",
+      "bytes": 5226
+    },
+    {
+      "path": "tests/storage/README.md",
+      "sha256": "9655bd9b9e24e5b11b1c6dbeb806e4fe24145647891d45c801c0ee26c98ebe6c",
+      "bytes": 5423
+    },
+    {
+      "path": "docs/planning/2026-10-09/implementation-plan.md",
+      "sha256": "ec6e308cdc95e5ed08c63c09b010398ab8b103dcab4a26227413609c7943ef71",
+      "bytes": 133429
+    },
+    {
+      "path": "docs/planning/2026-10-09/verification-matrix.json",
+      "sha256": "516813fd034d6c73b4b0d6f9eaaf4b1b54798828e137336324605d0b956085bc",
+      "bytes": 25840
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/tasks.json",
+      "sha256": "4a0dc902a36c4ad740dce4e39f8fc74960103f80451038c607517902999ce68a",
+      "bytes": 1927502
+    },
+    {
+      "path": "docs/planning/2026-10-09/component-audit-hub.json",
+      "sha256": "f9f0719be9be08faf53b079b4bd967578d011e064d77b71045e4adcca1c4ae94",
+      "bytes": 103544
+    },
+    {
+      "path": "docs/planning/2026-10-09/component-audit-harness.json",
+      "sha256": "c7e1dd0f2bedf0f6d65ea7445d4c6e2fa3c28a2f6c06bc9a967db8dc048c8fdc",
+      "bytes": 97354
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/decisions/acceptance.md",
+      "sha256": "b687a0353d20cb76244ce4c72f21661ce9f1808f74043d3a2b6b979b6dfdab59",
+      "bytes": 5308
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/decisions/runtime-and-deployment.md",
+      "sha256": "146ab3da80d6c97c3d8d05478f47cb5a5ae84cdfaee8502612602ff565410a98",
+      "bytes": 15003
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/decisions/startup-contract.md",
+      "sha256": "2c86650ad04978106ff011827c55708a7f02238f112177cefd4629ee857dc127",
+      "bytes": 12339
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/decisions/storage-contract.md",
+      "sha256": "19bb201cc3ffdc6d4e19213faee99ed584179d2fa0f34bbefb0371146e728fab",
+      "bytes": 14144
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P01/P01-T07-acceptance.json",
+      "sha256": "f5d241fe54ab36746647a5b8ffc9db81c3984f498432f1150df950560c45d66c",
+      "bytes": 8501
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/preflight-deployment/audit.json",
+      "sha256": "2364047ec8bf1d7b49bed49f2ab259bbb5c8427547cf60dc1e5c453aa0933082",
+      "bytes": 23789
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/preflight-kernel/audit.json",
+      "sha256": "5f5b8ecec30d3b893936ef4f60d4202ff70c4610957e2c1009bf0aae6ac88397",
+      "bytes": 136202
+    }
+  ],
+  "patternCheck": {
+    "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+    "exitCode": 1,
+    "error": "Review is stale or missing: inspect changes and refresh sourceDigest"
+  },
+  "runtimeTestsByReviewer": [],
+  "deploymentObservationsReviewed": true,
+  "baselineReview": "Reviewed safe deployment audit: Windows Docker 29.8.0 and Compose 5.5.1 are available; Ubuntu-26.04 Docker/Compose are unusable. No real Compose or native Docker qualification is present. Dedicated HUB-15 full policy/negative baseline remains not-run.",
+  "limitations": "Source and scoped evidence review only. No provider/model invocation, Docker mutation, credentials/config or live business record reads. Source/tracker untouched. Report is not preflight or phase approval.",
+  "findingsReport": "README.md"
+}

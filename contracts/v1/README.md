@@ -32,7 +32,10 @@ Ten core payload schemas, five executable lifecycle models, ordered recovery his
 | plugin-lifecycle | Report a bounded lifecycle observation. Its source still needs supervisor/plugin authorization. |
 | operation-outcome | Reply with committed, rejected, unavailable or unknown. Committed requires an owner record reference; unavailable/unknown cannot invent one. |
 | status-query | Request scoped status and optional visible hubs; no request can widen the authenticated scope. |
+| startup-status-observation | Return the L04 caller-scoped startup observation, including readiness, persistence, permitted work counts and visible hubs. Unavailable or forbidden information must remain explicit. |
 
 Task and attempt IDs in payloads must match operation context. A delegation ID must match its context reference. An outcome identifies the original operation through the envelope's correlation ID. A reply may target its authenticated recipient rather than a fixed service; its signed audience is still checked. A delegation's execution grant is a distinct reference from the requesting actor's authority grant, so comparing those two for equality would be incorrect.
 
 `retryable` is only advice about repeating the same operation identity and digest after re-authentication. It never permits a new task, executor reassignment or repetition of an uncertain external effect. Unknown/unavailable outcomes retain reservations until the authoritative owner reconciles them. These schemas do not resolve referenced grants, fetch artifact bytes or execute state transitions; those are owner responsibilities.
+
+The startup observation is a wire contract, not evidence that a stack is running. P02 supplies the status service; P06 and P10 qualify terminal integration and live federation state. A signed reply still needs an authorized producer and an authenticated recipient. Schema validation cannot decide which projects or hubs that recipient may see.

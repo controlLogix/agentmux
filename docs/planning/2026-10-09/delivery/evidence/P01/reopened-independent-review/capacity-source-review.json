@@ -1,0 +1,37 @@
+{
+  "reviewedAt": "2026-10-13T19:25:52.983453+00:00",
+  "decision": "no-blocking-source-finding-for-declared-fixture-scope",
+  "runtimeQualification": "pending source-bound full27 and native proof; reviewer did not rerun worker suite",
+  "sourceBindings": [
+    {
+      "path": "tests/storage/capacity.py",
+      "sha256": "1c1e38b65bd635c91b5aeaa831a94c594184f375a7c8dc3ce17bd0b42c03fab6"
+    },
+    {
+      "path": "tests/storage/run.py",
+      "sha256": "e68dd05cf34b505a212d170b0777c9fc2bbe46edcfc324ec6242fae00c17010f"
+    },
+    {
+      "path": "tests/storage/README.md",
+      "sha256": "bf485c6073f82d466838b8cefa06d110755bd2fe53a12af0826d6256fc96e7e5"
+    }
+  ],
+  "review": [
+    "Real subject-revision CAS serializes competing independent owner instances; state and operation outcome share one retained aggregate.",
+    "Bulk threshold checks projected usage, so one item cannot cross 85 percent; denied admissions do not append. UTF-8 byte charge is distinct from character count.",
+    "First acceptance allocates 1500 body bytes and two final records. Every append charges 32768 physical bytes against 196608 stream max; 16384 max-record and bounded subject/header framing provide separate headroom.",
+    "Low-payload physical admission fixture reaches four bulk appends, refuses a fifth and still commits both allocated final records. Actual stream bytes are checked against conservative charged history.",
+    "Restart and retained operation replay preserve accounting, changed operation digest is refused, and completed reserve is not replenished.",
+    "Broker exhaustion control deliberately introduces unguarded writers and requires unavailable with unchanged owner state. It does not claim these writers preserve protected headroom.",
+    "Bypass control performs real over-threshold append and observes violation; this is a deliberate in-fixture guard bypass, not a separate mutated-source execution.",
+    "run.py only appends the capacity fixture after the original twentieth case; prior assertions stay intact.",
+    "README accurately limits this to one accepted fixture task and stream accounting, excluding production multi-task allocation, auth, disk-full, object-store and account-wide quota."
+  ],
+  "limits": [
+    "This qualifies a conservative application admission mechanism only, not proposed GiB scale or P04 production services.",
+    "The aggregate permits two reserved final/reconciliation appends, not arbitrary subsequent task admission or reusable reserve.",
+    "No current authorization, signed identity or management-account denial is claimed."
+  ],
+  "taskOwnership": "Reopened P01-T07 AC05 covers this missing S03 proof; P04 production enforcement remains required.",
+  "sourceEditsByReviewer": false
+}

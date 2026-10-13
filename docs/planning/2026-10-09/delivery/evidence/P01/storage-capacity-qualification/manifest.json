@@ -1,0 +1,80 @@
+{
+  "recordedAt": "2026-10-13T19:30:03.746193+00:00",
+  "sourceCommit": "9db01f2d2ff6656d3f2c7fd8f9567fb421104605",
+  "sourceBinding": "Commit is checkout base; sourceHashes identify exact reviewed dirty candidate.",
+  "sourceHashes": {
+    "tests/storage/capacity.py": "1c1e38b65bd635c91b5aeaa831a94c594184f375a7c8dc3ce17bd0b42c03fab6",
+    "tests/storage/run.py": "e68dd05cf34b505a212d170b0777c9fc2bbe46edcfc324ec6242fae00c17010f",
+    "tests/storage/README.md": "bf485c6073f82d466838b8cefa06d110755bd2fe53a12af0826d6256fc96e7e5"
+  },
+  "rawFileCount": 7,
+  "files": [
+    {
+      "path": "final/storage-result.json",
+      "sha256": "2f23372aebba42bd6cb5689328d33329eb8514f7feaf9e219328354c8089c71e",
+      "bytes": 8571,
+      "role": "current-executed-candidate"
+    },
+    {
+      "path": "final/full-storage.log",
+      "sha256": "4e05a8361fa3881e58c6a1c64af63a922244ec4f6636d3787dfacd99d2e40814",
+      "bytes": 53,
+      "role": "current-executed-candidate"
+    },
+    {
+      "path": "final/capacity-review.json",
+      "sha256": "e717d09888a928a6bd3387005e163f305a007ba703905851b18883f45d894c19",
+      "bytes": 4543,
+      "role": "current-executed-candidate"
+    },
+    {
+      "path": "final/capacity-negative.json",
+      "sha256": "b6e357681a0e1b2a4321b1cbf640f88579f4cdc59e7cd1c0a070c2deff994e31",
+      "bytes": 731,
+      "role": "current-executed-candidate"
+    },
+    {
+      "path": "historical-pre-oracle/storage-result-before-invariant-oracle.json",
+      "sha256": "a3bbe01e2f549e02faa2bcb04a284289e116d8f5c5378ff1b95307ea4c9d8036",
+      "bytes": 8518,
+      "role": "historical-before-explicit-invariant-oracle"
+    },
+    {
+      "path": "historical-pre-oracle/full-storage-before-invariant-oracle.log",
+      "sha256": "2079723aacde11a4b47b4c90db796116effae3fa2f7d851d199a4fb19db0e983",
+      "bytes": 53,
+      "role": "historical-before-explicit-invariant-oracle"
+    },
+    {
+      "path": "historical-pre-oracle/capacity-negative-before-invariant-oracle.json",
+      "sha256": "84d66d3207366de3b75986103c527c8c9b18a8079507a604512aba2465e53cea",
+      "bytes": 942,
+      "role": "historical-before-explicit-invariant-oracle"
+    }
+  ],
+  "scope": "P01-T07 S03 scaled single-task application admission fixture; production multi-task owner admission remains P04.",
+  "fullRun": {
+    "command": "prepared Linux venv python tests/storage/run.py with private TMPDIR and AGENTMUX_EVIDENCE_DIR",
+    "exitCode": 0,
+    "cases": 27,
+    "seconds": 21.792,
+    "reportSha256": "2f23372aebba42bd6cb5689328d33329eb8514f7feaf9e219328354c8089c71e",
+    "logSha256": "4e05a8361fa3881e58c6a1c64af63a922244ec4f6636d3787dfacd99d2e40814"
+  },
+  "phaseAccepted": false,
+  "privacyReview": {
+    "reviewedLogs": "Both log files contain only one JSON status/case-count/timing summary.",
+    "reports": "Versions, source hashes, synthetic capacity cases and mutation assertions; no broker configuration, random token, private key, provider content, raw console output or user task data.",
+    "brokerLogsCopied": false
+  },
+  "limits": [
+    "All writers must use the same owner admission boundary.",
+    "Scaled 10,000-byte payload and192KiB stream budget are not measured product capacities.",
+    "One accepted task reserves two16KiB bounded final/reconcile records plus framing using conservative32KiB slots; physical stream bytes are checked against charged history.",
+    "The deliberately out-of-band full stream demonstrates explicit unavailable/no false committed rather than guaranteeing capacity under unauthorized writers.",
+    "No account-wide, disk-full, multi-task, object-store, R3, power-loss or production policy guarantee.",
+    "WSL Linux real broker only; candidate native macOS/Linux CI requires separate current-source evidence."
+  ],
+  "mutationMeaning": "The copied default-bypass fixture raised the expected assertion. The negative-control driver exited0 after detecting that failure; no standalone mutant process exit is claimed.",
+  "historicalMeaning": "Earlier result/log/mutation files retain older source hashes and do not qualify the final explicit-invariant candidate."
+}

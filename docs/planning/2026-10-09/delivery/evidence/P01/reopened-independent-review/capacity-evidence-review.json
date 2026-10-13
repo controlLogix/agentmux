@@ -1,0 +1,32 @@
+{
+  "decision": "recommend-accepting-bounded-S03-fixture-on-recorded-WSL-host",
+  "phaseAccepted": false,
+  "report": "/home/ryan/.cache/agentmux-governance/storage-capacity-4bz8pk/storage-result.json",
+  "reportSha256": "2f23372aebba42bd6cb5689328d33329eb8514f7feaf9e219328354c8089c71e",
+  "log": "/home/ryan/.cache/agentmux-governance/storage-capacity-4bz8pk/full-storage.log",
+  "logSha256": "4e05a8361fa3881e58c6a1c64af63a922244ec4f6636d3787dfacd99d2e40814",
+  "negativeReport": "/home/ryan/.cache/agentmux-governance/storage-capacity-4bz8pk/capacity-negative.json",
+  "negativeSha256": "b6e357681a0e1b2a4321b1cbf640f88579f4cdc59e7cd1c0a070c2deff994e31",
+  "status": "passed",
+  "cases": 27,
+  "allCasesPassed": true,
+  "seconds": 21.792,
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "sourceMatchesCurrent": {
+    "hub/requirements.lock": true,
+    "tests/contracts/fake_execution.py": true,
+    "tests/storage/README.md": true,
+    "tests/storage/capacity.py": true,
+    "tests/storage/python_client.py": true,
+    "tests/storage/run.py": true,
+    "tests/storage/typescript/README.md": true,
+    "tests/storage/typescript/package-lock.json": true,
+    "tests/storage/typescript/package.json": true,
+    "tests/storage/typescript/src/client.ts": true,
+    "tests/storage/typescript/tsconfig.json": true
+  },
+  "negativeExpectedFailure": "single item crossing 85 percent was admitted",
+  "negativeDriverMeaning": "The copied mutated fixture raised the expected assertion; this driver succeeds only after observing that failure.",
+  "review": "All 27 cases present including retained original twenty. Conservative record-slot allocation covers logical payload and bounded framing independently. Actual same acceptance invariant rejects bypassed state; external default-bypass mutant fails crossing admission as expected. No duplicate/restart refund. Physical exhaustion reports unavailable and preserves owner record.",
+  "remaining": "Corrected gate still requires actual native Linux/macOS source-bound qualification plus complete contract/integration/preservation/governance review, commit/push/remote proof. P04 production enforcement remains unqualified."
+}
