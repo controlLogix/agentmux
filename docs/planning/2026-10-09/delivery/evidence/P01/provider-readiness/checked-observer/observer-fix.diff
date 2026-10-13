@@ -1,0 +1,26 @@
+--- previous-observer.py
++++ observer.py
+@@ -45,8 +45,21 @@
+  result['passed']=True
+ except Exception as exc:result['error']={'type':type(exc).__name__,'message':str(exc),'winerror':getattr(exc,'winerror',None)}
+ finally:
+- if job:k.TerminateJobObject(job,134)
+- if parent:k.WaitForSingleObject(parent,5000)
++ cleanup={'verified':False}
++ if job:cleanup['terminateJobOk']=bool(k.TerminateJobObject(job,134))
++ if parent:cleanup['parentWait']=k.WaitForSingleObject(parent,3000)
++ if job:
++  deadline=time.monotonic()+3
++  while True:
++   a=BASICACCOUNTING()
++   if not k.QueryInformationJobObject(job,1,c.byref(a),c.sizeof(a),None):
++    cleanup['accountingError']=c.get_last_error();break
++   cleanup['activeProcesses']=int(a.ActiveProcesses)
++   if a.ActiveProcesses==0 or time.monotonic()>deadline:break
++   time.sleep(.05)
++ cleanup['verified']=cleanup.get('terminateJobOk') is True and cleanup.get('parentWait')==0 and cleanup.get('activeProcesses')==0
++ result['cleanup']=cleanup
++ if not cleanup['verified']:result['passed']=False
+  if config_before is not None:
+   try:result['windowsConfigBytesUnchanged']=config.exists() and config.read_bytes()==config_before
+   except OSError as exc:result['windowsConfigBytesUnchanged']=None;result['configComparisonErrorType']=type(exc).__name__

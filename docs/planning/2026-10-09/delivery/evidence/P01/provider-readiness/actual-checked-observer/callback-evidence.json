@@ -1,0 +1,36 @@
+{
+  "scope": "Read-only original hub delivery acknowledgment, task claim and completion for this exact calibration.",
+  "events": [
+    {
+      "seq": 12,
+      "at": "2026-10-13T14:11:10.675Z",
+      "entity": "delivery",
+      "entity_id": "01M4TSH2P86B3GSTG6T8AYQEA4>calc-worker-codex_1009",
+      "event": "acked",
+      "actor": null,
+      "recipient": "calc-worker-codex_1009"
+    },
+    {
+      "seq": 13,
+      "at": "2026-10-13T14:11:16.679Z",
+      "entity": "work",
+      "entity_id": "W-20B5K44YJT",
+      "event": "claimed",
+      "actor": "calc-worker-codex_1009"
+    },
+    {
+      "seq": 15,
+      "at": "2026-10-13T14:12:27.590Z",
+      "entity": "work",
+      "entity_id": "W-20B5K44YJT",
+      "event": "done",
+      "actor": "calc-worker-codex_1009"
+    }
+  ],
+  "done": {
+    "id": "W-20B5K44YJT",
+    "state": "done",
+    "claimed_by": "calc-worker-codex_1009",
+    "result": "Added calc.median with sorting, empty-input ValueError, odd-length middle selection, and even-length averaging. Added odd/even/empty unit tests. Verification: python -m unittest discover -s tests -v => 5 tests passed. Commit: c5c22aa add median. Worktree clean."
+  }
+}

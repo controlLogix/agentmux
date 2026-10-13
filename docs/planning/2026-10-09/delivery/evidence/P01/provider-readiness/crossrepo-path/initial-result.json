@@ -1,0 +1,84 @@
+{
+  "scope": "Private crossrepo home-path resolution with Python and Git only. No client or provider execution.",
+  "commands": [
+    {
+      "argv": [
+        "wsl",
+        "-d",
+        "Ubuntu-26.04",
+        "--exec",
+        "wslpath",
+        "-u",
+        "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-p01-crossrepo-path-30o14osh"
+      ],
+      "cwd": null,
+      "exitCode": 0,
+      "stdout": "/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-p01-crossrepo-path-30o14osh\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "wsl",
+        "-d",
+        "Ubuntu-26.04",
+        "--exec",
+        "python3",
+        "-c",
+        "import tempfile;print(tempfile.mkdtemp(prefix='agentmux-crossrepo-path-'))"
+      ],
+      "cwd": null,
+      "exitCode": 0,
+      "stdout": "/tmp/agentmux-crossrepo-path-lnsoude1\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "wsl",
+        "-d",
+        "Ubuntu-26.04",
+        "--exec",
+        "python3",
+        "-c",
+        "import pathlib,os,subprocess,json,sys; root=pathlib.Path(sys.argv[1]); native=pathlib.Path(sys.argv[2]); home=native/'home';home.mkdir(); base=root/'shared repos'; env=dict(os.environ,HOME=str(home),HUBDEMO_BASE=str(base)); p=subprocess.run(['bash',str(root/'setup_repos.sh'),'--reset'],env=env,capture_output=True,text=True); print(json.dumps({'exitCode':p.returncode,'stdout':p.stdout,'stderr':p.stderr})); assert p.returncode==0; (home/'hubdemo').symlink_to(base,target_is_directory=True)",
+        "/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-p01-crossrepo-path-30o14osh",
+        "/tmp/agentmux-crossrepo-path-lnsoude1"
+      ],
+      "cwd": null,
+      "exitCode": 0,
+      "stdout": "{\"exitCode\": 0, \"stdout\": \"created: /mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-p01-crossrepo-path-30o14osh/shared repos/calc\\ncreated: /mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-p01-crossrepo-path-30o14osh/shared repos/report\\n\", \"stderr\": \"\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "powershell.exe",
+        "-NoProfile",
+        "-NonInteractive",
+        "-Command",
+        "New-Item -ItemType Junction -Path $args[0] -Target $args[1] -ErrorAction Stop | Select-Object FullName,LinkType,Target | ConvertTo-Json -Compress",
+        "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-p01-crossrepo-path-30o14osh\\private Windows home\\hubdemo",
+        "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-p01-crossrepo-path-30o14osh\\shared repos"
+      ],
+      "cwd": null,
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "New-Item : Cannot bind argument to parameter 'Path' because it is null.\nAt line:1 char:35\n+ New-Item -ItemType Junction -Path $args[0] -Target $args[1] -ErrorAct ...\n+                                   ~~~~~~~~\n    + CategoryInfo          : InvalidData: (:) [New-Item], ParameterBindingValidationException\n    + FullyQualifiedErrorId : ParameterArgumentValidationErrorNullNotAllowed,Microsoft.PowerShell.Commands.NewItemComm \n   and\n \n"
+    }
+  ],
+  "sourceCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+  "passed": false,
+  "nativeFixture": "/tmp/agentmux-crossrepo-path-lnsoude1",
+  "setupSource": {
+    "path": "hub/demo/setup_repos.sh",
+    "sha256": "5c6c1c462063a3a73fb3d509d6ad42d65cde432a77114fd32d2a3bfa95026a7b"
+  },
+  "error": {
+    "type": "RuntimeError",
+    "message": "Fixture command failed: ['powershell.exe', '-NoProfile', '-NonInteractive', '-Command', 'New-Item -ItemType Junction -Path $args[0] -Target $args[1] -ErrorAction Stop | Select-Object FullName,LinkType,Target | ConvertTo-Json -Compress', 'C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Temp\\\\agentmux-p01-crossrepo-path-30o14osh\\\\private Windows home\\\\hubdemo', 'C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Temp\\\\agentmux-p01-crossrepo-path-30o14osh\\\\shared repos']"
+  },
+  "limits": [
+    "Python and Git path resolution only; actual clients honoring canonical profile overrides remain unqualified.",
+    "No auth/config files were read, copied or modified.",
+    "All home mappings, repositories and markers are disposable fixtures; no hubdemo directory was created in a real user home.",
+    "The marker changes the disposable checkout after its initial commit; this is a path probe, not a clean orchestration acceptance run."
+  ]
+}

@@ -1,0 +1,14 @@
+--- prior/codex-fixture.py
++++ checked-observer/codex-fixture.py
+@@ -6,7 +6,10 @@
+ agent=os.environ['AGENTMUX_AGENT'];assert re.fullmatch(r'[a-z0-9_-]+',agent)
+ assert sys.argv[1:]==['--no-daemon','--dangerously-bypass-approvals-and-sandbox'],sys.argv[1:]
+ root=P(manifest['ntfsFixture'])/'windows-supervisors'/agent;root.mkdir(parents=True,exist_ok=False)
+-source=P('/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-mcp-override-probe-ef9edb64c6804e9d928a88a4780fe0ca/supervisor-bare-mcp.py');assert hashlib.sha256(source.read_bytes()).hexdigest()=='6d7d50e7ced210fa09d6f9cfadf0bb977f76d8d624b3c041ab250ccb18ea1240';shutil.copyfile(source,root/'supervisor.py')
++source=P('/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-calib-observer-checked-d4a4c78894e24e4eaa9e1b21effb7456')
++for name,expected in {'supervisor.py': 'cd2787e2723e875ce9a5171d5823e0f560eff6cf1e994436b8e2bf5e213f8f6a', 'observer.py': 'bbf09f1d6d8cfd45588a40dc3230e6b03f6c1305406715dc5712bb22f26fc1bf', 'observer_api.py': '13382ba6c650ec841136805bdeb0dabcd92a9ec1035df44314f4415c56581a93'}.items():
++ path=source/name;assert hashlib.sha256(path.read_bytes()).hexdigest()==expected;shutil.copyfile(path,root/name)
++
+ def win(value):return subprocess.check_output(['wslpath','-w',value],text=True).strip()
+ keys=['AGENTMUX_WINDOWS_CALLBACK','AGENTMUX_AGENT','AGENTMUX_HUB_URL','AGENTMUX_WSL_DISTRO','AGENTMUX_WSL_BIN','AGENTMUX_WSL_CWD','AGENTMUX_SOCKET','AGENTMUX_HOME','AGENTMUX_HUB_TOKEN_FILE','TMUX_TMPDIR'];paths={'AGENTMUX_HOME','AGENTMUX_HUB_TOKEN_FILE','TMUX_TMPDIR','AGENTMUX_REPO'}
+ context={key:os.environ[key] for key in keys}

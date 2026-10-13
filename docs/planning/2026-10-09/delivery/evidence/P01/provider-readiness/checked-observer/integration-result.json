@@ -1,0 +1,510 @@
+{
+  "passed": true,
+  "scope": "Non-model integration of the copied calibration supervisor and independent observer.",
+  "cases": [
+    {
+      "kind": "teardown",
+      "socket": "agentmux-integrated-d4a4c78894e24e4eaa9e1b21effb7456-teardown",
+      "command": "/mnt/c/Users/RyanHelms/AppData/Local/Programs/Python/Python314/python.exe 'C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-calib-observer-checked-d4a4c78894e24e4eaa9e1b21effb7456\\teardown\\synthetic-wrapper.py'; sleep 15",
+      "passed": true,
+      "ready": {
+        "jobUid": "b1adac44-99b9-4926-9750-dfa1540bf231",
+        "parentPid": 39708,
+        "jobName": "Local\\agentmux-p01-b1adac44-99b9-4926-9750-dfa1540bf231",
+        "observerPid": 74088
+      },
+      "observerAcknowledgedBeforeResume": true,
+      "observerResult": {
+        "jobUid": "b1adac44-99b9-4926-9750-dfa1540bf231",
+        "jobName": "Local\\agentmux-p01-b1adac44-99b9-4926-9750-dfa1540bf231",
+        "parentPid": 39708,
+        "supervisorPid": 43124,
+        "observerPid": 74088,
+        "passed": true,
+        "events": [
+          {
+            "action": "Open exact named job",
+            "elapsedSeconds": 0.0001
+          },
+          {
+            "action": "Hold exact handles and config bytes before parent resume",
+            "elapsedSeconds": 0.0006
+          },
+          {
+            "action": "Terminate exact held job",
+            "elapsedSeconds": 0.6884
+          },
+          {
+            "action": "Verify zero active job processes",
+            "elapsedSeconds": 0.6886
+          }
+        ],
+        "terminalReason": "parent-exit",
+        "limitations": [
+          "Job accounting and byte comparison concern this exact fixture only.",
+          "No auth or config contents or hashes are logged.",
+          "Holding the observer job handle delays kill-on-last-handle-close; explicit job termination is required."
+        ],
+        "observerInJob": false,
+        "observerConsoleWindow": 0,
+        "heldHandles": {
+          "job": 472,
+          "parent": 476,
+          "supervisor": 480
+        },
+        "before": {
+          "TotalProcesses": 1,
+          "ActiveProcesses": 1,
+          "TotalTerminatedProcesses": 0
+        },
+        "parentExitCode": 3221225786,
+        "afterJob": {
+          "TotalProcesses": 3,
+          "ActiveProcesses": 0,
+          "TotalTerminatedProcesses": 0
+        },
+        "cleanup": {
+          "verified": true,
+          "terminateJobOk": true,
+          "parentWait": 0,
+          "activeProcesses": 0
+        },
+        "windowsConfigBytesUnchanged": true,
+        "elapsedSeconds": 0.6894
+      },
+      "exactHandleOutcomes": {
+        "supervisor": {
+          "waitResult": 0,
+          "exitCode": 1
+        },
+        "parent": {
+          "waitResult": 0,
+          "exitCode": 3221225786
+        },
+        "child": {
+          "waitResult": 0,
+          "exitCode": 133
+        },
+        "observer": {
+          "waitResult": 0,
+          "exitCode": 0
+        }
+      },
+      "supervisorFinalRecordPresent": false,
+      "tmuxCleanup": {
+        "killExit": 1,
+        "probeExit": 1,
+        "noServer": true
+      }
+    },
+    {
+      "kind": "cancel",
+      "socket": "agentmux-integrated-d4a4c78894e24e4eaa9e1b21effb7456-cancel",
+      "command": "/mnt/c/Users/RyanHelms/AppData/Local/Programs/Python/Python314/python.exe 'C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-calib-observer-checked-d4a4c78894e24e4eaa9e1b21effb7456\\cancel\\synthetic-wrapper.py'; sleep 15",
+      "passed": true,
+      "ready": {
+        "jobUid": "92672c38-d3b5-441a-a31e-e49488a02f8a",
+        "parentPid": 66140,
+        "jobName": "Local\\agentmux-p01-92672c38-d3b5-441a-a31e-e49488a02f8a",
+        "observerPid": 70772
+      },
+      "observerAcknowledgedBeforeResume": true,
+      "observerResult": {
+        "jobUid": "92672c38-d3b5-441a-a31e-e49488a02f8a",
+        "jobName": "Local\\agentmux-p01-92672c38-d3b5-441a-a31e-e49488a02f8a",
+        "parentPid": 66140,
+        "supervisorPid": 46836,
+        "observerPid": 70772,
+        "passed": true,
+        "events": [
+          {
+            "action": "Open exact named job",
+            "elapsedSeconds": 0.0001
+          },
+          {
+            "action": "Hold exact handles and config bytes before parent resume",
+            "elapsedSeconds": 0.0006
+          },
+          {
+            "action": "Terminate exact held job",
+            "elapsedSeconds": 0.4848
+          },
+          {
+            "action": "Verify zero active job processes",
+            "elapsedSeconds": 0.4849
+          }
+        ],
+        "terminalReason": "parent-exit",
+        "limitations": [
+          "Job accounting and byte comparison concern this exact fixture only.",
+          "No auth or config contents or hashes are logged.",
+          "Holding the observer job handle delays kill-on-last-handle-close; explicit job termination is required."
+        ],
+        "observerInJob": false,
+        "observerConsoleWindow": 0,
+        "heldHandles": {
+          "job": 464,
+          "parent": 468,
+          "supervisor": 472
+        },
+        "before": {
+          "TotalProcesses": 1,
+          "ActiveProcesses": 1,
+          "TotalTerminatedProcesses": 0
+        },
+        "parentExitCode": 103,
+        "afterJob": {
+          "TotalProcesses": 3,
+          "ActiveProcesses": 0,
+          "TotalTerminatedProcesses": 0
+        },
+        "cleanup": {
+          "verified": true,
+          "terminateJobOk": true,
+          "parentWait": 0,
+          "activeProcesses": 0
+        },
+        "windowsConfigBytesUnchanged": true,
+        "elapsedSeconds": 0.486
+      },
+      "exactHandleOutcomes": {
+        "supervisor": {
+          "waitResult": 0,
+          "exitCode": 0
+        },
+        "parent": {
+          "waitResult": 0,
+          "exitCode": 103
+        },
+        "child": {
+          "waitResult": 0,
+          "exitCode": 103
+        },
+        "observer": {
+          "waitResult": 0,
+          "exitCode": 0
+        }
+      },
+      "tmuxCleanup": {
+        "killExit": 0,
+        "probeExit": 1,
+        "noServer": true
+      }
+    },
+    {
+      "kind": "observer-setup-failure",
+      "socket": "agentmux-integrated-d4a4c78894e24e4eaa9e1b21effb7456-observer-setup-failure",
+      "command": "/mnt/c/Users/RyanHelms/AppData/Local/Programs/Python/Python314/python.exe 'C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-calib-observer-checked-d4a4c78894e24e4eaa9e1b21effb7456\\observer-setup-failure\\synthetic-wrapper.py'; sleep 15",
+      "passed": true,
+      "launchResult": {
+        "jobUid": "9d8f8f0e-b083-4544-b63c-a9651516d153",
+        "originalArgv": [
+          "C:\\Users\\RyanHelms\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
+          "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-calib-observer-checked-d4a4c78894e24e4eaa9e1b21effb7456\\observer-setup-failure\\synthetic.py",
+          "parent"
+        ],
+        "argv": [
+          "C:\\Users\\RyanHelms\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
+          "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-calib-observer-checked-d4a4c78894e24e4eaa9e1b21effb7456\\observer-setup-failure\\synthetic.py",
+          "parent"
+        ],
+        "passed": false,
+        "events": [
+          {
+            "action": "Create unique named fixture job",
+            "elapsedSeconds": 0.0014
+          },
+          {
+            "action": "Set kill-on-close",
+            "elapsedSeconds": 0.0015
+          },
+          {
+            "action": "Duplicate hStdInput",
+            "elapsedSeconds": 0.0015
+          },
+          {
+            "action": "Duplicate hStdOutput",
+            "elapsedSeconds": 0.0015
+          },
+          {
+            "action": "Duplicate hStdError",
+            "elapsedSeconds": 0.0015
+          },
+          {
+            "action": "Create suspended Codex with inherited console",
+            "elapsedSeconds": 0.0186
+          },
+          {
+            "action": "Assign before resume",
+            "elapsedSeconds": 0.0187
+          }
+        ],
+        "terminalReason": null,
+        "usesInheritedWindowsCodexHome": false,
+        "parentPid": 63760,
+        "handles": {
+          "job": 480,
+          "parent": 500,
+          "thread": 496
+        },
+        "error": {
+          "type": "RuntimeError",
+          "message": "Observer exited before readiness",
+          "winerror": null
+        },
+        "cleanup": {
+          "verified": true,
+          "terminateJobOk": true,
+          "parentWait": 0,
+          "activeProcesses": 0,
+          "observerExit": 17,
+          "observerEvidenceVerified": false
+        },
+        "windowsConfigBytesUnchanged": true,
+        "elapsedSeconds": 0.2477
+      },
+      "tmuxCleanup": {
+        "killExit": 0,
+        "probeExit": 1,
+        "noServer": true
+      }
+    },
+    {
+      "kind": "observer-afterready-exit",
+      "socket": "agentmux-integrated-d4a4c78894e24e4eaa9e1b21effb7456-observer-afterready-exit",
+      "command": "/mnt/c/Users/RyanHelms/AppData/Local/Programs/Python/Python314/python.exe 'C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-calib-observer-checked-d4a4c78894e24e4eaa9e1b21effb7456\\observer-afterready-exit\\synthetic-wrapper.py'; sleep 15",
+      "passed": true,
+      "launchResult": {
+        "jobUid": "6bc0127e-e2aa-43d6-9de8-11269fa1f743",
+        "originalArgv": [
+          "C:\\Users\\RyanHelms\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
+          "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-calib-observer-checked-d4a4c78894e24e4eaa9e1b21effb7456\\observer-afterready-exit\\synthetic.py",
+          "parent"
+        ],
+        "argv": [
+          "C:\\Users\\RyanHelms\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
+          "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-calib-observer-checked-d4a4c78894e24e4eaa9e1b21effb7456\\observer-afterready-exit\\synthetic.py",
+          "parent"
+        ],
+        "passed": false,
+        "events": [
+          {
+            "action": "Create unique named fixture job",
+            "elapsedSeconds": 0.0019
+          },
+          {
+            "action": "Set kill-on-close",
+            "elapsedSeconds": 0.0019
+          },
+          {
+            "action": "Duplicate hStdInput",
+            "elapsedSeconds": 0.002
+          },
+          {
+            "action": "Duplicate hStdOutput",
+            "elapsedSeconds": 0.002
+          },
+          {
+            "action": "Duplicate hStdError",
+            "elapsedSeconds": 0.002
+          },
+          {
+            "action": "Create suspended Codex with inherited console",
+            "elapsedSeconds": 0.0251
+          },
+          {
+            "action": "Assign before resume",
+            "elapsedSeconds": 0.0252
+          },
+          {
+            "action": "Independent observer holds exact job and parent before resume",
+            "elapsedSeconds": 0.3423
+          }
+        ],
+        "terminalReason": null,
+        "usesInheritedWindowsCodexHome": false,
+        "parentPid": 73168,
+        "handles": {
+          "job": 496,
+          "parent": 516,
+          "thread": 512
+        },
+        "observerPid": 4468,
+        "jobName": "Local\\agentmux-p01-6bc0127e-e2aa-43d6-9de8-11269fa1f743",
+        "error": {
+          "type": "RuntimeError",
+          "message": "Independent observer exited unexpectedly while parent was live",
+          "winerror": null
+        },
+        "cleanup": {
+          "verified": true,
+          "terminateJobOk": true,
+          "parentWait": 0,
+          "activeProcesses": 0,
+          "observerExit": 23,
+          "observerEvidenceVerified": false
+        },
+        "windowsConfigBytesUnchanged": true,
+        "elapsedSeconds": 1.2288
+      },
+      "tmuxCleanup": {
+        "killExit": 0,
+        "probeExit": 1,
+        "noServer": true
+      }
+    },
+    {
+      "kind": "observer-afterready-error",
+      "socket": "agentmux-integrated-d4a4c78894e24e4eaa9e1b21effb7456-observer-afterready-error",
+      "command": "/mnt/c/Users/RyanHelms/AppData/Local/Programs/Python/Python314/python.exe 'C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-calib-observer-checked-d4a4c78894e24e4eaa9e1b21effb7456\\observer-afterready-error\\synthetic-wrapper.py'; sleep 15",
+      "passed": true,
+      "launchResult": {
+        "jobUid": "02b559e5-93de-4938-a6f8-f86108890b5d",
+        "originalArgv": [
+          "C:\\Users\\RyanHelms\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
+          "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-calib-observer-checked-d4a4c78894e24e4eaa9e1b21effb7456\\observer-afterready-error\\synthetic.py",
+          "parent"
+        ],
+        "argv": [
+          "C:\\Users\\RyanHelms\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
+          "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-calib-observer-checked-d4a4c78894e24e4eaa9e1b21effb7456\\observer-afterready-error\\synthetic.py",
+          "parent"
+        ],
+        "passed": false,
+        "events": [
+          {
+            "action": "Create unique named fixture job",
+            "elapsedSeconds": 0.0016
+          },
+          {
+            "action": "Set kill-on-close",
+            "elapsedSeconds": 0.0016
+          },
+          {
+            "action": "Duplicate hStdInput",
+            "elapsedSeconds": 0.0016
+          },
+          {
+            "action": "Duplicate hStdOutput",
+            "elapsedSeconds": 0.0016
+          },
+          {
+            "action": "Duplicate hStdError",
+            "elapsedSeconds": 0.0016
+          },
+          {
+            "action": "Create suspended Codex with inherited console",
+            "elapsedSeconds": 0.0193
+          },
+          {
+            "action": "Assign before resume",
+            "elapsedSeconds": 0.0193
+          },
+          {
+            "action": "Independent observer holds exact job and parent before resume",
+            "elapsedSeconds": 0.2339
+          },
+          {
+            "action": "Stop any remaining processes in this exact job",
+            "elapsedSeconds": 1.0119
+          },
+          {
+            "action": "Read exact parent exit",
+            "elapsedSeconds": 1.0119
+          },
+          {
+            "action": "Read job process accounting",
+            "elapsedSeconds": 1.012
+          }
+        ],
+        "terminalReason": "natural-exit",
+        "usesInheritedWindowsCodexHome": false,
+        "parentPid": 18716,
+        "handles": {
+          "job": 480,
+          "parent": 500,
+          "thread": 496
+        },
+        "observerPid": 46764,
+        "jobName": "Local\\agentmux-p01-02b559e5-93de-4938-a6f8-f86108890b5d",
+        "exitCode": 134,
+        "jobAccounting": {
+          "TotalProcesses": 3,
+          "ActiveProcesses": 0,
+          "TotalTerminatedProcesses": 0
+        },
+        "cleanup": {
+          "verified": true,
+          "terminateJobOk": true,
+          "parentWait": 0,
+          "activeProcesses": 0,
+          "observerExit": 1,
+          "observerEvidenceVerified": false
+        },
+        "windowsConfigBytesUnchanged": true,
+        "elapsedSeconds": 1.0514
+      },
+      "observerResult": {
+        "jobUid": "02b559e5-93de-4938-a6f8-f86108890b5d",
+        "jobName": "Local\\agentmux-p01-02b559e5-93de-4938-a6f8-f86108890b5d",
+        "parentPid": 18716,
+        "supervisorPid": 20172,
+        "observerPid": 46764,
+        "passed": false,
+        "events": [
+          {
+            "action": "Open exact named job",
+            "elapsedSeconds": 0.0001
+          },
+          {
+            "action": "Hold exact handles and config bytes before parent resume",
+            "elapsedSeconds": 0.0005
+          }
+        ],
+        "terminalReason": null,
+        "limitations": [
+          "Job accounting and byte comparison concern this exact fixture only.",
+          "No auth or config contents or hashes are logged.",
+          "Holding the observer job handle delays kill-on-last-handle-close; explicit job termination is required."
+        ],
+        "observerInJob": false,
+        "observerConsoleWindow": 0,
+        "heldHandles": {
+          "job": 460,
+          "parent": 464,
+          "supervisor": 468
+        },
+        "before": {
+          "TotalProcesses": 1,
+          "ActiveProcesses": 1,
+          "TotalTerminatedProcesses": 0
+        },
+        "error": {
+          "type": "RuntimeError",
+          "message": "deliberate observer failure after readiness",
+          "winerror": null
+        },
+        "cleanup": {
+          "verified": true,
+          "terminateJobOk": true,
+          "parentWait": 0,
+          "activeProcesses": 0
+        },
+        "windowsConfigBytesUnchanged": true,
+        "elapsedSeconds": 0.808
+      },
+      "tmuxCleanup": {
+        "killExit": 0,
+        "probeExit": 1,
+        "noServer": true
+      }
+    }
+  ],
+  "noRealClientOrProfileAccess": true,
+  "limits": [
+    "Synthetic config only; no actual Windows profile byte comparison tested.",
+    "The 840-second bound is configured but was not waited out in these short tests.",
+    "Actual model integration remains unqualified."
+  ],
+  "elapsedSeconds": 8.8241
+}

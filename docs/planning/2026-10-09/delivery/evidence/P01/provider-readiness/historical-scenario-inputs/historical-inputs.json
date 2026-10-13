@@ -1,0 +1,2238 @@
+{
+  "schemaVersion": 1,
+  "scope": "Historical comparison inputs for three remaining original scenarios. No provider calls, new scenario execution, runtime change or phase acceptance.",
+  "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+  "historicalExecutionCommitKnown": false,
+  "assertionDefinitions": {
+    "E1": "E1  every top-level work item ended 'done'",
+    "E2": "E2  no delivery ended 'dead'",
+    "E3": "E3  no doorbell outcome 'failed' (text left unsubmitted / identity mismatch)",
+    "E4": "E4  no agent went 'blocked' on a modal that needed a person, and none died",
+    "E5": "E5  every message delivered to a live agent was acked",
+    "E6": "E6  the scenario's own verification (repo tests, file checks) passed"
+  },
+  "sourceReferences": [
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "hub/demo/orchestrate.py",
+      "bytes": 17332,
+      "sha256": "9e389a227a1407f7aedfe7462a89b88ec1e3e5506d4cf0c0d8b1f7c3c96a2451"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "hub/demo/scoreboard.py",
+      "bytes": 1628,
+      "sha256": "a88cb21230061659b518aa4025fc0bf18f74611ee2967e5d8d66a2090bc1fb59"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "hub/demo/setup_repos.sh",
+      "bytes": 2295,
+      "sha256": "5c6c1c462063a3a73fb3d509d6ad42d65cde432a77114fd32d2a3bfa95026a7b"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "hub/demo/README.md",
+      "bytes": 5219,
+      "sha256": "b195768c2cd08b23943cba1ec44fbb8f01b247078b6b3d1cd73e4754c15ebe5f"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "evals/orchestrations/SCOREBOARD.md",
+      "bytes": 3785,
+      "sha256": "3eab17289655dbccb882f0b8644c400254d13bc1225570ff5a24d60f2f8d4074"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "evals/orchestrations/20260929-222043-team.json",
+      "bytes": 3745,
+      "sha256": "c943beaca7a4521e96ca02783737f50f662de1edd2033ddf1d04dc5a408d8ff2"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "evals/orchestrations/20260929-225538-team.json",
+      "bytes": 13568,
+      "sha256": "6a9bae99b4556e8e45840df705ba8ee04fb75af9c50fbfd26d38667ddebcfa24"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "evals/orchestrations/20260929-230317-team.json",
+      "bytes": 13133,
+      "sha256": "afa26e2ce9b4bcb980222f066fc6a50991bad43dffee16af471617e7f28cafa3"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "evals/orchestrations/20260930-140310-team.json",
+      "bytes": 15470,
+      "sha256": "3d23b47c85e550a4d8138c4a3271e0206a5628cb2a0f16db6517b094393ad931"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "evals/orchestrations/20260930-142203-team.json",
+      "bytes": 10831,
+      "sha256": "6e6d96f6e509801349a9ff476e0ef1e59fdcb323960a60b716761c52e99c2ae4"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "evals/orchestrations/20261002-094337-team.json",
+      "bytes": 13463,
+      "sha256": "90ea3abb6319af39e793e6c6df3b8e41515be9bfd703e2dc970a3c6b03482827"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "evals/orchestrations/20261002-095252-team.json",
+      "bytes": 13004,
+      "sha256": "747d24b6aee5468b8d21495df19fcdd2429ac21523edecc64d0c98b80f9e4f6a"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "evals/orchestrations/20260929-225924-crossrepo.json",
+      "bytes": 13671,
+      "sha256": "2be1049d9d26b4961521951605c9e60a517b7863d8ffd9e24022d9caf78c4ada"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "evals/orchestrations/20260929-231132-crossrepo.json",
+      "bytes": 8048,
+      "sha256": "02f7daffb81b25f84f0c977945f1d4cd7e57f68a68748c43b8c3e65c05c12342"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "evals/orchestrations/20260929-232307-crossrepo.json",
+      "bytes": 10560,
+      "sha256": "1193b3371f54c942d5490c596db8029897f1e08dac020d2c74c5b9519ddc5c88"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "evals/orchestrations/20261002-094624-crossrepo.json",
+      "bytes": 13305,
+      "sha256": "d4b9b41b53285b7c8f7d7c90ba88f92d2bfa994837635e00e7385edf9f821b71"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "evals/orchestrations/20261002-095629-crossrepo.json",
+      "bytes": 13005,
+      "sha256": "0e68ca18e81328a86d14636f233af241321f4dbb87c2977c40cef1c215cd6f6e"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "evals/orchestrations/20260929-230742-swarm.json",
+      "bytes": 9183,
+      "sha256": "50467b7b5c280045684e358bac3c7f792cc98830d6d9b7660b3327bf7d66bec3"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "evals/orchestrations/20260929-230935-swarm.json",
+      "bytes": 12595,
+      "sha256": "9612464014568fa4c06f2b16224941f1a6db844e55629b2beae0e44968474c72"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "evals/orchestrations/20261002-094942-swarm.json",
+      "bytes": 13293,
+      "sha256": "db06ae54ebe5c6d67065bc9f3b34050f1cc167c9eb464f5f7525766344a231ff"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "evals/orchestrations/20261002-095926-swarm.json",
+      "bytes": 13711,
+      "sha256": "86681bc54d13a2a170291aaf4fd25af14a51f9a6259185dc7002b69a798ed0fc"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "evals/orchestrations/20261002-100423-swarm.json",
+      "bytes": 11155,
+      "sha256": "94b0c5b8250e43681e398307f337bb20aa9604d57013d901dcea2076cad34c8e"
+    },
+    {
+      "retentionCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+      "path": "evals/orchestrations/20261002-100651-swarm.json",
+      "bytes": 11410,
+      "sha256": "4393926653221850a08272b0261c9902c5bc8e145f35702e2c80fc6b04912f26"
+    }
+  ],
+  "scenarios": [
+    {
+      "scenario": "team",
+      "originalProviderMix": [
+        {
+          "repo": "calc",
+          "role": "lead",
+          "cli": "claude"
+        },
+        {
+          "repo": "calc",
+          "role": "worker",
+          "cli": "codex"
+        },
+        {
+          "repo": "calc",
+          "role": "reviewer",
+          "cli": "grok"
+        }
+      ],
+      "originalScenarioSource": "def sc_team(tag):\n    \"\"\"O2: team work - the lead decomposes into worker and reviewer items.\"\"\"\n    return {\n        \"agents\": [(\"calc\", \"lead\", f\"claude_{tag}\", \"claude\"),\n                   (\"calc\", \"worker\", f\"codex_{tag}\", \"codex\"),\n                   (\"calc\", \"reviewer\", f\"grok_{tag}\", \"grok\")],\n        \"teams\": [(\"calc\", f\"t_{tag}\")],\n        \"work\": [dict(to=f\"team:calc/t_{tag}\", title=\"Add variance and stdev to calc\",\n                      body=\"Goal: calc gains variance(xs) (population variance) and stdev(xs) (its square root), both \"\n                           \"raising ValueError on empty input, with unit tests, committed.\\n\"\n                           \"As lead: create ONE work item for your team's worker role to implement both with tests, and \"\n                           f\"after its result arrives, ONE work item for your team's reviewer role (use --to \"\n                           f\"role:team:calc/t_{tag}/worker and role:team:calc/t_{tag}/reviewer, each with --parent <this \"\n                           \"item id>). If the reviewer rejects, send the fixes back to a worker item and review again. \"\n                           \"When the review approves, mark this item done with a one-line summary.\")],\n        \"verify\": lambda: _verify_fn(\"calc\", \"stdev\", \"from calc import variance, stdev; assert abs(variance([1,2,3,4])-1.25)<1e-9 and abs(stdev([2,4,4,4,5,5,7,9])-2.0)<1e-9\"),\n    }",
+      "selectedHistoricalBaseline": "20261002-095252-team",
+      "selectionReason": "Latest retained report with all six named checks true; all earlier failures and successful reports remain included. This selects recorded behavior, not an exact historical runtime environment.",
+      "baselineChecks": {
+        "E1_all_top_done": true,
+        "E2_no_dead_delivery": true,
+        "E3_no_failed_bell": true,
+        "E4_no_blocked_or_died": true,
+        "E5_all_acked": true,
+        "E6_verified": true
+      },
+      "allHistoricalReports": [
+        {
+          "sourcePath": "evals/orchestrations/20260929-222043-team.json",
+          "run": "20260929-222043-team",
+          "started": "2026-09-29T22:20:43-0500",
+          "executionSourceCommit": null,
+          "clientVersions": null,
+          "agents": [
+            "calc-lead-claude_2220",
+            "calc-worker-codex_2220",
+            "calc-reviewer-grok_2220"
+          ],
+          "providerLabelsObserved": [
+            "claude",
+            "codex",
+            "grok"
+          ],
+          "providerEvidenceLimit": "Agent labels are retained observations, not verified executable identities. Codex-labelled lead roles may reflect the optional Claude substitution; the report does not record that environment flag.",
+          "checks": {
+            "E1_all_top_done": false,
+            "E2_no_dead_delivery": true,
+            "E3_no_failed_bell": true,
+            "E4_no_blocked_or_died": false,
+            "E5_all_acked": false,
+            "E6_verified": false
+          },
+          "errorFree": false,
+          "errors": [
+            "agent calc-lead-claude_2220 dead: {\"from\":\"ready\",\"note\":\"terminal gone\"}",
+            "delivery 01M3R58DVCCQXZHGX6F8PK7AC2>calc-lead-claude_2220 ended queued"
+          ],
+          "stats": {
+            "deliveries": 3,
+            "acked": 2,
+            "bells": {
+              "deferred": 7,
+              "submitted": 2
+            },
+            "modal_answers": [],
+            "extra_enters": 0,
+            "work_items": 1,
+            "duration_s": 1801
+          },
+          "verification": "calc.stdev check failed: Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nImportError: cannot import name 'variance' from 'calc' (/home/nick/hubdemo/calc/calc/__init__.py)\n",
+          "work": [
+            {
+              "id": "W-SNN2R7AYDX",
+              "parent_id": null,
+              "target": "team:calc/t_2220",
+              "title": "Add variance and stdev to calc",
+              "state": "ready",
+              "claimed_by": null,
+              "attempts": 0,
+              "result": null
+            }
+          ],
+          "skipEvidence": "These reports lack a complete raw test log and explicit skipped-check fields. Missing fields do not prove zero skips."
+        },
+        {
+          "sourcePath": "evals/orchestrations/20260929-225538-team.json",
+          "run": "20260929-225538-team",
+          "started": "2026-09-29T22:55:38-0500",
+          "executionSourceCommit": null,
+          "clientVersions": null,
+          "agents": [
+            "calc-lead-claude_2255",
+            "calc-worker-codex_2255",
+            "calc-reviewer-grok_2255"
+          ],
+          "providerLabelsObserved": [
+            "claude",
+            "codex",
+            "grok"
+          ],
+          "providerEvidenceLimit": "Agent labels are retained observations, not verified executable identities. Codex-labelled lead roles may reflect the optional Claude substitution; the report does not record that environment flag.",
+          "checks": {
+            "E1_all_top_done": true,
+            "E2_no_dead_delivery": true,
+            "E3_no_failed_bell": false,
+            "E4_no_blocked_or_died": true,
+            "E5_all_acked": true,
+            "E6_verified": true
+          },
+          "errorFree": false,
+          "errors": [
+            "bell calc-reviewer-grok_2255 failed: text still in the input box after submit"
+          ],
+          "stats": {
+            "deliveries": 5,
+            "acked": 5,
+            "bells": {
+              "deferred": 8,
+              "failed": 1,
+              "submitted": 5
+            },
+            "modal_answers": [
+              [
+                {
+                  "kind": "trust",
+                  "keys": [
+                    "Down",
+                    "Enter"
+                  ]
+                },
+                {
+                  "kind": "bypass",
+                  "keys": [
+                    "Down",
+                    "Enter"
+                  ]
+                }
+              ]
+            ],
+            "extra_enters": 2,
+            "work_items": 3,
+            "duration_s": 180
+          },
+          "verification": "calc: tests pass, stdev ok; log: 859b118 Add population variance and stdev to calc",
+          "work": [
+            {
+              "id": "W-177FNMC0H2",
+              "parent_id": null,
+              "target": "team:calc/t_2255",
+              "title": "Add variance and stdev to calc",
+              "state": "done",
+              "claimed_by": "calc-lead-claude_2255",
+              "attempts": 1,
+              "result": "Added population variance(xs) and stdev(xs) to calc/__init__.py with 8 new unit tests; both raise ValueError on empty input and materialize the input so generators are safe. Worker implemented (W-7XF23Z5GCB), reviewer approved with no changes required (W-V4KBMP56GB), 10/10 tests pass, committed as 859b118."
+            },
+            {
+              "id": "W-7XF23Z5GCB",
+              "parent_id": "W-177FNMC0H2",
+              "target": "role:team:calc/t_2255/worker",
+              "title": "Implement variance() and stdev() in calc with tests",
+              "state": "done",
+              "claimed_by": "calc-worker-codex_2255",
+              "attempts": 1,
+              "result": "Added population variance(xs) and stdev(xs) in calc/__init__.py, with function-specific ValueError messages for empty input and support for generators. Added tests for known values, single-element inputs, empty inputs, and generators in tests/test_calc.py. python3 -m unittest discover -s tests: Ran 10 tests in 0.000s, OK. git diff --check passed. No commit created."
+            },
+            {
+              "id": "W-V4KBMP56GB",
+              "parent_id": "W-177FNMC0H2",
+              "target": "role:team:calc/t_2255/reviewer",
+              "title": "Review variance()/stdev() implementation in calc",
+              "state": "done",
+              "claimed_by": "calc-reviewer-grok_2255",
+              "attempts": 1,
+              "result": "APPROVE: variance() is population variance (divide by n, not n-1). For [1, 2, 3, 4] the squared deviations sum to 5 and 5/4 is 1.25. stdev() returns variance(xs) ** 0.5. Both call list(xs) before any second pass, so a generator is consumed once, and both raise ValueError on empty input. Style matches mean(): no type hints, no docstrings, same list / empty-check / compute shape. Tests cover known values, a single element, empty-input ValueError, and generators. python3 -m unittest discover -s tests: 10 tests, OK. Note only: stdev() lists and empty-checks, then variance() lists again and mean() lists once more. That second pass is over an already-materialized list, so generators stay safe, and the stdev empty check keeps its own error message. No change required."
+            }
+          ],
+          "skipEvidence": "These reports lack a complete raw test log and explicit skipped-check fields. Missing fields do not prove zero skips."
+        },
+        {
+          "sourcePath": "evals/orchestrations/20260929-230317-team.json",
+          "run": "20260929-230317-team",
+          "started": "2026-09-29T23:03:17-0500",
+          "executionSourceCommit": null,
+          "clientVersions": null,
+          "agents": [
+            "calc-lead-claude_2303",
+            "calc-worker-codex_2303",
+            "calc-reviewer-grok_2303"
+          ],
+          "providerLabelsObserved": [
+            "claude",
+            "codex",
+            "grok"
+          ],
+          "providerEvidenceLimit": "Agent labels are retained observations, not verified executable identities. Codex-labelled lead roles may reflect the optional Claude substitution; the report does not record that environment flag.",
+          "checks": {
+            "E1_all_top_done": true,
+            "E2_no_dead_delivery": true,
+            "E3_no_failed_bell": true,
+            "E4_no_blocked_or_died": true,
+            "E5_all_acked": true,
+            "E6_verified": true
+          },
+          "errorFree": true,
+          "errors": [],
+          "stats": {
+            "deliveries": 5,
+            "acked": 5,
+            "bells": {
+              "deferred": 8,
+              "submitted": 7
+            },
+            "modal_answers": [
+              [
+                {
+                  "kind": "bypass",
+                  "keys": [
+                    "Down",
+                    "Enter"
+                  ]
+                }
+              ]
+            ],
+            "extra_enters": 2,
+            "work_items": 3,
+            "duration_s": 240
+          },
+          "verification": "calc: tests pass, stdev ok; log: 050d607 Add population variance and standard deviation",
+          "work": [
+            {
+              "id": "W-PJXVTKR7RP",
+              "parent_id": null,
+              "target": "team:calc/t_2303",
+              "title": "Add variance and stdev to calc",
+              "state": "done",
+              "claimed_by": "calc-lead-claude_2303",
+              "attempts": 1,
+              "result": "Added population variance(xs) and stdev(xs) to calc, both raising ValueError on empty input, with unit tests (7 tests, OK); implemented by worker and APPROVED by reviewer; committed on main as 050d607, not pushed."
+            },
+            {
+              "id": "W-1FTH0SWNR6",
+              "parent_id": "W-PJXVTKR7RP",
+              "target": "role:team:calc/t_2303/worker",
+              "title": "Implement variance() and stdev() in calc with unit tests",
+              "state": "done",
+              "claimed_by": "calc-worker-codex_2303",
+              "attempts": 1,
+              "result": "Implemented population variance() using mean() and stdev() as its square root; both support generators and raise ValueError on empty input. Added known-value, single-element, empty-input, and generator tests. python3 -m unittest discover -s tests: Ran 7 tests in 0.000s, OK. Committed on main as 050d60782b0c320fb778ed2c8eb994216aaab1e2 (Add population variance and standard deviation). No push. Git identity was absent, so used the existing repository commit identity hubdemo <hubdemo@localhost> for this commit only."
+            },
+            {
+              "id": "W-8A1TKPFA53",
+              "parent_id": "W-PJXVTKR7RP",
+              "target": "role:team:calc/t_2303/reviewer",
+              "title": "Review variance()/stdev() implementation in calc (commit 050d607)",
+              "state": "done",
+              "claimed_by": "calc-reviewer-grok_2303",
+              "attempts": 1,
+              "result": "APPROVE: commit 050d607 meets the requirements. variance() is the population variance (sum of squared deviations divided by N; [1,2,3,4] is 1.25, not the sample 5/3). stdev() is variance(xs) ** 0.5 on the same materialized sequence. Both raise ValueError on []. Both list(xs) first, are plain functions, and variance() reuses mean(). Tests cover the population value, stdev, a single element (0), empty input for both functions, and generators. unittest: 7 tests, OK. Extra checks (floats, negatives, zeros, two elements, all-equal, generator consumed once) match the population definition. Non-blocking: stdev([]) reports \"variance of empty sequence\" because it delegates to variance(); the required ValueError is still raised."
+            }
+          ],
+          "skipEvidence": "These reports lack a complete raw test log and explicit skipped-check fields. Missing fields do not prove zero skips."
+        },
+        {
+          "sourcePath": "evals/orchestrations/20260930-140310-team.json",
+          "run": "20260930-140310-team",
+          "started": "2026-09-30T14:03:10-0500",
+          "executionSourceCommit": null,
+          "clientVersions": null,
+          "agents": [
+            "calc-lead-codexb_1403",
+            "calc-worker-codex_1403",
+            "calc-reviewer-grok_1403"
+          ],
+          "providerLabelsObserved": [
+            "codex",
+            "grok"
+          ],
+          "providerEvidenceLimit": "Agent labels are retained observations, not verified executable identities. Codex-labelled lead roles may reflect the optional Claude substitution; the report does not record that environment flag.",
+          "checks": {
+            "E1_all_top_done": true,
+            "E2_no_dead_delivery": true,
+            "E3_no_failed_bell": true,
+            "E4_no_blocked_or_died": false,
+            "E5_all_acked": true,
+            "E6_verified": true
+          },
+          "errorFree": false,
+          "errors": [
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "bell calc-lead-codexb_1403 blocked: modal update appeared while typing",
+            "bell calc-worker-codex_1403 blocked: modal update appeared while typing",
+            "agent calc-lead-codexb_1403 blocked: {\"from\":\"ready\",\"note\":\"modal update appeared while typing\"}",
+            "agent calc-worker-codex_1403 blocked: {\"from\":\"ready\",\"note\":\"modal update appeared while typing\"}"
+          ],
+          "stats": {
+            "deliveries": 5,
+            "acked": 5,
+            "bells": {
+              "blocked": 52,
+              "deferred": 10,
+              "submitted": 5
+            },
+            "modal_answers": [
+              [
+                {
+                  "kind": "update",
+                  "keys": [
+                    "2"
+                  ]
+                }
+              ]
+            ],
+            "extra_enters": 2,
+            "work_items": 3,
+            "duration_s": 1100
+          },
+          "verification": "calc: tests pass, stdev ok; log: 42a2da1 Add population variance and standard deviation",
+          "work": [
+            {
+              "id": "W-KDHMKPWTAX",
+              "parent_id": null,
+              "target": "team:calc/t_1403",
+              "title": "Add variance and stdev to calc",
+              "state": "done",
+              "claimed_by": "calc-lead-codexb_1403",
+              "attempts": 1,
+              "result": "Added population variance and stdev with empty-input ValueError and unit tests; all 7 tests pass, reviewer approved, committed as 42a2da1."
+            },
+            {
+              "id": "W-6TJP5R33NZ",
+              "parent_id": "W-KDHMKPWTAX",
+              "target": "role:team:calc/t_1403/worker",
+              "title": "Implement variance and stdev with tests",
+              "state": "done",
+              "claimed_by": "calc-worker-codex_1403",
+              "attempts": 1,
+              "result": "Implemented population variance(xs) and stdev(xs), including ValueError for empty inputs and iterable support. Added tests for population results, fractional results, singleton/constant inputs, iterators, and empty inputs. Validation: python3 -m unittest discover -s tests passed all 7 tests; git diff --check passed. Commit: 42a2da105f6c296daea2c0fa3672b28721c3dc9f"
+            },
+            {
+              "id": "W-XN1P5SAQ7T",
+              "parent_id": "W-KDHMKPWTAX",
+              "target": "role:team:calc/t_1403/reviewer",
+              "title": "Review variance and stdev implementation",
+              "state": "done",
+              "claimed_by": "calc-reviewer-grok_1403",
+              "attempts": 1,
+              "result": "APPROVE: commit 42a2da1 implements population variance and stdev correctly.\n\nvariance(xs) materializes the iterable, raises ValueError on empty input, and divides the sum of squared deviations by n (not n-1). stdev(xs) is sqrt(variance(xs)), so empty input raises ValueError from variance before the square root. Checked the textbook series [2, 4, 4, 4, 5, 5, 7, 9]: mean 5, sum of squares 32, population variance 4, stdev 2 (sample variance would be 32/7). [-1, 0, 1] is 2/3 and sqrt(2/3). n=1 and a constant series are 0.\n\nTests pin that population result, fractional values via assertAlmostEqual, zero spread including a single element, one-pass iterators, and ValueError for both functions on [] and iter([]), with subTest. Existing add and mean tests still pass. python3 -m unittest discover -s tests: 7 tests, OK. No implementation edits."
+            }
+          ],
+          "skipEvidence": "These reports lack a complete raw test log and explicit skipped-check fields. Missing fields do not prove zero skips."
+        },
+        {
+          "sourcePath": "evals/orchestrations/20260930-142203-team.json",
+          "run": "20260930-142203-team",
+          "started": "2026-09-30T14:22:03-0500",
+          "executionSourceCommit": null,
+          "clientVersions": null,
+          "agents": [
+            "calc-lead-codexb_1422",
+            "calc-worker-codex_1422",
+            "calc-reviewer-grok_1422"
+          ],
+          "providerLabelsObserved": [
+            "codex",
+            "grok"
+          ],
+          "providerEvidenceLimit": "Agent labels are retained observations, not verified executable identities. Codex-labelled lead roles may reflect the optional Claude substitution; the report does not record that environment flag.",
+          "checks": {
+            "E1_all_top_done": true,
+            "E2_no_dead_delivery": true,
+            "E3_no_failed_bell": true,
+            "E4_no_blocked_or_died": true,
+            "E5_all_acked": true,
+            "E6_verified": true
+          },
+          "errorFree": true,
+          "errors": [],
+          "stats": {
+            "deliveries": 5,
+            "acked": 5,
+            "bells": {
+              "deferred": 9,
+              "submitted": 5
+            },
+            "modal_answers": [
+              [
+                {
+                  "kind": "update",
+                  "keys": [
+                    "2"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "update",
+                  "keys": [
+                    "2"
+                  ]
+                }
+              ]
+            ],
+            "extra_enters": 2,
+            "work_items": 3,
+            "duration_s": 250
+          },
+          "verification": "calc: tests pass, stdev ok; log: 54f85d4 Add population variance and standard deviation",
+          "work": [
+            {
+              "id": "W-EKCSEJPRTC",
+              "parent_id": null,
+              "target": "team:calc/t_1422",
+              "title": "Add variance and stdev to calc",
+              "state": "done",
+              "claimed_by": "calc-lead-codexb_1422",
+              "attempts": 1,
+              "result": "Added population variance(xs) and stdev(xs), ValueError for empty inputs, and unit tests in commit 54f85d4; all 7 tests pass and reviewer approved."
+            },
+            {
+              "id": "W-AZXVVS1087",
+              "parent_id": "W-EKCSEJPRTC",
+              "target": "role:team:calc/t_1422/worker",
+              "title": "Implement population variance and stdev with tests",
+              "state": "done",
+              "claimed_by": "calc-worker-codex_1422",
+              "attempts": 1,
+              "result": "Implemented population variance(xs) and stdev(xs), supporting iterables and raising ValueError on empty input. Added tests for population denominator, fractional results, constants, generators, and empty inputs. python3 -m unittest discover -s tests: all 7 tests passed; git diff --check passed. Commit: 54f85d47eb6b588252f600c1a76c96530b58dad2."
+            },
+            {
+              "id": "W-5S4E5GRYV9",
+              "parent_id": "W-EKCSEJPRTC",
+              "target": "role:team:calc/t_1422/reviewer",
+              "title": "Review variance and stdev implementation",
+              "state": "done",
+              "claimed_by": "calc-reviewer-grok_1422",
+              "attempts": 1,
+              "result": "APPROVE: commit 54f85d47eb6b588252f600c1a76c96530b58dad2.\n\nvariance(xs) is the population variance: materializes xs, raises ValueError(\"variance of empty sequence\") when empty, then sum((x - mean)^2) / n. The textbook series [2, 4, 4, 4, 5, 5, 7, 9] is exactly 4 (sample variance would be 32/7), so the divisor is n.\n\nstdev(xs) is variance(xs) ** 0.5, so empty input raises the same ValueError and a constant series is 0.\n\nFollows mean(): list() so generators work, ValueError on empty, true division. Tests cover the population example, a fractional case (assertAlmostEqual on 2/3 and its square root), single-value and constant series, generators, and empty list plus empty iterator for both functions.\n\npython3 -m unittest discover -s tests -v: 7 tests, OK."
+            }
+          ],
+          "skipEvidence": "These reports lack a complete raw test log and explicit skipped-check fields. Missing fields do not prove zero skips."
+        },
+        {
+          "sourcePath": "evals/orchestrations/20261002-094337-team.json",
+          "run": "20261002-094337-team",
+          "started": "2026-10-02T09:43:37-0500",
+          "executionSourceCommit": null,
+          "clientVersions": null,
+          "agents": [
+            "calc-lead-claude_0943",
+            "calc-worker-codex_0943",
+            "calc-reviewer-grok_0943"
+          ],
+          "providerLabelsObserved": [
+            "claude",
+            "codex",
+            "grok"
+          ],
+          "providerEvidenceLimit": "Agent labels are retained observations, not verified executable identities. Codex-labelled lead roles may reflect the optional Claude substitution; the report does not record that environment flag.",
+          "checks": {
+            "E1_all_top_done": true,
+            "E2_no_dead_delivery": true,
+            "E3_no_failed_bell": true,
+            "E4_no_blocked_or_died": true,
+            "E5_all_acked": true,
+            "E6_verified": true
+          },
+          "errorFree": true,
+          "errors": [],
+          "stats": {
+            "deliveries": 5,
+            "acked": 5,
+            "bells": {
+              "deferred": 8,
+              "submitted": 7
+            },
+            "modal_answers": [
+              [
+                {
+                  "kind": "update",
+                  "keys": [
+                    "2"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "bypass",
+                  "keys": [
+                    "Down",
+                    "Enter"
+                  ]
+                }
+              ]
+            ],
+            "extra_enters": 2,
+            "work_items": 3,
+            "duration_s": 160
+          },
+          "verification": "calc: tests pass, stdev ok; log: 2287380 Add population variance() and stdev() to calc",
+          "work": [
+            {
+              "id": "W-CTP74RF8E2",
+              "parent_id": null,
+              "target": "team:calc/t_0943",
+              "title": "Add variance and stdev to calc",
+              "state": "done",
+              "claimed_by": "calc-lead-claude_0943",
+              "attempts": 1,
+              "result": "Added population variance(xs) and stdev(xs) to calc/__init__.py with 7 new unittest cases (9/9 passing); worker implemented, reviewer approved, committed as 2287380."
+            },
+            {
+              "id": "W-2M2KZC0HCW",
+              "parent_id": "W-CTP74RF8E2",
+              "target": "role:team:calc/t_0943/worker",
+              "title": "Implement variance() and stdev() in calc with tests",
+              "state": "done",
+              "claimed_by": "calc-worker-codex_0943",
+              "attempts": 1,
+              "result": "Added population variance(xs) and stdev(xs) in calc/__init__.py, with iterable materialization and ValueError for empty input. Extended stdlib unittest coverage for known values, identical values, generators, and empty inputs. Verification: python3 -m unittest discover -s tests -v \u2014 all 9 tests passed (Ran 9 tests in 0.000s; OK). git diff --check passed. No commit made."
+            },
+            {
+              "id": "W-Y9BSF4PARP",
+              "parent_id": "W-CTP74RF8E2",
+              "target": "role:team:calc/t_0943/reviewer",
+              "title": "Review variance()/stdev() implementation and tests in calc",
+              "state": "done",
+              "claimed_by": "calc-reviewer-grok_0943",
+              "attempts": 1,
+              "result": "APPROVE: variance() and stdev() match the acceptance criteria.\n\n- calc/__init__.py:17-26. variance() is population variance (sum of squared deviations / n). variance([1,2,3,4]) == 1.25; the sample formula would be 1.666..., so the divisor is n. stdev() is math.sqrt(variance(xs)).\n- Empty input: variance([]) raises ValueError(\"variance of empty sequence\"). stdev([]) does not catch it, so the same ValueError propagates (confirmed at runtime).\n- Generators and other iterables are materialized with list(), same pattern as mean(). variance(x for x in [1,2,3,4]) and stdev of that generator both match the list results. A tuple works too.\n- Style matches the module: stdlib math only, no numpy, unittest not pytest, same empty-check shape as mean().\n- python3 -m unittest discover -s tests -v: 9 tests, OK. New tests cover the 1.25 case, identical values, generators, and empty input for both functions. Nothing fixed and nothing committed."
+            }
+          ],
+          "skipEvidence": "These reports lack a complete raw test log and explicit skipped-check fields. Missing fields do not prove zero skips."
+        },
+        {
+          "sourcePath": "evals/orchestrations/20261002-095252-team.json",
+          "run": "20261002-095252-team",
+          "started": "2026-10-02T09:52:52-0500",
+          "executionSourceCommit": null,
+          "clientVersions": null,
+          "agents": [
+            "calc-lead-claude_0952",
+            "calc-worker-codex_0952",
+            "calc-reviewer-grok_0952"
+          ],
+          "providerLabelsObserved": [
+            "claude",
+            "codex",
+            "grok"
+          ],
+          "providerEvidenceLimit": "Agent labels are retained observations, not verified executable identities. Codex-labelled lead roles may reflect the optional Claude substitution; the report does not record that environment flag.",
+          "checks": {
+            "E1_all_top_done": true,
+            "E2_no_dead_delivery": true,
+            "E3_no_failed_bell": true,
+            "E4_no_blocked_or_died": true,
+            "E5_all_acked": true,
+            "E6_verified": true
+          },
+          "errorFree": true,
+          "errors": [],
+          "stats": {
+            "deliveries": 5,
+            "acked": 5,
+            "bells": {
+              "deferred": 8,
+              "submitted": 7
+            },
+            "modal_answers": [
+              [
+                {
+                  "kind": "update",
+                  "keys": [
+                    "2"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "bypass",
+                  "keys": [
+                    "Down",
+                    "Enter"
+                  ]
+                }
+              ]
+            ],
+            "extra_enters": 2,
+            "work_items": 3,
+            "duration_s": 210
+          },
+          "verification": "calc: tests pass, stdev ok; log: 10096c0 Add population variance and standard deviation",
+          "work": [
+            {
+              "id": "W-C09AJV317P",
+              "parent_id": null,
+              "target": "team:calc/t_0952",
+              "title": "Add variance and stdev to calc",
+              "state": "done",
+              "claimed_by": "calc-lead-claude_0952",
+              "attempts": 1,
+              "result": "calc gains population variance(xs) and stdev(xs), both raising ValueError on empty input, with 8 passing unit tests; committed as 10096c0 (not pushed). Worker implemented, reviewer approved."
+            },
+            {
+              "id": "W-EA7K0H4CDH",
+              "parent_id": "W-C09AJV317P",
+              "target": "role:team:calc/t_0952/worker",
+              "title": "Implement variance and stdev in calc",
+              "state": "done",
+              "claimed_by": "calc-worker-codex_0952",
+              "attempts": 1,
+              "result": "Added population variance(xs) reusing mean() and stdev(xs) reusing variance(), materializing iterables and raising the required empty-input ValueErrors. Added known-value, constant, iterable, and empty-input tests plus tests/__init__.py for discovery. Requested python command failed because python is unavailable; python3 -m unittest discover -s tests -t . output: ........; Ran 8 tests in 0.000s; OK. git diff --check passed. Commit: 10096c07d5693928120231faa04d3443656971fe (used existing repository author identity via command-local git options because identity was unconfigured). No push; working tree clean."
+            },
+            {
+              "id": "W-C4RTHM150Q",
+              "parent_id": "W-C09AJV317P",
+              "target": "role:team:calc/t_0952/reviewer",
+              "title": "Review variance and stdev implementation in calc",
+              "state": "done",
+              "claimed_by": "calc-reviewer-grok_0952",
+              "attempts": 1,
+              "result": "APPROVE: commit 10096c0 matches the requirement.\n\n- variance([1,2,3,4]) is 1.25, population (divide by n). Sample variance would be 5/3.\n- stdev is variance(xs) ** 0.5 (sqrt(1.25) == 1.118033988749895).\n- Both call list(xs) first, so generators and iterators work; tests cover iter([...]) and a generator expression.\n- Empty input raises ValueError(\"variance of empty sequence\") and ValueError(\"stdev of empty sequence\"), same shape as mean().\n- variance() calls mean(); stdev() calls variance(). Style matches calc/__init__.py.\n- tests/test_calc.py stays in the existing unittest style and covers known values, a constant sequence, iterables, and both empty-input errors.\n- tests/__init__.py is an empty package marker. python3 -m unittest discover -s tests -t . and the README command python3 -m unittest discover -s tests both ran 8 tests, OK. No code changes made."
+            }
+          ],
+          "skipEvidence": "These reports lack a complete raw test log and explicit skipped-check fields. Missing fields do not prove zero skips."
+        }
+      ],
+      "historicalWorkDifferences": [
+        {
+          "run": "20260929-222043-team",
+          "workItemCount": 1,
+          "topLevelCount": 1,
+          "workStates": [
+            "ready"
+          ],
+          "workTitles": [
+            "Add variance and stdev to calc"
+          ],
+          "recordedUncommittedChanges": false,
+          "errorFree": false
+        },
+        {
+          "run": "20260929-225538-team",
+          "workItemCount": 3,
+          "topLevelCount": 1,
+          "workStates": [
+            "done"
+          ],
+          "workTitles": [
+            "Add variance and stdev to calc",
+            "Implement variance() and stdev() in calc with tests",
+            "Review variance()/stdev() implementation in calc"
+          ],
+          "recordedUncommittedChanges": false,
+          "errorFree": false
+        },
+        {
+          "run": "20260929-230317-team",
+          "workItemCount": 3,
+          "topLevelCount": 1,
+          "workStates": [
+            "done"
+          ],
+          "workTitles": [
+            "Add variance and stdev to calc",
+            "Implement variance() and stdev() in calc with unit tests",
+            "Review variance()/stdev() implementation in calc (commit 050d607)"
+          ],
+          "recordedUncommittedChanges": false,
+          "errorFree": true
+        },
+        {
+          "run": "20260930-140310-team",
+          "workItemCount": 3,
+          "topLevelCount": 1,
+          "workStates": [
+            "done"
+          ],
+          "workTitles": [
+            "Add variance and stdev to calc",
+            "Implement variance and stdev with tests",
+            "Review variance and stdev implementation"
+          ],
+          "recordedUncommittedChanges": false,
+          "errorFree": false
+        },
+        {
+          "run": "20260930-142203-team",
+          "workItemCount": 3,
+          "topLevelCount": 1,
+          "workStates": [
+            "done"
+          ],
+          "workTitles": [
+            "Add variance and stdev to calc",
+            "Implement population variance and stdev with tests",
+            "Review variance and stdev implementation"
+          ],
+          "recordedUncommittedChanges": false,
+          "errorFree": true
+        },
+        {
+          "run": "20261002-094337-team",
+          "workItemCount": 3,
+          "topLevelCount": 1,
+          "workStates": [
+            "done"
+          ],
+          "workTitles": [
+            "Add variance and stdev to calc",
+            "Implement variance() and stdev() in calc with tests",
+            "Review variance()/stdev() implementation and tests in calc"
+          ],
+          "recordedUncommittedChanges": false,
+          "errorFree": true
+        },
+        {
+          "run": "20261002-095252-team",
+          "workItemCount": 3,
+          "topLevelCount": 1,
+          "workStates": [
+            "done"
+          ],
+          "workTitles": [
+            "Add variance and stdev to calc",
+            "Implement variance and stdev in calc",
+            "Review variance and stdev implementation in calc"
+          ],
+          "recordedUncommittedChanges": false,
+          "errorFree": true
+        }
+      ],
+      "targetRun": null,
+      "baselineTargetComparisonComplete": false
+    },
+    {
+      "scenario": "crossrepo",
+      "originalProviderMix": [
+        {
+          "repo": "report",
+          "role": "lead",
+          "cli": "claude"
+        },
+        {
+          "repo": "calc",
+          "role": "worker",
+          "cli": "codex"
+        },
+        {
+          "repo": "report",
+          "role": "worker",
+          "cli": "grok"
+        }
+      ],
+      "originalScenarioSource": "def sc_crossrepo(tag):\n    \"\"\"O3: cross-repo - report's lead needs a function from the calc repo.\"\"\"\n    return {\n        \"agents\": [(\"report\", \"lead\", f\"claude_{tag}\", \"claude\"),\n                   (\"calc\", \"worker\", f\"codex_{tag}\", \"codex\"),\n                   (\"report\", \"worker\", f\"grok_{tag}\", \"grok\")],\n        \"teams\": [(\"report\", f\"r_{tag}\")],\n        \"work\": [dict(to=f\"team:report/r_{tag}\", title=\"Report shows the median\",\n                      body=\"Goal: report.summary(name, xs) returns 'NAME: n=N mean=M.MM median=D.DD' (median to 2 decimals), \"\n                           \"using a median(xs) function that must live in the OTHER repo, calc (checkout ~/hubdemo/calc), \"\n                           \"with tests in both repos, committed in both.\\n\"\n                           \"As lead: (1) if calc has no median yet, create a work item for role:calc/worker (the calc \"\n                           \"repo's workers are not on your team - that is expected) with --parent <this item id> asking \"\n                           \"for median with tests; (2) after its result arrives, create a work item for \"\n                           f\"role:team:report/r_{tag}/worker with --parent <this item id> to update report.summary and \"\n                           \"its test; (3) verify both repos' tests pass (python3 -m unittest discover -s tests in \"\n                           \"each), then mark this item done.\")],\n        \"verify\": lambda: _verify_all(\n            _verify_fn(\"calc\", \"median\", \"from calc import median; assert median([1,2,3,4])==2.5\"),\n            _verify_fn(\"report\", \"summary\", \"from report import summary; s=summary('a',[1,2,3,4]); assert 'median=2.50' in s, s\")),\n    }",
+      "selectedHistoricalBaseline": "20261002-095629-crossrepo",
+      "selectionReason": "Latest retained report with all six named checks true; all earlier failures and successful reports remain included. This selects recorded behavior, not an exact historical runtime environment.",
+      "baselineChecks": {
+        "E1_all_top_done": true,
+        "E2_no_dead_delivery": true,
+        "E3_no_failed_bell": true,
+        "E4_no_blocked_or_died": true,
+        "E5_all_acked": true,
+        "E6_verified": true
+      },
+      "allHistoricalReports": [
+        {
+          "sourcePath": "evals/orchestrations/20260929-225924-crossrepo.json",
+          "run": "20260929-225924-crossrepo",
+          "started": "2026-09-29T22:59:24-0500",
+          "executionSourceCommit": null,
+          "clientVersions": null,
+          "agents": [
+            "report-lead-claude_2259",
+            "calc-worker-codex_2259",
+            "report-worker-grok_2259"
+          ],
+          "providerLabelsObserved": [
+            "claude",
+            "codex",
+            "grok"
+          ],
+          "providerEvidenceLimit": "Agent labels are retained observations, not verified executable identities. Codex-labelled lead roles may reflect the optional Claude substitution; the report does not record that environment flag.",
+          "checks": {
+            "E1_all_top_done": true,
+            "E2_no_dead_delivery": true,
+            "E3_no_failed_bell": true,
+            "E4_no_blocked_or_died": true,
+            "E5_all_acked": true,
+            "E6_verified": true
+          },
+          "errorFree": true,
+          "errors": [],
+          "stats": {
+            "deliveries": 5,
+            "acked": 5,
+            "bells": {
+              "deferred": 8,
+              "submitted": 7
+            },
+            "modal_answers": [
+              [
+                {
+                  "kind": "trust",
+                  "keys": [
+                    "Down",
+                    "Enter"
+                  ]
+                },
+                {
+                  "kind": "bypass",
+                  "keys": [
+                    "Down",
+                    "Enter"
+                  ]
+                }
+              ]
+            ],
+            "extra_enters": 1,
+            "work_items": 3,
+            "duration_s": 210
+          },
+          "verification": "calc: tests pass, median ok; log: b171b28 Add median function with iterable support; UNCOMMITTED: ?? calc/__pycache__/\n?? tests/__pycache__/ | report: tests pass, summary ok; log: 807d435 Add median to summary via calc.median.; UNCOMMITTED: ?? report/__pycache__/\n?? tests/__pycache__/",
+          "work": [
+            {
+              "id": "W-HSTS1ZEQVS",
+              "parent_id": null,
+              "target": "team:report/r_2259",
+              "title": "Report shows the median",
+              "state": "done",
+              "claimed_by": "report-lead-claude_2259",
+              "attempts": 1,
+              "result": "Done, both repos committed and green.\n\ncalc (~/hubdemo/calc, commit b171b28, by calc-worker-codex_2259): added median(xs) to calc/__init__.py - sorts any iterable, returns the middle value for odd length, averages the middle pair for even, raises ValueError('median of empty sequence') on empty. tests/test_calc.py covers odd, even, unsorted, generator and empty input. python3 -m unittest discover -s tests: Ran 7 tests, OK.\n\nreport (~/hubdemo/report, commit 807d435, by report-worker-grok_2259): report/__init__.py now does 'from calc import mean, median' - median is NOT reimplemented here - and summary() returns 'NAME: n=N mean=M.MM median=D.DD'. tests/test_report.py asserts summary('a',[1,2,3]) == 'a: n=3 mean=2.00 median=2.00' plus an even-length case summary('a',[1,2,3,4]) == 'a: n=4 mean=2.50 median=2.50'. python3 -m unittest discover -s tests: Ran 2 tests, OK.\n\nLead verification: re-ran both suites myself (7 OK / 2 OK), confirmed median lives only in calc, and both working trees are clean apart from untracked __pycache__."
+            },
+            {
+              "id": "W-67ZMJZRYP9",
+              "parent_id": "W-HSTS1ZEQVS",
+              "target": "role:calc/worker",
+              "title": "Add median(xs) to calc",
+              "state": "done",
+              "claimed_by": "calc-worker-codex_2259",
+              "attempts": 1,
+              "result": "Committed b171b2838a6fb7c681140fe64b73a688da78286c. Public signature: median(xs), importable via from calc import median. Accepts any iterable of numbers; sorts input; odd length returns the middle value; even length returns (left_middle + right_middle) / 2; empty input raises ValueError(\"median of empty sequence\"). Added odd, even, unsorted, generator, and empty-input tests. python3 -m unittest discover -s tests: all 7 tests passed. Commit uses the existing repository author identity hubdemo <hubdemo@localhost> via command-local settings."
+            },
+            {
+              "id": "W-HRS7C43Q9Z",
+              "parent_id": "W-HSTS1ZEQVS",
+              "target": "role:team:report/r_2259/worker",
+              "title": "report.summary: add median",
+              "state": "done",
+              "claimed_by": "report-worker-grok_2259",
+              "attempts": 1,
+              "result": "summary() imports median from calc (not reimplemented) and returns 'NAME: n=N mean=M.MM median=D.DD'. tests/test_report.py was already named correctly; updated the odd-length expectation and added an even-length case ([1, 2, 3, 4] -> mean=2.50 median=2.50). Commit 807d435db1d7d2af97802607bdc3ba612d3e877a. python3 -m unittest discover -s tests: Ran 2 tests in 0.000s, OK."
+            }
+          ],
+          "skipEvidence": "These reports lack a complete raw test log and explicit skipped-check fields. Missing fields do not prove zero skips."
+        },
+        {
+          "sourcePath": "evals/orchestrations/20260929-231132-crossrepo.json",
+          "run": "20260929-231132-crossrepo",
+          "started": "2026-09-29T23:11:32-0500",
+          "executionSourceCommit": null,
+          "clientVersions": null,
+          "agents": [
+            "report-lead-claude_2311",
+            "calc-worker-codex_2311",
+            "report-worker-grok_2311"
+          ],
+          "providerLabelsObserved": [
+            "claude",
+            "codex",
+            "grok"
+          ],
+          "providerEvidenceLimit": "Agent labels are retained observations, not verified executable identities. Codex-labelled lead roles may reflect the optional Claude substitution; the report does not record that environment flag.",
+          "checks": {
+            "E1_all_top_done": false,
+            "E2_no_dead_delivery": true,
+            "E3_no_failed_bell": true,
+            "E4_no_blocked_or_died": false,
+            "E5_all_acked": false,
+            "E6_verified": false
+          },
+          "errorFree": false,
+          "errors": [
+            "bell report-lead-claude_2311 blocked: modal login: needs a person",
+            "bell report-lead-claude_2311 blocked: modal login: needs a person",
+            "bell report-lead-claude_2311 blocked: modal login: needs a person",
+            "bell report-lead-claude_2311 blocked: modal login: needs a person",
+            "bell report-lead-claude_2311 blocked: modal login: needs a person",
+            "bell report-lead-claude_2311 blocked: modal login: needs a person",
+            "bell report-lead-claude_2311 blocked: modal login: needs a person",
+            "bell report-lead-claude_2311 blocked: modal login: needs a person",
+            "bell report-lead-claude_2311 blocked: modal login: needs a person",
+            "bell report-lead-claude_2311 blocked: modal login: needs a person",
+            "bell report-lead-claude_2311 blocked: modal login: needs a person",
+            "bell report-lead-claude_2311 blocked: modal login: needs a person",
+            "bell report-lead-claude_2311 blocked: modal login: needs a person",
+            "bell report-lead-claude_2311 blocked: modal login: needs a person",
+            "bell report-lead-claude_2311 blocked: modal login: needs a person",
+            "bell report-lead-claude_2311 blocked: modal login: needs a person",
+            "bell report-lead-claude_2311 blocked: modal login: needs a person",
+            "bell report-lead-claude_2311 blocked: modal login: needs a person",
+            "agent report-lead-claude_2311 blocked: {\"from\":\"busy\",\"note\":\"modal login: needs a person\"}",
+            "agent report-lead-claude_2311 dead: {\"from\":\"blocked\",\"note\":\"killed by operator\"}",
+            "delivery 01M3R85ESV07BCC90VSY4RM29J>report-lead-claude_2311 ended submitted"
+          ],
+          "stats": {
+            "deliveries": 3,
+            "acked": 2,
+            "bells": {
+              "blocked": 18,
+              "deferred": 8,
+              "submitted": 3
+            },
+            "modal_answers": [
+              [
+                {
+                  "kind": "bypass",
+                  "keys": [
+                    "Down",
+                    "Enter"
+                  ]
+                }
+              ]
+            ],
+            "extra_enters": 0,
+            "work_items": 1,
+            "duration_s": 660
+          },
+          "verification": "calc.median check failed: Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nImportError: cannot import name 'median' from 'calc' (/home/nick/hubdemo/calc/calc/__init__.py). Did you mean: 'mean'?\n | report.summary check failed: Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nAssertionError: a: n=4 mean=2.50\n",
+          "work": [
+            {
+              "id": "W-RWJM7H8B78",
+              "parent_id": null,
+              "target": "team:report/r_2311",
+              "title": "Report shows the median",
+              "state": "ready",
+              "claimed_by": null,
+              "attempts": 0,
+              "result": null
+            }
+          ],
+          "skipEvidence": "These reports lack a complete raw test log and explicit skipped-check fields. Missing fields do not prove zero skips."
+        },
+        {
+          "sourcePath": "evals/orchestrations/20260929-232307-crossrepo.json",
+          "run": "20260929-232307-crossrepo",
+          "started": "2026-09-29T23:23:07-0500",
+          "executionSourceCommit": null,
+          "clientVersions": null,
+          "agents": [
+            "report-lead-codexb_2323",
+            "calc-worker-codex_2323",
+            "report-worker-grok_2323"
+          ],
+          "providerLabelsObserved": [
+            "codex",
+            "grok"
+          ],
+          "providerEvidenceLimit": "Agent labels are retained observations, not verified executable identities. Codex-labelled lead roles may reflect the optional Claude substitution; the report does not record that environment flag.",
+          "checks": {
+            "E1_all_top_done": true,
+            "E2_no_dead_delivery": true,
+            "E3_no_failed_bell": true,
+            "E4_no_blocked_or_died": true,
+            "E5_all_acked": true,
+            "E6_verified": true
+          },
+          "errorFree": true,
+          "errors": [],
+          "stats": {
+            "deliveries": 5,
+            "acked": 5,
+            "bells": {
+              "deferred": 14,
+              "submitted": 5
+            },
+            "modal_answers": [
+              [
+                {
+                  "kind": "trust",
+                  "keys": [
+                    "Enter"
+                  ]
+                }
+              ]
+            ],
+            "extra_enters": 2,
+            "work_items": 3,
+            "duration_s": 290
+          },
+          "verification": "calc: tests pass, median ok; log: 8070a9c Implement median for numeric iterables with tests | report: tests pass, summary ok; log: abae5f0 Add median to report summaries and tests",
+          "work": [
+            {
+              "id": "W-RXH0GTWBXM",
+              "parent_id": null,
+              "target": "team:report/r_2323",
+              "title": "Report shows the median",
+              "state": "done",
+              "claimed_by": "report-lead-codexb_2323",
+              "attempts": 1,
+              "result": "Implemented median in calc (8070a9c) and report summary median formatting (abae5f0), with tests committed in both repositories. Independently verified python3 -m unittest discover -s tests in calc (9 passed) and report (3 passed). Both working trees clean; git diff --check passed."
+            },
+            {
+              "id": "W-4Z3PDCCJRA",
+              "parent_id": "W-RXH0GTWBXM",
+              "target": "role:calc/worker",
+              "title": "Implement median with tests in calc",
+              "state": "done",
+              "claimed_by": "calc-worker-codex_2323",
+              "attempts": 1,
+              "result": "Implemented calc.median for odd/even numeric iterables, rejecting empty input with ValueError and preserving inputs. Added seven median tests. python3 -m unittest discover -s tests: all 9 tests passed; git diff --check passed. Commit: 8070a9cd73b1ae870f94feb51b812c126d200fe2"
+            },
+            {
+              "id": "W-FDBDAZE8FQ",
+              "parent_id": "W-RXH0GTWBXM",
+              "target": "role:team:report/r_2323/worker",
+              "title": "Add median to report summaries and tests",
+              "state": "done",
+              "claimed_by": "report-worker-grok_2323",
+              "attempts": 1,
+              "result": "Committed abae5f0 on report main. summary() now returns NAME: n=N mean=M.MM median=D.DD using calc.median. Tests cover odd median [1,2,3], even median [1,2,3,100], and two-decimal formatting [1,2,4]. python3 -m unittest discover -s tests: 3 tests, OK."
+            }
+          ],
+          "skipEvidence": "These reports lack a complete raw test log and explicit skipped-check fields. Missing fields do not prove zero skips."
+        },
+        {
+          "sourcePath": "evals/orchestrations/20261002-094624-crossrepo.json",
+          "run": "20261002-094624-crossrepo",
+          "started": "2026-10-02T09:46:24-0500",
+          "executionSourceCommit": null,
+          "clientVersions": null,
+          "agents": [
+            "report-lead-claude_0946",
+            "calc-worker-codex_0946",
+            "report-worker-grok_0946"
+          ],
+          "providerLabelsObserved": [
+            "claude",
+            "codex",
+            "grok"
+          ],
+          "providerEvidenceLimit": "Agent labels are retained observations, not verified executable identities. Codex-labelled lead roles may reflect the optional Claude substitution; the report does not record that environment flag.",
+          "checks": {
+            "E1_all_top_done": true,
+            "E2_no_dead_delivery": true,
+            "E3_no_failed_bell": true,
+            "E4_no_blocked_or_died": true,
+            "E5_all_acked": true,
+            "E6_verified": true
+          },
+          "errorFree": true,
+          "errors": [],
+          "stats": {
+            "deliveries": 6,
+            "acked": 6,
+            "bells": {
+              "deferred": 10,
+              "submitted": 7
+            },
+            "modal_answers": [
+              [
+                {
+                  "kind": "update",
+                  "keys": [
+                    "2"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "bypass",
+                  "keys": [
+                    "Down",
+                    "Enter"
+                  ]
+                }
+              ]
+            ],
+            "extra_enters": 2,
+            "work_items": 3,
+            "duration_s": 190
+          },
+          "verification": "calc: tests pass, median ok; log: b8784c5 Add median for iterable inputs | report: tests pass, summary ok; log: 4d91817 report.summary: add median",
+          "work": [
+            {
+              "id": "W-GAZAQRZ54Y",
+              "parent_id": null,
+              "target": "team:report/r_0946",
+              "title": "Report shows the median",
+              "state": "done",
+              "claimed_by": "report-lead-claude_0946",
+              "attempts": 1,
+              "result": "report.summary(name, xs) now returns 'NAME: n=N mean=M.MM median=D.DD'.\n\nSplit across repos as directed:\n- W-SJJNYYHG1E -> role:calc/worker (calc-worker-codex_0946): added calc.median(xs) in ~/hubdemo/calc - sorts a copy of any iterable, odd/even length handling, ValueError('median of empty sequence') on empty. Commit b8784c5.\n- W-WFQG8GYZF0 -> role:team:report/r_0946/worker (report-worker-grok_0946): report/__init__.py imports median from calc and appends ' median={median(xs):.2f}'; tests cover odd and even lengths. Commit 4d91817.\n\nVerified by lead: calc 'python3 -m unittest discover -s tests' = 7 tests OK; report = 2 tests OK. Both working trees clean. median() lives only in calc (calc.median.__module__ == 'calc'), not duplicated in report. End-to-end: summary('SALES',[3,1,2]) -> 'SALES: n=3 mean=2.00 median=2.00'; summary('EVEN',[1,2,3,4]) -> 'EVEN: n=4 mean=2.50 median=2.50'.\n\nNote: calc-worker's first done message cited commit 2ffabd4 (actually calc's initial commit); they sent a follow-up correction to b8784c5, which matches the repo."
+            },
+            {
+              "id": "W-SJJNYYHG1E",
+              "parent_id": "W-GAZAQRZ54Y",
+              "target": "role:calc/worker",
+              "title": "Add median(xs) to calc",
+              "state": "done",
+              "claimed_by": "calc-worker-codex_0946",
+              "attempts": 1,
+              "result": "Added calc.median(xs), sorting a copy of any iterable, handling odd/even lengths, and raising ValueError(\"median of empty sequence\") for empty input. Added coverage for odd/even, unsorted non-mutating input, generators, and empty input. python3 -m unittest discover -s tests passed all 7 tests. Committed as 2ffabd4."
+            },
+            {
+              "id": "W-WFQG8GYZF0",
+              "parent_id": "W-GAZAQRZ54Y",
+              "target": "role:team:report/r_0946/worker",
+              "title": "report.summary: add median",
+              "state": "done",
+              "claimed_by": "report-worker-grok_0946",
+              "attempts": 1,
+              "result": "summary() now appends median from calc, formatted to 2 decimals. Odd and even cases covered. unittest discover: 2 tests OK. Commit 4d91817 on main."
+            }
+          ],
+          "skipEvidence": "These reports lack a complete raw test log and explicit skipped-check fields. Missing fields do not prove zero skips."
+        },
+        {
+          "sourcePath": "evals/orchestrations/20261002-095629-crossrepo.json",
+          "run": "20261002-095629-crossrepo",
+          "started": "2026-10-02T09:56:29-0500",
+          "executionSourceCommit": null,
+          "clientVersions": null,
+          "agents": [
+            "report-lead-claude_0956",
+            "calc-worker-codex_0956",
+            "report-worker-grok_0956"
+          ],
+          "providerLabelsObserved": [
+            "claude",
+            "codex",
+            "grok"
+          ],
+          "providerEvidenceLimit": "Agent labels are retained observations, not verified executable identities. Codex-labelled lead roles may reflect the optional Claude substitution; the report does not record that environment flag.",
+          "checks": {
+            "E1_all_top_done": true,
+            "E2_no_dead_delivery": true,
+            "E3_no_failed_bell": true,
+            "E4_no_blocked_or_died": true,
+            "E5_all_acked": true,
+            "E6_verified": true
+          },
+          "errorFree": true,
+          "errors": [],
+          "stats": {
+            "deliveries": 6,
+            "acked": 6,
+            "bells": {
+              "deferred": 8,
+              "submitted": 6
+            },
+            "modal_answers": [
+              [
+                {
+                  "kind": "bypass",
+                  "keys": [
+                    "Down",
+                    "Enter"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "update",
+                  "keys": [
+                    "2"
+                  ]
+                }
+              ]
+            ],
+            "extra_enters": 2,
+            "work_items": 3,
+            "duration_s": 170
+          },
+          "verification": "calc: tests pass, median ok; log: cd1c997 Add median function with iterable support and tests | report: tests pass, summary ok; log: f73eb1b Include calc.median in report summaries.",
+          "work": [
+            {
+              "id": "W-0H4WEPZ6M3",
+              "parent_id": null,
+              "target": "team:report/r_0956",
+              "title": "Report shows the median",
+              "state": "done",
+              "claimed_by": "report-lead-claude_0956",
+              "attempts": 1,
+              "result": "Done across both repos. calc: added median(xs) (sorts a copy, odd/even handling, ValueError on empty) + 7 tests, commit cd1c997. report: summary() imports median from calc via the existing CALC_PATH mechanism (no local reimplementation) and returns 'NAME: n=N mean=M.MM median=D.DD'; tests cover [1,2,3] -> median=2.00 and [1,2,3,10] -> mean=4.00 median=2.50, commit f73eb1b. Verified myself: python3 -m unittest discover -s tests passes in both repos (7 OK in calc, 2 OK in report), both working trees clean, and summary('a',[1,2,3,10]) prints 'a: n=4 mean=4.00 median=2.50'. Sub-items: W-88GF5ES35S (calc worker), W-ECC8WZHWCQ (report worker)."
+            },
+            {
+              "id": "W-88GF5ES35S",
+              "parent_id": "W-0H4WEPZ6M3",
+              "target": "role:calc/worker",
+              "title": "Add median(xs) to calc",
+              "state": "done",
+              "claimed_by": "calc-worker-codex_0956",
+              "attempts": 1,
+              "result": "Added importable calc.median(xs), sorting a copy, handling odd/even lengths and raising ValueError(\"median of empty sequence\"). Added tests for odd, even, unsorted, input preservation, generator and empty input. python3 -m unittest discover -s tests: all 7 tests passed; git diff --check passed. Committed as reported in calc git history."
+            },
+            {
+              "id": "W-ECC8WZHWCQ",
+              "parent_id": "W-0H4WEPZ6M3",
+              "target": "role:team:report/r_0956/worker",
+              "title": "report.summary shows the median",
+              "state": "done",
+              "claimed_by": "report-worker-grok_0956",
+              "attempts": 1,
+              "result": "summary() now imports median from calc and returns 'NAME: n=N mean=M.MM median=D.DD'. Tests cover [1,2,3] -> median 2.00 and [1,2,3,10] -> mean 4.00 median 2.50. python3 -m unittest discover -s tests: 2 tests OK. Commit f73eb1b on main."
+            }
+          ],
+          "skipEvidence": "These reports lack a complete raw test log and explicit skipped-check fields. Missing fields do not prove zero skips."
+        }
+      ],
+      "historicalWorkDifferences": [
+        {
+          "run": "20260929-225924-crossrepo",
+          "workItemCount": 3,
+          "topLevelCount": 1,
+          "workStates": [
+            "done"
+          ],
+          "workTitles": [
+            "Report shows the median",
+            "Add median(xs) to calc",
+            "report.summary: add median"
+          ],
+          "recordedUncommittedChanges": true,
+          "errorFree": true
+        },
+        {
+          "run": "20260929-231132-crossrepo",
+          "workItemCount": 1,
+          "topLevelCount": 1,
+          "workStates": [
+            "ready"
+          ],
+          "workTitles": [
+            "Report shows the median"
+          ],
+          "recordedUncommittedChanges": false,
+          "errorFree": false
+        },
+        {
+          "run": "20260929-232307-crossrepo",
+          "workItemCount": 3,
+          "topLevelCount": 1,
+          "workStates": [
+            "done"
+          ],
+          "workTitles": [
+            "Report shows the median",
+            "Implement median with tests in calc",
+            "Add median to report summaries and tests"
+          ],
+          "recordedUncommittedChanges": false,
+          "errorFree": true
+        },
+        {
+          "run": "20261002-094624-crossrepo",
+          "workItemCount": 3,
+          "topLevelCount": 1,
+          "workStates": [
+            "done"
+          ],
+          "workTitles": [
+            "Report shows the median",
+            "Add median(xs) to calc",
+            "report.summary: add median"
+          ],
+          "recordedUncommittedChanges": false,
+          "errorFree": true
+        },
+        {
+          "run": "20261002-095629-crossrepo",
+          "workItemCount": 3,
+          "topLevelCount": 1,
+          "workStates": [
+            "done"
+          ],
+          "workTitles": [
+            "Report shows the median",
+            "Add median(xs) to calc",
+            "report.summary shows the median"
+          ],
+          "recordedUncommittedChanges": false,
+          "errorFree": true
+        }
+      ],
+      "targetRun": null,
+      "baselineTargetComparisonComplete": false
+    },
+    {
+      "scenario": "swarm",
+      "originalProviderMix": [
+        {
+          "repo": "calc",
+          "role": "worker",
+          "cli": "codex"
+        },
+        {
+          "repo": "calc",
+          "role": "worker",
+          "cli": "claude"
+        },
+        {
+          "repo": "calc",
+          "role": "worker",
+          "cli": "grok"
+        }
+      ],
+      "originalScenarioSource": "def sc_swarm(tag):\n    \"\"\"O4: first-claim contention - 3 workers of mixed CLIs, 4 role items, one repo.\"\"\"\n    fns = [(\"clamp\", \"clamp(x, lo, hi) returns x limited to [lo, hi]; ValueError if lo > hi\",\n            \"from calc import clamp; assert clamp(5,0,3)==3 and clamp(-1,0,3)==0\"),\n           (\"product\", \"product(xs) returns the product of xs (1 for empty input)\",\n            \"from calc import product; assert product([2,3,4])==24 and product([])==1\"),\n           (\"rng\", \"rng(xs) returns max(xs) - min(xs); ValueError on empty input\",\n            \"from calc import rng; assert rng([3,9,1])==8\"),\n           (\"mode\", \"mode(xs) returns the most common value, the smallest one on ties; ValueError on empty input\",\n            \"from calc import mode; assert mode([1,2,2,3,3])==2\")]\n    return {\n        \"agents\": [(\"calc\", \"worker\", f\"codex_{tag}\", \"codex\"),\n                   (\"calc\", \"worker\", f\"claude_{tag}\", \"claude\"),\n                   (\"calc\", \"worker\", f\"grok_{tag}\", \"grok\")],\n        \"teams\": [],\n        \"work\": [dict(to=\"role:calc/worker\", title=f\"Add calc.{n}\",\n                      body=f\"In the calc repo checkout, add {d} to calc/__init__.py, with unit tests in \"\n                           f\"tests/test_calc.py. Other workers are editing the same files at the same time: before \"\n                           f\"committing, run `git pull --rebase` is NOT available (no remote) - instead re-read the file \"\n                           f\"right before editing, keep your edit minimal, run the tests, then `git add -A && git commit \"\n                           f\"-m 'add {n}'` (retry the commit if the index is locked).\") for n, d, _c in fns],\n        \"verify\": lambda: _verify_all(*[_verify_fn(\"calc\", n, c) for n, _d, c in fns]),\n    }",
+      "selectedHistoricalBaseline": "20261002-100651-swarm",
+      "selectionReason": "Latest retained report with all six named checks true; all earlier failures and successful reports remain included. This selects recorded behavior, not an exact historical runtime environment.",
+      "baselineChecks": {
+        "E1_all_top_done": true,
+        "E2_no_dead_delivery": true,
+        "E3_no_failed_bell": true,
+        "E4_no_blocked_or_died": true,
+        "E5_all_acked": true,
+        "E6_verified": true
+      },
+      "allHistoricalReports": [
+        {
+          "sourcePath": "evals/orchestrations/20260929-230742-swarm.json",
+          "run": "20260929-230742-swarm",
+          "started": "2026-09-29T23:07:42-0500",
+          "executionSourceCommit": null,
+          "clientVersions": null,
+          "agents": [
+            "calc-worker-codex_2307",
+            "calc-worker-claude_2307",
+            "calc-worker-grok_2307"
+          ],
+          "providerLabelsObserved": [
+            "claude",
+            "codex",
+            "grok"
+          ],
+          "providerEvidenceLimit": "Agent labels are retained observations, not verified executable identities. Codex-labelled lead roles may reflect the optional Claude substitution; the report does not record that environment flag.",
+          "checks": {
+            "E1_all_top_done": false,
+            "E2_no_dead_delivery": true,
+            "E3_no_failed_bell": true,
+            "E4_no_blocked_or_died": false,
+            "E5_all_acked": false,
+            "E6_verified": false
+          },
+          "errorFree": false,
+          "errors": [
+            "agent calc-worker-claude_2307 dead: {\"from\":\"starting\",\"note\":\"terminal gone\"}",
+            "delivery 01M3R7YF6TBM7PD4KGDP222TYC>calc-worker-codex_2307 ended queued",
+            "delivery 01M3R7YHBE46MYJXDHNM3V3VVD>calc-worker-claude_2307 ended queued",
+            "delivery 01M3R7YKN0A8TM7YPN5JD1JQ17>calc-worker-grok_2307 ended queued"
+          ],
+          "stats": {
+            "deliveries": 3,
+            "acked": 0,
+            "bells": {
+              "deferred": 2
+            },
+            "modal_answers": [],
+            "extra_enters": 0,
+            "work_items": 4,
+            "duration_s": 0
+          },
+          "verification": "calc.clamp check failed: Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nImportError: cannot import name 'clamp' from 'calc' (/home/nick/hubdemo/calc/calc/__init__.py)\n | calc.product check failed: Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nImportError: cannot import name 'product' from 'calc' (/home/nick/hubdemo/calc/calc/__init__.py)\n | calc.rng check failed: Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nImportError: cannot import name 'rng' from 'calc' (/home/nick/hubdemo/calc/calc/__init__.py)\n | calc.mode check failed: Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nImportError: cannot import name 'mode' from 'calc' (/home/nick/hubdemo/calc/calc/__init__.py)\n",
+          "work": [
+            {
+              "id": "W-Z74PGNS4XN",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.clamp",
+              "state": "ready",
+              "claimed_by": null,
+              "attempts": 0,
+              "result": null
+            },
+            {
+              "id": "W-0C1NP74MED",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.product",
+              "state": "ready",
+              "claimed_by": null,
+              "attempts": 0,
+              "result": null
+            },
+            {
+              "id": "W-NPY04MYP1X",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.rng",
+              "state": "ready",
+              "claimed_by": null,
+              "attempts": 0,
+              "result": null
+            },
+            {
+              "id": "W-9RZ414R88E",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.mode",
+              "state": "ready",
+              "claimed_by": null,
+              "attempts": 0,
+              "result": null
+            }
+          ],
+          "skipEvidence": "These reports lack a complete raw test log and explicit skipped-check fields. Missing fields do not prove zero skips."
+        },
+        {
+          "sourcePath": "evals/orchestrations/20260929-230935-swarm.json",
+          "run": "20260929-230935-swarm",
+          "started": "2026-09-29T23:09:35-0500",
+          "executionSourceCommit": null,
+          "clientVersions": null,
+          "agents": [
+            "calc-worker-codex_2309",
+            "calc-worker-claude_2309",
+            "calc-worker-grok_2309"
+          ],
+          "providerLabelsObserved": [
+            "claude",
+            "codex",
+            "grok"
+          ],
+          "providerEvidenceLimit": "Agent labels are retained observations, not verified executable identities. Codex-labelled lead roles may reflect the optional Claude substitution; the report does not record that environment flag.",
+          "checks": {
+            "E1_all_top_done": true,
+            "E2_no_dead_delivery": true,
+            "E3_no_failed_bell": true,
+            "E4_no_blocked_or_died": true,
+            "E5_all_acked": true,
+            "E6_verified": true
+          },
+          "errorFree": true,
+          "errors": [],
+          "stats": {
+            "deliveries": 3,
+            "acked": 3,
+            "bells": {
+              "deferred": 14,
+              "submitted": 4
+            },
+            "modal_answers": [
+              [
+                {
+                  "kind": "bypass",
+                  "keys": [
+                    "Down",
+                    "Enter"
+                  ]
+                }
+              ]
+            ],
+            "extra_enters": 0,
+            "work_items": 4,
+            "duration_s": 90
+          },
+          "verification": "calc: tests pass, clamp ok; log: 2201457 add mode | calc: tests pass, product ok; log: 2201457 add mode | calc: tests pass, rng ok; log: 2201457 add mode | calc: tests pass, mode ok; log: 2201457 add mode",
+          "work": [
+            {
+              "id": "W-1BZ4A3C7FN",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.clamp",
+              "state": "done",
+              "claimed_by": "calc-worker-claude_2309",
+              "attempts": 1,
+              "result": "Duplicate of W-Z74PGNS4XN, which I completed earlier in this session. clamp(x, lo, hi) already exists in calc/__init__.py:15 with the ValueError-on-lo>hi behavior, and test_clamp covers it in tests/test_calc.py:13. Verified: suite runs 5 tests, OK. No new commit needed."
+            },
+            {
+              "id": "W-DG5KZB9PV8",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.product",
+              "state": "done",
+              "claimed_by": "calc-worker-codex_2309",
+              "attempts": 1,
+              "result": "Duplicate of completed W-0C1NP74MED: product(xs) and unit tests already committed in e4b57a4 (add product). Verified current implementation returns 1 for empty input and supports iterables. Current full suite passes (5 tests). No additional changes needed."
+            },
+            {
+              "id": "W-ARM76SGG53",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.rng",
+              "state": "done",
+              "claimed_by": "calc-worker-claude_2309",
+              "attempts": 1,
+              "result": "Duplicate of W-NPY04MYP1X, which I completed earlier in this session. rng(xs) already exists in calc/__init__.py with ValueError on empty input, covered by RngTests in tests/test_calc.py. Verified: suite runs 5 tests, OK. No new commit needed."
+            },
+            {
+              "id": "W-A0G4A4HK1N",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.mode",
+              "state": "done",
+              "claimed_by": "calc-worker-claude_2309",
+              "attempts": 1,
+              "result": "mode(xs) is in place in calc/__init__.py (ValueError on empty; returns the smallest value on ties) with ModeTests in tests/test_calc.py. A concurrent worker had already written both edits in the working tree but left them uncommitted; I verified the behavior (incl. tie case [3,1,3,1] -> 1), ran the suite (6 tests, OK), and committed them as 2201457 'add mode'. Working tree now clean."
+            }
+          ],
+          "skipEvidence": "These reports lack a complete raw test log and explicit skipped-check fields. Missing fields do not prove zero skips."
+        },
+        {
+          "sourcePath": "evals/orchestrations/20261002-094942-swarm.json",
+          "run": "20261002-094942-swarm",
+          "started": "2026-10-02T09:49:42-0500",
+          "executionSourceCommit": null,
+          "clientVersions": null,
+          "agents": [
+            "calc-worker-codex_0949",
+            "calc-worker-claude_0949",
+            "calc-worker-grok_0949"
+          ],
+          "providerLabelsObserved": [
+            "claude",
+            "codex",
+            "grok"
+          ],
+          "providerEvidenceLimit": "Agent labels are retained observations, not verified executable identities. Codex-labelled lead roles may reflect the optional Claude substitution; the report does not record that environment flag.",
+          "checks": {
+            "E1_all_top_done": true,
+            "E2_no_dead_delivery": true,
+            "E3_no_failed_bell": true,
+            "E4_no_blocked_or_died": true,
+            "E5_all_acked": true,
+            "E6_verified": true
+          },
+          "errorFree": true,
+          "errors": [],
+          "stats": {
+            "deliveries": 3,
+            "acked": 3,
+            "bells": {
+              "deferred": 12,
+              "submitted": 4
+            },
+            "modal_answers": [
+              [
+                {
+                  "kind": "update",
+                  "keys": [
+                    "2"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "bypass",
+                  "keys": [
+                    "Down",
+                    "Enter"
+                  ]
+                }
+              ]
+            ],
+            "extra_enters": 0,
+            "work_items": 4,
+            "duration_s": 110
+          },
+          "verification": "calc: tests pass, clamp ok; log: 8e37030 add mode | calc: tests pass, product ok; log: 8e37030 add mode | calc: tests pass, rng ok; log: 8e37030 add mode | calc: tests pass, mode ok; log: 8e37030 add mode",
+          "work": [
+            {
+              "id": "W-GFCKM7SKD3",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.clamp",
+              "state": "done",
+              "claimed_by": "calc-worker-claude_0949",
+              "attempts": 1,
+              "result": "Added calc.clamp(x, lo, hi) to calc/__init__.py (raises ValueError when lo > hi, otherwise max(lo, min(x, hi))) plus TClamp tests in tests/test_calc.py covering in-range, both bounds, and the bad-range error. Tests: PYTHONPATH=. python3 -m unittest tests.test_calc -> 8 tests OK. Committed as 76f6f20 'add clamp'. Note: per the instruction to use 'git add -A', that commit also swept in another worker's in-progress calc.product + TProduct changes that were unstaged in the shared checkout; I left them intact rather than rewriting history. Also note the repo has no package install/conftest, so tests only import 'calc' when run with PYTHONPATH=. from the repo root."
+            },
+            {
+              "id": "W-M6RFD9A2J4",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.product",
+              "state": "done",
+              "claimed_by": "calc-worker-codex_0949",
+              "attempts": 1,
+              "result": "Added calc.product with empty-input identity 1 and tests for values, zero, negative numbers, singleton, and generator input. All 8 unit tests passed. Concurrent worker committed the shared changes before my commit retry; working tree is clean and product implementation/tests are present in HEAD."
+            },
+            {
+              "id": "W-VZ1T39DCF5",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.rng",
+              "state": "done",
+              "claimed_by": "calc-worker-grok_0949",
+              "attempts": 1,
+              "result": "Added calc.rng(xs) = max(xs) - min(xs); ValueError on empty input. Unit tests in tests/test_calc.py. python3 -m unittest discover -s tests: 11 tests, OK. Committed fd1d1a4 'add rng'."
+            },
+            {
+              "id": "W-ZGWYVC3C9P",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.mode",
+              "state": "done",
+              "claimed_by": "calc-worker-codex_0949",
+              "attempts": 1,
+              "result": "Added calc.mode: returns the most frequent value, picks the smallest on ties, and raises ValueError for empty input. Added tests covering frequency, singleton, ties, negative values, empty input, and generators. All 15 tests passed; git diff --check passed. Commit 8e37030 (add mode)."
+            }
+          ],
+          "skipEvidence": "These reports lack a complete raw test log and explicit skipped-check fields. Missing fields do not prove zero skips."
+        },
+        {
+          "sourcePath": "evals/orchestrations/20261002-095926-swarm.json",
+          "run": "20261002-095926-swarm",
+          "started": "2026-10-02T09:59:26-0500",
+          "executionSourceCommit": null,
+          "clientVersions": null,
+          "agents": [
+            "calc-worker-codex_0959",
+            "calc-worker-claude_0959",
+            "calc-worker-grok_0959"
+          ],
+          "providerLabelsObserved": [
+            "claude",
+            "codex",
+            "grok"
+          ],
+          "providerEvidenceLimit": "Agent labels are retained observations, not verified executable identities. Codex-labelled lead roles may reflect the optional Claude substitution; the report does not record that environment flag.",
+          "checks": {
+            "E1_all_top_done": true,
+            "E2_no_dead_delivery": true,
+            "E3_no_failed_bell": true,
+            "E4_no_blocked_or_died": true,
+            "E5_all_acked": false,
+            "E6_verified": true
+          },
+          "errorFree": false,
+          "errors": [
+            "delivery 01M3YJ3JR56W3HA4NDBX7272M8>calc-worker-grok_0959 ended queued"
+          ],
+          "stats": {
+            "deliveries": 6,
+            "acked": 5,
+            "bells": {
+              "deferred": 23,
+              "submitted": 5
+            },
+            "modal_answers": [
+              [
+                {
+                  "kind": "update",
+                  "keys": [
+                    "2"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "bypass",
+                  "keys": [
+                    "Down",
+                    "Enter"
+                  ]
+                }
+              ]
+            ],
+            "extra_enters": 0,
+            "work_items": 4,
+            "duration_s": 190
+          },
+          "verification": "calc: tests pass, clamp ok; log: 6b266eb add rng | calc: tests pass, product ok; log: 6b266eb add rng | calc: tests pass, rng ok; log: 6b266eb add rng | calc: tests pass, mode ok; log: 6b266eb add rng",
+          "work": [
+            {
+              "id": "W-JWPJXCN4ZH",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.clamp",
+              "state": "done",
+              "claimed_by": "calc-worker-codex_0959",
+              "attempts": 1,
+              "result": "Added clamp(x, lo, hi), including ValueError for reversed bounds. Added tests covering interior, endpoints, out-of-range values, equal bounds, floats, and reversed bounds. All 7 tests passed. Committed as add clamp; shared-file product changes from another worker were included. Used existing repository author identity for this commit because Git identity was unset."
+            },
+            {
+              "id": "W-03S8Q0E58Z",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.product",
+              "state": "done",
+              "claimed_by": "calc-worker-claude_0959",
+              "attempts": 1,
+              "result": "Added product(xs) to calc/__init__.py (returns 1 for empty input, iterative multiply) plus 3 tests in tests/test_calc.py (basic, empty, zero-containing). Full suite: 7 tests, OK. Committed as f74886b 'add product'. NOTE: git add -A also swept in another worker's uncommitted clamp() work (W-JWPJXCN4ZH) - calc.clamp + ClampTests are included in that same commit. Nothing was lost or overwritten, but that worker will find their changes already committed."
+            },
+            {
+              "id": "W-11JFWZQSPA",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.rng",
+              "state": "done",
+              "claimed_by": "calc-worker-grok_0959",
+              "attempts": 1,
+              "result": "Added rng(xs) = max(xs) - min(xs), ValueError on empty input, with unit tests in tests/test_calc.py. python3 -m unittest discover -s tests: 17 tests OK. Commit 6b266eb add rng."
+            },
+            {
+              "id": "W-MT503PQVKM",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.mode",
+              "state": "done",
+              "claimed_by": "calc-worker-claude_0959",
+              "attempts": 1,
+              "result": "Added mode(xs) to calc/__init__.py: most common value, smallest on ties, ValueError on empty input; dict-based counting so no new imports (append-only edit to reduce conflicts with concurrent workers). 7 tests in tests/test_calc.py (ModeTests): single most-common, tie->smallest, all-unique->smallest, single element, negatives/floats, iterator input, empty raises. Full suite: 14 tests, OK. Committed as 039662b 'add mode' using targeted 'git commit -- <paths>' so no other worker's uncommitted work was swept in this time."
+            }
+          ],
+          "skipEvidence": "These reports lack a complete raw test log and explicit skipped-check fields. Missing fields do not prove zero skips."
+        },
+        {
+          "sourcePath": "evals/orchestrations/20261002-100423-swarm.json",
+          "run": "20261002-100423-swarm",
+          "started": "2026-10-02T10:04:23-0500",
+          "executionSourceCommit": null,
+          "clientVersions": null,
+          "agents": [
+            "calc-worker-codex_1004",
+            "calc-worker-claude_1004",
+            "calc-worker-grok_1004"
+          ],
+          "providerLabelsObserved": [
+            "claude",
+            "codex",
+            "grok"
+          ],
+          "providerEvidenceLimit": "Agent labels are retained observations, not verified executable identities. Codex-labelled lead roles may reflect the optional Claude substitution; the report does not record that environment flag.",
+          "checks": {
+            "E1_all_top_done": true,
+            "E2_no_dead_delivery": true,
+            "E3_no_failed_bell": true,
+            "E4_no_blocked_or_died": true,
+            "E5_all_acked": true,
+            "E6_verified": true
+          },
+          "errorFree": true,
+          "errors": [],
+          "stats": {
+            "deliveries": 3,
+            "acked": 3,
+            "bells": {
+              "deferred": 12,
+              "submitted": 4
+            },
+            "modal_answers": [
+              [
+                {
+                  "kind": "update",
+                  "keys": [
+                    "2"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "bypass",
+                  "keys": [
+                    "Down",
+                    "Enter"
+                  ]
+                }
+              ]
+            ],
+            "extra_enters": 0,
+            "work_items": 4,
+            "duration_s": 140
+          },
+          "verification": "calc: tests pass, clamp ok; log: 7a54157 add mode | calc: tests pass, product ok; log: 7a54157 add mode | calc: tests pass, rng ok; log: 7a54157 add mode | calc: tests pass, mode ok; log: 7a54157 add mode",
+          "work": [
+            {
+              "id": "W-PCM2KMS0F9",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.clamp",
+              "state": "done",
+              "claimed_by": "calc-worker-codex_1004",
+              "attempts": 1,
+              "result": "Added clamp(x, lo, hi) with inclusive bounds and ValueError for reversed bounds; added boundary, equal-bound, fractional, and invalid-bound tests. All 6 unittest tests passed; git diff --check passed. Committed as add clamp using the repository existing author identity."
+            },
+            {
+              "id": "W-0SX2RECRZ1",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.product",
+              "state": "done",
+              "claimed_by": "calc-worker-grok_1004",
+              "attempts": 1,
+              "result": "Added product(xs) to calc/__init__.py (1 for empty input) and test_product in tests/test_calc.py. Concurrent git add -A from the rng worker committed it inside 5a613f6 (add rng); HEAD 7a54157 still contains def product and test_product. python3 -m unittest tests.test_calc: 12 tests OK."
+            },
+            {
+              "id": "W-Y4WJ8685RW",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.rng",
+              "state": "done",
+              "claimed_by": "calc-worker-claude_1004",
+              "attempts": 1,
+              "result": "Added rng(xs) = max(xs)-min(xs), raising ValueError('rng of empty sequence') on empty input, to calc/__init__.py; added test_rng to tests/test_calc.py. All 7 tests pass (PYTHONPATH=. python3 tests/test_calc.py). Committed as 5a613f6 'add rng'. Note: a concurrent worker's uncommitted product() in calc/__init__.py got swept into this commit by the prescribed 'git add -A'."
+            },
+            {
+              "id": "W-PFR33BFMPR",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.mode",
+              "state": "done",
+              "claimed_by": "calc-worker-codex_1004",
+              "attempts": 1,
+              "result": "Added mode(xs) using frequency counts, choosing the smallest value on ties and raising ValueError for empty input. Added tests for repeated values, singleton, ties, generators, and empty inputs. All 12 unittest tests and git diff --check passed. Commit 7a54157 (add mode)."
+            }
+          ],
+          "skipEvidence": "These reports lack a complete raw test log and explicit skipped-check fields. Missing fields do not prove zero skips."
+        },
+        {
+          "sourcePath": "evals/orchestrations/20261002-100651-swarm.json",
+          "run": "20261002-100651-swarm",
+          "started": "2026-10-02T10:06:51-0500",
+          "executionSourceCommit": null,
+          "clientVersions": null,
+          "agents": [
+            "calc-worker-codex_1006",
+            "calc-worker-claude_1006",
+            "calc-worker-grok_1006"
+          ],
+          "providerLabelsObserved": [
+            "claude",
+            "codex",
+            "grok"
+          ],
+          "providerEvidenceLimit": "Agent labels are retained observations, not verified executable identities. Codex-labelled lead roles may reflect the optional Claude substitution; the report does not record that environment flag.",
+          "checks": {
+            "E1_all_top_done": true,
+            "E2_no_dead_delivery": true,
+            "E3_no_failed_bell": true,
+            "E4_no_blocked_or_died": true,
+            "E5_all_acked": true,
+            "E6_verified": true
+          },
+          "errorFree": true,
+          "errors": [],
+          "stats": {
+            "deliveries": 6,
+            "acked": 6,
+            "bells": {
+              "deferred": 17,
+              "submitted": 6
+            },
+            "modal_answers": [
+              [
+                {
+                  "kind": "update",
+                  "keys": [
+                    "2"
+                  ]
+                }
+              ],
+              [
+                {
+                  "kind": "bypass",
+                  "keys": [
+                    "Down",
+                    "Enter"
+                  ]
+                }
+              ]
+            ],
+            "extra_enters": 1,
+            "work_items": 4,
+            "duration_s": 150
+          },
+          "verification": "calc: tests pass, clamp ok; log: 5a69765 add mode | calc: tests pass, product ok; log: 5a69765 add mode | calc: tests pass, rng ok; log: 5a69765 add mode | calc: tests pass, mode ok; log: 5a69765 add mode",
+          "work": [
+            {
+              "id": "W-RTMDMRG4VA",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.clamp",
+              "state": "done",
+              "claimed_by": "calc-worker-claude_1006",
+              "attempts": 1,
+              "result": "Added clamp(x, lo, hi) to calc/__init__.py (raises ValueError when lo > hi, returns bounds-inclusive clamped value). Added TestClamp with 4 cases in tests/test_calc.py and moved the trailing __main__ block to the end of the file so appended classes still run under direct execution. python3 -m unittest discover -s tests: 6 tests, OK. Committed as 852cd75 'add clamp'."
+            },
+            {
+              "id": "W-JE9BPWB8EF",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.product",
+              "state": "done",
+              "claimed_by": "calc-worker-codex_1006",
+              "attempts": 1,
+              "result": "Added product(xs), returning 1 for empty input, with tests covering integers, empty input, zero, negatives, floats, and iterators. python3 -m unittest discover -s tests -v: all 7 tests passed. Concurrent worker commit 852cd75 included the implementation and tests; recorded completion with an empty add product commit."
+            },
+            {
+              "id": "W-ZAF4ZFFA5Y",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.rng",
+              "state": "done",
+              "claimed_by": "calc-worker-grok_1006",
+              "attempts": 1,
+              "result": "Added rng(xs) = max(xs)-min(xs) in calc/__init__.py (ValueError on empty; list() so iterators work once) and RngTests in tests/test_calc.py. python3 -m unittest discover -s tests: 12 tests OK. A concurrent worker's git add -A included these edits in 5a69765 'add mode' before a separate 'add rng' commit; working tree was clean, so git commit reported nothing to commit."
+            },
+            {
+              "id": "W-3VVWC1BAX3",
+              "parent_id": null,
+              "target": "role:calc/worker",
+              "title": "Add calc.mode",
+              "state": "done",
+              "claimed_by": "calc-worker-claude_1006",
+              "attempts": 1,
+              "result": "Added mode(xs) to calc/__init__.py (dict tally; returns smallest value among ties, ValueError on empty). Added TestMode with 4 cases inserted above the __main__ block in tests/test_calc.py. python3 -m unittest discover -s tests: 12 tests, OK. Committed as 5a69765 'add mode'. NOTE: 'git add -A' also swept in another worker's uncommitted rng() implementation (calc/__init__.py only, no rng tests present yet) into that same commit - nothing lost, but whoever owns W-ZAF4ZFFA5Y will find rng already committed and only needs to add its tests."
+            }
+          ],
+          "skipEvidence": "These reports lack a complete raw test log and explicit skipped-check fields. Missing fields do not prove zero skips."
+        }
+      ],
+      "historicalWorkDifferences": [
+        {
+          "run": "20260929-230742-swarm",
+          "workItemCount": 4,
+          "topLevelCount": 4,
+          "workStates": [
+            "ready"
+          ],
+          "workTitles": [
+            "Add calc.clamp",
+            "Add calc.product",
+            "Add calc.rng",
+            "Add calc.mode"
+          ],
+          "recordedUncommittedChanges": false,
+          "errorFree": false
+        },
+        {
+          "run": "20260929-230935-swarm",
+          "workItemCount": 4,
+          "topLevelCount": 4,
+          "workStates": [
+            "done"
+          ],
+          "workTitles": [
+            "Add calc.clamp",
+            "Add calc.product",
+            "Add calc.rng",
+            "Add calc.mode"
+          ],
+          "recordedUncommittedChanges": false,
+          "errorFree": true
+        },
+        {
+          "run": "20261002-094942-swarm",
+          "workItemCount": 4,
+          "topLevelCount": 4,
+          "workStates": [
+            "done"
+          ],
+          "workTitles": [
+            "Add calc.clamp",
+            "Add calc.product",
+            "Add calc.rng",
+            "Add calc.mode"
+          ],
+          "recordedUncommittedChanges": false,
+          "errorFree": true
+        },
+        {
+          "run": "20261002-095926-swarm",
+          "workItemCount": 4,
+          "topLevelCount": 4,
+          "workStates": [
+            "done"
+          ],
+          "workTitles": [
+            "Add calc.clamp",
+            "Add calc.product",
+            "Add calc.rng",
+            "Add calc.mode"
+          ],
+          "recordedUncommittedChanges": false,
+          "errorFree": false
+        },
+        {
+          "run": "20261002-100423-swarm",
+          "workItemCount": 4,
+          "topLevelCount": 4,
+          "workStates": [
+            "done"
+          ],
+          "workTitles": [
+            "Add calc.clamp",
+            "Add calc.product",
+            "Add calc.rng",
+            "Add calc.mode"
+          ],
+          "recordedUncommittedChanges": false,
+          "errorFree": true
+        },
+        {
+          "run": "20261002-100651-swarm",
+          "workItemCount": 4,
+          "topLevelCount": 4,
+          "workStates": [
+            "done"
+          ],
+          "workTitles": [
+            "Add calc.clamp",
+            "Add calc.product",
+            "Add calc.rng",
+            "Add calc.mode"
+          ],
+          "recordedUncommittedChanges": false,
+          "errorFree": true
+        }
+      ],
+      "targetRun": null,
+      "baselineTargetComparisonComplete": false
+    }
+  ],
+  "actualRunPrerequisites": [
+    "Use the original Claude, Codex and Grok provider mix. Keep HUBDEMO_NO_CLAUDE unset; setting it substitutes Codex for Claude and cannot qualify the original mix.",
+    "Crossrepo work text explicitly names ~/hubdemo/calc, independently of HUBDEMO_BASE. Provide a fixture-scoped home/path mapping for that exact path or record the unresolved mismatch; do not edit the task text to hide it.",
+    "The generated report module imports calc through CALC_PATH or os.path.expanduser(\"~/hubdemo/calc\"); setup_repos.sh does not set CALC_PATH. Verify the Windows tool process and Linux verifier both resolve this dependency to the same disposable calc checkout. A Linux HOME mapping alone does not establish the Windows expanduser result.",
+    "Original main calls ~/.local/bin/agentmux and resets calc/report using setup_repos.sh --reset. The fixture must supply that launcher and process-local Git identity without touching the user repositories.",
+    "Original verification invokes python3 from the operator environment. Record that interpreter separately from each Windows client tool interpreter.",
+    "Retain original 120-second delivery drain and all E1-E6 assertions. E6 can report success while also recording UNCOMMITTED changes, so independently prove the requested commits and clean repositories.",
+    "Team requires actual lead decomposition, worker completion, reviewer result and parent completion. Crossrepo requires actual ordered delegation across both repositories. Swarm requires mixed-provider first-claim contention and four actual function implementations.",
+    "Use Windows-owned installed clients and existing auth/config through WSL forwarding. An available Windows-owned Grok credential source is still required; these historical records supply no credentials.",
+    "Retain exact client versions, source hashes, callback actor identities and final exact job/config cleanup evidence for each actual new run. Synthetic observer evidence is not a substitute."
+  ],
+  "excluded": [
+    "Historical timeline and pane tails",
+    "Personal profiles, credentials and private model reasoning"
+  ],
+  "phaseAccepted": false
+}

@@ -1,0 +1,104 @@
+{
+  "scope": "One original Codex calibration and exact fixture cleanup; not P01 phase acceptance.",
+  "sourceBranchCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+  "originalReportSha256": "99ae0d93a8d61363e25a17357bbb5130f9c2773efd3e1b17dcf74ad7b178b78e",
+  "checks": {
+    "E1_all_top_done": true,
+    "E2_no_dead_delivery": true,
+    "E3_no_failed_bell": true,
+    "E4_no_blocked_or_died": true,
+    "E5_all_acked": true,
+    "E6_verified": true
+  },
+  "errorFree": true,
+  "taskId": "W-20B5K44YJT",
+  "actualCallbackActor": "calc-worker-codex_1009",
+  "tests": {
+    "argv": [
+      "C:\\Users\\RyanHelms\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-v"
+    ],
+    "exitCode": 0,
+    "stdout": "",
+    "stderr": "test_add (test_calc.T.test_add) ... ok\ntest_mean (test_calc.T.test_mean) ... ok\ntest_median_empty (test_calc.T.test_median_empty) ... ok\ntest_median_even (test_calc.T.test_median_even) ... ok\ntest_median_odd (test_calc.T.test_median_odd) ... ok\n\n----------------------------------------------------------------------\nRan 5 tests in 0.001s\n\nOK\n"
+  },
+  "git": {
+    "commit": {
+      "argv": [
+        "git",
+        "log",
+        "-1",
+        "--format=%H%n%s"
+      ],
+      "exitCode": 0,
+      "stdout": "c5c22aa3fe6c7be003b7a3115ed8bf3dfd0b74b1\nadd median\n",
+      "stderr": ""
+    },
+    "status": {
+      "argv": [
+        "git",
+        "status",
+        "--porcelain"
+      ],
+      "exitCode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "changedFiles": {
+      "argv": [
+        "git",
+        "diff",
+        "HEAD~1",
+        "--name-only"
+      ],
+      "exitCode": 0,
+      "stdout": "calc/__init__.py\ntests/test_calc.py\n",
+      "stderr": ""
+    }
+  },
+  "observer": {
+    "jobUid": "3b289ca1-27e8-46a9-ba6f-0b429f73c041",
+    "passed": true,
+    "afterJobActiveProcesses": 0,
+    "cleanupVerified": true,
+    "windowsConfigBytesUnchanged": false,
+    "terminalReason": "supervisor-exit"
+  },
+  "knownWindowsProcesses": [
+    {
+      "pid": 61076,
+      "handleOpened": false,
+      "errorIfAbsent": 87,
+      "waitState": null
+    },
+    {
+      "pid": 52796,
+      "handleOpened": false,
+      "errorIfAbsent": 87,
+      "waitState": null
+    },
+    {
+      "pid": 62476,
+      "handleOpened": false,
+      "errorIfAbsent": 87,
+      "waitState": null
+    }
+  ],
+  "linuxCleanup": {
+    "fixtureEnvironmentProcessPids": [],
+    "tokenFilesRemaining": 0,
+    "hubPidFileExists": true
+  },
+  "source67Unchanged": true,
+  "launchResultExists": false,
+  "limitations": [
+    "Windows config bytes changed; this does not qualify unchanged-profile or unrelated-settings claims.",
+    "The observer proves exact Windows job cleanup when console teardown prevented the supervisor result.",
+    "No full pane reasoning, auth contents, profile files, or token files are included in this compact proof."
+  ]
+}

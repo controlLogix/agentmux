@@ -151,7 +151,7 @@
       '- Reviewer: ' + reviewer,
       '- Exported: ' + new Date().toLocaleString(),
       '',
-      '> These notes are review feedback. They do not authorize implementation or merging. Merging requires Ryan’s review with Nick and Ryan’s explicit authorization.',
+      '> These notes are review feedback. They do not pass a delivery gate. Codex reviews phase evidence and final feature-branch acceptance. No merge or release is authorized.',
       ''
     ];
     fields.forEach(field => {

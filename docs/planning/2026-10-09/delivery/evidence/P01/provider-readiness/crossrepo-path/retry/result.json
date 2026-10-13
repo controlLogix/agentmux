@@ -1,0 +1,129 @@
+{
+  "scope": "Private crossrepo home-path resolution with Python and Git only. No client or provider execution.",
+  "commands": [
+    {
+      "argv": [
+        "wsl",
+        "-d",
+        "Ubuntu-26.04",
+        "--exec",
+        "wslpath",
+        "-u",
+        "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-p01-crossrepo-path-30o14osh\\retry"
+      ],
+      "cwd": null,
+      "exitCode": 0,
+      "stdout": "/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-p01-crossrepo-path-30o14osh/retry\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "wsl",
+        "-d",
+        "Ubuntu-26.04",
+        "--exec",
+        "python3",
+        "-c",
+        "import tempfile;print(tempfile.mkdtemp(prefix='agentmux-crossrepo-path-'))"
+      ],
+      "cwd": null,
+      "exitCode": 0,
+      "stdout": "/tmp/agentmux-crossrepo-path-ud69b9op\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "wsl",
+        "-d",
+        "Ubuntu-26.04",
+        "--exec",
+        "python3",
+        "-c",
+        "import pathlib,os,subprocess,json,sys; root=pathlib.Path(sys.argv[1]); native=pathlib.Path(sys.argv[2]); home=native/'home';home.mkdir(); base=root/'shared repos'; env=dict(os.environ,HOME=str(home),HUBDEMO_BASE=str(base)); p=subprocess.run(['bash',str(root/'setup_repos.sh'),'--reset'],env=env,capture_output=True,text=True); print(json.dumps({'exitCode':p.returncode,'stdout':p.stdout,'stderr':p.stderr})); assert p.returncode==0; (home/'hubdemo').symlink_to(base,target_is_directory=True)",
+        "/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-p01-crossrepo-path-30o14osh/retry",
+        "/tmp/agentmux-crossrepo-path-ud69b9op"
+      ],
+      "cwd": null,
+      "exitCode": 0,
+      "stdout": "{\"exitCode\": 0, \"stdout\": \"created: /mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-p01-crossrepo-path-30o14osh/retry/shared repos/calc\\ncreated: /mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-p01-crossrepo-path-30o14osh/retry/shared repos/report\\n\", \"stderr\": \"\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "powershell.exe",
+        "-NoProfile",
+        "-NonInteractive",
+        "-Command",
+        "New-Item -ItemType Junction -Path $env:AGENTMUX_FIXTURE_LINK -Target $env:AGENTMUX_FIXTURE_TARGET -ErrorAction Stop | Select-Object FullName,LinkType,Target | ConvertTo-Json -Compress"
+      ],
+      "cwd": null,
+      "exitCode": 0,
+      "stdout": "{\"FullName\":\"C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Temp\\\\agentmux-p01-crossrepo-path-30o14osh\\\\retry\\\\private Windows home\\\\hubdemo\",\"LinkType\":\"Junction\",\"Target\":[\"C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Temp\\\\agentmux-p01-crossrepo-path-30o14osh\\\\retry\\\\shared repos\"]}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "C:\\Users\\RyanHelms\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
+        "-c",
+        "import pathlib,os,json,subprocess\nfrom report import summary\nhomecalc=pathlib.Path(os.path.expanduser('~/hubdemo/calc'))\nassert summary('a',[1,2,3])=='a: n=3 mean=2.00'\nexpected=pathlib.Path(os.environ['FIXTURE_CALC'])\nassert homecalc.samefile(expected)\nmarker=homecalc/'fixture-marker.txt'\nassert marker.read_text()=='Private shared calc marker.\\n'\ngit=subprocess.run(['git','-C',str(homecalc),'rev-parse','HEAD'],capture_output=True,text=True)\nassert git.returncode==0\nprint(json.dumps({'expandedHomeCalc':str(homecalc),'sameFile':homecalc.samefile(expected),'marker':marker.read_text(),'summary':summary('a',[1,2,3]),'calcGitHead':git.stdout.strip(),'resolvedCalcModule':__import__('calc').__file__}))\n"
+      ],
+      "cwd": "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-p01-crossrepo-path-30o14osh\\retry\\shared repos\\report",
+      "exitCode": 0,
+      "stdout": "{\"expandedHomeCalc\": \"C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Temp\\\\agentmux-p01-crossrepo-path-30o14osh\\\\retry\\\\private Windows home\\\\hubdemo\\\\calc\", \"sameFile\": true, \"marker\": \"Private shared calc marker.\\n\", \"summary\": \"a: n=3 mean=2.00\", \"calcGitHead\": \"cd51606937e593590c56e60109edcedac2bd98bb\", \"resolvedCalcModule\": \"C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Temp\\\\agentmux-p01-crossrepo-path-30o14osh\\\\retry\\\\private Windows home/hubdemo/calc\\\\calc\\\\__init__.py\"}\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "wsl",
+        "-d",
+        "Ubuntu-26.04",
+        "--exec",
+        "python3",
+        "-c",
+        "import os,pathlib,subprocess,sys; root=pathlib.Path(sys.argv[1]); home=sys.argv[2]+'/home';env=dict(os.environ,HOME=home,FIXTURE_CALC=str(root/'shared repos/calc'));env.pop('CALC_PATH',None);p=subprocess.run(['python3','-c',(root/'import-probe.py').read_text()],cwd=root/'shared repos/report',env=env,capture_output=True,text=True);print(p.stdout,end='');print(p.stderr,file=sys.stderr,end='');raise SystemExit(p.returncode)",
+        "/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-p01-crossrepo-path-30o14osh/retry",
+        "/tmp/agentmux-crossrepo-path-ud69b9op"
+      ],
+      "cwd": null,
+      "exitCode": 0,
+      "stdout": "{\"expandedHomeCalc\": \"/tmp/agentmux-crossrepo-path-ud69b9op/home/hubdemo/calc\", \"sameFile\": true, \"marker\": \"Private shared calc marker.\\n\", \"summary\": \"a: n=3 mean=2.00\", \"calcGitHead\": \"cd51606937e593590c56e60109edcedac2bd98bb\", \"resolvedCalcModule\": \"/tmp/agentmux-crossrepo-path-ud69b9op/home/hubdemo/calc/calc/__init__.py\"}\n",
+      "stderr": ""
+    }
+  ],
+  "sourceCommit": "2aed3e7206e81cf119562647879c90a29457b08a",
+  "passed": true,
+  "nativeFixture": "/tmp/agentmux-crossrepo-path-ud69b9op",
+  "setupSource": {
+    "path": "hub/demo/setup_repos.sh",
+    "sha256": "5c6c1c462063a3a73fb3d509d6ad42d65cde432a77114fd32d2a3bfa95026a7b"
+  },
+  "windows": {
+    "expandedHomeCalc": "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-p01-crossrepo-path-30o14osh\\retry\\private Windows home\\hubdemo\\calc",
+    "sameFile": true,
+    "marker": "Private shared calc marker.\n",
+    "summary": "a: n=3 mean=2.00",
+    "calcGitHead": "cd51606937e593590c56e60109edcedac2bd98bb",
+    "resolvedCalcModule": "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-p01-crossrepo-path-30o14osh\\retry\\private Windows home/hubdemo/calc\\calc\\__init__.py"
+  },
+  "linux": {
+    "expandedHomeCalc": "/tmp/agentmux-crossrepo-path-ud69b9op/home/hubdemo/calc",
+    "sameFile": true,
+    "marker": "Private shared calc marker.\n",
+    "summary": "a: n=3 mean=2.00",
+    "calcGitHead": "cd51606937e593590c56e60109edcedac2bd98bb",
+    "resolvedCalcModule": "/tmp/agentmux-crossrepo-path-ud69b9op/home/hubdemo/calc/calc/__init__.py"
+  },
+  "windowsProfileOverrides": {
+    "USERPROFILE": "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-p01-crossrepo-path-30o14osh\\retry\\private Windows home",
+    "HOME": "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-p01-crossrepo-path-30o14osh\\retry\\private Windows home",
+    "CODEX_HOME": "C:/Users/RyanHelms/.codex",
+    "CLAUDE_CONFIG_DIR": "C:/Users/RyanHelms/.claude",
+    "GROK_HOME": "C:/Users/RyanHelms/.grok"
+  },
+  "limits": [
+    "Python and Git path resolution only; actual clients honoring canonical profile overrides remain unqualified.",
+    "No auth/config files were read, copied or modified.",
+    "All home mappings, repositories and markers are disposable fixtures; no hubdemo directory was created in a real user home.",
+    "The marker changes the disposable checkout after its initial commit; this is a path probe, not a clean orchestration acceptance run."
+  ]
+}

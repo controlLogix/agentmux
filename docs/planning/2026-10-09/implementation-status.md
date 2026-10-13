@@ -25,7 +25,7 @@ Branch: `feat/agentmux-platform-rearchitecture`. No phase or merge approval is i
 ## Current work and blockers
 
 - **P01-T04 — in_progress:** Establish per-phase evidence records, dependency gates, migration fixtures, and security/quality regression jobs.
-  Reason: Original calibration task passed E1-E6 with actual Windows Codex, five tests, empty-input verification and clean add-median commit. Final supervisor reporting was lost during tmux teardown: exact job accounting and Windows config comparison remain unavailable for that run. First scored failure and second unscored startup failure are preserved. Team/crossrepo/swarm still require an available Windows-owned Grok credential source. Explicit historical baseline/target E1-E6 comparison for all four scenarios, including calibration, and actual supported-host requirements remain open; no phase gate or P06 client integration is accepted.
+  Reason: Original calib passed all E1-E6 with real Windows Codex callbacks, five tests, empty-input verification and clean add-median commit. Its independent observer now verifies exact job cleanup and zero active processes. Windows config bytes changed; the cause and unrelated-settings preservation remain unqualified. Historical calibration comparison is recorded with unknown historical execution versions. Team/crossrepo/swarm still need original Claude/Codex/Grok executions and comparisons; Windows-owned Grok authentication is unavailable. Private Windows/Linux crossrepo path preparation passed, but actual clients honoring profile overrides remain unqualified. No phase gate or P06 host integration is accepted.
 
 ## P00. Scope, baseline, and architecture decisions
 

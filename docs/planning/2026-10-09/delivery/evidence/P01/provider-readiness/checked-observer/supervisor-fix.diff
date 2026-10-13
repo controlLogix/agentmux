@@ -1,0 +1,30 @@
+--- previous-supervisor.py
++++ supervisor.py
+@@ -128,11 +128,13 @@
+             time.sleep(.05)
+         observer_ready=json.loads((root/'observer-ready.json').read_text())
+         assert observer_ready['jobUid']==req['jobUid'] and observer_ready['parentPid']==pi.dwProcessId and observer_ready['observerPid']==observer.pid and observer_ready['parentInJob'] is True and observer_ready['parentAlive'] is True and observer_ready['observerInJob'] is False and observer_ready['observerConsoleWindow']==0
++        if observer.poll() is not None:raise RuntimeError('Observer died before parent resume')
+         result['observerPid']=observer.pid;result['jobName']=job_name
+         check(True,'Independent observer holds exact job and parent before resume')
+         if k.ResumeThread(pi.hThread)==0xffffffff:raise c.WinError(c.get_last_error())
+         (root/'launch-ready.json').write_text(json.dumps({'jobUid':req['jobUid'],'parentPid':pi.dwProcessId,'jobName':job_name,'observerPid':observer.pid}))
+         while True:
++            if observer.poll() is not None and k.WaitForSingleObject(pi.hProcess,0)==258:raise RuntimeError('Independent observer exited unexpectedly while parent was live')
+             wait=k.WaitForSingleObject(pi.hProcess,100)
+             if wait==0:result['terminalReason']='natural-exit';break
+             assert wait==258
+@@ -170,6 +172,13 @@
+         if observer is not None:
+             try:cleanup['observerExit']=observer.wait(timeout=3)
+             except subprocess.TimeoutExpired:cleanup['observerExit']=None
++            observer_record=root/'observer-result.json'
++            if observer_record.exists():
++                observer_result=json.loads(observer_record.read_text())
++                observer_ok=observer_result.get('jobUid')==req['jobUid'] and observer_result.get('passed') is True and observer_result.get('afterJob',{}).get('ActiveProcesses')==0 and observer_result.get('cleanup',{}).get('verified') is True and isinstance(observer_result.get('windowsConfigBytesUnchanged'),bool)
++                cleanup['observerEvidenceVerified']=observer_ok
++            else:cleanup['observerEvidenceVerified']=False
++            if not cleanup['observerEvidenceVerified']:result['passed']=False
+         result['cleanup']=cleanup
+         if not cleanup['verified']:result['passed']=False
+         for handle in dups+[pi.hThread,pi.hProcess,job]:
