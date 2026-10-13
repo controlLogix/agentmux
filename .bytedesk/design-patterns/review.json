@@ -4,6 +4,28 @@
   "incrementalReviews": [
     {
       "date": "2026-10-13",
+      "scope": "Automatic Git identity and repository notes saving",
+      "reviewer": "Codex; independent read-only helper review completed",
+      "sourceDigestRefreshed": false,
+      "evidence": [
+        "docs/reviews/open.mjs",
+        "docs/reviews/src/features/local-review.mjs",
+        "docs/reviews/src/features/local-review.test.mjs",
+        "docs/reviews/src/features/notes-local.mjs",
+        "docs/reviews/src/features/notes-local.test.mjs",
+        "docs/reviews/src/features/notes-lock.mjs",
+        "docs/reviews/src/features/notes-lock.test.mjs",
+        "docs/reviews/src/features/notes-controller.mjs",
+        "docs/reviews/src/features/notes-format.mjs",
+        "docs/reviews/README.md",
+        "docs/planning/2026-10-09/review-site/src/pages/build.mjs",
+        "docs/planning/2026-10-09/review-site/src/pages/review.template.html",
+        "docs/planning/2026-10-09/review-site/verification.json"
+      ],
+      "rationale": "Reviewed the document-only local launcher, effective Git name/email lookup, explicit repo-local setup, constrained note writes and identity-scoped drafts. Live pages enable same-origin loopback calls through a per-launch token; foreign Origin/Host and missing tokens are rejected. Standalone copies remain self-contained and block network requests. Server attribution overrides client names, existing email ownership prevents same-display-name collisions, revision checks prevent known stale overwrites, and OS-owned locks serialize helpers without abandoned lock files. Native Windows child-process exclusion/recovery, local Git/HTTP fixtures, retries, version-only draft recovery, reset-connection handling, retained import/export and packaging checks passed: twenty-five tests total. The actual launcher page and session returned HTTP 200, found effective Git identity, and selected ryan.md without writing current repository config or feedback. All independent review findings were repaired. POSIX lock behavior and rendered browser layout remain unqualified. Existing Scene presentation stays a pure organism; state and local service adapters remain features, and page composition owns setup. No product runtime, GoF/EIP relationship or phase scope changes. Another task is changing hub/profiles.py and its tests; this scoped review does not accept those changes or refresh the global source digest. No merge, release, phase acceptance, commit or push is authorized by this document review."
+    },
+    {
+      "date": "2026-10-13",
       "scope": "Reusable offline Git review notes workflow",
       "reviewer": "Codex; independent read-only subagent review completed",
       "previousSourceDigest": "ee60004a0bb5d8a5be84b19ac84ff0bafd294976bf8609e0a75fc91cf434298d",
@@ -687,6 +709,20 @@
         "docs/planning/2026-10-09/delivery/tasks.json"
       ],
       "rationale": "Reviewed 47 exact physical files and 28 exact-byte references, including independently checked privacy and scope. All original providers started; Claude stayed at a startup modal and no work was claimed. Diagnostic cancellation produced a genuine failed original score, not a full timeout or acceptance. All three exact jobs reached zero active processes; false Claude and Codex configuration comparisons remain recorded. The raw local score is preserved; its committed derivative omits private pane tails with provenance. Tracker and board preserve P01 in progress and all required original scenarios. Product runtime, approved patterns, catalogs, registry, diagrams, baselines and remediation are unchanged. This checkpoint accepts no phase or host integration and authorizes no merge or release."
+    },
+    {
+      "date": "2026-10-13",
+      "scope": "P01 baseline native Windows Claude readiness compatibility",
+      "reviewer": "Codex with independent runtime source review",
+      "previousSourceDigest": "664f8610a5c2c7a636c3c1907481d3ea411f69e8ae580b1ae5d028c40cd40044",
+      "evidence": [
+        "hub/profiles.py",
+        "hub/tests/test_hub_offline.py",
+        "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/windows-claude-prompt/README.md",
+        "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/windows-claude-prompt/manifest.json",
+        "docs/planning/2026-10-09/source-surface-index.json"
+      ],
+      "rationale": "Actual native Windows idle prompt and exact original Git source establish a glyph mismatch before delivery. The focused regression failed before the minimal character-class change and passed afterward; nineteen affected tests pass. Independent review confirms Unicode readiness and busy/menu/modal guards remain intact, with no auth, permission, API or transport change. The historical source row is retained. Recovered actual TEAM remains failed, including unresolved Codex submission timing and false configuration comparisons; no phase or P06 acceptance. No pattern relationship, catalog, registry, diagram, baseline or remediation changed. This is an in-progress checkpoint. The global digest is deliberately unchanged: concurrent shared review tools still need stable source review and component ownership mapping. A stale gate remains blocking; this scoped review does not qualify those edits."
     }
   ],
   "rules": {

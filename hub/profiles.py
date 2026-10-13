@@ -127,7 +127,8 @@ CLAUDE_BUSY = re.compile(BUSY_COMMON.pattern + r"|[✻✶✳✢✽·*] ?[A-Z][a-
 
 CLAUDE = Profile(
     cli="claude",
-    ready=re.compile(r"^\s*[│|]?\s*❯\s?(?!\s*\d+\.)(?!\s*(Yes|No)\b)"),
+    # Native Windows Claude also uses ASCII >; menus remain excluded.
+    ready=re.compile(r"^\s*[│|]?\s*[❯>]\s?(?!\s*\d+\.)(?!\s*(Yes|No)\b)"),
     busy=CLAUDE_BUSY,
     placeholder=PLACEHOLDER,
     modals=[

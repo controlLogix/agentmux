@@ -1,0 +1,18 @@
+test_windows_claude_idle_hint_receives_notice (hub.tests.test_hub_offline.Deliver.test_windows_claude_idle_hint_receives_notice) ... FAIL
+
+======================================================================
+FAIL: test_windows_claude_idle_hint_receives_notice (hub.tests.test_hub_offline.Deliver.test_windows_claude_idle_hint_receives_notice)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/mnt/c/Users/RyanHelms/GitHub/agentmux/hub/tests/test_hub_offline.py", line 325, in test_windows_claude_idle_hint_receives_notice
+    self.assertEqual(rc.outcome, "submitted", rc.as_dict())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'deferred' != 'submitted'
+- deferred
++ submitted
+ : {'outcome': 'deferred', 'reason': 'no input prompt visible', 'stages': {'resolved': 'ok', 'mode': 'ok', 'modal': 'ok', 'ready': 'no prompt'}, 'modal_answers': [], 'enters': 0, 'elapsed_ms': 1201}
+
+----------------------------------------------------------------------
+Ran 1 test in 1.213s
+
+FAILED (failures=1)

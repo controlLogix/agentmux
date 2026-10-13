@@ -317,6 +317,34 @@ class Deliver(unittest.TestCase):
         self.assertEqual(rc.outcome, "submitted", rc.as_dict())
         self.assertEqual(rc.stages["typed"], "ok")
 
+    def test_windows_claude_idle_hint_receives_notice(self):
+        # Observed native Windows Claude prompt, not a permission menu.
+        self.p = profiles.get("claude")
+        self.t.add("a", '>\u00a0Try "edit <filepath>"\n  bypass permissions on')
+        rc = self.run_line("a")
+        self.assertEqual(rc.outcome, "submitted", rc.as_dict())
+        self.assertEqual(self.keys("a")[0], "C-u")
+        self.assertTrue(any(kind == "text" and "[hub]" in text
+                            for _, kind, text in self.t.sent))
+
+    def test_windows_claude_choice_is_not_an_idle_prompt(self):
+        self.p = profiles.get("claude")
+        for choice in ("> 1. No, exit", "> Yes", "> No"):
+            with self.subTest(choice=choice):
+                self.t = FakeTransport()
+                self.t.add("a", choice)
+                self.assertFalse(self.p.is_ready(choice))
+                rc = self.run_line("a")
+                self.assertEqual(rc.outcome, "blocked", rc.as_dict())
+                self.assertEqual(self.t.sent, [])
+
+    def test_windows_claude_busy_prompt_defers_notice(self):
+        self.p = profiles.get("claude")
+        self.t.add("a", "Working (12s · esc to interrupt)\n>\u00a0")
+        rc = self.run_line("a")
+        self.assertEqual(rc.outcome, "deferred", rc.as_dict())
+        self.assertEqual(self.t.sent, [])
+
     def test_update_modal_answered_safely(self):  # C2: never Enter on 'Update now'
         self.t.add("a", "✨ Update available! 0.159 -> 0.160\n› 1. Update now (runs `npm install -g @openai/codex`)\n  2. Skip\n")
         s = self.t.sessions["a"]

@@ -25,7 +25,7 @@ Branch: `feat/agentmux-platform-rearchitecture`. No phase or merge approval is i
 ## Current work and blockers
 
 - **P01-T04 — in_progress:** Establish per-phase evidence records, dependency gates, migration fixtures, and security/quality regression jobs.
-  Reason: Grok active-hook discovery is corrected. Second original TEAM attempt started all providers but Claude remained at startup security notes; diagnostic cancellation yielded a genuine failed score (E1/E4/E5/E6 false, E2/E3 true). No work was claimed. All three exact jobs reached zero processes; Claude/Codex config comparisons were false. Preparing a fresh candidate preserving actual Windows Claude profile selection. Original team, crossrepo and swarm acceptance remains open.
+  Reason: Original TEAM on the fully reviewed current-client fixture failed with E1/E3/E4/E5/E6 false and E2 true; no claims, exact cleanup verified. Native Windows Claude ASCII idle prompt mismatch is repaired in the working candidate: failure-before/fix-after plus nineteen affected tests pass. A separate Codex submit failure followed by later ACK remains unproven and unresolved. Fresh original team, crossrepo and swarm acceptance, broader stable-candidate evidence and current source review remain required; P06 is not accepted.
 
 ## P00. Scope, baseline, and architecture decisions
 

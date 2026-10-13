@@ -7428,7 +7428,7 @@
       "componentIds": [
         "HUB-06"
       ],
-      "workingFileSha256": "fb1282f9ce4b6dc9361cfc2da36b2c41c01d0ea070a6feaee375a2098340ac25",
+      "workingFileSha256": "9da12247e93748ada1b94758e4e51a2842ddde92b0d76467a8ae99d6f0cd45dd",
       "declarations": [
         {
           "name": "Modal",
@@ -7472,12 +7472,12 @@
         },
         {
           "name": "get",
-          "line": 186,
+          "line": 187,
           "kind": "FunctionDef"
         }
       ],
       "httpPathLiterals": [],
-      "reviewStatus": "owned-by-component; maintainers must review behavioral completeness before P00 exit"
+      "reviewStatus": "Scoped P01 baseline compatibility repair reviewed: native Windows Claude ASCII idle prompt; nineteen affected delivery/profile/menu tests pass. P06 client integration and real original scenario acceptance remain open."
     },
     {
       "path": "hub/receipts.py",
@@ -16063,6 +16063,70 @@
           "reviewStatus": "Maintained P01 legacy plugin; parent source review with independent compatibility evidence required; P06 unaccepted."
         }
       ]
+    },
+    {
+      "date": "2026-10-13",
+      "actor": "Codex",
+      "reason": "P01 baseline preservation repair: actual Windows Claude ASCII prompt deferred delivery under the original Unicode-only matcher. Focused regression failed before the minimal glyph addition, then passed; all nineteen affected tests pass, preserving busy/modal/menu guards. No P06 capability extraction or acceptance. Previous source row retained; real scenario evidence remains required.",
+      "previousFiles": [
+        {
+          "path": "hub/profiles.py",
+          "componentIds": [
+            "HUB-06"
+          ],
+          "workingFileSha256": "fb1282f9ce4b6dc9361cfc2da36b2c41c01d0ea070a6feaee375a2098340ac25",
+          "declarations": [
+            {
+              "name": "Modal",
+              "line": 21,
+              "kind": "ClassDef"
+            },
+            {
+              "name": "Profile",
+              "line": 29,
+              "kind": "ClassDef"
+            },
+            {
+              "name": "Profile.bell",
+              "line": 44,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "Profile.modal",
+              "line": 47,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "Profile.is_busy",
+              "line": 54,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "Profile.is_ready",
+              "line": 60,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "Profile.composer_text",
+              "line": 64,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "Profile.has_placeholder",
+              "line": 72,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "get",
+              "line": 186,
+              "kind": "FunctionDef"
+            }
+          ],
+          "httpPathLiterals": [],
+          "reviewStatus": "owned-by-component; maintainers must review behavioral completeness before P00 exit"
+        }
+      ],
+      "sourceCommit": "837cfd0459b1ec0e720dcc88bd3486ceff329758"
     }
   ]
 }
