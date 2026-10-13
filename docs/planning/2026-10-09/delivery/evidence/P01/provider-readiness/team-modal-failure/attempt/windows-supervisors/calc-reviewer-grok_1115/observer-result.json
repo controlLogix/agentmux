@@ -1,0 +1,58 @@
+{
+  "jobUid": "54654515-5919-4c0e-b5a0-45985a01cff7",
+  "jobName": "Local\\agentmux-p01-54654515-5919-4c0e-b5a0-45985a01cff7",
+  "parentPid": 53236,
+  "supervisorPid": 65724,
+  "observerPid": 17216,
+  "passed": true,
+  "events": [
+    {
+      "action": "Open exact named job",
+      "elapsedSeconds": 0.0001
+    },
+    {
+      "action": "Hold exact handles and config bytes before parent resume",
+      "elapsedSeconds": 0.0017
+    },
+    {
+      "action": "Terminate exact held job",
+      "elapsedSeconds": 192.1744
+    },
+    {
+      "action": "Verify zero active job processes",
+      "elapsedSeconds": 192.2089
+    }
+  ],
+  "terminalReason": "fixture-cancellation",
+  "limitations": [
+    "Job accounting and byte comparison concern this exact fixture only.",
+    "No auth or config contents or hashes are logged.",
+    "Holding the observer job handle delays kill-on-last-handle-close; explicit job termination is required."
+  ],
+  "observerInJob": false,
+  "observerConsoleWindow": 0,
+  "heldHandles": {
+    "job": 472,
+    "parent": 312,
+    "supervisor": 480
+  },
+  "before": {
+    "TotalProcesses": 1,
+    "ActiveProcesses": 1,
+    "TotalTerminatedProcesses": 0
+  },
+  "parentExitCode": 133,
+  "afterJob": {
+    "TotalProcesses": 183,
+    "ActiveProcesses": 0,
+    "TotalTerminatedProcesses": 0
+  },
+  "cleanup": {
+    "verified": true,
+    "terminateJobOk": true,
+    "parentWait": 0,
+    "activeProcesses": 0
+  },
+  "windowsConfigBytesUnchanged": true,
+  "elapsedSeconds": 192.2092
+}

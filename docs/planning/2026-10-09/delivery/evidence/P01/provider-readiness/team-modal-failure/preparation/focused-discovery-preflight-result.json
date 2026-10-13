@@ -1,0 +1,62 @@
+{
+  "scope": "Focused active-hook selection regression and read-only immediate native Grok preflight. No provider or model launch.",
+  "helperSha256": "bca27b1e4b736b906720488919ebe6b816072d376cf9c327e056ad89f723f00f",
+  "cases": [
+    {
+      "case": "unchanged active source",
+      "expectedAccepted": true,
+      "observedAccepted": true,
+      "passed": true
+    },
+    {
+      "case": "backup ignored",
+      "expectedAccepted": true,
+      "observedAccepted": true,
+      "passed": true
+    },
+    {
+      "case": "nested JSON ignored",
+      "expectedAccepted": true,
+      "observedAccepted": true,
+      "passed": true
+    },
+    {
+      "case": "uppercase suffix ignored",
+      "expectedAccepted": true,
+      "observedAccepted": true,
+      "passed": true
+    },
+    {
+      "case": "added active JSON refused",
+      "expectedAccepted": false,
+      "observedAccepted": false,
+      "passed": true
+    },
+    {
+      "case": "changed active JSON refused",
+      "expectedAccepted": false,
+      "observedAccepted": false,
+      "passed": true
+    },
+    {
+      "case": "changed hook program refused",
+      "expectedAccepted": false,
+      "observedAccepted": false,
+      "passed": true
+    },
+    {
+      "case": "ORCA instrumentation refused",
+      "expectedAccepted": false,
+      "observedAccepted": false,
+      "passed": true
+    }
+  ],
+  "nativePreflight": {
+    "reviewedSourcesRevalidated": true,
+    "nativeSourceAbsenceRevalidated": true,
+    "orcaEnvironmentExcluded": true
+  },
+  "modelExecuted": false,
+  "authRead": false,
+  "canonicalProfilesChanged": false
+}

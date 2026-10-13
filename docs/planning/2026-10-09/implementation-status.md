@@ -25,7 +25,7 @@ Branch: `feat/agentmux-platform-rearchitecture`. No phase or merge approval is i
 ## Current work and blockers
 
 - **P01-T04 — in_progress:** Establish per-phase evidence records, dependency gates, migration fixtures, and security/quality regression jobs.
-  Reason: Windows Grok login is available in its canonical profile. One original TEAM attempt on c370290 stopped during provider setup before task posting or E1-E6 scoring: launch-time Grok preflight rejected a changed native hook source set. Review exact cleanup and source drift before retry. Original team, crossrepo and swarm evidence remains required; no phase acceptance.
+  Reason: Grok active-hook discovery is corrected. Second original TEAM attempt started all providers but Claude remained at startup security notes; diagnostic cancellation yielded a genuine failed score (E1/E4/E5/E6 false, E2/E3 true). No work was claimed. All three exact jobs reached zero processes; Claude/Codex config comparisons were false. Preparing a fresh candidate preserving actual Windows Claude profile selection. Original team, crossrepo and swarm acceptance remains open.
 
 ## P00. Scope, baseline, and architecture decisions
 

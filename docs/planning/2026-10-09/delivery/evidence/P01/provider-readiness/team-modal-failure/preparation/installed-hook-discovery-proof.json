@@ -1,0 +1,65 @@
+{
+  "reviewedOn": "2026-10-13T15:09:41.920046+00:00",
+  "scope": "Installed native Grok read-only inspect of a synthetic credential-free home; no provider prompt or canonical profile changes.",
+  "cli": {
+    "path": "C:\\Users\\RyanHelms\\.grok\\bin\\grok.exe",
+    "sha256": "bf43dc75f5478a106eab1e86d422c963e4dbe9666cf14dab363733d27bf1e672",
+    "command": [
+      "grok",
+      "inspect",
+      "--json"
+    ],
+    "exitCode": 0
+  },
+  "documentation": {
+    "path": "C:\\Users\\RyanHelms\\.grok\\docs\\user-guide\\10-hooks.md",
+    "sha256": "3690762505faa65d6a82e6462abeaa20fe3a127de611021c171f9088f2c2e56f",
+    "lines": "65, 68, 135",
+    "discoveryPattern": "~/.grok/hooks/*.json"
+  },
+  "fixtures": [
+    {
+      "path": "C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux-grok-hook-discovery-inspect-ti_qnr5v\\home\\hooks\\backup.json.bak",
+      "sha256": "f62181af35bee5e7fc4628121ef7160269960368f3c7f8046a007830a9bdf7db"
+    },
+    {
+      "path": "C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux-grok-hook-discovery-inspect-ti_qnr5v\\home\\hooks\\direct.json",
+      "sha256": "9f62a6517c99abd1b9929ec23b40d214daa18521a85c3751192f97c842b8282a"
+    },
+    {
+      "path": "C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux-grok-hook-discovery-inspect-ti_qnr5v\\home\\hooks\\uppercase.JSON",
+      "sha256": "71fada04904a6d49c9f16aca5aa84aa210eb52bb1712c222803f8ebfaca130bc"
+    },
+    {
+      "path": "C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux-grok-hook-discovery-inspect-ti_qnr5v\\home\\hooks\\nested\\nested.json",
+      "sha256": "5f314df76b1ddc62e211a71b16396e64c6517d4a57a1972e8cfe17831960e4b4"
+    }
+  ],
+  "observedMarkers": {
+    "direct.json": true,
+    "backup.json.bak": false,
+    "nested/nested.json": false,
+    "uppercase.JSON": false
+  },
+  "actualHooks": [
+    {
+      "event": "session_start",
+      "hookType": "command",
+      "target": "echo DIRECT_JSON_ONLY",
+      "source": {
+        "type": "user",
+        "path": "C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux-grok-hook-discovery-inspect-ti_qnr5v\\home\\hooks"
+      },
+      "matcher": null
+    }
+  ],
+  "stdoutSha256": "485fd7a76534f404d381e76d8c0e9b3bf954bdacb3f36feb1312e6b85f8828b5",
+  "stderrBytes": 0,
+  "canonicalCredentialsRead": false,
+  "modelExecuted": false,
+  "recommendation": "Use immediate children that are files and whose final extension equals .json with a case-sensitive comparison. Do not use recursive all-file inventory or Windows case-insensitive glob alone. Pin and compare every matching source byte; retain backup in failure history and metadata without treating it as an active native source.",
+  "limits": [
+    "Inspect discovery is actual installed CLI behavior, not a model session.",
+    "No startup hook commands executed; controlled echo markers only appear in discovery metadata."
+  ]
+}

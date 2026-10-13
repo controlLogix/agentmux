@@ -1,0 +1,89 @@
+{
+  "run": "20261013-111500-team",
+  "scenario": "team",
+  "started": "2026-10-13T11:15:00-0400",
+  "agents": [
+    "calc-lead-claude_1115",
+    "calc-worker-codex_1115",
+    "calc-reviewer-grok_1115"
+  ],
+  "work": [
+    {
+      "id": "W-EFEKFESPVD",
+      "parent_id": null,
+      "target": "team:calc/t_1115",
+      "title": "Add variance and stdev to calc",
+      "state": "ready",
+      "claimed_by": null,
+      "attempts": 0,
+      "result": null
+    }
+  ],
+  "errors": [
+    "bell calc-lead-claude_1115 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1115 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1115 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1115 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1115 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1115 blocked: modal unknown: unrecognized prompt: needs a person",
+    "agent calc-lead-claude_1115 blocked: {\"from\":\"ready\",\"note\":\"modal unknown: unrecognized prompt: needs a person\"}",
+    "agent calc-lead-claude_1115 dead: {\"from\":\"blocked\",\"note\":\"terminal gone\"}",
+    "agent calc-reviewer-grok_1115 dead: {\"from\":\"busy\",\"note\":\"terminal gone\"}",
+    "agent calc-worker-codex_1115 dead: {\"from\":\"busy\",\"note\":\"terminal gone\"}",
+    "delivery 01M4TX9SYJ2AFN5983B9S19EGW>calc-lead-claude_1115 ended queued"
+  ],
+  "timeline": [
+    "11:15:07 spawned calc-lead-claude_1115 (claude) %0",
+    "11:15:10 spawned calc-worker-codex_1115 (codex) %1",
+    "11:15:12 spawned calc-reviewer-grok_1115 (grok) %2",
+    "11:15:12 team calc/t_1115: calc-lead-claude_1115, calc-worker-codex_1115, calc-reviewer-grok_1115",
+    "11:15:12 posted W-EFEKFESPVD -> team:calc/t_1115: Add variance and stdev to calc",
+    "11:15:12 W-EFEKFESPVD ready by -",
+    "11:15:22 AGENT calc-lead-claude_1115 blocked: modal unknown: unrecognized prompt: needs a person",
+    "11:18:33 AGENT calc-lead-claude_1115 dead: terminal gone",
+    "11:18:33 AGENT calc-reviewer-grok_1115 dead: terminal gone",
+    "11:18:33 AGENT calc-worker-codex_1115 dead: terminal gone",
+    "11:18:33 an agent died; stopping early (the run is already not error-free)",
+    "11:18:33 cancelled unfinished W-EFEKFESPVD"
+  ],
+  "verify": "calc.stdev check failed: ll last):\n  File \"<string>\", line 1, in <module>\n    from calc import variance, stdev; assert abs(variance([1,2,3,4])-1.25)<1e-9 and abs(stdev([2,4,4,4,5,5,7,9])-2.0)<1e-9\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nImportError: cannot import name 'variance' from 'calc' (/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux original TEAM active JSON retry f1bj61xm/original demo repos/calc/calc/__init__.py)\n",
+  "checks": {
+    "E1_all_top_done": false,
+    "E2_no_dead_delivery": true,
+    "E3_no_failed_bell": true,
+    "E4_no_blocked_or_died": false,
+    "E5_all_acked": false,
+    "E6_verified": false
+  },
+  "error_free": false,
+  "stats": {
+    "deliveries": 3,
+    "acked": 2,
+    "bells": {
+      "blocked": 6,
+      "deferred": 7,
+      "submitted": 2
+    },
+    "modal_answers": [
+      [
+        {
+          "kind": "theme",
+          "keys": [
+            "Enter"
+          ]
+        }
+      ],
+      [
+        {
+          "kind": "trust",
+          "keys": [
+            "Enter"
+          ]
+        }
+      ]
+    ],
+    "extra_enters": 1,
+    "work_items": 1,
+    "duration_s": 200
+  }
+}

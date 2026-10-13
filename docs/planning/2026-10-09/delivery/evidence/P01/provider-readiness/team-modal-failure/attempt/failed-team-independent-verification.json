@@ -1,0 +1,257 @@
+{
+  "scope": "Root-authorized early diagnostic cancellation of unchanged unsupported Claude startup modal; genuine original failed TEAM score retained.",
+  "sourceCommit": "c370290d6711b8f41d131723dc6a775334f03ccd",
+  "originalReportSha256": "6e92fe93484514830c7c64bf7b62b3818328823d43025e367f1a7a43a512fcae",
+  "checks": {
+    "E1_all_top_done": false,
+    "E2_no_dead_delivery": true,
+    "E3_no_failed_bell": true,
+    "E4_no_blocked_or_died": false,
+    "E5_all_acked": false,
+    "E6_verified": false
+  },
+  "errorFree": false,
+  "work": [
+    {
+      "id": "W-EFEKFESPVD",
+      "parent_id": null,
+      "target": "team:calc/t_1115",
+      "title": "Add variance and stdev to calc",
+      "state": "ready",
+      "claimed_by": null,
+      "attempts": 0,
+      "result": null
+    }
+  ],
+  "harnessExitCode": 0,
+  "elapsedSeconds": 214.9473916249999,
+  "source67Unchanged": true,
+  "originalProviders": [
+    "claude",
+    "codex",
+    "grok"
+  ],
+  "rootAuthorizedCancellation": true,
+  "modalText": "Security notes: Press Enter to continue\u2026",
+  "manualModalInput": false,
+  "actors": [
+    {
+      "actor": "calc-lead-claude_1115",
+      "observer": {
+        "jobUid": "5750ffaf-46f4-480d-9263-c2395511b17f",
+        "parentPid": 70132,
+        "supervisorPid": 74328,
+        "observerPid": 64364,
+        "passed": true,
+        "terminalReason": "fixture-cancellation",
+        "afterJob": {
+          "TotalProcesses": 5,
+          "ActiveProcesses": 0,
+          "TotalTerminatedProcesses": 0
+        },
+        "cleanup": {
+          "verified": true,
+          "terminateJobOk": true,
+          "parentWait": 0,
+          "activeProcesses": 0
+        },
+        "windowsConfigBytesUnchanged": false
+      },
+      "knownPids": [
+        {
+          "pid": 70132,
+          "handleOpened": false,
+          "errorIfAbsent": 87,
+          "waitState": null
+        },
+        {
+          "pid": 74328,
+          "handleOpened": false,
+          "errorIfAbsent": 87,
+          "waitState": null
+        },
+        {
+          "pid": 64364,
+          "handleOpened": false,
+          "errorIfAbsent": 87,
+          "waitState": null
+        }
+      ]
+    },
+    {
+      "actor": "calc-reviewer-grok_1115",
+      "observer": {
+        "jobUid": "54654515-5919-4c0e-b5a0-45985a01cff7",
+        "parentPid": 53236,
+        "supervisorPid": 65724,
+        "observerPid": 17216,
+        "passed": true,
+        "terminalReason": "fixture-cancellation",
+        "afterJob": {
+          "TotalProcesses": 183,
+          "ActiveProcesses": 0,
+          "TotalTerminatedProcesses": 0
+        },
+        "cleanup": {
+          "verified": true,
+          "terminateJobOk": true,
+          "parentWait": 0,
+          "activeProcesses": 0
+        },
+        "windowsConfigBytesUnchanged": true
+      },
+      "knownPids": [
+        {
+          "pid": 53236,
+          "handleOpened": false,
+          "errorIfAbsent": 87,
+          "waitState": null
+        },
+        {
+          "pid": 65724,
+          "handleOpened": false,
+          "errorIfAbsent": 87,
+          "waitState": null
+        },
+        {
+          "pid": 17216,
+          "handleOpened": false,
+          "errorIfAbsent": 87,
+          "waitState": null
+        }
+      ]
+    },
+    {
+      "actor": "calc-worker-codex_1115",
+      "observer": {
+        "jobUid": "c482cf00-380b-4572-bad9-d2f269a4c48c",
+        "parentPid": 30184,
+        "supervisorPid": 33624,
+        "observerPid": 38992,
+        "passed": true,
+        "terminalReason": "fixture-cancellation",
+        "afterJob": {
+          "TotalProcesses": 66,
+          "ActiveProcesses": 0,
+          "TotalTerminatedProcesses": 0
+        },
+        "cleanup": {
+          "verified": true,
+          "terminateJobOk": true,
+          "parentWait": 0,
+          "activeProcesses": 0
+        },
+        "windowsConfigBytesUnchanged": false
+      },
+      "knownPids": [
+        {
+          "pid": 30184,
+          "handleOpened": false,
+          "errorIfAbsent": 87,
+          "waitState": null
+        },
+        {
+          "pid": 33624,
+          "handleOpened": false,
+          "errorIfAbsent": 87,
+          "waitState": null
+        },
+        {
+          "pid": 38992,
+          "handleOpened": false,
+          "errorIfAbsent": 87,
+          "waitState": null
+        }
+      ]
+    }
+  ],
+  "linuxCleanup": {
+    "fixtureEnvironmentProcessPids": [],
+    "tokenFilesRemaining": 0,
+    "recordedHubPid": "1718",
+    "recordedHubPidExistsNow": false,
+    "actualWork": [
+      {
+        "id": "W-EFEKFESPVD",
+        "state": "cancelled",
+        "claimed_by": null,
+        "attempts": 0
+      }
+    ],
+    "claimEventCount": 0
+  },
+  "gitEvidence": {
+    "calc": {
+      "log": {
+        "argv": [
+          "git",
+          "log",
+          "--oneline",
+          "-5"
+        ],
+        "exitCode": 0,
+        "stdout": "dd30cfd initial calc\n",
+        "stderr": ""
+      },
+      "status": {
+        "argv": [
+          "git",
+          "status",
+          "--porcelain"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "diff": {
+        "argv": [
+          "git",
+          "diff",
+          "HEAD"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    "report": {
+      "log": {
+        "argv": [
+          "git",
+          "log",
+          "--oneline",
+          "-5"
+        ],
+        "exitCode": 0,
+        "stdout": "8dc9ee9 initial report\n",
+        "stderr": ""
+      },
+      "status": {
+        "argv": [
+          "git",
+          "status",
+          "--porcelain"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "diff": {
+        "argv": [
+          "git",
+          "diff",
+          "HEAD"
+        ],
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    }
+  },
+  "limitations": [
+    "Original task was not claimed or implemented; no successful TEAM acceptance.",
+    "Claude and Codex config byte comparisons are false; no setting attribution is inferred.",
+    "Compact original report omits pane tails; raw original report remains in its external fixture with the recorded digest.",
+    "Harness exit zero is not scenario success."
+  ]
+}

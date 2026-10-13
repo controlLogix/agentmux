@@ -1,0 +1,11 @@
+--- failed/launch-preflight.py
++++ active-json/launch-preflight.py
+@@ -10,7 +10,7 @@
+  assert not any(key in environment for key in ['GROK_CONFIG','GROK_CONFIG_PATH'])
+  for item in [proof['config'],proof['hookProgram'],*proof['nativeHookFiles'],*proof['documentation'],*proof['clients']]:assert sha(item['path'])==item['sha256'], 'Reviewed Grok source changed: '+item['path']
+  expected={P(item['path']).resolve() for item in proof['nativeHookFiles']}
+- actual={path.resolve() for path in (canonical/'hooks').rglob('*') if path.is_file()}
++ actual={path.resolve() for path in (canonical/'hooks').iterdir() if path.is_file() and path.suffix=='.json'}
+  assert actual==expected, 'Native Grok hook source set changed'
+  for name in ['plugins','managed_config.toml','requirements.toml','lsp.json']:assert not (canonical/name).exists(), 'Unexpected native Grok source: '+name
+  for key,value in proof['documentedProcessOnlyGrokEnv'].items():assert environment.get(key)==value
