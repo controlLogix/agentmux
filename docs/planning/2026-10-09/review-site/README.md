@@ -1,5 +1,7 @@
 # Share the visual review with Nick
 
+For development, run `node docs/reviews/open.mjs` and open its local URL. The live page reads your effective Git name and email, asks to set missing identity for this repository, and saves notes directly into your own Markdown file. No manual export is needed. Leave the launcher running while reviewing. Commit and push the saved file to share it. See the [automatic Git notes workflow](../../../reviews/README.md).
+
 Send **[agentmux-visual-review.html](../agentmux-visual-review.html)**. It is about 13 MB and contains all six concept images, explanations, review questions, styling, scripts and a downloadable copy of the implementation plan. Nick does not need this repository or any other file to read the visual review.
 
 1. Download the HTML attachment to a local folder.
@@ -16,11 +18,11 @@ These are concept images with sample data. Review notes do not approve implement
 
 Claude Opus 5.5 authored the original layout, styling, scene renderer, image viewer and local notes interactions through the user-requested Ubuntu WSL terminal. Codex prepared the content, packaged the embedded assets and added the reusable Git notes workflow. See [design provenance](design-provenance.json) for attribution and the integration corrections.
 
-The [verification record](verification.json), refreshed October 13, reports three passing component tests, JavaScript syntax checks, valid local anchors and form labels, six unchanged embedded PNGs, the unchanged dashboard logo, an exact embedded plan, and no external resource references or network calls in the page script. Browser inspection was not completed: the browser tool's policy rejected the local file URL. Static checks do not establish rendered layout or browser interaction correctness.
+The [verification record](verification.json), refreshed October 13, reports component and notes tests, JavaScript syntax checks, valid local anchors and form labels, six unchanged embedded PNGs, the unchanged dashboard logo and an exact embedded plan. Only the live launcher enables requests to its local helper; standalone copies block network requests. Browser inspection was not completed: the browser tool's policy rejected the local file URL. Source checks do not establish rendered layout or browser interaction correctness.
 
 Codex reviewed this packaging correction with the current P01 evidence checkpoint. The verification history retains the earlier stale-digest result; final source validation is recorded separately in the repository review. These document checks do not pass a delivery gate. Review notes remain feedback, while Codex owns delivery review and final feature-branch acceptance. No merge or release is authorized.
 
-The Git notes update has fourteen passing source tests and a completed scoped independent review. Its first review retained a pending repository-wide check while delivery tracking and TEAM startup evidence were changing. Codex subsequently reviewed the complete checkpoint; the final source check is recorded separately in the repository review. These checks do not establish runtime or phase acceptance.
+The earlier export/import workflow had fourteen passing source tests and a completed scoped independent review. The automatic-save update adds local HTTP/Git fixture tests and source-level checks for identity setup, serialized writes, conflict handling and retry. See the current verification record for results. Browser rendering remains unverified. These checks do not establish platform acceptance.
 
 The six baseline defects now have [verified runtime repairs](../governance-repairs.md) and preserved governance history. The rebuilt HTML embeds the current plan, including that limited progress. Its concept screens remain future designs; the HTML does not establish complete phase or product acceptance.
 

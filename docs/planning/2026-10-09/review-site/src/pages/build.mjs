@@ -4,7 +4,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { renderScene } from '../components/organisms/index.mjs';
-import { importMarkdown, reviewerSlug } from '../../../../../reviews/src/features/notes-format.mjs';
+import { importMarkdown, notesFilename } from '../../../../../reviews/src/features/notes-format.mjs';
 
 const siteRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const planRoot = resolve(siteRoot, '..');
@@ -32,10 +32,15 @@ const reviewRoot = resolve(repoRoot, 'docs/reviews/agentmux-visual-review');
 const config = JSON.parse(read(resolve(reviewRoot, 'review.json')));
 const formatSource = read(resolve(repoRoot, 'docs/reviews/src/features/notes-format.mjs')).toString('utf8');
 const controllerSource = read(resolve(repoRoot, 'docs/reviews/src/features/notes-controller.mjs')).toString('utf8');
+const localSource = read(resolve(repoRoot, 'docs/reviews/src/features/notes-local.mjs')).toString('utf8');
 const inputs = {
   'implementation-plan.md': sha(plan), 'logo-ccc.svg': sha(logo), 'scene.css': sha(css),
   'review.js': sha(script), 'review.template.html': sha(html), 'notes-format.mjs': sha(formatSource),
   'notes-controller.mjs': sha(controllerSource),
+  'notes-local.mjs': sha(localSource),
+  'local-review.mjs': sha(read(resolve(repoRoot, 'docs/reviews/src/features/local-review.mjs'))),
+  'notes-lock.mjs': sha(read(resolve(repoRoot, 'docs/reviews/src/features/notes-lock.mjs'))),
+  'open.mjs': sha(read(resolve(repoRoot, 'docs/reviews/open.mjs'))),
   'build.mjs': sha(read(fileURLToPath(import.meta.url))),
   'review.json': sha(read(resolve(reviewRoot, 'review.json'))),
   'scenes.json': sha(read(resolve(siteRoot, 'scenes.json'))),
@@ -52,14 +57,15 @@ const document = { id: config.id, title: config.title, version,
 const notesRoot = resolve(reviewRoot, 'notes');
 const committedNotes = (existsSync(notesRoot) ? readdirSync(notesRoot).filter(file => file.endsWith('.md')).sort() : []).map(file => {
   const record = importMarkdown(read(resolve(notesRoot, file)).toString('utf8'), document);
-  if (file !== reviewerSlug(record.reviewer, config.reviewers) + '.md') throw new Error(`Reviewer and notes filename differ: ${file}`);
+  if (file !== notesFilename(record, config.reviewers)) throw new Error(`Reviewer and notes filename differ: ${file}`);
   return record;
 });
 const reviewData = JSON.stringify({ document, reviewers: config.reviewers, notesPath: config.notesPath,
   legacyDraftKey: config.legacyDraftKey, legacyReviewId: config.legacyReviewId, committedNotes }).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026');
 // This dependency-free feature is the same code tested as an ES module.
 const notesRuntime = 'const ReviewNotes = (() => {\n' + formatSource.replace(/^export /gm, '') +
-  '\nreturn { MAX_FILE, MAX_NOTE, draftKey, reviewerSlug, validateNotes, exportMarkdown, importMarkdown };\n})();\n' +
+  '\nreturn { MAX_FILE, MAX_NOTE, draftKey, reviewerSlug, notesFilename, validateNotes, exportMarkdown, importMarkdown };\n})();\n' +
+  localSource.replace(/^import .*;\r?\n/gm, '').replace(/^export /gm, '') + '\n' +
   controllerSource.replace(/^import .*;\r?\n/gm, '').replace(/^export /gm, '');
 const replacements = {
   '{{LOGO_DATA_URI}}': `data:image/svg+xml;base64,${logo.toString('base64')}`,

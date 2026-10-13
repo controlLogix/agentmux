@@ -463,6 +463,110 @@
         "Do not bundle ignored vendor manuals or imply an SDK integration from a protocol library."
       ],
       "limitations": []
+    },
+    {
+      "id": "REPO-10",
+      "name": "Delivery review notes and local repository helper",
+      "files": [
+        "docs/reviews/.gitattributes",
+        "docs/reviews/agentmux-visual-review/document-version.json",
+        "docs/reviews/agentmux-visual-review/notes/nick.md",
+        "docs/reviews/agentmux-visual-review/notes/ryan.md",
+        "docs/reviews/agentmux-visual-review/README.md",
+        "docs/reviews/agentmux-visual-review/review.json",
+        "docs/reviews/check.mjs",
+        "docs/reviews/open.mjs",
+        "docs/reviews/README.md",
+        "docs/reviews/src/features/local-review.mjs",
+        "docs/reviews/src/features/local-review.test.mjs",
+        "docs/reviews/src/features/notes-controller.mjs",
+        "docs/reviews/src/features/notes-controller.test.mjs",
+        "docs/reviews/src/features/notes-format.mjs",
+        "docs/reviews/src/features/notes-format.test.mjs",
+        "docs/reviews/src/features/notes-local.mjs",
+        "docs/reviews/src/features/notes-local.test.mjs",
+        "docs/reviews/src/features/notes-lock.mjs",
+        "docs/reviews/src/features/notes-lock.test.mjs",
+        "docs/reviews/src/features/packaging.test.mjs"
+      ],
+      "role": "tooling",
+      "baselineGroups": [],
+      "ownerPhase": "P01",
+      "disposition": "extend",
+      "currentBehavior": [
+        "Standalone review notes support import, draft restore and export.",
+        "An optional loopback helper uses Git identity and saves reviewer notes with revision checks and process-held locks."
+      ],
+      "reusePlan": "Preserve standalone review and existing notes; qualify the optional repository helper as delivery tooling.",
+      "enhancements": [
+        "Preserve reviewer identity across import, restore and export.",
+        "Verify confined writes, failed-save recovery and competing writers without changing product runtime scope."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "REPO-10-C01",
+          "description": "Preserve text, version and reviewer identity through standalone import/edit/restore/export, reset identity only on author switch; keep legacy drafts and known reviewer filenames.",
+          "existingTests": [
+            "docs/reviews/src/features/notes-controller.test.mjs",
+            "docs/reviews/src/features/notes-format.test.mjs"
+          ],
+          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "REPO-10-C02",
+          "description": "Use effective Git identity; configure only repo-local name/email; confine writes to assigned notes files and reject stale identity/revision.",
+          "existingTests": [
+            "docs/reviews/src/features/local-review.test.mjs"
+          ],
+          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "REPO-10-C03",
+          "description": "Reject foreign Host/Origin/missing token, links escaping notes/repository, malformed/oversized payloads; rejected writes preserve existing data.",
+          "existingTests": [
+            "docs/reviews/src/features/local-review.test.mjs"
+          ],
+          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "REPO-10-C04",
+          "description": "Lock competing writers, release locks on process exit, retain pending edits/conflict drafts and warn before delayed/unconfirmed saves; retry temporary failures.",
+          "existingTests": [
+            "docs/reviews/src/features/notes-lock.test.mjs",
+            "docs/reviews/src/features/notes-local.test.mjs",
+            "docs/reviews/src/features/notes-controller.test.mjs"
+          ],
+          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "REPO-10-C05",
+          "description": "Escape feedback, preserve exact assets/plan, keep stable source-version rules and standalone network restrictions, generate matching HTML/report/version.",
+          "existingTests": [
+            "docs/reviews/src/features/packaging.test.mjs",
+            "docs/reviews/src/features/notes-format.test.mjs"
+          ],
+          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve existing reviewer notes, known filenames and legacy browser drafts.",
+        "Keep pinned P00 source blobs and historical acceptance intact.",
+        "Do not treat review tooling as an Agentmux runtime service or P06 acceptance."
+      ],
+      "limitations": [
+        "Browser rendering and current full check evidence remain open until independently reviewed."
+      ]
     }
   ],
   "reviewHistory": [
@@ -474,6 +578,34 @@
         ".github/workflows/contracts.yml"
       ],
       "note": "Existing ownership, baseline behavior and qualification requirements are unchanged; new fixtures do not establish phase acceptance."
+    },
+    {
+      "date": "2026-10-13T16:40:36.663526+00:00",
+      "reviewer": "Codex",
+      "scope": "P01 delivery review notes ownership",
+      "addedFiles": [
+        "docs/reviews/.gitattributes",
+        "docs/reviews/agentmux-visual-review/document-version.json",
+        "docs/reviews/agentmux-visual-review/notes/nick.md",
+        "docs/reviews/agentmux-visual-review/notes/ryan.md",
+        "docs/reviews/agentmux-visual-review/README.md",
+        "docs/reviews/agentmux-visual-review/review.json",
+        "docs/reviews/check.mjs",
+        "docs/reviews/open.mjs",
+        "docs/reviews/README.md",
+        "docs/reviews/src/features/local-review.mjs",
+        "docs/reviews/src/features/local-review.test.mjs",
+        "docs/reviews/src/features/notes-controller.mjs",
+        "docs/reviews/src/features/notes-controller.test.mjs",
+        "docs/reviews/src/features/notes-format.mjs",
+        "docs/reviews/src/features/notes-format.test.mjs",
+        "docs/reviews/src/features/notes-local.mjs",
+        "docs/reviews/src/features/notes-local.test.mjs",
+        "docs/reviews/src/features/notes-lock.mjs",
+        "docs/reviews/src/features/notes-lock.test.mjs",
+        "docs/reviews/src/features/packaging.test.mjs"
+      ],
+      "note": "Append five checks owned by P01-T04. Proposed test claims do not establish acceptance."
     }
   ]
 }

@@ -6,11 +6,11 @@
     "phases.json": "882de6f13f309b878ebd8898ba73ab05fe94dc68ec517b311054f2a99f3102f7",
     "verification-matrix.json": "516813fd034d6c73b4b0d6f9eaaf4b1b54798828e137336324605d0b956085bc",
     "jev-coverage.json": "c7df684ce9162c36fb0d77ed8cf76c656824b7339b6c8464dce7ef2ce5988f95",
-    "component-inventory.json": "4fdabe9afcd5d2fd0c758263284e537ad1d457ba4a0d3b23cf4b929b8abe91a8",
+    "component-inventory.json": "10a2a061383530c77d20640128b4d066bc46b86776c79a45a5f0e8f9c1afedef",
     "component-audit-hub.json": "689690b169d1dcd9301cbeaed7764846b39b5676f04a2ef734bfc7e3048ba69d",
     "component-audit-harness.json": "7aad553c9ec95dbd1da1309ba3718984befb4fffb6eafba62be222cbe2ec7a50",
     "component-audit-dashboard.json": "a406607c28ee44054de9dc5f3b40b4b7e7d6e4e7989d29666fe09adb4904741f",
-    "component-audit-repository.json": "52a2e7648da7727c260b28764f6fc5817b6776d4e24198bec7a4b8436bf442c2"
+    "component-audit-repository.json": "e14d1ac94fec670077f407ebc8eaa63807dee4432c69a9b008f219701fc2a693"
   },
   "trackingDecision": "Repository tracking replaces Jira at Ryan's request; no Atlassian connection is required.",
   "epics": [
@@ -2102,7 +2102,8 @@
         "Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.",
         "Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.",
         "Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.",
-        "Bind Windows/WSL evidence to client installation/version, Windows auth/config ownership and actual interop observations; keep unsupported environments and P06 qualification gaps explicit rather than treating native Linux results as equivalent."
+        "Bind Windows/WSL evidence to client installation/version, Windows auth/config ownership and actual interop observations; keep unsupported environments and P06 qualification gaps explicit rather than treating native Linux results as equivalent.",
+        "Qualify delivery review notes preservation, Git identity, confined writes, failed-save recovery, competing writers and matching generated artifacts through REPO-10 checks."
       ],
       "acceptanceCriteria": [
         {
@@ -2168,15 +2169,19 @@
         "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-modal-failure/README.md",
         "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-modal-failure/archive-allowlist.json",
         "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/windows-claude-prompt/README.md",
-        "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/windows-claude-prompt/manifest.json"
+        "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/windows-claude-prompt/manifest.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-terminal-diagnostics/README.md",
+        "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-terminal-diagnostics/archive-manifest.json"
       ],
       "commits": [
         "f19c6473d56335b8eeb28704b02895b9d9ab7fcc",
         "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
         "00353fd0ccb0b4ce34cb4eb45549703430af30d1",
-        "7a7d47ae6830f86b8fed318ee64da6a5aac52701"
+        "7a7d47ae6830f86b8fed318ee64da6a5aac52701",
+        "171eb1f8d9254a043e9e2c0598c19fb6a12136c1"
       ],
-      "blocker": "Original TEAM on the fully reviewed current-client fixture failed with E1/E3/E4/E5/E6 false and E2 true; no claims, exact cleanup verified. Native Windows Claude ASCII idle prompt mismatch is repaired in the working candidate: failure-before/fix-after plus nineteen affected tests pass. A separate Codex submit failure followed by later ACK remains unproven and unresolved. Fresh original team, crossrepo and swarm acceptance, broader stable-candidate evidence and current source review remain required; P06 is not accepted.",
+      "blocker": "Original TEAM on 171eb1f ended after reviewed diagnostic cancellation: E1/E3/E4/E6 false, E2/E5 true, errorFree false. No work was claimed. All three exact Windows jobs and native fixture cleanup are verified. Codex submission and Claude unknown-modal causes remain unresolved; safe observations do not prove echo versus composer or menu versus input. Original crossrepo/swarm, stable-candidate preservation and browser/native macOS review-tool limits remain open. No P01 gate or P06 acceptance.",
       "history": [
         {
           "at": "2026-10-09T22:15:02.344871+00:00",
@@ -2363,6 +2368,26 @@
           "reason": "Original TEAM on the fully reviewed current-client fixture failed with E1/E3/E4/E5/E6 false and E2 true; no claims, exact cleanup verified. Native Windows Claude ASCII idle prompt mismatch is repaired in the working candidate: failure-before/fix-after plus nineteen affected tests pass. A separate Codex submit failure followed by later ACK remains unproven and unresolved. Fresh original team, crossrepo and swarm acceptance, broader stable-candidate evidence and current source review remain required; P06 is not accepted.",
           "previousBlocker": "Grok active-hook discovery is corrected. Second original TEAM attempt started all providers but Claude remained at startup security notes; diagnostic cancellation yielded a genuine failed score (E1/E4/E5/E6 false, E2/E3 true). No work was claimed. All three exact jobs reached zero processes; Claude/Codex config comparisons were false. Preparing a fresh candidate preserving actual Windows Claude profile selection. Original team, crossrepo and swarm acceptance remains open.",
           "sourceCommit": "837cfd0459b1ec0e720dcc88bd3486ceff329758"
+        },
+        {
+          "date": "2026-10-13T16:40:36.663526+00:00",
+          "actor": "Codex",
+          "reason": "Append REPO-10 review tooling ownership and five preservation checks. The current original TEAM run remains active and has failed receipts; no task or phase acceptance.",
+          "sourceCommit": "171eb1f8d9254a043e9e2c0598c19fb6a12136c1"
+        },
+        {
+          "date": "2026-10-13T16:42:16.681035+00:00",
+          "actor": "Codex",
+          "reason": "Record current original TEAM observations without treating the still-running attempt or safe diagnostic flags as acceptance. Windows Grok authentication is available; no additional user login is required.",
+          "previousBlocker": "Original TEAM on the fully reviewed current-client fixture failed with E1/E3/E4/E5/E6 false and E2 true; no claims, exact cleanup verified. Native Windows Claude ASCII idle prompt mismatch is repaired in the working candidate: failure-before/fix-after plus nineteen affected tests pass. A separate Codex submit failure followed by later ACK remains unproven and unresolved. Fresh original team, crossrepo and swarm acceptance, broader stable-candidate evidence and current source review remain required; P06 is not accepted.",
+          "sourceCommit": "171eb1f8d9254a043e9e2c0598c19fb6a12136c1"
+        },
+        {
+          "date": "2026-10-13T16:49:16.409380+00:00",
+          "actor": "Codex",
+          "reason": "Record terminal failed original TEAM score and independent exact cleanup. Cancelled once through exact supervisors after more than eleven minutes without claims; original assertions and timeout configuration were unchanged. Preserve config comparisons Claude/Codex false and Grok true without inferring causes.",
+          "previousBlocker": "Original TEAM on committed candidate 171eb1f is active with genuine Claude/Codex/Grok. Startup exposed a Codex still-in-composer failure and an unknown Claude modal; the top task remains unclaimed in observed status. The final original score and exact cleanup are pending. ASCII Claude idle readiness repair passed nineteen affected checks but does not resolve these new findings. Crossrepo/swarm, stable-candidate preservation, review-tool evidence and current source review remain required. P06 and the P01 gate are not accepted.",
+          "sourceCommit": "171eb1f8d9254a043e9e2c0598c19fb6a12136c1"
         }
       ],
       "phaseCriteria": [
@@ -2384,7 +2409,8 @@
       "deliverables": [
         "Establish per-phase evidence records, dependency gates, migration fixtures, and security/quality regression jobs.",
         "Focused regression evidence and affected compatibility/migration records",
-        "WSL-CLIENT-01 client ownership contract, current environment inventory and explicit interop gap record"
+        "WSL-CLIENT-01 client ownership contract, current environment inventory and explicit interop gap record",
+        "REPO-10 delivery review notes preservation and local helper evidence"
       ],
       "componentIds": [
         "HAR-17",
@@ -2401,12 +2427,18 @@
         "DASH-31",
         "REPO-02",
         "REPO-03",
-        "HAR-23"
+        "HAR-23",
+        "REPO-10"
       ],
       "behaviorCheckIds": [
         "HAR-23-C01",
         "HAR-23-C02",
-        "HAR-23-C03"
+        "HAR-23-C03",
+        "REPO-10-C01",
+        "REPO-10-C02",
+        "REPO-10-C03",
+        "REPO-10-C04",
+        "REPO-10-C05"
       ],
       "catalogRecordIds": [],
       "reviewer": "Codex",
@@ -34297,6 +34329,19 @@
       "date": "2026-10-10T01:48:25.532339+00:00",
       "actor": "Codex",
       "reason": "Clarify stable WSL command links and shared Windows-owned auth/config for P06-T03/P06-T05; retain all prior scope and evidence."
+    },
+    {
+      "date": "2026-10-13T16:40:36.663526+00:00",
+      "actor": "Codex",
+      "reason": "Map current delivery review tooling without changing P00 baseline or product phase scope. All new checks remain unqualified.",
+      "previousSourceHashes": {
+        "component-inventory.json": "4fdabe9afcd5d2fd0c758263284e537ad1d457ba4a0d3b23cf4b929b8abe91a8",
+        "component-audit-repository.json": "52a2e7648da7727c260b28764f6fc5817b6776d4e24198bec7a4b8436bf442c2"
+      },
+      "sourceHashes": {
+        "component-inventory.json": "10a2a061383530c77d20640128b4d066bc46b86776c79a45a5f0e8f9c1afedef",
+        "component-audit-repository.json": "915c632f8fe9fd74034147542b27abc0aec326a50e8be251c1dbcecf1be45400"
+      }
     }
   ],
   "deliveryGovernance": {

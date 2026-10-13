@@ -1,5 +1,5 @@
 {
-  "status": "static-tests-passed-scoped-review-recorded",
+  "status": "current-static-and-boundary-tests-passed-browser-review-open",
   "checkedOn": "2026-10-13",
   "imagesVerified": 6,
   "imageIntegrity": "Exact source bytes preserved",
@@ -7,28 +7,30 @@
   "duplicateIds": false,
   "brokenInternalLinks": false,
   "externalResourceReferences": 0,
-  "javascriptNetworkCalls": 0,
-  "bytes": 12986313,
-  "sha256": "a6ca2c389e1f2d3d5d7132c4601e90119b604c2707f1d853e7677aae58b98931",
+  "javascriptNetworkCalls": 1,
+  "bytes": 12995692,
+  "sha256": "fdbafbaf3aca5b7e771348f80dfcd1666b22c8e99b304db609476ab1140e5f00",
   "browserInspection": "Not run: browser policy blocks file URLs. Source-level event-handler fixtures do not verify rendered layout or real browser interactions.",
   "runtimeImplementationVerified": false,
-  "componentTests": "14 passed, 0 failed, 0 skipped",
+  "componentTests": "28 shared review tests and 3 scene tests passed; 0 failed or skipped",
   "javascriptSyntax": "passed",
   "planSha256": "ec6e308cdc95e5ed08c63c09b010398ab8b103dcab4a26227413609c7943ef71",
   "repositoryPatternCheck": {
     "command": "node .bytedesk/design-patterns/check.mjs check --root .",
-    "scope": "Scoped Git notes source review; global freshness depends on all current repository changes.",
-    "verificationRecord": ".bytedesk/design-patterns/review.json"
+    "exitCode": 1,
+    "error": "Review is stale or missing: inspect changes and refresh sourceDigest",
+    "scope": "Historical stale-digest result. Current full source review is recorded separately in .bytedesk/design-patterns/review.json; this document does not pass a phase.",
+    "status": "earlier-attempt-retained"
   },
-  "scope": "Codex and an independent subagent reviewed the Git-backed notes changes. Fourteen isolated scene, notes format/controller and in-memory packaging tests passed. Packaging tests retain exact six images, logo and embedded source plan, reject active imported markup, and preserve draft/export behavior. Static IDs and internal anchors checked. Browser interactions and complete runtime implementation remain unverified. Repository pattern freshness is a separate pending check.",
+  "scope": "Current review-tool candidate rebuilt and tested by Codex. Real browser rendering and native macOS behavior remain unverified; no product phase acceptance.",
   "gitNotes": {
     "documentId": "agentmux-visual-review",
-    "documentVersion": "sha256:21d50a8a450cefca5bfd3b81931df8d7293e7b89fd9535e3cd81cf7560e93adb",
+    "documentVersion": "sha256:dff25f77cddf582b9853dd1dd6ee68dcead61ca691b9e80e588fe9102b8c8420",
     "reviewerFiles": [
       "docs/reviews/agentmux-visual-review/notes/nick.md",
       "docs/reviews/agentmux-visual-review/notes/ryan.md"
     ],
-    "sharedFeatureTests": "11 passed",
+    "sharedFeatureTests": "28 passed",
     "sceneTests": "3 passed",
     "checker": "2 reviewer files valid",
     "testsCommand": "node --test docs/reviews/src/features/notes-format.test.mjs docs/reviews/src/features/notes-controller.test.mjs docs/reviews/src/features/packaging.test.mjs docs/planning/2026-10-09/review-site/src/components/organisms/Scene/Scene.test.mjs",
@@ -48,6 +50,22 @@
       "Saved inline JavaScript syntax"
     ],
     "independentReview": "Read-only subagent review; parser/controller syntax, nested metadata and single-pass placeholder fixes verified. No product phase acceptance."
+  },
+  "javascriptNetworkCallScope": "Fetch is used only for same-origin loopback requests in the live-served page. Standalone CSP blocks requests and the helper is inactive.",
+  "localReview": {
+    "launcher": "node docs/reviews/open.mjs",
+    "url": "http://127.0.0.1:4317/",
+    "pageStatus": 200,
+    "sessionStatus": 200,
+    "gitIdentityConfigured": true,
+    "notesFilename": "ryan.md",
+    "actualRepositoryConfigChanged": false,
+    "identitySetup": "Repo-local name/email setup tested in disposable Git repositories. Effective inherited identity tested without global writes.",
+    "automaticSaving": "Source event fixtures and real local HTTP/Git fixtures pass; no real feedback file was changed by verification.",
+    "locking": "Native Windows named-pipe and native Linux under WSL loopback exclusion, child-process exit recovery and reset handling passed.",
+    "tests": "28 shared tests and 3 scene tests passed",
+    "independentReview": "Identity preservation repair and added rejected-write/pending-save boundaries reviewed; real browser and native macOS remain open.",
+    "browserRendering": "Not inspected; local-file browser policy remains in force. Live page and APIs checked by HTTP without browser automation."
   },
   "history": [
     {
@@ -140,7 +158,7 @@
       "scope": "Exact embedded plan/logo and six images, static anchors/form labels and JavaScript checks passed. Three scene tests passed. Codex independently verified in-memory packaging equals generated HTML and reviewed the autonomy wording. Final source gate is separate from these checks. Browser layout/interactions and complete runtime implementation remain unverified."
     },
     {
-  "status": "source-tests-passed-git-notes-repository-review-pending",
+      "status": "source-tests-passed-git-notes-repository-review-pending",
       "checkedOn": "2026-10-13",
       "imagesVerified": 6,
       "imageIntegrity": "Exact source bytes preserved",
@@ -158,10 +176,10 @@
       "planSha256": "ec6e308cdc95e5ed08c63c09b010398ab8b103dcab4a26227413609c7943ef71",
       "repositoryPatternCheck": {
         "command": "node .bytedesk/design-patterns/check.mjs check --root .",
-    "exitCode": 1,
-    "error": "Review is stale or missing: inspect changes and refresh sourceDigest",
+        "exitCode": 1,
+        "error": "Review is stale or missing: inspect changes and refresh sourceDigest",
         "scope": "Scoped Git notes source review; global freshness depends on all current repository changes.",
-    "pendingReview": "Another active task is updating delivery tracking and TEAM startup evidence. This notes review does not qualify those changes or refresh the global digest.",
+        "pendingReview": "Another active task is updating delivery tracking and TEAM startup evidence. This notes review does not qualify those changes or refresh the global digest.",
         "verificationRecord": ".bytedesk/design-patterns/review.json"
       },
       "scope": "Added reusable offline Git review notes tooling and refreshed the saved HTML. All 14 focused tests and the two-reviewer CLI check passed. Browser layout and real controls remain unverified. No platform task or phase acceptance is claimed.",
@@ -193,6 +211,128 @@
         ],
         "independentReview": "Read-only subagent review; parser/controller syntax, nested metadata and single-pass placeholder fixes verified. No product phase acceptance."
       }
+    },
+    {
+      "status": "static-tests-passed-scoped-review-recorded",
+      "checkedOn": "2026-10-13",
+      "imagesVerified": 6,
+      "imageIntegrity": "Exact source bytes preserved",
+      "sourcePlan": "Exact source bytes embedded",
+      "duplicateIds": false,
+      "brokenInternalLinks": false,
+      "externalResourceReferences": 0,
+      "javascriptNetworkCalls": 0,
+      "bytes": 12986313,
+      "sha256": "a6ca2c389e1f2d3d5d7132c4601e90119b604c2707f1d853e7677aae58b98931",
+      "browserInspection": "Not run: browser policy blocks file URLs. Source-level event-handler fixtures do not verify rendered layout or real browser interactions.",
+      "runtimeImplementationVerified": false,
+      "componentTests": "14 passed, 0 failed, 0 skipped",
+      "javascriptSyntax": "passed",
+      "planSha256": "ec6e308cdc95e5ed08c63c09b010398ab8b103dcab4a26227413609c7943ef71",
+      "repositoryPatternCheck": {
+        "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+        "scope": "Scoped Git notes source review; global freshness depends on all current repository changes.",
+        "verificationRecord": ".bytedesk/design-patterns/review.json"
+      },
+      "scope": "Codex and an independent subagent reviewed the Git-backed notes changes. Fourteen isolated scene, notes format/controller and in-memory packaging tests passed. Packaging tests retain exact six images, logo and embedded source plan, reject active imported markup, and preserve draft/export behavior. Static IDs and internal anchors checked. Browser interactions and complete runtime implementation remain unverified. Repository pattern freshness is a separate pending check.",
+      "gitNotes": {
+        "documentId": "agentmux-visual-review",
+        "documentVersion": "sha256:21d50a8a450cefca5bfd3b81931df8d7293e7b89fd9535e3cd81cf7560e93adb",
+        "reviewerFiles": [
+          "docs/reviews/agentmux-visual-review/notes/nick.md",
+          "docs/reviews/agentmux-visual-review/notes/ryan.md"
+        ],
+        "sharedFeatureTests": "11 passed",
+        "sceneTests": "3 passed",
+        "checker": "2 reviewer files valid",
+        "testsCommand": "node --test docs/reviews/src/features/notes-format.test.mjs docs/reviews/src/features/notes-controller.test.mjs docs/reviews/src/features/packaging.test.mjs docs/planning/2026-10-09/review-site/src/components/organisms/Scene/Scene.test.mjs",
+        "checks": [
+          "Lossless fenced-note import/export",
+          "Named filenames",
+          "Rejected wrong-document and invalid imports preserve drafts",
+          "Import cancellation preserves draft",
+          "Old version attribution and explicit relabeling",
+          "Legacy draft recovery and storage-denied fallback",
+          "Literal shared-note display",
+          "Feedback changes do not change document source version",
+          "Layout changes do change version",
+          "Literal template markers and script payloads stay data",
+          "Exact source images/logo/plan",
+          "Unique IDs and valid labels/anchors",
+          "Saved inline JavaScript syntax"
+        ],
+        "independentReview": "Read-only subagent review; parser/controller syntax, nested metadata and single-pass placeholder fixes verified. No product phase acceptance."
+      }
+    },
+    {
+      "status": "automatic-git-notes-tested-repository-review-pending",
+      "checkedOn": "2026-10-13",
+      "imagesVerified": 6,
+      "imageIntegrity": "Exact source bytes preserved",
+      "sourcePlan": "Exact source bytes embedded",
+      "duplicateIds": false,
+      "brokenInternalLinks": false,
+      "externalResourceReferences": 0,
+      "javascriptNetworkCalls": 1,
+      "bytes": 12995091,
+      "sha256": "a7362c0adaa5a32ff2fc1a94ec3827fd23147a598bc25d9a1584abe63efb87e8",
+      "browserInspection": "Not run: browser policy blocks file URLs. Source-level event-handler fixtures do not verify rendered layout or real browser interactions.",
+      "runtimeImplementationVerified": false,
+      "componentTests": "14 passed, 0 failed, 0 skipped",
+      "javascriptSyntax": "passed",
+      "planSha256": "ec6e308cdc95e5ed08c63c09b010398ab8b103dcab4a26227413609c7943ef71",
+      "repositoryPatternCheck": {
+        "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+        "exitCode": 1,
+        "error": "Review is stale or missing: inspect changes and refresh sourceDigest",
+        "scope": "Scoped automatic notes review; separate active changes in hub/profiles.py and hub/tests/test_hub_offline.py are not accepted here."
+      },
+      "scope": "Automatic local notes saving, effective Git identity and repo-local identity setup implemented as document tooling. All 25 focused tests passed and the actual live page/session returned 200 with ryan.md selected. No production platform task, supported-host qualification, phase acceptance, commit or push is claimed.",
+      "gitNotes": {
+        "documentId": "agentmux-visual-review",
+        "documentVersion": "sha256:cba22a6a9c26bedf50a09e74976896567487198217472c318e375dfc209fabeb",
+        "reviewerFiles": [
+          "docs/reviews/agentmux-visual-review/notes/nick.md",
+          "docs/reviews/agentmux-visual-review/notes/ryan.md"
+        ],
+        "sharedFeatureTests": "22 passed",
+        "sceneTests": "3 passed",
+        "checker": "2 reviewer files valid",
+        "testsCommand": "node --test docs/reviews/src/features/notes-format.test.mjs docs/reviews/src/features/notes-controller.test.mjs docs/reviews/src/features/packaging.test.mjs docs/planning/2026-10-09/review-site/src/components/organisms/Scene/Scene.test.mjs",
+        "checks": [
+          "Lossless fenced-note import/export",
+          "Named filenames",
+          "Rejected wrong-document and invalid imports preserve drafts",
+          "Import cancellation preserves draft",
+          "Old version attribution and explicit relabeling",
+          "Legacy draft recovery and storage-denied fallback",
+          "Literal shared-note display",
+          "Feedback changes do not change document source version",
+          "Layout changes do change version",
+          "Literal template markers and script payloads stay data",
+          "Exact source images/logo/plan",
+          "Unique IDs and valid labels/anchors",
+          "Saved inline JavaScript syntax"
+        ],
+        "independentReview": "Read-only subagent review; parser/controller syntax, nested metadata and single-pass placeholder fixes verified. No product phase acceptance."
+      },
+      "javascriptNetworkCallScope": "Fetch is used only for same-origin loopback requests in the live-served page. Standalone CSP blocks requests and the helper is inactive.",
+      "localReview": {
+        "launcher": "node docs/reviews/open.mjs",
+        "url": "http://127.0.0.1:4317/",
+        "pageStatus": 200,
+        "sessionStatus": 200,
+        "gitIdentityConfigured": true,
+        "notesFilename": "ryan.md",
+        "actualRepositoryConfigChanged": false,
+        "identitySetup": "Repo-local name/email setup tested in disposable Git repositories. Effective inherited identity tested without global writes.",
+        "automaticSaving": "Source event fixtures and real local HTTP/Git fixtures pass; no real feedback file was changed by verification.",
+        "locking": "Native Windows named-pipe exclusion and actual child-process exit recovery passed. POSIX loopback fallback is source-reviewed, not natively qualified.",
+        "tests": "25 total passed",
+        "independentReview": "All reported findings closed: email ownership, inter-process exclusion, version recovery, retries and reset connection handling.",
+        "browserRendering": "Not inspected; local-file browser policy remains in force. Live page and APIs checked by HTTP without browser automation."
+      }
     }
-  ]
+  ],
+  "currentRootReview": "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/root-review.json"
 }

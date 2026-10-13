@@ -1,0 +1,33 @@
+{
+  "scope": "Separate read-only observer for early Codex delivery. No scenario source changes.",
+  "rootAuthorizationRequired": true,
+  "startCondition": "Root authorizes original model run and observer; attempt-live.json exists.",
+  "command": [
+    "/home/ryan/.cache/agentmux-governance/venv/bin/python",
+    "/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux original TEAM LF wrapper fix ygfz4b26/observe-early-codex.py",
+    "--observe-authorized"
+  ],
+  "boundSeconds": 180,
+  "maximumSamples": 720,
+  "pollSeconds": 0.25,
+  "fields": [
+    "UTC timestamp",
+    "observer elapsed seconds",
+    "session presence",
+    "ready/busy/modal/placeholder booleans from frozen Codex profile",
+    "composer hub notice presence, count and character positions",
+    "visible screen hub notice count and line/column positions"
+  ],
+  "rawScreenSaved": false,
+  "modelReasoningSaved": false,
+  "terminalWrites": false,
+  "sourceMonkeypatch": false,
+  "limitations": [
+    "Sampling cannot prove every intermediate frame or which Enter submitted a notice.",
+    "Profile interpretation may confuse transcript and input. Positions and busy state can help test that hypothesis but cannot alone prove it.",
+    "Captures cover visible screen only.",
+    "An ACK proves callback consumption only."
+  ],
+  "receiptCorrelation": "After the run, read only safe bell stages, timestamps, enter counts and delivery received/acked timestamps; do not print message bodies or tokens.",
+  "staticObserverCheckPassed": true
+}

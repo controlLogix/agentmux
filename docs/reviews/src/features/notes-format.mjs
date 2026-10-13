@@ -33,12 +33,19 @@ export function draftKey(documentId) {
   return 'agentmux.review-notes.v1.' + documentId;
 }
 
+export function notesFilename(record, reviewers = []) {
+  if (record.reviewerId !== undefined && (typeof record.reviewerId !== 'string' || !ID.test(record.reviewerId))) throw new Error('Invalid reviewer file ID.');
+  return (record.reviewerId || reviewerSlug(record.reviewer, reviewers)) + '.md';
+}
+
 export function validateNotes(record, document, { allowEmptyReviewer = false } = {}) {
   validateDocument(document);
   if (!record || record.format !== 'agentmux-review-notes' || record.schemaVersion !== 1) throw new Error('Unsupported review notes format.');
   if (record.documentId !== document.id) throw new Error('These notes belong to a different document.');
   if (typeof record.documentVersion !== 'string' || !VERSION.test(record.documentVersion)) throw new Error('Invalid document version in notes.');
   if (typeof record.reviewer !== 'string' || record.reviewer.length > 120 || (!allowEmptyReviewer && !record.reviewer.trim())) throw new Error('Notes must include a reviewer name.');
+  if (record.reviewerEmail !== undefined && (typeof record.reviewerEmail !== 'string' || record.reviewerEmail.length > 254 || !/^[^\s@]+@[^\s@]+$/.test(record.reviewerEmail))) throw new Error('Invalid reviewer email.');
+  if (record.reviewerId !== undefined) notesFilename(record);
   if (typeof record.exportedAt !== 'string' || !Number.isFinite(Date.parse(record.exportedAt))) throw new Error('Invalid notes date.');
   if (!record.notes || typeof record.notes !== 'object' || Array.isArray(record.notes)) throw new Error('Invalid note fields.');
   const ids = document.sections.map(section => section.id);

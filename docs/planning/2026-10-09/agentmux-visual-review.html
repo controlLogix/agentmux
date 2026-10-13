@@ -615,11 +615,11 @@ img{break-inside:avoid}
   <div class="wrap">
     <p class="eyebrow">Send feedback</p>
     <h2 class="section__title" id="notes-title">Your review notes</h2>
-    <p class="notes__lede">Download your notes into your own file in the Git notes folder, then commit and push it. After pulling, import a note file to continue editing, or rebuild this page to include both reviewers’ committed notes.</p>
+    <p class="notes__lede">For automatic repository saving and Git identity, start the live review with <code>node docs/reviews/open.mjs</code>. Standalone copies still support local drafts and downloads.</p>
     <div class="notes__grid">
       <div>
         <div class="form-field">
-          <label class="form-label" for="reviewer-name">Your name (required for export)</label>
+          <label class="form-label" id="reviewer-name-label" for="reviewer-name">Reviewer name (standalone export)</label>
           <input type="text" id="reviewer-name" name="reviewer-name" autocomplete="name" maxlength="120" list="reviewer-names">
           <datalist id="reviewer-names"><option value="Nick Klute"></option><option value="Ryan Helms"></option></datalist>
           <div class="print-mirror" data-print-for="reviewer-name" aria-hidden="true"></div>
@@ -635,6 +635,15 @@ img{break-inside:avoid}
         <h3 class="panel__title" id="save-title">Save and share</h3>
         <p class="notes__version" id="document-version"></p>
         <p class="notes__version" id="notes-version"></p>
+        <p class="notes__version" id="git-identity-current"></p>
+        <div class="notes__import" id="git-identity-panel" hidden>
+          <p>Set your Git identity for this repository.</p>
+          <label class="form-label" for="git-name">Git name</label>
+          <input id="git-name" type="text" maxlength="120" autocomplete="name">
+          <label class="form-label" for="git-email">Git email</label>
+          <input id="git-email" type="email" maxlength="254" autocomplete="email">
+          <button id="git-identity-save" class="btn" type="button">Set repository Git identity</button>
+        </div>
         <noscript><p class="notes__noscript">Scripts are turned off. You can read the whole review and type in the boxes, but this page cannot save or download notes. Copy your notes into an email to Ryan before you close the page.</p></noscript>
         <div class="notes__actions" data-js-only hidden>
           <button type="button" class="btn btn--primary" data-action="download">Download notes (.md)</button>
@@ -654,7 +663,7 @@ img{break-inside:avoid}
         <p class="notes__status" id="notes-status" role="status" aria-live="polite"></p>
         <p class="notes__saved" id="notes-saved"></p>
         <ul class="notes__facts">
-          <li>Nothing on this page sends data anywhere.</li>
+          <li id="notes-local-fact">This standalone file sends no data. The live launcher saves notes locally into the repository.</li>
           <li>Drafts save only in this browser on this computer. Some browsers block saving for files opened from disk.</li>
           <li id="notes-git-path">Download your own note file, then commit and push it. This page does not run Git commands.</li>
           <li>Imported feedback is text. Loading it replaces this page’s draft only after confirmation.</li>
@@ -723,7 +732,7 @@ img{break-inside:avoid}
   </div>
 </dialog>
 
-<script type="application/json" id="review-data">{"document":{"id":"agentmux-visual-review","title":"Agentmux visual review","version":"sha256:21d50a8a450cefca5bfd3b81931df8d7293e7b89fd9535e3cd81cf7560e93adb","sections":[{"id":"01-workspace-and-terminal","title":"01 · Workspace and AI terminal","question":"Can you follow the terminal request through assigned work and waiting tasks while still finding the existing dashboard views and actions you use?"},{"id":"02-planning-and-board","title":"02 · Planning and the task board","question":"Does the plan make dependencies, approval state and the next step clear without losing existing board controls or task history?"},{"id":"03-agent-conversations","title":"03 · Agent collaboration and evidence","question":"Can you distinguish an agent's report from verified evidence, understand the block and tell which messages the current user may see?"},{"id":"04-connected-hubs","title":"04 · Connected teams and routing decisions","question":"Are ownership, reserved work and unknown progress clear, and does the design explain Jev's advisory role and what happens when it abstains or is unavailable?"},{"id":"05-review-and-acceptance","title":"05 · Result review and acceptance","question":"Can you distinguish worker completion, evidence review and origin acceptance, and which dashboard review actions should be available through authorized services?"},{"id":"06-plugins-and-industrial-tools","title":"06 · Plugin tools and industrial operations","question":"Are package relationships and read-only permissions clear, including the separate authorization and environment checks needed before equipment changes?"},{"id":"global","title":"Overall notes","question":"Do the scenes keep worker completion, evidence, result submission and origin acceptance clearly separate? Note anything that blurs them, and any other overall feedback."}]},"reviewers":[{"id":"nick","name":"Nick Klute"},{"id":"ryan","name":"Ryan Helms"}],"notesPath":"docs/reviews/agentmux-visual-review/notes","legacyDraftKey":"agentmux.visual-review.2026-10-09.notes.v1","legacyReviewId":"agentmux-visual-review-2026-10-09","committedNotes":[{"format":"agentmux-review-notes","schemaVersion":1,"documentId":"agentmux-visual-review","documentVersion":"sha256:21d50a8a450cefca5bfd3b81931df8d7293e7b89fd9535e3cd81cf7560e93adb","reviewer":"Nick Klute","exportedAt":"2026-10-13T15:09:47Z","notes":{"01-workspace-and-terminal":"","02-planning-and-board":"","03-agent-conversations":"","04-connected-hubs":"","05-review-and-acceptance":"","06-plugins-and-industrial-tools":"","global":""}},{"format":"agentmux-review-notes","schemaVersion":1,"documentId":"agentmux-visual-review","documentVersion":"sha256:21d50a8a450cefca5bfd3b81931df8d7293e7b89fd9535e3cd81cf7560e93adb","reviewer":"Ryan Helms","exportedAt":"2026-10-13T15:09:47Z","notes":{"01-workspace-and-terminal":"","02-planning-and-board":"","03-agent-conversations":"","04-connected-hubs":"","05-review-and-acceptance":"","06-plugins-and-industrial-tools":"","global":""}}]}</script>
+<script type="application/json" id="review-data">{"document":{"id":"agentmux-visual-review","title":"Agentmux visual review","version":"sha256:dff25f77cddf582b9853dd1dd6ee68dcead61ca691b9e80e588fe9102b8c8420","sections":[{"id":"01-workspace-and-terminal","title":"01 · Workspace and AI terminal","question":"Can you follow the terminal request through assigned work and waiting tasks while still finding the existing dashboard views and actions you use?"},{"id":"02-planning-and-board","title":"02 · Planning and the task board","question":"Does the plan make dependencies, approval state and the next step clear without losing existing board controls or task history?"},{"id":"03-agent-conversations","title":"03 · Agent collaboration and evidence","question":"Can you distinguish an agent's report from verified evidence, understand the block and tell which messages the current user may see?"},{"id":"04-connected-hubs","title":"04 · Connected teams and routing decisions","question":"Are ownership, reserved work and unknown progress clear, and does the design explain Jev's advisory role and what happens when it abstains or is unavailable?"},{"id":"05-review-and-acceptance","title":"05 · Result review and acceptance","question":"Can you distinguish worker completion, evidence review and origin acceptance, and which dashboard review actions should be available through authorized services?"},{"id":"06-plugins-and-industrial-tools","title":"06 · Plugin tools and industrial operations","question":"Are package relationships and read-only permissions clear, including the separate authorization and environment checks needed before equipment changes?"},{"id":"global","title":"Overall notes","question":"Do the scenes keep worker completion, evidence, result submission and origin acceptance clearly separate? Note anything that blurs them, and any other overall feedback."}]},"reviewers":[{"id":"nick","name":"Nick Klute"},{"id":"ryan","name":"Ryan Helms"}],"notesPath":"docs/reviews/agentmux-visual-review/notes","legacyDraftKey":"agentmux.visual-review.2026-10-09.notes.v1","legacyReviewId":"agentmux-visual-review-2026-10-09","committedNotes":[{"format":"agentmux-review-notes","schemaVersion":1,"documentId":"agentmux-visual-review","documentVersion":"sha256:21d50a8a450cefca5bfd3b81931df8d7293e7b89fd9535e3cd81cf7560e93adb","reviewer":"Nick Klute","exportedAt":"2026-10-13T15:09:47Z","notes":{"01-workspace-and-terminal":"","02-planning-and-board":"","03-agent-conversations":"","04-connected-hubs":"","05-review-and-acceptance":"","06-plugins-and-industrial-tools":"","global":""}},{"format":"agentmux-review-notes","schemaVersion":1,"documentId":"agentmux-visual-review","documentVersion":"sha256:21d50a8a450cefca5bfd3b81931df8d7293e7b89fd9535e3cd81cf7560e93adb","reviewer":"Ryan Helms","exportedAt":"2026-10-13T15:09:47Z","notes":{"01-workspace-and-terminal":"","02-planning-and-board":"","03-agent-conversations":"","04-connected-hubs":"","05-review-and-acceptance":"","06-plugins-and-industrial-tools":"","global":""}}]}</script>
 <script>
 const ReviewNotes = (() => {
 // Shared offline notes format. File access and page state belong to its callers.
@@ -761,12 +770,19 @@ function draftKey(documentId) {
   return 'agentmux.review-notes.v1.' + documentId;
 }
 
+function notesFilename(record, reviewers = []) {
+  if (record.reviewerId !== undefined && (typeof record.reviewerId !== 'string' || !ID.test(record.reviewerId))) throw new Error('Invalid reviewer file ID.');
+  return (record.reviewerId || reviewerSlug(record.reviewer, reviewers)) + '.md';
+}
+
 function validateNotes(record, document, { allowEmptyReviewer = false } = {}) {
   validateDocument(document);
   if (!record || record.format !== 'agentmux-review-notes' || record.schemaVersion !== 1) throw new Error('Unsupported review notes format.');
   if (record.documentId !== document.id) throw new Error('These notes belong to a different document.');
   if (typeof record.documentVersion !== 'string' || !VERSION.test(record.documentVersion)) throw new Error('Invalid document version in notes.');
   if (typeof record.reviewer !== 'string' || record.reviewer.length > 120 || (!allowEmptyReviewer && !record.reviewer.trim())) throw new Error('Notes must include a reviewer name.');
+  if (record.reviewerEmail !== undefined && (typeof record.reviewerEmail !== 'string' || record.reviewerEmail.length > 254 || !/^[^\s@]+@[^\s@]+$/.test(record.reviewerEmail))) throw new Error('Invalid reviewer email.');
+  if (record.reviewerId !== undefined) notesFilename(record);
   if (typeof record.exportedAt !== 'string' || !Number.isFinite(Date.parse(record.exportedAt))) throw new Error('Invalid notes date.');
   if (!record.notes || typeof record.notes !== 'object' || Array.isArray(record.notes)) throw new Error('Invalid note fields.');
   const ids = document.sections.map(section => section.id);
@@ -817,14 +833,132 @@ function importMarkdown(markdown, document) {
   return validateNotes({ ...record, notes }, document);
 }
 
-return { MAX_FILE, MAX_NOTE, draftKey, reviewerSlug, validateNotes, exportMarkdown, importMarkdown };
+return { MAX_FILE, MAX_NOTE, draftKey, reviewerSlug, notesFilename, validateNotes, exportMarkdown, importMarkdown };
 })();
+
+// Connect notes controls to the launcher on this computer only.
+function attachLocalReview(data, hooks, root = document) {
+  const $ = selector => root.querySelector(selector);
+  let ready = false, revision = null, identity, sequence = 0, savedSequence = 0;
+  let timer, writing = false, stopped = false, failures = 0;
+  const fields = Array.from(root.querySelectorAll('textarea[data-note]'));
+  const panel = $('#git-identity-panel');
+  const lock = value => fields.forEach(field => { field.disabled = value; });
+  lock(true);
+  $('#reviewer-name').readOnly = true;
+  const identityLabel = $('#reviewer-name-label');
+  if (identityLabel) identityLabel.textContent = 'Git name (detected automatically)';
+  for (const action of ['download', 'show']) {
+    const button = root.querySelector('[data-action="' + action + '"]');
+    if (button) button.hidden = true;
+  }
+  root.querySelector('[data-action="save"]').textContent = 'Save notes now';
+  $('#notes-local-fact').textContent = 'Notes are saved to the repository on this computer. They are not sent to an external service.';
+  root.querySelector('.notes__lede').textContent = 'Your Git identity is used automatically. Notes save into your own repository file as you type. Commit and push that file when you want to share it.';
+
+  async function api(path, body) {
+    const response = await fetch(path, { method: body === undefined ? 'GET' : 'POST',
+      headers: { 'X-Review-Token': data.bridge.token, ...(body === undefined ? {} : { 'Content-Type': 'application/json' }) },
+      ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
+    const result = await response.json();
+    if (!response.ok) { const error = new Error(result.error || 'Local save failed.'); error.status = response.status; throw error; }
+    return result;
+  }
+  async function flush() {
+    if (!ready || stopped || writing || savedSequence === sequence) return;
+    writing = true;
+    const attempt = sequence;
+    const record = hooks.snapshot();
+    hooks.setSaved('Saving notes to the repository…');
+    try {
+      const result = await api('/api/notes', { revision, record, identity: { name: identity.name, email: identity.email } });
+      revision = result.revision;
+      savedSequence = attempt;
+      failures = 0;
+      hooks.setSaved('Saved to ' + data.notesPath + '/' + result.filename + ' at ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '.');
+      hooks.setStatus('Notes saved automatically. Commit and push your note file to share them.', 'ok');
+    } catch (error) {
+      const transient = !error.status || error.status >= 500 || [408, 423, 429].includes(error.status);
+      failures++;
+      stopped = !transient || failures > 5;
+      hooks.setSaved('Repository save failed. Your draft remains in this page.');
+      hooks.setStatus(error.message + (stopped ? ' Save was not confirmed. Reload after resolving the issue.' : ' Save was not confirmed; retrying automatically.'), 'warn');
+      if (!stopped) timer = window.setTimeout(flush, Math.min(1000 * 2 ** (failures - 1), 10000));
+    } finally {
+      writing = false;
+      // Queue newer edits only after this write acknowledges its file revision.
+      if (!stopped && savedSequence !== sequence && savedSequence === attempt) void flush();
+    }
+  }
+  function changed() {
+    if (!ready) return;
+    hooks.setIdentity(identity);
+    failures = 0;
+    sequence++;
+    window.clearTimeout(timer);
+    hooks.setSaved('Repository save pending…');
+    timer = window.setTimeout(flush, 450);
+  }
+  async function initialize() {
+    try {
+      const session = await api('/api/session');
+      identity = session.identity;
+      if (!identity.configured) {
+        panel.hidden = false;
+        $('#git-name').value = identity.name;
+        $('#git-email').value = identity.email;
+        hooks.setStatus('Git name or email is missing or invalid. Set it below for this repository.', 'warn');
+        return;
+      }
+      panel.hidden = true;
+      revision = session.revision;
+      hooks.setIdentity(identity);
+      $('#git-identity-current').textContent = 'Git identity: ' + identity.name + ' <' + identity.email + '>';
+      $('#notes-git-path').textContent = 'Automatically saved to ' + data.notesPath + '/' + identity.filename + '. Commit and push this file to share your changes.';
+      const empty = { format: 'agentmux-review-notes', schemaVersion: 1, documentId: data.document.id,
+        documentVersion: data.document.version, reviewer: identity.name, exportedAt: new Date().toISOString(),
+        notes: Object.fromEntries(data.document.sections.map(section => [section.id, ''])) };
+      const loaded = session.record && Object.values(session.record.notes).some(text => text.trim()) ? session.record : empty;
+      hooks.loadRecord(loaded);
+      // Different origins cannot read file:// drafts. Recover only this launcher's own identity-scoped draft.
+      try {
+        const raw = window.localStorage.getItem(hooks.storageKey());
+        if (raw) {
+          const draft = ReviewNotes.validateNotes(JSON.parse(raw), data.document);
+          if ((JSON.stringify(draft.notes) !== JSON.stringify(hooks.snapshot().notes) || draft.documentVersion !== hooks.snapshot().documentVersion) &&
+              window.confirm('A browser draft differs from your repository file. Recover that draft and save it to your file? Cancel keeps the repository notes.')) {
+            hooks.loadRecord(draft); sequence++;
+          }
+        }
+      } catch { /* Repository saving still works when browser draft storage is unavailable. */ }
+      hooks.setIdentity(identity);
+      ready = true;
+      lock(false);
+      hooks.setStatus('Git identity detected. Your notes will save automatically to the repository.', 'ok');
+      hooks.setSaved('Repository notes loaded.');
+      if (sequence) void flush();
+    } catch (error) { hooks.setStatus(error.message + ' Keep the local launcher running and reload.', 'warn'); }
+  }
+  $('#git-identity-save').addEventListener('click', async () => {
+    try {
+      await api('/api/identity', { name: $('#git-name').value, email: $('#git-email').value });
+      await initialize();
+    } catch (error) { hooks.setStatus(error.message, 'warn'); }
+  });
+  window.addEventListener('beforeunload', event => {
+    if (savedSequence === sequence) return;
+    event.preventDefault(); event.returnValue = '';
+  });
+  void initialize();
+  return changed;
+}
+
 
 // Attach offline notes controls to a page using the documented element IDs.
 function attachReviewNotes(reviewData, root = document) {
 
   const reviewDocument = reviewData.document;
-  const STORAGE_KEY = ReviewNotes.draftKey(reviewDocument.id);
+  let STORAGE_KEY = ReviewNotes.draftKey(reviewDocument.id);
   const BLOCKED = 'This browser does not allow this page to save drafts. That often happens with files opened from disk or in private windows. Your notes stay here only until you close or reload the page, so download them to keep a copy.';
 
   const $ = (selector, scope = root) => scope.querySelector(selector);
@@ -854,6 +988,9 @@ function attachReviewNotes(reviewData, root = document) {
   let unsharedChanges = false;
   let noteVersion = reviewDocument.version;
   let importSequence = 0;
+  let localChanged = null;
+  let gitIdentity = null;
+  let reviewerMetadata = {};
 
   const versionLabel = version => version === 'legacy-unversioned' ? 'unknown (older export or draft)' : version.slice(0, 23);
   $('#document-version').textContent = 'Document: ' + reviewDocument.id + ' · ' + versionLabel(reviewDocument.version);
@@ -912,20 +1049,29 @@ function attachReviewNotes(reviewData, root = document) {
     const notes = {};
     fields.forEach(field => { notes[field.dataset.note] = field.value; });
     return { format: 'agentmux-review-notes', schemaVersion: 1, documentId: reviewDocument.id,
-      documentVersion: noteVersion, exportedAt: new Date().toISOString(), reviewer: nameInput ? nameInput.value : '', notes };
+      documentVersion: noteVersion, exportedAt: new Date().toISOString(),
+      ...reviewerMetadata, reviewer: nameInput ? nameInput.value : '', notes };
+  }
+
+  function rememberReviewer(record) {
+    reviewerMetadata = { reviewer: record.reviewer };
+    for (const key of ['reviewerId', 'reviewerEmail']) {
+      if (record[key] !== undefined) reviewerMetadata[key] = record[key];
+    }
   }
 
   function saveDraft(manual) {
     window.clearTimeout(saveTimer);
+    localChanged?.();
     if (!canStore) {
-      if (manual) setStatus(BLOCKED, 'warn');
+      if (manual && !reviewData.bridge) setStatus(BLOCKED, 'warn');
       return;
     }
     try {
       if (hasText()) {
         window.localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot()));
         setSaved('Draft saved in this browser at ' + clock() + '.');
-        if (manual) setStatus('Draft saved in this browser at ' + clock() + '. Download your notes to share them.', 'ok');
+        if (manual) setStatus(reviewData.bridge ? 'Saving notes to your repository file…' : 'Draft saved in this browser at ' + clock() + '. Download your notes to share them.', 'ok');
       } else {
         window.localStorage.removeItem(STORAGE_KEY);
         setSaved('No notes written yet.');
@@ -966,6 +1112,7 @@ function attachReviewNotes(reviewData, root = document) {
           documentVersion: 'legacy-unversioned', exportedAt: data.savedAt, reviewer: data.reviewer, notes: data.notes };
       }
       ReviewNotes.validateNotes(data, reviewDocument, { allowEmptyReviewer: true });
+      rememberReviewer(data);
       noteVersion = data.documentVersion;
       fields.forEach(field => {
         const value = data.notes[field.dataset.note];
@@ -996,7 +1143,7 @@ function attachReviewNotes(reviewData, root = document) {
 
   function download() {
     if (canStore) saveDraft(false);
-    const filename = ReviewNotes.reviewerSlug(nameInput.value, reviewData.reviewers) + '.md';
+    const filename = ReviewNotes.notesFilename(snapshot(), reviewData.reviewers);
     const text = buildMarkdown();
     try {
       const url = URL.createObjectURL(new Blob([text], { type: 'text/markdown;charset=utf-8' }));
@@ -1022,6 +1169,7 @@ function attachReviewNotes(reviewData, root = document) {
     const message = 'Load notes from ' + record.reviewer + '? This replaces every note in the current browser draft.' +
       (mismatch ? ' These notes refer to a different or unknown document version; their original version will be kept.' : '');
     if (!window.confirm(message)) return;
+    rememberReviewer(record);
     window.clearTimeout(saveTimer);
     fields.forEach(field => { field.value = record.notes[field.dataset.note]; reflect(field); });
     nameInput.value = record.reviewer;
@@ -1081,8 +1229,10 @@ function attachReviewNotes(reviewData, root = document) {
       setStatus('Your notes are shown as text below. Select all and copy them.', 'info');
     },
     clear: () => {
-      if (!window.confirm('Clear every note on this page and the draft saved in this browser? Download your notes first if you need a copy.')) return;
+      if (!window.confirm(reviewData.bridge ? 'Clear every note in your repository note file and this browser draft? Committed versions remain in Git history.' : 'Clear every note on this page and the draft saved in this browser? Download your notes first if you need a copy.')) return;
       inputs.forEach(input => { input.value = ''; reflect(input); });
+      reviewerMetadata = {};
+      if (gitIdentity) nameInput.value = gitIdentity.name;
       noteVersion = reviewDocument.version;
       reflectVersion();
       if (exportBox) exportBox.hidden = true;
@@ -1095,6 +1245,7 @@ function attachReviewNotes(reviewData, root = document) {
       }
       setSaved('No notes written yet.');
       setStatus(canStore ? 'All notes cleared, including the saved draft.' : 'All notes on this page cleared.', 'info');
+      localChanged?.();
     }
   };
 
@@ -1110,10 +1261,12 @@ function attachReviewNotes(reviewData, root = document) {
 
   inputs.forEach(input => {
     input.addEventListener('input', () => {
+      if (input === nameInput && input.value !== reviewerMetadata.reviewer) reviewerMetadata = {};
       unsharedChanges = true;
       reflect(input);
+      localChanged?.();
       window.clearTimeout(saveTimer);
-      if (canStore) saveTimer = window.setTimeout(() => saveDraft(false), 700);
+      if (canStore || reviewData.bridge) saveTimer = window.setTimeout(() => saveDraft(false), 300);
     });
   });
 
@@ -1125,9 +1278,24 @@ function attachReviewNotes(reviewData, root = document) {
     event.returnValue = '';
   });
 
-  restore();
+  if (!reviewData.bridge) restore();
   reflectVersion();
   inputs.forEach(input => reflect(input));
+
+  if (reviewData.bridge) localChanged = attachLocalReview(reviewData, {
+    snapshot, setStatus, setSaved, storageKey: () => STORAGE_KEY,
+    setIdentity: person => {
+      gitIdentity = person; nameInput.value = person.name;
+      rememberReviewer({ reviewer: person.name, reviewerId: person.id, reviewerEmail: person.email });
+      STORAGE_KEY = ReviewNotes.draftKey(reviewDocument.id) + '.git.' + encodeURIComponent(person.email.toLowerCase());
+    },
+    loadRecord: record => {
+      ReviewNotes.validateNotes(record, reviewDocument);
+      rememberReviewer(record);
+      fields.forEach(field => { field.value = record.notes[field.dataset.note]; reflect(field); });
+      noteVersion = record.documentVersion; reflectVersion();
+    }
+  }, root);
 
 }
 

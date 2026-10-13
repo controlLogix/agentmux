@@ -2,7 +2,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { importMarkdown, reviewerSlug, MAX_FILE } from './src/features/notes-format.mjs';
+import { importMarkdown, notesFilename, MAX_FILE } from './src/features/notes-format.mjs';
 
 const reviewsRoot = dirname(fileURLToPath(import.meta.url));
 const requested = process.argv[2];
@@ -19,7 +19,7 @@ for (const name of names.sort()) {
     const bytes = readFileSync(resolve(root, 'notes', file));
     if (bytes.length > MAX_FILE) throw new Error('Notes file exceeds 2 MB: ' + file);
     const record = importMarkdown(bytes.toString('utf8'), document);
-    if (file !== reviewerSlug(record.reviewer, config.reviewers) + '.md') throw new Error('Reviewer and filename differ: ' + file);
+    if (file !== notesFilename(record, config.reviewers)) throw new Error('Reviewer and filename differ: ' + file);
     console.log(name + '/' + file + ': valid' + (record.documentVersion === document.version ? '' : ' (earlier or unknown document version retained)'));
     count++;
   }

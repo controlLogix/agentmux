@@ -21,10 +21,12 @@ const record = (version = documentData.version) => ({ format: 'agentmux-review-n
   documentId: documentData.id, documentVersion: version, reviewer: 'Nick', exportedAt: '2026-10-13T15:00:00Z',
   notes: { first: '<script>literal text</script>\n```example\n```', global: 'Overall note' } });
 
-function setup({ initial = new Map(), blocked = false, confirm = true } = {}) {
-  const previous = { document: globalThis.document, window: globalThis.window, URL: globalThis.URL };
+function setup({ initial = new Map(), blocked = false, confirm = true, live = null } = {}) {
+  const previous = { document: globalThis.document, window: globalThis.window, URL: globalThis.URL, fetch: globalThis.fetch };
   const elements = new Map(['reviewer-name', 'notes-status', 'notes-saved', 'notes-export', 'notes-export-text',
-    'notes-version', 'document-version', 'notes-git-path', 'shared-reviewer', 'shared-notes', 'notes-import']
+    'notes-version', 'document-version', 'notes-git-path', 'shared-reviewer', 'shared-notes', 'notes-import',
+    'git-identity-panel', 'reviewer-name-label', 'git-name', 'git-email', 'git-identity-current',
+    'git-identity-save', 'notes-local-fact', 'lede']
     .map(id => [id, new Element(id)]));
   const fields = documentData.sections.map(section => {
     const element = new Element(section.id + '-note'); element.dataset.note = section.id; elements.set(element.id, element); return element;
@@ -32,9 +34,14 @@ function setup({ initial = new Map(), blocked = false, confirm = true } = {}) {
   const buttons = ['download', 'save', 'show', 'clear', 'load-shared', 'version'].map(action => {
     const element = new Element(); element.dataset.action = action; return element;
   });
-  const timers = new Map(); let tick = 0; const blobs = []; const prompts = [];
+  const timers = new Map(), deadlines = new Map(), events = new Map(), calls = [];
+  let tick = 0, now = 0, releaseWrite; const blobs = []; const prompts = [];
   const root = { documentElement: { classList: { add() {}, remove() {} } }, body: new Element(),
-    querySelector: selector => elements.get(selector.slice(1)) || null,
+    querySelector: selector => {
+      if (selector === '.notes__lede') return elements.get('lede');
+      const action = selector.match(/data-action="([^"]+)"/);
+      return action ? buttons.find(button => button.dataset.action === action[1]) : elements.get(selector.slice(1)) || null;
+    },
     querySelectorAll: selector => selector === 'textarea[data-note]' ? fields : selector === '[data-action]' ? buttons : [],
     createElement: () => new Element() };
   const storage = {
@@ -43,12 +50,43 @@ function setup({ initial = new Map(), blocked = false, confirm = true } = {}) {
     removeItem(key) { if (blocked) throw new Error('blocked'); initial.delete(key); }
   };
   globalThis.document = root;
-  globalThis.window = { localStorage: storage, setTimeout: fn => { timers.set(++tick, fn); return tick; },
-    clearTimeout: id => timers.delete(id), addEventListener() {}, confirm: message => { prompts.push(message); return confirm; } };
+  globalThis.window = { localStorage: storage, setTimeout: (fn, delay = 0) => {
+    timers.set(++tick, fn); deadlines.set(tick, now + delay); return tick;
+  }, clearTimeout: id => { timers.delete(id); deadlines.delete(id); },
+  addEventListener(type, fn) { events.set(type, [...(events.get(type) || []), fn]); },
+  confirm: message => { prompts.push(message); return confirm; } };
   globalThis.URL = { createObjectURL(blob) { blobs.push(blob); return 'blob:fixture'; }, revokeObjectURL() {} };
-  attachReviewNotes({ document: documentData, reviewers: [{ id: 'nick', name: 'Nick Klute' }],
+  if (live) {
+    const response = body => ({ ok: true, json: async () => body });
+    globalThis.fetch = async (path, options) => {
+      if (path === '/api/session') return response({ identity: live.identity, revision: 'original', record: live.record || null });
+      calls.push({ path, body: JSON.parse(options.body) });
+      if (live.hold && calls.length === 1) return await new Promise(done => {
+        releaseWrite = () => done(response({ revision: 'saved-1', filename: live.identity.filename }));
+      });
+      return response({ revision: 'saved-' + calls.length, filename: live.identity.filename });
+    };
+  }
+  attachReviewNotes({ document: documentData, ...(live ? { bridge: { token: 'synthetic' } } : {}), reviewers: [{ id: 'nick', name: 'Nick Klute' }],
     notesPath: 'docs/reviews/another-review/notes', committedNotes: [record()], legacyDraftKey: 'legacy', legacyReviewId: 'old-id' }, root);
-  return { elements, fields, timers, blobs, initial, prompts, root,
+  return { elements, fields, timers, blobs, initial, prompts, root, calls,
+    async ready() { await new Promise(setImmediate); },
+    async advance(ms) {
+      const until = now + ms;
+      while (true) {
+        const next = [...deadlines].sort((a, b) => a[1] - b[1])[0];
+        if (!next || next[1] > until) break;
+        const [id, at] = next, fn = timers.get(id); now = at; timers.delete(id); deadlines.delete(id);
+        void fn(); await new Promise(setImmediate);
+      }
+      now = until;
+    },
+    warnsBeforeLeaving() {
+      let warned = false;
+      for (const fn of events.get('beforeunload') || []) fn({ preventDefault() { warned = true; } });
+      return warned;
+    },
+    releaseWrite: () => releaseWrite(),
     action: action => buttons.find(button => button.dataset.action === action).fire('click'),
     import: async (text, size = text.length) => { const input = elements.get('notes-import'); input.files = [{ size, text: async () => text }]; await input.fire('change'); },
     close() { Object.assign(globalThis, previous); } };
@@ -109,4 +147,67 @@ test('legacy drafts are preserved with unknown version; blocked storage still pe
     assert.match(blocked.elements.get('notes-status').textContent, /saving is unavailable/);
     await blocked.action('download'); assert.equal(blocked.blobs.length, 1);
   } finally { blocked.close(); }
+});
+
+test('imported reviewer identity survives edits, draft restoration and export', async () => {
+  const imported = { ...record(), reviewer: 'Other Reviewer',
+    reviewerId: 'other-reviewer-12345678', reviewerEmail: 'other@example.test' };
+  const h = setup();
+  let saved;
+  try {
+    await h.import(exportMarkdown(imported, documentData));
+    h.fields[0].value += ' edited'; await h.fields[0].fire('input');
+    await h.action('download');
+    const exported = importMarkdown(await h.blobs[0].text(), documentData);
+    assert.equal(exported.reviewerId, imported.reviewerId);
+    assert.equal(exported.reviewerEmail, imported.reviewerEmail);
+    assert.equal(h.root.body.children[0].download, imported.reviewerId + '.md');
+    saved = h.initial;
+  } finally { h.close(); }
+  const restored = setup({ initial: saved });
+  try {
+    await restored.action('download');
+    const exported = importMarkdown(await restored.blobs[0].text(), documentData);
+    assert.equal(exported.reviewerId, imported.reviewerId);
+    assert.equal(exported.reviewerEmail, imported.reviewerEmail);
+    assert.equal(exported.notes.first, imported.notes.first + ' edited');
+    assert.equal(restored.root.body.children[0].download, imported.reviewerId + '.md');
+  } finally { restored.close(); }
+});
+
+test('an explicit reviewer switch clears imported identity and uses the new reviewer filename', async () => {
+  const h = setup();
+  try {
+    await h.import(exportMarkdown({ ...record(), reviewer: 'Other Reviewer',
+      reviewerId: 'other-reviewer-12345678', reviewerEmail: 'other@example.test' }, documentData));
+    h.elements.get('reviewer-name').value = 'Nick Klute';
+    await h.elements.get('reviewer-name').fire('input'); await h.action('download');
+    const exported = importMarkdown(await h.blobs[0].text(), documentData);
+    assert.equal(exported.reviewer, 'Nick Klute');
+    assert.equal(exported.reviewerId, undefined); assert.equal(exported.reviewerEmail, undefined);
+    assert.equal(h.root.body.children[0].download, 'nick.md');
+  } finally { h.close(); }
+});
+
+test('combined controllers warn through debounce and pending writes, then save newer edits with Git identity', async () => {
+  const identity = { configured: true, name: 'Ryan Helms', email: 'ryan@example.test', id: 'ryan', filename: 'ryan.md' };
+  const h = setup({ live: { identity, hold: true, record: { ...record(), reviewer: 'Old display name',
+    reviewerId: 'ryan', reviewerEmail: identity.email } } });
+  try {
+    await h.ready();
+    assert.equal(h.fields[0].disabled, false); assert.equal(h.elements.get('reviewer-name').readOnly, true);
+    assert.equal(h.warnsBeforeLeaving(), false);
+    h.fields[0].value = 'First edit'; await h.fields[0].fire('input');
+    assert.equal(h.warnsBeforeLeaving(), true); assert.equal(h.calls.length, 0);
+    await h.advance(750); assert.equal(h.calls.length, 1); assert.equal(h.warnsBeforeLeaving(), true);
+    h.fields[0].value = 'Latest edit'; await h.fields[0].fire('input'); await h.advance(750);
+    assert.equal(h.calls.length, 1); assert.equal(h.fields[0].value, 'Latest edit');
+    h.releaseWrite(); await h.ready();
+    assert.equal(h.calls.length, 2); assert.equal(h.calls[1].body.revision, 'saved-1');
+    assert.equal(h.calls[1].body.record.notes.first, 'Latest edit');
+    assert.equal(h.calls[1].body.record.reviewer, identity.name);
+    assert.equal(h.calls[1].body.record.reviewerId, identity.id);
+    assert.equal(h.calls[1].body.record.reviewerEmail, identity.email);
+    assert.equal(h.warnsBeforeLeaving(), false);
+  } finally { h.close(); }
 });

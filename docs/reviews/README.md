@@ -1,8 +1,26 @@
 # Review notes shared through Git
 
-Keep one Markdown file per reviewer and document. The HTML saves a private browser draft; downloading creates the file that Git shares. The page never commits, pushes or fetches files itself.
+Keep one Markdown file per reviewer and document. The live launcher reads your Git name and email and saves your notes directly into your repository file as you type. No export or import is required for normal use. Commits and pushes remain explicit Git actions.
 
-## Nick and Ryan's workflow
+## Automatic saving with Git identity
+
+From this repository, run:
+
+```text
+node docs/reviews/open.mjs
+```
+
+Open the local URL printed by the launcher and leave that terminal running while you review. The launcher rebuilds the page and serves it only on `127.0.0.1`, normally port 4317. Choose a different port with `node docs/reviews/open.mjs agentmux-visual-review 4318` if necessary. Stop with Ctrl+C.
+
+The page detects effective `user.name` and `user.email`, including global settings inherited by this repository. If either is missing or invalid, editing stays disabled and the page asks for your name and email. **Set repository Git identity** writes those two values with `git config --local`; it does not change global configuration or other settings. Existing effective identity is used as-is. Identity is attribution from Git configuration, not proof of login or permission.
+
+Nick and Ryan’s names map to `nick.md` and `ryan.md`. Other reviewers get a name-based filename with an email-derived suffix so matching display names do not share a file. Reviewer metadata records the Git name and email. Optional `emails` lists on reviewer entries can map a different Git display name to an existing reviewer file; do not guess anyone’s email.
+
+Notes load automatically from your file. Each save checks the file revision and current Git identity before writing. An OS-owned local lock also serializes writes from different helper processes; Windows uses a named pipe and other hosts use a loopback socket. The operating system releases it if a helper exits. If a pull, editor or identity change conflicts, saving stops and the page keeps your draft; reload and reconcile the changes before continuing. Temporary failures retry up to five times with backoff. The page warns before leaving with unconfirmed saves. The helper uses a per-launch token and rejects foreign Origins and Hosts. It exposes only identity setup and this review’s note files, not arbitrary Git commands or repository files.
+
+Git notes are the durable shared copy. Live browser recovery is scoped by document and Git email. An older standalone `file://` browser draft belongs to a different browser origin and cannot be read automatically by this local URL. It remains in the old page’s browser storage; the standalone download/import path below is available for one-time migration or backups.
+
+## Nick and Ryan's Git workflow
 
 Use `feat/agentmux-platform-rearchitecture` for this work. Start with a clean working tree, then pull:
 
@@ -10,10 +28,9 @@ Use `feat/agentmux-platform-rearchitecture` for this work. Start with a clean wo
 git pull --ff-only
 ```
 
-1. Open `docs/planning/2026-10-09/agentmux-visual-review.html` locally.
-2. Enter **Nick Klute** or **Ryan Helms** and write notes. Browser drafts still save locally.
-3. Choose **Download notes (.md)**. Save or move the download to `docs/reviews/agentmux-visual-review/notes/nick.md` or `ryan.md`, replacing only your own file. Check that the browser has not added a suffix such as `(1)` to the filename.
-4. Validate the note files. Commit only your own notes and push:
+1. Start `node docs/reviews/open.mjs` and open its local URL.
+2. Write notes. Wait for **Saved to …/nick.md** or **…/ryan.md** before closing.
+3. Validate the note files. Commit only your own notes and push:
 
 ```text
 node docs/reviews/check.mjs agentmux-visual-review
@@ -28,6 +45,8 @@ After the other person pushes, pull and either:
 
 - Use **Import a review notes file (.md)** to load the other person's file directly. Loading requires confirmation and replaces the current browser draft, so download any unsaved work first. Merely selecting Git notes to read them does not change your draft.
 - Rebuild the HTML with `node docs/planning/2026-10-09/review-site/src/pages/build.mjs`, then reload it. **Git notes included in this copy** lets you read or load either committed file. A downloaded copy is a snapshot; it does not update when someone pushes new notes.
+
+For normal live use, stop and restart the launcher after pulling so its shared-note snapshot includes both latest files. Your own file is read fresh when the page initializes. Loading someone else’s notes into the live draft copies them into your own file under your Git identity; reading the shared-note preview does not write anything.
 
 Do not overwrite the other person's note file after importing it. Change the reviewer name back to your own if you are writing a response under your own name. Usually, read their feedback and respond in your own file.
 
@@ -44,6 +63,8 @@ Notes use fenced text blocks so code, Markdown headings and trailing whitespace 
 ## Reuse for a future review
 
 Create `docs/reviews/<document-id>/review.json`, `document-version.json` and `notes/<reviewer>.md`. Give each document a stable ID and stable section IDs; changing the document ID starts a separate review. For an incompatible section change, use a new document ID or explicitly migrate old notes instead of silently dropping sections.
+
+Set `artifactPath`, `notesPath` and optionally `buildScript` to repository-relative paths in `review.json`. `node docs/reviews/open.mjs <document-id>` launches the same identity and automatic-save workflow for that document. Its page must include the local identity controls shown in the current template. The standalone build remains self-contained and makes no requests; only the live-served copy receives the loopback session token and allows same-origin connections.
 
 Reuse these feature modules:
 

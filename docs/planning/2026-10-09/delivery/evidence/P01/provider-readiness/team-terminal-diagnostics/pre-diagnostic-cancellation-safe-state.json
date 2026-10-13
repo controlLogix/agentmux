@@ -1,0 +1,68 @@
+{
+  "agents": [
+    {
+      "session": "calc-lead-claude_1234",
+      "cli": "claude",
+      "state": "blocked"
+    },
+    {
+      "session": "calc-worker-codex_1234",
+      "cli": "codex",
+      "state": "ready"
+    },
+    {
+      "session": "calc-reviewer-grok_1234",
+      "cli": "grok",
+      "state": "busy"
+    }
+  ],
+  "work": [
+    {
+      "id": "W-WH54Q84GNE",
+      "parent_id": null,
+      "state": "ready",
+      "claimed_by": null,
+      "attempts": 0
+    }
+  ],
+  "claimEvents": 0,
+  "deliveries": [
+    {
+      "recipient": "calc-lead-claude_1234",
+      "state": "acked"
+    },
+    {
+      "recipient": "calc-worker-codex_1234",
+      "state": "acked"
+    },
+    {
+      "recipient": "calc-reviewer-grok_1234",
+      "state": "acked"
+    },
+    {
+      "recipient": "virtual:operator",
+      "state": "queued"
+    }
+  ],
+  "bellCounts": [
+    {
+      "event": "blocked",
+      "count": 17
+    },
+    {
+      "event": "deferred",
+      "count": 8
+    },
+    {
+      "event": "failed",
+      "count": 1
+    },
+    {
+      "event": "submitted",
+      "count": 3
+    }
+  ],
+  "elapsedSeconds": 660.762,
+  "ownedRunnerHandle": 59707,
+  "observerComplete": true
+}

@@ -1,0 +1,69 @@
+{
+  "reviewedOn": "2026-10-13T16:43:55.014328+00:00",
+  "scope": "Root-authorized P01 review-tool boundary tests only; real data, profiles, generated artifacts and tracking files unchanged by worker.",
+  "sourceHashes": {
+    "docs/reviews/src/features/local-review.mjs": "e5195f79ce523638e93762ab4003d4167153bd26bb05cdcd4ba890ef1f26b3d7",
+    "docs/reviews/src/features/local-review.test.mjs": "2b386cfda1ebbedd57aad98a2d2fb4efd9933ae8a2776fed2e412368e84644a4",
+    "docs/reviews/src/features/notes-controller.mjs": "a2a400672df0c0f565480309486fe27c315f24bbe3ec648f639c494cd8c7e435",
+    "docs/reviews/src/features/notes-controller.test.mjs": "41d81eab4245750927674b1323a7ec1bc4194f15af858106dc969276106e24f5",
+    "docs/reviews/src/features/notes-local.mjs": "d50e7519f9a327798c11d26ca9f9adb94851458b7908bec48e7968c46104c374",
+    "docs/reviews/src/features/notes-lock.mjs": "99dd07b7feed289961e1819a23a0f6baabee84ed820217cc0a1eed4bd28bd859",
+    "docs/reviews/src/features/notes-lock.test.mjs": "8207ed84aad76e0afeb5a8b010bf0d2f717afccc32964aef8487bda7c391b55a"
+  },
+  "tests": [
+    {
+      "command": "node --test docs/reviews/src/features/local-review.test.mjs",
+      "host": "native Windows",
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 13207.9833,
+      "coverage": [
+        "Actual isolated Git identity and HTTP request rejection",
+        "Malformed JSON/array/null/wrong Content-Type and over2MB bodies do not change existing notes or Git config",
+        "Invalid over20000character note rejected without replacing prior file",
+        "Configured traversal/absolute path and junction outside repository rejected",
+        "Replacing notesfolder with link to other folder blocks read/write while preserving both files"
+      ]
+    },
+    {
+      "command": "node --test docs/reviews/src/features/notes-controller.test.mjs docs/reviews/src/features/notes-format.test.mjs",
+      "host": "native Windows",
+      "passed": 11,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 154.1984,
+      "coverage": [
+        "Real standalone and live controllers composed with synthetic DOM/timers/fetch",
+        "Immediate warning before debounce and until acknowledgment",
+        "New edits during held save retain latest values; next save uses acknowledged revision",
+        "Git-authoritative reviewer metadata retained",
+        "Prior imported identity/legacy/known filenames and format cases retained"
+      ]
+    },
+    {
+      "command": "wsl -d Ubuntu-26.04 -- /usr/bin/node --test /mnt/c/Users/RyanHelms/GitHub/agentmux/docs/reviews/src/features/notes-lock.test.mjs",
+      "host": "native Linux Node under WSL Ubuntu26.04",
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 630.153611,
+      "coverage": [
+        "Actual child OS-loopback lock exclusion",
+        "Process exit releases lock",
+        "Accepted connection reset error handling"
+      ]
+    }
+  ],
+  "implementationChangesThisRound": [],
+  "testChangesThisRound": [
+    "docs/reviews/src/features/local-review.test.mjs",
+    "docs/reviews/src/features/notes-controller.test.mjs"
+  ],
+  "limits": [
+    "Integrated controller test uses synthetic DOM/fetch; real browser rendering and interactions are not established.",
+    "HTTP helper tests are native Windows; lock has native Linux WSL evidence, not native macOS qualification.",
+    "No product phase or supported-client qualification claimed.",
+    "Full repository pattern attestation/build/tracker and candidate acceptance remain root-owned."
+  ]
+}

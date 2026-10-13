@@ -1,0 +1,104 @@
+{
+  "run": "20261013-123414-team",
+  "scenario": "team",
+  "started": "2026-10-13T12:34:14-0400",
+  "agents": [
+    "calc-lead-claude_1234",
+    "calc-worker-codex_1234",
+    "calc-reviewer-grok_1234"
+  ],
+  "work": [
+    {
+      "id": "W-WH54Q84GNE",
+      "parent_id": null,
+      "target": "team:calc/t_1234",
+      "title": "Add variance and stdev to calc",
+      "state": "ready",
+      "claimed_by": null,
+      "attempts": 0,
+      "result": null
+    }
+  ],
+  "errors": [
+    "bell calc-worker-codex_1234 failed: text still in the input box after submit",
+    "bell calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "bell calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "agent calc-lead-claude_1234 blocked: {\"from\":\"busy\",\"note\":\"modal unknown: unrecognized prompt: needs a person\"}",
+    "agent calc-lead-claude_1234 dead: {\"from\":\"blocked\",\"note\":\"terminal gone\"}",
+    "agent calc-reviewer-grok_1234 dead: {\"from\":\"busy\",\"note\":\"terminal gone\"}",
+    "agent calc-worker-codex_1234 dead: {\"from\":\"ready\",\"note\":\"terminal gone\"}"
+  ],
+  "timeline": [
+    "12:34:21 spawned calc-lead-claude_1234 (claude) %0",
+    "12:34:24 spawned calc-worker-codex_1234 (codex) %1",
+    "12:34:26 spawned calc-reviewer-grok_1234 (grok) %2",
+    "12:34:26 team calc/t_1234: calc-lead-claude_1234, calc-worker-codex_1234, calc-reviewer-grok_1234",
+    "12:34:26 posted W-WH54Q84GNE -> team:calc/t_1234: Add variance and stdev to calc",
+    "12:34:26 W-WH54Q84GNE ready by -",
+    "12:36:26 AGENT calc-lead-claude_1234 blocked: modal unknown: unrecognized prompt: needs a person",
+    "12:46:07 AGENT calc-lead-claude_1234 dead: terminal gone",
+    "12:46:07 AGENT calc-reviewer-grok_1234 dead: terminal gone",
+    "12:46:07 AGENT calc-worker-codex_1234 dead: terminal gone",
+    "12:46:07 an agent died; stopping early (the run is already not error-free)",
+    "12:46:07 cancelled unfinished W-WH54Q84GNE"
+  ],
+  "verify": "calc.stdev check failed:  call last):\n  File \"<string>\", line 1, in <module>\n    from calc import variance, stdev; assert abs(variance([1,2,3,4])-1.25)<1e-9 and abs(stdev([2,4,4,4,5,5,7,9])-2.0)<1e-9\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nImportError: cannot import name 'variance' from 'calc' (/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux original TEAM LF wrapper fix ygfz4b26/original demo repos/calc/calc/__init__.py)\n",
+  "checks": {
+    "E1_all_top_done": false,
+    "E2_no_dead_delivery": true,
+    "E3_no_failed_bell": false,
+    "E4_no_blocked_or_died": false,
+    "E5_all_acked": true,
+    "E6_verified": false
+  },
+  "error_free": false,
+  "stats": {
+    "deliveries": 3,
+    "acked": 3,
+    "bells": {
+      "blocked": 19,
+      "deferred": 8,
+      "failed": 1,
+      "submitted": 3
+    },
+    "modal_answers": [
+      [
+        {
+          "kind": "trust",
+          "keys": [
+            "Down",
+            "Enter"
+          ]
+        }
+      ],
+      [
+        {
+          "kind": "trust",
+          "keys": [
+            "Enter"
+          ]
+        }
+      ]
+    ],
+    "extra_enters": 3,
+    "work_items": 1,
+    "duration_s": 701
+  }
+}

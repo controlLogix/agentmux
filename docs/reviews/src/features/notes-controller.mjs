@@ -1,10 +1,11 @@
 import * as ReviewNotes from './notes-format.mjs';
+import { attachLocalReview } from './notes-local.mjs';
 
 // Attach offline notes controls to a page using the documented element IDs.
 export function attachReviewNotes(reviewData, root = document) {
 
   const reviewDocument = reviewData.document;
-  const STORAGE_KEY = ReviewNotes.draftKey(reviewDocument.id);
+  let STORAGE_KEY = ReviewNotes.draftKey(reviewDocument.id);
   const BLOCKED = 'This browser does not allow this page to save drafts. That often happens with files opened from disk or in private windows. Your notes stay here only until you close or reload the page, so download them to keep a copy.';
 
   const $ = (selector, scope = root) => scope.querySelector(selector);
@@ -34,6 +35,9 @@ export function attachReviewNotes(reviewData, root = document) {
   let unsharedChanges = false;
   let noteVersion = reviewDocument.version;
   let importSequence = 0;
+  let localChanged = null;
+  let gitIdentity = null;
+  let reviewerMetadata = {};
 
   const versionLabel = version => version === 'legacy-unversioned' ? 'unknown (older export or draft)' : version.slice(0, 23);
   $('#document-version').textContent = 'Document: ' + reviewDocument.id + ' · ' + versionLabel(reviewDocument.version);
@@ -92,20 +96,29 @@ export function attachReviewNotes(reviewData, root = document) {
     const notes = {};
     fields.forEach(field => { notes[field.dataset.note] = field.value; });
     return { format: 'agentmux-review-notes', schemaVersion: 1, documentId: reviewDocument.id,
-      documentVersion: noteVersion, exportedAt: new Date().toISOString(), reviewer: nameInput ? nameInput.value : '', notes };
+      documentVersion: noteVersion, exportedAt: new Date().toISOString(),
+      ...reviewerMetadata, reviewer: nameInput ? nameInput.value : '', notes };
+  }
+
+  function rememberReviewer(record) {
+    reviewerMetadata = { reviewer: record.reviewer };
+    for (const key of ['reviewerId', 'reviewerEmail']) {
+      if (record[key] !== undefined) reviewerMetadata[key] = record[key];
+    }
   }
 
   function saveDraft(manual) {
     window.clearTimeout(saveTimer);
+    localChanged?.();
     if (!canStore) {
-      if (manual) setStatus(BLOCKED, 'warn');
+      if (manual && !reviewData.bridge) setStatus(BLOCKED, 'warn');
       return;
     }
     try {
       if (hasText()) {
         window.localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot()));
         setSaved('Draft saved in this browser at ' + clock() + '.');
-        if (manual) setStatus('Draft saved in this browser at ' + clock() + '. Download your notes to share them.', 'ok');
+        if (manual) setStatus(reviewData.bridge ? 'Saving notes to your repository file…' : 'Draft saved in this browser at ' + clock() + '. Download your notes to share them.', 'ok');
       } else {
         window.localStorage.removeItem(STORAGE_KEY);
         setSaved('No notes written yet.');
@@ -146,6 +159,7 @@ export function attachReviewNotes(reviewData, root = document) {
           documentVersion: 'legacy-unversioned', exportedAt: data.savedAt, reviewer: data.reviewer, notes: data.notes };
       }
       ReviewNotes.validateNotes(data, reviewDocument, { allowEmptyReviewer: true });
+      rememberReviewer(data);
       noteVersion = data.documentVersion;
       fields.forEach(field => {
         const value = data.notes[field.dataset.note];
@@ -176,7 +190,7 @@ export function attachReviewNotes(reviewData, root = document) {
 
   function download() {
     if (canStore) saveDraft(false);
-    const filename = ReviewNotes.reviewerSlug(nameInput.value, reviewData.reviewers) + '.md';
+    const filename = ReviewNotes.notesFilename(snapshot(), reviewData.reviewers);
     const text = buildMarkdown();
     try {
       const url = URL.createObjectURL(new Blob([text], { type: 'text/markdown;charset=utf-8' }));
@@ -202,6 +216,7 @@ export function attachReviewNotes(reviewData, root = document) {
     const message = 'Load notes from ' + record.reviewer + '? This replaces every note in the current browser draft.' +
       (mismatch ? ' These notes refer to a different or unknown document version; their original version will be kept.' : '');
     if (!window.confirm(message)) return;
+    rememberReviewer(record);
     window.clearTimeout(saveTimer);
     fields.forEach(field => { field.value = record.notes[field.dataset.note]; reflect(field); });
     nameInput.value = record.reviewer;
@@ -261,8 +276,10 @@ export function attachReviewNotes(reviewData, root = document) {
       setStatus('Your notes are shown as text below. Select all and copy them.', 'info');
     },
     clear: () => {
-      if (!window.confirm('Clear every note on this page and the draft saved in this browser? Download your notes first if you need a copy.')) return;
+      if (!window.confirm(reviewData.bridge ? 'Clear every note in your repository note file and this browser draft? Committed versions remain in Git history.' : 'Clear every note on this page and the draft saved in this browser? Download your notes first if you need a copy.')) return;
       inputs.forEach(input => { input.value = ''; reflect(input); });
+      reviewerMetadata = {};
+      if (gitIdentity) nameInput.value = gitIdentity.name;
       noteVersion = reviewDocument.version;
       reflectVersion();
       if (exportBox) exportBox.hidden = true;
@@ -275,6 +292,7 @@ export function attachReviewNotes(reviewData, root = document) {
       }
       setSaved('No notes written yet.');
       setStatus(canStore ? 'All notes cleared, including the saved draft.' : 'All notes on this page cleared.', 'info');
+      localChanged?.();
     }
   };
 
@@ -290,10 +308,12 @@ export function attachReviewNotes(reviewData, root = document) {
 
   inputs.forEach(input => {
     input.addEventListener('input', () => {
+      if (input === nameInput && input.value !== reviewerMetadata.reviewer) reviewerMetadata = {};
       unsharedChanges = true;
       reflect(input);
+      localChanged?.();
       window.clearTimeout(saveTimer);
-      if (canStore) saveTimer = window.setTimeout(() => saveDraft(false), 700);
+      if (canStore || reviewData.bridge) saveTimer = window.setTimeout(() => saveDraft(false), 300);
     });
   });
 
@@ -305,9 +325,24 @@ export function attachReviewNotes(reviewData, root = document) {
     event.returnValue = '';
   });
 
-  restore();
+  if (!reviewData.bridge) restore();
   reflectVersion();
   inputs.forEach(input => reflect(input));
+
+  if (reviewData.bridge) localChanged = attachLocalReview(reviewData, {
+    snapshot, setStatus, setSaved, storageKey: () => STORAGE_KEY,
+    setIdentity: person => {
+      gitIdentity = person; nameInput.value = person.name;
+      rememberReviewer({ reviewer: person.name, reviewerId: person.id, reviewerEmail: person.email });
+      STORAGE_KEY = ReviewNotes.draftKey(reviewDocument.id) + '.git.' + encodeURIComponent(person.email.toLowerCase());
+    },
+    loadRecord: record => {
+      ReviewNotes.validateNotes(record, reviewDocument);
+      rememberReviewer(record);
+      fields.forEach(field => { field.value = record.notes[field.dataset.note]; reflect(field); });
+      noteVersion = record.documentVersion; reflectVersion();
+    }
+  }, root);
 
 }
 

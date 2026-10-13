@@ -347,11 +347,11 @@ img{break-inside:avoid}
   <div class="wrap">
     <p class="eyebrow">Send feedback</p>
     <h2 class="section__title" id="notes-title">Your review notes</h2>
-    <p class="notes__lede">Download your notes into your own file in the Git notes folder, then commit and push it. After pulling, import a note file to continue editing, or rebuild this page to include both reviewers’ committed notes.</p>
+    <p class="notes__lede">For automatic repository saving and Git identity, start the live review with <code>node docs/reviews/open.mjs</code>. Standalone copies still support local drafts and downloads.</p>
     <div class="notes__grid">
       <div>
         <div class="form-field">
-          <label class="form-label" for="reviewer-name">Your name (required for export)</label>
+          <label class="form-label" id="reviewer-name-label" for="reviewer-name">Reviewer name (standalone export)</label>
           <input type="text" id="reviewer-name" name="reviewer-name" autocomplete="name" maxlength="120" list="reviewer-names">
           <datalist id="reviewer-names"><option value="Nick Klute"></option><option value="Ryan Helms"></option></datalist>
           <div class="print-mirror" data-print-for="reviewer-name" aria-hidden="true"></div>
@@ -367,6 +367,15 @@ img{break-inside:avoid}
         <h3 class="panel__title" id="save-title">Save and share</h3>
         <p class="notes__version" id="document-version"></p>
         <p class="notes__version" id="notes-version"></p>
+        <p class="notes__version" id="git-identity-current"></p>
+        <div class="notes__import" id="git-identity-panel" hidden>
+          <p>Set your Git identity for this repository.</p>
+          <label class="form-label" for="git-name">Git name</label>
+          <input id="git-name" type="text" maxlength="120" autocomplete="name">
+          <label class="form-label" for="git-email">Git email</label>
+          <input id="git-email" type="email" maxlength="254" autocomplete="email">
+          <button id="git-identity-save" class="btn" type="button">Set repository Git identity</button>
+        </div>
         <noscript><p class="notes__noscript">Scripts are turned off. You can read the whole review and type in the boxes, but this page cannot save or download notes. Copy your notes into an email to Ryan before you close the page.</p></noscript>
         <div class="notes__actions" data-js-only hidden>
           <button type="button" class="btn btn--primary" data-action="download">Download notes (.md)</button>
@@ -386,7 +395,7 @@ img{break-inside:avoid}
         <p class="notes__status" id="notes-status" role="status" aria-live="polite"></p>
         <p class="notes__saved" id="notes-saved"></p>
         <ul class="notes__facts">
-          <li>Nothing on this page sends data anywhere.</li>
+          <li id="notes-local-fact">This standalone file sends no data. The live launcher saves notes locally into the repository.</li>
           <li>Drafts save only in this browser on this computer. Some browsers block saving for files opened from disk.</li>
           <li id="notes-git-path">Download your own note file, then commit and push it. This page does not run Git commands.</li>
           <li>Imported feedback is text. Loading it replaces this page’s draft only after confirmation.</li>

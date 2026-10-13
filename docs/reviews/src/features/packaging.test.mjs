@@ -6,7 +6,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createHash } from 'node:crypto';
 import { Script, runInNewContext } from 'node:vm';
 import { renderScene } from '../../../planning/2026-10-09/review-site/src/components/organisms/index.mjs';
-import { importMarkdown, exportMarkdown, reviewerSlug } from './notes-format.mjs';
+import { importMarkdown, exportMarkdown, notesFilename } from './notes-format.mjs';
 
 const repo = resolve(dirname(fileURLToPath(import.meta.url)), '../../../..');
 const builder = resolve(repo, 'docs/planning/2026-10-09/review-site/src/pages/build.mjs');
@@ -22,7 +22,7 @@ function build(overrides = new Map()) {
     readFileSync: path => overrides.has(resolve(path)) ? Buffer.from(overrides.get(resolve(path))) : readFileSync(path),
     writeFileSync: (path, content) => outputs.set(path, String(content)),
     existsSync, readdirSync, resolve, dirname, fileURLToPath, createHash,
-    renderScene, importMarkdown, reviewerSlug, Buffer, console: { log() {} }
+    renderScene, importMarkdown, notesFilename, Buffer, console: { log() {} }
   });
   return { html: outputs.get(resolve(repo, 'docs/planning/2026-10-09/agentmux-visual-review.html')),
     report: JSON.parse(outputs.get(resolve(repo, 'docs/planning/2026-10-09/review-site/build-report.json'))) };

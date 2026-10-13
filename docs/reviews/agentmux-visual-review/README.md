@@ -1,6 +1,6 @@
 # Agentmux visual review notes
 
-Open `docs/planning/2026-10-09/agentmux-visual-review.html`. Nick exports to `notes/nick.md`; Ryan exports to `notes/ryan.md`. The initial files contain empty fields, not submitted feedback.
+Run `node docs/reviews/open.mjs` and open its local URL. Git name/email select your reviewer file; notes save automatically to `notes/nick.md` or `notes/ryan.md`. Missing identity is set through the page for this repository only. The initial files contain empty fields, not submitted feedback.
 
 Use the [shared workflow](../README.md) for pull, export, import, commit and push instructions. The current document ID is `agentmux-visual-review`; [document-version.json](document-version.json) records its source version.
 

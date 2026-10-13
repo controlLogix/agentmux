@@ -25,7 +25,7 @@ Branch: `feat/agentmux-platform-rearchitecture`. No phase or merge approval is i
 ## Current work and blockers
 
 - **P01-T04 — in_progress:** Establish per-phase evidence records, dependency gates, migration fixtures, and security/quality regression jobs.
-  Reason: Original TEAM on the fully reviewed current-client fixture failed with E1/E3/E4/E5/E6 false and E2 true; no claims, exact cleanup verified. Native Windows Claude ASCII idle prompt mismatch is repaired in the working candidate: failure-before/fix-after plus nineteen affected tests pass. A separate Codex submit failure followed by later ACK remains unproven and unresolved. Fresh original team, crossrepo and swarm acceptance, broader stable-candidate evidence and current source review remain required; P06 is not accepted.
+  Reason: Original TEAM on 171eb1f ended after reviewed diagnostic cancellation: E1/E3/E4/E6 false, E2/E5 true, errorFree false. No work was claimed. All three exact Windows jobs and native fixture cleanup are verified. Codex submission and Claude unknown-modal causes remain unresolved; safe observations do not prove echo versus composer or menu versus input. Original crossrepo/swarm, stable-candidate preservation and browser/native macOS review-tool limits remain open. No P01 gate or P06 acceptance.
 
 ## P00. Scope, baseline, and architecture decisions
 

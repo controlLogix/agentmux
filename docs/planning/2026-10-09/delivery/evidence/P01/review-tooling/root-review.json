@@ -1,0 +1,101 @@
+{
+  "reviewedAt": "2026-10-13T16:46:15.323326+00:00",
+  "reviewer": "Codex",
+  "sourceCommit": "171eb1f8d9254a043e9e2c0598c19fb6a12136c1",
+  "candidateState": "Working review-tool changes on top of this commit; no phase acceptance.",
+  "componentId": "REPO-10",
+  "tests": [
+    {
+      "command": "node --test docs/reviews/src/features/*.test.mjs",
+      "environment": "native Windows Node",
+      "exitCode": 0,
+      "passed": 28,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 10204.5044
+    },
+    {
+      "command": "node --test docs/planning/2026-10-09/review-site/src/components/organisms/Scene/Scene.test.mjs",
+      "environment": "native Windows Node",
+      "exitCode": 0,
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "command": "node docs/planning/2026-10-09/review-site/src/pages/build.mjs",
+      "exitCode": 0
+    },
+    {
+      "command": "node docs/reviews/check.mjs",
+      "exitCode": 0,
+      "reviewerFiles": 2
+    }
+  ],
+  "workerEvidence": "worker-boundary-review.json",
+  "sourceHashes": {
+    "docs/reviews/src/features/local-review.mjs": "e5195f79ce523638e93762ab4003d4167153bd26bb05cdcd4ba890ef1f26b3d7",
+    "docs/reviews/src/features/local-review.test.mjs": "2b386cfda1ebbedd57aad98a2d2fb4efd9933ae8a2776fed2e412368e84644a4",
+    "docs/reviews/src/features/notes-controller.mjs": "a2a400672df0c0f565480309486fe27c315f24bbe3ec648f639c494cd8c7e435",
+    "docs/reviews/src/features/notes-controller.test.mjs": "41d81eab4245750927674b1323a7ec1bc4194f15af858106dc969276106e24f5",
+    "docs/reviews/src/features/notes-local.mjs": "d50e7519f9a327798c11d26ca9f9adb94851458b7908bec48e7968c46104c374",
+    "docs/reviews/src/features/notes-lock.mjs": "99dd07b7feed289961e1819a23a0f6baabee84ed820217cc0a1eed4bd28bd859",
+    "docs/reviews/src/features/notes-lock.test.mjs": "8207ed84aad76e0afeb5a8b010bf0d2f717afccc32964aef8487bda7c391b55a",
+    "docs/reviews/.gitattributes": "d7a3fbe6bddd4e351c5e2c805c17ef74b2e7b5b39cd3d602a0c8b2fa70ef1f2d",
+    "docs/reviews/check.mjs": "0928b06ca247eb3c2a8c0c6dd514f6d590e37cd28688bd50643ff52b1d8d1b10",
+    "docs/reviews/open.mjs": "e7a1959e5a522ae7153757394edd93d95bb22d736cace9bde4d1682da71d31f0",
+    "docs/reviews/README.md": "24372015eb3e56b40b8edacae5fc08618e6a50d45551d291d4965ec85835fb59",
+    "docs/reviews/agentmux-visual-review/document-version.json": "c4a6de5b78f28d40b4e4d7da57d03870d1aa245f5d941645270b699c85892e0d",
+    "docs/reviews/agentmux-visual-review/README.md": "7376ac413505e201dad41cc9910c54cb12288eb82caecdc7fff9acf995aed6e6",
+    "docs/reviews/agentmux-visual-review/review.json": "f2d2042bf60cc47aa0c938c7a48b8c1680cd0efffc16e8432cf05bbd2de14f5d",
+    "docs/reviews/src/features/notes-format.mjs": "5e79b3bce9581d2580a133f9f9688cd710e64cce5b822a6aa26fce46b7ef01fb",
+    "docs/reviews/src/features/notes-format.test.mjs": "521ab36661606a32c1a0acbb0b27cd68e82ddd147b7a39ac972f30875675f443",
+    "docs/reviews/src/features/notes-local.test.mjs": "bd41d5702c178776f03545417bb78134d3c22ed7d95d5378ad7c75d732cb7db2",
+    "docs/reviews/src/features/packaging.test.mjs": "48b966394d92bff7fbb8d68094362faca7b54bc9b2b24ec59caf977f5463f338",
+    "docs/reviews/agentmux-visual-review/notes/nick.md": "24aee7c1bca2ce53329fa0e1d7c127ba538ad31f1f167403c0f67480858e2940",
+    "docs/reviews/agentmux-visual-review/notes/ryan.md": "b514f3ef4ff6455e6aaf2a1569212e56667f5d93886e1a38a8b480228ef39edc"
+  },
+  "artifact": {
+    "file": "agentmux-visual-review.html",
+    "bytes": 12995692,
+    "sha256": "fdbafbaf3aca5b7e771348f80dfcd1666b22c8e99b304db609476ab1140e5f00",
+    "imageCount": 6,
+    "documentId": "agentmux-visual-review",
+    "documentVersion": "sha256:dff25f77cddf582b9853dd1dd6ee68dcead61ca691b9e80e588fe9102b8c8420",
+    "committedReviewers": [
+      "Nick Klute",
+      "Ryan Helms"
+    ],
+    "planSha256": "ec6e308cdc95e5ed08c63c09b010398ab8b103dcab4a26227413609c7943ef71",
+    "logoSha256": "b72097103e251ae3487e987e8a4a3a16c1fdd76a85a0b4b0670e19f6e4683bc4",
+    "imageHashes": {
+      "01-workspace-and-terminal.png": "2b5c40037445bf697e944f69d759927f19f3257c8ccd2af7c199b3c307b8eb43",
+      "02-planning-and-board.png": "ceaf75f1e32ff346e3247c6137d5b4d8f940e4daeb7fc963d0bf4676c4e87adb",
+      "03-agent-conversations.png": "6fb01e2b4f9ab66c3f5846282d9f2974b4d44ef3fe7692760aae9192d7f6bba7",
+      "04-connected-hubs.png": "9dfd227f35bd927d4692a9176d78c7b4e08f0a56c1138ad99d7ed613a76c32ca",
+      "05-review-and-acceptance.png": "e7799f556f026c1e3dae75a750bcbe2cb75490233cab83da2c15b2f4aa15289e",
+      "06-plugins-and-industrial-tools.png": "083d189e9544b86f2ec7351d9faddf8469d25e5fca1da94b94e00b039249afda"
+    },
+    "designAuthor": "Claude Opus via the user-requested WSL terminal",
+    "packaging": "Codex; all images, styles, scripts and source-plan download are embedded",
+    "productImplementation": false
+  },
+  "review": [
+    "Reviewed loopback-only authority, per-session token, Host/Origin checks, Git-authoritative attribution, constrained paths, optimistic revisions, process-held locks and failed-save recovery.",
+    "Standalone identity loss was reproduced before repair; import, restore and export now preserve reviewer identity.",
+    "No new GoF/EIP architecture relationship; page setup remains separate from presentation components and features.",
+    "Existing inventory rows, component records and histories are preserved exactly; only P01-T04 gains ownership checks."
+  ],
+  "limitations": [
+    "Real browser rendering and interactions remain unverified after an earlier tool-policy rejection. No bypass was attempted.",
+    "Native macOS review-helper execution remains unverified.",
+    "P01 original provider and stable-candidate acceptance remains open."
+  ],
+  "phaseAccepted": false,
+  "savedArtifactChecks": [
+    "Saved artifact bytes and SHA-256 match build report.",
+    "Six embedded PNGs and source plan match exact originals.",
+    "Document version matches generated metadata; IDs and local references are valid.",
+    "Two saved executable inline scripts pass Node vm.Script syntax checks."
+  ]
+}
