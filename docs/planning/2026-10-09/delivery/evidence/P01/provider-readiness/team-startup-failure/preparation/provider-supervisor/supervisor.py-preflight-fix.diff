@@ -1,0 +1,43 @@
+--- prior/supervisor.py
++++ preflight/supervisor.py
+@@ -110,10 +110,14 @@
+             assert handle and handle!=c.c_void_p(-1).value and k.GetFileType(handle)
+             dup=w.HANDLE();check(k.DuplicateHandle(process,handle,process,c.byref(dup),0,True,2),'Duplicate '+field)
+             dups.append(dup.value);setattr(si,field,dup.value)
+-        env={key:value for key,value in os.environ.items() if not key.startswith('ORCA_')};env.update(req['callbackEnvironment']);env.update(req.get('processEnvironment',{}));env['PATH']=req['PATH']
++        env={key:value for key,value in os.environ.items() if not key.startswith('ORCA_') and key not in ['GROK_CONFIG','GROK_CONFIG_PATH']};env.update(req['callbackEnvironment']);env.update(req.get('processEnvironment',{}));env['PATH']=req['PATH']
+         # Do not override CODEX_HOME: retain any existing Windows-owned profile setting.
+         assert 'AGENTMUX_HUB_TOKEN' not in env
+         result['usesInheritedWindowsCodexHome']=bool(env.get('CODEX_HOME'))
++        if not synthetic:
++            import importlib.util
++            spec=importlib.util.spec_from_file_location('fixture_preflight',root/'launch-preflight.py');preflight=importlib.util.module_from_spec(spec);spec.loader.exec_module(preflight)
++            result['launchPreflight']=preflight.verify_launch(req,root,env)
+         envblock=c.create_unicode_buffer('\0'.join(key+'='+value for key,value in sorted(env.items(),key=lambda item:item[0].upper()))+'\0\0')
+         cmd=c.create_unicode_buffer(subprocess.list2cmdline(req['argv']))
+         check(k.CreateProcessW(req['argv'][0],cmd,None,None,True,0x4|0x400,c.cast(envblock,c.c_void_p),req['cwd'],c.byref(si),c.byref(pi)),'Create suspended Codex with inherited console')
+@@ -217,7 +221,9 @@
+   if provider=='claude':
+    # Recreate the original unrestricted generated settings, without profile copies.
+    settings=root/'claude-process-settings.json'
+-   settings.write_text(json.dumps({'permissions':{'defaultMode':'bypassPermissions','allow':[],'deny':[]},'disableAllHooks':True})+'\n')
++   generated=req['generatedClaudeSettings'];assert generated=={'permissions':{'defaultMode':'bypassPermissions','allow':[],'deny':[]}}, 'Unsupported original generated Claude permission/gate settings'
++   assert len(req['generatedClaudeSettingsSha256'])==64
++   settings.write_text(json.dumps(generated)+'\n')
+    mapped=['--settings',str(settings),'--setting-sources','']
+    extra=['--safe-mode','--strict-mcp-config','--mcp-config','{"mcpServers":{}}','--no-chrome']
+    process_env['CLAUDE_CONFIG_DIR']=r'C:/Users/RyanHelms/.claude'
+@@ -227,6 +233,13 @@
+    process_env['GROK_HOME']=r'C:/Users/RyanHelms/.grok'
+   argv=[str(executable),*mapped,*extra]
+   out={'schemaVersion':1,'provider':provider,'configPath':str(CONFIGS[provider]),'jobUid':str(uuid.uuid4()),'preparedOnly':True,'sourceOriginalArgs':original,'originalArgv':[str(executable),*mapped],'argv':argv,'cwd':str(cwd),'helperDirectory':str(helper),'callbackEnvironment':env,'processEnvironment':process_env,'PATH':windows_path,'files':[{'path':str(executable),'sha256':sha(executable)}],'maxSeconds':2700,'limitations':['Canonical Windows auth/config remains in place without copies.','Grok native hook side effects require the independently reviewed empty ORCA environment and pinned early-return hook.','CLI help documents controls; actual native provider startup remains unqualified.']}
++ if provider=='claude':
++  out['generatedClaudeSettings']=req['generatedClaudeSettings'];out['generatedClaudeSettingsSha256']=req['generatedClaudeSettingsSha256']
++  out['files'].append({'path':str(root/'claude-process-settings.json'),'sha256':sha(root/'claude-process-settings.json')})
++ if provider=='grok':
++  out['grokReadinessSha256']=req['grokReadinessSha256'];assert sha(root/'grok-readiness-review.json')==out['grokReadinessSha256']
++  out['files'].append({'path':str(root/'grok-readiness-review.json'),'sha256':out['grokReadinessSha256']})
++ out['files'].append({'path':str(root/'launch-preflight.py'),'sha256':sha(root/'launch-preflight.py')})
+  (root/'prepared-request.json').write_text(json.dumps(out,indent=2)+'\n',encoding='utf-8')
+  return out
+ 

@@ -1,7 +1,34 @@
 {
-  "reviewer": "Codex, scoped P01 cleanup and delivery-document review",
-  "sourceDigest": "ee60004a0bb5d8a5be84b19ac84ff0bafd294976bf8609e0a75fc91cf434298d",
+  "reviewer": "Codex, scoped P01 failure evidence and shared notes review",
+  "sourceDigest": "6ad599c43c8492bf7f3c33514f3418c5e70c87381f40111257049fe687bcd888",
   "incrementalReviews": [
+    {
+      "date": "2026-10-13",
+      "scope": "Reusable offline Git review notes workflow",
+      "reviewer": "Codex; independent read-only subagent review completed",
+      "previousSourceDigest": "ee60004a0bb5d8a5be84b19ac84ff0bafd294976bf8609e0a75fc91cf434298d",
+      "sourceDigestRefreshed": false,
+      "evidence": [
+        "docs/reviews/README.md",
+        "docs/reviews/check.mjs",
+        "docs/reviews/src/features/notes-format.mjs",
+        "docs/reviews/src/features/notes-format.test.mjs",
+        "docs/reviews/src/features/notes-controller.mjs",
+        "docs/reviews/src/features/notes-controller.test.mjs",
+        "docs/reviews/src/features/packaging.test.mjs",
+        "docs/reviews/agentmux-visual-review/review.json",
+        "docs/reviews/agentmux-visual-review/document-version.json",
+        "docs/reviews/agentmux-visual-review/notes/nick.md",
+        "docs/reviews/agentmux-visual-review/notes/ryan.md",
+        "docs/planning/2026-10-09/review-site/src/features/review.js",
+        "docs/planning/2026-10-09/review-site/src/pages/build.mjs",
+        "docs/planning/2026-10-09/review-site/src/pages/review.template.html",
+        "docs/planning/2026-10-09/review-site/verification.json",
+        "docs/planning/2026-10-09/review-site/build-report.json",
+        "docs/planning/2026-10-09/agentmux-visual-review.html"
+      ],
+      "rationale": "Reviewed the reusable notes format and page controller, strict document/section validation, lossless fenced text, named exports, original version attribution, explicit relabeling, legacy draft recovery and storage-denied behavior. The builder embeds validated reviewer notes with script-safe JSON and replaces original template markers once; note content cannot trigger a second template expansion. Independent review findings about controller syntax, nested metadata examples and inserted placeholders were repaired and covered by tests. All fourteen focused tests passed, including eleven format/controller/packaging tests and three retained Scene tests. Both reviewer files passed the CLI checker. The saved HTML's scripts compile, all seventeen source hashes match, and both empty reviewer files refer to the current source version. Existing images, logo and plan bytes are preserved. Application state remains in features; Scene remains a pure organism. No new GoF/EIP pattern, runtime relationship, platform implementation or phase acceptance is introduced. Browser rendering remains unverified under the local-file policy. Concurrent delivery tracking and TEAM startup evidence belong to another active task and are not qualified here; the global source digest is deliberately left unchanged until those changes receive their owning review."
+    },
     {
       "date": "2026-10-09",
       "reviewer": "Codex",
@@ -634,6 +661,20 @@
         "docs/planning/2026-10-09/review-site/verification.json"
       ],
       "rationale": "Inspected frozen Windows supervisor/observer source and five actual non-model positive/failure cases with independent review. Fresh unchanged original calibration at 2aed3e7 passed all E1-E6 through actual Windows Codex callbacks; same actor acknowledged/claimed/completed work, five tests and empty-input check passed, requested c5c22aa commit is clean. Matching observer held exact job/parent before resume and recorded checked cleanup and zero active processes; missing supervisor report and later PID absence are distinguished. Windows config comparison is false: no unchanged-profile or unrelated-settings acceptance. All67 runtime references remain exact Git bytes. Reviewed11 source-linked calibration comparison refs and23 historical scenario-input refs; historical missing execution metadata and failures remain explicit. Non-model Windows junction/Linux symlink private home paths resolve same NTFS calc/report baseline; initial PowerShell failure retained, actual client profile overrides still unqualified. Verified133 raw staged file hashes and packaged HTML bytes. Shared visual-review wording removes superseded Ryan/Nick delivery gates; exact source packaging/assets/anchors/JS and3scene tests reviewed, browser/runtime limits unchanged and earlier stale check retained in verification history. Tracker22tests and check pass; two named preservation checks remainpartial, no task/gate accepted. No product runtime, enterprise pattern, diagram, registry, catalog or remediation changed; external OS fixtures are not a new product architecture. Grok authentication and three original scenarios remain open. No P02 work, merge or release."
+    },
+    {
+      "date": "2026-10-13",
+      "scope": "P01 original TEAM startup failure and shared visual review notes",
+      "reviewer": "Codex with independent bounded source and evidence reviews",
+      "previousSourceDigest": "ee60004a0bb5d8a5be84b19ac84ff0bafd294976bf8609e0a75fc91cf434298d",
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-startup-failure/README.md",
+        "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-startup-failure/archive-allowlist.json",
+        "docs/planning/2026-10-09/delivery/tasks.json",
+        "docs/planning/2026-10-09/review-site/verification.json",
+        "docs/reviews/README.md"
+      ],
+      "rationale": "Reviewed 168 exact allowlisted preparation, failure and cleanup files and bounded privacy scans. Original TEAM setup failed before scoring; the Grok hook discovery mismatch is retained. Started clients reached zero active job processes; the false Claude config comparison remains recorded. All 22 tracker tests pass with P01 active and no gate accepted. Independently reviewed Git-backed notes format, controller and packaging: the current HTML retains six original images, logo, source plan, literal imports and draft/export behavior. All 14 isolated tests passed without skips. Refreshed stale HTML verification, preserved history, and reconciled the historical pending check in the README. Browser interaction remains unverified. All 67 product runtime source files remain unchanged. No product pattern, relationship, approved catalog, registry, diagram, baseline or remediation changed. The external Win32 observer is test instrumentation. Scoped blank-at-EOF exemptions preserve empty note blocks and reviewed source bytes; other whitespace checks remain enabled. No phase advancement, merge or release is authorized."
     }
   ],
   "rules": {

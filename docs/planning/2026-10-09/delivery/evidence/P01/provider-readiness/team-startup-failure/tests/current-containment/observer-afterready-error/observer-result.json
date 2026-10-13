@@ -1,0 +1,49 @@
+{
+  "jobUid": "06646cd3-f5b3-4e0c-986b-12509b576f4c",
+  "jobName": "Local\\agentmux-p01-06646cd3-f5b3-4e0c-986b-12509b576f4c",
+  "parentPid": 72440,
+  "supervisorPid": 35440,
+  "observerPid": 41068,
+  "passed": false,
+  "events": [
+    {
+      "action": "Open exact named job",
+      "elapsedSeconds": 0.0001
+    },
+    {
+      "action": "Hold exact handles and config bytes before parent resume",
+      "elapsedSeconds": 0.0007
+    }
+  ],
+  "terminalReason": null,
+  "limitations": [
+    "Job accounting and byte comparison concern this exact fixture only.",
+    "No auth or config contents or hashes are logged.",
+    "Holding the observer job handle delays kill-on-last-handle-close; explicit job termination is required."
+  ],
+  "observerInJob": false,
+  "observerConsoleWindow": 0,
+  "heldHandles": {
+    "job": 512,
+    "parent": 516,
+    "supervisor": 520
+  },
+  "before": {
+    "TotalProcesses": 1,
+    "ActiveProcesses": 1,
+    "TotalTerminatedProcesses": 0
+  },
+  "error": {
+    "type": "RuntimeError",
+    "message": "deliberate observer failure after readiness",
+    "winerror": null
+  },
+  "cleanup": {
+    "verified": true,
+    "terminateJobOk": true,
+    "parentWait": 0,
+    "activeProcesses": 0
+  },
+  "windowsConfigBytesUnchanged": true,
+  "elapsedSeconds": 0.8067
+}

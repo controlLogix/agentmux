@@ -1,0 +1,152 @@
+{
+  "reviewedOn": "2026-10-13T15:00:24.412440+00:00",
+  "helperPath": "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux original TEAM preparation _fwm3fqa\\provider-supervisor\\launch-preflight.py",
+  "helperSha256": "f457a3c1606feaa3aa627f49d2b7c6a4e9e2b610a7d57c470eed7b504c65a863",
+  "scope": "Independent direct tests of actual launch-preflight helper using disposable synthetic sources only. No model, profile or credential access.",
+  "cases": [
+    {
+      "case": "synthetic-grok-pinned-sources-positive",
+      "expectedRejection": false,
+      "outcome": "accepted",
+      "passed": true
+    },
+    {
+      "case": "grok-config-byte-drift",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "grok-hook-byte-drift",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "grok-program-byte-drift",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "grok-doc-byte-drift",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "grok-client-byte-drift",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "grok-new-hook-source",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "grok-unexpected-plugins",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "grok-unexpected-managed_config.toml",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "grok-unexpected-requirements.toml",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "grok-unexpected-lsp.json",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "grok-inherited-ORCA_AGENT_HOOK_ENDPOINT",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "grok-inherited-GROK_CONFIG",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "grok-inherited-GROK_CONFIG_PATH",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "grok-proof-sha-drift",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "claude-original-permissions-positive",
+      "expectedRejection": false,
+      "outcome": "accepted",
+      "passed": true
+    },
+    {
+      "case": "claude-deny-settings-drift",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "claude-deny-unsupported-input",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "claude-gate-settings-drift",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "claude-gate-unsupported-input",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "claude-posture-settings-drift",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "claude-posture-unsupported-input",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    },
+    {
+      "case": "claude-orca-env",
+      "expectedRejection": true,
+      "outcome": "rejected",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "limitations": [
+    "Synthetic verify_grok tests exercise actual source drift checks; canonical production path guard is inspected separately.",
+    "No OS process launch in these tests.",
+    "Lowercase Windows environment aliases remain a defense improvement; current source filters uppercase ORCA_* keys."
+  ]
+}

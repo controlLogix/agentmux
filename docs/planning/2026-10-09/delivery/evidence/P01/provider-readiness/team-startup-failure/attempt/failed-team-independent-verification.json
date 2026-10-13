@@ -1,0 +1,172 @@
+{
+  "scope": "Failed original TEAM startup before task posting or original scoring. Exact cleanup is separate from scenario success.",
+  "sourceCommit": "c370290d6711b8f41d131723dc6a775334f03ccd",
+  "harnessExitCode": 1,
+  "originalReportsCount": 0,
+  "source67Unchanged": true,
+  "actors": [
+    {
+      "actor": "calc-lead-claude_1106",
+      "launchResultExists": true,
+      "observerResultExists": true,
+      "launchPassed": true,
+      "error": null,
+      "observer": {
+        "jobUid": "f30f3f9b-3c7f-40e9-8f60-1c54346d02d3",
+        "parentPid": 11060,
+        "supervisorPid": 38484,
+        "observerPid": 3316,
+        "passed": true,
+        "terminalReason": "fixture-cancellation",
+        "afterJob": {
+          "TotalProcesses": 5,
+          "ActiveProcesses": 0,
+          "TotalTerminatedProcesses": 0
+        },
+        "cleanup": {
+          "verified": true,
+          "terminateJobOk": true,
+          "parentWait": 0,
+          "activeProcesses": 0
+        },
+        "windowsConfigBytesUnchanged": false
+      },
+      "knownPids": [
+        {
+          "pid": 11060,
+          "handleOpened": false,
+          "errorIfAbsent": 87,
+          "waitState": null
+        },
+        {
+          "pid": 38484,
+          "handleOpened": false,
+          "errorIfAbsent": 87,
+          "waitState": null
+        },
+        {
+          "pid": 3316,
+          "handleOpened": false,
+          "errorIfAbsent": 87,
+          "waitState": null
+        }
+      ]
+    },
+    {
+      "actor": "calc-reviewer-grok_1106",
+      "launchResultExists": true,
+      "observerResultExists": false,
+      "launchPassed": false,
+      "error": {
+        "type": "AssertionError",
+        "message": "Native Grok hook source set changed",
+        "winerror": null
+      }
+    },
+    {
+      "actor": "calc-worker-codex_1106",
+      "launchResultExists": true,
+      "observerResultExists": true,
+      "launchPassed": true,
+      "error": null,
+      "observer": {
+        "jobUid": "58d9d38a-92a5-42f6-9cb1-0eca7c738e97",
+        "parentPid": 40608,
+        "supervisorPid": 64588,
+        "observerPid": 9592,
+        "passed": true,
+        "terminalReason": "parent-exit",
+        "afterJob": {
+          "TotalProcesses": 2,
+          "ActiveProcesses": 0,
+          "TotalTerminatedProcesses": 0
+        },
+        "cleanup": {
+          "verified": true,
+          "terminateJobOk": true,
+          "parentWait": 0,
+          "activeProcesses": 0
+        },
+        "windowsConfigBytesUnchanged": true
+      },
+      "knownPids": [
+        {
+          "pid": 40608,
+          "handleOpened": false,
+          "errorIfAbsent": 87,
+          "waitState": null
+        },
+        {
+          "pid": 64588,
+          "handleOpened": false,
+          "errorIfAbsent": 87,
+          "waitState": null
+        },
+        {
+          "pid": 9592,
+          "handleOpened": false,
+          "errorIfAbsent": 87,
+          "waitState": null
+        }
+      ]
+    }
+  ],
+  "linuxCleanup": {
+    "fixtureEnvironmentProcessPids": [],
+    "tokenFilesRemaining": 0,
+    "recordedHubPid": "1371",
+    "recordedHubPidExistsNow": false
+  },
+  "runnerCleanup": {
+    "harnessExited": true,
+    "hub-stop": {
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/venv/bin/python",
+        "/home/ryan/.cache/agentmux-governance/original-team-lqm0dwqz/snapshot/hub/cli.py",
+        "stop"
+      ],
+      "exitCode": 0,
+      "stdout": "hub stopping\n",
+      "stderr": ""
+    },
+    "courier-stop": {
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/original-team-lqm0dwqz/snapshot/agentmux.sh",
+        "courier",
+        "stop"
+      ],
+      "exitCode": 0,
+      "stdout": "stopped courier (pid 1843)\n",
+      "stderr": ""
+    },
+    "tmux-kill": {
+      "argv": [
+        "tmux",
+        "-L",
+        "agentmux",
+        "kill-server"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "no server running on /home/ryan/.cache/agentmux-governance/original-team-lqm0dwqz/tmux-1000/agentmux\n"
+    },
+    "tmux-verify": {
+      "argv": [
+        "tmux",
+        "-L",
+        "agentmux",
+        "list-sessions"
+      ],
+      "exitCode": 1,
+      "stdout": "",
+      "stderr": "no server running on /home/ryan/.cache/agentmux-governance/original-team-lqm0dwqz/tmux-1000/agentmux\n"
+    },
+    "tokenFilesRemoved": 4
+  },
+  "hookInventory": "grok-hook-source-inventory.json",
+  "noRetry": true,
+  "limitations": [
+    "Claude Windows config byte comparison is false; no setting-change attribution is asserted.",
+    "The failed startup produced no E1-E6 score or task completion."
+  ]
+}

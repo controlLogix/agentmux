@@ -2162,7 +2162,9 @@
         "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/checked-observer/archive.json",
         "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/calibration-comparison/archive.json",
         "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/historical-scenario-inputs/manifest.json",
-        "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/crossrepo-path/manifest.json"
+        "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/crossrepo-path/manifest.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-startup-failure/README.md",
+        "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-startup-failure/archive-allowlist.json"
       ],
       "commits": [
         "f19c6473d56335b8eeb28704b02895b9d9ab7fcc",
@@ -2170,7 +2172,7 @@
         "00353fd0ccb0b4ce34cb4eb45549703430af30d1",
         "7a7d47ae6830f86b8fed318ee64da6a5aac52701"
       ],
-      "blocker": "Original calib passed all E1-E6 with real Windows Codex callbacks, five tests, empty-input verification and clean add-median commit. Its independent observer now verifies exact job cleanup and zero active processes. Windows config bytes changed; the cause and unrelated-settings preservation remain unqualified. Historical calibration comparison is recorded with unknown historical execution versions. Team/crossrepo/swarm still need original Claude/Codex/Grok executions and comparisons; Windows-owned Grok authentication is unavailable. Private Windows/Linux crossrepo path preparation passed, but actual clients honoring profile overrides remain unqualified. No phase gate or P06 host integration is accepted.",
+      "blocker": "Windows Grok login is available in its canonical profile. One original TEAM attempt on c370290 stopped during provider setup before task posting or E1-E6 scoring: launch-time Grok preflight rejected a changed native hook source set. Review exact cleanup and source drift before retry. Original team, crossrepo and swarm evidence remains required; no phase acceptance.",
       "history": [
         {
           "at": "2026-10-09T22:15:02.344871+00:00",
@@ -2336,6 +2338,13 @@
           "reason": "Reviewed actual original calibration with durable exact Windows job cleanup and false config comparison; recorded historical comparisons and non-model crossrepo path preparation. No phase or profile-preservation acceptance.",
           "previousBlocker": "Original calibration task passed E1-E6 with actual Windows Codex, five tests, empty-input verification and clean add-median commit. Final supervisor reporting was lost during tmux teardown: exact job accounting and Windows config comparison remain unavailable for that run. First scored failure and second unscored startup failure are preserved. Team/crossrepo/swarm still require an available Windows-owned Grok credential source. Explicit historical baseline/target E1-E6 comparison for all four scenarios, including calibration, and actual supported-host requirements remain open; no phase gate or P06 client integration is accepted.",
           "sourceCommit": "2aed3e7206e81cf119562647879c90a29457b08a"
+        },
+        {
+          "date": "2026-10-13T15:08:07.710051+00:00",
+          "actor": "Codex",
+          "reason": "Windows Grok login is available in its canonical profile. One original TEAM attempt on c370290 stopped during provider setup before task posting or E1-E6 scoring: launch-time Grok preflight rejected a changed native hook source set. Review exact cleanup and source drift before retry. Original team, crossrepo and swarm evidence remains required; no phase acceptance.",
+          "previousBlocker": "Original calib passed all E1-E6 with real Windows Codex callbacks, five tests, empty-input verification and clean add-median commit. Its independent observer now verifies exact job cleanup and zero active processes. Windows config bytes changed; the cause and unrelated-settings preservation remain unqualified. Historical calibration comparison is recorded with unknown historical execution versions. Team/crossrepo/swarm still need original Claude/Codex/Grok executions and comparisons; Windows-owned Grok authentication is unavailable. Private Windows/Linux crossrepo path preparation passed, but actual clients honoring profile overrides remain unqualified. No phase gate or P06 host integration is accepted.",
+          "sourceCommit": "c370290d6711b8f41d131723dc6a775334f03ccd"
         }
       ],
       "phaseCriteria": [

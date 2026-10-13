@@ -1,0 +1,24 @@
+{
+  "passed": false,
+  "scope": "Non-model integration of the generic provider supervisor and independent observer.",
+  "cases": [
+    {
+      "kind": "teardown",
+      "socket": "agentmux-integrated-cqmj_xpf-teardown",
+      "command": "/mnt/c/Users/RyanHelms/AppData/Local/Programs/Python/Python314/python.exe 'C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux-provider-observer-nonmodel-cqmj_xpf\\teardown\\synthetic-wrapper.py'; sleep 15",
+      "passed": false,
+      "tmuxCleanupTimeout": true
+    }
+  ],
+  "noRealClientOrProfileAccess": true,
+  "limits": [
+    "Synthetic config only; no actual Windows profile byte comparison tested.",
+    "The 2700-second bound is configured but was not waited out in these short tests.",
+    "Actual model integration remains unqualified."
+  ],
+  "error": {
+    "type": "TimeoutExpired",
+    "message": "Command '['wsl', '-d', 'Ubuntu-26.04', '--exec', 'bash', '-lc', 'tmux -L agentmux-integrated-cqmj_xpf-teardown -f /dev/null new-session -d -s fixture \\'/mnt/c/Users/RyanHelms/AppData/Local/Programs/Python/Python314/python.exe \\'\"\\'\"\\'C:\\\\Users\\\\RyanHelms\\\\AppData\\\\Local\\\\Temp\\\\agentmux-provider-observer-nonmodel-cqmj_xpf\\\\teardown\\\\synthetic-wrapper.py\\'\"\\'\"\\'; sleep 15\\'']' timed out after 5 seconds"
+  },
+  "elapsedSeconds": 10.213
+}

@@ -121,6 +121,10 @@ code{padding:.1em .38em;font:500 .86em/1.4 var(--mono);color:var(--bright);backg
 .notes__facts{display:grid;gap:6px;margin:20px 0 0;padding:16px 0 0 18px;font-size:14px;color:var(--muted);border-top:1px solid var(--line-soft)}
 .notes__export{margin-top:20px}
 .notes__export textarea{min-height:240px;font:13px/1.5 var(--mono)}
+.notes__version{margin:0 0 16px;font-size:14px;overflow-wrap:anywhere;color:var(--muted)}
+.notes__import{display:grid;gap:10px;margin:20px 0;padding-top:20px;border-top:1px solid var(--line-soft)}
+.notes__import input,.notes__import select{width:100%;min-width:0;max-width:100%;font:inherit;font-size:15px;color:var(--bright);background:var(--bg);border:1px solid var(--line);border-radius:var(--radius);padding:10px}
+.notes__import pre{margin:0;max-height:360px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font:14px/1.6 var(--sans)}
 .notes__boundary{margin:48px 0 0;padding:18px 20px;font-size:16px;color:var(--bright);background:var(--accent-soft);border:1px solid var(--accent-line);border-radius:var(--radius)}
 .notes textarea,.notes input[type=text]{background:var(--bg)}
 .print-mirror{display:none}
@@ -186,7 +190,7 @@ body{font-size:16px}
 @page{margin:14mm}
 *,*::before,*::after{color:#000!important;background:transparent!important;box-shadow:none!important;text-shadow:none!important}
 html,body{font-size:11pt;background:#fff!important}
-.topbar,.skip,.viewer,.steps,.notes__actions,.notes__status,.notes__saved,.notes__export,.notes__facts,noscript{display:none!important}
+.topbar,.skip,.viewer,.steps,.notes__actions,.notes__import,.notes__status,.notes__saved,.notes__export,.notes__facts,noscript{display:none!important}
 .wrap{width:100%}
 .hero{padding:0 0 18pt}
 .hero h1{max-width:none;font-size:26pt}
@@ -343,12 +347,13 @@ img{break-inside:avoid}
   <div class="wrap">
     <p class="eyebrow">Send feedback</p>
     <h2 class="section__title" id="notes-title">Your review notes</h2>
-    <p class="notes__lede">Answer the overall question below, then download one Markdown file with every note from this page. Send that file to Ryan.</p>
+    <p class="notes__lede">Download your notes into your own file in the Git notes folder, then commit and push it. After pulling, import a note file to continue editing, or rebuild this page to include both reviewers’ committed notes.</p>
     <div class="notes__grid">
       <div>
         <div class="form-field">
-          <label class="form-label" for="reviewer-name">Your name (optional)</label>
-          <input type="text" id="reviewer-name" name="reviewer-name" autocomplete="name" maxlength="120">
+          <label class="form-label" for="reviewer-name">Your name (required for export)</label>
+          <input type="text" id="reviewer-name" name="reviewer-name" autocomplete="name" maxlength="120" list="reviewer-names">
+          <datalist id="reviewer-names"><option value="Nick Klute"></option><option value="Ryan Helms"></option></datalist>
           <div class="print-mirror" data-print-for="reviewer-name" aria-hidden="true"></div>
         </div>
         <div class="form-field">
@@ -360,19 +365,31 @@ img{break-inside:avoid}
       </div>
       <aside class="notes__panel" aria-labelledby="save-title">
         <h3 class="panel__title" id="save-title">Save and share</h3>
+        <p class="notes__version" id="document-version"></p>
+        <p class="notes__version" id="notes-version"></p>
         <noscript><p class="notes__noscript">Scripts are turned off. You can read the whole review and type in the boxes, but this page cannot save or download notes. Copy your notes into an email to Ryan before you close the page.</p></noscript>
         <div class="notes__actions" data-js-only hidden>
           <button type="button" class="btn btn--primary" data-action="download">Download notes (.md)</button>
           <button type="button" class="btn" data-action="save">Save draft in this browser</button>
           <button type="button" class="btn" data-action="show">Show notes as text</button>
+          <button type="button" class="btn" data-action="version">Mark notes reviewed for this document version</button>
           <button type="button" class="btn btn--quiet" data-action="clear">Clear all notes</button>
+        </div>
+        <div class="notes__import" data-js-only hidden>
+          <label class="form-label" for="notes-import">Import a review notes file (.md)</label>
+          <input id="notes-import" type="file" accept=".md,text/markdown,text/plain">
+          <label class="form-label" for="shared-reviewer">Git notes included in this copy</label>
+          <select id="shared-reviewer"><option value="">Choose a reviewer</option></select>
+          <button type="button" class="btn" data-action="load-shared">Load selected Git notes into the draft</button>
+          <pre id="shared-notes" aria-label="Selected reviewer’s Git notes"></pre>
         </div>
         <p class="notes__status" id="notes-status" role="status" aria-live="polite"></p>
         <p class="notes__saved" id="notes-saved"></p>
         <ul class="notes__facts">
           <li>Nothing on this page sends data anywhere.</li>
           <li>Drafts save only in this browser on this computer. Some browsers block saving for files opened from disk.</li>
-          <li>Downloading is the reliable way to keep and share your notes.</li>
+          <li id="notes-git-path">Download your own note file, then commit and push it. This page does not run Git commands.</li>
+          <li>Imported feedback is text. Loading it replaces this page’s draft only after confirmation.</li>
         </ul>
         <div class="notes__export" id="notes-export" hidden>
           <label class="form-label" for="notes-export-text">Your notes as Markdown. Select all and copy.</label>
@@ -438,7 +455,9 @@ img{break-inside:avoid}
   </div>
 </dialog>
 
+<script type="application/json" id="review-data">{{REVIEW_DATA}}</script>
 <script>
+{{NOTES_RUNTIME}}
 {{REVIEW_SCRIPT}}
 </script>
 </body>

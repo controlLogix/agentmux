@@ -1,0 +1,88 @@
+{
+  "modelExecuted": false,
+  "preparedOnly": true,
+  "rootAuthorizationPending": true,
+  "boundSeconds": 2700,
+  "boundBasis": {
+    "sequentialSpawnAllowanceSeconds": 540,
+    "originalScenarioSeconds": 1800,
+    "originalDrainSeconds": 120,
+    "cleanupAndContingencySeconds": 240
+  },
+  "boundActuallyElapsed": false,
+  "scripts": {
+    "supervisor.py": "315d24bf92e57900a5f9b12c9fdac7603e95386845ddd9c91e1758527722f7a1",
+    "observer.py": "565d60edfa49005f97a815eabed916674c8c3812fd5c8e7fd22e61c1ee342097",
+    "observer_api.py": "13382ba6c650ec841136805bdeb0dabcd92a9ec1035df44314f4415c56581a93"
+  },
+  "pending": [
+    "Independent supervisor diff review.",
+    "Non-model containment regression checks.",
+    "Review pinned Grok native source absence and hook effect suppression.",
+    "Prepare scenario wrapper and runner after supervisor acceptance."
+  ],
+  "nonModelPrepareChecks": [
+    {
+      "provider": "claude",
+      "exitCode": 0,
+      "configPath": "C:\\Users\\RyanHelms\\.claude.json",
+      "originalArgv": [
+        "C:\\nvm4w\\nodejs\\node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe",
+        "--settings",
+        "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux original TEAM preparation _fwm3fqa\\claude-prepare-probe\\claude-process-settings.json",
+        "--setting-sources",
+        ""
+      ],
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe",
+        "--settings",
+        "C:\\Users\\RyanHelms\\AppData\\Local\\Temp\\agentmux original TEAM preparation _fwm3fqa\\claude-prepare-probe\\claude-process-settings.json",
+        "--setting-sources",
+        "",
+        "--safe-mode",
+        "--strict-mcp-config",
+        "--mcp-config",
+        "{\"mcpServers\":{}}",
+        "--no-chrome"
+      ],
+      "modelExecuted": false,
+      "nativeProviderExecuted": false
+    },
+    {
+      "provider": "grok",
+      "exitCode": 0,
+      "configPath": "C:\\Users\\RyanHelms\\.grok\\config.toml",
+      "originalArgv": [
+        "C:\\Users\\RyanHelms\\.grok\\bin\\grok.exe",
+        "--permission-mode",
+        "bypassPermissions"
+      ],
+      "argv": [
+        "C:\\Users\\RyanHelms\\.grok\\bin\\grok.exe",
+        "--permission-mode",
+        "bypassPermissions"
+      ],
+      "modelExecuted": false,
+      "nativeProviderExecuted": false
+    },
+    {
+      "provider": "codex",
+      "exitCode": 0,
+      "configPath": "C:\\Users\\RyanHelms\\.codex\\config.toml",
+      "originalArgv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "C:\\nvm4w\\nodejs\\node_modules\\@openai\\codex\\bin\\codex.js",
+        "--no-daemon",
+        "--dangerously-bypass-approvals-and-sandbox"
+      ],
+      "argv": [
+        "C:\\nvm4w\\nodejs\\node.exe",
+        "C:\\nvm4w\\nodejs\\node_modules\\@openai\\codex\\bin\\codex.js",
+        "--no-daemon",
+        "--dangerously-bypass-approvals-and-sandbox"
+      ],
+      "modelExecuted": false,
+      "nativeProviderExecuted": false
+    }
+  ]
+}

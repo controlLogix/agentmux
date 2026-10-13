@@ -1,0 +1,20 @@
+--- checked/observer.py
++++ providers/observer.py
+@@ -4,7 +4,7 @@
+ assert sys.argv[1:]==['observer-input.json']
+ req=json.loads((root/'observer-input.json').read_text())
+ assert str(uuid.UUID(req['jobUid']))==req['jobUid'] and req['jobName']=='Local\\agentmux-p01-'+req['jobUid']
+-assert req['maxSeconds']==840
++assert req['maxSeconds']==2700
+ assert hashlib.sha256((root/'observer.py').read_bytes()).hexdigest()==req['observerSha256']
+ assert hashlib.sha256((root/'observer_api.py').read_bytes()).hexdigest()==req['apiSha256']
+ result={'jobUid':req['jobUid'],'jobName':req['jobName'],'parentPid':req['parentPid'],'supervisorPid':req['supervisorPid'],'observerPid':os.getpid(),'passed':False,'events':[],'terminalReason':None,'limitations':['Job accounting and byte comparison concern this exact fixture only.','No auth or config contents or hashes are logged.','Holding the observer job handle delays kill-on-last-handle-close; explicit job termination is required.']}
+@@ -31,7 +31,7 @@
+   assert wait==258
+   if (root/'cancel.request').exists():result['terminalReason']='fixture-cancellation';break
+   if k.WaitForSingleObject(supervisor,0)==0:result['terminalReason']='supervisor-exit';break
+-  if time.monotonic()-start>=840:result['terminalReason']='14-minute-bound';break
++  if time.monotonic()-start>=2700:result['terminalReason']='45-minute-bound';break
+  assert k.TerminateJobObject(job,133);event('Terminate exact held job')
+  assert k.WaitForSingleObject(parent,5000)==0
+  code=w.DWORD();assert k.GetExitCodeProcess(parent,c.byref(code));result['parentExitCode']=code.value

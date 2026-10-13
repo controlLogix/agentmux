@@ -1,5 +1,5 @@
 {
-  "status": "static-checks-passed-scoped-repository-review-recorded",
+  "status": "static-tests-passed-scoped-review-recorded",
   "checkedOn": "2026-10-13",
   "imagesVerified": 6,
   "imageIntegrity": "Exact source bytes preserved",
@@ -8,21 +8,47 @@
   "brokenInternalLinks": false,
   "externalResourceReferences": 0,
   "javascriptNetworkCalls": 0,
-  "bytes": 12971266,
-  "sha256": "cb9bbd756470615fdeccbb8358b5bb3819911d623ea20f010a86b2b9445b2965",
-  "browserInspection": "Not run: browser tool policy rejected local file URL; no alternate route attempted.",
+  "bytes": 12986313,
+  "sha256": "a6ca2c389e1f2d3d5d7132c4601e90119b604c2707f1d853e7677aae58b98931",
+  "browserInspection": "Not run: browser policy blocks file URLs. Source-level event-handler fixtures do not verify rendered layout or real browser interactions.",
   "runtimeImplementationVerified": false,
-  "componentTests": "3 passed",
+  "componentTests": "14 passed, 0 failed, 0 skipped",
   "javascriptSyntax": "passed",
   "planSha256": "ec6e308cdc95e5ed08c63c09b010398ab8b103dcab4a26227413609c7943ef71",
   "repositoryPatternCheck": {
     "command": "node .bytedesk/design-patterns/check.mjs check --root .",
-    "scope": "Final Codex source review covers this packaging correction and the current P01 evidence checkpoint; final command output is recorded in the repository review. No task or phase acceptance.",
-    "reviewer": "Codex",
-    "reviewDate": "2026-10-13",
+    "scope": "Scoped Git notes source review; global freshness depends on all current repository changes.",
     "verificationRecord": ".bytedesk/design-patterns/review.json"
   },
-  "scope": "Exact embedded plan/logo and six images, static anchors/form labels and JavaScript checks passed. Three scene tests passed. Codex independently verified in-memory packaging equals generated HTML and reviewed the autonomy wording. Final source gate is separate from these checks. Browser layout/interactions and complete runtime implementation remain unverified.",
+  "scope": "Codex and an independent subagent reviewed the Git-backed notes changes. Fourteen isolated scene, notes format/controller and in-memory packaging tests passed. Packaging tests retain exact six images, logo and embedded source plan, reject active imported markup, and preserve draft/export behavior. Static IDs and internal anchors checked. Browser interactions and complete runtime implementation remain unverified. Repository pattern freshness is a separate pending check.",
+  "gitNotes": {
+    "documentId": "agentmux-visual-review",
+    "documentVersion": "sha256:21d50a8a450cefca5bfd3b81931df8d7293e7b89fd9535e3cd81cf7560e93adb",
+    "reviewerFiles": [
+      "docs/reviews/agentmux-visual-review/notes/nick.md",
+      "docs/reviews/agentmux-visual-review/notes/ryan.md"
+    ],
+    "sharedFeatureTests": "11 passed",
+    "sceneTests": "3 passed",
+    "checker": "2 reviewer files valid",
+    "testsCommand": "node --test docs/reviews/src/features/notes-format.test.mjs docs/reviews/src/features/notes-controller.test.mjs docs/reviews/src/features/packaging.test.mjs docs/planning/2026-10-09/review-site/src/components/organisms/Scene/Scene.test.mjs",
+    "checks": [
+      "Lossless fenced-note import/export",
+      "Named filenames",
+      "Rejected wrong-document and invalid imports preserve drafts",
+      "Import cancellation preserves draft",
+      "Old version attribution and explicit relabeling",
+      "Legacy draft recovery and storage-denied fallback",
+      "Literal shared-note display",
+      "Feedback changes do not change document source version",
+      "Layout changes do change version",
+      "Literal template markers and script payloads stay data",
+      "Exact source images/logo/plan",
+      "Unique IDs and valid labels/anchors",
+      "Saved inline JavaScript syntax"
+    ],
+    "independentReview": "Read-only subagent review; parser/controller syntax, nested metadata and single-pass placeholder fixes verified. No product phase acceptance."
+  },
   "history": [
     {
       "status": "passed-static-checks",
@@ -86,6 +112,87 @@
         "resolution": "Review the broader repository changes before refreshing the review digest. No review evidence or baseline was changed to make the check pass."
       },
       "scope": "Packaging preparation result before Codex completed the broader evidence/source review. Existing browser and runtime limits remain unchanged."
+    },
+    {
+      "status": "static-checks-passed-scoped-repository-review-recorded",
+      "checkedOn": "2026-10-13",
+      "imagesVerified": 6,
+      "imageIntegrity": "Exact source bytes preserved",
+      "sourcePlan": "Exact source bytes embedded",
+      "duplicateIds": false,
+      "brokenInternalLinks": false,
+      "externalResourceReferences": 0,
+      "javascriptNetworkCalls": 0,
+      "bytes": 12971266,
+      "sha256": "cb9bbd756470615fdeccbb8358b5bb3819911d623ea20f010a86b2b9445b2965",
+      "browserInspection": "Not run: browser tool policy rejected local file URL; no alternate route attempted.",
+      "runtimeImplementationVerified": false,
+      "componentTests": "3 passed",
+      "javascriptSyntax": "passed",
+      "planSha256": "ec6e308cdc95e5ed08c63c09b010398ab8b103dcab4a26227413609c7943ef71",
+      "repositoryPatternCheck": {
+        "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+        "scope": "Final Codex source review covers this packaging correction and the current P01 evidence checkpoint; final command output is recorded in the repository review. No task or phase acceptance.",
+        "reviewer": "Codex",
+        "reviewDate": "2026-10-13",
+        "verificationRecord": ".bytedesk/design-patterns/review.json"
+      },
+      "scope": "Exact embedded plan/logo and six images, static anchors/form labels and JavaScript checks passed. Three scene tests passed. Codex independently verified in-memory packaging equals generated HTML and reviewed the autonomy wording. Final source gate is separate from these checks. Browser layout/interactions and complete runtime implementation remain unverified."
+    },
+    {
+  "status": "source-tests-passed-git-notes-repository-review-pending",
+      "checkedOn": "2026-10-13",
+      "imagesVerified": 6,
+      "imageIntegrity": "Exact source bytes preserved",
+      "sourcePlan": "Exact source bytes embedded",
+      "duplicateIds": false,
+      "brokenInternalLinks": false,
+      "externalResourceReferences": 0,
+      "javascriptNetworkCalls": 0,
+      "bytes": 12986313,
+      "sha256": "a6ca2c389e1f2d3d5d7132c4601e90119b604c2707f1d853e7677aae58b98931",
+      "browserInspection": "Not run: browser policy blocks file URLs. Source-level event-handler fixtures do not verify rendered layout or real browser interactions.",
+      "runtimeImplementationVerified": false,
+      "componentTests": "3 passed",
+      "javascriptSyntax": "passed",
+      "planSha256": "ec6e308cdc95e5ed08c63c09b010398ab8b103dcab4a26227413609c7943ef71",
+      "repositoryPatternCheck": {
+        "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+    "exitCode": 1,
+    "error": "Review is stale or missing: inspect changes and refresh sourceDigest",
+        "scope": "Scoped Git notes source review; global freshness depends on all current repository changes.",
+    "pendingReview": "Another active task is updating delivery tracking and TEAM startup evidence. This notes review does not qualify those changes or refresh the global digest.",
+        "verificationRecord": ".bytedesk/design-patterns/review.json"
+      },
+      "scope": "Added reusable offline Git review notes tooling and refreshed the saved HTML. All 14 focused tests and the two-reviewer CLI check passed. Browser layout and real controls remain unverified. No platform task or phase acceptance is claimed.",
+      "gitNotes": {
+        "documentId": "agentmux-visual-review",
+        "documentVersion": "sha256:21d50a8a450cefca5bfd3b81931df8d7293e7b89fd9535e3cd81cf7560e93adb",
+        "reviewerFiles": [
+          "docs/reviews/agentmux-visual-review/notes/nick.md",
+          "docs/reviews/agentmux-visual-review/notes/ryan.md"
+        ],
+        "sharedFeatureTests": "11 passed",
+        "sceneTests": "3 passed",
+        "checker": "2 reviewer files valid",
+        "testsCommand": "node --test docs/reviews/src/features/notes-format.test.mjs docs/reviews/src/features/notes-controller.test.mjs docs/reviews/src/features/packaging.test.mjs docs/planning/2026-10-09/review-site/src/components/organisms/Scene/Scene.test.mjs",
+        "checks": [
+          "Lossless fenced-note import/export",
+          "Named filenames",
+          "Rejected wrong-document and invalid imports preserve drafts",
+          "Import cancellation preserves draft",
+          "Old version attribution and explicit relabeling",
+          "Legacy draft recovery and storage-denied fallback",
+          "Literal shared-note display",
+          "Feedback changes do not change document source version",
+          "Layout changes do change version",
+          "Literal template markers and script payloads stay data",
+          "Exact source images/logo/plan",
+          "Unique IDs and valid labels/anchors",
+          "Saved inline JavaScript syntax"
+        ],
+        "independentReview": "Read-only subagent review; parser/controller syntax, nested metadata and single-pass placeholder fixes verified. No product phase acceptance."
+      }
     }
   ]
 }

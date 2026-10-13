@@ -1,0 +1,108 @@
+{
+  "reviewedOn": "2026-10-13T14:48:38.512699+00:00",
+  "scope": "Native Grok profile readiness and harmless existing status-hook early-return. No provider prompt or profile changes.",
+  "canonicalProfile": "C:\\Users\\RyanHelms\\.grok",
+  "authCachePresent": true,
+  "config": {
+    "path": "C:\\Users\\RyanHelms\\.grok\\config.toml",
+    "sha256": "f02e951097cda5d76e1987fa4c2e4a6137cd0be12f2be4dbdb403d58ed1f621a",
+    "topKeys": [
+      "cli",
+      "marketplace",
+      "models",
+      "ui"
+    ],
+    "nativeMcpServersCount": 0,
+    "enabledPluginsCount": 0,
+    "pluginExtraPathsCount": 0,
+    "nativeHooksInConfig": false
+  },
+  "nativeHookFiles": [
+    {
+      "path": "C:\\Users\\RyanHelms\\.grok\\hooks\\orca-status.json",
+      "sha256": "8b3b16428f1baf5b6eaaff465242764f955d83dda2713fb3175dea698fd0891c"
+    }
+  ],
+  "hookEvents": [
+    "Notification",
+    "PostToolUse",
+    "PostToolUseFailure",
+    "PreToolUse",
+    "SessionEnd",
+    "SessionStart",
+    "Stop",
+    "StopCancelled",
+    "StopFailure",
+    "UserPromptSubmit"
+  ],
+  "allHookCommandsMatchReviewedCmd": true,
+  "nativePluginsDirectoryPresent": false,
+  "managedConfigPresent": false,
+  "requirementsPresent": false,
+  "nativeLspPresent": false,
+  "hookProgram": {
+    "path": "C:\\Users\\RyanHelms\\.orca\\agent-hooks\\grok-hook.cmd",
+    "sha256": "14d6011707e15f5fce5a1f0b374cfaccbbe5676a2abb532b410dff06434fc99a",
+    "logic": "Optionally calls ORCA_AGENT_HOOK_ENDPOINT first; exits before curl unless ORCA_AGENT_HOOK_PORT, ORCA_AGENT_HOOK_TOKEN and ORCA_PANE_KEY are all present.",
+    "processOnlyControl": "Remove inherited ORCA_* variables from supervised client and tool subprocess environments.",
+    "earlyReturnProbe": {
+      "exitCode": 0,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "passed": true
+    }
+  },
+  "documentedProcessOnlyGrokEnv": {
+    "GROK_CLAUDE_HOOKS_ENABLED": "0",
+    "GROK_CURSOR_HOOKS_ENABLED": "0",
+    "GROK_CLAUDE_MCPS_ENABLED": "0",
+    "GROK_CURSOR_MCPS_ENABLED": "0",
+    "GROK_MANAGED_MCPS_ENABLED": "0",
+    "GROK_MANAGED_MCP_GATEWAY_TOOLS_ENABLED": "0"
+  },
+  "documentation": [
+    {
+      "path": "C:\\Users\\RyanHelms\\.grok\\docs\\user-guide\\02-authentication.md",
+      "sha256": "ecf2234c009e7c89faecaef7e1f51daed902e7343f7d85d774a79ecc525c7b12"
+    },
+    {
+      "path": "C:\\Users\\RyanHelms\\.grok\\docs\\user-guide\\05-configuration.md",
+      "sha256": "781c2b46bc68d153b8d9dc5843acce3634b06120aaf646bbd79b5ef40d21cea0"
+    },
+    {
+      "path": "C:\\Users\\RyanHelms\\.grok\\docs\\user-guide\\07-mcp-servers.md",
+      "sha256": "b6d5c2a0a96d8349d074e2cfc9f0ed817f892d24f2891f74b3827d721b02c2eb"
+    },
+    {
+      "path": "C:\\Users\\RyanHelms\\.grok\\docs\\user-guide\\09-plugins.md",
+      "sha256": "62e0aacdd23ddfb96641cf570fa49f2f794ef24231ea27736a124bb23472cf4b"
+    },
+    {
+      "path": "C:\\Users\\RyanHelms\\.grok\\docs\\user-guide\\10-hooks.md",
+      "sha256": "3690762505faa65d6a82e6462abeaa20fe3a127de611021c171f9088f2c2e56f"
+    },
+    {
+      "path": "C:\\Users\\RyanHelms\\.grok\\docs\\user-guide\\26-config-reference.md",
+      "sha256": "ba434d85bd911f3ddf47ae81d6c39b09389454077c404feca67a158565fd526e"
+    }
+  ],
+  "clients": [
+    {
+      "path": "C:\\nvm4w\\nodejs\\node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe",
+      "sha256": "76de74f7694a5bdc03378a5f837c9e132827bf004c98c276bc4e9094ff06769a"
+    },
+    {
+      "path": "C:\\Users\\RyanHelms\\.grok\\bin\\grok.exe",
+      "sha256": "bf43dc75f5478a106eab1e86d422c963e4dbe9666cf14dab363733d27bf1e672"
+    }
+  ],
+  "limits": [
+    "Compatibility switches do not disable native hooks; audited existing hook side effects are suppressed through early-return.",
+    "GROK_CONFIG drops hooks/plugins/mcp_servers tables; pager.disable_plugins only hides UI.",
+    "Recheck observed source absence and exact hook bytes immediately before launch.",
+    "System-level policy source absence requires separate preflight.",
+    "Canonical auth/config remain Windows-owned; ordinary session persistence and token refresh may write shared state.",
+    "No credential values or hashes recorded.",
+    "Initial proof construction asserted quoted command spelling and failed before launching anything; corrected comparison uses normalized paths."
+  ]
+}
