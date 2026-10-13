@@ -1,0 +1,2542 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "passed",
+  "phaseId": "P01",
+  "planRevision": "2026-10-09",
+  "sourceCommit": "0fd64326b9621163b5b550f6419d21e1007b56d3",
+  "dependencies": [
+    "P00-GATE"
+  ],
+  "acceptanceResults": [
+    {
+      "criterionId": "P01-AC01",
+      "status": "passed",
+      "text": "Two independently implemented test clients exchange valid requests and reject incompatible or malformed envelopes.",
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/independent-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/contracts.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/macos/contracts.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/wsl-contract-source-reuse-74d6.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/wsl-inventory/validation.json"
+      ],
+      "environment": "Actual native Linux/macOS; separate actual WSL and Windows/POSIX utility evidence, with source-equivalent reuse explicitly reviewed."
+    },
+    {
+      "criterionId": "P01-AC02",
+      "status": "passed",
+      "text": "Fixtures cover duplicate, delayed, out-of-order, unauthorized, canceled, timed-out, and replayed messages without conflating execution with delivery.",
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/independent-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/contracts.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/leaf-result.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/signed-leaf-result.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/storage-result.json"
+      ],
+      "environment": "Actual native Linux/macOS; separate actual WSL and Windows/POSIX utility evidence, with source-equivalent reuse explicitly reviewed."
+    },
+    {
+      "criterionId": "P01-AC03",
+      "status": "passed",
+      "text": "A failing predecessor gate prevents promotion. Waivers cannot bypass accepted ownership or security invariants.",
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/independent-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/negative-fixture.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/macos/negative-fixture.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/conformance-admission-negative.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/preservation/current-scope-20261013/preservation-negative-results.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/ci-result.json"
+      ],
+      "environment": "Actual native Linux/macOS; separate actual WSL and Windows/POSIX utility evidence, with source-equivalent reuse explicitly reviewed."
+    },
+    {
+      "criterionId": "P01-AC04",
+      "status": "passed",
+      "text": "CI captures exact versions and logs without recording credentials or private model reasoning. Known baseline blockers are repaired or disproved with evidence, and the required repository governance gate passes before P02 progression. WSL-CLIENT-01 has a recorded placement contract, Windows/WSL client/version inventory and honest current interop observations; P06-specific integration claims remain unaccepted until actual-host qualification.",
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/independent-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/wsl-native-74d6bb9/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/wsl-inventory/validation.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-74d6-startup-observer-failed-diagnostic-20261013-133431/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/P01-T04-acceptance.json"
+      ],
+      "environment": "Actual native Linux/macOS; separate actual WSL and Windows/POSIX utility evidence, with source-equivalent reuse explicitly reviewed."
+    },
+    {
+      "criterionId": "P01-AC05",
+      "status": "passed",
+      "text": "Two language clients pass the NATS storage fixtures on pinned server/client versions: competing revisions admit one transition, partial atomic batches leave no partial record set, and lost acknowledgments reconcile the same operation. Unsupported cross-stream or external-effect transactions are rejected or handled by an explicit recovery contract.",
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/independent-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/storage-result.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/macos/storage-result.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/incoming-storage-negative/archive.json"
+      ],
+      "environment": "Actual native Linux/macOS; separate actual WSL and Windows/POSIX utility evidence, with source-equivalent reuse explicitly reviewed."
+    },
+    {
+      "criterionId": "P01-AC06",
+      "status": "passed",
+      "text": "The existing regression assertions are retained or mapped to equivalent assertions. Characterization fixtures capture each affected behavior before refactoring; a deliberately removed assertion, missing component, or unapproved retirement prevents progression.",
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/independent-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/component-acceptance-review-0fd6432.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/preservation/current-scope-20261013/preservation-negative-results.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/regression-independent-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/hub-full-result.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/wsl-native-74d6bb9/full-result.json"
+      ],
+      "environment": "Actual native Linux/macOS; separate actual WSL and Windows/POSIX utility evidence, with source-equivalent reuse explicitly reviewed."
+    }
+  ],
+  "failureScenarios": [
+    {
+      "scenarioId": "FAIL-05",
+      "status": "passed",
+      "definition": {
+        "id": "FAIL-05",
+        "scenario": "Unsupported schema or a payload type inconsistent with subject/account/operation",
+        "oracle": "Reject or explicitly quarantine before dispatch. No alternative subject lets a caller evade approval or invoke a different capability.",
+        "phases": [
+          "P01",
+          "P10"
+        ],
+        "status": "not-run"
+      },
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/contracts.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/signed-leaf-result.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/macos/contracts.json"
+      ],
+      "scope": "P01 contract, real broker and preservation/admission fixture boundary; later-phase runtime assertions remain required."
+    },
+    {
+      "scenarioId": "FAIL-06",
+      "status": "passed",
+      "definition": {
+        "id": "FAIL-06",
+        "scenario": "Two workers race for one authorized attempt",
+        "oracle": "One ownership decision is authoritative; losing contender cannot execute; duplicate command IDs return the prior outcome or state.",
+        "phases": [
+          "P01",
+          "P04",
+          "P05"
+        ],
+        "status": "not-run"
+      },
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/storage-result.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/incoming-storage/storage-result.json"
+      ],
+      "scope": "P01 contract, real broker and preservation/admission fixture boundary; later-phase runtime assertions remain required."
+    },
+    {
+      "scenarioId": "FAIL-08",
+      "status": "passed",
+      "definition": {
+        "id": "FAIL-08",
+        "scenario": "Crash after state commit but before publication or acknowledgement",
+        "oracle": "Recovery replays the same committed intent/result with the same identity; the receiver tolerates repeats.",
+        "phases": [
+          "P01",
+          "P04",
+          "P10"
+        ],
+        "status": "not-run"
+      },
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/storage-result.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/contracts.json"
+      ],
+      "scope": "P01 contract, real broker and preservation/admission fixture boundary; later-phase runtime assertions remain required."
+    },
+    {
+      "scenarioId": "FAIL-42",
+      "status": "passed",
+      "definition": {
+        "id": "FAIL-42",
+        "scenario": "Atomic batch is abandoned, rejected, interrupted or commits with its final acknowledgment lost",
+        "oracle": "The qualified single-stream boundary contains either the complete valid record set or none. Unknown commit is reconciled by durable operation identity; retry cannot create a second transition.",
+        "phases": [
+          "P01",
+          "P04"
+        ],
+        "status": "not-run"
+      },
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/storage-result.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/incoming-storage-negative/archive.json"
+      ],
+      "scope": "P01 contract, real broker and preservation/admission fixture boundary; later-phase runtime assertions remain required."
+    },
+    {
+      "scenarioId": "FAIL-43",
+      "status": "passed",
+      "definition": {
+        "id": "FAIL-43",
+        "scenario": "A claim or approval reads a lagging KV projection, replica or mixed-revision query",
+        "oracle": "The view exposes freshness and cannot grant authority. Owner revalidates against an authoritative/verified revision, rejects a stale conditional write and retries only after rechecking policy.",
+        "phases": [
+          "P01",
+          "P04",
+          "P07"
+        ],
+        "status": "not-run"
+      },
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/storage-result.json"
+      ],
+      "scope": "P01 contract, real broker and preservation/admission fixture boundary; later-phase runtime assertions remain required."
+    },
+    {
+      "scenarioId": "FAIL-47",
+      "status": "passed",
+      "definition": {
+        "id": "FAIL-47",
+        "scenario": "A provider claims atomicity across different streams, KV buckets, object uploads or an external tool",
+        "oracle": "Capability validation rejects the unsupported transaction claim. The approved same-stream record/batch or explicit staged recovery protocol passes fault injection, including orphan artifact cleanup and partial publication.",
+        "phases": [
+          "P01",
+          "P04"
+        ],
+        "status": "not-run"
+      },
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/storage-result.json"
+      ],
+      "scope": "P01 contract, real broker and preservation/admission fixture boundary; later-phase runtime assertions remain required."
+    },
+    {
+      "scenarioId": "FAIL-49",
+      "status": "passed",
+      "definition": {
+        "id": "FAIL-49",
+        "scenario": "An existing source file, command, screen action, plugin behavior or test assertion is omitted from migration",
+        "oracle": "Coverage or review blocks the phase; add a component and behavior check before changing the boundary. A successful new workflow cannot waive omitted existing capability.",
+        "phases": [
+          "P00",
+          "P01",
+          "P03",
+          "P05",
+          "P06",
+          "P07",
+          "P10",
+          "P11",
+          "P12"
+        ],
+        "status": "not-run"
+      },
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/preservation/preservation-negative-results.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/regression-retention-result.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/surface-module-coverage.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/module-independent-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/preservation/current-scope-20261013/preservation-negative-results.json"
+      ],
+      "scope": "P01 contract, real broker and preservation/admission fixture boundary; later-phase runtime assertions remain required."
+    },
+    {
+      "scenarioId": "FAIL-54",
+      "status": "passed",
+      "definition": {
+        "id": "FAIL-54",
+        "scenario": "A baseline/candidate result uses stale source, a skipped environment or a mock in place of a supported live system",
+        "oracle": "Invalidate the comparison or mark the claim unverified. Require matching source/environment evidence and the actual supported system before declaring parity.",
+        "phases": [
+          "P01",
+          "P06",
+          "P10",
+          "P11",
+          "P12"
+        ],
+        "status": "not-run"
+      },
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/conformance-admission-negative.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/macos/conformance-admission-negative.json"
+      ],
+      "scope": "P01 contract, real broker and preservation/admission fixture boundary; later-phase runtime assertions remain required."
+    }
+  ],
+  "rollbackEvidence": [
+    "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/storage-result.json",
+    "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/leaf-result.json",
+    "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/signed-leaf-result.json",
+    "docs/planning/2026-10-09/delivery/evidence/P01/preservation/current-scope-20261013/preservation-negative-results.json"
+  ],
+  "independentReviewer": "Codex",
+  "advancementApproval": {
+    "actor": "Codex",
+    "date": "2026-10-13T18:56:41.485386+00:00",
+    "decision": "approved"
+  },
+  "mergeAuthorization": false,
+  "remoteCommit": "0fd64326b9621163b5b550f6419d21e1007b56d3",
+  "componentPreservation": {
+    "reviewer": "Codex",
+    "inventoryRevision": {
+      "path": "docs/planning/2026-10-09/component-inventory.json",
+      "sha256": "75618c78a72e002cc447d33c9c0a8347c14a12f0c9ededfcdede5eb4b5725d5f"
+    },
+    "components": [
+      "DASH-29",
+      "DASH-31",
+      "HAR-17",
+      "HAR-18",
+      "HAR-19",
+      "HAR-20",
+      "HAR-21",
+      "HAR-22",
+      "HAR-23",
+      "HUB-01",
+      "HUB-11",
+      "HUB-24",
+      "HUB-26",
+      "REPO-02",
+      "REPO-03",
+      "REPO-10"
+    ],
+    "behaviorResults": [
+      {
+        "checkId": "DASH-29-C01",
+        "definition": {
+          "componentId": "DASH-29",
+          "source": "docs/planning/2026-10-09/component-audit-dashboard.json",
+          "id": "DASH-29-C01",
+          "description": "Deliberate broken assertions and known-old code cause failure; a missing prerequisite is skipped/blocked explicitly rather than counted as pass.",
+          "existingTests": [
+            "dashboard/test_testlib.sh",
+            "dashboard/check_test_failability.sh",
+            "dashboard/test_residue.sh"
+          ],
+          "requiredEnvironment": "Static checks and Python/Node/shell fixtures in a disposable checkout; no live operator state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "testlib has 11 passing checks; failability has 18 including 11 checker probes and seven actual old revisions. All seven required bases were available; historical failing counts 25/35/18/19/9/26/5 exceed declared minima 11/9/15/12/6/26/3.",
+            "Missing-history behavior is visibly SKIP in checker self-tests; it is not counted as successful differential proof in this map."
+          ],
+          "limits": [
+            "Legacy dashboard runner treats zero-exit SKIP as nonfailure, so its exit code alone is insufficient for gate acceptance. Required suite summaries must be inspected. Per-base detail logs are removed by the unchanged checker; retained stdout contains summary failure counts."
+          ],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/local-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/local-result.json",
+                "exists": true,
+                "sha256": "d5cd28c1745cab25a1a248a26b96bc2c0824f2ddef627f553f4e8202b41563cd",
+                "bytes": 88385
+              },
+              "historicalRecordedSha256": "d5cd28c1745cab25a1a248a26b96bc2c0824f2ddef627f553f4e8202b41563cd",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/conformance-admission-negative-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/conformance-admission-negative-result.json",
+                "exists": true,
+                "sha256": "64f7b15f6aa428d6e70f9a89e83d838d0f572020712be95471fbe5594efb0b69",
+                "bytes": 1285
+              },
+              "historicalRecordedSha256": "64f7b15f6aa428d6e70f9a89e83d838d0f572020712be95471fbe5594efb0b69",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "DASH-29"
+      },
+      {
+        "checkId": "DASH-29-C02",
+        "definition": {
+          "componentId": "DASH-29",
+          "source": "docs/planning/2026-10-09/component-audit-dashboard.json",
+          "id": "DASH-29-C02",
+          "description": "Full fixture runs preserve the live dashboard/home and scoped persistent state; cancellation stops child writers before cleanup.",
+          "existingTests": [
+            "dashboard/test_residue.sh",
+            "dashboard/check_test_residue.sh"
+          ],
+          "requiredEnvironment": "Disposable supported host with shell/process tools; operator state is observed only by permitted safe metadata.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Residue meta suite proves cancellation/child-writer/sentinel and scoped state checks with isolated stub fixtures.",
+            "The reported field-panel race has a bounded test-only repair: 213 positive checks pass; removing the runtime duplicate-scan guard in a disposable copy causes exactly two intended failures. This does not replace the full dashboard isolation result.",
+            "Completed62suite09run, residue/cleanup and every recorded skip reviewed; cancellation/writer/sentinel cases independently retained. Current unchanged runner plus callback19/real17/native129 changeimpact."
+          ],
+          "limits": [
+            "Zero covered preexisting files and no operator8787 process in fullrun; populated-home and live-listener properties rely on separate fixturecontrols.",
+            "No nativeWindows inference, hook or broad Windows fileaccessaudit.",
+            "Original20plugin skips and3.14archivedbytecode skip remain historical gaps; new36plugin and separate3.12 differential supplement them."
+          ],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/local-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/local-result.json",
+                "exists": true,
+                "sha256": "d5cd28c1745cab25a1a248a26b96bc2c0824f2ddef627f553f4e8202b41563cd",
+                "bytes": 88385
+              },
+              "historicalRecordedSha256": "d5cd28c1745cab25a1a248a26b96bc2c0824f2ddef627f553f4e8202b41563cd",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/cleanup-check.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/cleanup-check.json",
+                "exists": true,
+                "sha256": "16918367c79f7ac84ba4f76e3231b9abb878791bbde5cec59d1dac0409e4afcb",
+                "bytes": 332
+              },
+              "historicalRecordedSha256": "16918367c79f7ac84ba4f76e3231b9abb878791bbde5cec59d1dac0409e4afcb",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/field-race-review/result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/field-race-review/result.json",
+                "exists": true,
+                "sha256": "42e68370fde744a8aab48e1e462046092c8caf4f950b885ee6ef35db6819f5c6",
+                "bytes": 2249
+              },
+              "historicalRecordedSha256": "42e68370fde744a8aab48e1e462046092c8caf4f950b885ee6ef35db6819f5c6",
+              "historicalRecordedCandidate": "37e0d8cd7439d31a491ac673e73438f7885cd04e",
+              "bindingNote": "Use the report source hashes and explicit working-change flag. Names and field-panel fixes are tested working changes above the recorded base, not bytes already present in 37e0d8c.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/assertion-mapping/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/assertion-mapping/archive.json",
+                "exists": true,
+                "sha256": "416e9695222dd1f493832ecdf2951da4fd260cc5cc05ac07b702e53965cfc9e6",
+                "bytes": 371
+              },
+              "historicalRecordedSha256": "416e9695222dd1f493832ecdf2951da4fd260cc5cc05ac07b702e53965cfc9e6",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Source-bound scoped review; captured proof retains original limits and failures.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/native/a21f03a/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/a21f03a/archive.json",
+                "exists": true,
+                "sha256": "f7c5f46a75e5322ebd40cc1872db8d82c6c9c5f11a0e692f6708dd5bb91c43fb",
+                "bytes": 3096
+              },
+              "historicalRecordedSha256": "f7c5f46a75e5322ebd40cc1872db8d82c6c9c5f11a0e692f6708dd5bb91c43fb",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Bothnative hosts all23checks;747source references each agree witha21f. Plugin36, hub129/conformance45 pass no skips.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "DASH-29"
+      },
+      {
+        "checkId": "DASH-31-C01",
+        "definition": {
+          "componentId": "DASH-31",
+          "source": "docs/planning/2026-10-09/component-audit-dashboard.json",
+          "id": "DASH-31-C01",
+          "description": "Every assigned regression is mapped to an owning runtime capability and either rerun against target adapters or superseded by an equivalent accepted test.",
+          "existingTests": [
+            "dashboard/test_launch.sh",
+            "dashboard/test_dispatch.py",
+            "dashboard/test_orchestration_plugin.py",
+            "dashboard/test_plugin_skills.py",
+            "dashboard/test_run.sh"
+          ],
+          "requiredEnvironment": "Static checks and Python/Node/shell fixtures in a disposable checkout; no live operator state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "All 18 assigned regression files remain inventoried; retention evidence preserves assertions or explicit reviewed replacements.",
+            "Independent read-only review maps all18assigned dashboard suites to owner capabilities and exact assertion lines; test hashes match retained full-run records. Current maintained-plugin36 proof supersedes missing external-plugin source counts separately. Later production adapter comparisons remain obligations in their owning phases.",
+            "All18assigned suites now have owner mapping and exactassertion anchors with retained results; all18testhashes match. Original externalplugin tests now execute16+4 in native36replacement gate with no skips. Runtimecallbackchanges reviewed separately."
+          ],
+          "limits": [
+            "Maintained replacement is not recoveredoriginalsource.",
+            "No target-adapter equivalence claimed until later owningimplementation passes its AC03."
+          ],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/regression-retention-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/regression-retention-result.json",
+                "exists": true,
+                "sha256": "6bdd717da10e4ad744aa3a978d7e5190da9d1cde0c37886822347e2377cf697c",
+                "bytes": 783
+              },
+              "historicalRecordedSha256": "6bdd717da10e4ad744aa3a978d7e5190da9d1cde0c37886822347e2377cf697c",
+              "historicalRecordedCandidate": "f19c6473d56335b8eeb28704b02895b9d9ab7fcc",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/assertion-mapping/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/assertion-mapping/archive.json",
+                "exists": true,
+                "sha256": "416e9695222dd1f493832ecdf2951da4fd260cc5cc05ac07b702e53965cfc9e6",
+                "bytes": 371
+              },
+              "historicalRecordedSha256": "416e9695222dd1f493832ecdf2951da4fd260cc5cc05ac07b702e53965cfc9e6",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Source-bound scoped review; captured proof retains original limits and failures.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/native/a21f03a/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/a21f03a/archive.json",
+                "exists": true,
+                "sha256": "f7c5f46a75e5322ebd40cc1872db8d82c6c9c5f11a0e692f6708dd5bb91c43fb",
+                "bytes": 3096
+              },
+              "historicalRecordedSha256": "f7c5f46a75e5322ebd40cc1872db8d82c6c9c5f11a0e692f6708dd5bb91c43fb",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Bothnative hosts all23checks;747source references each agree witha21f. Plugin36, hub129/conformance45 pass no skips.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/identity-shell/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/identity-shell/archive.json",
+                "exists": true,
+                "sha256": "1c031197d687dd8f4fe9ce1518cc2b903a6d00d41fe876da44ed71b8cb67a519",
+                "bytes": 1863
+              },
+              "historicalRecordedSha256": "1c031197d687dd8f4fe9ce1518cc2b903a6d00d41fe876da44ed71b8cb67a519",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Exacta21f actual native WSL shell work/results; source revisions/log hashes verified independently. Initial loader failure retained.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/plugin-restoration/parent-review.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/plugin-restoration/parent-review.json",
+                "exists": true,
+                "sha256": "ca0bc91704dbad8f8d966c30dc8783f81dd74257bafb91e631ef03ec668ce058",
+                "bytes": 5728
+              },
+              "historicalRecordedSha256": "ca0bc91704dbad8f8d966c30dc8783f81dd74257bafb91e631ef03ec668ce058",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "New maintained source, original unavailable, exact final22source hashes; scoped36 compatibility methods and independent actual runtime/Git checks, not P06 or phase acceptance.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "DASH-31"
+      },
+      {
+        "checkId": "DASH-31-C02",
+        "definition": {
+          "componentId": "DASH-31",
+          "source": "docs/planning/2026-10-09/component-audit-dashboard.json",
+          "id": "DASH-31-C02",
+          "description": "Claim/liveness/lock, guard, stdin and evidence-retention assertions still fail under deliberately broken behavior; scope and identity cannot be satisfied by changing a test expectation.",
+          "existingTests": [
+            "dashboard/test_coordination.sh",
+            "dashboard/test_courier.py",
+            "dashboard/test_runlock.py",
+            "dashboard/test_sandbox_coordination.py",
+            "dashboard/test_warrant.py",
+            "dashboard/test_evidence_archive.sh",
+            "dashboard/test_inbox_guard.sh",
+            "dashboard/test_modal_guard.sh",
+            "dashboard/test_no_inherited_stdin.py",
+            "dashboard/test_argguard.sh",
+            "dashboard/test_idle.sh",
+            "dashboard/test_lifecycle.sh",
+            "dashboard/test_runcards.py"
+          ],
+          "requiredEnvironment": "Per-test temporary homes and fake/live prerequisites declared separately; actual CLI/tmux qualification only on supported hosts.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Historical failability establishes genuine failures for its seven selected predecessor rows; source retention prevents silent assertion removal.",
+            "Seven actual disposable runtime mutations trigger existing relevant assertions for exclusive lock, inherited stdin, wrong warrant secret, archive copy, inbox traversal, modal detection and courier recipient validation. Exact original source/test hashes and mutation diffs/logs retained; source unchanged. Historical argument/run/lifecycle/coordination/residue failures remain complementary. This qualifies named fault sensitivity, not complete security or provider execution."
+          ],
+          "limits": [
+            "Field-panel concurrency negative proof is separately recorded; it does not stand in for the listed harness/guard/stdin/evidence-retention families."
+          ],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/local-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/local-result.json",
+                "exists": true,
+                "sha256": "d5cd28c1745cab25a1a248a26b96bc2c0824f2ddef627f553f4e8202b41563cd",
+                "bytes": 88385
+              },
+              "historicalRecordedSha256": "d5cd28c1745cab25a1a248a26b96bc2c0824f2ddef627f553f4e8202b41563cd",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/regression-retention-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/regression-retention-result.json",
+                "exists": true,
+                "sha256": "6bdd717da10e4ad744aa3a978d7e5190da9d1cde0c37886822347e2377cf697c",
+                "bytes": 783
+              },
+              "historicalRecordedSha256": "6bdd717da10e4ad744aa3a978d7e5190da9d1cde0c37886822347e2377cf697c",
+              "historicalRecordedCandidate": "f19c6473d56335b8eeb28704b02895b9d9ab7fcc",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/field-race-review/result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/field-race-review/result.json",
+                "exists": true,
+                "sha256": "42e68370fde744a8aab48e1e462046092c8caf4f950b885ee6ef35db6819f5c6",
+                "bytes": 2249
+              },
+              "historicalRecordedSha256": "42e68370fde744a8aab48e1e462046092c8caf4f950b885ee6ef35db6819f5c6",
+              "historicalRecordedCandidate": "37e0d8cd7439d31a491ac673e73438f7885cd04e",
+              "bindingNote": "Use the report source hashes and explicit working-change flag. Names and field-panel fixes are tested working changes above the recorded base, not bytes already present in 37e0d8c.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/assertion-mapping/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/assertion-mapping/archive.json",
+                "exists": true,
+                "sha256": "416e9695222dd1f493832ecdf2951da4fd260cc5cc05ac07b702e53965cfc9e6",
+                "bytes": 371
+              },
+              "historicalRecordedSha256": "416e9695222dd1f493832ecdf2951da4fd260cc5cc05ac07b702e53965cfc9e6",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Source-bound scoped review; captured proof retains original limits and failures.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/fault-sensitivity/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/fault-sensitivity/archive.json",
+                "exists": true,
+                "sha256": "31af5f56a81d6e4208bc46fada44a3e5353b09b63017ddb604967b585cf62e9d",
+                "bytes": 1618
+              },
+              "historicalRecordedSha256": "31af5f56a81d6e4208bc46fada44a3e5353b09b63017ddb604967b585cf62e9d",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Source-bound scoped review; captured proof retains original limits and failures.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "DASH-31"
+      },
+      {
+        "checkId": "HAR-17-C01",
+        "definition": {
+          "componentId": "HAR-17",
+          "source": "docs/planning/2026-10-09/component-audit-harness.json",
+          "id": "HAR-17-C01",
+          "description": "Verify the archived digest and ensure packaging/cleanup does not delete or overwrite the reference.",
+          "existingTests": [
+            "dashboard/test_gateway.py"
+          ],
+          "requiredEnvironment": "Read-only artifact inspection; no bytecode execution required for inventory.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Archived reference SHA-256 is fedba136c42822aed1e8bcb430c2f6eba48b63c392d2cc1a3b6da1487a83400f; isolated copy and source remain unchanged after execution and cleanup.",
+            "Reference is retained in the candidate; P01 introduces no package/cleanup operation that replaces it."
+          ],
+          "limits": [
+            "Future packaging changes must preserve this reference; current evidence does not qualify an unimplemented installer."
+          ],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/gateway-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/gateway-result.json",
+                "exists": true,
+                "sha256": "6703ba667f32503970d3ad509dcaec6879ac1a6907ff0b91fd99d3528c856563",
+                "bytes": 1557
+              },
+              "historicalRecordedSha256": "6703ba667f32503970d3ad509dcaec6879ac1a6907ff0b91fd99d3528c856563",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/local-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/local-result.json",
+                "exists": true,
+                "sha256": "d5cd28c1745cab25a1a248a26b96bc2c0824f2ddef627f553f4e8202b41563cd",
+                "bytes": 88385
+              },
+              "historicalRecordedSha256": "d5cd28c1745cab25a1a248a26b96bc2c0824f2ddef627f553f4e8202b41563cd",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/regression-retention-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/regression-retention-result.json",
+                "exists": true,
+                "sha256": "6bdd717da10e4ad744aa3a978d7e5190da9d1cde0c37886822347e2377cf697c",
+                "bytes": 783
+              },
+              "historicalRecordedSha256": "6bdd717da10e4ad744aa3a978d7e5190da9d1cde0c37886822347e2377cf697c",
+              "historicalRecordedCandidate": "f19c6473d56335b8eeb28704b02895b9d9ab7fcc",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HAR-17"
+      },
+      {
+        "checkId": "HAR-17-C02",
+        "definition": {
+          "componentId": "HAR-17",
+          "source": "docs/planning/2026-10-09/component-audit-harness.json",
+          "id": "HAR-17-C02",
+          "description": "Run the differential suite only in its supported interpreter and report incompatible interpreter skips separately.",
+          "existingTests": [
+            "dashboard/test_gateway.py"
+          ],
+          "requiredEnvironment": "Isolated CPython 3.12; no credentials or network.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Actual isolated Windows CPython 3.12.10 run: 66 tests pass, including archived differential execution; this is not an incompatible-interpreter skip."
+          ],
+          "limits": [
+            "No live Bedrock call or credentials. Other interpreter skips cannot replace this supported-interpreter result."
+          ],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/gateway-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/gateway-result.json",
+                "exists": true,
+                "sha256": "6703ba667f32503970d3ad509dcaec6879ac1a6907ff0b91fd99d3528c856563",
+                "bytes": 1557
+              },
+              "historicalRecordedSha256": "6703ba667f32503970d3ad509dcaec6879ac1a6907ff0b91fd99d3528c856563",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HAR-17"
+      },
+      {
+        "checkId": "HAR-18-C01",
+        "definition": {
+          "componentId": "HAR-18",
+          "source": "docs/planning/2026-10-09/component-audit-harness.json",
+          "id": "HAR-18-C01",
+          "description": "Run each paired test module unchanged as the source baseline and verify target orchestration attaches the actual result and source revision.",
+          "existingTests": [
+            "orchtest/test_cidr.py",
+            "orchtest/test_digest8.py",
+            "orchtest/test_durations.py",
+            "orchtest/test_ordinal.py",
+            "orchtest/test_shorten.py",
+            "orchtest/test_sizes.py",
+            "orchtest/test_slug.py"
+          ],
+          "requiredEnvironment": "Offline Python unittest environment on supported platforms.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "All seven unchanged paired orchtest modules ran: 28 tests passed on WSL Python 3.14.4. Result records exact source hashes and a2e9ee6 candidate.",
+            "Actual alpha shell claims target work, executes unchanged orchtest28 with zero skips/errors/failures and returns source revision plus log digest through production release(done). Operator work_show retrieves same descriptor and validates actual log/hash. Native Unix peer ancestry authenticates identity; no --as override/mock. Initial external loader failure and cleanup records preserved. Local path/digest in work JSON, not a dedicated artifact transport or provider proof."
+          ],
+          "limits": [],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/local-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/local-result.json",
+                "exists": true,
+                "sha256": "d5cd28c1745cab25a1a248a26b96bc2c0824f2ddef627f553f4e8202b41563cd",
+                "bytes": 88385
+              },
+              "historicalRecordedSha256": "d5cd28c1745cab25a1a248a26b96bc2c0824f2ddef627f553f4e8202b41563cd",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/regression-retention-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/regression-retention-result.json",
+                "exists": true,
+                "sha256": "6bdd717da10e4ad744aa3a978d7e5190da9d1cde0c37886822347e2377cf697c",
+                "bytes": 783
+              },
+              "historicalRecordedSha256": "6bdd717da10e4ad744aa3a978d7e5190da9d1cde0c37886822347e2377cf697c",
+              "historicalRecordedCandidate": "f19c6473d56335b8eeb28704b02895b9d9ab7fcc",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/identity-shell/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/identity-shell/archive.json",
+                "exists": true,
+                "sha256": "1c031197d687dd8f4fe9ce1518cc2b903a6d00d41fe876da44ed71b8cb67a519",
+                "bytes": 1863
+              },
+              "historicalRecordedSha256": "1c031197d687dd8f4fe9ce1518cc2b903a6d00d41fe876da44ed71b8cb67a519",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Exacta21f actual native WSL shell work/results; source revisions/log hashes verified independently. Initial loader failure retained.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HAR-18"
+      },
+      {
+        "checkId": "HAR-18-C02",
+        "definition": {
+          "componentId": "HAR-18",
+          "source": "docs/planning/2026-10-09/component-audit-harness.json",
+          "id": "HAR-18-C02",
+          "description": "Verify the digest collision remains a reported limitation rather than accepted collision-free behavior, even when the regression test passes.",
+          "existingTests": [
+            "orchtest/test_digest8.py"
+          ],
+          "requiredEnvironment": "Offline Python; owner-side acceptance fixture for an impossible or unmet criterion.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "test_documented_collision_demonstrates_unmet_ac3 passes by demonstrating the existing collision, not collision freedom. Preservation README explicitly retains this limitation."
+          ],
+          "limits": [
+            "This is the unchanged workload limitation, not acceptance of an impossible collision-free criterion by a production owner."
+          ],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/local-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/local-result.json",
+                "exists": true,
+                "sha256": "d5cd28c1745cab25a1a248a26b96bc2c0824f2ddef627f553f4e8202b41563cd",
+                "bytes": 88385
+              },
+              "historicalRecordedSha256": "d5cd28c1745cab25a1a248a26b96bc2c0824f2ddef627f553f4e8202b41563cd",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HAR-18"
+      },
+      {
+        "checkId": "HAR-19-C01",
+        "definition": {
+          "componentId": "HAR-19",
+          "source": "docs/planning/2026-10-09/component-audit-harness.json",
+          "id": "HAR-19-C01",
+          "description": "Feed portable synthetic transcript/pane/receipt/courier snapshots and compare normalized records, cutoff handling, partial logs, timezone uncertainty and missing-source diagnostics.",
+          "existingTests": [],
+          "requiredEnvironment": "Offline Python fixtures; new extraction tests are required. Historical raw snapshots are not assumed available.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Synthetic transcript, pane, receipt and courier checks cover normalization, cutoff, torn/partial records, timezone uncertainty and missing sources.",
+            "COMMS-01 remains visible: missing courier input raises FileNotFoundError while missing receipt input returns no rows. Characterization does not hide the difference."
+          ],
+          "limits": [
+            "Portable synthetic inputs; no claim of access to all historical raw snapshots."
+          ],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/comms-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/comms-result.json",
+                "exists": true,
+                "sha256": "dc0190ab9dadeca98625762f4d5ec40e68aacbfbfac192d0057eabc9bc6a7ea1",
+                "bytes": 5295
+              },
+              "historicalRecordedSha256": "dc0190ab9dadeca98625762f4d5ec40e68aacbfbfac192d0057eabc9bc6a7ea1",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HAR-19"
+      },
+      {
+        "checkId": "HAR-19-C02",
+        "definition": {
+          "componentId": "HAR-19",
+          "source": "docs/planning/2026-10-09/component-audit-harness.json",
+          "id": "HAR-19-C02",
+          "description": "Verify input paths remain read-only, generated data stays under an explicit output directory and imported historical observations trigger no message delivery.",
+          "existingTests": [],
+          "requiredEnvironment": "Offline fixture directories and a filesystem write audit.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Write audit restricts generated output to the disposable root; original sources remain unchanged. Historical observations cause no message delivery; network and subprocess escape are denied by the fixture."
+          ],
+          "limits": [
+            "These are bounded synthetic extractor/correlator executions, not a live historical replay."
+          ],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/comms-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/comms-result.json",
+                "exists": true,
+                "sha256": "dc0190ab9dadeca98625762f4d5ec40e68aacbfbfac192d0057eabc9bc6a7ea1",
+                "bytes": 5295
+              },
+              "historicalRecordedSha256": "dc0190ab9dadeca98625762f4d5ec40e68aacbfbfac192d0057eabc9bc6a7ea1",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HAR-19"
+      },
+      {
+        "checkId": "HAR-20-C01",
+        "definition": {
+          "componentId": "HAR-20",
+          "source": "docs/planning/2026-10-09/component-audit-harness.json",
+          "id": "HAR-20-C01",
+          "description": "Use synthetic matching and nonmatching sources to check wrong recipients, clock skew, truncation, duplicates and missing-source unknowns; compare both judgment passes without deleting disagreements.",
+          "existingTests": [],
+          "requiredEnvironment": "Offline Python with portable fixture records; add direct correlation regression cases.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Synthetic correlator checks cover wrong recipient, inclusive clock-skew bound, truncation, duplicates and unknown/missing sources.",
+            "Both retained judgment files are compared without deletion: first pass 49 agree / 10 disagree / 2 unverifiable; second 49 agree / 2 unverifiable. Shared 35 IDs have no changed shared verdict.",
+            "Fresh unchanged correlate/spotcheck scripts produce independently expected agree/disagree/unverifiable judgments from synthetic raw inputs. Two actual path-adapted full determinism shell executions (four complete cycles) yield identical5derivedSHA256 outputs; inputs and both original judgment files remain unchanged. Original shell byte equality and historical verdict correctness are not claimed."
+          ],
+          "limits": [],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/comms-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/comms-result.json",
+                "exists": true,
+                "sha256": "dc0190ab9dadeca98625762f4d5ec40e68aacbfbfac192d0057eabc9bc6a7ea1",
+                "bytes": 5295
+              },
+              "historicalRecordedSha256": "dc0190ab9dadeca98625762f4d5ec40e68aacbfbfac192d0057eabc9bc6a7ea1",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/har20-fresh/result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/har20-fresh/result.json",
+                "exists": true,
+                "sha256": "b5e88928edfa9caa6b6086c7d6431aa53bafc9209861e7ba2d4aca775380c1f4",
+                "bytes": 4977
+              },
+              "historicalRecordedSha256": "b5e88928edfa9caa6b6086c7d6431aa53bafc9209861e7ba2d4aca775380c1f4",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Current original Python bytes and preserved historical judgments; synthetic raw inputs; only shell-owned output paths/line endings adapted, full diff retained.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HAR-20"
+      },
+      {
+        "checkId": "HAR-20-C02",
+        "definition": {
+          "componentId": "HAR-20",
+          "source": "docs/planning/2026-10-09/component-audit-harness.json",
+          "id": "HAR-20-C02",
+          "description": "Verify repeated analysis yields identical derived hashes on a frozen input set while retaining prior judgment files.",
+          "existingTests": [
+            "analysis/comms-2026-09/determinism.sh"
+          ],
+          "requiredEnvironment": "An isolated copy of a frozen dataset; this script writes derived outputs and is not a read-only command.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Two frozen synthetic correlate.py runs produce identical outcomes, sample and summary hashes; both prior judgment files remain unchanged.",
+            "Fresh unchanged correlate/spotcheck scripts produce independently expected agree/disagree/unverifiable judgments from synthetic raw inputs. Two actual path-adapted full determinism shell executions (four complete cycles) yield identical5derivedSHA256 outputs; inputs and both original judgment files remain unchanged. Original shell byte equality and historical verdict correctness are not claimed."
+          ],
+          "limits": [],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/comms-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/comms-result.json",
+                "exists": true,
+                "sha256": "dc0190ab9dadeca98625762f4d5ec40e68aacbfbfac192d0057eabc9bc6a7ea1",
+                "bytes": 5295
+              },
+              "historicalRecordedSha256": "dc0190ab9dadeca98625762f4d5ec40e68aacbfbfac192d0057eabc9bc6a7ea1",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/har20-fresh/result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/har20-fresh/result.json",
+                "exists": true,
+                "sha256": "b5e88928edfa9caa6b6086c7d6431aa53bafc9209861e7ba2d4aca775380c1f4",
+                "bytes": 4977
+              },
+              "historicalRecordedSha256": "b5e88928edfa9caa6b6086c7d6431aa53bafc9209861e7ba2d4aca775380c1f4",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Current original Python bytes and preserved historical judgments; synthetic raw inputs; only shell-owned output paths/line endings adapted, full diff retained.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HAR-20"
+      },
+      {
+        "checkId": "HAR-21-C01",
+        "definition": {
+          "componentId": "HAR-21",
+          "source": "docs/planning/2026-10-09/component-audit-harness.json",
+          "id": "HAR-21-C01",
+          "description": "Verify the 21 records remain parseable, every scoreboard row resolves to its original record and failures are retained rather than filtered.",
+          "existingTests": [],
+          "requiredEnvironment": "Read-only JSON/Markdown evidence inventory; new validation may run offline.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "All 21 historical reports remain parseable; each scoreboard identity and failed-check attribution is checked. Fourteen error-free and seven failed records remain; regenerated scoreboard matches the original."
+          ],
+          "limits": [],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/historical-scoreboard.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/historical-scoreboard.json",
+                "exists": true,
+                "sha256": "5a2b88aa6fd407dd7bafaa7b185b67ba928b4ebf8aeeb6842bf537c80de8de38",
+                "bytes": 3496
+              },
+              "historicalRecordedSha256": "5a2b88aa6fd407dd7bafaa7b185b67ba928b4ebf8aeeb6842bf537c80de8de38",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HAR-21"
+      },
+      {
+        "checkId": "HAR-22-C01",
+        "definition": {
+          "componentId": "HAR-22",
+          "source": "docs/planning/2026-10-09/component-audit-harness.json",
+          "id": "HAR-22-C01",
+          "description": "Verify normal/failure/signal/startup-error paths clean only the test resources and never restart or rewrite the operator's service/home.",
+          "existingTests": [
+            "dashboard/test_residue.sh",
+            "dashboard/check_test_residue.sh",
+            "dashboard/run_tests.sh"
+          ],
+          "requiredEnvironment": "Disposable test homes/services with a separate sentinel operator service.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Unchanged residue suite: 26 assertions pass, including normal, failure, signal and startup error cleanup with sentinel operator fixtures. Actual runner/gate are used with stub server/discovery/test subjects.",
+            "Separate check_test_residue.sh wrapper around test_residue.sh passes with scoped state unchanged."
+          ],
+          "limits": [
+            "The meta fixture proves cleanup control paths; it is not the pending full dashboard run. Private socket cleanup returned 1 and is preserved in the report; post-run inspection found no owned processes and the disposable root was removed."
+          ],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/local-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/local-result.json",
+                "exists": true,
+                "sha256": "d5cd28c1745cab25a1a248a26b96bc2c0824f2ddef627f553f4e8202b41563cd",
+                "bytes": 88385
+              },
+              "historicalRecordedSha256": "d5cd28c1745cab25a1a248a26b96bc2c0824f2ddef627f553f4e8202b41563cd",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/cleanup-check.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/cleanup-check.json",
+                "exists": true,
+                "sha256": "16918367c79f7ac84ba4f76e3231b9abb878791bbde5cec59d1dac0409e4afcb",
+                "bytes": 332
+              },
+              "historicalRecordedSha256": "16918367c79f7ac84ba4f76e3231b9abb878791bbde5cec59d1dac0409e4afcb",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HAR-22"
+      },
+      {
+        "checkId": "HAR-22-C02",
+        "definition": {
+          "componentId": "HAR-22",
+          "source": "docs/planning/2026-10-09/component-audit-harness.json",
+          "id": "HAR-22-C02",
+          "description": "Deliberately swap the sentinel listener or leave a test resource and verify the gate fails with evidence.",
+          "existingTests": [
+            "dashboard/test_residue.sh",
+            "dashboard/check_test_failability.sh"
+          ],
+          "requiredEnvironment": "Isolated process/port fixtures; no production dashboard or user state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Sentinel listener replacement and scoped persistent-state residue mutations are rejected by the unchanged residue gate; 26-assertion result retains failure-path checks."
+          ],
+          "limits": [],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/local-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/local-result.json",
+                "exists": true,
+                "sha256": "d5cd28c1745cab25a1a248a26b96bc2c0824f2ddef627f553f4e8202b41563cd",
+                "bytes": 88385
+              },
+              "historicalRecordedSha256": "d5cd28c1745cab25a1a248a26b96bc2c0824f2ddef627f553f4e8202b41563cd",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HAR-22"
+      },
+      {
+        "checkId": "HUB-01-C01",
+        "definition": {
+          "componentId": "HUB-01",
+          "source": "docs/planning/2026-10-09/component-audit-hub.json",
+          "id": "HUB-01-C01",
+          "description": "Round-trip every supported address form; preserve invalid-name suggestions, explicit normalization and refusal of malformed or wildcard-bearing identity tokens.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Existing Names tests cover explicit normalization/suggestions, session round trip, group-role parsing, agent/group subject conversion and invalid prefix; federation tests reject bad subject tokens.",
+            "Added six-method Names selection covers all eight address forms, canonical round trips and subject mapping, malformed/wildcard identity tokens, intentional role:* scope, and equal per-part length limits for both session spellings. Against original 37e source it fails ten subtests; working source passes all six methods. Original test methods are unchanged by AST comparison.",
+            "Actual native Linux/macOS original hub full129tests pass with zero failures/errors/skips, including current address/config/federation assertions. Independent source identity matches exact80f candidate, closing recorded native legacy-suite gap. Original WSL focused/broad fixtures remain separately preserved."
+          ],
+          "limits": [],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/baseline-full-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/baseline-full-result.json",
+                "exists": true,
+                "sha256": "3e3dbbb93562abd3fe4775899be4e39ad5fa4603c07a7039890ab12e6093b5f2",
+                "bytes": 6023
+              },
+              "historicalRecordedSha256": "3e3dbbb93562abd3fe4775899be4e39ad5fa4603c07a7039890ab12e6093b5f2",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/names-review/result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/names-review/result.json",
+                "exists": true,
+                "sha256": "1714ab73badc5cc3507045a12f76e1f04488ce4f02cf97b024616543e80f74de",
+                "bytes": 3599
+              },
+              "historicalRecordedSha256": "1714ab73badc5cc3507045a12f76e1f04488ce4f02cf97b024616543e80f74de",
+              "historicalRecordedCandidate": "37e0d8cd7439d31a491ac673e73438f7885cd04e",
+              "bindingNote": "Use the report source hashes and explicit working-change flag. Names and field-panel fixes are tested working changes above the recorded base, not bytes already present in 37e0d8c.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/native/80f43e0/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/80f43e0/archive.json",
+                "exists": true,
+                "sha256": "55037cb4ec9b4d51b838b70b48ee181388488818563b5f7e64a429544f1d1089",
+                "bytes": 2645
+              },
+              "historicalRecordedSha256": "55037cb4ec9b4d51b838b70b48ee181388488818563b5f7e64a429544f1d1089",
+              "historicalRecordedCandidate": "80f43e02f3344696a3985c48ef12578319f3bd0f",
+              "bindingNote": "Independent native Linux/macOS588source references each match exact80f; all22 checks pass. No plugin code included.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HUB-01"
+      },
+      {
+        "checkId": "HUB-01-C02",
+        "definition": {
+          "componentId": "HUB-01",
+          "source": "docs/planning/2026-10-09/component-audit-hub.json",
+          "id": "HUB-01-C02",
+          "description": "Translate legacy aliases to new identities without collisions across projects or agent generations; compare local and remote recipient selection.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. Two contract SDKs and isolated NATS.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Existing legacy-name tests translate aliases to canonical local session identities, refuse duplicate live names, and prevent a re-registered generation inheriting old mail. Federation fixtures compare repository URL/local alias identity and peer recipient selection.",
+            "Actual alpha-worker-same and beta-worker-same coexist across two repositories. Seven address forms select expected recipients with actual pane acknowledgements; bare shared name refuses; beta pane cannot claim alpha work. Independent2122source references agree witha21f. Existing generation/federation assertions remain separately mapped; no new-v1 identity migration claimed.",
+            "Independent opinion explicitly maps legacy aliases, duplicate live names, re-registration generations, per-repo claims, shared repository IDs and peer agent/role selection. Exact native129 source/test results plus actual WSL same-name two-repo proof close P01 characterization gap. No production v1 adapter claimed."
+          ],
+          "limits": [
+            "P01 preflight explicitly leaves production legacy adapters to later phases; this map does not authorize advancing phases or demand implementing those adapters in P01.",
+            "Production adapter comparison remains required on P04-T01/P04-T01-AC05; no later-phase implementation or acceptance occurs in P01."
+          ],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/baseline-full-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/baseline-full-result.json",
+                "exists": true,
+                "sha256": "3e3dbbb93562abd3fe4775899be4e39ad5fa4603c07a7039890ab12e6093b5f2",
+                "bytes": 6023
+              },
+              "historicalRecordedSha256": "3e3dbbb93562abd3fe4775899be4e39ad5fa4603c07a7039890ab12e6093b5f2",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/native/a2e9ee6/review.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/a2e9ee6/review.json",
+                "exists": true,
+                "sha256": "c88a654109c7179813afda572cc100434a391836fad1d73a9d5924ba5eac831c",
+                "bytes": 2129
+              },
+              "historicalRecordedSha256": "c88a654109c7179813afda572cc100434a391836fad1d73a9d5924ba5eac831c",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/identity-shell/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/identity-shell/archive.json",
+                "exists": true,
+                "sha256": "1c031197d687dd8f4fe9ce1518cc2b903a6d00d41fe876da44ed71b8cb67a519",
+                "bytes": 1863
+              },
+              "historicalRecordedSha256": "1c031197d687dd8f4fe9ce1518cc2b903a6d00d41fe876da44ed71b8cb67a519",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Exacta21f actual native WSL shell work/results; source revisions/log hashes verified independently. Initial loader failure retained.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/assertion-mapping/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/assertion-mapping/archive.json",
+                "exists": true,
+                "sha256": "416e9695222dd1f493832ecdf2951da4fd260cc5cc05ac07b702e53965cfc9e6",
+                "bytes": 371
+              },
+              "historicalRecordedSha256": "416e9695222dd1f493832ecdf2951da4fd260cc5cc05ac07b702e53965cfc9e6",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Source-bound scoped review; captured proof retains original limits and failures.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/native/a21f03a/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/a21f03a/archive.json",
+                "exists": true,
+                "sha256": "f7c5f46a75e5322ebd40cc1872db8d82c6c9c5f11a0e692f6708dd5bb91c43fb",
+                "bytes": 3096
+              },
+              "historicalRecordedSha256": "f7c5f46a75e5322ebd40cc1872db8d82c6c9c5f11a0e692f6708dd5bb91c43fb",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Bothnative hosts all23checks;747source references each agree witha21f. Plugin36, hub129/conformance45 pass no skips.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HUB-01"
+      },
+      {
+        "checkId": "HUB-11-C01",
+        "definition": {
+          "componentId": "HUB-11",
+          "source": "docs/planning/2026-10-09/component-audit-hub.json",
+          "id": "HUB-11-C01",
+          "description": "Round-trip configuration and permissions, compare remote URL forms and local aliases, preserve sharing defaults and reject malformed IDs/envelopes.",
+          "existingTests": [
+            "hub/tests/test_fed_unit.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Config.test_round_trip checks saved repository/peer values and 0600 permissions; Identity tests compare URL spellings, local aliases and unshared defaults; Envelope tests reject malformed IDs/type/version/data and bad subject tokens.",
+            "Actual native Linux/macOS original hub full129tests pass with zero failures/errors/skips, including current address/config/federation assertions. Independent source identity matches exact80f candidate, closing recorded native legacy-suite gap. Original WSL focused/broad fixtures remain separately preserved."
+          ],
+          "limits": [],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/baseline-full-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/baseline-full-result.json",
+                "exists": true,
+                "sha256": "3e3dbbb93562abd3fe4775899be4e39ad5fa4603c07a7039890ab12e6093b5f2",
+                "bytes": 6023
+              },
+              "historicalRecordedSha256": "3e3dbbb93562abd3fe4775899be4e39ad5fa4603c07a7039890ab12e6093b5f2",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/native/80f43e0/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/80f43e0/archive.json",
+                "exists": true,
+                "sha256": "55037cb4ec9b4d51b838b70b48ee181388488818563b5f7e64a429544f1d1089",
+                "bytes": 2645
+              },
+              "historicalRecordedSha256": "55037cb4ec9b4d51b838b70b48ee181388488818563b5f7e64a429544f1d1089",
+              "historicalRecordedCandidate": "80f43e02f3344696a3985c48ef12578319f3bd0f",
+              "bindingNote": "Independent native Linux/macOS588source references each match exact80f; all22 checks pass. No plugin code included.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HUB-11"
+      },
+      {
+        "checkId": "HUB-11-C02",
+        "definition": {
+          "componentId": "HUB-11",
+          "source": "docs/planning/2026-10-09/component-audit-hub.json",
+          "id": "HUB-11-C02",
+          "description": "Reject mismatched plane/type/recipient/account and unsupported versions; translate valid legacy envelopes without losing sender, source node, repository or original ID.",
+          "existingTests": [
+            "hub/tests/test_fed_unit.py",
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores. New versioned contract fixtures.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Legacy governance and real-broker federation tests exercise authenticated subject/plane/type/recipient binding and identity preservation at the existing boundary. New contracts/leaf fixtures exercise their separate v1 namespace and broker-account denial.",
+            "Explicit source-field mapping: WorkProtocol.test_result_binds_peer_node_attempt_task_repo_grant_and_evidence independently changes from/node/rid/origin_node/origin_id plus offer/execution/grant/result fields; each invalid result leaves origin reserved, valid result completes exact row. Source lines294\u00c3\u00a2\u00e2\u201a\u00ac\u00e2\u20ac\u0153312 and nativea21f job logs show executed method success on both hosts. Envelope/account/peer-sender/version/recovery methods are individually mapped in independent characterization opinion. No actual legacy-v2/v3 to v1 translation claimed."
+          ],
+          "limits": [
+            "Production adapter comparison remains required on P10-T01/P10-T01-AC05; no later-phase implementation or acceptance occurs in P01."
+          ],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/baseline-full-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/baseline-full-result.json",
+                "exists": true,
+                "sha256": "3e3dbbb93562abd3fe4775899be4e39ad5fa4603c07a7039890ab12e6093b5f2",
+                "bytes": 6023
+              },
+              "historicalRecordedSha256": "3e3dbbb93562abd3fe4775899be4e39ad5fa4603c07a7039890ab12e6093b5f2",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/native/a2e9ee6/review.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/a2e9ee6/review.json",
+                "exists": true,
+                "sha256": "c88a654109c7179813afda572cc100434a391836fad1d73a9d5924ba5eac831c",
+                "bytes": 2129
+              },
+              "historicalRecordedSha256": "c88a654109c7179813afda572cc100434a391836fad1d73a9d5924ba5eac831c",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/native/37e0d8c/review.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/37e0d8c/review.json",
+                "exists": true,
+                "sha256": "94c4484c147fc6b19c7a8bf4b3ccb0b3d7df15310e438b455e70119ca831add4",
+                "bytes": 7482
+              },
+              "historicalRecordedSha256": "94c4484c147fc6b19c7a8bf4b3ccb0b3d7df15310e438b455e70119ca831add4",
+              "historicalRecordedCandidate": "37e0d8cd7439d31a491ac673e73438f7885cd04e",
+              "bindingNote": "Use the report source hashes and explicit working-change flag. Names and field-panel fixes are tested working changes above the recorded base, not bytes already present in 37e0d8c.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/identity-shell/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/identity-shell/archive.json",
+                "exists": true,
+                "sha256": "1c031197d687dd8f4fe9ce1518cc2b903a6d00d41fe876da44ed71b8cb67a519",
+                "bytes": 1863
+              },
+              "historicalRecordedSha256": "1c031197d687dd8f4fe9ce1518cc2b903a6d00d41fe876da44ed71b8cb67a519",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Exacta21f actual native WSL shell work/results; source revisions/log hashes verified independently. Initial loader failure retained.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/assertion-mapping/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/assertion-mapping/archive.json",
+                "exists": true,
+                "sha256": "416e9695222dd1f493832ecdf2951da4fd260cc5cc05ac07b702e53965cfc9e6",
+                "bytes": 371
+              },
+              "historicalRecordedSha256": "416e9695222dd1f493832ecdf2951da4fd260cc5cc05ac07b702e53965cfc9e6",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Source-bound scoped review; captured proof retains original limits and failures.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/native/a21f03a/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/a21f03a/archive.json",
+                "exists": true,
+                "sha256": "f7c5f46a75e5322ebd40cc1872db8d82c6c9c5f11a0e692f6708dd5bb91c43fb",
+                "bytes": 3096
+              },
+              "historicalRecordedSha256": "f7c5f46a75e5322ebd40cc1872db8d82c6c9c5f11a0e692f6708dd5bb91c43fb",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Bothnative hosts all23checks;747source references each agree witha21f. Plugin36, hub129/conformance45 pass no skips.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HUB-11"
+      },
+      {
+        "checkId": "HUB-24-C01",
+        "definition": {
+          "componentId": "HUB-24",
+          "source": "docs/planning/2026-10-09/component-audit-hub.json",
+          "id": "HUB-24-C01",
+          "description": "Execute the shell smoke on a disposable home; preserve delivery/claim/death and sidecar cleanup observations.",
+          "existingTests": [
+            "hub/demo/smoke_shell.sh"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. tmux and harness; no model needed.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Real shell pane acknowledged welcome and direct-message delivery; actual work moved ready to claimed to done with result smoke ok. Agent death/kill events and sidecar removal are recorded.",
+            "Executed fba373a06a7b356b49fc778b96be5d6e5ae387b6 in a private native WSL filesystem, isolated HOME/state/tmux; all 403 snapshot hashes matched and remained stable. Owned hub stopped cleanly and root was deleted."
+          ],
+          "limits": [
+            "Shell-only WSL execution, not macOS/native Linux provider qualification. Claim/done use the smoke script authorized --as session path, not autonomous model decisions. Result notification to virtual operator remains queued; no notification acknowledgment claim. NATS was explicitly disabled for this smoke."
+          ],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/shell-smoke-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/shell-smoke-result.json",
+                "exists": true,
+                "sha256": "3ccba5caacf9ab13b26c410bd474654c70dc7a29e781613190804728ba0d44ba",
+                "bytes": 48029
+              },
+              "historicalRecordedSha256": "3ccba5caacf9ab13b26c410bd474654c70dc7a29e781613190804728ba0d44ba",
+              "historicalRecordedCandidate": "fba373a06a7b356b49fc778b96be5d6e5ae387b6",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/shell-smoke-source-check.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/shell-smoke-source-check.json",
+                "exists": true,
+                "sha256": "6087dbcedbd9d72b3f4da7846688e81aa9d1e1ed8bbfecb67e31919210c4c23a",
+                "bytes": 349
+              },
+              "historicalRecordedSha256": "6087dbcedbd9d72b3f4da7846688e81aa9d1e1ed8bbfecb67e31919210c4c23a",
+              "historicalRecordedCandidate": "fba373a06a7b356b49fc778b96be5d6e5ae387b6",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HUB-24"
+      },
+      {
+        "checkId": "HUB-24-C03",
+        "definition": {
+          "componentId": "HUB-24",
+          "source": "docs/planning/2026-10-09/component-audit-hub.json",
+          "id": "HUB-24-C03",
+          "description": "Regenerate scoreboard from copied historical fixtures and verify totals/failed-check attribution without overwriting original reports.",
+          "existingTests": [],
+          "requiredEnvironment": "Offline copied report fixtures.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Scoreboard rebuilt from copied 21 historical reports, all row identities/failure attribution verified, original files unchanged and regenerated content hash equal."
+          ],
+          "limits": [],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/historical-scoreboard.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/historical-scoreboard.json",
+                "exists": true,
+                "sha256": "5a2b88aa6fd407dd7bafaa7b185b67ba928b4ebf8aeeb6842bf537c80de8de38",
+                "bytes": 3496
+              },
+              "historicalRecordedSha256": "5a2b88aa6fd407dd7bafaa7b185b67ba928b4ebf8aeeb6842bf537c80de8de38",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HUB-24"
+      },
+      {
+        "checkId": "HUB-26-C01",
+        "definition": {
+          "componentId": "HUB-26",
+          "source": "docs/planning/2026-10-09/component-audit-hub.json",
+          "id": "HUB-26-C01",
+          "description": "Run all existing suites in their declared environments, recording every pass/fail/skip and known baseline failure; do not import old counts as a new result.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py",
+            "hub/tests/test_nats_federation.py",
+            "hub/tests/test_fed_unit.py",
+            "hub/tests/test_fed_live.py",
+            "hub/tests/test_governance.py",
+            "hub/tests/test_local_runner.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. Bash; real NATS/nsc/nats-py/Git for broker suites; disposable kind only when requested.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Strict WSL full profile records 125 tests across six existing hub modules with no skips. Source hashes bind this baseline.",
+            "Native Linux/macOS original full129 and callback11 pass against80f; actual WSL native filesystem exact80f full129 and callback11 also pass, zero skips, unchanged inputs. Reports include original failures and exact environments; no new plugin/nativeCI or later adapters accepted."
+          ],
+          "limits": [],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/baseline-full-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/baseline-full-result.json",
+                "exists": true,
+                "sha256": "3e3dbbb93562abd3fe4775899be4e39ad5fa4603c07a7039890ab12e6093b5f2",
+                "bytes": 6023
+              },
+              "historicalRecordedSha256": "3e3dbbb93562abd3fe4775899be4e39ad5fa4603c07a7039890ab12e6093b5f2",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/native/80f43e0/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/80f43e0/archive.json",
+                "exists": true,
+                "sha256": "55037cb4ec9b4d51b838b70b48ee181388488818563b5f7e64a429544f1d1089",
+                "bytes": 2645
+              },
+              "historicalRecordedSha256": "55037cb4ec9b4d51b838b70b48ee181388488818563b5f7e64a429544f1d1089",
+              "historicalRecordedCandidate": "80f43e02f3344696a3985c48ef12578319f3bd0f",
+              "bindingNote": "Independent native Linux/macOS588source references each match exact80f; all22 checks pass. No plugin code included.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/wsl-native-80f43e0/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/wsl-native-80f43e0/archive.json",
+                "exists": true,
+                "sha256": "840be29dac5e29a99ce361b6596466c8cdaefeda54aa623b9783c65fd0253cfe",
+                "bytes": 1131
+              },
+              "historicalRecordedSha256": "840be29dac5e29a99ce361b6596466c8cdaefeda54aa623b9783c65fd0253cfe",
+              "historicalRecordedCandidate": "80f43e02f3344696a3985c48ef12578319f3bd0f",
+              "bindingNote": "ExactGit archive on WSL native Linux filesystem with preparedlockedruntime, no credential inheritance; rawresults/sourcechecks/cleanup retained.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HUB-26"
+      },
+      {
+        "checkId": "HUB-26-C02",
+        "definition": {
+          "componentId": "HUB-26",
+          "source": "docs/planning/2026-10-09/component-audit-hub.json",
+          "id": "HUB-26-C02",
+          "description": "Run a mapped target comparison for each owning component and retain old failing cases until fixed or disproved with evidence.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py",
+            "hub/tests/test_nats_federation.py",
+            "hub/tests/test_fed_unit.py",
+            "hub/tests/test_fed_live.py",
+            "hub/tests/test_governance.py",
+            "hub/tests/test_local_runner.py"
+          ],
+          "requiredEnvironment": "P01 verification harness plus each component's target environment.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Baseline repair cases and legacy suites remain; retention gate checks 105 regression files and rejects an actual removed assertion. The comparison preserves reviewed replacements rather than silently weakening tests.",
+            "Independent read-only review maps all18assigned dashboard suites to owner capabilities and exact assertion lines; test hashes match retained full-run records. Current maintained-plugin36 proof supersedes missing external-plugin source counts separately. Later production adapter comparisons remain obligations in their owning phases.",
+            "Sixlegacy modules run129tests natively on macOS/Linux with exactsourcebinding, WSLsource-bound baseline retained, repaired regressions/faults retained. Class ownership below links suite methods to current component boundaries; SDK/contract/storage/leaf reports retain their separate fixtureoracles."
+          ],
+          "limits": [
+            "Broad Fed class spans capabilities; use exact methodnames/results to claim individual behaviors, not classpass alone.",
+            "No blanket all198behavior or wholecomponentqualification. Production adapter comparisons remain required in later owningtasks."
+          ],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/baseline-full-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/baseline-full-result.json",
+                "exists": true,
+                "sha256": "3e3dbbb93562abd3fe4775899be4e39ad5fa4603c07a7039890ab12e6093b5f2",
+                "bytes": 6023
+              },
+              "historicalRecordedSha256": "3e3dbbb93562abd3fe4775899be4e39ad5fa4603c07a7039890ab12e6093b5f2",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/regression-retention-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/regression-retention-result.json",
+                "exists": true,
+                "sha256": "6bdd717da10e4ad744aa3a978d7e5190da9d1cde0c37886822347e2377cf697c",
+                "bytes": 783
+              },
+              "historicalRecordedSha256": "6bdd717da10e4ad744aa3a978d7e5190da9d1cde0c37886822347e2377cf697c",
+              "historicalRecordedCandidate": "f19c6473d56335b8eeb28704b02895b9d9ab7fcc",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/assertion-mapping/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/assertion-mapping/archive.json",
+                "exists": true,
+                "sha256": "416e9695222dd1f493832ecdf2951da4fd260cc5cc05ac07b702e53965cfc9e6",
+                "bytes": 371
+              },
+              "historicalRecordedSha256": "416e9695222dd1f493832ecdf2951da4fd260cc5cc05ac07b702e53965cfc9e6",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Source-bound scoped review; captured proof retains original limits and failures.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/native/a21f03a/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/a21f03a/archive.json",
+                "exists": true,
+                "sha256": "f7c5f46a75e5322ebd40cc1872db8d82c6c9c5f11a0e692f6708dd5bb91c43fb",
+                "bytes": 3096
+              },
+              "historicalRecordedSha256": "f7c5f46a75e5322ebd40cc1872db8d82c6c9c5f11a0e692f6708dd5bb91c43fb",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Bothnative hosts all23checks;747source references each agree witha21f. Plugin36, hub129/conformance45 pass no skips.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HUB-26"
+      },
+      {
+        "checkId": "HUB-26-C03",
+        "definition": {
+          "componentId": "HUB-26",
+          "source": "docs/planning/2026-10-09/component-audit-hub.json",
+          "id": "HUB-26-C03",
+          "description": "Check fixture isolation, cleanup, account boundaries and repeatability; a skipped broker suite cannot satisfy a phase's live gate.",
+          "existingTests": [
+            "hub/tests/test_governance.py",
+            "hub/tests/test_local_runner.py"
+          ],
+          "requiredEnvironment": "P01 harness validation in disposable local and cluster test installations.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "WSL legacy fixtures and archived native a2 leaf/storage reports exercise actual isolated brokers, accounts, cleanup and faults. Strict evidence admission tests reject skipped environment/test reports.",
+            "Reviewed native 37e artifacts now cover both macOS and Linux with the changed 18-case storage and 45-case conformance fixtures, separate broker-account checks and cleanup reports. All artifact hashes in the review manifest were verified again."
+          ],
+          "limits": [
+            "Bounded single-node broker fixtures and declared restart/fault model only. No R3, power-loss, production enrollment or final real-hub acceptance claim. Legacy suite and Names-fix platform coverage remain HUB-26-C01."
+          ],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/baseline-full-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/baseline-full-result.json",
+                "exists": true,
+                "sha256": "3e3dbbb93562abd3fe4775899be4e39ad5fa4603c07a7039890ab12e6093b5f2",
+                "bytes": 6023
+              },
+              "historicalRecordedSha256": "3e3dbbb93562abd3fe4775899be4e39ad5fa4603c07a7039890ab12e6093b5f2",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/native/a2e9ee6/review.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/a2e9ee6/review.json",
+                "exists": true,
+                "sha256": "c88a654109c7179813afda572cc100434a391836fad1d73a9d5924ba5eac831c",
+                "bytes": 2129
+              },
+              "historicalRecordedSha256": "c88a654109c7179813afda572cc100434a391836fad1d73a9d5924ba5eac831c",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/conformance-admission-negative-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/conformance-admission-negative-result.json",
+                "exists": true,
+                "sha256": "64f7b15f6aa428d6e70f9a89e83d838d0f572020712be95471fbe5594efb0b69",
+                "bytes": 1285
+              },
+              "historicalRecordedSha256": "64f7b15f6aa428d6e70f9a89e83d838d0f572020712be95471fbe5594efb0b69",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/native/37e0d8c/review.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/37e0d8c/review.json",
+                "exists": true,
+                "sha256": "94c4484c147fc6b19c7a8bf4b3ccb0b3d7df15310e438b455e70119ca831add4",
+                "bytes": 7482
+              },
+              "historicalRecordedSha256": "94c4484c147fc6b19c7a8bf4b3ccb0b3d7df15310e438b455e70119ca831add4",
+              "historicalRecordedCandidate": "37e0d8cd7439d31a491ac673e73438f7885cd04e",
+              "bindingNote": "Use the report source hashes and explicit working-change flag. Names and field-panel fixes are tested working changes above the recorded base, not bytes already present in 37e0d8c.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "HUB-26"
+      },
+      {
+        "checkId": "REPO-02-C01",
+        "definition": {
+          "componentId": "REPO-02",
+          "source": "docs/planning/2026-10-09/component-audit-repository.json",
+          "id": "REPO-02-C01",
+          "description": "The gate rejects stale reviews, missing pattern evidence and unresolved findings; prior records remain readable.",
+          "existingTests": [
+            ".bytedesk/design-patterns/check.mjs"
+          ],
+          "requiredEnvironment": "Node and Git; read-only checker",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Pattern checker and historical records are retained; preservation negatives prove inventory deletion and unreasoned replacement are rejected, which are separate controls.",
+            "Five copied-checkout cases pass: unchanged candidate accepts, stale review rejects, missing pattern evidence rejects, unresolved finding rejects, and restored candidate accepts. Original records are unchanged and fixture removed."
+          ],
+          "limits": [
+            "Checker behavior at committed 37e source; structural checks do not prove the semantic quality of design review. Working source changes still require the normal reviewed digest refresh."
+          ],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/preservation-negative-results.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/preservation-negative-results.json",
+                "exists": true,
+                "sha256": "72a5ac7e9d6b302e1a64cab54a734937bc72815eb471cc2ceb01558107ae19a8",
+                "bytes": 4399
+              },
+              "historicalRecordedSha256": "72a5ac7e9d6b302e1a64cab54a734937bc72815eb471cc2ceb01558107ae19a8",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/regression-retention-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/regression-retention-result.json",
+                "exists": true,
+                "sha256": "6bdd717da10e4ad744aa3a978d7e5190da9d1cde0c37886822347e2377cf697c",
+                "bytes": 783
+              },
+              "historicalRecordedSha256": "6bdd717da10e4ad744aa3a978d7e5190da9d1cde0c37886822347e2377cf697c",
+              "historicalRecordedCandidate": "f19c6473d56335b8eeb28704b02895b9d9ab7fcc",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/pattern-negative-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/pattern-negative-result.json",
+                "exists": true,
+                "sha256": "224f0369dee246272cf9f29077f823955a86a42fef922e9ff89f8bf4784848dd",
+                "bytes": 4481
+              },
+              "historicalRecordedSha256": "224f0369dee246272cf9f29077f823955a86a42fef922e9ff89f8bf4784848dd",
+              "historicalRecordedCandidate": "37e0d8cd7439d31a491ac673e73438f7885cd04e",
+              "bindingNote": "Use the report source hashes and explicit working-change flag. Names and field-panel fixes are tested working changes above the recorded base, not bytes already present in 37e0d8c.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "REPO-02"
+      },
+      {
+        "checkId": "REPO-03-C01",
+        "definition": {
+          "componentId": "REPO-03",
+          "source": "docs/planning/2026-10-09/component-audit-repository.json",
+          "id": "REPO-03-C01",
+          "description": "Deliberately failing an existing assertion blocks the relevant gate; skipped environments cannot count as passes.",
+          "existingTests": [
+            ".github/workflows/tests.yml",
+            ".github/workflows/design-patterns.yml"
+          ],
+          "requiredEnvironment": "CI with declared Node, Python and supported OS jobs",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "historicalCharacterization": {
+          "status": "qualified",
+          "proved": [
+            "Archived native CI a2 exercises an intentional broken contract fixture; retention checker rejects a removed existing Python assertion. Twelve evidence-admission tests reject stale sources, missing tests, skips and wrong operating-system claims.",
+            "Native 37e macOS/Linux CI artifacts are now reviewed, with deliberate negative fixture and skip/evidence-admission checks retained.",
+            "Actual dashboard workflow script/arguments (python3 interpreter vs workflow python) return1 for one deliberately failed existing assertion, four tests/zero errors; setup import failure retained separately. Native conformance/skip evidence and existing strict local-runner rejection cases remain distinct. No actual failed CI workflow execution or skipped broker success claimed.",
+            "Strict localrunner test_failed_selection_can_be_retried_without_running_other_suites proves failureexit1 then repairedexit0; skipped/emptyselection tests prove1; nativecontract fixture/admission and patternnegative evidence; deliberate dashboardassertion exits1 through sameworkflow script/args."
+          ],
+          "limits": [
+            "Local dashboardprobe interpreter is python3 vs workflowpython; no deliberate remoteCI failure asserted.",
+            "tests.yml optional broker skips never qualify liveevidence; native strict129 supplies actualbroker execution."
+          ],
+          "evidence": [
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/native/a2e9ee6/review.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/a2e9ee6/review.json",
+                "exists": true,
+                "sha256": "c88a654109c7179813afda572cc100434a391836fad1d73a9d5924ba5eac831c",
+                "bytes": 2129
+              },
+              "historicalRecordedSha256": "c88a654109c7179813afda572cc100434a391836fad1d73a9d5924ba5eac831c",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/regression-retention-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/regression-retention-result.json",
+                "exists": true,
+                "sha256": "6bdd717da10e4ad744aa3a978d7e5190da9d1cde0c37886822347e2377cf697c",
+                "bytes": 783
+              },
+              "historicalRecordedSha256": "6bdd717da10e4ad744aa3a978d7e5190da9d1cde0c37886822347e2377cf697c",
+              "historicalRecordedCandidate": "f19c6473d56335b8eeb28704b02895b9d9ab7fcc",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/conformance-admission-negative-result.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/conformance-admission-negative-result.json",
+                "exists": true,
+                "sha256": "64f7b15f6aa428d6e70f9a89e83d838d0f572020712be95471fbe5594efb0b69",
+                "bytes": 1285
+              },
+              "historicalRecordedSha256": "64f7b15f6aa428d6e70f9a89e83d838d0f572020712be95471fbe5594efb0b69",
+              "historicalRecordedCandidate": "a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41",
+              "bindingNote": "Recorded candidate/base is provenance, not automatic current-candidate qualification. Compare relevant source bytes below; changed unrelated files do not invalidate unchanged assertions. acceptedCommit in retention is its comparison baseline.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/native/37e0d8c/review.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/37e0d8c/review.json",
+                "exists": true,
+                "sha256": "94c4484c147fc6b19c7a8bf4b3ccb0b3d7df15310e438b455e70119ca831add4",
+                "bytes": 7482
+              },
+              "historicalRecordedSha256": "94c4484c147fc6b19c7a8bf4b3ccb0b3d7df15310e438b455e70119ca831add4",
+              "historicalRecordedCandidate": "37e0d8cd7439d31a491ac673e73438f7885cd04e",
+              "bindingNote": "Use the report source hashes and explicit working-change flag. Names and field-panel fixes are tested working changes above the recorded base, not bytes already present in 37e0d8c.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/assertion-mapping/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/assertion-mapping/archive.json",
+                "exists": true,
+                "sha256": "416e9695222dd1f493832ecdf2951da4fd260cc5cc05ac07b702e53965cfc9e6",
+                "bytes": 371
+              },
+              "historicalRecordedSha256": "416e9695222dd1f493832ecdf2951da4fd260cc5cc05ac07b702e53965cfc9e6",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Source-bound scoped review; captured proof retains original limits and failures.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/legacy-step-negative/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/preservation/legacy-step-negative/archive.json",
+                "exists": true,
+                "sha256": "85603e034869c072446731680b32d8745734300be6684dcf681c217e30e95011",
+                "bytes": 782
+              },
+              "historicalRecordedSha256": "85603e034869c072446731680b32d8745734300be6684dcf681c217e30e95011",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Source-bound scoped review; captured proof retains original limits and failures.",
+              "originalRecordHashStillMatches": true
+            },
+            {
+              "record": "docs/planning/2026-10-09/delivery/evidence/P01/native/a21f03a/archive.json",
+              "currentRecordBinding": {
+                "path": "docs/planning/2026-10-09/delivery/evidence/P01/native/a21f03a/archive.json",
+                "exists": true,
+                "sha256": "f7c5f46a75e5322ebd40cc1872db8d82c6c9c5f11a0e692f6708dd5bb91c43fb",
+                "bytes": 3096
+              },
+              "historicalRecordedSha256": "f7c5f46a75e5322ebd40cc1872db8d82c6c9c5f11a0e692f6708dd5bb91c43fb",
+              "historicalRecordedCandidate": null,
+              "bindingNote": "Bothnative hosts all23checks;747source references each agree witha21f. Plugin36, hub129/conformance45 pass no skips.",
+              "originalRecordHashStillMatches": true
+            }
+          ]
+        },
+        "candidateReview": "Original assertions retained; current unchanged execution bytes verified against candidate. Reviewed backup/name/profile/callback and test timing replacements retain accepted assertions. Native/WSL hub/plugin runs and scoped repair reports address changed boundaries.",
+        "candidateEvidence": [
+          "P01-T04-acceptance.json",
+          "native/74d6bb9/root-review.json",
+          "wsl-native-74d6bb9/root-review.json",
+          "review-tooling/regression-independent-review.json"
+        ],
+        "componentId": "REPO-03"
+      },
+      {
+        "checkId": "HAR-23-C01",
+        "definition": {
+          "componentId": "HAR-23",
+          "source": "docs/planning/2026-10-09/component-audit-harness.json",
+          "id": "HAR-23-C01",
+          "description": "Validate nine maintained skill guides and metadata, literal-argument runtime forwarding, explicit binding and relocation with spaces; distinguish new provenance from unavailable original source.",
+          "existingTests": [
+            "dashboard/test_plugin_skills.py",
+            "plugins/agentmux-orchestration/tests/test_packaging.py"
+          ],
+          "requiredEnvironment": "Private Linux/WSL package/runtime fixtures; actual installed-host metadata validator; no inference.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "candidateEvidence": [
+          "plugin-restoration/metadata-fastpath-parent-review.json",
+          "native/74d6bb9/linux/plugin-preservation.json",
+          "native/74d6bb9/macos/plugin-preservation.json"
+        ],
+        "scope": "Only current qualification scope; no installed-host or final hub acceptance.",
+        "componentId": "HAR-23"
+      },
+      {
+        "checkId": "HAR-23-C02",
+        "definition": {
+          "componentId": "HAR-23",
+          "source": "docs/planning/2026-10-09/component-audit-harness.json",
+          "id": "HAR-23-C02",
+          "description": "Verify irrelevant hook bypass, approved literal hire, live definition refusals, ambiguous/path/patch/HTTP denials and continued-service read-only roster MCP.",
+          "existingTests": [
+            "dashboard/test_orchestration_plugin.py",
+            "plugins/agentmux-orchestration/tests/test_hook_mcp.py",
+            "tests/contracts/plugin_preservation.py"
+          ],
+          "requiredEnvironment": "Disposable HTTP/dashboard/tmux and package fixtures; native Windows hook launch remains P06-unqualified.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "candidateEvidence": [
+          "plugin-restoration/metadata-fastpath-parent-review.json",
+          "native/74d6bb9/linux/plugin-preservation.json",
+          "native/74d6bb9/macos/plugin-preservation.json"
+        ],
+        "scope": "Only current qualification scope; no installed-host or final hub acceptance.",
+        "componentId": "HAR-23"
+      },
+      {
+        "checkId": "HAR-23-C03",
+        "definition": {
+          "componentId": "HAR-23",
+          "source": "docs/planning/2026-10-09/component-audit-harness.json",
+          "id": "HAR-23-C03",
+          "description": "Run current definition/team CLI contracts through the relocated launcher against actual disposable dashboard state; map all nine workflows to supported commands and preserve collection/identity/checksum policy.",
+          "existingTests": [
+            "dashboard/test_agentcli.py",
+            "dashboard/test_teamcli.py",
+            "dashboard/test_dispatch.py"
+          ],
+          "requiredEnvironment": "Private real dashboard/SQLite and bounded original provider fixtures; no real-model equivalence claim.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "candidateEvidence": [
+          "plugin-restoration/metadata-fastpath-parent-review.json",
+          "native/74d6bb9/linux/plugin-preservation.json",
+          "native/74d6bb9/macos/plugin-preservation.json"
+        ],
+        "scope": "Only current qualification scope; no installed-host or final hub acceptance.",
+        "componentId": "HAR-23"
+      },
+      {
+        "checkId": "REPO-10-C01",
+        "definition": {
+          "componentId": "REPO-10",
+          "source": "docs/planning/2026-10-09/component-audit-repository.json",
+          "id": "REPO-10-C01",
+          "description": "Preserve text, version and reviewer identity through standalone import/edit/restore/export, reset identity only on author switch; keep legacy drafts and known reviewer filenames.",
+          "existingTests": [
+            "docs/reviews/src/features/notes-controller.test.mjs",
+            "docs/reviews/src/features/notes-format.test.mjs"
+          ],
+          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "candidateEvidence": [
+          "review-tooling/independent-share-review-20261013/root-review.json",
+          "review-tooling/independent-share-review-20261013/independent-review.json"
+        ],
+        "scope": "Only current qualification scope; no installed-host or final hub acceptance.",
+        "componentId": "REPO-10"
+      },
+      {
+        "checkId": "REPO-10-C02",
+        "definition": {
+          "componentId": "REPO-10",
+          "source": "docs/planning/2026-10-09/component-audit-repository.json",
+          "id": "REPO-10-C02",
+          "description": "Use effective Git identity; configure only repo-local name/email; confine writes to assigned notes files and reject stale identity/revision.",
+          "existingTests": [
+            "docs/reviews/src/features/local-review.test.mjs"
+          ],
+          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "candidateEvidence": [
+          "review-tooling/independent-share-review-20261013/root-review.json",
+          "review-tooling/independent-share-review-20261013/independent-review.json"
+        ],
+        "scope": "Only current qualification scope; no installed-host or final hub acceptance.",
+        "componentId": "REPO-10"
+      },
+      {
+        "checkId": "REPO-10-C03",
+        "definition": {
+          "componentId": "REPO-10",
+          "source": "docs/planning/2026-10-09/component-audit-repository.json",
+          "id": "REPO-10-C03",
+          "description": "Reject foreign Host/Origin/missing token, links escaping notes/repository, malformed/oversized payloads; rejected writes preserve existing data.",
+          "existingTests": [
+            "docs/reviews/src/features/local-review.test.mjs"
+          ],
+          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "candidateEvidence": [
+          "review-tooling/independent-share-review-20261013/root-review.json",
+          "review-tooling/independent-share-review-20261013/independent-review.json"
+        ],
+        "scope": "Only current qualification scope; no installed-host or final hub acceptance.",
+        "componentId": "REPO-10"
+      },
+      {
+        "checkId": "REPO-10-C04",
+        "definition": {
+          "componentId": "REPO-10",
+          "source": "docs/planning/2026-10-09/component-audit-repository.json",
+          "id": "REPO-10-C04",
+          "description": "Lock competing writers, release locks on process exit, retain pending edits/conflict drafts and warn before delayed/unconfirmed saves; retry temporary failures.",
+          "existingTests": [
+            "docs/reviews/src/features/notes-lock.test.mjs",
+            "docs/reviews/src/features/notes-local.test.mjs",
+            "docs/reviews/src/features/notes-controller.test.mjs"
+          ],
+          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "candidateEvidence": [
+          "review-tooling/independent-share-review-20261013/root-review.json",
+          "review-tooling/independent-share-review-20261013/independent-review.json"
+        ],
+        "scope": "Only current qualification scope; no installed-host or final hub acceptance.",
+        "componentId": "REPO-10"
+      },
+      {
+        "checkId": "REPO-10-C05",
+        "definition": {
+          "componentId": "REPO-10",
+          "source": "docs/planning/2026-10-09/component-audit-repository.json",
+          "id": "REPO-10-C05",
+          "description": "Escape feedback, preserve exact assets/plan, keep stable source-version rules and standalone network restrictions, generate matching HTML/report/version.",
+          "existingTests": [
+            "docs/reviews/src/features/packaging.test.mjs",
+            "docs/reviews/src/features/notes-format.test.mjs"
+          ],
+          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        "status": "passed",
+        "candidateEvidence": [
+          "review-tooling/independent-share-review-20261013/root-review.json",
+          "review-tooling/independent-share-review-20261013/independent-review.json"
+        ],
+        "scope": "Only current qualification scope; no installed-host or final hub acceptance.",
+        "componentId": "REPO-10"
+      },
+      {
+        "checkId": "REPO-10-C06",
+        "definition": {
+          "componentId": "REPO-10",
+          "source": "docs/planning/2026-10-09/component-audit-repository.json",
+          "id": "REPO-10-C06",
+          "description": "Verify offline review-inbox discovery across local and cached remote refs: valid nonempty notes and configured work paths, duplicate grouping, versions and Git attribution, local drafts, explicit reply receipts and unknown/mixed states. Reject unsafe paths/arguments and malformed input, report bounded/truncated history honestly, and prove repository/config/index/ref preservation. Review shared/Claude entry points and agent metadata for selection, cached-history labeling, untrusted-content handling and separate write authorization.",
+          "existingTests": [
+            ".agents/skills/review-inbox/scripts/inbox.test.mjs",
+            ".agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs"
+          ],
+          "requiredEnvironment": "Disposable offline Git repositories on Windows and native POSIX; credential-free scanner invocation and shared skill/reference/YAML inspection. No network, models, real reviewer notes or browser needed.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P01"
+        },
+        "status": "passed",
+        "candidateEvidence": [
+          "review-tooling/independent-share-review-20261013/scanner-root-review.json",
+          "review-tooling/independent-share-review-20261013/scanner-final-review.json",
+          "review-tooling/independent-share-review-20261013/scanner-mixed-reply-review.json"
+        ],
+        "scope": "Only current qualification scope; no installed-host or final hub acceptance.",
+        "componentId": "REPO-10"
+      }
+    ],
+    "evidence": [
+      "docs/planning/2026-10-09/delivery/evidence/P01/component-acceptance-review-0fd6432.json",
+      "docs/planning/2026-10-09/delivery/evidence/P01/P01-T04-acceptance.json"
+    ],
+    "unmappedItems": [],
+    "openVerificationGaps": [],
+    "gainEvidence": [
+      "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/independent-share-review-20261013/root-review.json",
+      "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/independent-share-review-20261013/scanner-root-review.json"
+    ],
+    "migrationAndRecoveryEvidence": [
+      "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/storage-result.json",
+      "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/linux/signed-leaf-result.json"
+    ],
+    "laterPhaseQualifications": [
+      {
+        "id": "HAR-21-C02",
+        "definition": {
+          "componentId": "HAR-21",
+          "source": "docs/planning/2026-10-09/component-audit-harness.json",
+          "id": "HAR-21-C02",
+          "description": "Repeat calibration/team/cross-repository/swarm scenarios in an isolated environment with pinned supported clients and explicit recording of all failed/skipped checks.",
+          "existingTests": [
+            "hub/demo/orchestrate.py"
+          ],
+          "requiredEnvironment": "Disposable repositories and hub/tmux environments; live agents and paid providers only when separately authorized.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P06"
+        },
+        "result": null,
+        "status": "P06qualification-unaccepted"
+      },
+      {
+        "id": "HUB-24-C02",
+        "definition": {
+          "componentId": "HUB-24",
+          "source": "docs/planning/2026-10-09/component-audit-hub.json",
+          "id": "HUB-24-C02",
+          "description": "Compare all four orchestration scenarios and E1\u00c3\u00a2\u00e2\u201a\u00ac\u00e2\u20ac\u0153E6 against baseline and target; add explicit acceptance checks and keep failed/skipped outcomes.",
+          "existingTests": [
+            "hub/demo/orchestrate.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. tmux, isolated repos and approved real provider accounts/budget.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P06"
+        },
+        "result": null,
+        "status": "P06qualification-unaccepted"
+      },
+      {
+        "id": "REPO-10-C07",
+        "definition": {
+          "componentId": "REPO-10",
+          "source": "docs/planning/2026-10-09/component-audit-repository.json",
+          "id": "REPO-10-C07",
+          "description": "Qualify the promised review-inbox opening workflow in each supported installed Claude Code/Codex host: explicit selection, latest selected branch head/version, safe reuse or isolated workspace, documented owned server, verified page/session and browser opening. Preserve dirty/occupied branches, unknown listeners and settings; honor cached/fetch errors and browser denials. Opening never writes notes, records answers, commits, pushes or authorizes implementation without a separate request.",
+          "existingTests": [],
+          "requiredEnvironment": "Actual supported installed agent hosts and disposable review repositories/workspaces; owned loopback server and supported browser tool. Keep unsupported host/transport behavior explicit.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P06"
+        },
+        "result": null,
+        "status": "P06qualification-unaccepted"
+      }
+    ]
+  },
+  "deliveryGovernance": {
+    "reviewAuthority": "Codex",
+    "oneActivePhase": true,
+    "humanDeliveryApprovalRequired": false,
+    "mergeAuthorized": false
+  },
+  "ci": {
+    "nativeRun": 38448793759,
+    "standardTestsRun": 38448793649,
+    "patternRun": 38448793700,
+    "candidate": "0fd64326b9621163b5b550f6419d21e1007b56d3",
+    "allConclusions": "success"
+  },
+  "limitations": [
+    "This approves only P01. No P06 supported-host/provider qualification, later production runtime or final bilateral hub acceptance.",
+    "Historical WSL contract evidence is reused only for52unchanged execution sources; CI wrapper differences separately covered by current native jobs.",
+    "Original failed TEAM, false configuration-byte comparisons and all original scenario assertions remain required P06 work.",
+    "Native leaf report wording incorrectly says WSL; actual recorded native environment is authoritative and the original report remains unchanged.",
+    "Real browser/macOS review-helper execution was not claimed or added as a P01 gate.",
+    "Final acceptance permits feature-branch commit/push only; no merge or release."
+  ]
+}

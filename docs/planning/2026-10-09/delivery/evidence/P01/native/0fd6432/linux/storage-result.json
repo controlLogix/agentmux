@@ -1,0 +1,199 @@
+{
+  "status": "passed",
+  "recordedAt": "2026-10-13T18:43:44.296661+00:00",
+  "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+  "python": "3.14.8",
+  "natsPy": "2.16.0",
+  "natsServer": "nats-server: v2.15.0",
+  "node": "v22.21.1",
+  "seconds": 6.833,
+  "cases": [
+    {
+      "id": "complete-state-provenance-effect-record",
+      "passed": true,
+      "sequence": 1
+    },
+    {
+      "id": "conditional-two-language-race",
+      "passed": true,
+      "winnerSequence": 2,
+      "loserApiCodes": [
+        10071
+      ]
+    },
+    {
+      "id": "authoritative-latest-read-both-clients",
+      "passed": true,
+      "sequence": 2
+    },
+    {
+      "id": "conditional-winner-only-dispatches-once",
+      "passed": true,
+      "scenario": "FAIL-06",
+      "winnerOperation": "ts-contender",
+      "providerAdmissions": 1,
+      "providerCompletions": 1,
+      "boundary": "real owner reservation; in-memory dispatch deduplication only"
+    },
+    {
+      "id": "lost-puback-reconciles-after-restart-and-dedup-expiry",
+      "passed": true,
+      "recoveredSequence": 3,
+      "laterSequence": 4
+    },
+    {
+      "id": "changed-digest-replay-rejected-both-clients",
+      "passed": true
+    },
+    {
+      "id": "python-atomic-batch-no-partial-before-commit",
+      "passed": true,
+      "openingAck": {
+        "stagingHeaders": {}
+      },
+      "commitAck": {
+        "stream": "LEDGER",
+        "seq": 6,
+        "batch": "batch-one",
+        "count": 2
+      }
+    },
+    {
+      "id": "atomic-gap-rejects-without-partial-records",
+      "passed": true,
+      "apiCode": 10176
+    },
+    {
+      "id": "uncommitted-batch-remains-absent-after-restart",
+      "passed": true
+    },
+    {
+      "id": "typescript-native-atomic-batch",
+      "passed": true,
+      "ack": {
+        "sequence": 8,
+        "stream": "LEDGER",
+        "batch": "U3AGzUfpTG3ElHoY7PyLJf",
+        "count": 2,
+        "committed": true
+      }
+    },
+    {
+      "id": "atomic-batch-stale-subject-condition-rejected",
+      "passed": true,
+      "apiCode": 10071
+    },
+    {
+      "id": "atomic-condition-rechecked-after-interleaved-commit",
+      "passed": true,
+      "apiCode": 10071
+    },
+    {
+      "id": "typescript-raw-batch-gap-rejected",
+      "passed": true,
+      "apiCode": 10176
+    },
+    {
+      "id": "cross-stream-atomic-transaction-rejected",
+      "passed": true,
+      "apiCode": 10176
+    },
+    {
+      "id": "lost-final-batch-ack-reconciles-after-restart-and-dedup-expiry",
+      "passed": true,
+      "scenario": "FAIL-42",
+      "records": 2,
+      "duplicateWindowSeconds": 0.2,
+      "waitSeconds": 0.3,
+      "retryApiCode": 10071
+    },
+    {
+      "id": "stale-kv-projection-requires-owner-and-policy-revalidation",
+      "passed": true,
+      "scenario": "FAIL-43",
+      "projectionSequence": 12,
+      "ownerSequence": 13,
+      "policyRevision": 2
+    },
+    {
+      "id": "fixture-capability-rejects-cross-stream-kv-object-tool-atomicity",
+      "passed": true,
+      "scenario": "FAIL-47",
+      "rejectedResourceKinds": [
+        "stream-record",
+        "kv",
+        "object-upload",
+        "external-tool"
+      ],
+      "boundary": "fixture admission only; no production plugin registry"
+    },
+    {
+      "id": "incoming-creation-atomic-with-attribution-claim-python",
+      "passed": true,
+      "scenario": "FAIL-08",
+      "baselineFinding": "AMX-BASE-002",
+      "injectedBoundaries": [
+        "state",
+        "attribution",
+        "claim",
+        "after-commit"
+      ],
+      "recordsAdded": 1,
+      "claimIntents": 1,
+      "boundary": "fixture complete-record construction; no production authorization or dispatch"
+    },
+    {
+      "id": "incoming-creation-atomic-with-attribution-claim-typescript",
+      "passed": true,
+      "scenario": "FAIL-08",
+      "baselineFinding": "AMX-BASE-002",
+      "injectedBoundaries": [
+        "state",
+        "attribution",
+        "claim",
+        "after-commit"
+      ],
+      "recordsAdded": 1,
+      "claimIntents": 1,
+      "boundary": "fixture complete-record construction; no production authorization or dispatch"
+    },
+    {
+      "id": "retention-hole-requires-reconciliation",
+      "passed": true
+    }
+  ],
+  "sourceSha256": {
+    "hub/requirements.lock": "3ed79db16ab9b01c1c4f1b2b99443b8952579abd8a85fd38e60aff8c1baa2420",
+    "tests/contracts/fake_execution.py": "5d451dee85a6653869d83d6f38c26540a2fabd8797dad28385dcfe66dc5507c0",
+    "tests/storage/README.md": "9655bd9b9e24e5b11b1c6dbeb806e4fe24145647891d45c801c0ee26c98ebe6c",
+    "tests/storage/python_client.py": "e09951cf4a7237cac16a9b3b2b455dfeecdc3bd904e575343412d471561865c6",
+    "tests/storage/run.py": "3eb87919f153de49af63839d00dd07305e2a341cad1d965b33c57fbb02d55b55",
+    "tests/storage/typescript/README.md": "951a9f510f9a117cffd07cf9118a240485e37aea683c6867ae3ffd054b618e88",
+    "tests/storage/typescript/package-lock.json": "e0d86aeebaf835fb965ef32ff0925c4f3919fd87b8f41daa2ca90ffe9f291a1d",
+    "tests/storage/typescript/package.json": "5df63a73a27894e59288e4ee366e0fa1ff495812a8a2efe7d25efd7e63561a1e",
+    "tests/storage/typescript/src/client.ts": "9087215cf5266e2a12e44dee4edd1ed3192d5c94813e65443c8e152b0c0ac43a",
+    "tests/storage/typescript/tsconfig.json": "c46cb61f3946e5fc5c84ab49896f889d2bde0478d8f8b0710079d5e17edb79d4"
+  },
+  "typeScriptBuildSha256": "ea6a2fed48d95ca6d8daf0e75379e77c439471475d1be1593715774725e8748c",
+  "typeScriptBuildInputSha256": {
+    "package.json": "5df63a73a27894e59288e4ee366e0fa1ff495812a8a2efe7d25efd7e63561a1e",
+    "package-lock.json": "e0d86aeebaf835fb965ef32ff0925c4f3919fd87b8f41daa2ca90ffe9f291a1d",
+    "tsconfig.json": "c46cb61f3946e5fc5c84ab49896f889d2bde0478d8f8b0710079d5e17edb79d4",
+    "src/client.ts": "9087215cf5266e2a12e44dee4edd1ed3192d5c94813e65443c8e152b0c0ac43a"
+  },
+  "typeScriptBuildInputsMatchRepository": true,
+  "brokerBinarySha256": "387ce54e7a0a249d877a579ed641d715bab047d7e061bfa42b4d07f6a0401341",
+  "command": "python tests/storage/run.py",
+  "sourceCommit": "0fd64326b9621163b5b550f6419d21e1007b56d3",
+  "limits": [
+    "One file-backed R1 broker on the recorded host platform; no R3, network partition or power-loss qualification.",
+    "Fixture owners use trusted synthetic provenance; no authentication/permission or production domain owner claim.",
+    "Lost acknowledgment is deliberately omitted by the publisher; restart is graceful SIGTERM, not a power failure.",
+    "Retained-history scans are fixture implementations bounded to 10000 messages, not production indexes.",
+    "Atomic persistence does not make external effects, projections, streams or hubs transactional."
+  ],
+  "sources": [
+    "https://docs.nats.io/learn/jetstream/advanced-publishing",
+    "https://raw.githubusercontent.com/nats-io/nats-server/v2.15.0/server/stream.go"
+  ]
+}

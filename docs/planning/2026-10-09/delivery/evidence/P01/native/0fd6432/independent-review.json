@@ -1,0 +1,664 @@
+{
+  "reviewedAt": "2026-10-13T18:51:53.755619+00:00",
+  "reviewer": "Codex independent subagent",
+  "sourceCommit": "0fd64326b9621163b5b550f6419d21e1007b56d3",
+  "runId": 38448793759,
+  "phaseAccepted": false,
+  "method": "Read raw downloaded reports/log; independently hash every raw file, verify report links and compare all source/mirror/build-input maps with exact candidate Git blobs. No runtime suites rerun.",
+  "environments": {
+    "linux": {
+      "jobId": 115474618625,
+      "jobConclusion": "success",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "python": "3.14.8",
+      "node": "v22.21.1",
+      "npm": "10.9.4",
+      "topLevelSourcePins": 253,
+      "sourceMapsVerified": 17,
+      "uniqueSourcePathsVerified": 255,
+      "sourceMismatches": [],
+      "reportLogLinksMatched": true,
+      "checks": [
+        {
+          "name": "locked-python-dependencies",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "/home/runner/work/agentmux/agentmux/sdk/python/requirements.lock",
+            "-r",
+            "/home/runner/work/agentmux/agentmux/hub/requirements.lock"
+          ],
+          "exitCode": 0,
+          "seconds": 5.327
+        },
+        {
+          "name": "contracts-dependencies",
+          "command": [
+            "npm",
+            "ci",
+            "--ignore-scripts",
+            "--no-audit",
+            "--no-fund"
+          ],
+          "exitCode": 0,
+          "seconds": 1.217
+        },
+        {
+          "name": "contracts-build",
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exitCode": 0,
+          "seconds": 0.666
+        },
+        {
+          "name": "storage-dependencies",
+          "command": [
+            "npm",
+            "ci",
+            "--ignore-scripts",
+            "--no-audit",
+            "--no-fund"
+          ],
+          "exitCode": 0,
+          "seconds": 0.817
+        },
+        {
+          "name": "storage-build",
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exitCode": 0,
+          "seconds": 0.615
+        },
+        {
+          "name": "python-sdk-units",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "sdk/python/tests",
+            "-v"
+          ],
+          "exitCode": 0,
+          "seconds": 0.866
+        },
+        {
+          "name": "typescript-sdk-units",
+          "command": [
+            "npm",
+            "test"
+          ],
+          "exitCode": 0,
+          "seconds": 0.766
+        },
+        {
+          "name": "cross-language-contracts",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "tests/contracts/run.py",
+            "--evidence",
+            "/home/runner/work/_temp/agentmux-evidence/contracts.json"
+          ],
+          "exitCode": 0,
+          "seconds": 27.128
+        },
+        {
+          "name": "conformance-evidence-admission",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "docs/planning/2026-10-09/delivery/check_conformance_evidence.py",
+            "--report",
+            "/home/runner/work/_temp/agentmux-evidence/contracts.json",
+            "--candidate",
+            "0fd64326b9621163b5b550f6419d21e1007b56d3",
+            "--environment",
+            "linux",
+            "--evidence",
+            "/home/runner/work/_temp/agentmux-evidence/conformance-admission.json"
+          ],
+          "exitCode": 0,
+          "seconds": 0.164
+        },
+        {
+          "name": "conformance-evidence-negative-checks",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "docs/planning/2026-10-09/delivery/test_conformance_evidence.py",
+            "--evidence",
+            "/home/runner/work/_temp/agentmux-evidence/conformance-admission-negative.json"
+          ],
+          "exitCode": 0,
+          "seconds": 0.816
+        },
+        {
+          "name": "negative-contract-fixture",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "tests/contracts/ci.py",
+            "--negative-fixture",
+            "--evidence",
+            "/home/runner/work/_temp/agentmux-evidence"
+          ],
+          "exitCode": 0,
+          "seconds": 0.615
+        },
+        {
+          "name": "storage",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "tests/storage/run.py"
+          ],
+          "exitCode": 0,
+          "seconds": 7.181
+        },
+        {
+          "name": "leaf",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "tests/leaf/run.py"
+          ],
+          "exitCode": 0,
+          "seconds": 2.521
+        },
+        {
+          "name": "leaf/signed",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "tests/leaf/signed_run.py"
+          ],
+          "exitCode": 0,
+          "seconds": 11.141
+        },
+        {
+          "name": "original-hub-full-profile",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "-m",
+            "hub.tests.run_local",
+            "--profile",
+            "full"
+          ],
+          "exitCode": 0,
+          "seconds": 61.789
+        },
+        {
+          "name": "original-hub-evidence",
+          "exitCode": 0
+        },
+        {
+          "name": "maintained-plugin-preservation",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "tests/contracts/plugin_preservation.py",
+            "--evidence",
+            "/home/runner/work/_temp/agentmux-evidence/plugin-preservation.json"
+          ],
+          "exitCode": 0,
+          "seconds": 8.182
+        },
+        {
+          "name": "platform-placement-contract",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "tests/platform",
+            "-p",
+            "test_*.py",
+            "-v"
+          ],
+          "exitCode": 0,
+          "seconds": 0.164
+        },
+        {
+          "name": "windows-callback-contract",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "-m",
+            "unittest",
+            "hub.tests.test_windows_callbacks",
+            "-v"
+          ],
+          "exitCode": 0,
+          "seconds": 0.415
+        },
+        {
+          "name": "tracker-tests",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "docs/planning/2026-10-09/delivery",
+            "-p",
+            "test_track.py",
+            "-v"
+          ],
+          "exitCode": 0,
+          "seconds": 0.365
+        },
+        {
+          "name": "regression-preservation",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "docs/planning/2026-10-09/delivery/check_regressions.py",
+            "--self-test"
+          ],
+          "exitCode": 0,
+          "seconds": 0.114
+        },
+        {
+          "name": "component-preservation",
+          "command": [
+            "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+            "docs/planning/2026-10-09/verify-component-coverage.py"
+          ],
+          "exitCode": 0,
+          "seconds": 0.114
+        },
+        {
+          "name": "pattern-review",
+          "command": [
+            "node",
+            ".bytedesk/design-patterns/check.mjs",
+            "check",
+            "--root",
+            "."
+          ],
+          "exitCode": 0,
+          "seconds": 0.365
+        }
+      ],
+      "counts": {
+        "contractTests": 45,
+        "contractResultEntries": 1497,
+        "storageCases": 20,
+        "leafCases": 11,
+        "signedLeafCases": 19,
+        "hubTests": 132,
+        "pluginTests": 36,
+        "negativeAdmissionTests": 12
+      },
+      "broker": {
+        "version": "nats-server: v2.15.0",
+        "archiveUrl": "https://github.com/nats-io/nats-server/releases/download/v2.15.0/nats-server-v2.15.0-linux-amd64.tar.gz",
+        "checksumUrl": "https://github.com/nats-io/nats-server/releases/download/v2.15.0/SHA256SUMS",
+        "archiveSha256": "5d2c51caca950333aba84911df7d377f826f3a59ec36061c6539105084f65c92",
+        "binarySha256": "387ce54e7a0a249d877a579ed641d715bab047d7e061bfa42b4d07f6a0401341",
+        "checksumVerified": true
+      },
+      "nsc": {
+        "version": "nsc version 2.15.0",
+        "archiveUrl": "https://github.com/nats-io/nsc/releases/download/v2.15.0/nsc-linux-amd64.zip",
+        "checksumUrl": "https://github.com/nats-io/nsc/releases/download/v2.15.0/SHA256SUMS-nsc.txt",
+        "archiveSha256": "7d55eda757dc9f233675a3038fcf8779bcda99753b1603f7009fc8537e126b7e",
+        "binarySha256": "4463d74efd49f0027a74fb6600714a3d972031985e9a2b4f7e3e3681af215a56",
+        "checksumVerified": true
+      },
+      "cleanup": {
+        "leaf": true,
+        "signedLeaf": true,
+        "pluginHomeRemoved": true,
+        "hubIsolatedHome": true,
+        "hubIsolatedCache": true
+      },
+      "rawFileHashes": {
+        "ci-result.json": "7835570780f0fa5b97d8b0ceb4cb31cf60f718bac8964b0dc80ce898b0b031be",
+        "conformance-admission-negative.json": "1ebaf73211c1d53cb442956d3d75e7e35ceecc46a74a24bee6c87e8d08646781",
+        "conformance-admission.json": "cccd24194788ee1afe83c6dcc58ca0151b46e8ee5677a0c21ce28e4207486fc0",
+        "contracts.json": "9af20837769aad78dceeb94823fc3cb03664707e0f87f3353c6d689396ce8d63",
+        "hub-full-result.json": "80bebc0a3c6c8acaab2934267f220d9d95df53699bc1104a846e246e5aeea4eb",
+        "leaf-result.json": "3c2b36085ab927bd23e8ab311f07bb35f6f17b8b701b4902e83ff20b54113906",
+        "negative-fixture.json": "b53c8467be2357e8f6df2bf2a7402b5a26671e081cb223a8bbd271b9089bf4ba",
+        "plugin-preservation.json": "36a3957464301294ae67300c84dbe56b27bc0028bde68f7568ec1db7552184b1",
+        "plugin-preservation.log": "02935b900059462c2daedd24ab8164241734eac1a84a5b7d75bb93cf8a4888c4",
+        "signed-leaf-result.json": "f1121921cbf4fec48d1217352346665657512e6a29ae555c2897e466dce9e9ff",
+        "storage-result.json": "d0980b3efd59341f8cf4dd6971804a174176a2f2e00b98c10e007a41e98567e8"
+      }
+    },
+    "macos": {
+      "jobId": 115474617882,
+      "jobConclusion": "success",
+      "platform": "macOS-15.7.9-arm64-arm-64bit-Mach-O",
+      "python": "3.14.8",
+      "node": "v22.21.1",
+      "npm": "10.9.4",
+      "topLevelSourcePins": 253,
+      "sourceMapsVerified": 17,
+      "uniqueSourcePathsVerified": 255,
+      "sourceMismatches": [],
+      "reportLogLinksMatched": true,
+      "checks": [
+        {
+          "name": "locked-python-dependencies",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "/Users/runner/work/agentmux/agentmux/sdk/python/requirements.lock",
+            "-r",
+            "/Users/runner/work/agentmux/agentmux/hub/requirements.lock"
+          ],
+          "exitCode": 0,
+          "seconds": 3.266
+        },
+        {
+          "name": "contracts-dependencies",
+          "command": [
+            "npm",
+            "ci",
+            "--ignore-scripts",
+            "--no-audit",
+            "--no-fund"
+          ],
+          "exitCode": 0,
+          "seconds": 1.51
+        },
+        {
+          "name": "contracts-build",
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exitCode": 0,
+          "seconds": 0.773
+        },
+        {
+          "name": "storage-dependencies",
+          "command": [
+            "npm",
+            "ci",
+            "--ignore-scripts",
+            "--no-audit",
+            "--no-fund"
+          ],
+          "exitCode": 0,
+          "seconds": 1.07
+        },
+        {
+          "name": "storage-build",
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exitCode": 0,
+          "seconds": 0.718
+        },
+        {
+          "name": "python-sdk-units",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "sdk/python/tests",
+            "-v"
+          ],
+          "exitCode": 0,
+          "seconds": 0.821
+        },
+        {
+          "name": "typescript-sdk-units",
+          "command": [
+            "npm",
+            "test"
+          ],
+          "exitCode": 0,
+          "seconds": 0.889
+        },
+        {
+          "name": "cross-language-contracts",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "tests/contracts/run.py",
+            "--evidence",
+            "/Users/runner/work/_temp/agentmux-evidence/contracts.json"
+          ],
+          "exitCode": 0,
+          "seconds": 24.608
+        },
+        {
+          "name": "conformance-evidence-admission",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "docs/planning/2026-10-09/delivery/check_conformance_evidence.py",
+            "--report",
+            "/Users/runner/work/_temp/agentmux-evidence/contracts.json",
+            "--candidate",
+            "0fd64326b9621163b5b550f6419d21e1007b56d3",
+            "--environment",
+            "macos",
+            "--evidence",
+            "/Users/runner/work/_temp/agentmux-evidence/conformance-admission.json"
+          ],
+          "exitCode": 0,
+          "seconds": 0.219
+        },
+        {
+          "name": "conformance-evidence-negative-checks",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "docs/planning/2026-10-09/delivery/test_conformance_evidence.py",
+            "--evidence",
+            "/Users/runner/work/_temp/agentmux-evidence/conformance-admission-negative.json"
+          ],
+          "exitCode": 0,
+          "seconds": 1.264
+        },
+        {
+          "name": "negative-contract-fixture",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "tests/contracts/ci.py",
+            "--negative-fixture",
+            "--evidence",
+            "/Users/runner/work/_temp/agentmux-evidence"
+          ],
+          "exitCode": 0,
+          "seconds": 0.671
+        },
+        {
+          "name": "storage",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "tests/storage/run.py"
+          ],
+          "exitCode": 0,
+          "seconds": 7.122
+        },
+        {
+          "name": "leaf",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "tests/leaf/run.py"
+          ],
+          "exitCode": 0,
+          "seconds": 2.615
+        },
+        {
+          "name": "leaf/signed",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "tests/leaf/signed_run.py"
+          ],
+          "exitCode": 0,
+          "seconds": 11.293
+        },
+        {
+          "name": "original-hub-full-profile",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "-m",
+            "hub.tests.run_local",
+            "--profile",
+            "full"
+          ],
+          "exitCode": 0,
+          "seconds": 82.752
+        },
+        {
+          "name": "original-hub-evidence",
+          "exitCode": 0
+        },
+        {
+          "name": "maintained-plugin-preservation",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "tests/contracts/plugin_preservation.py",
+            "--evidence",
+            "/Users/runner/work/_temp/agentmux-evidence/plugin-preservation.json"
+          ],
+          "exitCode": 0,
+          "seconds": 64.619
+        },
+        {
+          "name": "platform-placement-contract",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "tests/platform",
+            "-p",
+            "test_*.py",
+            "-v"
+          ],
+          "exitCode": 0,
+          "seconds": 0.208
+        },
+        {
+          "name": "windows-callback-contract",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "-m",
+            "unittest",
+            "hub.tests.test_windows_callbacks",
+            "-v"
+          ],
+          "exitCode": 0,
+          "seconds": 0.651
+        },
+        {
+          "name": "tracker-tests",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "-m",
+            "unittest",
+            "discover",
+            "-s",
+            "docs/planning/2026-10-09/delivery",
+            "-p",
+            "test_track.py",
+            "-v"
+          ],
+          "exitCode": 0,
+          "seconds": 0.378
+        },
+        {
+          "name": "regression-preservation",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "docs/planning/2026-10-09/delivery/check_regressions.py",
+            "--self-test"
+          ],
+          "exitCode": 0,
+          "seconds": 0.294
+        },
+        {
+          "name": "component-preservation",
+          "command": [
+            "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+            "docs/planning/2026-10-09/verify-component-coverage.py"
+          ],
+          "exitCode": 0,
+          "seconds": 0.338
+        },
+        {
+          "name": "pattern-review",
+          "command": [
+            "node",
+            ".bytedesk/design-patterns/check.mjs",
+            "check",
+            "--root",
+            "."
+          ],
+          "exitCode": 0,
+          "seconds": 0.789
+        }
+      ],
+      "counts": {
+        "contractTests": 45,
+        "contractResultEntries": 1497,
+        "storageCases": 20,
+        "leafCases": 11,
+        "signedLeafCases": 19,
+        "hubTests": 132,
+        "pluginTests": 36,
+        "negativeAdmissionTests": 12
+      },
+      "broker": {
+        "version": "nats-server: v2.15.0",
+        "archiveUrl": "https://github.com/nats-io/nats-server/releases/download/v2.15.0/nats-server-v2.15.0-darwin-arm64.tar.gz",
+        "checksumUrl": "https://github.com/nats-io/nats-server/releases/download/v2.15.0/SHA256SUMS",
+        "archiveSha256": "e1c4e22d70bd44abfa0bcb3c16f7cf0c66f648c2e728c58924e8a1ce88913cc8",
+        "binarySha256": "5bc802f2d8216bb05415df93bb7dc30bf818a8284c745919b3bdb524032fcb10",
+        "checksumVerified": true
+      },
+      "nsc": {
+        "version": "nsc version 2.15.0",
+        "archiveUrl": "https://github.com/nats-io/nsc/releases/download/v2.15.0/nsc-darwin-arm64.zip",
+        "checksumUrl": "https://github.com/nats-io/nsc/releases/download/v2.15.0/SHA256SUMS-nsc.txt",
+        "archiveSha256": "18ef004eded116886607c3797aa7170624b38ab7eb4b0bce0586c30a5ab811c5",
+        "binarySha256": "6c9c449fdfa3c0151fcb8066effe1be45e0f94d9561b5ea2d8caf34ed0cf1981",
+        "checksumVerified": true
+      },
+      "cleanup": {
+        "leaf": true,
+        "signedLeaf": true,
+        "pluginHomeRemoved": true,
+        "hubIsolatedHome": true,
+        "hubIsolatedCache": true
+      },
+      "rawFileHashes": {
+        "ci-result.json": "80cda565db24aaf2066e3a900e84ce4b3448a7b54bf94bf8b67e61260627400c",
+        "conformance-admission-negative.json": "d9e82c96d7555bf0e5ee4d3bf18a6fed6b90e269435cc247bf38c200349809b5",
+        "conformance-admission.json": "1d33ca098a65ecf5f38639310fa337f193dfbdf52bf93ae875cc0a7effe2a6ab",
+        "contracts.json": "ffbd917e7e824bba79818ad2cea9d5edd12a1e86abe01e1c0df3c0f51f2761fc",
+        "hub-full-result.json": "a981474a0838b2395638c444f6bb06b0351e364617576885651614fe65d4132c",
+        "leaf-result.json": "c139d8537be454cdc4baefad559dda3a46bbf5cf5570f8f705c2f5dc80f40e4d",
+        "negative-fixture.json": "b53c8467be2357e8f6df2bf2a7402b5a26671e081cb223a8bbd271b9089bf4ba",
+        "plugin-preservation.json": "e11f14493684af8bfab207fa624d22f3f91da22bd1caf65c09064cada070d962",
+        "plugin-preservation.log": "cf31196d871c520625786bbe35b1cce1fdff2f62a1cc239949623f5b95428d9b",
+        "signed-leaf-result.json": "2fac17562cd7e5bf2fa557173ffd4e6045a3c68dc0d5f46500601f656506476f",
+        "storage-result.json": "06f893a52bed4b82bba684ddb1b7d519e98ebfae82ad8bdb1e67b41cefd6ebc8"
+      }
+    }
+  },
+  "limitations": [
+    "Native Ubuntu/macOS only; no WSL, native Windows provider, browser, model or final bilateral qualification.",
+    "Inherited leaf limitation calls the fixture WSL; actual recorded native environment governs this review. No WSL proof is inferred.",
+    "Negative admission deliberately tests archived a2e9ee6 reports; positive admission binds current candidate.",
+    "GitHub ZIP digests are advertised provenance; extracted file bytes were independently hashed.",
+    "Review-inbox/review-tooling suites retain separate evidence; the native runner does not execute them.",
+    "Single-node stores, graceful restarts and pre-enrolled fixture keys/permissions do not prove production enrollment, TLS, R3 or power-loss resilience."
+  ]
+}

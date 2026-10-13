@@ -1,0 +1,85 @@
+{
+  "recordedAt": "2026-10-13T18:44:21.429180+00:00",
+  "sourceHashes": {
+    "hub/requirements.lock": "3ed79db16ab9b01c1c4f1b2b99443b8952579abd8a85fd38e60aff8c1baa2420",
+    "tests/leaf/README.md": "01f32039b3eaaa556b8b30a82d9ba2853cd6df6b713de6848de49d025ae487c1",
+    "tests/leaf/run.py": "17fdaf80d25955643c23c246d7477f3324a62cb152bc1ec358416c4914d77063",
+    "tests/leaf/signed_run.py": "240042e1494a2065a8cd5849f0150aa52937e460a22f7e53225cd10cab31ba6d"
+  },
+  "cases": [
+    {
+      "name": "authenticated_leaf_transfers_scoped_command",
+      "status": "passed"
+    },
+    {
+      "name": "leaf_credentials_filter_both_directions_independently_of_client_permissions",
+      "status": "passed"
+    },
+    {
+      "name": "receiver_bridge_cannot_publish_outside_scope_or_access_owner_storage",
+      "status": "passed"
+    },
+    {
+      "name": "unrelated_account_isolated_with_positive_delivery_control",
+      "status": "passed"
+    },
+    {
+      "name": "receiver_acceptance_durable_before_lost_ack_origin_remains_unknown",
+      "status": "passed"
+    },
+    {
+      "name": "offline_receiver_retains_reservation_and_completes_only_read_only_scope",
+      "status": "passed"
+    },
+    {
+      "name": "receiver_restart_retains_independent_ledger_and_result",
+      "status": "passed"
+    },
+    {
+      "name": "origin_restart_retains_reservation_and_ledgers_are_distinct",
+      "status": "passed"
+    },
+    {
+      "name": "leaf_reconciliation_resolves_lost_acceptance_and_rejects_changed_digest_without_reexecution",
+      "status": "passed"
+    },
+    {
+      "name": "actual_offer_replay_recomputes_digest_and_preserves_single_execution",
+      "status": "passed"
+    },
+    {
+      "name": "retained_result_crosses_reconnected_leaf_and_only_origin_owner_accepts",
+      "status": "passed"
+    }
+  ],
+  "command": "python tests/leaf/run.py",
+  "environment": {
+    "platform": "macOS-15.7.9-arm64-arm-64bit-Mach-O",
+    "python": "3.14.8"
+  },
+  "limitations": [
+    "Local WSL loopback fixture; not production federation, TLS, enrollment, OIDC, dynamic grants or final bilateral release proof.",
+    "A narrow fixture protocol models reservation and acceptance; no production SDK, ingress signature or full contract compatibility is claimed.",
+    "Single-node independent stores and graceful process restarts; no R3, power-loss, network adversary or host-failure durability claim.",
+    "Static broker account permissions are real; offline scope checks and origin acceptance are explicit fixture logic."
+  ],
+  "sourceCommit": "0fd64326b9621163b5b550f6419d21e1007b56d3",
+  "sourceBinding": "Checkout base commit plus exact fixture and dependency-lock hashes; no legacy application import.",
+  "brokerVersion": "nats-server: v2.15.0",
+  "brokerSha256": "5bc802f2d8216bb05415df93bb7dc30bf818a8284c745919b3bdb524032fcb10",
+  "natsPyVersion": "2.16.0",
+  "outcome": {
+    "domains": [
+      "ORIGIN",
+      "RECEIVER"
+    ],
+    "executions": 1,
+    "inputUnchanged": true,
+    "originState": "accepted",
+    "receiverState": "completion_reported"
+  },
+  "cleanupComplete": true,
+  "exitCode": 0,
+  "sourceUnchangedDuringRun": true,
+  "durationSeconds": 2.461
+}

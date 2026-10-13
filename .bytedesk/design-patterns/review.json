@@ -1,6 +1,6 @@
 {
-  "reviewer": "Codex; combined P01 source review, phase acceptance pending",
-  "sourceDigest": "f31a059ab2410565edc1b798d1f9d95cc3bcb9d445cbd95b465941222f135878",
+  "reviewer": "Codex; final P01 source and evidence review",
+  "sourceDigest": "8f075673c7310174d987625d9eaaf91e19583f3981354df7eabb6d260e8dd7b2",
   "incrementalReviews": [
     {
       "date": "2026-10-13",
@@ -812,6 +812,21 @@
       "reviewedCandidateDigest": "f31a059ab2410565edc1b798d1f9d95cc3bcb9d445cbd95b465941222f135878",
       "sourceDigestRefreshed": true,
       "rationale": "Root previously verified these logs against actual fixture/report hashes and inspected their scope. Explicitly stage exact raw bytes; no code, assertion, scope, registry, diagram or runtime relation changes. P01 gate remains pending."
+    },
+    {
+      "date": "2026-10-13T18:59:50.634144+00:00",
+      "reviewer": "Codex",
+      "scope": "Final P01 acceptance records and exact-candidate native evidence.",
+      "previousSourceDigest": "f31a059ab2410565edc1b798d1f9d95cc3bcb9d445cbd95b465941222f135878",
+      "reviewedCandidateDigest": "8f075673c7310174d987625d9eaaf91e19583f3981354df7eabb6d260e8dd7b2",
+      "sourceDigestRefreshed": true,
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P01/P01-gate-record.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/native/0fd6432/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P01/P01-T04-acceptance.json"
+      ],
+      "rationale": "Root inspected both exact-candidate native archives, all source/report/log links, actual results, scope limits, source reuse, all six phase criteria, eight failure mappings and 35 component checks. All phase implementation tasks and required current checks are accepted. New files are evidence and task-state records, not new runtime relationships or patterns. Original failures and later P06 qualification remain required. Final candidate is verified remotely; this acceptance authorizes only the feature-branch record push and P02 advancement after that push, never merge or release.",
+      "rawEvidenceStaged": "Both final native plugin logs explicitly tracked with scoped byte-preserving attributes; their exact hashes were already root-reviewed."
     }
   ],
   "rules": {

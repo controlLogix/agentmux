@@ -1,0 +1,56 @@
+{
+  "reviewer": "Codex",
+  "reviewedAt": "2026-10-13T18:54:02.391708+00:00",
+  "sourceCommit": "0fd64326b9621163b5b550f6419d21e1007b56d3",
+  "runId": 38448793759,
+  "rawFilesVerified": 22,
+  "topLevelGitPinsIndependentlyVerified": 253,
+  "independentNestedMapReview": {
+    "sha256": "f2d102a5f93226843163c8936533d4748bff27fd1e929c54131e7c46f45a104d",
+    "sourceMapsPerHost": 17,
+    "uniquePathsPerHost": 255
+  },
+  "environments": [
+    {
+      "host": "linux",
+      "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "jobId": 115474618625,
+      "checks": 23,
+      "counts": {
+        "contractTests": 45,
+        "contractResultEntries": 1497,
+        "storageCases": 20,
+        "leafCases": 11,
+        "signedLeafCases": 19,
+        "hubTests": 132,
+        "pluginTests": 36,
+        "negativeAdmissionTests": 12
+      }
+    },
+    {
+      "host": "macos",
+      "platform": "macOS-15.7.9-arm64-arm-64bit-Mach-O",
+      "jobId": 115474617882,
+      "checks": 23,
+      "counts": {
+        "contractTests": 45,
+        "contractResultEntries": 1497,
+        "storageCases": 20,
+        "leafCases": 11,
+        "signedLeafCases": 19,
+        "hubTests": 132,
+        "pluginTests": 36,
+        "negativeAdmissionTests": 12
+      }
+    }
+  ],
+  "limits": [
+    "Native Ubuntu/macOS only; no WSL, native Windows provider, browser, model or final bilateral qualification.",
+    "Inherited leaf limitation calls the fixture WSL; actual recorded native environment governs this review. No WSL proof is inferred.",
+    "Negative admission deliberately tests archived a2e9ee6 reports; positive admission binds current candidate.",
+    "GitHub ZIP digests are advertised provenance; extracted file bytes were independently hashed.",
+    "Review-inbox/review-tooling suites retain separate evidence; the native runner does not execute them.",
+    "Single-node stores, graceful restarts and pre-enrolled fixture keys/permissions do not prove production enrollment, TLS, R3 or power-loss resilience."
+  ],
+  "decision": "Accept actual native candidate evidence for P01 fixture/runtime scope. Phase gate review is separate."
+}
