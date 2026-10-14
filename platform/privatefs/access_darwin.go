@@ -4,6 +4,8 @@ package privatefs
 
 /*
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <sys/acl.h>
 #include <sys/mount.h>
 #include <errno.h>
@@ -14,9 +16,19 @@ static int agentmux_private_acl_safe(int fd, int private_object) {
     struct statfs mount;
     if (fstatfs(fd, &mount) != 0 || (mount.f_flags & MNT_LOCAL) == 0 ||
         (mount.f_flags & MNT_IGNORE_OWNERSHIP) != 0) return 0;
-    acl_t acl = acl_get_fd_np(fd, ACL_TYPE_EXTENDED);
-    if (acl == NULL) return 0;
+    // Read absence and ACL content from one successful held-descriptor query.
+    // A NULL ACL result alone is never proof that the file has no ACL.
+    filesec_t security = filesec_init();
+    if (security == NULL) return 0;
+    struct stat metadata;
+    acl_t acl = NULL;
+    int present = 0;
     int safe = 0;
+    if (fstatx_np(fd, &metadata, security) != 0 ||
+        filesec_query_property(security, FILESEC_ACL, &present) != 0) goto done;
+    if (!present) { safe = 1; goto done; }
+    if (filesec_get_property(security, FILESEC_ACL, &acl) != 0 ||
+        acl == NULL || acl == _FILESEC_REMOVE_ACL) goto done;
     if (acl_valid(acl) != 0) goto done;
     for (int i = 0; i <= ACL_MAX_ENTRIES; i++) {
         acl_entry_t entry;
@@ -40,7 +52,8 @@ static int agentmux_private_acl_safe(int fd, int private_object) {
         }
     }
 done:
-    if (acl_free(acl) != 0) safe = 0;
+    if (acl != NULL && acl != _FILESEC_REMOVE_ACL && acl_free(acl) != 0) safe = 0;
+    filesec_free(security);
     return safe;
 }
 */

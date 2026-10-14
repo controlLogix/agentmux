@@ -1,0 +1,665 @@
+{
+  "scope": "P02 source and exact native CI failure diagnosis; no phase acceptance",
+  "runId": 38635588141,
+  "commit": "f5202b265c8ef1128534401a8f0ec0e6dc26bf84",
+  "artifacts": [
+    {
+      "id": "artifact-11926889766",
+      "host": "macOS-15.7.9-arm64-arm-64bit-Mach-O",
+      "resultSHA256": "dad851fe243c863f34be6a6260b454bd7fe2d6db62a0c0d3c47e77ad2c29d708",
+      "checks": [
+        {
+          "name": "darwin-descriptor-research",
+          "exitCode": 1,
+          "namedPassed": 0,
+          "namedFailures": [],
+          "compilerErrors": [
+            "runtime/acl_darwin.go:49:26: error: use of undeclared identifier 'MNT_IGNORE_OWNERS'"
+          ]
+        },
+        {
+          "name": "darwin-fail-closed-control",
+          "exitCode": 1,
+          "namedPassed": 0,
+          "namedFailures": [],
+          "compilerErrors": [
+            "runtime/acl_darwin.go:49:26: error: use of undeclared identifier 'MNT_IGNORE_OWNERS'"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "artifact-11926924400",
+      "host": "macOS-15.7.9-arm64-arm-64bit-Mach-O",
+      "resultSHA256": "a3dd9ff27488a3940db6ef5515a70ebe31bc0653d7e40e08ae34d5e756dcaf25",
+      "checks": [
+        {
+          "name": "deployment",
+          "exitCode": 1,
+          "namedPassed": 187,
+          "namedFailures": [
+            "TestTeamBasicRealTLSPrivateResolverAndScopedSnapshot/valid",
+            "TestTeamBasicRealTLSPrivateResolverAndScopedSnapshot/wrong-password",
+            "TestTeamBasicRealTLSPrivateResolverAndScopedSnapshot/restored",
+            "TestTeamBasicRealTLSPrivateResolverAndScopedSnapshot/info-unavailable",
+            "TestTeamBasicRealTLSPrivateResolverAndScopedSnapshot/wrong-hostname",
+            "TestTeamBasicRealTLSPrivateResolverAndScopedSnapshot/wrong-trust",
+            "TestTeamBasicRealTLSPrivateResolverAndScopedSnapshot",
+            "TestTeamBasicCallerCancellationAndEarlierDeadlineDuringSetup/greeting-cancel",
+            "TestTeamBasicCallerCancellationAndEarlierDeadlineDuringSetup/greeting-cancel-earlier-deadline",
+            "TestTeamBasicCallerCancellationAndEarlierDeadlineDuringSetup/tls-client-hello-cancel",
+            "TestTeamBasicCallerCancellationAndEarlierDeadlineDuringSetup/tls-client-hello-cancel-earlier-deadline",
+            "TestTeamBasicCallerCancellationAndEarlierDeadlineDuringSetup",
+            "TestDarwinTeamPrivateCredentialRejectsACLGrants/credential-read",
+            "TestDarwinTeamPrivateCredentialRejectsACLGrants/private-directory-read",
+            "TestDarwinTeamPrivateCredentialRejectsACLGrants/ancestor-write",
+            "TestDarwinTeamPrivateCredentialRejectsACLGrants/deny-only",
+            "TestDarwinTeamPrivateCredentialRejectsACLGrants/directory-grant-during-read",
+            "TestDarwinTeamPrivateCredentialRejectsACLGrants/ancestor-grant-during-read",
+            "TestDarwinTeamPrivateCredentialRejectsACLGrants",
+            "TestTeamPrivateCredentialResolverBindingsAndFileAdmission/valid",
+            "TestTeamPrivateCredentialResolverBindingsAndFileAdmission",
+            "TestTeamPrivateReadRejectsWritableAncestorAndSameSizeRewrite/same-size-rewrite",
+            "TestTeamPrivateReadRejectsWritableAncestorAndSameSizeRewrite"
+          ],
+          "compilerErrors": []
+        },
+        {
+          "name": "protocol",
+          "exitCode": 1,
+          "namedPassed": 64,
+          "namedFailures": [
+            "TestExactCredentialNamesAndEnvironmentReload",
+            "TestPrivateCredentialFileAndSupervisorBindings",
+            "TestServerTrustEnvironmentMandatoryForTLSWithoutCredentialSchemaChange"
+          ],
+          "compilerErrors": []
+        },
+        {
+          "name": "launcher",
+          "exitCode": 1,
+          "namedPassed": 0,
+          "namedFailures": [],
+          "compilerErrors": [
+            "runtime/acl_darwin.go:49:26: error: use of undeclared identifier 'MNT_IGNORE_OWNERS'"
+          ]
+        },
+        {
+          "name": "runtime-command",
+          "exitCode": 1,
+          "namedPassed": 0,
+          "namedFailures": [],
+          "compilerErrors": [
+            "runtime/acl_darwin.go:49:26: error: use of undeclared identifier 'MNT_IGNORE_OWNERS'"
+          ]
+        },
+        {
+          "name": "private-files",
+          "exitCode": 1,
+          "namedPassed": 10,
+          "namedFailures": [
+            "TestDarwinPrivateDescriptorRejectsReadAndWriteAllowACL/read",
+            "TestDarwinPrivateDescriptorRejectsReadAndWriteAllowACL/write",
+            "TestDarwinPrivateDescriptorRejectsReadAndWriteAllowACL"
+          ],
+          "compilerErrors": []
+        },
+        {
+          "name": "runtime",
+          "exitCode": 1,
+          "namedPassed": 0,
+          "namedFailures": [],
+          "compilerErrors": [
+            "runtime/acl_darwin.go:49:26: error: use of undeclared identifier 'MNT_IGNORE_OWNERS'"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "artifact-11927129291",
+      "host": "macOS-15.7.9-arm64-arm-64bit-Mach-O",
+      "resultSHA256": "a0f20433a24a6ba4c3fe48aaa014ac1370cfe188a4555a4de59858e29f9a56bb",
+      "checks": [
+        {
+          "name": "darwin-protected-install",
+          "exitCode": 1,
+          "namedPassed": 0,
+          "namedFailures": [],
+          "compilerErrors": [
+            "runtime/acl_darwin.go:49:26: error: use of undeclared identifier 'MNT_IGNORE_OWNERS'"
+          ]
+        },
+        {
+          "name": "darwin-installed-host-lifecycle",
+          "exitCode": 1,
+          "namedPassed": 0,
+          "namedFailures": [],
+          "compilerErrors": [
+            "runtime/acl_darwin.go:49:26: error: use of undeclared identifier 'MNT_IGNORE_OWNERS'"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "artifact-11927409567",
+      "host": "macOS-15.7.9-x86_64-i386-64bit-Mach-O",
+      "resultSHA256": "dc1355e33ccb637435e36eeb6c042b334a97f17f563a481faf7d1ad567600ee7",
+      "checks": [
+        {
+          "name": "deployment",
+          "exitCode": 1,
+          "namedPassed": 187,
+          "namedFailures": [
+            "TestTeamBasicRealTLSPrivateResolverAndScopedSnapshot/valid",
+            "TestTeamBasicRealTLSPrivateResolverAndScopedSnapshot/wrong-password",
+            "TestTeamBasicRealTLSPrivateResolverAndScopedSnapshot/restored",
+            "TestTeamBasicRealTLSPrivateResolverAndScopedSnapshot/info-unavailable",
+            "TestTeamBasicRealTLSPrivateResolverAndScopedSnapshot/wrong-hostname",
+            "TestTeamBasicRealTLSPrivateResolverAndScopedSnapshot/wrong-trust",
+            "TestTeamBasicRealTLSPrivateResolverAndScopedSnapshot",
+            "TestTeamBasicCallerCancellationAndEarlierDeadlineDuringSetup/greeting-cancel",
+            "TestTeamBasicCallerCancellationAndEarlierDeadlineDuringSetup/greeting-cancel-earlier-deadline",
+            "TestTeamBasicCallerCancellationAndEarlierDeadlineDuringSetup/tls-client-hello-cancel",
+            "TestTeamBasicCallerCancellationAndEarlierDeadlineDuringSetup/tls-client-hello-cancel-earlier-deadline",
+            "TestTeamBasicCallerCancellationAndEarlierDeadlineDuringSetup",
+            "TestDarwinTeamPrivateCredentialRejectsACLGrants/credential-read",
+            "TestDarwinTeamPrivateCredentialRejectsACLGrants/private-directory-read",
+            "TestDarwinTeamPrivateCredentialRejectsACLGrants/ancestor-write",
+            "TestDarwinTeamPrivateCredentialRejectsACLGrants/deny-only",
+            "TestDarwinTeamPrivateCredentialRejectsACLGrants/directory-grant-during-read",
+            "TestDarwinTeamPrivateCredentialRejectsACLGrants/ancestor-grant-during-read",
+            "TestDarwinTeamPrivateCredentialRejectsACLGrants",
+            "TestTeamPrivateCredentialResolverBindingsAndFileAdmission/valid",
+            "TestTeamPrivateCredentialResolverBindingsAndFileAdmission",
+            "TestTeamPrivateReadRejectsWritableAncestorAndSameSizeRewrite/same-size-rewrite",
+            "TestTeamPrivateReadRejectsWritableAncestorAndSameSizeRewrite"
+          ],
+          "compilerErrors": []
+        },
+        {
+          "name": "protocol",
+          "exitCode": 1,
+          "namedPassed": 64,
+          "namedFailures": [
+            "TestExactCredentialNamesAndEnvironmentReload",
+            "TestPrivateCredentialFileAndSupervisorBindings",
+            "TestServerTrustEnvironmentMandatoryForTLSWithoutCredentialSchemaChange"
+          ],
+          "compilerErrors": []
+        },
+        {
+          "name": "launcher",
+          "exitCode": 1,
+          "namedPassed": 0,
+          "namedFailures": [],
+          "compilerErrors": [
+            "runtime/acl_darwin.go:49:26: error: use of undeclared identifier 'MNT_IGNORE_OWNERS'"
+          ]
+        },
+        {
+          "name": "runtime-command",
+          "exitCode": 1,
+          "namedPassed": 0,
+          "namedFailures": [],
+          "compilerErrors": [
+            "runtime/acl_darwin.go:49:26: error: use of undeclared identifier 'MNT_IGNORE_OWNERS'"
+          ]
+        },
+        {
+          "name": "private-files",
+          "exitCode": 1,
+          "namedPassed": 10,
+          "namedFailures": [
+            "TestDarwinPrivateDescriptorRejectsReadAndWriteAllowACL/read",
+            "TestDarwinPrivateDescriptorRejectsReadAndWriteAllowACL/write",
+            "TestDarwinPrivateDescriptorRejectsReadAndWriteAllowACL"
+          ],
+          "compilerErrors": []
+        },
+        {
+          "name": "runtime",
+          "exitCode": 1,
+          "namedPassed": 0,
+          "namedFailures": [],
+          "compilerErrors": [
+            "runtime/acl_darwin.go:49:26: error: use of undeclared identifier 'MNT_IGNORE_OWNERS'"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "artifact-11928116511",
+      "host": "macOS-15.7.9-x86_64-i386-64bit-Mach-O",
+      "resultSHA256": "540c92425cb8e4b649ddee07b86f801ca969990474961a6f2f1fb9320b911d74",
+      "checks": [
+        {
+          "name": "darwin-protected-install",
+          "exitCode": 1,
+          "namedPassed": 0,
+          "namedFailures": [],
+          "compilerErrors": [
+            "runtime/acl_darwin.go:49:26: error: use of undeclared identifier 'MNT_IGNORE_OWNERS'"
+          ]
+        },
+        {
+          "name": "darwin-installed-host-lifecycle",
+          "exitCode": 1,
+          "namedPassed": 0,
+          "namedFailures": [],
+          "compilerErrors": [
+            "runtime/acl_darwin.go:49:26: error: use of undeclared identifier 'MNT_IGNORE_OWNERS'"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "artifact-11928436080",
+      "host": "macOS-15.7.9-x86_64-i386-64bit-Mach-O",
+      "resultSHA256": "af8deb406235d3d109d596cdf09fd74447d7afa042519ff6b8aeb1ddc8e0c3b9",
+      "checks": [
+        {
+          "name": "darwin-descriptor-research",
+          "exitCode": 1,
+          "namedPassed": 0,
+          "namedFailures": [],
+          "compilerErrors": [
+            "runtime/acl_darwin.go:49:26: error: use of undeclared identifier 'MNT_IGNORE_OWNERS'"
+          ]
+        },
+        {
+          "name": "darwin-fail-closed-control",
+          "exitCode": 1,
+          "namedPassed": 0,
+          "namedFailures": [],
+          "compilerErrors": [
+            "runtime/acl_darwin.go:49:26: error: use of undeclared identifier 'MNT_IGNORE_OWNERS'"
+          ]
+        }
+      ]
+    }
+  ],
+  "rawVerification": [
+    {
+      "path": "artifact-11926889766/darwin-descriptor-research.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926889766/darwin-descriptor-research.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926889766/darwin-fail-closed-control.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926889766/darwin-fail-closed-control.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/assembly.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/assembly.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/accounts.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/accounts.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/deployment.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/deployment.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/protocol.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/protocol.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/boot.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/boot.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/launcher.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/launcher.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/runtime-command.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/runtime-command.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/local-tls.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/local-tls.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/private-files.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/private-files.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/runtime.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/runtime.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/darwin-cgo0-private-refusal.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/darwin-cgo0-private-refusal.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/darwin-cgo0-deployment-refusal.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11926924400/darwin-cgo0-deployment-refusal.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927129291/darwin-protected-install.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927129291/darwin-protected-install.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927129291/darwin-installed-host-lifecycle.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927129291/darwin-installed-host-lifecycle.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/assembly.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/assembly.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/accounts.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/accounts.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/deployment.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/deployment.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/protocol.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/protocol.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/boot.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/boot.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/launcher.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/launcher.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/runtime-command.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/runtime-command.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/local-tls.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/local-tls.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/private-files.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/private-files.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/runtime.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/runtime.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/darwin-cgo0-private-refusal.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/darwin-cgo0-private-refusal.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/darwin-cgo0-deployment-refusal.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11927409567/darwin-cgo0-deployment-refusal.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11928116511/darwin-protected-install.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11928116511/darwin-protected-install.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11928116511/darwin-installed-host-lifecycle.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11928116511/darwin-installed-host-lifecycle.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11928436080/darwin-descriptor-research.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11928436080/darwin-descriptor-research.stderr.log",
+      "matches": true
+    },
+    {
+      "path": "artifact-11928436080/darwin-fail-closed-control.jsonl",
+      "matches": true
+    },
+    {
+      "path": "artifact-11928436080/darwin-fail-closed-control.stderr.log",
+      "matches": true
+    }
+  ],
+  "allRecordedRawHashesMatch": true,
+  "sourcePins": [
+    {
+      "path": "platform/privatefs/access_darwin.go",
+      "before": "b220031c600e02b1217706ebfc4268361fc33e56f29ac7753d37f9a5cc9b5646",
+      "after": "f54667ff124e64f03e5eff0ed08af9b50aa854948f05091fe13c602ca2693424",
+      "function": "agentmux_private_acl_safe"
+    },
+    {
+      "path": "platform/runtime/acl_darwin.go",
+      "before": "bfcd89538837b9ffd94c46882f231a1930091d3b21d3e5bb5cb475659acfe609",
+      "after": "f6bbea42eaefeb5e2f9abb6658eda4094c44da2fffe553583ef9ca3159a1c968",
+      "function": "agentmux_acl_safe"
+    }
+  ],
+  "controls": [
+    {
+      "stem": "access_darwin",
+      "stage": "before",
+      "kind": "compile",
+      "argv": [
+        "cc",
+        "-std=c11",
+        "-Werror=implicit-function-declaration",
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-mac-ci-f520/access_darwin-before-control.c",
+        "-o",
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-mac-ci-f520/access_darwin-before-control"
+      ],
+      "exitCode": 0
+    },
+    {
+      "stem": "access_darwin",
+      "stage": "before",
+      "kind": "run",
+      "argv": [
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-mac-ci-f520/access_darwin-before-control"
+      ],
+      "exitCode": 1
+    },
+    {
+      "stem": "access_darwin",
+      "stage": "after",
+      "kind": "compile",
+      "argv": [
+        "cc",
+        "-std=c11",
+        "-Werror=implicit-function-declaration",
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-mac-ci-f520/access_darwin-after-control.c",
+        "-o",
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-mac-ci-f520/access_darwin-after-control"
+      ],
+      "exitCode": 0
+    },
+    {
+      "stem": "access_darwin",
+      "stage": "after",
+      "kind": "run",
+      "argv": [
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-mac-ci-f520/access_darwin-after-control"
+      ],
+      "exitCode": 0
+    },
+    {
+      "stem": "acl_darwin",
+      "stage": "before",
+      "kind": "compile",
+      "argv": [
+        "cc",
+        "-std=c11",
+        "-Werror=implicit-function-declaration",
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-mac-ci-f520/acl_darwin-before-control.c",
+        "-o",
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-mac-ci-f520/acl_darwin-before-control"
+      ],
+      "exitCode": 0
+    },
+    {
+      "stem": "acl_darwin",
+      "stage": "before",
+      "kind": "run",
+      "argv": [
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-mac-ci-f520/acl_darwin-before-control"
+      ],
+      "exitCode": 1
+    },
+    {
+      "stem": "acl_darwin",
+      "stage": "after",
+      "kind": "compile",
+      "argv": [
+        "cc",
+        "-std=c11",
+        "-Werror=implicit-function-declaration",
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-mac-ci-f520/acl_darwin-after-control.c",
+        "-o",
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-mac-ci-f520/acl_darwin-after-control"
+      ],
+      "exitCode": 0
+    },
+    {
+      "stem": "acl_darwin",
+      "stage": "after",
+      "kind": "run",
+      "argv": [
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-mac-ci-f520/acl_darwin-after-control"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "limits": [
+    "Actual Mac runtime compiler error is proven; spelling correction is not native execution proof.",
+    "Valid empty-ACL fixtures are refused on both native Mac architectures. Explicit absence is the source-supported likely mechanism; original native records do not expose each native C predicate.",
+    "C controls extract exact candidate functions with test-only modeled Apple APIs; they do not execute an Apple SDK, filesystem, ACL or mount.",
+    "Runtime before control normalizes only old mount spelling so the separate absent-ACL refusal can execute.",
+    "Initial runtime model incorrectly checked ACL-only function against mount-denial expectations and failed; corrected producer calls the actual composite ACL-plus-mount predicate. Initial tool chunks d9aaba/174f3f preserve this harness correction, not a product failure.",
+    "Linux ARM now passes but its original poll failure cause remains unknown.",
+    "No CI rerun, source promotion, Docker job or native qualification by this worker."
+  ],
+  "primarySources": [
+    "https://raw.githubusercontent.com/apple-oss-distributions/Libc/main/posix1e/acl_file.c",
+    "https://raw.githubusercontent.com/apple-oss-distributions/Libc/main/gen/filesec.c",
+    "https://raw.githubusercontent.com/apple-oss-distributions/Libc/main/sys/statx_np.c",
+    "https://raw.githubusercontent.com/apple-oss-distributions/xnu/main/bsd/sys/fcntl.h",
+    "https://raw.githubusercontent.com/apple-oss-distributions/xnu/main/bsd/sys/mount.h"
+  ],
+  "manifestSHA256": "cc0154e6273f56c371c015c73b7dbf6c4925566dc2ea08b59037a6d425a1a1cc"
+}

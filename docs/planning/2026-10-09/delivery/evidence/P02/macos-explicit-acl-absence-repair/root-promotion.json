@@ -1,0 +1,15 @@
+{
+  "reviewer": "Codex",
+  "decision": "promoted exact two-source repair after independent review",
+  "sourceSHA256": {
+    "platform/privatefs/access_darwin.go": "f54667ff124e64f03e5eff0ed08af9b50aa854948f05091fe13c602ca2693424",
+    "platform/runtime/acl_darwin.go": "f6bbea42eaefeb5e2f9abb6658eda4094c44da2fffe553583ef9ca3159a1c968"
+  },
+  "independentReviewSHA256": "443fb0062abefc37e2bcfda75a7b09c1027c8906fca1cc566bb8480a36d2ef28",
+  "nativeQualification": "required at committed candidate",
+  "scope": "Explicit absence admission only after successful descriptor metadata query. Query failures, malformed/present unsafe ACLs, invalid mounts and cleanup failures remain refused.",
+  "limits": [
+    "Linux modeled controls do not qualify Apple SDK, ACL or mount behavior.",
+    "No phase acceptance or advancement."
+  ]
+}

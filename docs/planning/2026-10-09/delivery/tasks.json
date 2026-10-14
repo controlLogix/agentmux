@@ -3632,7 +3632,8 @@
         "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-93b0278.json"
       ],
       "commits": [
-        "93b027830d39b496a2eff756d5836caf5563663a"
+        "93b027830d39b496a2eff756d5836caf5563663a",
+        "f5202b265c8ef1128534401a8f0ec0e6dc26bf84"
       ],
       "blocker": null,
       "history": [
@@ -4050,6 +4051,33 @@
           "evidence": [
             "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-targeted-repairs/root-review.json"
           ]
+        },
+        {
+          "date": "2026-10-14T20:57:31.300434+00:00",
+          "action": "ci_repair_checkpoint_pushed_verified",
+          "note": "Reviewed source/test repairs and evidence committed and pushed as f5202b2; remote feature head verified. Native Linux AMD64 and ARM64 foundation jobs pass, Mac execution jobs and retained Ubuntu qualification remain failed. Artifact admission and P02 gate remain open.",
+          "commit": "f5202b265c8ef1128534401a8f0ec0e6dc26bf84",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-f5202b2.json"
+          ]
+        },
+        {
+          "date": "2026-10-14T21:02:04.782031+00:00",
+          "action": "real_midboot_failure_and_retention_repair",
+          "note": "One actual f520 plus fa634 diagnostic midboot run failed safely: observed child exited before protected-role qualification; no crash/recovery proof. Exact-owned cleanup completed and baseline networks restored. Root verified 260 shared and 261 executed source hashes, 25 producer, 19 public and three private fixture artifacts. No retry. The omitted tracker regression replacement is now registered; focused retention check passes and both original and changed-tracker assertion-removal controls still fail closed. New Mac failures remain under diagnosis.",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/midboot-unqualified-child-exit/root-review.json",
+            "docs/planning/2026-10-09/delivery/evidence/P02/tracker-regression-preservation-repair/root-review.json"
+          ]
+        },
+        {
+          "date": "2026-10-14T21:09:18.505029+00:00",
+          "action": "macos_acl_absence_repair_promoted",
+          "note": "Promoted exact two-helper macOS repair after independent source review and modeled before/after controls. Successful held-descriptor metadata query distinguishes explicit ACL absence from errors; present ACL and mount checks remain. All old mount-flag spellings are removed. Native macOS execution remains required. Tracker regression replacement is registered, with retention and removal-negative checks passing locally.",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/macos-explicit-acl-absence-repair/root-promotion.json",
+            "docs/planning/2026-10-09/delivery/evidence/P02/tracker-regression-preservation-repair/root-review.json"
+          ]
         }
       ],
       "phaseCriteria": [
@@ -4155,7 +4183,8 @@
         "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-93b0278.json"
       ],
       "commits": [
-        "93b027830d39b496a2eff756d5836caf5563663a"
+        "93b027830d39b496a2eff756d5836caf5563663a",
+        "f5202b265c8ef1128534401a8f0ec0e6dc26bf84"
       ],
       "blocker": null,
       "history": [
@@ -4285,6 +4314,15 @@
             "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-93b0278.json"
           ],
           "commit": "93b027830d39b496a2eff756d5836caf5563663a"
+        },
+        {
+          "date": "2026-10-14T20:57:31.300434+00:00",
+          "action": "ci_repair_checkpoint_pushed_verified",
+          "note": "Reviewed source/test repairs and evidence committed and pushed as f5202b2; remote feature head verified. Native Linux AMD64 and ARM64 foundation jobs pass, Mac execution jobs and retained Ubuntu qualification remain failed. Artifact admission and P02 gate remain open.",
+          "commit": "f5202b265c8ef1128534401a8f0ec0e6dc26bf84",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-f5202b2.json"
+          ]
         }
       ],
       "phaseCriteria": [
@@ -4393,7 +4431,8 @@
         "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-93b0278.json"
       ],
       "commits": [
-        "93b027830d39b496a2eff756d5836caf5563663a"
+        "93b027830d39b496a2eff756d5836caf5563663a",
+        "f5202b265c8ef1128534401a8f0ec0e6dc26bf84"
       ],
       "blocker": null,
       "history": [
@@ -4553,6 +4592,15 @@
             "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-93b0278.json"
           ],
           "commit": "93b027830d39b496a2eff756d5836caf5563663a"
+        },
+        {
+          "date": "2026-10-14T20:57:31.300434+00:00",
+          "action": "ci_repair_checkpoint_pushed_verified",
+          "note": "Reviewed source/test repairs and evidence committed and pushed as f5202b2; remote feature head verified. Native Linux AMD64 and ARM64 foundation jobs pass, Mac execution jobs and retained Ubuntu qualification remain failed. Artifact admission and P02 gate remain open.",
+          "commit": "f5202b265c8ef1128534401a8f0ec0e6dc26bf84",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-f5202b2.json"
+          ]
         }
       ],
       "phaseCriteria": [
@@ -4649,7 +4697,8 @@
         "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-93b0278.json"
       ],
       "commits": [
-        "93b027830d39b496a2eff756d5836caf5563663a"
+        "93b027830d39b496a2eff756d5836caf5563663a",
+        "f5202b265c8ef1128534401a8f0ec0e6dc26bf84"
       ],
       "blocker": null,
       "history": [
@@ -4733,6 +4782,15 @@
             "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-93b0278.json"
           ],
           "commit": "93b027830d39b496a2eff756d5836caf5563663a"
+        },
+        {
+          "date": "2026-10-14T20:57:31.300434+00:00",
+          "action": "ci_repair_checkpoint_pushed_verified",
+          "note": "Reviewed source/test repairs and evidence committed and pushed as f5202b2; remote feature head verified. Native Linux AMD64 and ARM64 foundation jobs pass, Mac execution jobs and retained Ubuntu qualification remain failed. Artifact admission and P02 gate remain open.",
+          "commit": "f5202b265c8ef1128534401a8f0ec0e6dc26bf84",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-f5202b2.json"
+          ]
         }
       ],
       "phaseCriteria": [
@@ -4835,7 +4893,8 @@
         "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-93b0278.json"
       ],
       "commits": [
-        "93b027830d39b496a2eff756d5836caf5563663a"
+        "93b027830d39b496a2eff756d5836caf5563663a",
+        "f5202b265c8ef1128534401a8f0ec0e6dc26bf84"
       ],
       "blocker": null,
       "history": [
@@ -5035,6 +5094,24 @@
             "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-93b0278.json"
           ],
           "commit": "93b027830d39b496a2eff756d5836caf5563663a"
+        },
+        {
+          "date": "2026-10-14T20:57:31.300434+00:00",
+          "action": "ci_repair_checkpoint_pushed_verified",
+          "note": "Reviewed source/test repairs and evidence committed and pushed as f5202b2; remote feature head verified. Native Linux AMD64 and ARM64 foundation jobs pass, Mac execution jobs and retained Ubuntu qualification remain failed. Artifact admission and P02 gate remain open.",
+          "commit": "f5202b265c8ef1128534401a8f0ec0e6dc26bf84",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-f5202b2.json"
+          ]
+        },
+        {
+          "date": "2026-10-14T21:02:04.782031+00:00",
+          "action": "real_midboot_failure_and_retention_repair",
+          "note": "One actual f520 plus fa634 diagnostic midboot run failed safely: observed child exited before protected-role qualification; no crash/recovery proof. Exact-owned cleanup completed and baseline networks restored. Root verified 260 shared and 261 executed source hashes, 25 producer, 19 public and three private fixture artifacts. No retry. The omitted tracker regression replacement is now registered; focused retention check passes and both original and changed-tracker assertion-removal controls still fail closed. New Mac failures remain under diagnosis.",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/midboot-unqualified-child-exit/root-review.json",
+            "docs/planning/2026-10-09/delivery/evidence/P02/tracker-regression-preservation-repair/root-review.json"
+          ]
         }
       ],
       "phaseCriteria": [
@@ -5359,7 +5436,8 @@
         "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-93b0278.json"
       ],
       "commits": [
-        "93b027830d39b496a2eff756d5836caf5563663a"
+        "93b027830d39b496a2eff756d5836caf5563663a",
+        "f5202b265c8ef1128534401a8f0ec0e6dc26bf84"
       ],
       "blocker": null,
       "history": [
@@ -6344,6 +6422,33 @@
           "note": "Promoted a synthetic collector metadata fixture repair and the Apple-declared ownership mount flag spelling. Worker evidence passed 38 RunnerTests and four C flag combinations. Native macOS verification and ARM poll diagnosis remain open; no phase acceptance. AMD64 evidence remains bound to checkpoint 93b0278, before these repairs.",
           "evidence": [
             "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-targeted-repairs/root-review.json"
+          ]
+        },
+        {
+          "date": "2026-10-14T20:57:31.300434+00:00",
+          "action": "ci_repair_checkpoint_pushed_verified",
+          "note": "Reviewed source/test repairs and evidence committed and pushed as f5202b2; remote feature head verified. Native Linux AMD64 and ARM64 foundation jobs pass, Mac execution jobs and retained Ubuntu qualification remain failed. Artifact admission and P02 gate remain open.",
+          "commit": "f5202b265c8ef1128534401a8f0ec0e6dc26bf84",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-f5202b2.json"
+          ]
+        },
+        {
+          "date": "2026-10-14T21:02:04.782031+00:00",
+          "action": "real_midboot_failure_and_retention_repair",
+          "note": "One actual f520 plus fa634 diagnostic midboot run failed safely: observed child exited before protected-role qualification; no crash/recovery proof. Exact-owned cleanup completed and baseline networks restored. Root verified 260 shared and 261 executed source hashes, 25 producer, 19 public and three private fixture artifacts. No retry. The omitted tracker regression replacement is now registered; focused retention check passes and both original and changed-tracker assertion-removal controls still fail closed. New Mac failures remain under diagnosis.",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/midboot-unqualified-child-exit/root-review.json",
+            "docs/planning/2026-10-09/delivery/evidence/P02/tracker-regression-preservation-repair/root-review.json"
+          ]
+        },
+        {
+          "date": "2026-10-14T21:09:18.505029+00:00",
+          "action": "macos_acl_absence_repair_promoted",
+          "note": "Promoted exact two-helper macOS repair after independent source review and modeled before/after controls. Successful held-descriptor metadata query distinguishes explicit ACL absence from errors; present ACL and mount checks remain. All old mount-flag spellings are removed. Native macOS execution remains required. Tracker regression replacement is registered, with retention and removal-negative checks passing locally.",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/macos-explicit-acl-absence-repair/root-promotion.json",
+            "docs/planning/2026-10-09/delivery/evidence/P02/tracker-regression-preservation-repair/root-review.json"
           ]
         }
       ],

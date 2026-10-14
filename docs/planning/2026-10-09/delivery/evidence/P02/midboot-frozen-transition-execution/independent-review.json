@@ -1,0 +1,50 @@
+{
+  "scope": "Independent read-only paused-creator helper execution synchronization source/component evidence review",
+  "workerReviewSHA256": "ea6f39dab67a19b6d780ec97f87c42276510e1c2686057af43d23957b6bc235b",
+  "sourceSHA256": {
+    "installed_cli_midboot_compose_integration_linux_test.go": "fa634909ccf64c399b3ef9236ad14e8b8902ecc8814408b9bc5077091215e2af",
+    "installed_cli_midboot_discovery_controls_test.go": "e4c26f7f65303a5ef37c46e4041073deefe71073cb331e63edfacd42d04fbfcb",
+    "midboot_private_docker_parser_test.go": "fbd974aa97c88e918a30f610b5b644d44a4afccc9efe40d636b36ec653d9fc00",
+    "midboot_private_docker_parser_controls_test.go": "c3e3f2ca7c4aed52c6bacab38d357077c2551edabdc94dc2285bd23dbb56c09f",
+    "installed_cli_midboot_starting_controls_test.go": "e94be0efad75d27550d32dff6932919891fd1078ff06354d979449cafb94e9b6",
+    "installed_cli_midboot_frozen_transition_controls_test.go": "9a05fd733962e8584582dcfaea90033ad28ab6b4c70f279759e0aa64d277fe84"
+  },
+  "artifactChecks": {
+    "source:installed_cli_midboot_compose_integration_linux_test.go": true,
+    "source:installed_cli_midboot_discovery_controls_test.go": true,
+    "source:midboot_private_docker_parser_test.go": true,
+    "source:midboot_private_docker_parser_controls_test.go": true,
+    "source:installed_cli_midboot_starting_controls_test.go": true,
+    "source:installed_cli_midboot_frozen_transition_controls_test.go": true,
+    "artifact:current-after.json": true,
+    "artifact:frozen-stderr.log": true,
+    "artifact:added-source.json": true,
+    "artifact:source-after.json": true,
+    "artifact:invocation.json": true,
+    "artifact:frozen-exit.txt": true,
+    "artifact:source-before.json": true,
+    "artifact:run.py": true,
+    "artifact:pause-before-exec-repair.diff": true,
+    "artifact:frozen-events.jsonl": true,
+    "actual-control-results": true
+  },
+  "allBindingsMatch": true,
+  "rawNamedPasses": [
+    "TestComposeCLIMidBootFrozenHelperExecutionTransition"
+  ],
+  "findings": [],
+  "sourceReview": [
+    "The direct-child roster is a synchronization trigger only. No image read or evidence write precedes pausing the original creator-owned host pidfd. Its original deadline and live descriptor are checked immediately before SIGSTOP.",
+    "After actual stopped state is observed, exact same nonempty roster smaller than all four roles is required. Child pidfds are retained before fallible diagnostics. The same roster, stopped original creator and original deadline remain required during execution transition.",
+    "Every child must have the original parent, fixed expected role credential path, no extra arguments, actual expected signed member image digest and a live same pidfd. Helpers remain unqualified; child exit, changed parent/roster, duplicates and four-role roster refuse phase proof. No child PID is signaled.",
+    "The existing actual kernel-not-ready check, specific held startup lock timeout, full broker/volume/record/foreign preservation checks and final actual-role plus original deadline revalidation remain before original creator SIGKILL.",
+    "The real component control keeps one actual pidfd across owned helper to different actual image exec, verifies helper refusal then exact fixture-role qualification, and refuses the same descriptor after actual sole Wait exit."
+  ],
+  "limits": [
+    "One actual owned-process component race control; no installed kernel role, NATS, Docker or mid-boot crash execution on this repair.",
+    "The component supplies a fixture credential-path binding and actual binary digest. It does not prove independent profile enrollment or protected production role authority.",
+    "An unknown helper that does not transition remains unqualified and can fail the original deadline; this source review cannot guarantee the next real scheduling case will reach a proper subset.",
+    "Historical failed58f6 source/diff and original proper-subset failure remain preserved; no retrospective cause or completed phase claim.",
+    "No source promotion, new test/build, engine call, unknown PID signal, shared metadata or phase advancement."
+  ]
+}

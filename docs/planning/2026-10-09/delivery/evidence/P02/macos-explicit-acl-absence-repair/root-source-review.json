@@ -1,0 +1,17 @@
+{
+  "reviewer": "Codex",
+  "decision": "source and local controls reviewed; independent review pending before promotion",
+  "verifiedArtifacts": 126,
+  "archivedTextArtifacts": 124,
+  "sourceReason": "Successful fstatx_np on the held descriptor plus filesec_query_property establishes explicit absence. A missing ACL pointer or query error alone remains rejected. Present ACL copies are independently allocated by filesec_get_property and freed before filesec_free, matching Apple implementation. Existing ACL bounds, mutation checks, mount policy and descriptor checks are unchanged.",
+  "controlScope": "18 modeled API states with two private-object settings per helper; before absence refusal reproduced, after controls passed. Linux model is not native macOS verification.",
+  "primarySources": [
+    "https://raw.githubusercontent.com/apple-oss-distributions/Libc/main/gen/filesec.c",
+    "https://raw.githubusercontent.com/apple-oss-distributions/Libc/main/sys/statx_np.c"
+  ],
+  "limits": [
+    "Native failure records show valid empty-ACL fixture refusal but do not expose every C predicate. The absence mechanism is source-supported inference.",
+    "No native Apple SDK or filesystem behavior is proven by modeled C controls.",
+    "No P02 gate acceptance."
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "admitted": true,
+  "steps": [
+    {
+      "stage": "endpoint",
+      "elapsedSeconds": 0.2839237809967017,
+      "directExit": 0,
+      "stdoutBytes": 44,
+      "stderrBytes": 0,
+      "argv": [
+        "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+        "--context",
+        "desktop-linux",
+        "context",
+        "inspect",
+        "desktop-linux",
+        "--format",
+        "{{json .Endpoints.docker.Host}}"
+      ]
+    },
+    {
+      "stage": "engine",
+      "elapsedSeconds": 0.9932739430078072,
+      "directExit": 0,
+      "stdoutBytes": 39,
+      "stderrBytes": 0,
+      "argv": [
+        "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+        "--context",
+        "desktop-linux",
+        "info",
+        "--format",
+        "{{json .ID}}"
+      ]
+    },
+    {
+      "stage": "image",
+      "elapsedSeconds": 0.33065657899715006,
+      "directExit": 0,
+      "stdoutBytes": 81,
+      "stderrBytes": 0,
+      "argv": [
+        "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+        "--context",
+        "desktop-linux",
+        "image",
+        "inspect",
+        "docker.io/library/nats@sha256:fdae708d900cb150ce13f203359719bdd9cefd3dbbbc32a4c6224b23ea3e0b2c",
+        "--format",
+        "{{json .RepoDigests}}"
+      ]
+    },
+    {
+      "stage": "networks",
+      "elapsedSeconds": 0.3416481530002784,
+      "directExit": 0,
+      "stdoutBytes": 585,
+      "stderrBytes": 0,
+      "argv": [
+        "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+        "--context",
+        "desktop-linux",
+        "network",
+        "ls",
+        "--quiet",
+        "--no-trunc"
+      ],
+      "count": 9
+    },
+    {
+      "stage": "containers",
+      "elapsedSeconds": 0.4430710779997753,
+      "directExit": 0,
+      "stdoutBytes": 845,
+      "stderrBytes": 0,
+      "argv": [
+        "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+        "--context",
+        "desktop-linux",
+        "ps",
+        "--all",
+        "--quiet",
+        "--no-trunc"
+      ],
+      "count": 13
+    }
+  ],
+  "limits": "Preliminary read-only checks; actual test repeats full driver admission and complete ownership baselines."
+}

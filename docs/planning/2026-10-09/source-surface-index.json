@@ -14145,16 +14145,16 @@
       "componentIds": [
         "PLAT-02"
       ],
-      "workingFileSha256": "bfcd89538837b9ffd94c46882f231a1930091d3b21d3e5bb5cb475659acfe609",
+      "workingFileSha256": "f6bbea42eaefeb5e2f9abb6658eda4094c44da2fffe553583ef9ca3159a1c968",
       "declarations": [
         {
           "name": "darwinDescriptorPolicy",
-          "line": 57,
+          "line": 70,
           "kind": "go-function"
         }
       ],
       "httpPathLiterals": [],
-      "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
+      "reviewStatus": "Explicit ACL absence and independent ACL allocation ownership reviewed. Modeled API controls pass. Native macOS descriptor and install qualification remain required; P02 is not accepted."
     },
     {
       "path": "platform/runtime/installed_host.go",
@@ -15964,16 +15964,16 @@
       "componentIds": [
         "PLAT-01"
       ],
-      "workingFileSha256": "b220031c600e02b1217706ebfc4268361fc33e56f29ac7753d37f9a5cc9b5646",
+      "workingFileSha256": "f54667ff124e64f03e5eff0ed08af9b50aa854948f05091fe13c602ca2693424",
       "declarations": [
         {
           "name": "checkNativeDescriptor",
-          "line": 49,
+          "line": 62,
           "kind": "go-function"
         }
       ],
       "httpPathLiterals": [],
-      "reviewStatus": "Targeted CI repair reviewed and promoted. Synthetic local controls passed; native macOS verification and full P02 acceptance remain open."
+      "reviewStatus": "Explicit ACL absence and independent ACL allocation ownership reviewed. Modeled API controls pass. Native macOS descriptor and install qualification remain required; P02 is not accepted."
     },
     {
       "path": "platform/privatefs/access_darwin_nocgo.go",
@@ -28546,6 +28546,50 @@
           {
             "name": "checkNativeDescriptor",
             "line": 49,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
+      }
+    },
+    {
+      "date": "2026-10-14T21:07:01.387343+00:00",
+      "reviewer": "Codex with independent source review",
+      "scope": "Explicit held-descriptor absent ACL handling on macOS",
+      "evidence": "docs/planning/2026-10-09/delivery/evidence/P02/macos-explicit-acl-absence-repair/independent-review.json",
+      "previousRow": {
+        "path": "platform/privatefs/access_darwin.go",
+        "componentIds": [
+          "PLAT-01"
+        ],
+        "workingFileSha256": "b220031c600e02b1217706ebfc4268361fc33e56f29ac7753d37f9a5cc9b5646",
+        "declarations": [
+          {
+            "name": "checkNativeDescriptor",
+            "line": 49,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "Targeted CI repair reviewed and promoted. Synthetic local controls passed; native macOS verification and full P02 acceptance remain open."
+      }
+    },
+    {
+      "date": "2026-10-14T21:07:01.388917+00:00",
+      "reviewer": "Codex with independent source review",
+      "scope": "Explicit held-descriptor absent ACL handling on macOS",
+      "evidence": "docs/planning/2026-10-09/delivery/evidence/P02/macos-explicit-acl-absence-repair/independent-review.json",
+      "previousRow": {
+        "path": "platform/runtime/acl_darwin.go",
+        "componentIds": [
+          "PLAT-02"
+        ],
+        "workingFileSha256": "bfcd89538837b9ffd94c46882f231a1930091d3b21d3e5bb5cb475659acfe609",
+        "declarations": [
+          {
+            "name": "darwinDescriptorPolicy",
+            "line": 57,
             "kind": "go-function"
           }
         ],

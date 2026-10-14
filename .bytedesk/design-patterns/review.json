@@ -1,6 +1,6 @@
 {
   "reviewer": "Codex; corrected P01 native evidence and complete preservation review",
-  "sourceDigest": "b87f52df5c33dafe86fc353d5d0af208f4248261e22fc1e8e9722db09101de85",
+  "sourceDigest": "bc77133df3cd0c97462a994cb01797dba7da1dcecea446ec1926b948c13af242",
   "incrementalReviews": [
     {
       "date": "2026-10-13",
@@ -951,6 +951,29 @@
         "docs/planning/2026-10-09/delivery/evidence/P02/retained-p01-tracker-fixture-repair/root-review.json"
       ],
       "rationale": "All changes since 93b0278 are the three reviewed source/test corrections, corresponding source-index history, tracker history and raw reviewed CI evidence. No registered pattern relationship changes. Prior raw evidence and review history are preserved. Exact raw staged bytes were checked. Native qualification and P02 acceptance remain open."
+    },
+    {
+      "date": "2026-10-14T21:09:18.505029+00:00",
+      "scope": "macOS explicit ACL absence handling and regression replacement registration",
+      "reviewer": "Codex with independent source review",
+      "sourceDigestRefreshed": false,
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/macos-explicit-acl-absence-repair/independent-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/tracker-regression-preservation-repair/root-review.json"
+      ],
+      "rationale": "Reviewed exact two native descriptor helpers against Apple public implementations. Absent ACL requires successful held-descriptor stat and property query; unknowns and present unsafe ACLs remain refused. Independent ACL copy cleanup matches public ownership contract. Existing mount and descriptor policies remain. Baseline regression inventory and validator are unchanged; only the previously reviewed fixture replacement is registered. Source-index history and raw failure records preserved. No new pattern relationship, native qualification, recovery proof or phase acceptance."
+    },
+    {
+      "date": "2026-10-14T21:13:16.901546+00:00",
+      "scope": "Stable macOS ACL and retention registration repair checkpoint",
+      "reviewer": "Codex with independent reviews",
+      "sourceDigestRefreshed": true,
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/macos-explicit-acl-absence-repair/root-promotion.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/tracker-regression-preservation-repair/independent/closure.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/midboot-unqualified-child-exit/root-review.json"
+      ],
+      "rationale": "Reviewed all current changes since f520: two Darwin descriptor helpers, explicit previously reviewed tracker replacement, preserved source-index history, fast checkpoint workflow, tracker notes and byte-bound evidence. Current coverage, retention and tracker checks pass; formatting unchanged. Historical failed recovery attempt retained with strict phase refusal and exact cleanup evidence. No pattern relationship change or deletion of review history. Native macOS, full recovery and P02 acceptance remain open."
     }
   ],
   "rules": {
@@ -1361,14 +1384,14 @@
     }
   ],
   "finalVerification": {
-    "date": "2026-10-14T20:51:02.339972+00:00",
+    "date": "2026-10-14T21:13:16.901546+00:00",
     "command": "node .bytedesk/design-patterns/check.mjs check --root .",
     "result": {
       "baselineVersion": "1.1.0",
       "ok": true,
       "errors": []
     },
-    "scope": "Targeted P02 CI repair checkpoint source freshness; no runtime or phase acceptance."
+    "scope": "Stable repair checkpoint source freshness only; no P02 runtime acceptance."
   },
   "finalVerificationHistory": [
     {
@@ -1390,6 +1413,16 @@
         "errors": []
       },
       "scope": "Current feature checkpoint source freshness/pattern attestation; no P02 runtime acceptance."
+    },
+    {
+      "date": "2026-10-14T20:51:02.339972+00:00",
+      "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+      "result": {
+        "baselineVersion": "1.1.0",
+        "ok": true,
+        "errors": []
+      },
+      "scope": "Targeted P02 CI repair checkpoint source freshness; no runtime or phase acceptance."
     }
   ]
 }

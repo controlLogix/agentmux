@@ -1,0 +1,44 @@
+{
+  "appleSources": [
+    {
+      "url": "https://raw.githubusercontent.com/apple-oss-distributions/Libc/71bbe350ab79eef58113991d817ccc6165061a64/gen/filesec.c",
+      "sha256": "ae040dd45027269485360f736bf983d1371f25bac5c56184a7b2d7021490a454"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apple-oss-distributions/Libc/71bbe350ab79eef58113991d817ccc6165061a64/sys/statx_np.c",
+      "sha256": "5a05eabc7d870f2c1a98c4e3b828d020e4a51e4b60c6887d955422add747730d"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/apple-oss-distributions/Libc/71bbe350ab79eef58113991d817ccc6165061a64/posix1e/acl_translate.c",
+      "sha256": "929b16ba8d52527c1bb4812ed7ed25f3e43f315516898d1bd777a10ca690e4c2"
+    }
+  ],
+  "findings": [],
+  "sourceDirectory": "C:\\Users\\RyanHelms\\.cache\\agentmux-governance\\p02-mac-ci-f520",
+  "limits": [
+    "No tests, compiler, native calls or source edits by independent reviewer.",
+    "Official source semantics and cached C controls do not establish current macOS native ACL or installed boot acceptance.",
+    "No phase acceptance; root owns promotion and native CI qualification."
+  ],
+  "scope": "Read-only independent source review of two cached Darwin ACL repairs",
+  "appleCommit": "71bbe350ab79eef58113991d817ccc6165061a64",
+  "workerControls": [
+    "Both before C controls exit 1; both patched controls exit 0 after successful C compilation. These are stubbed Linux controls, not Apple native execution.",
+    "Controls cover absent ACL, init/stat/query/extraction failure, NULL/remove sentinel, invalid ACL, deny/read-only allow/write allow, unknown tag and iterator/permission failures."
+  ],
+  "pins": {
+    "access_darwin-after.go": "f54667ff124e64f03e5eff0ed08af9b50aa854948f05091fe13c602ca2693424",
+    "access_darwin-after-control.c": "9deb9130d3d601870cb72a85446d76836bcf6d2ecf25f018806202fd3ab804e4",
+    "acl-controls.json": "5564afb029e52b3f65c8cfee5b328809b824a6612a7bed9aaa7ed6f8b28b66ca",
+    "acl_darwin-after.go": "f6bbea42eaefeb5e2f9abb6658eda4094c44da2fffe553583ef9ca3159a1c968",
+    "access_darwin-repair.diff": "fea8856e8e1c632606fe186e39aa0afec35b818a670d2fe3bbc1a7f05bfabaf5",
+    "acl_darwin-repair.diff": "73e5a468f1a8bc1897cbe3926c9a8e8f42b207d6337dbf33a2564d2fe4b3542b",
+    "acl_darwin-after-control.c": "8b7ec420ad83ccc431abb1a1cfee28a1d0117960c3a1428d5195b06f0bdee299"
+  },
+  "conclusions": [
+    "Fresh filesec_init plus successful fstatx_np and successful FILESEC_ACL query distinguishes absent ACL from query/allocation failure. A failed or ambiguous query refuses.",
+    "FILESEC_ACL extraction allocates an independent acl_t via acl_copy_int_native and acl_init; acl_free releases that copy, while filesec_free releases its separate raw ACL buffer and container. No double free identified.",
+    "ACL validation, maximum entry bound, EINVAL-only iteration completion, private allow refusal, ancestor mutation mask and error refusal are preserved.",
+    "Mount locality and ownership checks remain intact; runtime retains root-owned APFS requirement and fixes only the incorrect ownership-ignore constant."
+  ]
+}

@@ -1,0 +1,86 @@
+--- actual-failed-58f6.go
++++ pause-before-exec.go
+@@ -64,22 +64,21 @@
+  if time.Now().After(startupDeadline)||entryPollError!=nil||entryExited!=0 {t.Fatal("midboot_original_creator_or_deadline_changed_before_gate_release")}
+  if gate.Close() != nil { t.Fatal("mid-boot arbitration gate release failed") }
+  gate = nil
+- var candidate *composeCLIMidBootCandidate
+- lastDiagnostic:=[]byte(nil)
+- for candidate==nil {
+-  var predicates map[string]bool
+-  candidate,predicates=composeCLIDiscoverExecutedMidBootRole(t,f,original,expectedMembers)
+-  if candidate!=nil{original.roleFDs=append(original.roleFDs,candidate.fd)}
+-  encoded,_:=json.Marshal(predicates)
+-  if !bytes.Equal(encoded,lastDiagnostic){f.WriteEvidence(t,"midboot-discovery-"+bootstrapFixtureRandom(t,4)+".json",map[string]any{"stage":"executed_role_discovery","predicates":predicates,"genuineCandidateFound":candidate!=nil});lastDiagnostic=encoded}
+-  if candidate!=nil { break }
+-  if time.Now().After(startupDeadline) { t.Fatal("mid-boot genuine executed role did not appear within original budget") }
++ // A child observation is only a synchronization trigger. It grants no
++ // process authority; this diagnostic pauses only our original creator fd.
++ var triggerPIDs []int
++ for len(triggerPIDs)==0 {
++  triggerPIDs=installedCLIChildren(original.hostPID)
++  if len(triggerPIDs)>0 {break}
++  if time.Now().After(startupDeadline) {t.Fatal("midboot_child_trigger_deadline")}
+   poll:=[]unix.PollFd{{Fd:int32(original.hostFD),Events:unix.POLLIN}}
+-  if n,e:=unix.Poll(poll,0);e!=nil||n!=0{t.Fatal("mid-boot creator exited before executed role")}
++  if n,e:=unix.Poll(poll,0);e!=nil||n!=0 {t.Fatal("midboot_creator_exited_before_child_trigger")}
+   time.Sleep(time.Millisecond)
+  }
+- // Discovery never signals a discovered PID. Only the original creator-proven
+- // host pidfd grants this explicit pause injection.
++ triggerPoll:=[]unix.PollFd{{Fd:int32(original.hostFD),Events:unix.POLLIN}};triggerExited,triggerError:=unix.Poll(triggerPoll,0)
++ if time.Now().After(startupDeadline)||triggerError!=nil||triggerExited!=0 {t.Fatal("midboot_original_creator_or_deadline_changed_before_pause")}
++ // No child PID is signaled. Only the original creator-proven host descriptor
++ // grants this explicit disposable pause injection.
+  if unix.PidfdSendSignal(original.hostFD, unix.SIGSTOP, nil, 0) != nil { t.Fatal("mid-boot exact creator pause refused") }
+  paused = true
+  // SIGSTOP delivery must be observed before the partial-child roster is used.
+@@ -90,7 +89,8 @@
+   if time.Now().After(startupDeadline) { t.Fatal("mid-boot pause exceeded original startup budget") }
+   time.Sleep(time.Millisecond)
+  }
+- roles, partialPIDs := composeCLIPinPartialMidBootRoles(t, f, original, expectedMembers, candidate)
++ f.WriteEvidence(t,"midboot-observed-child-trigger.json",map[string]any{"observedDirectChildCount":len(triggerPIDs),"phaseQualified":false,"signalAuthority":"Original creator-owned host pidfd only"})
++ roles, partialPIDs := composeCLIWaitFrozenMidBootRoles(t, f, original, triggerPIDs, expectedMembers, startupDeadline)
+  phaseContext, phaseCancel := context.WithDeadline(context.Background(), startupDeadline)
+  defer phaseCancel()
+  ctx, cancel = context.WithTimeout(phaseContext, 500*time.Millisecond)
+@@ -337,3 +337,38 @@
+  if failure!=nil {switch failure.Error(){case "owner_bridge_connection_unavailable","owner_bridge_reply_unavailable","owner_bridge_deadline":return "midboot_starting_retry";default:return "midboot_starting_authority_or_cleanup_refused"}}
+  return composeCLIMidBootStartingCode(out,attempt)
+ }
++
++// Every frozen child must execute a genuine expected role before the phase is
++// accepted. Helpers and pre-exec children never satisfy this gate.
++func composeCLIWaitFrozenMidBootRoles(t *testing.T,f *bootstrapDockerFixture,x *composeCLIFront,trigger []int,expected map[string]string,deadline time.Time)([]string,[]int){
++ t.Helper()
++ pids:=installedCLIChildren(x.hostPID)
++ if !composeCLIMidBootSamePIDs(trigger,pids)||len(pids)==0||len(pids)>=len(protocol.Roles()) {t.Fatal("midboot_frozen_partial_roster_missed")}
++ for _,pid:=range pids {fd,e:=unix.PidfdOpen(pid,0);if e!=nil{t.Fatal("midboot_frozen_child_descriptor_refused")};x.roleFDs=append(x.roleFDs,fd)}
++ last:=[]byte(nil)
++ for {
++  state,e:=os.ReadFile(fmt.Sprintf("/proc/%d/status",x.hostPID))
++  hostPoll:=[]unix.PollFd{{Fd:int32(x.hostFD),Events:unix.POLLIN}};hostExited,hostPollError:=unix.Poll(hostPoll,0)
++  if e!=nil||!strings.Contains(string(state),"State:\tT (stopped)")||hostPollError!=nil||hostExited!=0||!composeCLIMidBootSamePIDs(pids,installedCLIChildren(x.hostPID)) {t.Fatal("midboot_frozen_roster_or_creator_changed")}
++  roles,facts,ready,code:=composeCLIMidBootFrozenRoles(f,x,pids,expected)
++  encoded,_:=json.Marshal(facts)
++  if !bytes.Equal(encoded,last){f.WriteEvidence(t,"midboot-frozen-child-"+bootstrapFixtureRandom(t,4)+".json",map[string]any{"stage":"frozen_child_execution","childPredicates":facts,"genuineRoleCount":len(roles),"phaseQualified":ready,"refusalCode":code});last=encoded}
++  if code!=""{t.Fatal(code)}
++  if time.Now().After(deadline){t.Fatal("midboot_frozen_role_execution_deadline")}
++  if ready {return roles,pids}
++  time.Sleep(time.Millisecond)
++ }
++}
++
++func composeCLIMidBootFrozenRoles(f *bootstrapDockerFixture,x *composeCLIFront,pids []int,expected map[string]string)([]string,[]map[string]bool,bool,string){
++ if len(pids)==0||len(pids)>=len(protocol.Roles())||len(pids)!=len(x.roleFDs){return nil,nil,false,"midboot_frozen_partial_roster_missed"}
++ roles:=[]string{};facts:=[]map[string]bool{};seen:=map[string]bool{};ready:=true;names:=protocol.Roles()
++ for i,pid:=range pids {
++  role,predicate:=composeCLIMidBootRevalidationPredicates(f,x,pid,x.roleFDs[i],names[:],expected);facts=append(facts,predicate)
++  if !predicate["liveDescriptor"] {return roles,facts,false,"midboot_frozen_child_exited"}
++  if !predicate["parentMatches"] {return roles,facts,false,"midboot_frozen_child_parent_changed"}
++  if !predicate["credentialBoundRole"]||!predicate["executedImageMatches"]||!predicate["noArguments"] {ready=false;continue}
++  if seen[role] {return roles,facts,false,"midboot_frozen_role_duplicate"};seen[role]=true;roles=append(roles,role)
++ }
++ return roles,facts,ready&&len(roles)==len(pids),""
++}
