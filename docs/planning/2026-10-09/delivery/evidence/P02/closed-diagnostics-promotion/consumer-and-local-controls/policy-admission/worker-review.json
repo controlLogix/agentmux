@@ -1,0 +1,80 @@
+{
+  "scope": "Exactly one read-only admission helper invocation; no lifecycle or original-cause acceptance",
+  "programSHA256": "c9fd2aba98bf38a441cbd5343033fe3da8021981744ef46d7d68c595fd93cfd6",
+  "embeddedSchema": {
+    "sourceSHA256Before": "c65618379b8aa45f1074fdc22e4b39c989b2d1e1d0e35b37abca136beb9a0ea6",
+    "copySHA256": "c65618379b8aa45f1074fdc22e4b39c989b2d1e1d0e35b37abca136beb9a0ea6",
+    "sourceSHA256After": "c65618379b8aa45f1074fdc22e4b39c989b2d1e1d0e35b37abca136beb9a0ea6",
+    "unchanged": true,
+    "compilerOverlayOnly": true
+  },
+  "preparationSHA256": "730548674b0ca3ddb770cab143625e8e82272c7f110474a7429af509ee5fd7ee",
+  "calls": [
+    {
+      "name": "compile",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "build",
+        "-overlay",
+        "/home/ryan/.cache/agentmux-governance/p02-policy-readonly-once-y_68cuav/compiler-overlay.json",
+        "-o",
+        "/home/ryan/.cache/agentmux-governance/p02-policy-readonly-once-y_68cuav/admission-helper",
+        "/home/ryan/.cache/agentmux-governance/p02-policy-readonly-once-y_68cuav/main.go"
+      ],
+      "cwd": "/home/ryan/.cache/agentmux-governance/p02-receipt-diagnostic-single-ie6vkvpu/src/platform",
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 3.854755306005245,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "soleCommunicateJoined": true
+    },
+    {
+      "name": "admission",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/p02-policy-readonly-once-y_68cuav/admission-helper"
+      ],
+      "cwd": "/home/ryan/.cache/agentmux-governance/p02-receipt-diagnostic-single-ie6vkvpu/src/platform",
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 0.2881263950112043,
+      "stdoutBytes": 222,
+      "stderrBytes": 0,
+      "stdoutSHA256": "840f602d1266cc5349779f1eb7179d4646f4f0ce54993183432ad8ff5098dd8b",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "soleCommunicateJoined": true
+    }
+  ],
+  "closedOutput": {
+    "schemaVersion": "1.0.0",
+    "kind": "read-only-policy-admission",
+    "stages": [
+      {
+        "stage": "enrolled_policy_admission",
+        "status": "passed",
+        "refusalCode": "none"
+      },
+      {
+        "stage": "repeated_config_load",
+        "status": "passed",
+        "refusalCode": "none"
+      }
+    ]
+  },
+  "currentAndPreparedProductionStable": true,
+  "productionSourceCount": 105,
+  "selectedFixtureBytesAndOwnershipStable": true,
+  "fixtureEntryCount": 28,
+  "fixtureBeforeInventorySHA256": "56d43209ed5323cecf983cea872ac1257fb4024a3ac075f389246153b43e54b8",
+  "fixtureAfterInventorySHA256": "56d43209ed5323cecf983cea872ac1257fb4024a3ac075f389246153b43e54b8",
+  "noObservedCleanupFailure": true,
+  "limits": [
+    "No Probe/Request/BeginEnsure/PrepareHost/BridgeClient/BridgeServer/NATS/Docker/processdiscovery or fixture writes.",
+    "Constructor already calls h.Load; repeatstage is a fresh reload.",
+    "This postfailure observation cannot identify the stage/cause of original frontend failure or adopt any process.",
+    "Fixed helper emits at most two closed rows; captured output limit64KiB validated before public projection.",
+    "No timeout occurred; exact owned compiler/helper subprocess handles joined. Timeout branch is only own diagnostic child cleanup, not fixture authority."
+  ]
+}

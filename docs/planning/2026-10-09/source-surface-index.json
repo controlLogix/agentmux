@@ -11390,101 +11390,132 @@
       "componentIds": [
         "PLAT-01"
       ],
-      "workingFileSha256": "25ebb1c850399530433e7c8a2c79d2f63f222b85557881509568130c3c16d2a3",
+      "workingFileSha256": "3d850105741224ebae1853e53c239a2e6346f4eb6375d3eeb29dda6f151555ad",
       "declarations": [
         {
           "name": "hostPolicyError",
-          "line": 79,
+          "line": 78,
           "kind": "go-function"
         },
         {
           "name": "canonicalHostFilePath",
-          "line": 81,
+          "line": 80,
           "kind": "go-function"
         },
         {
           "name": "openPrivateHostRoot",
-          "line": 91,
+          "line": 90,
           "kind": "go-function"
         },
         {
           "name": "trustedHostAncestors",
-          "line": 138,
+          "line": 137,
           "kind": "go-function"
         },
         {
           "name": "LoadEnrolledHostPolicy",
-          "line": 189,
+          "line": 188,
           "kind": "go-function"
         },
         {
           "name": "Load",
-          "line": 267,
+          "line": 266,
           "kind": "go-function"
         },
         {
           "name": "Invocation",
-          "line": 301,
+          "line": 300,
           "kind": "go-function"
         },
         {
           "name": "PrepareHost",
-          "line": 308,
+          "line": 307,
           "kind": "go-function"
         },
         {
           "name": "loadBridgeSettings",
-          "line": 347,
+          "line": 346,
           "kind": "go-function"
         },
         {
           "name": "BridgeClient",
-          "line": 405,
+          "line": 404,
           "kind": "go-function"
         },
         {
           "name": "BridgeServer",
-          "line": 415,
+          "line": 414,
           "kind": "go-function"
         },
         {
           "name": "hostInvocationID",
-          "line": 432,
+          "line": 431,
           "kind": "go-function"
         },
         {
           "name": "BeginEnsure",
-          "line": 441,
+          "line": 440,
           "kind": "go-function"
         },
         {
           "name": "ID",
-          "line": 451,
+          "line": 450,
           "kind": "go-function"
         },
         {
           "name": "Observe",
-          "line": 457,
+          "line": 456,
           "kind": "go-function"
         },
         {
           "name": "Probe",
-          "line": 463,
+          "line": 462,
           "kind": "go-function"
         },
         {
           "name": "Request",
-          "line": 473,
+          "line": 472,
           "kind": "go-function"
         },
         {
           "name": "ObserveStatus",
-          "line": 483,
+          "line": 482,
           "kind": "go-function"
         }
       ],
       "httpPathLiterals": [],
-      "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
+      "reviewStatus": "Codex reviewed closed typed diagnostic provenance and history parity; component race checks pass, installed lifecycle and P02 acceptance remain open."
+    },
+    {
+      "path": "platform/launcher/host_policy_diagnostic.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "5c17561f78258a4b0682ea70bbcf7d383fece497d71ec6d1302e7b3bf0fc2dc9",
+      "declarations": [
+        {
+          "name": "Error",
+          "line": 14,
+          "kind": "go-function"
+        },
+        {
+          "name": "Format",
+          "line": 15,
+          "kind": "go-function"
+        },
+        {
+          "name": "MarshalJSON",
+          "line": 16,
+          "kind": "go-function"
+        },
+        {
+          "name": "hostPolicyDiagnosticCategory",
+          "line": 20,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "Codex reviewed closed typed diagnostic provenance and history parity; component race checks pass, installed lifecycle and P02 acceptance remain open."
     },
     {
       "path": "platform/launcher/host_receipt_binding.go",
@@ -12249,7 +12280,7 @@
       "componentIds": [
         "PLAT-01"
       ],
-      "workingFileSha256": "c824be83853e38abf30543e585027f6660ec3756bc282d2e2395e463ca3b3d84",
+      "workingFileSha256": "dddc1e7562eabfde17265fe2fd41794f0f66c71178669ae796acab5c72e320b4",
       "declarations": [
         {
           "name": "diagnosticReviewedWrapper",
@@ -12293,17 +12324,17 @@
         },
         {
           "name": "ValidRequestDiagnostic",
-          "line": 117,
+          "line": 125,
           "kind": "go-function"
         },
         {
           "name": "ProjectRequestDiagnostic",
-          "line": 124,
+          "line": 132,
           "kind": "go-function"
         }
       ],
       "httpPathLiterals": [],
-      "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
+      "reviewStatus": "Codex reviewed closed typed diagnostic provenance and history parity; component race checks pass, installed lifecycle and P02 acceptance remain open."
     },
     {
       "path": "platform/launcher/session_cleanup.go",
@@ -28968,6 +28999,176 @@
         "httpPathLiterals": [],
         "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
       }
+    },
+    {
+      "date": "2026-10-14T22:31:09.436156+00:00",
+      "reviewer": "Codex",
+      "scope": "Typed host policy diagnostic leaf and projector; no new orchestration relationship",
+      "previousFiles": [
+        {
+          "path": "platform/launcher/host_policy.go",
+          "componentIds": [
+            "PLAT-01"
+          ],
+          "workingFileSha256": "25ebb1c850399530433e7c8a2c79d2f63f222b85557881509568130c3c16d2a3",
+          "declarations": [
+            {
+              "name": "hostPolicyError",
+              "line": 79,
+              "kind": "go-function"
+            },
+            {
+              "name": "canonicalHostFilePath",
+              "line": 81,
+              "kind": "go-function"
+            },
+            {
+              "name": "openPrivateHostRoot",
+              "line": 91,
+              "kind": "go-function"
+            },
+            {
+              "name": "trustedHostAncestors",
+              "line": 138,
+              "kind": "go-function"
+            },
+            {
+              "name": "LoadEnrolledHostPolicy",
+              "line": 189,
+              "kind": "go-function"
+            },
+            {
+              "name": "Load",
+              "line": 267,
+              "kind": "go-function"
+            },
+            {
+              "name": "Invocation",
+              "line": 301,
+              "kind": "go-function"
+            },
+            {
+              "name": "PrepareHost",
+              "line": 308,
+              "kind": "go-function"
+            },
+            {
+              "name": "loadBridgeSettings",
+              "line": 347,
+              "kind": "go-function"
+            },
+            {
+              "name": "BridgeClient",
+              "line": 405,
+              "kind": "go-function"
+            },
+            {
+              "name": "BridgeServer",
+              "line": 415,
+              "kind": "go-function"
+            },
+            {
+              "name": "hostInvocationID",
+              "line": 432,
+              "kind": "go-function"
+            },
+            {
+              "name": "BeginEnsure",
+              "line": 441,
+              "kind": "go-function"
+            },
+            {
+              "name": "ID",
+              "line": 451,
+              "kind": "go-function"
+            },
+            {
+              "name": "Observe",
+              "line": 457,
+              "kind": "go-function"
+            },
+            {
+              "name": "Probe",
+              "line": 463,
+              "kind": "go-function"
+            },
+            {
+              "name": "Request",
+              "line": 473,
+              "kind": "go-function"
+            },
+            {
+              "name": "ObserveStatus",
+              "line": 483,
+              "kind": "go-function"
+            }
+          ],
+          "httpPathLiterals": [],
+          "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
+        },
+        {
+          "path": "platform/launcher/request_diagnostic.go",
+          "componentIds": [
+            "PLAT-01"
+          ],
+          "workingFileSha256": "c824be83853e38abf30543e585027f6660ec3756bc282d2e2395e463ca3b3d84",
+          "declarations": [
+            {
+              "name": "diagnosticReviewedWrapper",
+              "line": 26,
+              "kind": "go-function"
+            },
+            {
+              "name": "Error",
+              "line": 53,
+              "kind": "go-function"
+            },
+            {
+              "name": "Format",
+              "line": 61,
+              "kind": "go-function"
+            },
+            {
+              "name": "MarshalJSON",
+              "line": 62,
+              "kind": "go-function"
+            },
+            {
+              "name": "Unwrap",
+              "line": 63,
+              "kind": "go-function"
+            },
+            {
+              "name": "localAuthorityFailure",
+              "line": 69,
+              "kind": "go-function"
+            },
+            {
+              "name": "bridgeAuthorityFailure",
+              "line": 72,
+              "kind": "go-function"
+            },
+            {
+              "name": "requestDiagnostic",
+              "line": 86,
+              "kind": "go-function"
+            },
+            {
+              "name": "ValidRequestDiagnostic",
+              "line": 117,
+              "kind": "go-function"
+            },
+            {
+              "name": "ProjectRequestDiagnostic",
+              "line": 124,
+              "kind": "go-function"
+            }
+          ],
+          "httpPathLiterals": [],
+          "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
+        }
+      ],
+      "phaseAccepted": false
     }
   ]
 }

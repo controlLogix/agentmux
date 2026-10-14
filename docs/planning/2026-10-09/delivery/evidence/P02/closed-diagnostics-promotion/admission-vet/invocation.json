@@ -1,0 +1,57 @@
+{
+  "cwd": "/home/ryan/.cache/agentmux-governance/p02-host-policy-history-parity-x9y2c317/snapshot/platform",
+  "environment": {
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GOENV": "off",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "0"
+  },
+  "AMX_DOCKER_FIXTUREAbsent": true,
+  "candidateBefore": {
+    "host_policy_diagnostic_test.go": "4a5589e8ea5d80c53f2cd33ab566a52500fea8eb75aa51b54fa3431de82ccf93",
+    "request_diagnostic.go": "dddc1e7562eabfde17265fe2fd41794f0f66c71178669ae796acab5c72e320b4",
+    "bootstrap_history_host_diagnostic_test.go": "b992017a59e0237734beb0b7f0e61b977899c1a3c47a650da878354a665889b9",
+    "bootstrap_history.schema.json": "9fb067de7702d270bc89f1ff400c57503fb3bdfb007e0257862ed1c75c20b21c",
+    "host_policy.go": "3d850105741224ebae1853e53c239a2e6346f4eb6375d3eeb29dda6f151555ad",
+    "host_policy_diagnostic.go": "5c17561f78258a4b0682ea70bbcf7d383fece497d71ec6d1302e7b3bf0fc2dc9"
+  },
+  "commands": {
+    "admission": {
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-race",
+        "-count=1",
+        "-json",
+        "./launcher",
+        "-run",
+        "^TestInstalledHostPolicy(BridgeBindingsBeforeFactoryLoad|NullableOwnerAndBoundFiles|RejectsPrivateBoundaryAndDeclarations)$"
+      ],
+      "startedUnix": 1792016968.455652,
+      "endedUnix": 1792016970.9638143,
+      "directExit": 0
+    },
+    "vet": {
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "vet",
+        "./launcher"
+      ],
+      "startedUnix": 1792016970.9642127,
+      "endedUnix": 1792016972.0134413,
+      "directExit": 0
+    }
+  },
+  "startedUnix": 1792016968.4321272,
+  "candidateAfter": {
+    "host_policy_diagnostic_test.go": "4a5589e8ea5d80c53f2cd33ab566a52500fea8eb75aa51b54fa3431de82ccf93",
+    "request_diagnostic.go": "dddc1e7562eabfde17265fe2fd41794f0f66c71178669ae796acab5c72e320b4",
+    "bootstrap_history_host_diagnostic_test.go": "b992017a59e0237734beb0b7f0e61b977899c1a3c47a650da878354a665889b9",
+    "bootstrap_history.schema.json": "9fb067de7702d270bc89f1ff400c57503fb3bdfb007e0257862ed1c75c20b21c",
+    "host_policy.go": "3d850105741224ebae1853e53c239a2e6346f4eb6375d3eeb29dda6f151555ad",
+    "host_policy_diagnostic.go": "5c17561f78258a4b0682ea70bbcf7d383fece497d71ec6d1302e7b3bf0fc2dc9"
+  },
+  "candidateUnchanged": true
+}

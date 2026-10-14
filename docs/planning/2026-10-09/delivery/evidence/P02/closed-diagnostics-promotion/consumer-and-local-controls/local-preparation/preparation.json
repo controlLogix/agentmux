@@ -1,0 +1,98 @@
+{
+  "scope": "Updated current-candidate local-only diagnostic preparation; no compile/execution",
+  "programSHA256": "d50190b0fd9a8432571b7edc9bfb5647f53d0e16bb7eb96250eeb8c89b0cc182",
+  "priorPreparationSHA256": "285ee351c6e51c4975e0a471928d264bb546012a9c317f4279ee193ee97eba6f",
+  "priorProgramSHA256": "514fed6c96e6e9e5c932cb2f66738a1f59e2e269b53ca7bf25b48d1acf453113",
+  "snapshot": "/home/ryan/.cache/agentmux-governance/p02-local-preparation-current-49v6zcs2",
+  "moduleWorkingDirectory": "/home/ryan/.cache/agentmux-governance/p02-local-preparation-current-49v6zcs2/src/platform",
+  "productionSourceCount": 106,
+  "embeddedResourceCount": 1,
+  "contractSourceCount": 26,
+  "beforeCopyAfterMatch": true,
+  "sourceBeforeSHA256": "8d337f707cf231bc331af83812fbf6c1f6f31a95c35fe91e1c80c861d14d0333",
+  "sourceCopySHA256": "8d337f707cf231bc331af83812fbf6c1f6f31a95c35fe91e1c80c861d14d0333",
+  "sourceAfterCopySHA256": "8d337f707cf231bc331af83812fbf6c1f6f31a95c35fe91e1c80c861d14d0333",
+  "keyPins": {
+    "platform/launcher/host_policy.go": "3d850105741224ebae1853e53c239a2e6346f4eb6375d3eeb29dda6f151555ad",
+    "platform/launcher/request_diagnostic.go": "dddc1e7562eabfde17265fe2fd41794f0f66c71178669ae796acab5c72e320b4",
+    "platform/launcher/host_policy_diagnostic.go": "5c17561f78258a4b0682ea70bbcf7d383fece497d71ec6d1302e7b3bf0fc2dc9",
+    "platform/launcher/bootstrap_history.schema.json": "9fb067de7702d270bc89f1ff400c57503fb3bdfb007e0257862ed1c75c20b21c"
+  },
+  "fixedSelection": {
+    "policy": "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-3887681337/installed/host-policy.json",
+    "uid": 1000,
+    "workspaces": [
+      "/mnt/c/Users/RyanHelms/GitHub/agentmux"
+    ]
+  },
+  "totalContextSeconds": 10,
+  "closedRefusalWhitelist": [
+    "docker_command_failed",
+    "docker_command_timeout_outcome_unknown",
+    "docker_configuration_mismatch",
+    "docker_environment_conflict",
+    "docker_resource_conflict",
+    "docker_selection_mismatch",
+    "docker_versions_unqualified",
+    "host_enrollment_invalid",
+    "host_executable_invalid",
+    "host_policy_invalid",
+    "host_profile_invalid",
+    "owned_cleanup_incomplete",
+    "request_deadline",
+    "runtime_authority_rejected",
+    "none",
+    "unknown"
+  ],
+  "projection": "ProjectRequestDiagnostic then exact ValidRequestDiagnostic; no unknown Error/Is/As/Unwrap/type methods or rawtext inspected by helper. request_failed mapsunknown. Specific cleanup/auth/deadline priority stays in reviewed projector.",
+  "auditedCallGraph": [
+    {
+      "stage": "admission",
+      "calls": "LoadEnrolledHostPolicy→private policy reads→h.Load→profile/release/config/role/trust/owner validation",
+      "effects": "Read selected private files only; no Docker/NATS inspection."
+    },
+    {
+      "stage": "local_invocation_constructor",
+      "calls": "BeginEnsure→crypto/rand.Read→EnsureInvocation in memory",
+      "effects": "Local nonce object only; no authority, metadata writes or startup."
+    },
+    {
+      "stage": "receipt_binding",
+      "calls": "BootstrapReceiptBinding→h.Load→typed owner JSON marshal/SHA256",
+      "effects": "Read/revalidate private declarations; in-memory binding only."
+    },
+    {
+      "stage": "installed_image_preparation",
+      "calls": "PrepareHost→private root/no-follow member checks→PrepareInstalledHost→MemfdCreate/copy→sealAndVerify/ELF admission→private readonly memory descriptor",
+      "effects": "Only fresh anonymous memory FD changes; original installed file remains read-only."
+    },
+    {
+      "stage": "installed_image_close",
+      "calls": "InstalledHostImage.Close→sealedExecutable.close→exact image os.File.Close",
+      "effects": "Checked one-use local resource closure; no FD retry/child/creator authority."
+    }
+  ],
+  "callGraphSourcePins": {
+    "platform/launcher/host_policy.go": "3d850105741224ebae1853e53c239a2e6346f4eb6375d3eeb29dda6f151555ad",
+    "platform/launcher/host_receipt_binding.go": "16f5eca18bcdccc911494f51efbbfff359518fbee4a7ecb8ca7d6ca1aabb5b51",
+    "platform/launcher/host_config.go": "8acbb094876456bc22ae743fb4697fb22d5a722ad7a0231ee4578695a3c5de53",
+    "platform/runtime/installed_host_linux.go": "72e1c8cefd8f3c06ff8c8fba4be53e444aa14de9e24ea773ef1fa67bff815627",
+    "platform/runtime/installed_host.go": "94cb640c7422bd3725af089511958699bb7d7418455273bccc7ba3dde06df780",
+    "platform/runtime/snapshot_linux.go": "2adf8ef1a70fa737f36bc015dc5bdb18e164baf2e4fd13437ac1c6d73f14addb",
+    "platform/kernel/assembly/open_unix.go": "f39acc55f3633bddf82fed8c09f454d20321ea3fdd514e8809d5640ed6577769",
+    "platform/kernel/assembly/verify.go": "e915287f32b009b2b47bbaf7287f9ee29d0ed82fd8e57098260512b8c9826c83"
+  },
+  "constraints": [
+    "No StartHost/Probe/Request/BridgeClient/BridgeServer/engine/NATS/processdiscovery/signals or fixture writes.",
+    "All stages check same original context; actual method error preserved before context classification.",
+    "Image Close is attempted even after context expiry and its actual error recorded privately; no fresh cleanup timeout.",
+    "Synchronous local filesystem/crypto/syscall/Close operations are not hard-preemptible.",
+    "Output only fixed5stage/status/refusal strings; no IDs/digests/config/owner/image values.",
+    "Passing current preparation cannot identify original frontend failure stage or adopt any process.",
+    "Before-call guards also check original context at each method boundary; cancel is explicitly called after image closure before process exit.",
+    "Fresh source-only snapshot includes exact current embedded resource; old105/c656 preparations preserved historical and not claimedcurrent.",
+    "No generic raw-helpercode or string matching remains; current typed refusal categories come from reviewed production projector.",
+    "Helper calls only reviewed ProjectRequestDiagnostic/ValidRequestDiagnostic for refusal categories; it never reads underlying error text or type."
+  ],
+  "preExecutionGate": "Root must review updated program and current source claim before compile/run."
+}

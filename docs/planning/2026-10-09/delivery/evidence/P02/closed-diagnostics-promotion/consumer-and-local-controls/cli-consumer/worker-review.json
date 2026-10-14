@@ -1,0 +1,133 @@
+{
+  "scope": "Existing CLI consumer race suite and vet on current promoted candidate",
+  "invocation": {
+    "cwd": "/home/ryan/.cache/agentmux-governance/p02-host-diagnostic-cli-consumer-v2loh5_o/snapshot/platform",
+    "environment": {
+      "GOPROXY": "off",
+      "GOSUMDB": "off",
+      "GOWORK": "off",
+      "GOENV": "off",
+      "GORACE": "atexit_sleep_ms=0",
+      "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "0"
+    },
+    "clearedOverrideNames": [],
+    "candidatePins": {
+      "host_policy_diagnostic_test.go": "4a5589e8ea5d80c53f2cd33ab566a52500fea8eb75aa51b54fa3431de82ccf93",
+      "request_diagnostic.go": "dddc1e7562eabfde17265fe2fd41794f0f66c71178669ae796acab5c72e320b4",
+      "bootstrap_history_host_diagnostic_test.go": "b992017a59e0237734beb0b7f0e61b977899c1a3c47a650da878354a665889b9",
+      "bootstrap_history.schema.json": "9fb067de7702d270bc89f1ff400c57503fb3bdfb007e0257862ed1c75c20b21c",
+      "host_policy.go": "3d850105741224ebae1853e53c239a2e6346f4eb6375d3eeb29dda6f151555ad",
+      "host_policy_diagnostic.go": "5c17561f78258a4b0682ea70bbcf7d383fece497d71ec6d1302e7b3bf0fc2dc9"
+    },
+    "documentationPins": {
+      "AGENTS.md": "97a1da4151e3ef28575cfa70b486434c6a3fe91da7994ab5bfa47cbec67a7197",
+      ".claude/rules/plain-language.md": "7e2b8b6b328a83559342b7a4569f5fb9252699917ec5a7b7451dfd238b184a50",
+      "docs/LOCAL_TESTING.md": "218366bac4be25047a5adf5dc7791a1a54261e5302b6cc8b842213c97a5521c7"
+    },
+    "sourceCount": 272,
+    "commands": {
+      "test": {
+        "argv": [
+          "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+          "test",
+          "-race",
+          "-count=1",
+          "-json",
+          "./cmd/agentmux-runtime"
+        ],
+        "startedUnix": 1792017231.5956004,
+        "endedUnix": 1792017237.4308562,
+        "directExit": 0
+      },
+      "vet": {
+        "argv": [
+          "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+          "vet",
+          "./cmd/agentmux-runtime"
+        ],
+        "startedUnix": 1792017237.4312654,
+        "endedUnix": 1792017239.2968032,
+        "directExit": 0
+      }
+    },
+    "startedUnix": 1792017231.5866797,
+    "sharedSourceUnchanged": true,
+    "candidateUnchanged": true,
+    "documentationUnchanged": true
+  },
+  "namedPasses": 21,
+  "topLevelPasses": [
+    "TestOwnedBootstrapProgressChecksActualChildAndCaller",
+    "TestRequestDiagnosticOutputDoesNotTrustErrorText",
+    "TestFrontendBudgetReservesResponseAndCleanup",
+    "TestFrontendCleanupNeverExtendsTotal",
+    "TestFrontendStatusUsesOriginalFiveSecondTotal",
+    "TestFrontendEarlierCancelledCallerDoesNotGainTime",
+    "TestFrontendNearExpiryOwnedReceiptRetainsUnknownFactsAndCleanup",
+    "TestFrontendHistoryBudgetKeepsOriginalReserve",
+    "TestFrontendHistoryNeverMasksHardRequestFailure",
+    "TestFrontendHistoryKeepsNonzeroResultAndSeparateShape",
+    "TestFrontendHistoryFailedWriterRetainsOriginalFailure",
+    "TestInstalledLauncherLiteralCommands",
+    "TestInitialLookupNeverStartsOnStatusOrHardFailure",
+    "TestInstalledLauncherFailedEnsureEmitsEvidenceAndFails",
+    "TestInstalledLauncherReceiptDoesNotInventInstanceDetails",
+    "TestInstalledLauncherProgressNeverMasksAuthorityOrCleanupFailure"
+  ],
+  "namedFailures": 0,
+  "namedSkips": 0,
+  "testStderrBytes": 0,
+  "vetStdoutBytes": 0,
+  "vetStderrBytes": 0,
+  "artifacts": {
+    "source-copy.json": {
+      "sha256": "1c75bb65d447acf84ea057e12386e47ec937024c02c6333d6a6068020927a170",
+      "bytes": 31733
+    },
+    "test-exit.txt": {
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    "source-after.json": {
+      "sha256": "1c75bb65d447acf84ea057e12386e47ec937024c02c6333d6a6068020927a170",
+      "bytes": 31733
+    },
+    "test.stdout": {
+      "sha256": "1e3375ddc1794c3366c69d726866d5f6cb4e0a4264b3736cfd4a234e48737fcc",
+      "bytes": 22263
+    },
+    "vet.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "test.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "vet.stdout": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "vet-exit.txt": {
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    "invocation.json": {
+      "sha256": "d79273baf0eeef54e3afc39582c0666e6c32f6df27c1ca3400f0df578f0c8195",
+      "bytes": 2067
+    },
+    "source-before.json": {
+      "sha256": "1c75bb65d447acf84ea057e12386e47ec937024c02c6333d6a6068020927a170",
+      "bytes": 31733
+    },
+    "run.py": {
+      "sha256": "63de57154b3e4cf6fd36d1fa93bd6cb1b713981e9808b2c1780d0a4c76be1f9c",
+      "bytes": 3085
+    }
+  },
+  "limits": [
+    "Existing owned-child CLI component fixture retained; no actualDocker/NATS/stack/nativequalification.",
+    "No113history or30admission rerun, broadplatform suite or sharededits.",
+    "Prior original5.14secondfailure cause remains unknown."
+  ]
+}

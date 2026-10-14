@@ -83,6 +83,8 @@ For each failure, choose one of three next actions: repair source, repair the di
 
 Use this order for each stable source slice:
 
+Inspect the package's test entry point and initialization before creating a separate test runner. If an anchored selection runs without starting shared services, use the actual package tests. For example, the launcher `TestMain` runs the selected tests directly when `AMX_DOCKER_FIXTURE` is not `1`; its synthetic Docker handler is a separate, explicit mode. Clear inherited fixture overrides and keep actual Docker authorization disabled for pure checks. This avoids copying functions or compiling twice just to bypass an entry point that does no setup. Use compile-only checks when execution is not yet approved or the selected package cannot run without unwanted work.
+
 1. Compile and run the smallest meaningful regression. Use a normal focused run for a non-concurrency edit; use race detection immediately for a concurrency defect.
 2. Run the affected regression group, with race detection and static checks where required. Batch independent pure checks in the same prepared environment.
 3. Run the required real integration selection against a frozen candidate. Give a timing-sensitive test exclusive use of its shared Docker engine and avoid competing builds or bulk reads during its timing window.

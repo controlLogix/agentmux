@@ -1,0 +1,52 @@
+{
+  "scope": "Independent read-only cache source review; no compile, process inspection, signals, Docker or actual case acceptance",
+  "workerReviewSHA256": "c96a06aaff85e879f79bf128b819b3570f08936e8cf9cc48f577511bde71d56c",
+  "sourceChecks": [
+    {
+      "path": "original-fa634.go",
+      "expected": "fa634909ccf64c399b3ef9236ad14e8b8902ecc8814408b9bc5077091215e2af",
+      "actual": "fa634909ccf64c399b3ef9236ad14e8b8902ecc8814408b9bc5077091215e2af",
+      "matches": true
+    },
+    {
+      "path": "installed_cli_midboot_metadata_predicate_test.go",
+      "expected": "2ff0cd87051d8a25263ea2ba59ced3cb83f0148ecf6f73bd046f5a52aad83e16",
+      "actual": "2ff0cd87051d8a25263ea2ba59ced3cb83f0148ecf6f73bd046f5a52aad83e16",
+      "matches": true
+    },
+    {
+      "path": "caller.diff",
+      "expected": "b239e26eb20a7a0530697c16216ee5a2fd40c84657f6c8e104b2e040af4f33bf",
+      "actual": "b239e26eb20a7a0530697c16216ee5a2fd40c84657f6c8e104b2e040af4f33bf",
+      "matches": true
+    },
+    {
+      "path": "installed_cli_midboot_metadata_controls_test.go",
+      "expected": "531d4751a0824e9bd5538ba1b242d89304eb0a1023bcaad686fcb5e02011d80c",
+      "actual": "531d4751a0824e9bd5538ba1b242d89304eb0a1023bcaad686fcb5e02011d80c",
+      "matches": true
+    },
+    {
+      "path": "installed_cli_midboot_compose_integration_linux_test.go",
+      "expected": "d1ea990d646e9a8e91bc88fea91e87dc89704460b5ac6cd5cd870c3e28cdfc5f",
+      "actual": "d1ea990d646e9a8e91bc88fea91e87dc89704460b5ac6cd5cd870c3e28cdfc5f",
+      "matches": true
+    }
+  ],
+  "allPinsMatch": true,
+  "findings": [],
+  "reasoning": [
+    "Exact opened proc metadata file is read through LimitReader64KiB+1 and closed once on every normal/read-error path; close failure is hard. Oversized content reaches predicate rejection rather than truncated acceptance.",
+    "Candidate pidfd is opened before metadata read. Eligibility requires successful bounded read/close, exact role/scope/credential metadata, same held descriptor live and original deadline still open. Rejected candidates close only their freshly owned FD.",
+    "Accepted candidate FD moves into original creator cleanup roleFDs before fallible roster/evidence work. Candidate PID is moved to index0 of the newly read full frozen roster; later FDs append in that reordered roster order, preserving index correspondence.",
+    "Metadata selects only a synchronization trigger. All strict1-3 complete-roster, expected signed image, credential/parent/noargs/liveFD checks remain before phase evidence/crash.",
+    "Only original creator-held host pidfd receives STOP/CONT/KILL; candidate child descriptors do not grant child-signal authority. Original startup deadline checks remain before pause and final kill.",
+    "No new context/timeout or original authority/preservation/recovery assertion was relaxed by this delta."
+  ],
+  "limits": [
+    "This source slice and its controls were prepared only; compile-only evidence belongs to worker separately.",
+    "Bounded byte count is not a hard wall-clock bound for an abnormal blocked procfs read. Deadline is rechecked after return before candidate acceptance/host pause.",
+    "Pure metadata tuples do not prove an actual role image, actual native authority or successful scheduling window.",
+    "Originalfa634 baseline and earlier failed actual cases remain distinct from this revised unexecuted caller."
+  ]
+}

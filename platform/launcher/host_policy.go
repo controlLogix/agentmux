@@ -7,7 +7,6 @@ import (
 	"crypto/ed25519"
 	"crypto/rand"
 	"encoding/hex"
-	"errors"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -76,7 +75,7 @@ type EnrolledHostPolicy struct {
 	policy    HostPolicy
 }
 
-func hostPolicyError(code string) error { return errors.New("host_policy_" + code) }
+func hostPolicyError(code string) error { return &hostPolicyFailure{code: code} }
 
 func canonicalHostFilePath(path string) bool {
 	if !filepath.IsAbs(path) || filepath.Clean(path) != path || !canonicalProfilePath(filepath.Dir(path)) {

@@ -1,0 +1,32 @@
+{
+  "scope": "Additive persisted/public diagnostic parity repair",
+  "prior64ReviewSHA256": "4a64f0e3a1be8de6262ce5a6902036a1139ea1b4d50f2723589ca3c2cbd6c855",
+  "schemaEnumLocations": [
+    "/properties/latestAttempt/properties/terminal/anyOf/0/properties/diagnosticCode/anyOf/0/enum",
+    "/properties/latestAttempt/properties/terminal/anyOf/0/allOf/0/else/properties/diagnosticCode/enum",
+    "/properties/previousFailure/anyOf/0/properties/diagnosticCode/enum"
+  ],
+  "addedCodes": [
+    "host_policy_invalid",
+    "host_profile_invalid",
+    "host_enrollment_invalid",
+    "host_executable_invalid"
+  ],
+  "sourcePins": {
+    "host_policy_diagnostic_test.go": "4a5589e8ea5d80c53f2cd33ab566a52500fea8eb75aa51b54fa3431de82ccf93",
+    "request_diagnostic.go": "dddc1e7562eabfde17265fe2fd41794f0f66c71178669ae796acab5c72e320b4",
+    "bootstrap_history_host_diagnostic_test.go": "b992017a59e0237734beb0b7f0e61b977899c1a3c47a650da878354a665889b9",
+    "bootstrap_history.schema.json": "9fb067de7702d270bc89f1ff400c57503fb3bdfb007e0257862ed1c75c20b21c",
+    "host_policy.go": "3d850105741224ebae1853e53c239a2e6346f4eb6375d3eeb29dda6f151555ad",
+    "host_policy_diagnostic.go": "5c17561f78258a4b0682ea70bbcf7d383fece497d71ec6d1302e7b3bf0fc2dc9"
+  },
+  "diffSHA256": "a85f3af89dc74f01e84a268c6bfa813dd7be9a9e34fadca405fd906f005bbfa7",
+  "limits": [
+    "No originalfailure cause claim; component lease/files/operation seams, no installed Docker qualification.",
+    "Original64 check candidate preserved unpromoted."
+  ],
+  "signatureCorrectionBeforeExecution": {
+    "originalDraftSHA256": "b1535e4f9e39c3cb1a67e16e786b6ce79f443c22ebf950a8e8450459d7c57f56",
+    "actualSignature": "terminalHistory(failure, now)"
+  }
+}

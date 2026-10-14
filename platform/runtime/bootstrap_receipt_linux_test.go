@@ -197,6 +197,6 @@ func main(){ctx,cancel:=signal.NotifyContext(context.Background(),syscall.SIGTER
 	}
 	poll := []unix.PollFd{{Fd: int32(fd), Events: unix.POLLIN}}
 	if n, e := unix.Poll(poll, 100); e != nil || n != 0 {
-		t.Fatal("receipt child exited with frontend")
+		t.Fatal(pidfdSurvivalDiagnostic(n, e, poll[0].Revents))
 	}
 }

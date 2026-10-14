@@ -1,0 +1,407 @@
+--- a/bootstrap_history.schema.json
++++ b/bootstrap_history.schema.json
+@@ -184,7 +184,11 @@
+                         "owned_cleanup_incomplete",
+                         "request_deadline",
+                         "request_failed",
+-                        "selected_host_port_occupied"
++                        "selected_host_port_occupied",
++                        "host_policy_invalid",
++                        "host_profile_invalid",
++                        "host_enrollment_invalid",
++                        "host_executable_invalid"
+                       ]
+                     },
+                     {
+@@ -240,7 +244,11 @@
+                           "owned_cleanup_incomplete",
+                           "request_deadline",
+                           "request_failed",
+-                          "selected_host_port_occupied"
++                          "selected_host_port_occupied",
++                          "host_policy_invalid",
++                          "host_profile_invalid",
++                          "host_enrollment_invalid",
++                          "host_executable_invalid"
+                         ]
+                       }
+                     }
+@@ -287,7 +295,11 @@
+                 "owned_cleanup_incomplete",
+                 "request_deadline",
+                 "request_failed",
+-                "selected_host_port_occupied"
++                "selected_host_port_occupied",
++                "host_policy_invalid",
++                "host_profile_invalid",
++                "host_enrollment_invalid",
++                "host_executable_invalid"
+               ]
+             },
+             "cleanup": {
+--- a/bootstrap_history_host_diagnostic_test.go
++++ b/bootstrap_history_host_diagnostic_test.go
+@@ -0,0 +1,135 @@
++//go:build linux || darwin
++
++package launcher
++
++import (
++	"encoding/json"
++	"strings"
++	"testing"
++	"time"
++)
++
++// These controls exercise the actual private writer, schema decoder and next
++// attempt rollover under real acquired lease/files. The operation seam does
++// not claim installed Bootstrap, Docker or current readiness qualification.
++func TestBootstrapHistoryHostDiagnosticRoundTrip(t *testing.T) {
++	cases := map[string]string{"private_policy_invalid": "host_policy_invalid", "profile_binding_invalid": "host_profile_invalid", "owner_enrollment_invalid": "host_enrollment_invalid", "executable_changed": "host_executable_invalid"}
++	for sourceCode, expected := range cases {
++		t.Run(expected, func(t *testing.T) {
++			first, op, f, lease, binding := historyFixture(t)
++			enterHistoryFixture(t, first, op, f)
++			if op.complete(nil, hostPolicyError(sourceCode)) != nil || first.RecordTerminal(op.startup) != nil {
++				t.Fatal("actual history writer refused trusted host failure")
++			}
++			raw, _, e := readHistoryFile(op.startup, first.root, first.binding.OwnerUID)
++			if e != nil {
++				t.Fatal("actual terminal history read failed")
++			}
++			record, e := decodeBootstrapHistory(raw, time.Now().UTC())
++			if e != nil || record.LatestAttempt.Terminal == nil || record.LatestAttempt.Terminal.Outcome != "failed" || record.LatestAttempt.Terminal.DiagnosticCode == nil || *record.LatestAttempt.Terminal.DiagnosticCode != expected {
++				t.Fatal("terminal schema roundtrip lost category")
++			}
++			public, e := terminalHistory(&bootstrapHistoryFailure{InvocationID: op.attemptID, CompletedAt: record.LatestAttempt.Terminal.CompletedAt, DiagnosticCode: expected, Cleanup: "unknown"}, time.Now().UTC())
++			if e != nil || public == nil || public.Diagnostic != requestDiagnostic(expected) {
++				t.Fatal("public terminal conversion lost category")
++			}
++			unknown := record
++			terminal := *record.LatestAttempt.Terminal
++			bad := "future_unknown"
++			terminal.DiagnosticCode = &bad
++			unknown.LatestAttempt.Terminal = &terminal
++			if _, e := decodeBootstrapHistory(mustStatusJSON(unknown), time.Now().UTC()); e == nil {
++				t.Fatal("unknown terminal code accepted")
++			}
++			if first.Close(op.startup) != nil {
++				t.Fatal("first exact history close failed")
++			}
++			newer, e := newBootstrapOperation(op.startup, op.lifetime, op.server, lease, "attempt_"+strings.Repeat("b", 32))
++			if e != nil {
++				t.Fatal("next real-lease component admission failed")
++			}
++			binding.ColdInvocationID = newer.attemptID
++			second, e := openBootstrapHistory(op.startup, newer, binding)
++			if second != nil {
++				defer func() {
++					if second.Close(op.startup) != nil {
++						t.Error("second exact history close failed")
++					}
++				}()
++			}
++			if e != nil || newer.enter(newer.startup, f.config, f.profile, newer.attemptID) != nil || second.Begin(newer.startup) != nil {
++				t.Fatal("next actual history marker refused")
++			}
++			raw, _, e = readHistoryFile(newer.startup, second.root, second.binding.OwnerUID)
++			if e != nil {
++				t.Fatal("actual rollover history read failed")
++			}
++			record, e = decodeBootstrapHistory(raw, time.Now().UTC())
++			if e != nil || record.LatestAttempt.Terminal != nil || record.PreviousFailure == nil || record.PreviousFailure.DiagnosticCode != expected || record.PreviousFailure.InvocationID != op.attemptID {
++				t.Fatal("previous failure schema roundtrip lost category")
++			}
++			record.PreviousFailure.DiagnosticCode = "future_unknown"
++			if _, e := decodeBootstrapHistory(mustStatusJSON(record), time.Now().UTC()); e == nil {
++				t.Fatal("unknown previous failure accepted")
++			}
++		})
++	}
++}
++
++func TestBootstrapHistoryHostDiagnosticSchemaParity(t *testing.T) {
++	var schema any
++	if json.Unmarshal([]byte(bootstrapHistorySchemaText), &schema) != nil {
++		t.Fatal("embedded schema invalid")
++	}
++	enums := [][]string{}
++	var walk func(any)
++	walk = func(value any) {
++		switch v := value.(type) {
++		case map[string]any:
++			if raw, ok := v["enum"].([]any); ok {
++				codes := []string{}
++				hasFailed := false
++				for _, x := range raw {
++					s, ok := x.(string)
++					if !ok {
++						continue
++					}
++					codes = append(codes, s)
++					hasFailed = hasFailed || s == "request_failed"
++				}
++				if hasFailed {
++					enums = append(enums, codes)
++				}
++			}
++			for _, x := range v {
++				walk(x)
++			}
++		case []any:
++			for _, x := range v {
++				walk(x)
++			}
++		}
++	}
++	walk(schema)
++	if len(enums) != 3 {
++		t.Fatal("diagnostic enum locations changed without coverage")
++	}
++	required := []string{"docker_environment_conflict", "docker_selection_mismatch", "docker_versions_unqualified", "docker_configuration_mismatch", "docker_resource_conflict", "docker_command_failed", "docker_command_timeout_outcome_unknown", "runtime_authority_rejected", "owned_cleanup_incomplete", "request_deadline", "request_failed", "selected_host_port_occupied", "host_policy_invalid", "host_profile_invalid", "host_enrollment_invalid", "host_executable_invalid"}
++	for _, codes := range enums {
++		if len(codes) != len(required) {
++			t.Fatal("diagnostic enum lost or gained unreviewed codes")
++		}
++		seen := map[string]bool{}
++		for _, c := range codes {
++			if seen[c] {
++				t.Fatal("duplicate diagnostic enum code")
++			}
++			seen[c] = true
++		}
++		for _, c := range required {
++			if !seen[c] {
++				t.Fatal("diagnostic enum parity missing")
++			}
++		}
++	}
++}
+--- a/host_policy.go
++++ b/host_policy.go
+@@ -7,7 +7,6 @@
+ 	"crypto/ed25519"
+ 	"crypto/rand"
+ 	"encoding/hex"
+-	"errors"
+ 	"os"
+ 	"path/filepath"
+ 	"reflect"
+@@ -76,7 +75,7 @@
+ 	policy    HostPolicy
+ }
+ 
+-func hostPolicyError(code string) error { return errors.New("host_policy_" + code) }
++func hostPolicyError(code string) error { return &hostPolicyFailure{code: code} }
+ 
+ func canonicalHostFilePath(path string) bool {
+ 	if !filepath.IsAbs(path) || filepath.Clean(path) != path || !canonicalProfilePath(filepath.Dir(path)) {
+--- a/host_policy_diagnostic.go
++++ b/host_policy_diagnostic.go
+@@ -0,0 +1,33 @@
++//go:build linux || darwin
++
++package launcher
++
++import (
++	"encoding/json"
++	"fmt"
++)
++
++// This private leaf retains only the existing error code. It carries no path,
++// credential, owner, callback or underlying error object.
++type hostPolicyFailure struct{ code string }
++
++func (e hostPolicyFailure) Error() string                { return "host_policy_" + e.code }
++func (e hostPolicyFailure) Format(s fmt.State, _ rune)   { fmt.Fprint(s, e.Error()) }
++func (e hostPolicyFailure) MarshalJSON() ([]byte, error) { return json.Marshal(e.Error()) }
++
++// Only constructor codes already returned by the reviewed policy sources gain
++// a public category. Error strings and unknown wrappers grant no category.
++func hostPolicyDiagnosticCategory(code string) string {
++	switch code {
++	case "private_root_invalid", "workspace_invalid", "inside_workspace", "private_root_unavailable", "private_root_changed", "ancestor_changed", "ancestor_invalid", "ancestor_untrusted", "ancestor_access_denied", "selection_invalid", "private_policy_root_invalid", "private_policy_invalid", "fields_invalid", "decode_invalid", "declarations_invalid", "unconfigured":
++		return "host_policy_invalid"
++	case "profile_invalid", "profile_binding_invalid", "bootstrap_config_invalid":
++		return "host_profile_invalid"
++	case "owner_binding_invalid", "owner_enrollment_invalid", "bridge_unconfigured", "bridge_private_root_invalid", "bridge_reference_invalid", "bridge_credential_invalid", "bridge_fields_invalid", "bridge_binding_invalid", "receipt_enrollment_invalid":
++		return "host_enrollment_invalid"
++	case "executable_unqualified", "executable_root_invalid", "executable_invalid", "executable_changed":
++		return "host_executable_invalid"
++	default:
++		return ""
++	}
++}
+--- a/host_policy_diagnostic_test.go
++++ b/host_policy_diagnostic_test.go
+@@ -0,0 +1,109 @@
++//go:build linux || darwin
++
++package launcher
++
++import (
++	"context"
++	"encoding/json"
++	"errors"
++	"fmt"
++	"strings"
++	"testing"
++
++	"github.com/nats-io/nats.go"
++)
++
++type hostPolicyDiagnosticUnknownWrapper struct{ hidden error }
++
++func (hostPolicyDiagnosticUnknownWrapper) Error() string { panic("unknown Error invoked") }
++func (hostPolicyDiagnosticUnknownWrapper) Unwrap() error { panic("unknown Unwrap invoked") }
++
++func TestHostPolicyDiagnosticTrustedCodesAndSpoofs(t *testing.T) {
++	categories := map[string][]string{
++		"host_policy_invalid":     {"private_root_invalid", "workspace_invalid", "inside_workspace", "private_root_unavailable", "private_root_changed", "ancestor_changed", "ancestor_invalid", "ancestor_untrusted", "ancestor_access_denied", "selection_invalid", "private_policy_root_invalid", "private_policy_invalid", "fields_invalid", "decode_invalid", "declarations_invalid", "unconfigured"},
++		"host_profile_invalid":    {"profile_invalid", "profile_binding_invalid", "bootstrap_config_invalid"},
++		"host_enrollment_invalid": {"owner_binding_invalid", "owner_enrollment_invalid", "bridge_unconfigured", "bridge_private_root_invalid", "bridge_reference_invalid", "bridge_credential_invalid", "bridge_fields_invalid", "bridge_binding_invalid", "receipt_enrollment_invalid"},
++		"host_executable_invalid": {"executable_unqualified", "executable_root_invalid", "executable_invalid", "executable_changed"},
++	}
++	for category, codes := range categories {
++		for _, code := range codes {
++			t.Run(code, func(t *testing.T) {
++				actual := hostPolicyError(code)
++				if actual.Error() != "host_policy_"+code {
++					t.Fatal("existing error text changed")
++				}
++				got := ProjectRequestDiagnostic(actual)
++				if got.Code != category || !ValidRequestDiagnostic(got) {
++					t.Fatal("trusted constructor category lost")
++				}
++				if ProjectRequestDiagnostic(errors.New(actual.Error())).Code != "request_failed" {
++					t.Fatal("spoofed text gained trusted category")
++				}
++				wrapped := fmt.Errorf("private path=/private/fixture password=secret: %w", actual)
++				if ProjectRequestDiagnostic(wrapped) != got {
++					t.Fatal("reviewed wrapper lost trusted category")
++				}
++				encoded, e := json.Marshal(ProjectRequestDiagnostic(wrapped))
++				if e != nil || strings.Contains(string(encoded), "secret") || strings.Contains(string(encoded), "/private") {
++					t.Fatal("public diagnostic leaked wrapper text")
++				}
++				var fields map[string]json.RawMessage
++				if json.Unmarshal(encoded, &fields) != nil || len(fields) != 5 {
++					t.Fatal("fixed five-field schema changed")
++				}
++			})
++		}
++	}
++}
++
++func TestHostPolicyDiagnosticUnknownAndPriority(t *testing.T) {
++	var nilTyped *hostPolicyFailure
++	cases := []struct {
++		name    string
++		failure error
++		code    string
++	}{
++		{"nil", nil, "request_failed"}, {"nil_typed", nilTyped, "request_failed"},
++		{"unknown_constructor", hostPolicyError("future_unknown"), "request_failed"},
++		{"context_without_cause", hostPolicyError("context_invalid"), "request_failed"},
++		{"receipt_descriptor_plumbing", hostPolicyError("receipt_descriptor_invalid"), "request_failed"},
++		{"receipt_binding_plumbing", hostPolicyError("receipt_binding_invalid"), "request_failed"},
++		{"unknown_wrapper", hostPolicyDiagnosticUnknownWrapper{hostPolicyError("profile_invalid")}, "request_failed"},
++		{"cleanup", errors.Join(hostPolicyError("profile_invalid"), ErrTransportCleanup, nats.ErrAuthorization, context.DeadlineExceeded), "owned_cleanup_incomplete"},
++		{"authentication", errors.Join(hostPolicyError("profile_invalid"), nats.ErrAuthorization, context.DeadlineExceeded), "runtime_authority_rejected"},
++		{"account_expired", errors.Join(hostPolicyError("profile_invalid"), nats.ErrAuthExpired), "runtime_authority_rejected"},
++		{"authority", errors.Join(hostPolicyError("profile_invalid"), errOwnerBridgeAuthority), "runtime_authority_rejected"},
++		{"deadline", errors.Join(hostPolicyError("profile_invalid"), context.DeadlineExceeded), "request_deadline"},
++		{"conflicting_categories", errors.Join(hostPolicyError("profile_invalid"), hostPolicyError("executable_invalid")), "request_failed"},
++	}
++	for _, tc := range cases {
++		t.Run(tc.name, func(t *testing.T) {
++			got := ProjectRequestDiagnostic(tc.failure)
++			if got.Code != tc.code || !ValidRequestDiagnostic(got) {
++				t.Fatal("priority or unknown refusal changed")
++			}
++		})
++	}
++	children := make([]error, 65)
++	for i := range children {
++		children[i] = hostPolicyError("profile_invalid")
++	}
++	if ProjectRequestDiagnostic(errors.Join(children...)).Code != "request_failed" {
++		t.Fatal("bounded ancestry exceeded")
++	}
++}
++
++func TestHostPolicyDiagnosticLeafPresentation(t *testing.T) {
++	value := hostPolicyFailure{code: "profile_invalid"}
++	for _, actual := range []any{value, &value} {
++		for _, format := range []string{"%v", "%+v", "%#v"} {
++			if fmt.Sprintf(format, actual) != "host_policy_profile_invalid" {
++				t.Fatal("leaf state exposed or code changed")
++			}
++		}
++		raw, e := json.Marshal(actual)
++		if e != nil || string(raw) != `"host_policy_profile_invalid"` {
++			t.Fatal("leaf JSON changed")
++		}
++	}
++}
+--- a/request_diagnostic.go
++++ b/request_diagnostic.go
+@@ -104,6 +104,14 @@
+ 		action, message = "check_enrolled_trust", "Runtime authority was rejected. Check the enrolled identity and server trust; do not bypass authentication."
+ 	case "owned_cleanup_incomplete":
+ 		action, message = "wait_for_owned_cleanup", "Owned cleanup is incomplete. Keep the recovery handles and finish cleanup before retrying."
++	case "host_policy_invalid":
++		action, message = "check_enrolled_policy", "The enrolled host policy failed validation. Check its declared selection, private access and fields before retrying."
++	case "host_profile_invalid":
++		action, message = "check_enrolled_profile", "The enrolled profile or bootstrap configuration failed validation. Check the existing profile binding before retrying."
++	case "host_enrollment_invalid":
++		action, message = "check_enrolled_owner", "The enrolled owner or bridge declarations failed validation. Check the existing identity and credential bindings before retrying."
++	case "host_executable_invalid":
++		action, message = "check_installed_runtime", "The installed runtime image failed validation. Check the enrolled executable and protected installation before retrying."
+ 	case "request_deadline":
+ 		action, message = "check_status", "The request deadline expired. Check status again; this failure does not establish readiness."
+ 	default:
+@@ -123,7 +131,8 @@
+ // The original error and concrete cleanup handles remain with the caller.
+ func ProjectRequestDiagnostic(failure error) RequestDiagnostic {
+ 	queue := []error{failure}
+-	var refusalCode string
++	var refusalCode, hostCategory string
++	hostCategoriesConflict := false
+ 	cleanup, specificAuth, authority, deadline := false, false, false, false
+ 	for inspected := 0; len(queue) > 0; inspected++ {
+ 		if inspected >= 64 {
+@@ -135,6 +144,24 @@
+ 			continue
+ 		}
+ 		switch value := err.(type) {
++		case *hostPolicyFailure:
++			if value != nil {
++				category := hostPolicyDiagnosticCategory(value.code)
++				if category != "" {
++					if hostCategory != "" && hostCategory != category {
++						hostCategoriesConflict = true
++					}
++					hostCategory = category
++				}
++			}
++		case hostPolicyFailure:
++			category := hostPolicyDiagnosticCategory(value.code)
++			if category != "" {
++				if hostCategory != "" && hostCategory != category {
++					hostCategoriesConflict = true
++				}
++				hostCategory = category
++			}
+ 		case *dockerRefusalError:
+ 			if value != nil {
+ 				refusalCode = value.code
+@@ -193,5 +220,8 @@
+ 	if deadline {
+ 		return requestDiagnostic("request_deadline")
+ 	}
++	if hostCategory != "" && !hostCategoriesConflict {
++		return requestDiagnostic(hostCategory)
++	}
+ 	return requestDiagnostic("request_failed")
+ }

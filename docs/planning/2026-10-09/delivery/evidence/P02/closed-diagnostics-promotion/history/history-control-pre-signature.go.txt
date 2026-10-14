@@ -1,0 +1,135 @@
+//go:build linux || darwin
+
+package launcher
+
+import (
+	"encoding/json"
+	"strings"
+	"testing"
+	"time"
+)
+
+// These controls exercise the actual private writer, schema decoder and next
+// attempt rollover under real acquired lease/files. The operation seam does
+// not claim installed Bootstrap, Docker or current readiness qualification.
+func TestBootstrapHistoryHostDiagnosticRoundTrip(t *testing.T) {
+	cases := map[string]string{"private_policy_invalid": "host_policy_invalid", "profile_binding_invalid": "host_profile_invalid", "owner_enrollment_invalid": "host_enrollment_invalid", "executable_changed": "host_executable_invalid"}
+	for sourceCode, expected := range cases {
+		t.Run(expected, func(t *testing.T) {
+			first, op, f, lease, binding := historyFixture(t)
+			enterHistoryFixture(t, first, op, f)
+			if op.complete(nil, hostPolicyError(sourceCode)) != nil || first.RecordTerminal(op.startup) != nil {
+				t.Fatal("actual history writer refused trusted host failure")
+			}
+			raw, _, e := readHistoryFile(op.startup, first.root, first.binding.OwnerUID)
+			if e != nil {
+				t.Fatal("actual terminal history read failed")
+			}
+			record, e := decodeBootstrapHistory(raw, time.Now().UTC())
+			if e != nil || record.LatestAttempt.Terminal == nil || record.LatestAttempt.Terminal.Outcome != "failed" || record.LatestAttempt.Terminal.DiagnosticCode == nil || *record.LatestAttempt.Terminal.DiagnosticCode != expected {
+				t.Fatal("terminal schema roundtrip lost category")
+			}
+			public, e := terminalHistory(&bootstrapHistoryFailure{InvocationID: op.attemptID, CompletedAt: record.LatestAttempt.Terminal.CompletedAt, DiagnosticCode: expected, Cleanup: "unknown"})
+			if e != nil || public == nil || public.Diagnostic != requestDiagnostic(expected) {
+				t.Fatal("public terminal conversion lost category")
+			}
+			unknown := record
+			terminal := *record.LatestAttempt.Terminal
+			bad := "future_unknown"
+			terminal.DiagnosticCode = &bad
+			unknown.LatestAttempt.Terminal = &terminal
+			if _, e := decodeBootstrapHistory(mustStatusJSON(unknown), time.Now().UTC()); e == nil {
+				t.Fatal("unknown terminal code accepted")
+			}
+			if first.Close(op.startup) != nil {
+				t.Fatal("first exact history close failed")
+			}
+			newer, e := newBootstrapOperation(op.startup, op.lifetime, op.server, lease, "attempt_"+strings.Repeat("b", 32))
+			if e != nil {
+				t.Fatal("next real-lease component admission failed")
+			}
+			binding.ColdInvocationID = newer.attemptID
+			second, e := openBootstrapHistory(op.startup, newer, binding)
+			if second != nil {
+				defer func() {
+					if second.Close(op.startup) != nil {
+						t.Error("second exact history close failed")
+					}
+				}()
+			}
+			if e != nil || newer.enter(newer.startup, f.config, f.profile, newer.attemptID) != nil || second.Begin(newer.startup) != nil {
+				t.Fatal("next actual history marker refused")
+			}
+			raw, _, e = readHistoryFile(newer.startup, second.root, second.binding.OwnerUID)
+			if e != nil {
+				t.Fatal("actual rollover history read failed")
+			}
+			record, e = decodeBootstrapHistory(raw, time.Now().UTC())
+			if e != nil || record.LatestAttempt.Terminal != nil || record.PreviousFailure == nil || record.PreviousFailure.DiagnosticCode != expected || record.PreviousFailure.InvocationID != op.attemptID {
+				t.Fatal("previous failure schema roundtrip lost category")
+			}
+			record.PreviousFailure.DiagnosticCode = "future_unknown"
+			if _, e := decodeBootstrapHistory(mustStatusJSON(record), time.Now().UTC()); e == nil {
+				t.Fatal("unknown previous failure accepted")
+			}
+		})
+	}
+}
+
+func TestBootstrapHistoryHostDiagnosticSchemaParity(t *testing.T) {
+	var schema any
+	if json.Unmarshal([]byte(bootstrapHistorySchemaText), &schema) != nil {
+		t.Fatal("embedded schema invalid")
+	}
+	enums := [][]string{}
+	var walk func(any)
+	walk = func(value any) {
+		switch v := value.(type) {
+		case map[string]any:
+			if raw, ok := v["enum"].([]any); ok {
+				codes := []string{}
+				hasFailed := false
+				for _, x := range raw {
+					s, ok := x.(string)
+					if !ok {
+						continue
+					}
+					codes = append(codes, s)
+					hasFailed = hasFailed || s == "request_failed"
+				}
+				if hasFailed {
+					enums = append(enums, codes)
+				}
+			}
+			for _, x := range v {
+				walk(x)
+			}
+		case []any:
+			for _, x := range v {
+				walk(x)
+			}
+		}
+	}
+	walk(schema)
+	if len(enums) != 3 {
+		t.Fatal("diagnostic enum locations changed without coverage")
+	}
+	required := []string{"docker_environment_conflict", "docker_selection_mismatch", "docker_versions_unqualified", "docker_configuration_mismatch", "docker_resource_conflict", "docker_command_failed", "docker_command_timeout_outcome_unknown", "runtime_authority_rejected", "owned_cleanup_incomplete", "request_deadline", "request_failed", "selected_host_port_occupied", "host_policy_invalid", "host_profile_invalid", "host_enrollment_invalid", "host_executable_invalid"}
+	for _, codes := range enums {
+		if len(codes) != len(required) {
+			t.Fatal("diagnostic enum lost or gained unreviewed codes")
+		}
+		seen := map[string]bool{}
+		for _, c := range codes {
+			if seen[c] {
+				t.Fatal("duplicate diagnostic enum code")
+			}
+			seen[c] = true
+		}
+		for _, c := range required {
+			if !seen[c] {
+				t.Fatal("diagnostic enum parity missing")
+			}
+		}
+	}
+}
