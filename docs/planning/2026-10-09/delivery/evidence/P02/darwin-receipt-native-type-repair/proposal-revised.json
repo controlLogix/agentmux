@@ -1,0 +1,44 @@
+{
+  "scope": "P02 cache-only source proposal; no execution or platform acceptance",
+  "cause": "Actual Darwin anonymous pipe stat mode is0660, so current Linux private-mode admission rejects genuine inherited writer.",
+  "source": {
+    "path": "platform/runtime/bootstrap_receipt.go",
+    "sha256": "6c3ba5a49629b3a179b30560e7b552f08ab5236e898f53d72ef8ef7cee6f8c8a"
+  },
+  "primarySources": [
+    "https://raw.githubusercontent.com/apple-oss-distributions/xnu/main/bsd/kern/sys_pipe.c",
+    "https://raw.githubusercontent.com/apple-oss-distributions/xnu/main/bsd/kern/proc_info.c",
+    "https://raw.githubusercontent.com/apple-oss-distributions/xnu/main/bsd/sys/proc_info.h"
+  ],
+  "changes": [
+    "Common writer keeps exact binding/env integer range, F_GETFL write-only direction, FD_CLOEXEC/nonblocking setup and ownership transfer unchanged. Move descriptor-specific predicate to build-tagged helpers.",
+    "Linux helper retains current S_IFIFO/private-mode/current-UID checks exactly.",
+    "Darwin+cgo helper calls proc_pidfdinfo(getpid(), actualInheritedFD, PROC_PIDFDPIPEINFO, exact struct pipe_fdinfo buffer, sizeof buffer). Only exact successful size and nonzero native pipe handle/peer qualify. Kernel rejects DTYPE_VNODE named FIFO, socket and regular files for this flavor.",
+    "Darwin requires exact synthetic anonymous-pipe stat shape (FIFO0660, zero device/rdevice/linkcount) plus existing write-only flag; synthetic caller UID is not pipe-owner authority. No username or other PID discovery.",
+    "Darwin without cgo fails closed; no0660 generic fallback.",
+    "C syscall temporarily borrows the already supplied inherited descriptor; proc_pidfdinfo itself holds/drops kernel fileproc around its actual type check. No duplicatedFD, path reopen, FD adoption, new ownership object or cleanup on refusal. After successful existing validation the same originalFD is adopted as before.",
+    "Descriptor authority is the existing trusted creator inheritance/fullboundreceipt protocol; the stat or pipe handle alone never authorizes startup/history. Native API error/shortsize/zerohandle/unknown metadata refuses."
+  ],
+  "controls": [
+    "Existing genuine inherited receipt launcher controls execute on both actual native Darwin runners.",
+    "Native new control: own anonymous write pipe qualifies; read end, namedFIFO evenmode0600/0660, Unixsocket and regularfile refuse without being consumed; zero/missing/short native results are modeled negative controls only.",
+    "Linux original real pipe and sealed child receipt selection remains exact-preservation regression.",
+    "DarwinCGO0 refusal compile/control remains separate."
+  ],
+  "openQuestions": [
+    "Native pipe_stat currentUID is synthesized from caller and cannot prove originating owner; fixedcreator inheritance is essential.",
+    "Native creation and pipeAPI runtime behavior still need actual qualification; local model/crosscompile is insufficient.",
+    "No local compile/test before root approval and C real-NATS window release.",
+    "SDK-exported libproc interface is marked private and subject to change; support requires actual native OS/SDK qualification, not a public API stability promise.",
+    "Only Fstat synthetic metadata has zero nlink; proc pipe_stat.vst_nlink is1 and must not use that zero predicate.",
+    "Root independently corrected previously swapped SDK fd/flavor parameters; kernel syscall internal argument order is different. Initial proposal/draft preserved unexecuted."
+  ],
+  "notChanged": [
+    "oneframe4096/EOF",
+    "original child identity/proof",
+    "StartHost historical semantics",
+    "one cmd.Wait",
+    "original caller deadlines",
+    "no listener or bus alternative"
+  ]
+}

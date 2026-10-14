@@ -250,7 +250,7 @@ func OpenBootstrapReceiptWriter(binding BootstrapReceiptBinding) (*BootstrapRece
 	}
 	var info unix.Stat_t
 	flags, flagErr := unix.FcntlInt(uintptr(fd), unix.F_GETFL, 0)
-	if unix.Fstat(fd, &info) != nil || flagErr != nil || info.Mode&unix.S_IFMT != unix.S_IFIFO || info.Mode&0077 != 0 || info.Uid != uint32(os.Geteuid()) || flags&unix.O_ACCMODE != unix.O_WRONLY {
+	if unix.Fstat(fd, &info) != nil || flagErr != nil || !bootstrapReceiptDescriptorValid(fd, &info, flags) {
 		return nil, receiptError("descriptor_invalid")
 	}
 	fdFlags, fdErr := unix.FcntlInt(uintptr(fd), unix.F_GETFD, 0)

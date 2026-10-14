@@ -1,0 +1,35 @@
+{
+  "sourcePins": {
+    "src/platform/runtime/bootstrap_receipt.go": "a7205206d1eaf4e127d8a59cbf2674a7c164a00a28841141271fea451a59961d",
+    "src/platform/runtime/bootstrap_receipt_descriptor_darwin.go": "355a863902c95c4d2565fea80b53ba2f4e23d22a7f3e750e06e0f78fd150adf5",
+    "src/platform/runtime/bootstrap_receipt_descriptor_darwin_nocgo.go": "563a92e43db65d5b3637f27ae31b81becff1fff3210530b62c4e45116291d168",
+    "src/platform/runtime/bootstrap_receipt_descriptor_darwin_nocgo_test.go": "6a23bd4964ae939f861d72b6817c82fbe116cc1c2ba153182d117312640eed9e",
+    "src/platform/runtime/bootstrap_receipt_descriptor_darwin_test.go": "89e4b88ffa0ed30a5c5579f555dccccad75e67adc38d6428fa88f5fa9ebb257e",
+    "src/platform/runtime/bootstrap_receipt_descriptor_linux.go": "1eacb33705e7208ab5bfb90d082d824974cdfd8d7a788392296b1c0458f9ebcb",
+    "src/platform/runtime/bootstrap_receipt_descriptor_linux_test.go": "80568df1a7ecebb5e3b64625017a96d417c0e47ca725a334381398182ed1979c"
+  },
+  "evidence": [
+    "Eight modeled native API controls exit0 after compilation.",
+    "Actual standalone Linux predicate has7 named race passes/no failure/skip.",
+    "Darwin CGO0 standalone compile succeeds; refusal control authored but not native-executed.",
+    "Native Darwin positive pipe, read-end, regular, socket and namedFIFO0660 refusal tests are authored only."
+  ],
+  "verifiedArtifacts": 41,
+  "scope": "Read-only independent implementation and evidence review of Darwin receipt descriptor slice",
+  "conclusions": [
+    "SDK wrapper order is pid, fd, flavor, buffer, size. Candidate uses this order; model pins exact arguments.",
+    "PROC_PIDFDPIPEINFO kernel branch requires DTYPE_PIPE on held self-owned fileproc. Named FIFO/vnode, regular file and sockets cannot gain pipe type through0660 metadata.",
+    "Candidate checks exact native response size and nonzero pipe/peer identifiers. Wrapper failure0 and short/oversized/zero results refuse.",
+    "Fstat synthetic FIFO0660/dev0/rdev0/nlink0 and write-only access are separate from proc pipe_stat nlink1. No incorrect proc-stat zero-link requirement exists.",
+    "The original receipt body changes only one descriptor predicate. CLOEXEC, borrowed descriptor handling before adoption, nonblocking setup, binding validation and consumed-close semantics are unchanged.",
+    "Linux predicate is exactly the prior FIFO/private mode/effective UID/write-only expression. NoCGO Darwin refuses every descriptor."
+  ],
+  "findings": [],
+  "limits": [
+    "SDK-exported private libproc interface remains OS/SDK qualification dependent.",
+    "No reviewer tests, compilation, native calls or shared changes.",
+    "No full receipt/runtime/native Mac or phase acceptance claim."
+  ],
+  "manifestSHA256": "5978770a7fa7eb5dfee73366e527b65a13f832f0bfc7cc3ee4905ca305944f50",
+  "workerReviewSHA256": "99f1d27c2733fa96b46a20fd1e3204d9adcc9c7c573351e6c9db64ed02b686de"
+}

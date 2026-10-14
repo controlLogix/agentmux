@@ -1,0 +1,67 @@
+--- shared/owner_bridge.go
++++ candidate/owner_bridge.go
+@@ -268,7 +268,10 @@
+ func ownerBridgeAsyncErrorHandler(*nats.Conn, *nats.Subscription, error) {}
+ 
+ func ownerBridgeAuthorityLastError(nc *nats.Conn) error {
+-	err := nc.LastError()
++	return ownerBridgeRecordedAuthorityError(nc.LastError())
++}
++
++func ownerBridgeRecordedAuthorityError(err error) error {
+ 	if errors.Is(err, nats.ErrPermissionViolation) || errors.Is(err, nats.ErrAuthorization) || errors.Is(err, nats.ErrAuthExpired) || errors.Is(err, nats.ErrAuthRevoked) || errors.Is(err, nats.ErrAccountAuthExpired) {
+ 		return bridgeError("authority_rejected")
+ 	}
+@@ -752,9 +755,25 @@
+ 			reply := ownerBridgeReply{protocol.Version, "host-owner-status-reply", request.RequestID, request.InvocationID, s.config.Kernel.Scope, bridgeTime(time.Now()), observation}
+ 			raw, e := json.Marshal(reply)
+ 			if e == nil && len(raw) <= ownerBridgeReplyLimit && ctx.Err() == nil && (failureDeadline.IsZero() || time.Now().Before(failureDeadline)) && validateOwnerBridgeJSON(raw, "host-owner-status-reply", ownerBridgeReplyLimit) == nil {
+-				if nc.Publish(s.subjects.ReplyPrefix+request.RequestID[len("request_"):], raw) != nil || nc.FlushWithContext(ctx) != nil {
++				beforePublish := nc.LastError()
++				if beforePublish != nil {
+ 					cancel()
+-					return bridgeError("reply_failed")
++					return ownerBridgeReplyOutcome(lifetime, beforePublish, nil, nil, nil, bootErr)
++				}
++				publishErr := nc.Publish(s.subjects.ReplyPrefix+request.RequestID[len("request_"):], raw)
++				var flushErr error
++				if publishErr == nil {
++					flushErr = nc.FlushWithContext(ctx)
++				}
++				afterFlush := nc.LastError()
++				outcome := ownerBridgeReplyOutcome(lifetime, beforePublish, publishErr, flushErr, afterFlush, bootErr)
++				if outcome != nil {
++					cancel()
++					return outcome
++				}
++				if flushErr != nil {
++					cancel()
++					return nil
+ 				}
+ 				if bootErr != nil {
+ 					cancel()
+@@ -918,3 +937,24 @@
+ 	}
+ 	return &bridgeCompletionCause{code: "owner_bridge_owned_connection_cleanup_failed", cause: joined}
+ }
++
++// Each recorded error is a snapshot from this reply boundary. Cancellation is
++// shutdown only; it does not confirm that Flush completed or a caller accepted a reply.
++func ownerBridgeReplyOutcome(lifetime context.Context, beforePublish, publishErr, flushErr, afterFlush, bootErr error) error {
++	if authority := ownerBridgeRecordedAuthorityError(beforePublish); authority != nil {
++		return authority
++	}
++	if beforePublish != nil || publishErr != nil {
++		return bridgeError("reply_failed")
++	}
++	if authority := ownerBridgeRecordedAuthorityError(afterFlush); authority != nil {
++		return authority
++	}
++	if flushErr != nil && !(errors.Is(flushErr, context.Canceled) && lifetime.Err() == context.Canceled) {
++		return bridgeError("reply_failed")
++	}
++	if bootErr != nil {
++		return bridgeError("startup_failed")
++	}
++	return nil
++}

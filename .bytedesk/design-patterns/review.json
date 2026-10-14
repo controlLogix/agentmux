@@ -1,6 +1,6 @@
 {
   "reviewer": "Codex; corrected P01 native evidence and complete preservation review",
-  "sourceDigest": "bc77133df3cd0c97462a994cb01797dba7da1dcecea446ec1926b948c13af242",
+  "sourceDigest": "7a01ceb1b7173e5f7b8ddedcb614e5add09c20f3ca877729ffd52d6f638dfb6b",
   "incrementalReviews": [
     {
       "date": "2026-10-13",
@@ -974,6 +974,28 @@
         "docs/planning/2026-10-09/delivery/evidence/P02/midboot-unqualified-child-exit/root-review.json"
       ],
       "rationale": "Reviewed all current changes since f520: two Darwin descriptor helpers, explicit previously reviewed tracker replacement, preserved source-index history, fast checkpoint workflow, tracker notes and byte-bound evidence. Current coverage, retention and tracker checks pass; formatting unchanged. Historical failed recovery attempt retained with strict phase refusal and exact cleanup evidence. No pattern relationship change or deletion of review history. Native macOS, full recovery and P02 acceptance remain open."
+    },
+    {
+      "date": "2026-10-14T21:48:10.160576+00:00",
+      "scope": "Native receipt descriptor and canceled reply cleanup repairs",
+      "reviewer": "Codex with independent source reviews",
+      "sourceDigestRefreshed": false,
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/darwin-receipt-native-type-repair/independent-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/reply-cancellation-shutdown-repair/independent-review.json"
+      ],
+      "rationale": "The existing receipt factory uses OS-specific descriptor predicates; creator binding, borrowed/adopted handle lifetime, framing, CLOEXEC and cleanup are preserved. Linux private metadata checks remain exact. Darwin native pipe identity uses an SDK-exported private API with required OS/SDK qualification; unknown results and named FIFO/file/socket substitutions refuse. Existing owner-status facade snapshots errors at its reply boundary and treats explicit lifetime cancellation as shutdown without delivery proof, preserving Publish/authority/other Flush/startup/cleanup failures. No new pattern relationship or protected-kernel replacement is introduced. Original records, source history and baseline inventory are preserved; native and full phase acceptance remain open."
+    },
+    {
+      "date": "2026-10-14T21:51:11.438800+00:00",
+      "scope": "Stable native receipt and graceful reply-cancellation candidate",
+      "reviewer": "Codex with independent source/evidence reviews",
+      "sourceDigestRefreshed": true,
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/darwin-receipt-native-type-repair/root-promotion.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/reply-cancellation-shutdown-repair/root-promotion.json"
+      ],
+      "rationale": "All changes since70ed are the two independently reviewed boundary repairs, supporting focused/native test files, complete prior source-index rows, seven additive component files, deliberate planning-hash reconciliation with prior values, task history and raw scoped evidence. Original baseline and acceptance scope are unchanged. Coverage, tracker and regression retention pass; native Mac/ARM and full recovery acceptance remain open. No new pattern relation or merge authorization."
     }
   ],
   "rules": {
@@ -1384,14 +1406,14 @@
     }
   ],
   "finalVerification": {
-    "date": "2026-10-14T21:13:16.901546+00:00",
+    "date": "2026-10-14T21:51:11.438800+00:00",
     "command": "node .bytedesk/design-patterns/check.mjs check --root .",
     "result": {
       "baselineVersion": "1.1.0",
       "ok": true,
       "errors": []
     },
-    "scope": "Stable repair checkpoint source freshness only; no P02 runtime acceptance."
+    "scope": "Stable candidate source freshness only; no P02 acceptance."
   },
   "finalVerificationHistory": [
     {
@@ -1423,6 +1445,16 @@
         "errors": []
       },
       "scope": "Targeted P02 CI repair checkpoint source freshness; no runtime or phase acceptance."
+    },
+    {
+      "date": "2026-10-14T21:13:16.901546+00:00",
+      "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+      "result": {
+        "baselineVersion": "1.1.0",
+        "ok": true,
+        "errors": []
+      },
+      "scope": "Stable repair checkpoint source freshness only; no P02 runtime acceptance."
     }
   ]
 }
