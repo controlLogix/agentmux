@@ -269,7 +269,9 @@ export function attachReviewNotes(reviewData, root = document) {
       reflectVersion();
       unsharedChanges = true;
       saveDraft(false);
-      setStatus('Notes now refer to this document version.' + (canStore ? '' : ' Download them to keep a copy.'), canStore ? 'ok' : 'warn');
+      setStatus(reviewData.bridge ? 'Notes now refer to this document version. Saving to your repository file…' :
+        'Notes now refer to this document version.' + (canStore ? '' : ' Download them to keep a copy.'),
+        reviewData.bridge || canStore ? 'ok' : 'warn');
     },
     show: () => {
       showExport(buildMarkdown());
@@ -320,7 +322,8 @@ export function attachReviewNotes(reviewData, root = document) {
   window.addEventListener('beforeprint', () => inputs.forEach(input => reflect(input)));
   window.addEventListener('pagehide', () => { if (canStore && unsharedChanges) saveDraft(false); });
   window.addEventListener('beforeunload', event => {
-    if (canStore || !unsharedChanges || !hasText()) return;
+    // The local controller tracks pending file writes, even without browser storage.
+    if (reviewData.bridge || canStore || !unsharedChanges || !hasText()) return;
     event.preventDefault();
     event.returnValue = '';
   });

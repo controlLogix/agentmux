@@ -1,0 +1,69 @@
+{
+  "result": {
+    "reviewedPortReconfiguration": {
+      "oldPort": 42741,
+      "newPort": 40765,
+      "host": "127.0.0.1",
+      "windowsHostApproval": {
+        "listenerClosed": true,
+        "host": "127.0.0.1",
+        "rangeObservationCount": 12,
+        "excluded": false,
+        "occupied": false,
+        "candidate": 40765,
+        "windowsBindSucceeded": true
+      },
+      "nativeWSLClientEndpoint": "nats://127.0.0.1:40765",
+      "declaredClientEndpointMatchesHostPublish": true,
+      "actualReachabilityNotYetProved": true,
+      "oneCandidateOnly": true
+    },
+    "sameProjectContainerIdentity": {
+      "oldID": "fe012aa16fff8f11a35bf101e34cb0f3d893de79bf9c2f564b4d315c880d2cc8",
+      "newID": "92ebb7b277baa7264adbc265d8221f34e884ee7c2baa0ec12bcc7438263db607",
+      "recreatedOwnedNeverStartedContainer": true
+    },
+    "guards": [
+      {
+        "stage": "before_compose_up",
+        "existingContainerCount": 14,
+        "IDsStatesPortsEqualFreshBaseline": true
+      },
+      {
+        "stage": "after_compose_up",
+        "existingContainerCount": 14,
+        "IDsStatesPortsEqualFreshBaseline": true
+      },
+      {
+        "stage": "final_after_exact_stop",
+        "existingContainerCount": 14,
+        "IDsStatesPortsEqualFreshBaseline": true
+      }
+    ],
+    "cleanup": {
+      "exactOwnedContainerStopped": true,
+      "containerRetained": true,
+      "dataVolumeRetained": true,
+      "originalIDsStatesPortsPreserved": true
+    },
+    "failureCode": "config_or_data_mount_shape_mismatch"
+  },
+  "stoppedContainer": {
+    "id": "92ebb7b277baa7264adbc265d8221f34e884ee7c2baa0ec12bcc7438263db607",
+    "state": "exited",
+    "running": false,
+    "exitCode": 0,
+    "mounts": [
+      {
+        "type": "volume",
+        "readWrite": true,
+        "expectedConfigDestination": false,
+        "expectedDataDestination": true,
+        "sameOwnedDataVolume": true,
+        "sourceIsWindowsDrivePath": false,
+        "sourceIsDesktopHostPath": false,
+        "sourceIsDaemonVolumePath": true
+      }
+    ]
+  }
+}

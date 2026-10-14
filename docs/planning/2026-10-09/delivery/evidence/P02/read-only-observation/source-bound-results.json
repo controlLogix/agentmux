@@ -1,0 +1,96 @@
+{
+  "recordKind": "read-only-authenticated-infrastructure-observation",
+  "owningTask": "P02-T04",
+  "sourceBaseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "workingTreeChanges": true,
+  "phaseAccepted": false,
+  "taskAccepted": false,
+  "sourceHashes": {
+    "platform/deployment/observe.go": "befbca0285fa7015915f7b3ef3fb636a321fb521e5b75429f464e9b610d408eb",
+    "platform/deployment/observe_test.go": "9c4ba6091f07176ca73a11a856b3790e6cce92df08ac95e9e255dc6c339f11d1",
+    "platform/deployment/compose.go": "f045ad9172e3e5fde14e69b9e8450c78287387f79e540caca7968e4cf8af130b",
+    "platform/deployment/compose_test.go": "752d446218b30f15728140f45b80384247aa7ff3c45a73c5f191b8bc80aba131",
+    "platform/deployment/probe.go": "df71842055c7f946d6579b1db499957a4c3dc7620bd4824ffd8acbb45f9995c7",
+    "platform/deployment/probe_test.go": "0ccac91b33d9b7330fbc8b17446540ceb51b5157be840ee457b3f61e0ccce786",
+    "platform/deployment/profile.go": "219b2c8742514699c0c12822576e580142e2f43b51d8405e3207a8ebb0a5f6fd",
+    "platform/deployment/profile_test.go": "145e667f8f0dc39daadc11b9906067cb495bf1336a6ba7b1f11c915388610c74"
+  },
+  "environment": {
+    "distribution": "Ubuntu-26.04, explicitly selected in WSL2",
+    "goVersion": "go1.27.2 linux/amd64",
+    "brokerVersion": "nats-server: v2.15.0",
+    "brokerSha256": "387ce54e7a0a249d877a579ed641d715bab047d7e061bfa42b4d07f6a0401341",
+    "runId": "final-jUBh1W",
+    "workspacePlacement": "Persistent native Linux home cache",
+    "dependencyResolution": "GOTOOLCHAIN=local, GOPROXY=off, GOSUMDB=off, -mod=readonly",
+    "brokerSelection": "AGENTMUX_TEST_NATS selects the prepared disposable broker binary, never a live daemon"
+  },
+  "focusedSelectionGuard": {
+    "commandArguments": ["test", "-race", "-mod=readonly", "-count=1", "-timeout=45s", "-run", "TestObserveDialer", "-json", "./deployment"],
+    "exitCode": 0,
+    "raw": "final/selected-address.jsonl"
+  },
+  "observerRace": {
+    "commandArguments": ["test", "-race", "-mod=readonly", "-count=1", "-timeout=90s", "-run", "TestObserve", "-json", "./deployment"],
+    "exitCode": 0,
+    "passedTestAndSubtestRecords": 21,
+    "raw": "final/observe-race.jsonl",
+    "rawSha256": "7d3fed6420eec3f823d30c90736105651bef5a4c1356212bb718065b6702ccfe"
+  },
+  "affectedDeploymentRace": {
+    "commandArguments": ["test", "-race", "-mod=readonly", "-count=1", "-timeout=90s", "-json", "./deployment"],
+    "exitCode": 0,
+    "passedTestAndSubtestRecords": 74,
+    "failureRecords": 0,
+    "skipRecords": 0,
+    "packageElapsedSeconds": 3.482,
+    "raw": "final/deployment-race.jsonl",
+    "rawSha256": "daf88e739ce8f948a0faa13e1e9f6e6b5e6ae5d1b94b33b406e300bef7738e82"
+  },
+  "vet": {
+    "commandArguments": ["vet", "./deployment"],
+    "exitCode": 0,
+    "stdout": "final/vet.stdout",
+    "stderr": "final/vet.stderr",
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  "sourceBinding": {
+    "allCopiedGoAndModuleFiles": "final/source-before.sha256",
+    "sourceListSha256": "2190cf7cab4776c05005019700d2553f0a4561e5d0ed1694358be33dd24ac1e2",
+    "fileCount": 48,
+    "afterExecutionSha256CheckExitCode": 0,
+    "copiedSourceUnchanged": true,
+    "artifactsCopiedBeforeOwnedExecutionReturned": true
+  },
+  "independentReview": {
+    "reviewer": "Codex subagent Mencius",
+    "scope": "Read-only source and resource/fixture review, not phase acceptance",
+    "connectionCancellationFindingResolved": true,
+    "fatalPathAcceptedSocketCleanupFindingResolved": true,
+    "liveUnselectedEndpointCoverageFindingResolved": true,
+    "remainingFindings": 0
+  },
+  "assertions": [
+    "Observer succeeds with a principal restricted to account INFO, fixed stream INFO and existing MSG.GET.",
+    "Real publication and stream-creation attempts by that restricted principal receive actual permission denials.",
+    "Absent stream and missing requested record remain unknown; no publication, creation or repair follows.",
+    "Repeated existing-record observation preserves stream configuration, creation identity, record counts and sequence state.",
+    "Wrong credentials, domain, server name/version and unavailable endpoint cannot produce verified identity observations.",
+    "Malformed existing record or incompatible configuration is refused without changes.",
+    "Monitoring verifies owned NATS connections close after successful and failed observation.",
+    "A real withheld greeting obeys the earlier 75ms caller deadline.",
+    "Canceling after actual TCP acceptance interrupts setup in less than 500ms despite a five-second options timeout.",
+    "Live unselected endpoint and released-owner dialing are refused before TCP contact.",
+    "Result and error output contains no credentials, endpoint or raw private record bytes."
+  ],
+  "limits": [
+    "Read-only observations do not prove current write permission, restart durability, protected-role readiness, application readiness or an atomic snapshot.",
+    "Writing deployment.Probe remains separate and must not be injected into the read-only doctor.",
+    "Private profile/release authority and bootstrap integration remain coordinator responsibilities.",
+    "Native macOS/Linux, actual Compose startup, full recovery and all phase criteria remain mandatory.",
+    "Earlier reported renderer-worker import/vet failure was not reproduced on the frozen current source; no unsupported cause is claimed.",
+    "Pattern checker still reports stale review while P02 source changes; coordinator owns final registration and review.",
+    "No other worker source files, global metadata or tracker were edited; no Docker operation, CI dispatch, commit, push, merge or release."
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "recordedAt": "2026-10-13T20:40:05.749927+00:00",
+  "baseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "sourceBinding": "Working owned files only; source copy hashes below bind the actual package tested. Not a committed phase candidate.",
+  "scope": "P02-T02 protected assembly verification slice; no full lifecycle completion.",
+  "status": "focused-package-tests-passed",
+  "phaseAccepted": false,
+  "environment": "Native WSL Linux filesystem source copy, linux/amd64",
+  "toolchain": "go1.27.2 linux/amd64",
+  "command": "prepared go test -json ./kernel/assembly",
+  "environmentControls": {
+    "GOTOOLCHAIN": "local",
+    "GOPROXY": "off",
+    "GOFLAGS": "-mod=readonly",
+    "GOCACHE": "/home/ryan/.cache/agentmux-tests/p02-assembly-ql88adog/gocache"
+  },
+  "topLevelTestsPassed": 10,
+  "subtestsPassed": 47,
+  "failureEvents": [],
+  "stderrEmpty": true,
+  "sourceBindings": [
+    {
+      "path": "platform/go.mod",
+      "sha256": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+      "testedSha256": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+      "workingMatchesTested": true
+    },
+    {
+      "path": "platform/go.sum",
+      "sha256": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+      "testedSha256": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+      "workingMatchesTested": true
+    },
+    {
+      "path": "platform/kernel/assembly/verify.go",
+      "sha256": "d28ef2e43d2e8536373321c7021ace5d902903dac8b8ed5ed9a8bbb4f2b6c6f9",
+      "testedSha256": "d28ef2e43d2e8536373321c7021ace5d902903dac8b8ed5ed9a8bbb4f2b6c6f9",
+      "workingMatchesTested": true
+    },
+    {
+      "path": "platform/kernel/assembly/verify_test.go",
+      "sha256": "138b42bae577380b9abbc00f18c699d5f4abd8b9ea8e548bb1330e82d8c6374d",
+      "testedSha256": "138b42bae577380b9abbc00f18c699d5f4abd8b9ea8e548bb1330e82d8c6374d",
+      "workingMatchesTested": true
+    },
+    {
+      "path": "platform/kernel/assembly/README.md",
+      "sha256": "d9c9934bd2562ae2f5696de8696b4162cbc57a6fbf9518943b5d3deac7d36eb7",
+      "testedSha256": "d9c9934bd2562ae2f5696de8696b4162cbc57a6fbf9518943b5d3deac7d36eb7",
+      "workingMatchesTested": true
+    }
+  ],
+  "coverage": [
+    "Four fixed distinct roles, stable output ordering and copied member values.",
+    "Separate trusted raw assembly digest refuses altered JSON and jointly changed binary declarations; expected release authority/version/parent digest/API checked.",
+    "Actual file tampering, missing member file, directory entrypoint, missing root and empty root refused.",
+    "Real within/outside file and parent-directory symlinks, traversal, absolute/drive/backslash/NUL and overlong paths refused.",
+    "Closed required shapes, duplicate literal/escaped keys, invalid UTF8/lone surrogate/trailing JSON refused.",
+    "P01 safe-integer semantics include accepted integer-valued decimals/exponents and reject fractional/unsafe/bool/string revisions.",
+    "Literal and escaped valid Unicode entrypoints verified."
+  ],
+  "API": "assembly.Verify(raw []byte, packageDir string, trust Trust) (Verified,error); value-copy PackageRoot/Release/Members getters. Authority/Trust/Member exported; no process or broker API.",
+  "pins": "Initial platform go.mod uses approved github.com/controlLogix/agentmux/platform module; Go1.27.2/nats.go1.54.0 and exact transitive pins/go.sum retained from accepted spike. Assembly uses standard library only.",
+  "requiredFollowup": [
+    "Root register five owned paths and specific component checks; update affected pattern review through actual source inspection.",
+    "Supervisor must prevent verified package writes and bind execution to checked objects; path verification followed by later path-based exec still races. Executable mode/format/interpreter policy remains supervisor work.",
+    "Trusted release authority enrollment/signature/key policy, process lifecycle, readiness, kernel accounts, Compose and supported native-host qualification remain separate P02/later work."
+  ],
+  "limits": [
+    "Hashing and os.Root containment protect verification reads; file contents may change during or after hashing without release write protection. Files are closed before returning paths.",
+    "Host-selected root is canonicalized; entrypoint symlinks inside it are refused. This does not turn a writable release directory into a sandbox.",
+    "Caller must supply authenticated Trust separately; checksums do not enroll or authenticate a release authority.",
+    "No protected member process spawned, no broker/Docker/user config/legacy code changed.",
+    "Only isolated package tests ran; no broad runtime qualification claimed."
+  ],
+  "patternCheck": {
+    "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+    "exitCode": 1,
+    "error": "Review is stale or missing: inspect changes and refresh sourceDigest"
+  },
+  "testSourceDirectory": "/home/ryan/.cache/agentmux-tests/p02-assembly-ql88adog/platform"
+}

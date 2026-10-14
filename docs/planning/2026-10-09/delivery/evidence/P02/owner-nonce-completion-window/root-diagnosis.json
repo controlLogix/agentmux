@@ -1,0 +1,21 @@
+{
+  "reviewer": "Codex",
+  "date": "2026-10-14T16:30:40.527112+00:00",
+  "decision": "Reproduced component boundary; approve narrow cache-only repair and controls",
+  "actualNamedFailureCount": 1,
+  "originalRequestDeadlineSeconds": 5,
+  "nonceUnchanged": true,
+  "repairConstraints": [
+    "Revalidate full operation binding and actual held lease before waiting.",
+    "Only trusted pending refusal with actually entered canceled core qualifies.",
+    "Wait for actual completion under the same remaining request context, releasing locks first.",
+    "Keep replay consumed and publication at most once.",
+    "Refuse missing deadlines; no fresh nonce or detached waiter."
+  ],
+  "limits": [
+    "Private operation entry/completion seams and 200-millisecond scheduling interval.",
+    "No internal request acceptance marker; no proof of historical intermittent Run cause.",
+    "No actual Docker or supported-platform phase acceptance."
+  ],
+  "phaseAccepted": false
+}

@@ -1,0 +1,119 @@
+name: P02 separately enrolled native Compose evidence
+
+on:
+  push:
+    branches: [feat/agentmux-platform-rearchitecture]
+  workflow_dispatch:
+    inputs:
+      allow_protected_fixture_install:
+        description: Allow the separately enrolled Mac fixture installer (runtime remains unprivileged)
+        type: boolean
+        required: true
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: p02-native-compose-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  enrollment-plan:
+    if: github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' && vars.P02_NATIVE_COMPOSE_ENABLED == 'true'
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      any: ${{ steps.plan.outputs.any }}
+    steps:
+      - id: plan
+        name: Select only explicitly enabled enrolled targets
+        env:
+          LINUX_AMD64: ${{ vars.P02_LINUX_AMD64_ENABLED }}
+          LINUX_ARM64: ${{ vars.P02_LINUX_ARM64_ENABLED }}
+          DARWIN_AMD64: ${{ vars.P02_DARWIN_AMD64_ENABLED }}
+          DARWIN_ARM64: ${{ vars.P02_DARWIN_ARM64_ENABLED }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          rows = []
+          for key, target, system, arch in (
+              ('LINUX_AMD64', 'linux-amd64', 'Linux', 'X64'),
+              ('LINUX_ARM64', 'linux-arm64', 'Linux', 'ARM64'),
+              ('DARWIN_AMD64', 'darwin-amd64', 'macOS', 'X64'),
+              ('DARWIN_ARM64', 'darwin-arm64', 'macOS', 'ARM64')):
+              enabled = os.environ.get(key) == 'true'
+              print(target + ': ' + ('requested; host prerequisites must still pass' if enabled else 'unexecuted; not enabled'))
+              if enabled:
+                  rows.append({'target': target, 'labels': json.dumps(['self-hosted', system, arch, 'agentmux-p02-compose']), 'prefix': 'P02_' + key})
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as output:
+              output.write('matrix=' + json.dumps({'include': rows}) + '\n')
+              output.write('any=' + ('true' if rows else 'false') + '\n')
+          PY
+  native-compose:
+    needs: enrollment-plan
+    if: github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' && needs.enrollment-plan.outputs.any == 'true'
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.enrollment-plan.outputs.matrix) }}
+    # These are required pre-enrolled capabilities, not a claim that runners exist.
+    # Missing matching capacity stays queued/unexecuted and cannot pass the phase.
+    runs-on: ${{ fromJSON(matrix.labels) }}
+    timeout-minutes: 55
+    env:
+      SELECTION: ${{ vars[format('{0}_SELECTION', matrix.prefix)] }}
+      SELECTION_PIN: ${{ vars[format('{0}_SELECTION_SHA256', matrix.prefix)] }}
+      PREREQUISITES: ${{ vars[format('{0}_PREREQUISITES', matrix.prefix)] }}
+      PREREQUISITES_PIN: ${{ vars[format('{0}_PREREQUISITES_SHA256', matrix.prefix)] }}
+      QUALIFICATION_WORKSPACE: ${{ vars[format('{0}_WORKSPACE', matrix.prefix)] }}
+      QUALIFICATION_PYTHON: ${{ vars[format('{0}_PYTHON', matrix.prefix)] }}
+      TARGET_ENABLED: ${{ vars[format('{0}_ENABLED', matrix.prefix)] }}
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5, official ref checked October 14, 2026
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Require independently supplied enrollment
+        shell: bash
+        run: |
+          test -n "$SELECTION" && test -n "$SELECTION_PIN"
+          test -n "$PREREQUISITES" && test -n "$PREREQUISITES_PIN"
+          test -n "$QUALIFICATION_WORKSPACE"
+          test -n "$QUALIFICATION_PYTHON"
+          test "$TARGET_ENABLED" = "true"
+      - name: Collect the exact native Compose selection
+        shell: bash
+        env:
+          TARGET: ${{ matrix.target }}
+          CANDIDATE: ${{ github.sha }}
+          EVIDENCE: ${{ runner.temp }}/p02-native-compose-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.target }}
+          ALLOW_INSTALL: ${{ (github.event_name == 'workflow_dispatch' && inputs.allow_protected_fixture_install) || vars.P02_DARWIN_PROTECTED_FIXTURE_INSTALL_AUTHORIZED == 'true' }}
+        run: |
+          extra=()
+          if [ "$ALLOW_INSTALL" = "true" ]; then extra+=(--allow-protected-fixture-install); fi
+          "$QUALIFICATION_PYTHON" -I -B tests/platform/native_compose.py --target "$TARGET" \
+            --workspace "$QUALIFICATION_WORKSPACE" --evidence "$EVIDENCE" \
+            --selection "$SELECTION" --selection-sha256 "$SELECTION_PIN" \
+            --prerequisites "$PREREQUISITES" --prerequisites-sha256 "$PREREQUISITES_PIN" \
+            --candidate-commit "$CANDIDATE" "${extra[@]}"
+      - name: Preserve only the collector's public evidence directory
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4, official ref checked October 14, 2026
+        with:
+          name: p02-native-compose-${{ matrix.target }}-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/p02-native-compose-${{ github.run_id }}-${{ github.run_attempt }}-${{ matrix.target }}/
+          if-no-files-found: error
+          retention-days: 30
+
+# Exact feature-branch pushes are opt-in through P02_NATIVE_COMPOSE_ENABLED.
+# Each target also requires <PREFIX>_ENABLED and separately enrolled paths/pins.
+# Disabled targets never qualify. These settings are not changed by this workflow.
+# workflow_dispatch requires this workflow on the default branch, so it is not
+# the current feature-only execution route. Never move it to main to enable it.
+# No pull-request execution, engine setup or broad cleanup.
+# The separately provisioned runner must supply Python, native tools/module cache,
+# private filesystem support, exact engine/image/context and approved Mac setup.
+# <PREFIX>_PYTHON selects a prepared interpreter with the existing sdk/python
+# requirements.lock versions. This workflow never installs or updates them.
+# This selection does not yet qualify the separate installed CLI or complete gate.

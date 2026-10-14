@@ -1,0 +1,56 @@
+{
+  "scope": "Close the command/exit provenance gap with an explicitly separate rerun of the same eight reviewed installed-admission sources",
+  "priorReview": "review.json",
+  "priorFindingPreserved": "The original supplied record lacked direct exit artifacts. review.json remains unchanged as the historical open finding; no old exit code is inferred or rewritten.",
+  "newRecord": {
+    "path": "/home/ryan/.cache/agentmux-governance/p02-installed-trust-exit-proof-4bbf67a8/supplemental-review.json",
+    "sha256": "b0b826ca007ee93f33eedecd27662ed1322fe91d3e14d9c0ac9f825b051c9ca1",
+    "historicalRecordSha256": "982b83fba819cf42484cd52f238233763248166dc888b0585eddb2d37bffe130",
+    "historicalSeparateExitArtifactFound": false,
+    "allEightHistoricalSupplementAndCurrentSourceHashesMatch": true
+  },
+  "inspectedProducer": {
+    "path": "run.py",
+    "sha256": "d80d30ad17be322f4f5799c75aaf0ee59fad37b93ab847425bf53ffe7284aee2",
+    "result": "Actual producer passes literal argv directly to subprocess.run in the immutable snapshot and records each returned returncode. The reviewer read the producer and did not execute it again."
+  },
+  "invocation": {
+    "cwd": "/home/ryan/.cache/agentmux-governance/p02-installed-trust-exit-proof-4bbf67a8/platform",
+    "raceArgv": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test", "-race", "-json", "./launcher", "-run",
+      "TestLocalServerTrust|TestProfile|TestHostConfig|TestHostPrivateRead|TestInstalledHostPolicy", "-count=1"
+    ],
+    "vetArgv": ["/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go", "vet", "./launcher"],
+    "fixedEnvironment": {"GOTOOLCHAIN": "local", "GOPROXY": "off", "GOSUMDB": "off", "GOWORK": "off", "GORACE": "atexit_sleep_ms=0"},
+    "limits": "The producer copies its parent environment and overwrites only these fixed values; this is not a claim of a fully scrubbed environment."
+  },
+  "directResults": {
+    "raceExit": 0,
+    "vetExit": 0,
+    "raceStartedUTC": "2026-10-14T03:32:52.205845+00:00",
+    "raceFinishedUTC": "2026-10-14T03:33:04.801071+00:00",
+    "vetFinishedUTC": "2026-10-14T03:33:07.196073+00:00",
+    "rawNamedTestPasses": 182,
+    "rawPackagePasses": 1,
+    "failuresOrSkips": 0,
+    "raceStderrAndVetOutputEmpty": true
+  },
+  "verifiedArtifacts": {
+    "invocation.json": "8622ca4298bc9f053ed0de3286c1884e02adfcd38012db8c960ce4185574765b",
+    "exits.json": "3fd5f32d1545db56719892e622bb6885cb8272e13350035843cfad4d882bf15d",
+    "race.stdout": "e69a8ded79bf6d681f22b3e3505384cce613379862373814635a61dcedf5a184",
+    "race.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vet.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vet.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "reviewer": "Collaborating Codex session",
+  "findingStatus": "Resolved for this supplemental execution; the historical missing exits remain missing",
+  "supplementalExecutionProvenanceAccepted": true,
+  "limits": [
+    "Eight reviewed sources match, but this is the historical dependency snapshot. Later root transport/runtime/bridge changes need their own candidate evidence.",
+    "No source edits, new test execution, heavy WSL jobs, Docker changes or provider calls were performed by this review.",
+    "No native macOS ACL, actual Docker/NATS installed admission, full launcher suite or phase acceptance is established."
+  ],
+  "phaseAccepted": false
+}

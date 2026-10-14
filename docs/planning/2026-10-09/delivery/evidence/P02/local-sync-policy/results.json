@@ -1,0 +1,76 @@
+{
+  "recordKind": "local-durable-sync-policy-repair",
+  "sourceBaseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "phaseAccepted": false,
+  "environment": "Go 1.27.2 linux/amd64 in Ubuntu-26.04 WSL with prepared disposable NATS 2.15.0",
+  "sourceHashes": {
+    "platform/deployment/profile.go": "f15a34a2111492fc83f3c5e85aad2cb869c4c6487bac9f3cc10aa2de9de767e7",
+    "platform/deployment/profile_test.go": "3e36d029e3cd4c06b72ca046d05dec82c92efa32d21c3dd5a90c2eab09491aec",
+    "platform/deployment/sync_policy_test.go": "968989e83ac321c81a3aa5df41017d3fb2cc144a0c00031c7f3b8803f5111427"
+  },
+  "sourceBinding": {
+    "copiedGoAndModuleFiles": 77,
+    "sourceList": "results/source-before.sha256",
+    "sourceListSha256": "b3c5e3d77ef54b40b4f0baeffb7ede0936e89bccf7f5d65225d3c541cc02e7eb",
+    "afterVerification": "results/source-after.txt",
+    "changedExecutedFiles": 0,
+    "snapshot": "candidate-HNeZpK"
+  },
+  "tools": {
+    "goExecutableSha256": "548d3c32f83fa81152f543eb1526be7884cfe0526eb5e9ce29d3eca14786e7e0",
+    "natsExecutableSha256": "387ce54e7a0a249d877a579ed641d715bab047d7e061bfa42b4d07f6a0401341"
+  },
+  "focused": {
+    "command": "go test -race -count=1 -timeout=90s -run '^Test(LocalSyncPolicy|StorageFactory)' -json ./deployment",
+    "exitCode": 0,
+    "passedTestAndSubtestEntries": 17,
+    "failures": 0,
+    "skips": 0,
+    "packageSeconds": 0.242,
+    "raw": "results/focused.jsonl",
+    "rawSha256": "2b3f7603ce60cb9f2207f1ca0a8a1898d273660750a8880a2f043e29770b501a"
+  },
+  "affected": {
+    "command": "go test -race -count=1 -timeout=180s -json ./deployment",
+    "exitCode": 0,
+    "passedTestAndSubtestEntries": 81,
+    "failures": 0,
+    "skips": 0,
+    "packageSeconds": 2.436,
+    "raw": "results/affected.jsonl",
+    "rawSha256": "0e24afbdd44c9d019ce25f888fa1af9ab7612200807c21f8d5a3f5b65c698db5"
+  },
+  "vet": {"command": "go vet ./deployment", "exitCode": 0, "raw": "results/vet.stderr"},
+  "actualObservations": [
+    "Prepared NATS 2.15.0 accepted generated configuration with its -t syntax check and started the owned fixture.",
+    "The fixture administrator obtained a SYS VARZ response bound to the connected server ID, version and selected domain; active sync_always was true.",
+    "Owned fixture restarts with missing sync_interval and periodic 10s controls reported sync_always false.",
+    "Original storage, protected account, health permission and replica assertions remain present."
+  ],
+  "independentSourceReview": {
+    "reviewer": "Independent Codex agent Mencius",
+    "status": "No actionable findings; missing factory-setting finding closed on source inspection",
+    "evidenceReview": {
+      "status": "Independent evidence review closed with no new findings in this scope",
+      "checks": [
+        "Raw hashes and focused 17/17 plus affected 81/81 run/pass pairs match, with no failures or skips.",
+        "All 77 source entries match their after-check names and OK results. The three owned files match the snapshot and current source.",
+        "Logs confirm sync_always=true and both relaxed-policy negative controls pass.",
+        "Test and vet exits are zero; stderr files are empty."
+      ],
+      "limits": "Reviewer ran no tests or process operations. Coordinator still owns host refusal integration, governance and phase acceptance."
+    }
+  },
+  "primarySources": [
+    "https://github.com/nats-io/nats-server/blob/v2.15.0/server/jetstream.go",
+    "https://raw.githubusercontent.com/nats-io/nats-server/v2.15.0/server/monitor.go"
+  ],
+  "governance": {"exitCode": 1, "errors": ["Review is stale or missing: inspect changes and refresh sourceDigest"]},
+  "limits": [
+    "WSL execution is not native macOS or native Linux qualification.",
+    "No Docker mutation or live Compose test was performed in this slice.",
+    "The setting and observed flag do not prove power-loss, disk-failure or P12 durability objectives.",
+    "Root owns missing/relaxed policy refusal regressions in bootstrap/host files, final metadata, tracker, commit, push and phase gate.",
+    "Earlier restart and missing-setting evidence is preserved as historical, not relabeled."
+  ]
+}

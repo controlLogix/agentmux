@@ -1,0 +1,5 @@
+import pathlib,tempfile,shutil,subprocess,json,hashlib,time
+repo=pathlib.Path('/mnt/c/Users/RyanHelms/GitHub/agentmux');root=pathlib.Path(tempfile.mkdtemp(prefix='p02-collector-research-first-',dir='/home/ryan/.cache/agentmux-governance'));p=root/'tests/platform/native_go.py';p.parent.mkdir(parents=True);shutil.copyfile(repo/'tests/platform/native_go.py',p);ci=root/'tests/contracts/ci.py';ci.parent.mkdir();shutil.copyfile(repo/'tests/contracts/ci.py',ci)
+cmd=['python3','-m','unittest','native_go.RunnerTests.test_research_refusal_claim_requires_stable_original_and_executed_source'];start=time.monotonic()
+with (root/'first.stdout').open('w') as out,(root/'first.stderr').open('w') as err:r=subprocess.run(cmd,cwd=p.parent,stdout=out,stderr=err)
+(root/'first-result.json').write_text(json.dumps({'command':cmd,'exit':r.returncode,'sourceSHA256':hashlib.sha256(p.read_bytes()).hexdigest(),'seconds':time.monotonic()-start},indent=2));print(str(root));print((root/'first.stderr').read_text());raise SystemExit(0 if r.returncode!=0 else 1)

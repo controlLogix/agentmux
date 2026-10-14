@@ -1,0 +1,31 @@
+{
+  "review": "Independent source and evidence review of installed launcher integration. Two findings repaired: unsuccessful ensure exit classification and private path ancestor trust. No remaining actionable finding in these seven files.",
+  "sourceHashes": {
+    "launcher/host_policy.go": "00eca320cc41ba3ec1694b4f7e205327c37c0cad9ed4fa81325aa5ff31fe8406",
+    "launcher/host_policy_test.go": "d8e32ea2eb70042cbaae5c387616ad1cf01423b7c3e56488a9faffe8d1a17eaa",
+    "runtime/installed_host_linux.go": "55dd59c7865907f7e7e791e188f4e5ad11b9e3bdebcc6290a11bc50a0ede683e",
+    "runtime/installed_host_linux_test.go": "66cf4af96d29e82bc5e0e4fe10431b106949a6894bf07ce52e5de9870ee7067f",
+    "runtime/installed_host_unsupported.go": "1aab8c8ce186d802859eed922a77d96f81d41904b0083961a8db861a1e3511a8",
+    "cmd/agentmux-runtime/main.go": "67a6be16e1011cc3e86057fbbb081f45af79550d143f485732d26011e5bf5fc4",
+    "cmd/agentmux-runtime/main_test.go": "0f3c87887352a373940de7e02f4dc3497a7dd91a39c1b2a48eb3b5b57e0441bb"
+  },
+  "currentSourceMatches": true,
+  "passedTestEntries": 36,
+  "failuresOrSkips": [],
+  "rawSHA256": "99ecd16d688b8b143429adc0ba4065e7747466aef7af531d9e4f40d0b25856b6",
+  "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "vetExitCode": 0,
+  "vetStdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "vetStderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "qualificationLimits": [
+    "Runtime tests use actual sealed helper children, not full installed product daemon.",
+    "Real Compose/NATS cold/warm concurrent launcher qualification remains required.",
+    "macOS installed host is fail closed and unqualified.",
+    "Local filesystem calls are not preemptible by caller contexts."
+  ],
+  "historicalAncestorFailure": {
+    "path": "/home/ryan/.cache/agentmux-governance/p02-installed-original-diagnostic-DkVdQQ/ancestry.jsonl",
+    "sha256": "d380ec18526e17616ed5a651a25894aa4408be9e841b8566b0445d711ba82479"
+  },
+  "repairedAncestorControlSHA256": "9fc4c890602e0d82b7ad96b1eb1137ececa69fc7ee936ab7fc90ec5c182206f4"
+}

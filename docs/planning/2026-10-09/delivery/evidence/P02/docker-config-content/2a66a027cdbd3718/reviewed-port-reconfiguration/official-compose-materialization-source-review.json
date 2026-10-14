@@ -1,0 +1,30 @@
+{
+  "scope": "Official tag source read-only explanation, not proof installed binary is source-equivalent. Actual fixture behavior is independently observed.",
+  "versionTag": "v5.5.1",
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/docker/compose/v5.5.1/pkg/compose/create.go",
+      "sha256": "6b74d3e216b2984fc654193af30f3a6fcb0bef7fd5d93ef24f8ad0fbf7bfe314",
+      "bytes": 49579,
+      "externalOriginal": "/home/ryan/.cache/agentmux-governance/amx-p02-config-2a66a027cdbd3718-xxbs3w6x/official-compose-create.go"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/docker/compose/v5.5.1/pkg/compose/secrets.go",
+      "sha256": "da656691c7fe3e2bf0a8e709e2dcd096c06d57e3b321518fc3b6b291cc178cef",
+      "bytes": 4993,
+      "externalOriginal": "/home/ryan/.cache/agentmux-governance/amx-p02-config-2a66a027cdbd3718-xxbs3w6x/official-compose-secrets.go"
+    }
+  ],
+  "observations": [
+    "Content configs bypass bind-mount construction.",
+    "Inline content is copied from an in-memory tar into the container filesystem using CopyToContainer.",
+    "Requested mode and UID/GID are put in the tar header.",
+    "Inline content injection rejects read-only service root filesystems.",
+    "This path creates no client-side config cache file in the reviewed implementation; privileged daemon/container root can still read or alter the resulting private file."
+  ],
+  "remainingLimits": [
+    "Container export/commit can retain the config and secrets.",
+    "No exact installed Compose build-source equivalence asserted.",
+    "No authenticated or durable probe reached in this attempt."
+  ]
+}

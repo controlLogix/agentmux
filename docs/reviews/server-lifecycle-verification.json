@@ -1,0 +1,63 @@
+{
+  "checkedOn": "2026-10-13",
+  "scope": "One managed local HTTP review server per repository and host, shared by its Git worktrees. Document tooling only; no platform phase acceptance.",
+  "decision": "Use an OS-owned lifetime lock plus private authenticated server state and a persisted port in the common Git directory. A port-only convention would allow duplicate servers on different ports; a PID file alone would permit unsafe stale-PID takeover.",
+  "shutdownPolicy": "Explicit --stop, --restart or Ctrl+C in the owning terminal. Drain active HTTP connections and handler promises before releasing ownership. Do not infer shutdown from one tab closing, because other tabs or saves may remain active.",
+  "tests": {
+    "command": "node --test docs/reviews/src/features/*.test.mjs docs/planning/2026-10-09/review-site/src/components/organisms/Scene/Scene.test.mjs",
+    "environment": "Native Windows Node; disposable Git repositories, worktrees, processes and local remotes",
+    "passed": 57,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 117322.5307,
+    "lifecycleCases": 13
+  },
+  "coverage": [
+    "Concurrent and separate-process opens reuse one authenticated instance",
+    "Changing the requested port cannot bypass ownership",
+    "Git worktrees share the same server slot",
+    "Other checkouts/documents cannot silently stop or replace the owner",
+    "Private manager token and foreign-Origin rejection",
+    "Connected and disconnected note handlers finish before ownership release",
+    "Starting and unresponsive owners are unknown, not falsely inactive",
+    "Shutdown tracks its own instance even after immediate replacement",
+    "Crash recovery never terminates a recorded PID",
+    "Unknown listeners are neither killed nor bypassed automatically",
+    "Failed startup releases ownership; restart replaces rather than duplicates",
+    "Bound port persistence includes HTTP port 80",
+    "Case-insensitive Git redirect variables cannot redirect the launcher"
+  ],
+  "sourceHashes": {
+    "docs/reviews/open.mjs": "b1bbdcb659032de64e608425fe58fce2c4f75d0c7e9c447b1b4b6c87cc9a169a",
+    "docs/reviews/src/features/review-server.mjs": "2ed39e72f1202c7b5fac018dfc34aab8a9852ec982a45798a69b3927583c7522",
+    "docs/reviews/src/features/review-server.test.mjs": "fd93f2cd2b3d6cc8eff84cbd8ca8a4423b505583f64e6ee066e341645ad8b537",
+    "docs/reviews/src/features/local-review.mjs": "b01d1889e8bd3156c590e57cd259ea59486b3877bdfc67e1d9088749578d4286",
+    ".agents/skills/review-inbox/SKILL.md": "1ff824f3d82286f5dac639abf8cd40a4ee21c9cb8c1960460ed049264fe9b8db",
+    "docs/planning/2026-10-09/review-site/src/pages/build.mjs": "78340b4332f49b5cd3b7dbae728cd3979e1cfa6d3da623cdd0d84a3b3b881ebb"
+  },
+  "liveVerification": {
+    "url": "http://127.0.0.1:4317/",
+    "documentVersion": "sha256:72ea00a76dc41ae58322f0ba216d33692a56629c215f9fdea3f0a7f3cfbdeeb1",
+    "artifactSha256": "0bf6c9c4770c329d46ef39c98a4ccc3ba28fbd3afe5733f7e7996f17263831fb",
+    "instanceId": "c8364450f0dad0c63fb9eef3b2df8f51",
+    "pid": 48868,
+    "sameInstanceReusedOnSecondOpen": true,
+    "listenersOn4317": 1,
+    "listenersOn4318": 0,
+    "browserReloaded": true,
+    "browserNotesStatus": "Repository notes loaded; original notes version retained as an earlier version",
+    "legacyMigration": "Confirmed the user's saved-note status, then stopped the known owned legacy terminal session and started the managed replacement. No unknown process was terminated.",
+    "agentWroteOrSharedRealNotes": false
+  },
+  "independentReview": {
+    "agentId": "01a136fc-8df5-7591-b973-239c2d03e1a4",
+    "result": "Four production findings repaired and closed by source inspection. The remaining replacement-race test gap was closed with a controlled barrier and a passing focused regression. Parent ran the final 57-case suite."
+  },
+  "limits": "Native Windows is tested. Native POSIX operation and simultaneous Windows/WSL ownership are not qualified. Separate hosts maintain separate server instances. An explicit shutdown can wait for an unfinished handler; no forced takeover is performed.",
+  "repositoryPatternCheck": {
+    "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+    "ok": false,
+    "error": "Review is stale or missing: inspect changes and refresh sourceDigest",
+    "reason": "Concurrent platform source, audit and delivery changes require their owning full review; this scoped document-tooling review does not accept them."
+  }
+}

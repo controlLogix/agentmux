@@ -1,0 +1,90 @@
+{
+  "scope": "P02 slice B: local TLS enrollment, additive secure broker/Compose factories, and authenticated health/read-only clients",
+  "sourceHashes": {
+    "platform/deployment/local_tls_material.go": "a07b3f4b8913f977a89aa2787227b85ee4b62b4add4cfd968b53ebe51a8cdcfa",
+    "platform/deployment/local_tls_material_test.go": "e67d773c79a0bf96213a27f4c097fdf98509ba5f4bc4919bf0fad741ce2b3730",
+    "platform/deployment/secure_local_config.go": "1f28903775933ad41644691c1e96590a92fcccab71eb636fc8f5b4572c9294f5",
+    "platform/deployment/secure_local_config_test.go": "04eaf9f7f1d1c1a66ef19e2e8fb07dc84868c3d8eb63463b53df7d1c3cd298b5",
+    "platform/deployment/secure_compose.go": "614077efd26b3828f54b25639d9531b7b7be6744fe48e69558429b77a27821ab",
+    "platform/deployment/secure_compose_test.go": "c050baca8f25694ab9f26f9e54f3d4b85b8d918f487fa5470303272f53fff3b0",
+    "platform/deployment/probe.go": "234c24933fdef9258593d394d5794c3062947b7ba5c03c01ee71c107c2332b77",
+    "platform/deployment/observe.go": "d944585825872d3ee168f88f5a17832b74d95ee5fff19fe762fbc13de6303c31",
+    "platform/deployment/local_tls_probe_transport.go": "04d5d12797037063545a3d6819f519e57247d1a6105d83a630946aa0526821bc",
+    "platform/deployment/local_tls_probe_test.go": "97a757abfe5702527246acb3a0df90c0afbbb8ca70d8b8a42f0022c09fdbbb12",
+    "platform/deployment/local_tls_adversary_test.go": "2358cce497e494dd79d6dc6527ad971b11b72dffb1788a6037050bfbbce4bc4c"
+  },
+  "sharedAPIExecutedSource": {
+    "path": "platform/localtls/client.go",
+    "sha256": "d8c5f5f87abf98490538247af0eb3e4335ce73666bc8a39416bae90ae37c46fe",
+    "owner": "Root's separate trust/protocol worker; this slice does not grant its acceptance."
+  },
+  "execution": {
+    "candidate": "/home/ryan/.cache/agentmux-governance/local-tls-enrollment/candidate-B7v7Ya/platform",
+    "directory": "combined-final",
+    "sourceFiles": 154,
+    "sourceUnchanged": true,
+    "sourceListSha256": "23adabf089b6ae7993d25270cfe447a4c5b71ecfc12f016400ff94c993f53bf9",
+    "focused": {
+      "command": "go test -race -count=1 -timeout=90s -run '^Test(LocalTLSMaterial|Secure|LocalTLSProbe)' -json ./deployment",
+      "exit": 0,
+      "passedTestEntries": 39,
+      "packageSeconds": 0.299,
+      "rawSha256": "ceedf3134ef27b29dd36358992eff04e039e5c57b60303407df8bc75ac146a32"
+    },
+    "affected": {
+      "command": "go test -race -count=1 -timeout=180s -json ./deployment",
+      "exit": 0,
+      "passedTestEntries": 184,
+      "packageSeconds": 8.616,
+      "rawSha256": "de9b434402061acab573e0400ff9eed745b5b9a9afb606e4983faa475c13fc2b"
+    },
+    "failedOrSkippedTestEntries": 0,
+    "stderrEmpty": true,
+    "vetCommand": "go vet ./deployment",
+    "vetExit": 0,
+    "limits": "Actual Linux/WSL disposable NATS2.15 and owned local peers; no Docker resource mutation, provider use or native macOS execution. GORACE removes only post-exit sleep."
+  },
+  "independentReview": {
+    "reviewer": "Plato",
+    "agentId": "01a137e6-481f-7441-9095-89ea4bb76f8c",
+    "findingsRemaining": [],
+    "result": "All eleven exact source hashes are closed in source review, including final Formatter redaction. Earlier separate reviews covered crypto, factories/rendering, clients and actual fixture/capture tests.",
+    "limits": "Source review only. Main executed the tests; the reviewer did not edit files, rerun tests or accept installed/native/phase integration."
+  },
+  "provedBoundaries": [
+    "Offline per-profile P256 enrollment retains no encoded or returned CA signing key; normal current chain/DNS/EKU/key checks and exact leaf pin apply.",
+    "Pointer/value formatting, all Formatter verbs and JSON redact private material. Inputs and private getters are copied.",
+    "Malformed leading or repeated PEM, invalid profile/DNS/chain/key/lifetime/usage and canceled enrollment are refused.",
+    "Secure factories preserve complete existing account, listener, domain and file-storage declarations and add only strict TLS fields.",
+    "The renderer preserves the original stack and injects exact broker_config/server_cert/server_key objects with fixed root-owned 0400 references.",
+    "Actual NATS2.15 accepts Boolean handshake_first:true and min_version:1.3 using fixture-local certificate/key paths. Automatic, duration or plain fallback and weaker/ambiguous configuration are refused by admission.",
+    "Authenticated TLS health cold creation/write/read, warm write/read and read-only existing-record observation succeed.",
+    "Wrong root, DNS, leaf pin and endpoint return no infrastructure proof; a subsequent valid control succeeds.",
+    "Probe and Observe send no CONNECT or password to an owned fake plaintext INFO server. An explicit legacy plaintext negative control captures CONNECT and proves the assertion is active. Captured bytes never leave memory.",
+    "Silent unverified TLS handshakes honor caller cancellation within 500ms and close the peer socket before cleanup.",
+    "All broker/peer fixtures are owned, bounded and joined. Health and observation retain actual identity, domain, compatible stream and stored-record checks."
+  ],
+  "preservedHistory": [
+    "material-initial: passing narrow tests preceded two independent source findings; that evidence is not accepted repaired source.",
+    "material-repair and material-results.json: closure before the additional all-verb Formatter hardening; historical source hashes remain distinct.",
+    "factory-initial and factory-results.json: source/shape checks before client integration and actual broker tests.",
+    "transport-preservation: legacy observation/cancellation selection after client integration, separate from actual secure qualification.",
+    "broker-initial and adversary-initial: earlier focused secure-broker/capture controls, not the final full affected candidate."
+  ],
+  "remainingRootIntegration": [
+    "Installed loader must bind protocol scope, TLS endpoint/DNS/roots/leaf pin and reject nil TLS; nil remains only the explicitly separate legacy helper boundary.",
+    "Root must bind and inspect full exact private Compose bytes and both injected certificate/key objects in the actual Docker container.",
+    "Complete real startup, reuse, recovery, supported-environment and native checks on the final integrated candidate.",
+    "Complete source/component/pattern registration, phase review, commit, push and remote candidate verification before advancement."
+  ],
+  "actualDockerInjectionAccepted": false,
+  "requiredPatternCheck": {
+    "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+    "exit": 1,
+    "error": "Review is stale or missing: inspect changes and refresh sourceDigest",
+    "owner": "Root coordinator; no global attestation was changed by this slice."
+  },
+  "installedLoaderAccepted": false,
+  "nativeMacExecuted": false,
+  "phaseAccepted": false
+}

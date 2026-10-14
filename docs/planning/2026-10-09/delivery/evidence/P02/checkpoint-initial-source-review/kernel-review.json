@@ -1,0 +1,63 @@
+{
+  "kind": "independent-current-kernel-semantic-source-review",
+  "purpose": "Ten-file kernel slice for reviewed feature checkpoint; no global attestation or phase approval",
+  "sourceSHA256": {
+    "platform/kernel/assembly/verify.go": "e915287f32b009b2b47bbaf7287f9ee29d0ed82fd8e57098260512b8c9826c83",
+    "platform/kernel/assembly/open_unix.go": "f39acc55f3633bddf82fed8c09f454d20321ea3fdd514e8809d5640ed6577769",
+    "platform/kernel/assembly/open_unsupported.go": "91100eeb4268ce69aeb5c6116d7ecd7a3f9dc89c806c6adeeda4ee84b5a987a0",
+    "platform/kernel/protocol/codec.go": "4921211e9fa9767b3f17826e66cd66542b690a569f49729b11d765d6c11b3d64",
+    "platform/kernel/protocol/private_unsupported.go": "608afc7538c80a0b157be6f3b15037da34923bfe6743ef4ad5c01449866a7a81",
+    "platform/kernel/communication/config.go": "b54e90bbf5d5c37fa7e60ffdc878ddd4204bfba411665e2c35311c1fe5b9a883",
+    "platform/kernel/boot/run.go": "44d27d088332d7f3503c3c8dce04c3dfa807113d1b3f6084592feed60acd9dd1",
+    "platform/kernel/lifecycle/run.go": "ddf748d4038b5099d605efffac8eee213e6479e7b27177f0b3f3fc9ffedb2dac",
+    "platform/kernel/communication/run.go": "1340ecbbca4b21a3354b0be3147207bbd1fbe9b5039c7825fb750b149a703069",
+    "platform/kernel/status/run.go": "6be86037c5ff514759af8d767284efae5baabdd406cfa187aaa4ef42fd97ea43"
+  },
+  "componentEvidenceSHA256": {
+    "docs/planning/2026-10-09/delivery/evidence/P02/assembly-read-boundaries/review.json": "284250830cf7601456e8d151b6a15aee53fe480ba97673ca8756e68f00cabc08",
+    "docs/planning/2026-10-09/delivery/evidence/P02/protected-assembly/root-review.json": "df738bf881f0107361ac14f31f1211cd9e09e7f89e972e8d7ff7b856a6696794",
+    "docs/planning/2026-10-09/delivery/evidence/P02/protected-communication/final/review.json": "7f9f9ae73ece9b0e2054d9b605b4d2784a95d9caa5d5726d411f825b5880b085",
+    "docs/planning/2026-10-09/delivery/evidence/P02/protected-actors/final-affected/review.json": "01c39410680943b0c8e1a697282109cf36d1201077a249227863d9e80451c1ff",
+    "docs/planning/2026-10-09/delivery/evidence/P02/exact-json-fields/review.json": "2db30465147eb077b09a500287bf91832ad6bab0bf95b0f22d9061ca0bf30031"
+  },
+  "pinMapping": {
+    "assembly": "Current verify/openUnix/openUnsupported pins match assembly-read-boundaries and exact-json-fields; initial protected assembly review is historical before the bounded held-root repair.",
+    "protocol": "Current codec/privateUnsupported pins match exact-json-fields; codec changed after early actor cohort, so that early full cohort is not exact current dependency evidence.",
+    "communication": "Current config pin matches protected-communication final and actor/closed-codec component snapshots.",
+    "roles": "All four current Run entrypoints match protected-actors final-affected and exact-json-fields. Actor transport/TLS/cleanup changed later, so original cohort does not by itself qualify every current dependency."
+  },
+  "actualSourceReview": [
+    {
+      "files": "assembly verify/open",
+      "howWhereWhy": "Host supplies separate expected raw assembly digest, parent release authority/version/API and selected root. Closed shapes, decoded duplicate keys, Unicode and safe integers bind exactly four distinct members. Member paths remain contained with component-wise descriptor O_NOFOLLOW/O_NONBLOCK; actual read counts, per-member/aggregate byte limits and final size/digest checks precede value-only result.",
+      "tradeoff": "Returned paths are not executable authority; current runtime must seal or protect images. Caller authenticates release trust/root separately. Local filesystem syscalls are not forcibly preempted."
+    },
+    {
+      "files": "protocol codec/privateUnsupported",
+      "howWhereWhy": "Recursive typed field-name walk rejects aliases/duplicates/extras/trailing data and bounds UTF8,size,depth before typed decode. Semantic decoders validate exact scope,role,kind,incarnation,revision,states and freshness. Ready snapshots require all four fresh ready members and exact status-role incarnation. Cursor rejects replay/retired incarnations and flags gaps without inventing lost events. Unsupported credential platform refuses.",
+      "tradeoff": "Required values/null semantics/authority are separate from generic structural helper. Map/interface keys intentionally remain open where types declare them. Cursor is an owned consumer state, not a shared synchronized global authority."
+    },
+    {
+      "files": "communication config",
+      "howWhereWhy": "Six distinct deployment-provided credential secrets populate separate SYS,KERNEL,APPLICATION accounts. Protected users publish own observations,selected control roles issue fixed announce commands,status role exports exact public status subjects. Ordinary plugin publishes nothing and subscribes only imported status; SYS/JS business access denied to protected/plugin users. Explicit container binding still requires private host port mapping.",
+      "tradeoff": "Initial Core NATS account factory is not JWT enrollment,federation or business persistence; secure installed TLS factory is separate. JSON bytes contain credentials and remain private."
+    },
+    {
+      "files": "four Run entrypoints",
+      "howWhereWhy": "Each role opens only its fixed actor identity and returns actual Open/Serve errors unchanged, preserving concrete cleanup ancestry. Boot readiness waits for other protected peers;lifecycle publishes bounded peer view;communication reports its connection observation;status derives degraded/ready from all peers and publishes bounded expiring kernel snapshot.",
+      "tradeoff": "Kernel-info is not application L04 or work/federation readiness. Actual process signals remain supervisor infrastructure, not a general plugin command bus. Lifecycle role state ready alone cannot make complete kernel snapshot ready."
+    }
+  ],
+  "findings": [],
+  "sourceSliceReviewed": true,
+  "globalSourceDigestRefreshAuthorized": false,
+  "phaseAccepted": false,
+  "nativeAccepted": false,
+  "limits": [
+    "Actual full text of all ten files inspected; current source pins and existing semantic component records compared. No tests rerun or engine/build performed.",
+    "Matching direct source pins preserve scoped reviews; module/transport/TLS/other caller dependency changes prevent treating historical full component cohorts as current whole-product execution proof.",
+    "Root combines this slice with remaining changed production/tooling/contracts/collector/pattern reviews before checkpoint attestation.",
+    "No shared index,tracker,pattern sourceDigest or Git changes.",
+    "Unpromoted observer and failed midboot test remain outside current shared-source approval."
+  ]
+}

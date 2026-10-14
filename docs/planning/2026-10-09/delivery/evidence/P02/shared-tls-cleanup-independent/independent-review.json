@@ -1,0 +1,104 @@
+{
+  "reviewer": "/root/p02_installed_launcher",
+  "sourceSnapshot": "\\\\wsl.localhost\\Ubuntu-26.04\\home\\ryan\\.cache\\agentmux-governance\\p02-protocol-cleanup-independent-fe395d6a",
+  "ownerFreezeRecordSHA256": "29e385a650ee77a9d3192667c4b685cbf9a0c22343d530e9fe320dba12b4cbb0",
+  "sourceHashes": {
+    "localtls/client.go": "d8c5f5f87abf98490538247af0eb3e4335ce73666bc8a39416bae90ae37c46fe",
+    "localtls/client_test.go": "82647a337ee11d77c23a0776f918beccf91ff09d7731e763ccbbfcbe73652711",
+    "kernel/protocol/credentials.go": "0b73aef06b02db8225f732e543087b87b5634792346e148b6acac018682885b0",
+    "kernel/protocol/transport.go": "c4d602a3b349405334cb5b5a90367f9ebc5438bcc0edbffa7fd2c06e3efd77d1",
+    "kernel/protocol/private_unix.go": "19317232374f774060e51fc10530ab202f11a8d29cc5be879fb552c04be02d5b",
+    "kernel/protocol/server_trust.go": "6008e76ec7e946b461f7da7e1043ccde1b5016c79ed07ee74a7984f3d6a5969e",
+    "kernel/protocol/server_trust_unix.go": "0f2e6d97be04db01a1bef10f237dfe0e654d275f96c7f11b73756924b1598400",
+    "kernel/protocol/server_trust_linux.go": "7e114397d01374f5665a866d8a247f8403d897b80b3a36973f7417e820960c22",
+    "kernel/protocol/server_trust_darwin.go": "b251188f34ac4e35724c33565942f094ecbf84ac87ab88943a6b16af4c893ea0",
+    "kernel/protocol/server_trust_unsupported.go": "0d558c18832ffd72d15d20832c96003e6d6145f5db0213d301e1e5ae92cc5417",
+    "kernel/protocol/server_trust_test.go": "d23d7840a7141723b6f7ada0eb4356fb76ff2857de3e9bf9ef423e8e15522adb",
+    "kernel/protocol/transport_cleanup_test.go": "3cd88b637b2884ba36edd0be4567ea7db05360bc73799446938b3bd472c29aa7",
+    "privatefs/access_darwin_nocgo_test.go": "a4d1b9c8eed29b0afe22b91e72f7a1d799e96d2f5a09d681b578ba86d0391565",
+    "privatefs/access_darwin_nocgo.go": "8adba4f7cf8a9955479162ea0632b557857d848dd1d288288773e528a14d4453",
+    "privatefs/access_darwin_test.go": "9113bb935b8a4953d5450270ebf3dc2fe2537657bd2283ff0363e38086ba77be",
+    "privatefs/access_darwin.go": "09eb387cf9bb75bbf8afbbed0e3c72c6af44526ba68cabdd6b9c7a643372de82",
+    "privatefs/access_linux_test.go": "72da545f6dbaa99a19f866f3cdf50a8d138e7a08643b9e2c302aac6854ff22da",
+    "privatefs/access_linux.go": "ee3ee960f6c9a237381a9e2864c782281d5997918f88eab6bed3c37d4b95f1e8",
+    "privatefs/access_test.go": "13b3c9d5e0913e565a52f6abff92c2f44c5ac3fcb0b3966f72cc45f376f6c52d",
+    "privatefs/access_unsupported.go": "47bf8dfcb47e9d83bf0da4f2d667a7bf548c86d2e7fdd06c9c2d41f6e02615cb",
+    "privatefs/access.go": "5373922675f09a0b229e6f4fae1c0941529cbc5f7e842abc1be48319df0a92b8"
+  },
+  "all21ReviewedSourceHashesMatchCurrent": true,
+  "reviewedActualCallerHashes": {
+    "kernel/boot/run.go": "44d27d088332d7f3503c3c8dce04c3dfa807113d1b3f6084592feed60acd9dd1",
+    "kernel/communication/run.go": "1340ecbbca4b21a3354b0be3147207bbd1fbe9b5039c7825fb750b149a703069",
+    "kernel/lifecycle/run.go": "ddf748d4038b5099d605efffac8eee213e6479e7b27177f0b3f3fc9ffedb2dac",
+    "kernel/status/run.go": "6be86037c5ff514759af8d767284efae5baabdd406cfa187aaa4ef42fd97ea43",
+    "cmd/agentmux-kernel/main.go": "27e6bb75c3d41cc2367a4590bcf0bf12fe420ae76f020ac484fa0ea399f95cad"
+  },
+  "changedSinceHistoricalOpenReview": {
+    "kernel/protocol/transport.go": {
+      "old": "1107703ddcd6e02a5f2b7db8211fb7e296ad7d456df544236e02328b7df7e104",
+      "new": "c4d602a3b349405334cb5b5a90367f9ebc5438bcc0edbffa7fd2c06e3efd77d1"
+    },
+    "kernel/protocol/transport_cleanup_test.go": {
+      "old": null,
+      "new": "3cd88b637b2884ba36edd0be4567ea7db05360bc73799446938b3bd472c29aa7"
+    }
+  },
+  "findingStatus": "resolved",
+  "findings": [],
+  "resolution": "Failed Open and Serve cleanup return a typed CleanupError retaining the exact actor. Close reports cleanup failure and allows explicit retry. Human formatting contains only the fixed kernel_cleanup_failed code. Unwrap preserves the original cause. Actual role callers propagate the typed error; CLI prints its safe code and exits with failure.",
+  "runs": {
+    "cleanup.jsonl": {
+      "testPassEntries": 3,
+      "failures": [],
+      "skips": [],
+      "sha256": "f2f89985054139a9e375d12dddfeb39f69c9d4ab744082db585ef6f014ecb7ef"
+    },
+    "affected.jsonl": {
+      "testPassEntries": 240,
+      "failures": [],
+      "skips": [
+        {
+          "Time": "2026-10-13T23:14:06.069322968-04:00",
+          "Action": "skip",
+          "Package": "github.com/controlLogix/agentmux/platform/kernel/lifecycle",
+          "Elapsed": 0
+        },
+        {
+          "Time": "2026-10-13T23:14:06.539999431-04:00",
+          "Action": "skip",
+          "Package": "github.com/controlLogix/agentmux/platform/kernel/status",
+          "Elapsed": 0
+        }
+      ],
+      "sha256": "81eac57f0c9765f51780fbd3717b5847afa1e369b7abab27d82e1a2debb764fa"
+    }
+  },
+  "vet": {
+    "exitCode": 0,
+    "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "independentProbe": {
+    "path": "platform/kernel/protocol/cleanup_review_test.go",
+    "sha256": "307e77cab1c500ad2d816be806e995f47bc3715fa005292ddf1da0e2eb64fc45",
+    "description": "Separate review-only test binds exact retained actor, original cause, private password/cause sentinels, all format verbs and failed explicit retry. Not shared product source. Adds one pass to 239 candidate entries."
+  },
+  "historicalReview": "p02-shared-security-independent-12672efa/independent-review.json",
+  "preservedFailureEvidence": [
+    "p02-protocol-cleanup-negative-caI1as/focused.jsonl",
+    "p02-serve-cleanup-negative-iTOsEq/focused.jsonl"
+  ],
+  "patternCheck": {
+    "exitCode": 1,
+    "errors": [
+      "Review is stale or missing: inspect changes and refresh sourceDigest"
+    ]
+  },
+  "limits": [
+    "Linux execution only. Real TLS-first NATS test fixtures are not inspected Compose product acceptance.",
+    "Darwin native CGO1 ACL and ownership-disabled mount controls remain unexecuted.",
+    "Lifecycle/status are no-test packages; package-level skip records mean compile only, zero named test skips.",
+    "Protocol failure tests use invalid concrete dialer as honest ownership boundary control. Localtls covers actual failed socket close and retained retry.",
+    "Slice review closure only; no P02 phase acceptance."
+  ]
+}

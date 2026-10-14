@@ -1,0 +1,17 @@
+--- prior/installed_cli_midboot_discovery_controls_test.go
++++ current/installed_cli_midboot_discovery_controls_test.go
+@@ -30,8 +30,14 @@
+   if kind=="wrong_credentials"&&predicates["credentialBoundRole"]{t.Fatal("wrong credential path claimed bound role")}
+   if kind=="wrong_image"&&predicates["executedImageMatches"]{t.Fatal("wrong executed image claimed expected member")}
+   if kind=="extra_arguments"&&predicates["noArguments"]{t.Fatal("extra command argument claimed empty entrypoint")}
++  if candidate!=nil {
++   role,facts:=composeCLIMidBootRevalidationPredicates(f,x,candidate.pid,candidate.fd,[]string{"boot"},expected)
++   if role!="boot"||!facts["credentialBoundRole"]||!facts["parentMatches"]||!facts["executedImageMatches"]||!facts["noArguments"]||!facts["liveDescriptor"]{t.Fatal("exact final role revalidation refused owned matching process")}
++  }
+   // Discovery did not stop or kill any observed process.
+   if cmd.Process.Signal(syscall.Signal(0))!=nil{t.Fatal("discovery changed actual fixture process lifetime")}
+   cmd.Process.Signal(syscall.SIGTERM);select{case <-done:joined=true;case <-time.After(time.Second):t.Fatal("exact classifier fixture did not join")}
++  if candidate!=nil { _,facts:=composeCLIMidBootRevalidationPredicates(f,x,candidate.pid,candidate.fd,[]string{"boot"},expected);if facts["liveDescriptor"]{t.Fatal("final role revalidation accepted exited exact process")} }
++
+  })}
+ }

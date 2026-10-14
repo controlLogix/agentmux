@@ -1,0 +1,65 @@
+{
+  "commands": {
+    "before": [
+      "go",
+      "test",
+      "-race",
+      "-json",
+      "./cmd/agentmux-runtime",
+      "-run",
+      "^TestFrontend(Budget|CleanupNever|Status|Earlier)",
+      "-count=1"
+    ],
+    "before-receipt": [
+      "go",
+      "test",
+      "-race",
+      "-json",
+      "./cmd/agentmux-runtime",
+      "-run",
+      "^TestFrontendNearExpiryOwnedReceiptRetainsUnknownFactsAndCleanup$",
+      "-count=1"
+    ],
+    "repaired": [
+      "go",
+      "test",
+      "-race",
+      "-json",
+      "./cmd/agentmux-runtime",
+      "-run",
+      "^TestFrontend(Budget|CleanupNever|Status|Earlier)",
+      "-count=1"
+    ],
+    "repaired-receipt": [
+      "go",
+      "test",
+      "-race",
+      "-json",
+      "./cmd/agentmux-runtime",
+      "-run",
+      "^TestFrontendNearExpiryOwnedReceiptRetainsUnknownFactsAndCleanup$",
+      "-count=1"
+    ],
+    "affected": [
+      "go",
+      "test",
+      "-race",
+      "-json",
+      "./cmd/agentmux-runtime",
+      "-count=1"
+    ],
+    "vet": [
+      "go",
+      "vet",
+      "./cmd/agentmux-runtime"
+    ]
+  },
+  "goExecutable": "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+  "environment": {
+    "GORACE": "atexit_sleep_ms=0",
+    "GOPROXY": "off",
+    "GOSUMDB": "off"
+  },
+  "recordedAfterExecution": true,
+  "directExitFilesPreserved": true
+}

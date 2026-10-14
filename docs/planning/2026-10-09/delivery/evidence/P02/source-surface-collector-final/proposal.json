@@ -1,0 +1,525 @@
+{
+  "schemaVersion": "1.0.0",
+  "proposalOnly": true,
+  "source": "tests/platform/native_go.py",
+  "sourceSHA256": "5089b6dcdbbf55f38837644c69ff1877006518407e1ea23c4d098071cbd99fcd",
+  "currentSourceSHA256AtRead": "5089b6dcdbbf55f38837644c69ff1877006518407e1ea23c4d098071cbd99fcd",
+  "componentIds": [
+    "REPO-03"
+  ],
+  "declarations": [
+    {
+      "name": "digest",
+      "line": 59,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "atomic_report",
+      "line": 63,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "remaining_timeout",
+      "line": 79,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "stop_owned",
+      "line": 86,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "wait_owned",
+      "line": 99,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "admit_preparation_workspace",
+      "line": 109,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "prepare_tools",
+      "line": 121,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "source_hashes",
+      "line": 138,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "download",
+      "line": 148,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "broker_downloader",
+      "line": 153,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "toolchain",
+      "line": 160,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "validate_module",
+      "line": 179,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "validate_package_matrix",
+      "line": 186,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "validate_install_selection",
+      "line": 218,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "admit_install_events",
+      "line": 239,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "admit_required_events",
+      "line": 245,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "validate_cgo0_private_selection",
+      "line": 258,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "validate_cgo0_deployment_selection",
+      "line": 278,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "admit_events",
+      "line": 298,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "AdmissionTests",
+      "line": 347,
+      "kind": "ClassDef"
+    },
+    {
+      "name": "test_completion_order_requires_run_then_test_end_then_package_end",
+      "line": 348,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_interrupted_checkpoint_publication_preserves_prior_report",
+      "line": 361,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_actual_pass",
+      "line": 371,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_empty_skip_failure_and_malformed_are_not_passes",
+      "line": 378,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_nonzero_exit_and_package_only_are_not_passes",
+      "line": 385,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_a_pass_cannot_hide_skip_failure_or_missing_package_end",
+      "line": 390,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_missing_mismatched_and_incomplete_package_events_fail",
+      "line": 404,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_module_pins_are_structured_and_replacements_refused",
+      "line": 413,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_downloader_import_does_not_write_checkout_bytecode",
+      "line": 422,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "observed",
+      "line": 424,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_package_matrix_cannot_hide_missing_new_or_incomplete_tests",
+      "line": 431,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_runtime_command_package_cannot_be_omitted_or_declared_without_tests",
+      "line": 446,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_local_tls_package_cannot_be_omitted_or_declared_without_tests",
+      "line": 456,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_private_files_package_cannot_be_omitted_or_declared_without_tests",
+      "line": 466,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "RunnerTests",
+      "line": 477,
+      "kind": "ClassDef"
+    },
+    {
+      "name": "test_interrupted_owned_wait_stops_and_reaps_before_propagation",
+      "line": 480,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_interruption_after_reaping_never_signals_saved_identity",
+      "line": 491,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "interrupted_wait",
+      "line": 494,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_hidden_preparation_refuses_populated_workspace_before_writes",
+      "line": 507,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_preparation_accepts_only_empty_regular_marker",
+      "line": 519,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "exercise",
+      "line": 530,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "prepared",
+      "line": 562,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "query",
+      "line": 566,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "spawn",
+      "line": 595,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "timed_wait",
+      "line": 638,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_install_requires_native_host_authorization_and_nonroot_before_effects",
+      "line": 674,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_install_selection_is_separate_and_never_qualifies_full_boot",
+      "line": 682,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_install_admission_requires_every_reviewed_top_level_test",
+      "line": 708,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_install_inventory_refuses_missing_tests_or_cgo",
+      "line": 720,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_host_scope_cannot_borrow_protected_image_passes",
+      "line": 735,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_host_selection_failure_or_source_drift_never_qualifies_collection",
+      "line": 748,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_protected_image_pass_cannot_hide_failed_host_scope",
+      "line": 756,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_install_inventory_requires_all_host_declarations_exactly_once",
+      "line": 765,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_install_refuses_malformed_apple_compiler_version_before_tests",
+      "line": 779,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_install_and_research_flags_are_mutually_exclusive",
+      "line": 788,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_preparation_rejects_combined_install_and_research_markers",
+      "line": 792,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_synthetic_normal_runner_records_every_scope_and_isolates_environment",
+      "line": 801,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_unsupported_host_refuses_before_tools_or_tests",
+      "line": 815,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_normal_native_selection_executes_runtime_command_on_both_hosts",
+      "line": 821,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_normal_native_selection_executes_local_tls_on_both_hosts",
+      "line": 833,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_darwin_normal_matrix_requires_actual_cgo_compiler_sdk_for_private_files",
+      "line": 845,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_darwin_cgo0_refusal_is_exact_separate_and_not_product_qualification",
+      "line": 864,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_cgo0_inventory_and_named_events_cannot_hide_missing_or_wrong_test",
+      "line": 880,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_darwin_cgo0_deployment_refusal_has_separate_command_and_report",
+      "line": 907,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_deployment_refusal_claim_requires_stable_original_and_executed_source",
+      "line": 929,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_cgo0_deployment_inventory_rejects_wrong_missing_and_repeated_test",
+      "line": 937,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_cgo0_deployment_events_require_exact_actual_named_completion",
+      "line": 956,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_setup_failure_retains_failed_report_without_private_error_text",
+      "line": 970,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_synthetic_test_failure_and_changed_execution_source_cannot_pass",
+      "line": 977,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_research_has_separate_results_and_actual_fail_closed_control",
+      "line": 983,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_research_refusal_claim_requires_stable_original_and_executed_source",
+      "line": 996,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_darwin_normal_matrix_never_claims_native_protected_boot",
+      "line": 1003,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "test_timeout_is_checkpointed_and_exhausted_scopes_are_unexecuted",
+      "line": 1011,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "main",
+      "line": 1028,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "checkpoint",
+      "line": 1085,
+      "kind": "FunctionDef"
+    },
+    {
+      "name": "native_query",
+      "line": 1154,
+      "kind": "FunctionDef"
+    }
+  ],
+  "httpPathLiterals": [],
+  "previousSurfaceSHA256": "5573f0c12e65ee6aafd2887ae54dd0e404670e94f123157070ab61b4904cf2b2",
+  "addedDeclarationNames": [
+    "validate_cgo0_deployment_selection",
+    "test_completion_order_requires_run_then_test_end_then_package_end",
+    "test_darwin_cgo0_deployment_refusal_has_separate_command_and_report",
+    "test_deployment_refusal_claim_requires_stable_original_and_executed_source",
+    "test_cgo0_deployment_inventory_rejects_wrong_missing_and_repeated_test",
+    "test_cgo0_deployment_events_require_exact_actual_named_completion",
+    "test_research_refusal_claim_requires_stable_original_and_executed_source"
+  ],
+  "removedDeclarationNames": [],
+  "how": "Retain exact separate Darwin CGO0 deployment/privatefs selections, ordered Go lifecycle admission and stable-source/non-timeout deployment reporting. Preserve parallel overlap, pause/continue and existing closed scope/error checks. Research refusal also starts false and is derived only after overall success and both source guards, with the exact successful non-timeout refusal check.",
+  "where": [
+    "admit_events ordered lifecycle loop",
+    "main cgo0DeploymentRefusalObserved gated reporting",
+    "main post-collection unprotectedImageRefusalObserved reporting after final source checks"
+  ],
+  "why": "Reversed terminal logs and source drift cannot support candidate-qualified refusal evidence; each native refusal is separate from usable private storage, boot, Compose and phase acceptance.",
+  "findings": [
+    {
+      "id": "NATIVE-COLLECTOR-ORDER",
+      "status": "closed-in-current-source-and-pure-controls"
+    },
+    {
+      "id": "NATIVE-COLLECTOR-SOURCE-FLAG",
+      "status": "closed-in-current-source-and-pure-controls"
+    },
+    {
+      "id": "NATIVE-COLLECTOR-RESEARCH-SOURCE-FLAG",
+      "status": "closed-in-current-source-and-pure-controls"
+    }
+  ],
+  "pureControls": {
+    "admission": {
+      "positive": {
+        "status": "passed",
+        "passedTestEvents": 1,
+        "skipEvents": 0,
+        "failureEvents": 0,
+        "malformedOutput": false,
+        "allStartedTestsCompleted": true,
+        "lifecycleOrderValid": true,
+        "selectedTests": [
+          "TestDarwinTeamPrivateCredentialWithoutCGORefuses"
+        ],
+        "allRequiredTestsPassed": true
+      },
+      "test_pass_before_run": {
+        "status": "failed",
+        "passedTestEvents": 1,
+        "skipEvents": 0,
+        "failureEvents": 0,
+        "malformedOutput": false,
+        "allStartedTestsCompleted": true,
+        "lifecycleOrderValid": false,
+        "selectedTests": [
+          "TestDarwinTeamPrivateCredentialWithoutCGORefuses"
+        ],
+        "allRequiredTestsPassed": true
+      },
+      "package_pass_before_test": {
+        "status": "failed",
+        "passedTestEvents": 1,
+        "skipEvents": 0,
+        "failureEvents": 0,
+        "malformedOutput": false,
+        "allStartedTestsCompleted": true,
+        "lifecycleOrderValid": false,
+        "selectedTests": [
+          "TestDarwinTeamPrivateCredentialWithoutCGORefuses"
+        ],
+        "allRequiredTestsPassed": true
+      }
+    },
+    "reportingFlags": {
+      "cgo0DeploymentRefusalObserved": {
+        "positive": true,
+        "original_drift": false,
+        "executed_drift": false,
+        "overall_failure": false,
+        "timeout": false,
+        "nonzero": false
+      },
+      "unprotectedImageRefusalObserved": {
+        "positive": true,
+        "original_drift": false,
+        "executed_drift": false,
+        "overall_failure": false,
+        "timeout": false,
+        "nonzero": false
+      }
+    },
+    "collectorMainExecuted": false,
+    "nativeExecutionPerformed": false
+  },
+  "evidence": {
+    "rootReviewSHA256": "bb8fa6fc40f76ff9c7d38c2f208d0cad4db4cb9294889c4047afbdebe53b77ac",
+    "artifactHashesAtIndependentRead": {
+      "review.json": "bb8fa6fc40f76ff9c7d38c2f208d0cad4db4cb9294889c4047afbdebe53b77ac",
+      "selftest.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "selftest.stderr": "1e8fd2ccd636f2d99a9bc29004ac5f4050d5c6085f77a02b97e78a93ff20cb19",
+      "independent-source-surface-proposal-final.json": "68cebd34915252bcb0dcb966a4c901870804292e907eeb3212bcc9e8f83f3680",
+      "selftest-result.json": "14e30b6981525a6ceb93f1bb2688a1d3d9ef37b4d41da9ef4e5ba01de1483997",
+      "independent-source-surface-proposal.json": "4969ca81f3aa73cc575b39c60aaf1c8bf95dfd7f14369d6f160e6a9b30181627",
+      "focused.stderr": "65d3a21d9a25d3449538a550bbf07742cec0a72ecf37d6271c24c8db70978275",
+      "focused-result.json": "95878a5dd92b29f2329b0d57c7bc620f236d6b5daf03e73003bc66b25dfacff0",
+      "focused.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "rawSyntheticSelftestMethods": 45,
+    "rawSummary": "Ran 45 tests / OK",
+    "rawFocusedSummary": "Ran 1 test / OK",
+    "originalOrderAndDeploymentFailuresInspected": true,
+    "originalResearchFailureInspected": true,
+    "manifestProvided": false
+  },
+  "limits": [
+    "No duplicate self-test, collector main, product runtime, engine, installation, provider or native job was executed by this reviewer.",
+    "Only extracted pure JSON admission functions and reporting expressions were evaluated.",
+    "Historical proposals and raw failures remain unchanged; current findings are closed only within this source and synthetic evidence scope.",
+    "Recorded commands, exits and hashes are not complete effective-environment or OS-lifecycle provenance.",
+    "AST records do not prove complete API or semantic coverage. No HTTP handler route is present; outbound download URLs are separate.",
+    "Root owns metadata, native qualification and phase acceptance."
+  ],
+  "nativeExecutionPerformed": false,
+  "phaseAccepted": false,
+  "proposedReviewStatus": "P02 current collector source reviewed; three findings closed within source and synthetic controls only; no native or phase acceptance.",
+  "historicalProposal": {
+    "path": "/home/ryan/.cache/agentmux-governance/p02-collector-order-final-ghgidoug/independent-source-surface-proposal.json",
+    "sha256": "21c24f7db3ed7ee3d198065b392a0c7d4608aff7f8451b206d08a7d8913b8541",
+    "findingState": "Research reporting finding was open for that earlier source."
+  },
+  "proposalCorrection": "Recomputed declaration delta and owners against the current source index; preserved the initial proposal unchanged. Independent review also corrected the research flag location from the historical loop to post-collection reporting after final source checks."
+}

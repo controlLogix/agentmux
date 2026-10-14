@@ -1,0 +1,126 @@
+{
+  "scope": "Cache-only owner history writer-gate/public warning boundary repair; no promotion, Docker, installed lifecycle, native qualification or phase acceptance.",
+  "previousReviewSHA256": "5542307bcad110eeaf490ce815382c687a96925a2461fdd9479d31b0b6a1106f",
+  "candidateSourceSHA256": {
+    "owner_bridge.go": "2fc483eb32f24c326ebe7abd4a07a4a24c0b68672781ba3e4afd9816c5d6a8c7",
+    "host_receipt_server.go": "c4e2d3d1ff9ce746229e0300480c2fe0819728c2246e57bf52630c64143cd81a",
+    "owner_bridge_receipt.go": "10e4f251736aace0c91793ab18df8f883edd4e2b958a84c0923f48aa6d1704aa",
+    "session_cleanup.go": "66e9107d765355fa6e3771bc97ed1e372e9d6c57c736fea8ab0be1fd7eefd096",
+    "bootstrap_history_stage.go": "4803820067e312ff24956d8aa83eef696d1d31d42071e3e5bee339d45490b8d0",
+    "bootstrap_operation.go": "f833259d00a13584e32577b8579e6b701c80e829323d932eeb64a71b8af57aa5",
+    "bootstrap_history.go": "2f7ad3e45fe10a3030355bfd1a76fc58dd65258018265026d230fef1821df96c",
+    "owner_bridge_history.go": "dbd091ab8c600ebb13cdf24aab0d042a181ac2b629a7f697a6da83d386fb20fd",
+    "bootstrap_history_owner_integration_test.go": "67f95426382ffe34392408e0ae6a8810fda336eb5c11a4a9f91a1a524460ffcb"
+  },
+  "changedCandidateFiles": [
+    "owner_bridge_history.go",
+    "bootstrap_history_owner_integration_test.go"
+  ],
+  "results": [
+    {
+      "label": "failure-before",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-race",
+        "./launcher",
+        "-run",
+        "^TestBootstrapHistory(RefusedWritersPreserveSnapshot|PublicWarningHasNoUnwrapMethods)$",
+        "-count=1",
+        "-json"
+      ],
+      "exit": 1,
+      "elapsedSeconds": 6.826237595996645
+    },
+    {
+      "label": "repaired-focused",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-race",
+        "./launcher",
+        "-run",
+        "^TestBootstrapHistory(RefusedWritersPreserveSnapshot|PublicWarningHasNoUnwrapMethods)$",
+        "-count=1",
+        "-json"
+      ],
+      "exit": 0,
+      "elapsedSeconds": 4.447859288004111
+    },
+    {
+      "label": "affected-component",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-race",
+        "./launcher",
+        "-run",
+        "^TestBootstrapHistory(PreEntryActualFailureChronology|FailureFinalizationUsesJoinedEnvelope|RetireActiveThenExpiredContext|ActiveWarningHasNoCleanupCapability|RefusedWritersPreserveSnapshot|PublicWarningHasNoUnwrapMethods)$",
+        "-count=1",
+        "-json"
+      ],
+      "exit": 0,
+      "elapsedSeconds": 1.556877627997892
+    },
+    {
+      "label": "vet",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "vet",
+        "./launcher"
+      ],
+      "exit": 0,
+      "elapsedSeconds": 1.4183154450001894
+    }
+  ],
+  "testEvents": {
+    "failure-before": {
+      "pass": [],
+      "fail": [
+        "TestBootstrapHistoryRefusedWritersPreserveSnapshot",
+        "TestBootstrapHistoryPublicWarningHasNoUnwrapMethods",
+        "package"
+      ],
+      "skip": []
+    },
+    "repaired-focused": {
+      "pass": [
+        "TestBootstrapHistoryRefusedWritersPreserveSnapshot",
+        "TestBootstrapHistoryPublicWarningHasNoUnwrapMethods"
+      ],
+      "fail": [],
+      "skip": []
+    },
+    "affected-component": {
+      "pass": [
+        "TestBootstrapHistoryPreEntryActualFailureChronology",
+        "TestBootstrapHistoryFailureFinalizationUsesJoinedEnvelope",
+        "TestBootstrapHistoryRetireActiveThenExpiredContext",
+        "TestBootstrapHistoryActiveWarningHasNoCleanupCapability",
+        "TestBootstrapHistoryRefusedWritersPreserveSnapshot",
+        "TestBootstrapHistoryPublicWarningHasNoUnwrapMethods"
+      ],
+      "fail": [],
+      "skip": []
+    }
+  },
+  "meaningfulControls": "Real private store retained in immutable snapshot; prejoin finalizer refuses without replacing it. Actual held cleanup gate plus concurrent finalizer/Close wait original20ms context and preserve exact snapshot. Existing private warning ancestry remains retained; public literal warning has neither Unwrap signature nor Close capability.",
+  "limits": "Final six cases are component seams and real files/locks, not actual Run or NATS/CLI integration. No full foundation rerun. File syscalls remain nonpreemptible supported-local-filesystem assumptions.",
+  "artifactSHA256": {
+    "affected-component.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "before-owner_bridge_history.go": "5b254a86a43c87f43cca87e130ec5a2d32fc3a2d804106da2fc560b55f88a052",
+    "affected-component.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "affected-component.jsonl": "1481e94800f56863680fa0fed0b37799c35f104fbe326d9ce5954f68b4b3c537",
+    "failure-before.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "failure-before.jsonl": "fd9454b393eeefd27f8ec923b255314b5b6d6b3ba7136cd46aa498930916ad2e",
+    "repaired-focused.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vet.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "repaired-focused.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "failure-before.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "repair.diff": "7ea911008301c902f41027790d0639fe81c2ac6969abdb04bb1f9d61af6cdedf",
+    "vet.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "results.json": "60832c5a9c20ae4028587cf1e93c2fb5c8418581fefd82ed1003d857e1c77b54",
+    "vet.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "repaired-focused.jsonl": "d646d778b0be6be89c91eb86fe3e662eab45aa6d9eae69c0875d6f2dcd83a803"
+  }
+}

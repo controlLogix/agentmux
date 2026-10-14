@@ -1,0 +1,58 @@
+{
+  "currentByteMatches": {
+    "launcher/owner_bridge_test.go": true,
+    "launcher/owner_bridge.go": true,
+    "launcher/kernel_status.go": true,
+    "launcher/bootstrap.go": true,
+    "deployment/owner_bridge_config.go": true,
+    "deployment/profile.go": true,
+    "kernel/communication/config.go": true
+  },
+  "namedPasses": 89,
+  "failures": 0,
+  "ownedFile": "launcher/owner_bridge_test.go",
+  "vet": {
+    "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "vet",
+      "./launcher"
+    ],
+    "actualExitCode": 0
+  },
+  "sources": {
+    "launcher/owner_bridge_test.go": "65b4caabc9d7155b083e52c6ad61b722a46f308ffccbda774f1635fb1f5b3ee3",
+    "launcher/owner_bridge.go": "69275921118866f2c4e131d3067cfbd25bf79613f8d4a1e4dbed4822cbd99ddd",
+    "launcher/kernel_status.go": "0d202137745bc9048e70de0bed17bf90fc191885a25dd9cfa18cf40d5abaa5c8",
+    "launcher/bootstrap.go": "cca71363e1a0d7db86836df2ba20cd3c47997c012e992e510fb71d1281a6a3a4",
+    "deployment/owner_bridge_config.go": "a1bd6e104b5c935e972f716306de163a095427340bbbf35557e15dace5fce20a",
+    "deployment/profile.go": "f15a34a2111492fc83f3c5e85aad2cb869c4c6487bac9f3cc10aa2de9de767e7",
+    "kernel/communication/config.go": "b54e90bbf5d5c37fa7e60ffdc878ddd4204bfba411665e2c35311c1fe5b9a883"
+  },
+  "auditPath": "/home/ryan/.cache/agentmux-governance/p02-acceptance-audit-20261014/checklist.md",
+  "limits": [
+    "Actual NATS broker with admitted factory/account and pinned TLS; Docker inspection is controlled fixture subprocess, not an actual engine proof.",
+    "Tests only changed; actual factory permissions unchanged.",
+    "No native Mac/full installed CLI/Compose/whole-phase acceptance claimed."
+  ],
+  "dependencySnapshot": "p02-real-tls-compose-Wwqtev",
+  "sourceDirectory": "/home/ryan/.cache/agentmux-governance/p02-host-isolation-current-zZqBus/platform",
+  "historical": [
+    "p02-host-isolation-matrix-first-0nAGVs incomplete dependency compile failure",
+    "p02-host-isolation-matrix-stable-base-ttuTpY historical complete dependency pass"
+  ],
+  "skips": 0,
+  "rawSHA256": "59c2df1f1cf616f43242366abb5f80c73a05f170761f04225d1f061041f8061b",
+  "command": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-race",
+    "-json",
+    "./launcher",
+    "-run",
+    "^TestOwnerBridgeActualNATS(PrincipalIsolation|CorrelatedL04AndRefusals)$",
+    "-count=1"
+  ],
+  "actualExitCode": 0
+}

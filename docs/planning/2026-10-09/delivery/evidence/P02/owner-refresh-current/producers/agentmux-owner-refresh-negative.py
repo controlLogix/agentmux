@@ -1,0 +1,8 @@
+import pathlib,shutil,tempfile,subprocess,os,json,hashlib,time
+base=pathlib.Path('/home/ryan/.cache/agentmux-tests/p02-owner-bridge-tls-candidate-aeeryxie');root=pathlib.Path(tempfile.mkdtemp(prefix='p02-refresh-cleanup-negative-',dir='/home/ryan/.cache/agentmux-tests'));shutil.copytree(base/'platform',root/'platform');p=root/'platform/launcher/owner_bridge.go';original=p.read_text();idx=original.index('func bridgeObservationCleanupFailure(');mutant=original[:idx]+'''func bridgeObservationCleanupFailure(causes ...error) error {
+ return nil
+}
+''';p.write_text(mutant)
+env=os.environ.copy();env.update(GOPROXY='off',GOSUMDB='off',GOTOOLCHAIN='local',GOFLAGS='-mod=readonly',GORACE='atexit_sleep_ms=0');cmd=['/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go','test','-race','-count=1','-json','./launcher','-run','^TestOwnerBridgeObservationCleanupRetainsBothActualSocketOwners$'];start=time.monotonic()
+with(root/'negative.jsonl').open('w')as out,(root/'negative.stderr').open('w')as err:r=subprocess.run(cmd,cwd=root/'platform',env=env,stdout=out,stderr=err)
+log=(root/'negative.jsonl').read_text();record={'path':str(root),'command':cmd,'exit':r.returncode,'seconds':time.monotonic()-start,'originalSHA256':hashlib.sha256(original.encode()).hexdigest(),'mutantSHA256':hashlib.sha256(mutant.encode()).hexdigest(),'expectedFailureObserved':r.returncode!=0 and 'observation cleanup discarded actual retry owners' in log,'scope':'Two real TLS socket owners; combined-cause helper mutant, not injected full Run/health-kernel failure.'};(root/'negative-result.json').write_text(json.dumps(record,indent=2));print(json.dumps(record));raise SystemExit(0 if record['expectedFailureObserved']else 1)

@@ -1,0 +1,100 @@
+{
+  "recordKind": "team-tls-jwt-worker-fixture-evidence",
+  "phaseAccepted": false,
+  "scope": "Real disposable TLS NATS operator/account/user JWT verification and the draft team observer API; not production enrollment, R3 availability or complete team runtime qualification.",
+  "environment": "Go 1.27.2 linux/amd64 in Ubuntu-26.04 WSL; prepared disposable NATS 2.15.0; no downloads or Docker operations",
+  "ownedSourceHashes": {
+    "platform/deployment/team_jwt_test.go": "32d9fe2fc75b7aa842b386a6dcef266cbe560ecdc7a5cd316e5fbd70b65b0d55",
+    "platform/deployment/team_tls_fixture_test.go": "460e3abb390d1fe7bf20ea5f037b958f51de2811907746ca7615c8e3513eddfb"
+  },
+  "executedCoreSourceHash": "21b4062391b28bb4a2a0418eb641cfdce9da8a89c2a8f2d87919229f3a8b24fa",
+  "dependencies": {
+    "natsGo": "v1.54.0",
+    "nkeys": "v0.4.16",
+    "moduleChangesByWorker": false,
+    "goModSha256": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+    "goSumSha256": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542"
+  },
+  "signing": {
+    "method": "Test-only JWT v2 serializer and existing nkeys Ed25519 signing; the actual broker verifies signatures, operator/account trust and user nonce signatures. No local JWT decoder decides authentication.",
+    "primarySources": [
+      "https://github.com/nats-io/jwt/blob/main/v2/claims.go",
+      "https://github.com/nats-io/jwt/blob/main/v2/header.go",
+      "https://github.com/nats-io/jwt/blob/main/v2/user_claims.go",
+      "https://github.com/nats-io/jwt/blob/main/v2/account_claims.go",
+      "https://github.com/nats-io/jwt/blob/main/v2/operator_claims.go",
+      "https://github.com/nats-io/jwt/blob/main/v2/types.go"
+    ]
+  },
+  "sourceBinding": {
+    "snapshot": "jwt-worker-EIEHKT",
+    "copiedGoAndModuleFiles": 88,
+    "sourceBefore": "jwt-worker-EIEHKT/source-before.sha256",
+    "sourceBeforeSha256": "0ba11855a4f22cf7bf223b9a7fe6d37e11f2705de58f69c0ea9b8fe7747d8acc",
+    "sourceAfter": "jwt-worker-EIEHKT/source-after.txt",
+    "sourceAfterSha256": "b2abd5350bfa39e520b398d266a94ac545aa484a51b82d4599117f8f636632ee",
+    "allAfterChecksOK": true,
+    "beforeAfterNamesMatch": true,
+    "ownedCurrentFilesMatchExecutedHashes": true
+  },
+  "focused": {
+    "command": "go test -race -count=1 -timeout=90s -run '^TestTeamJWT' -json ./deployment",
+    "exitCode": 0,
+    "passedTestAndSubtestEntries": 15,
+    "runTerminalMismatches": 0,
+    "failures": 0,
+    "skips": 0,
+    "packagePasses": 1,
+    "packageSeconds": 4.76,
+    "raw": "jwt-worker-EIEHKT/focused.jsonl",
+    "rawSha256": "ac65b21f060212af006814d2b4227eaad317f4f7c9297b04f6a4230efea3026f",
+    "stderr": "jwt-worker-EIEHKT/focused.stderr",
+    "stderrBytes": 0
+  },
+  "tools": {
+    "raw": "jwt-worker-EIEHKT/tools.txt",
+    "rawSha256": "6bf073d7bf9b7b722a40f001b30570aaa09c2786076a34ceb746a383f5189a69",
+    "goExecutableSha256": "548d3c32f83fa81152f543eb1526be7884cfe0526eb5e9ce29d3eca14786e7e0",
+    "natsExecutableSha256": "387ce54e7a0a249d877a579ed641d715bab047d7e061bfa42b4d07f6a0401341",
+    "runnerSha256": "f1e2328698a52f49eb5ce7e9cf78f879aa4038c34d53e68cc35bff25daa96fec"
+  },
+  "verifiedCases": [
+    "Real TLS connection with a trusted generated CA and localhost certificate name",
+    "Real server verification of operator-signed account claims, account-signed user claims and user nonce signatures",
+    "Two observations using fresh NewTeamJWTCredential material per resolver call",
+    "Permitted AccountInfo returns the selected domain",
+    "Forbidden AccountInfo leaves domain unavailable while independent TLS/server/snapshot evidence remains available",
+    "Disabled ObserveDomain sends no AccountInfo request on a live API audit subscription, qualified by a permitted positive request control",
+    "Wrong CA, hostname, seed, altered JWT signature and untrusted account issuer are refused by the actual connection/server",
+    "Trusted credential scope mismatch and actual snapshot scope mismatch are refused",
+    "Actual broker snapshot subscription denial produces no snapshot evidence",
+    "Actual broker denies protected event subscription and protected command publication"
+  ],
+  "retainedEarlierAttempts": [
+    {"snapshot": "jwt-worker-6FpG1z", "exitCode": 1, "reason": "Fixture snapshot lifetime was two seconds instead of the fixed three-second protocol value; denial callback incorrectly expected a non-nil subscription."},
+    {"snapshot": "jwt-worker-0TTtVx", "exitCode": 0, "scope": "Rerun the previously failed selection before broadening; INFO audit positive control was added afterward."}
+  ],
+  "findingsForCoreOwner": [
+    {
+      "file": "platform/deployment/team_connection.go",
+      "line": 177,
+      "priority": 2,
+      "finding": "The pinned nats.go processTransientError invokes the async error handler with nil subscription. The sub != nil guard misses real snapshot permission refusals; the permanent refusal fixture returns only after its two-second timeout (2.06 seconds including fixture setup).",
+      "nextAction": "Recognize the exact snapshot denial using the pinned client error shape or its supported subscription permission mechanism, preserve independent INFO failures, and add a prompt refusal timing assertion. No permission bypass was observed."
+    }
+  ],
+  "governance": {
+    "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+    "exitCode": 1,
+    "errors": ["Review is stale or missing: inspect changes and refresh sourceDigest"],
+    "metadataChangedByWorker": false
+  },
+  "limits": [
+    "Only the two new worker test files and this scoped evidence directory were changed by this worker.",
+    "Only prepared owned temporary broker processes were started; cleanup was registered before Start and waited on their owned process waiter. Snapshot publishers are cancelled and joined before connection and broker teardown.",
+    "Private seeds stay in memory; generated TLS keys and broker configuration stay in private test temporary directories. Broker stdout/stderr are discarded, and no private JWTs, keys, configuration or responses are retained in evidence.",
+    "The worker ran only its focused JWT selection and its failed-selection retry, not all deployment or native platform tests. Root must run the affected stable-candidate checks and independently review this evidence.",
+    "No production enrollment, remote service, provider, Docker, tracker, commit or push operation was performed.",
+    "Earlier sync-policy and cancellation closures are unchanged; no P02 acceptance is claimed."
+  ]
+}

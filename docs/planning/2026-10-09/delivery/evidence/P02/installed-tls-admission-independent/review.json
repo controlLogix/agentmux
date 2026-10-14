@@ -1,0 +1,47 @@
+{
+  "scope": "Read-only independent review of D's frozen eight-file installed TLS/private-file admission slice",
+  "candidate": "/home/ryan/.cache/agentmux-governance/p02-installed-trust-integration-L8S26f",
+  "manifestSha256": "982b83fba819cf42484cd52f238233763248166dc888b0585eddb2d37bffe130",
+  "sourceHashes": {
+    "platform/launcher/host_policy.go": "52ec5ee9ef345526fd26a5d423f2a86f99bfa1aa060cfd6315cf963242481e0a",
+    "platform/launcher/host_policy_test.go": "4070bb871000803900df84c67f4b05b96ef83137ee5ba7a5e61c049406baaebd",
+    "platform/launcher/host_config.go": "8acbb094876456bc22ae743fb4697fb22d5a722ad7a0231ee4578695a3c5de53",
+    "platform/launcher/host_config_test.go": "e0eb4762fe3a772a6db291e65ca8e824674c3a004c82c6f50439d90f7781cfed",
+    "platform/launcher/profile.go": "d158be8c5bbe3d122dd59652485ed4ddbd288b870173d037c3f0e197f37ee45c",
+    "platform/launcher/profile_test.go": "70d2869399e419550833f5e594a0e41b74db3cad2356665b63bcb74cce0b2435",
+    "platform/launcher/local_server_trust.go": "a807181aac2f4829c7d6ba506f1a1cadafac0b6724745bf2dcd1e7989f9bd9bc",
+    "platform/launcher/local_server_trust_test.go": "53ba014e76b81cf6df7afa4806232e1539e9178b514291cd46345ff34c81d27c"
+  },
+  "sourceReview": {
+    "reviewers": ["Collaborating Codex session", "Plato independent reviewer"],
+    "findings": [],
+    "result": "Installed loading binds release, full scope, profile, endpoint, DNS, CA root, leaf pin, matching private key and exact secure factory/Compose bytes. Held private-file reads preserve owner/mode/link/identity/change-time and descriptor access checks. Missing TLS enrollment and plaintext do not regenerate or fallback. Policy copies avoid caller mutation.",
+    "limits": "Source closure only. No source edits, test reruns, provider calls, Docker operations or native execution by these reviewers."
+  },
+  "verifiedExistingArtifacts": {
+    "focused.jsonl": "fe88a6428c6da54df8beeefc7d061d9fedea2cf11cfa2bc0833fc4e9d00e08d8",
+    "affected.jsonl": "607356460dddfe8371931274c907b03f8eb3d2d11c01d588073fd296e0c9d917",
+    "vet.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vet.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "rawInspection": {
+    "focusedTestPassEntries": 30,
+    "affectedTestPassEntries": 182,
+    "failedOrSkippedEntries": 0,
+    "packagePassEventsPresent": true,
+    "vetOutputEmpty": true,
+    "inspector": "Plato verified raw event counts; main independently verified the artifact SHA-256 values and read the production admission paths."
+  },
+  "evidenceFinding": {
+    "status": "Open; root notified",
+    "problem": "The supplied manifest and directory do not record invocation arguments or exit codes. Raw passing JSON events alone do not prove the claimed -race flag, and empty vet output alone does not prove a successful vet exit.",
+    "required": "Link preserved command and exit records or collect an explicitly identified new verification run. Do not infer missing arguments or relabel source history."
+  },
+  "limits": [
+    "This review does not prove real Docker injection or NATS credential admission through the installed client.",
+    "Native Darwin descriptor ACL/mount behavior and protected execution require actual qualified CGO1 execution.",
+    "Source review, worker completion and passing raw entries are not phase acceptance."
+  ],
+  "executionProvenanceAccepted": false,
+  "phaseAccepted": false
+}

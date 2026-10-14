@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "-tags=agentmux_bootstrap_docker",
+    "./launcher",
+    "-run",
+    "^TestBootstrapSelection(NativeMatrixAndLegacyWSL|RejectsUnpinnedOrAmbiguousInput|RejectsWrongHostAndAmbientTargets|BuildCommandsStayNative|DescriptorRejectsActualSubstitutions|CurrentWSLQualificationLiteral|CurrentWSLQualificationRejectsUnapprovedTuples|CurrentWSLQualificationRequiresActualHostAndPin)$"
+  ],
+  "cwd": "/home/ryan/.cache/agentmux-governance/p02-current-wsl-selection-pure-9aw_qy6o/src/platform",
+  "environment": {
+    "GOTOOLCHAIN": "local",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GOFLAGS": "-mod=readonly",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "0"
+  },
+  "selectionEnvironmentAbsent": true
+}

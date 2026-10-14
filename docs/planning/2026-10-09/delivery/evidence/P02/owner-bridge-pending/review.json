@@ -1,0 +1,97 @@
+{
+  "source": {
+    "platform/launcher/owner_bridge.go": "99f46f107310f4ac92a73389e02f52c4c2a7ea81ba466019b812c46503913386",
+    "platform/launcher/owner_bridge_pending_test.go": "dcba15dc8e9a3f7fa1ce51f23cc8c6c10b10bf6572f130434fa6ef63cbed5286"
+  },
+  "workingOwnedSourceExact": true,
+  "snapshot": "/home/ryan/.cache/agentmux-tests/p02-owner-bridge-tls-candidate-skz_3_q8",
+  "affected": {
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-json",
+      "./launcher",
+      "-run",
+      "^(TestOwnerBridge|TestTransportCleanup)"
+    ],
+    "exit": 0,
+    "seconds": 65.97855504399922,
+    "sourceStable": true,
+    "namedPass": 224,
+    "namedFail": 0,
+    "skips": 0
+  },
+  "vet": {
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "vet",
+      "./launcher"
+    ],
+    "exit": 0,
+    "seconds": 1.7606126690006931
+  },
+  "SDK": {
+    "ok": true,
+    "checks": 52,
+    "corpusCases": 18,
+    "generatedOutputs": 8
+  },
+  "negative": {
+    "path": "/home/ryan/.cache/agentmux-tests/p02-owner-pending-late-subscribe-negative-ficili6j",
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-timeout=20s",
+      "-json",
+      "./launcher",
+      "-run",
+      "^TestOwnerBridgeRunPublishesGenuinePendingAndJoins$"
+    ],
+    "exit": 1,
+    "expectedFailureDetected": true,
+    "baselineSnapshot": "/home/ryan/.cache/agentmux-tests/p02-owner-bridge-tls-candidate-skz_3_q8",
+    "mutantSHA": "b5d9f2cb5fc525fc541e9b99f51ae17b312362cee435f391ca7004010f2aa5d8"
+  },
+  "actualProof": "Actual service OS lease + one genuine Bootstrap call admits and prepares four separately signed static images. Early authenticated TLS NATS response carries actual cold operation ID independently from outer request; no ready/write/count facts. Actual cancellation joins call then permits service lease reacquisition; real scoped actor readiness permits reused completion; actual startup timeout permits failed reply and releases service lease.",
+  "fixtureFailure": "Initial reuse fixture exposed valid incomplete role frames and safely failed. Only fixture arbitration changed: hold real startup lease until actors produce a complete ready frame, then release it. Original failure/source kept distinct. No production readiness or deadline relaxation.",
+  "boundaries": "Private operation and actual Core enter authorize starting; full schema admission remains mandatory, unknown starting shape exception only, fixed full scope/enrollment/nonce/invocation reply correlation. Hard authority/inspection/cleanup errors do not retry. Only ordinary unavailable retries and actual startup cancellation transition to original terminal window. Exactly one Bootstrap goroutine cancels+joins startup and child lifetime before exact Session cleanup/lease release.",
+  "nonstandardTestOutput": [
+    "write tcp 127.0.0.1:52924->127.0.0.1:46485: use of closed network connection on connection [14]",
+    "write tcp 127.0.0.1:53042->127.0.0.1:46485: use of closed network connection on connection [27]",
+    "write tcp 127.0.0.1:56098->127.0.0.1:37881: use of closed network connection on connection [15]",
+    "write tcp 127.0.0.1:56090->127.0.0.1:37881: use of closed network connection on connection [14]",
+    "write tcp 127.0.0.1:32968->127.0.0.1:33521: use of closed network connection on connection [24]",
+    "write tcp 127.0.0.1:33008->127.0.0.1:33521: use of closed network connection on connection [27]",
+    "write tcp 127.0.0.1:34512->127.0.0.1:35193: use of closed network connection on connection [15]",
+    "write tcp 127.0.0.1:34498->127.0.0.1:35193: use of closed network connection on connection [14]",
+    "write tcp 127.0.0.1:34536->127.0.0.1:35193: use of closed network connection on connection [18]",
+    "write tcp 127.0.0.1:35584->127.0.0.1:37961: use of closed network connection on connection [25]",
+    "write tcp 127.0.0.1:40226->127.0.0.1:36927: use of closed network connection on connection [10]",
+    "write tcp 127.0.0.1:47690->127.0.0.1:41259: use of closed network connection on connection [11]",
+    "write tcp 127.0.0.1:47710->127.0.0.1:41259: use of closed network connection on connection [13]",
+    "write tcp 127.0.0.1:52760->127.0.0.1:34879: use of closed network connection on connection [21]",
+    "write tcp 127.0.0.1:37146->127.0.0.1:34879: use of closed network connection on connection [22]",
+    "write tcp 127.0.0.1:55678->127.0.0.1:37471: use of closed network connection on connection [11]",
+    "write tcp 127.0.0.1:35504->127.0.0.1:39629: use of closed network connection on connection [11]",
+    "write tcp 127.0.0.1:48136->127.0.0.1:35043: use of closed network connection on connection [11]",
+    "write tcp 127.0.0.1:49332->127.0.0.1:42587: use of closed network connection on connection [11]",
+    "write tcp 127.0.0.1:44318->127.0.0.1:35761: use of closed network connection on connection [11]",
+    "write tcp 127.0.0.1:55742->127.0.0.1:33749: use of closed network connection on connection [11]",
+    "write tcp 127.0.0.1:51942->127.0.0.1:39905: use of closed network connection on connection [15]",
+    "write tcp 127.0.0.1:39230->127.0.0.1:34527: use of closed network connection on connection [14]",
+    "write tcp 127.0.0.1:39280->127.0.0.1:34527: use of closed network connection on connection [18]",
+    "write tcp 127.0.0.1:39240->127.0.0.1:34527: use of closed network connection on connection [15]"
+  ],
+  "limits": [
+    "Broker-absent ten-second receipt/CLI path remains separate.",
+    "Native fixture adapts listener/store/cert paths; controlled read-only Docker inspector is not actual engine/Compose proof.",
+    "Role actors are real in-process protocol services; this slice does not prove four protected PIDs.",
+    "Blocked private filesystem syscalls are explicitly unsupported for strict timing; no timed-out join discards ownership.",
+    "Pattern check exited1 only stale review/sourceDigest; root metadata refresh required.",
+    "No phase acceptance, provider/model calls, Docker engine calls or commits."
+  ]
+}

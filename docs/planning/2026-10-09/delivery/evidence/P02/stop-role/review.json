@@ -1,0 +1,99 @@
+{
+  "scope": "P02 exact owned-child role stop; no phase acceptance",
+  "platform": "Native Linux in WSL, Go1.27.2 linux/amd64",
+  "snapshot": "/home/ryan/.cache/agentmux-tests/p02-stop-role-_r4k713k",
+  "commands": [
+    "GOPROXY=off GOSUMDB=off GOTOOLCHAIN=local GOFLAGS=-mod=readonly go test -race -json ./runtime -run TestStopRole",
+    "GOPROXY=off GOSUMDB=off GOTOOLCHAIN=local GOFLAGS=-mod=readonly go test -race -json ./runtime"
+  ],
+  "results": {
+    "focused": {
+      "exitCode": 0,
+      "topLevelTests": 4,
+      "passingEntries": 6,
+      "elapsedSeconds": 5.084,
+      "stderrBytes": 0
+    },
+    "runtime": {
+      "exitCode": 0,
+      "topLevelTests": 18,
+      "passingEntries": 28,
+      "elapsedSeconds": 7.646,
+      "stderrBytes": 0
+    }
+  },
+  "testedSourceHashes": {
+    "go.mod": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+    "go.sum": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+    "runtime/README.md": "51bd1399f410da9bc0899eba02028e76d987b14dbd22df1495c2a7fbb5b11b17",
+    "runtime/snapshot_darwin_test.go": "29823b7772b37e6935c3d4261016dcc05cb9c3ba1a84deff8e69ff1dc6f5b93d",
+    "runtime/snapshot_linux.go": "fea9f5daf47c79f1f65a9f81f90a3df99cc324dcc3cc23a20585922b35aea43b",
+    "runtime/snapshot_unsupported.go": "8455c45f2628914a95a897b5539888d597035a01d345487a061b1bf79fccb182",
+    "runtime/stop_role.go": "04be379b36456a781a26fa0d3f78da84253501e0fff5bd599acede45c97a8b1d",
+    "runtime/stop_role_linux_test.go": "dbab48564a0c1986e90b6cbced36e06fde2609bb87ab7008d46bfb91e41df730",
+    "runtime/supervisor.go": "25c83fd49ff7fea03ec239f32b57ece8c3ddd756000deee4e01eea99da1cfa5d",
+    "runtime/supervisor_linux_test.go": "37355c6a6d87f75d62f6af9fa0963d135b48d9f349502603448ad390c629d1f7",
+    "runtime/testdata/dynamic/main.go": "3cac6809a685f4986b167bf231ecfeb0fca298bc4ee700b124b7d6c93d97fe84",
+    "runtime/testdata/role/main.go": "ce544b3b6027ab8d224388787d15d4793fee63c05cce1847e20c623898848c82",
+    "kernel/assembly/README.md": "d9c9934bd2562ae2f5696de8696b4162cbc57a6fbf9518943b5d3deac7d36eb7",
+    "kernel/assembly/verify.go": "d28ef2e43d2e8536373321c7021ace5d902903dac8b8ed5ed9a8bbb4f2b6c6f9",
+    "kernel/assembly/verify_test.go": "138b42bae577380b9abbc00f18c699d5f4abd8b9ea8e548bb1330e82d8c6374d"
+  },
+  "snapshotUnchanged": true,
+  "currentSourceHashes": {
+    "go.mod": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+    "go.sum": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+    "runtime/README.md": "51bd1399f410da9bc0899eba02028e76d987b14dbd22df1495c2a7fbb5b11b17",
+    "runtime/snapshot_darwin_test.go": "29823b7772b37e6935c3d4261016dcc05cb9c3ba1a84deff8e69ff1dc6f5b93d",
+    "runtime/snapshot_linux.go": "fea9f5daf47c79f1f65a9f81f90a3df99cc324dcc3cc23a20585922b35aea43b",
+    "runtime/snapshot_unsupported.go": "8455c45f2628914a95a897b5539888d597035a01d345487a061b1bf79fccb182",
+    "runtime/stop_role.go": "04be379b36456a781a26fa0d3f78da84253501e0fff5bd599acede45c97a8b1d",
+    "runtime/stop_role_linux_test.go": "dbab48564a0c1986e90b6cbced36e06fde2609bb87ab7008d46bfb91e41df730",
+    "runtime/supervisor.go": "25c83fd49ff7fea03ec239f32b57ece8c3ddd756000deee4e01eea99da1cfa5d",
+    "runtime/supervisor_linux_test.go": "37355c6a6d87f75d62f6af9fa0963d135b48d9f349502603448ad390c629d1f7",
+    "runtime/testdata/dynamic/main.go": "3cac6809a685f4986b167bf231ecfeb0fca298bc4ee700b124b7d6c93d97fe84",
+    "runtime/testdata/role/main.go": "ce544b3b6027ab8d224388787d15d4793fee63c05cce1847e20c623898848c82",
+    "kernel/assembly/README.md": "d9c9934bd2562ae2f5696de8696b4162cbc57a6fbf9518943b5d3deac7d36eb7",
+    "kernel/assembly/verify.go": "d28ef2e43d2e8536373321c7021ace5d902903dac8b8ed5ed9a8bbb4f2b6c6f9",
+    "kernel/assembly/verify_test.go": "138b42bae577380b9abbc00f18c699d5f4abd8b9ea8e548bb1330e82d8c6374d"
+  },
+  "workingSourceMatchesTested": true,
+  "ownSourceFiles": [
+    "platform/runtime/stop_role.go",
+    "platform/runtime/stop_role_linux_test.go"
+  ],
+  "api": "(*Group).StopRole(ctx context.Context, role string) error",
+  "ownership": [
+    "Uses only child.cmd.Process returned by original Group.Start",
+    "Shares exact stopToken serialization with whole-group Stop; supervisor.go unchanged",
+    "TERM then configured StopGrace, KILL if needed, observes existing child.done; never another Wait",
+    "Total operation bounded by existing StopGrace+ReapTimeout and earlier caller deadline, including shared-token wait"
+  ],
+  "actualAssertions": [
+    "Real static sealed children exit by SIGTERM when cooperative and SIGKILL when ignoring TERM",
+    "Only selected role exits; other three direct children remain live and whole-group Done stays open",
+    "Repeated role stop and role stop after whole-group shutdown are idempotent",
+    "Invalid role,nil/cancelled context,nil/unowned Group signal no child",
+    "Earlier caller deadline still kills selected owned child after TERM; original Wait reaps",
+    "Deadline while shared token held returns without signalling children",
+    "Concurrent two-role and whole-group Stop calls finish with all actual children reaped"
+  ],
+  "limits": [
+    "An expired caller may receive incomplete-reaping error; original Wait retains ownership and continues actual reaping",
+    "No process-group signalling,PID lookup,process adoption,second Wait or restart API",
+    "Native macOS qualification remains separate; this actual test run qualifies Linux/WSL only",
+    "Started roles and stopped processes are not application readiness or federation proof"
+  ],
+  "patternCheck": {
+    "exitCode": 1,
+    "finding": "Review is stale or missing: inspect changes and refresh sourceDigest",
+    "owner": "root reviewer"
+  },
+  "artifactHashes": {
+    "focused-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "focused.jsonl": "577957258cb9879852ae302d69023c2b2171c5bb3b38635928c2773e82af35bb",
+    "manifest.json": "f66bf9a69f9c88a87a3ce32e0ee21f3abbc3dc3ac1d3e67f9def544387c16a3f",
+    "runtime-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "runtime.jsonl": "9cd224bb5b290c5c6a39c03b3ce6a2c579e7a9b8a1aa3fafbc25d1f5a215bf20"
+  }
+}

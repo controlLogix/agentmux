@@ -1,0 +1,91 @@
+{
+  "scope": "Independent P02 receipt runtime component review only",
+  "workerReviewSHA256": "2cd200aa6d7824f7398a4e5cefc37fb3dcd33a690e34f9116f9e29c7ec1c761e",
+  "reviewedSourceHashes": {
+    "runtime/bootstrap_receipt.go": "d18adf5539e70ff66d39b19a405bcbdfe3de8147fb19e90a60e515fa5f3a5519",
+    "runtime/bootstrap_receipt_test.go": "85fdbc4b43c34284853af5062c9a1a78aaa049467c25eb40c95df694333c9f75",
+    "runtime/bootstrap_receipt_linux_test.go": "466edfeaef9b405460985d78fee84a56cd4e978e174f5e2cf764df410b39d167",
+    "runtime/installed_host.go": "94cb640c7422bd3725af089511958699bb7d7418455273bccc7ba3dde06df780",
+    "runtime/installed_host_linux.go": "72e1c8cefd8f3c06ff8c8fba4be53e444aa14de9e24ea773ef1fa67bff815627",
+    "runtime/installed_host_darwin.go": "dfb82e401929befde882136522c9fe4380c06d8ed8c7bc12980e2086a080aa07"
+  },
+  "reviewedCurrentMatches": {
+    "runtime/bootstrap_receipt.go": true,
+    "runtime/bootstrap_receipt_test.go": true,
+    "runtime/bootstrap_receipt_linux_test.go": true,
+    "runtime/installed_host.go": true,
+    "runtime/installed_host_linux.go": true,
+    "runtime/installed_host_darwin.go": true
+  },
+  "command": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "./runtime",
+    "-run",
+    "^(TestBootstrapReceipt|TestInstalledHost)"
+  ],
+  "configuredEnvironment": {
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GORACE": "atexit_sleep_ms=0"
+  },
+  "start": "2026-10-14T06:22:27Z",
+  "end": "2026-10-14T06:22:44Z",
+  "directExits": {
+    "focused": 0,
+    "vet": 0
+  },
+  "namedResults": {
+    "pass": 26,
+    "fail": 0,
+    "skip": 0
+  },
+  "artifactHashes": {
+    "worker-review.json": "2cd200aa6d7824f7398a4e5cefc37fb3dcd33a690e34f9116f9e29c7ec1c761e",
+    "end.txt": "5d83d130c57528a1faf1652de2df2e3eafa2ac7dec6ff27e6d479178c48d157d",
+    "focused.jsonl": "f36fe29e3c40c506a5d841d0c873aa2b1ba2c63e2b6d57f8cf28f2cb47335495",
+    "focused.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "record-producer.py": "9a6ba4d05cf2a9b2c56ec4209732fbea22d4158aa90d9c6759e4c822af38d111",
+    "vet.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "producer.sh": "55fe1d77921fb231b245808d065bd0bb66caf48cbdfecae6e17fa440151c351f",
+    "vet.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "focused.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vet.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "start.txt": "5760b2b8c397883f0b3228e5d1464eb95bccb3b2b18299b2600081b62b8a77dc"
+  },
+  "findings": [
+    {
+      "description": "Generated Linux frontend could discard a nonnil exact child returned with a post-spawn error before installing cleanup.",
+      "status": "repaired-source-reviewed",
+      "where": "runtime/bootstrap_receipt_linux_test.go",
+      "change": "Non-nil exact child cleanup registered before error handling; return through defer after spawn."
+    },
+    {
+      "description": "Writer descriptor test lacked immediate owned cleanup before later Fatal assertions.",
+      "status": "repaired-source-reviewed",
+      "where": "runtime/bootstrap_receipt_test.go",
+      "change": "Concrete writer.Close registered immediately after successful ownership admission."
+    }
+  ],
+  "controlsReviewed": [
+    "Start retains the existing single exact exec.Cmd.Wait; no PID lookup or existing-child adoption was added to production.",
+    "Only newly spawned verified installed image receives private write descriptor; binding RuntimeDigest equals that prepared image digest.",
+    "Original scope/enrollment digest/actual cold invocation and runtime image digest must all match the one closed frame.",
+    "Bounded single read requires four-byte size header, <=4096 total bytes, strict closed JSON, fixed outcome and EOF; repeated reads/writes are refused.",
+    "Reader cancellation closes and joins receipt IO without signaling or stopping child. Writer marks CLOEXEC before descendants, bounds its write and closes for EOF.",
+    "Exact owned detached child and actual frontend-exit controls passed on Linux; normal no-receipt StartHost remains separate.",
+    "Pre-spawn failure closes both pipe ends; post-spawn writer-close failure returns the concrete exact child alongside error rather than dropping ownership."
+  ],
+  "remainingFindings": [],
+  "limits": [
+    "Transport receipt is not L04 or application status. Accepted emission must be bound to genuine actual operation.enter by root glue.",
+    "Runtime scope/digest comparison does not itself verify launcher OwnerEnrollment or actual service lease; root HostPolicy/operation admission supplies those separately.",
+    "Linux fixtures are component evidence, not full installed product/Compose/NATS/ten-second acceptance.",
+    "Native Darwin execution remains required. No additional system privileges, engine or provider calls were made.",
+    "Pattern review sourceDigest is root-owned and remains separately stale; no shared metadata/source edits."
+  ]
+}

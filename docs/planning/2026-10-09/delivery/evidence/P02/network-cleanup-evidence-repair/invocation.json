@@ -1,0 +1,25 @@
+{
+  "argv": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-overlay",
+    "/home/ryan/.cache/agentmux-governance/p02-network-evidence-summary-fixed-dMj7Hy/overlay.json",
+    "-race",
+    "-count=1",
+    "-json",
+    "-tags=agentmux_bootstrap_docker",
+    "./launcher",
+    "-run",
+    "^TestBootstrapNetwork"
+  ],
+  "environment": {
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "0"
+  },
+  "startedUtc": "2026-10-14T15:05:41.473868+00:00",
+  "sourceSHA256": "5347669150b3bf622cde6634389e564ef67b9eabbe5849393f6ffd711f57b00e",
+  "producerSHA256": "bd502a018a0ccfcf6ab9f32373f9cc109412096c16ddcb1043292b91a6dd04f5"
+}

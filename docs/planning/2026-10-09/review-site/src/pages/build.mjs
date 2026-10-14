@@ -40,6 +40,7 @@ const inputs = {
   'notes-local.mjs': sha(localSource),
   'local-review.mjs': sha(read(resolve(repoRoot, 'docs/reviews/src/features/local-review.mjs'))),
   'notes-lock.mjs': sha(read(resolve(repoRoot, 'docs/reviews/src/features/notes-lock.mjs'))),
+  'review-server.mjs': sha(read(resolve(repoRoot, 'docs/reviews/src/features/review-server.mjs'))),
   'open.mjs': sha(read(resolve(repoRoot, 'docs/reviews/open.mjs'))),
   'build.mjs': sha(read(fileURLToPath(import.meta.url))),
   'review.json': sha(read(resolve(reviewRoot, 'review.json'))),

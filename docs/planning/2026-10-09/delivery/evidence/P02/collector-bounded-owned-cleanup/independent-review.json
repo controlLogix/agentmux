@@ -1,0 +1,142 @@
+{
+  "schemaVersion": "1.0.0",
+  "scope": "Independent source and saved-evidence review of thread-free collector cleanup repair",
+  "workerReview": {
+    "path": "/home/ryan/.cache/agentmux-governance/p02-native-collector-cleanup-repair-v3/review.json",
+    "sha256": "be9352b657432089c6e3e8fd2d958d6c547bffda8dfd7918719b128a4d322877"
+  },
+  "sourceSHA256": {
+    "original.py": "5089b6dcdbbf55f38837644c69ff1877006518407e1ea23c4d098071cbd99fcd",
+    "native_go.py": "743f28e7d17e9f95448ac5375b3a5864efe00bfad09c2eda099f3434d5632682",
+    "run_controls.py": "0d79c51c60839368c825ba260fcc9fa6718e0514864136f716f98f94bfd0e8d8",
+    "bounded_api_control.py": "a63c3ff6bb3bc36bea4f6384c8c07144ee1cceb46c2027f8dab009b587dca26d",
+    "producer.py": "b1c063d3d8e0ddf95d9fd394ed94686934b40d39e6ded389fe0ef03ec291b1be"
+  },
+  "manifest": {
+    "path": "/home/ryan/.cache/agentmux-governance/p02-native-collector-cleanup-repair-v3/manifest.json",
+    "sha256": "f56a491e0eba3ba6492ec9d55bceb9dc0b0977cf4d3ac0f18e3c139e3b66856e",
+    "verifiedEntries": 20
+  },
+  "verifiedArtifacts": {
+    "after.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "before.stdout": "b163b6e31f57ad1098099c40098a9cd8b554eff13db246ddf6a716d64d1a25ea",
+    "run_controls.py": "0d79c51c60839368c825ba260fcc9fa6718e0514864136f716f98f94bfd0e8d8",
+    "before.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "affected.stderr": "0242ce4f12fe85a1fd62a71d76e388beb5ecf042cbc7b321ceed6972ac214688",
+    "review.json": "be9352b657432089c6e3e8fd2d958d6c547bffda8dfd7918719b128a4d322877",
+    "gate_repair.py": "00d84717f18133e718d6a3d7969686c85a4c9f76d405aaa7fb2a7f891bf4441f",
+    "native_go.py": "743f28e7d17e9f95448ac5375b3a5864efe00bfad09c2eda099f3434d5632682",
+    "prepare.py": "678988701f27c1710657e35b9bf01b65c56eec40f2692912d504b380ddb2c285",
+    "retry_repair.py": "720453d70278de01d4af1bf6f958ba6d76e2e693170e723c4e6fd0df9c2492b6",
+    "add_controls.py": "fcff45dda937c1942f396e247bbea1d74cb8f71e3af190ae97791fe90494a987",
+    "producer.py": "b1c063d3d8e0ddf95d9fd394ed94686934b40d39e6ded389fe0ef03ec291b1be",
+    "candidate.diff": "c6ec2f6f2855517e12608d1149b23c0920715ccc9bac91bb33a8fe5216c5e32c",
+    "affected.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "original.py": "5089b6dcdbbf55f38837644c69ff1877006518407e1ea23c4d098071cbd99fcd",
+    "bounded_api_control.py": "a63c3ff6bb3bc36bea4f6384c8c07144ee1cceb46c2027f8dab009b587dca26d",
+    "focused.stderr": "5221db3ddf0279ffbfd64c8f7ce4cf20b1bab0788f344fd78185de02e3f8fb33",
+    "after.stdout": "453900549ab2180fe98f8b96042182cbf910dd5795895f0395ef65c1d408bb30",
+    "focused.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source-design.diff": "24b3f31048a1f14aad9d2c87f59931b1da4ff531a6c81b3a3320b287f3a4bc22"
+  },
+  "currentSharedOriginalMatches": true,
+  "findings": [
+    {
+      "id": "COLLECTOR-PREPARATION-REPORT",
+      "status": "closed in v3",
+      "reason": "The accidental cleanup report branch in prepare_tools was removed. Original fixed preparation failure behavior remains unchanged."
+    },
+    {
+      "id": "COLLECTOR-REAPER-START",
+      "status": "superseded and eliminated in v3",
+      "reason": "No reaper thread or start-refusal inference remains. Bounded builtin Popen wait is synchronous; exact retained owner gate serializes retry and atexit cleanup after that waiter returns."
+    },
+    {
+      "id": "COLLECTOR-RETRY-STATE",
+      "status": "closed in v3",
+      "reason": "Transient wait failure is separate from actual stop failure. One successful retry clears only pending wait state; the initial error retains the actual cause. All code-known returns preserve actual stop failure."
+    }
+  ],
+  "ownershipReview": [
+    "Every production stop owner originates from an existing collector-created Popen with start_new_session=True. No process lookup, adoption, callback or reconstructed PID is added.",
+    "Both production wait sites pass the original collection_deadline. Existing35-minute collection and12-minute research work budgets and five-second reserve remain unchanged. No background extension is used for bounded cleanup observation.",
+    "The owner gate serializes stop/wait and exact atexit shutdown. A timeout or interruption returns fixed OwnedCleanupError while the registry retains the concrete Popen; raw Go output is not admitted as success and report exit code stays null.",
+    "The atexit cleanup has explicit unbounded physical-reap/interpreter-exit semantics. It introduces no new normal work allowance and cannot claim successful cleanup before actual process.wait returns.",
+    "Public str/repr and collector report fields are fixed and do not publish original cause text. Actual primary/cleanup causes remain privately attached to the exact owner/error."
+  ],
+  "results": {
+    "before": {
+      "exitCode": 1,
+      "boundedWaitAPI": false,
+      "actualChildReaped": true
+    },
+    "after": {
+      "exitCode": 0,
+      "boundedWaitAPI": true,
+      "actualChildReaped": true
+    },
+    "focused": {
+      "namedPasses": [
+        "test_owned_builtin_timeout_reaps_actual_child",
+        "test_owned_cleanup_timeout_retains_owner_and_retry_resolves",
+        "test_owned_cleanup_interruption_retains_owner",
+        "test_owned_cleanup_stop_failure_never_disappears_after_reap",
+        "test_owned_cleanup_shutdown_reaps_exact_retained_child",
+        "test_interrupted_owned_wait_stops_and_reaps_before_propagation",
+        "test_interruption_after_reaping_never_signals_saved_identity"
+      ],
+      "exitCode": 0
+    },
+    "affectedRunnerTests": {
+      "namedPasses": [
+        "test_cgo0_deployment_events_require_exact_actual_named_completion",
+        "test_cgo0_deployment_inventory_rejects_wrong_missing_and_repeated_test",
+        "test_cgo0_inventory_and_named_events_cannot_hide_missing_or_wrong_test",
+        "test_darwin_cgo0_deployment_refusal_has_separate_command_and_report",
+        "test_darwin_cgo0_refusal_is_exact_separate_and_not_product_qualification",
+        "test_darwin_normal_matrix_never_claims_native_protected_boot",
+        "test_darwin_normal_matrix_requires_actual_cgo_compiler_sdk_for_private_files",
+        "test_deployment_refusal_claim_requires_stable_original_and_executed_source",
+        "test_hidden_preparation_refuses_populated_workspace_before_writes",
+        "test_host_scope_cannot_borrow_protected_image_passes",
+        "test_host_selection_failure_or_source_drift_never_qualifies_collection",
+        "test_install_admission_requires_every_reviewed_top_level_test",
+        "test_install_and_research_flags_are_mutually_exclusive",
+        "test_install_inventory_refuses_missing_tests_or_cgo",
+        "test_install_inventory_requires_all_host_declarations_exactly_once",
+        "test_install_refuses_malformed_apple_compiler_version_before_tests",
+        "test_install_requires_native_host_authorization_and_nonroot_before_effects",
+        "test_install_selection_is_separate_and_never_qualifies_full_boot",
+        "test_interrupted_owned_wait_stops_and_reaps_before_propagation",
+        "test_interruption_after_reaping_never_signals_saved_identity",
+        "test_normal_native_selection_executes_local_tls_on_both_hosts",
+        "test_normal_native_selection_executes_runtime_command_on_both_hosts",
+        "test_owned_builtin_timeout_reaps_actual_child",
+        "test_owned_cleanup_interruption_retains_owner",
+        "test_owned_cleanup_shutdown_reaps_exact_retained_child",
+        "test_owned_cleanup_stop_failure_never_disappears_after_reap",
+        "test_owned_cleanup_timeout_retains_owner_and_retry_resolves",
+        "test_preparation_accepts_only_empty_regular_marker",
+        "test_preparation_rejects_combined_install_and_research_markers",
+        "test_protected_image_pass_cannot_hide_failed_host_scope",
+        "test_research_has_separate_results_and_actual_fail_closed_control",
+        "test_research_refusal_claim_requires_stable_original_and_executed_source",
+        "test_setup_failure_retains_failed_report_without_private_error_text",
+        "test_synthetic_normal_runner_records_every_scope_and_isolates_environment",
+        "test_synthetic_test_failure_and_changed_execution_source_cannot_pass",
+        "test_timeout_is_checkpointed_and_exhausted_scopes_are_unexecuted",
+        "test_unsupported_host_refuses_before_tools_or_tests"
+      ],
+      "exitCode": 0
+    },
+    "failedOrSkippedTests": 0
+  },
+  "qualificationLimits": [
+    "Tests ran on WSL CPython3.14.4. No native Linux/macOS collection, CI Python3.12 execution, Docker job or phase acceptance is established.",
+    "Actual builtin child reap and actual interpreter-shutdown reap are proven. Timeout/interruption/stop-failure cases use documented test-only mocks/wrappers, not real kernel-uninterruptible failure.",
+    "The before control demonstrates the original actual builtin cleanup call lacked a timeout. It does not claim an observed prolonged OS reap or the cause of a historical engine timing failure.",
+    "V1/v2 subclass ignoring timeout, reaper designs, source findings and failed setup remain preserved as historical evidence; they do not define current builtin wait acceptance.",
+    "Independent reviewer ran no tests/builds/native collectors/engine calls. Only small source/hash/raw-log reads were made during root-authorized review."
+  ],
+  "recommendation": "Source and component-evidence findings are closed on743f28e7. Root may independently batch-verify and decide promotion with the durable tests. Supported-environment and phase gates remain separate."
+}

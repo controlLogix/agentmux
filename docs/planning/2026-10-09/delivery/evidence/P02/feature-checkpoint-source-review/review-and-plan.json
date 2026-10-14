@@ -1,0 +1,87 @@
+{
+  "kind": "independent-action-pin-review-and-checkpoint-plan",
+  "workflow": ".github/workflows/platform-foundation.yml",
+  "currentWorkflowSHA256": "85d84f5a96883d84b896a2357487647a5e0e75bcce71eb182e2729d0c7024390",
+  "mechanicallyRestoredPreviousSHA256": "13c168e1bd3141f3d351beb6126b32ba5a7594113500e8f57efbb032e821b200",
+  "actionPinRecordSHA256": "94d47b8772b5a07598cbbb413f0fdf56c8d2c01769f2d36edcfbc5c29e9f89bd",
+  "pins": {
+    "actions/checkout@v5": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09",
+    "actions/setup-python@v6": "ece7cb06caefa5fff74198d8649806c4678c61a1",
+    "actions/upload-artifact@v4": "ea165f8d65b6e75b540449e92b4886f43607fa02"
+  },
+  "replacementCounts": {
+    "checkout": 3,
+    "setupPython": 3,
+    "uploadArtifact": 3
+  },
+  "actionFindings": [],
+  "verifiedPreserved": [
+    "Feature push branch and existing pull_request/workflow_dispatch events",
+    "Existing feature ref/head-ref guards",
+    "Four-target Linux/macOS architecture matrix and separate Darwin research/install jobs",
+    "Read-only contents permission,checkout no credential persistence",
+    "Existing concurrency/cancellation,timeouts and collector commands",
+    "Always-upload failure evidence,exact SHA naming,no-files error and30day retention"
+  ],
+  "checkpointScope": {
+    "purpose": "Reviewed feature-branch checkpoint enabling actual native CI, not phase advancement",
+    "sourceGroups": [
+      {
+        "group": "Platform production",
+        "paths": "platform assembly/accounts/deployment/kernel/launcher/localtls/privatefs/runtime and both cmd entrypoints",
+        "review": "Inventory every actual shared source file; match current bytes to scoped independent source review, actual callers and pattern relation. Source declarations or hash equality alone do not constitute semantic review."
+      },
+      {
+        "group": "Contracts and SDK controls",
+        "paths": "New HOST request/reply schemas and tests/contracts/test_owner_bridge.py",
+        "review": "Closed fields/scope/auth correlation unchanged,known shapes reject extras,SDK validation provenance; distinguish actual L04 fixtures from bootstrap control/history."
+      },
+      {
+        "group": "Collectors and workflows",
+        "paths": "tests/platform/native_go.py,native_compose.py,test_source_surface.py and .github/workflows/platform-{foundation,compose}.yml",
+        "review": "Native/WSL/platform exclusion,actual named inventory,skip/empty failure,exact sources and owned process joins,branch/trusted enrollment/permissions/artifact behavior. Official action pins are reviewed separately; execution is still pending."
+      },
+      {
+        "group": "Review tooling",
+        "paths": "docs/reviews/open.mjs,local-review.mjs,notes-controller.mjs,review-server.mjs/tests,review-inbox skill",
+        "review": "Map current deltas to actual source/lifecycle independent closure; preserve user note bytes and attribution. REPO review tooling is separate from product dashboard/P06."
+      },
+      {
+        "group": "Tracking and generated review source",
+        "paths": "delivery/track.py,verify-component-coverage.py,review-site/src/pages/build.mjs,component/source inventories",
+        "review": "Read actual changed executable logic and generation inputs; retain atomic-write failure semantics. Root alone updates tracker,index,pattern history and generated artifacts."
+      },
+      {
+        "group": "Pattern attestation",
+        "paths": ".context/design-patterns*.md,.bytedesk/design-patterns/{review,remediation}.json",
+        "review": "Register actual how/where/why/tradeoffs and preserve exact history. Existing86production scoped pattern review and58 incremental reviews do not automatically approve all newshared source. SourceDigest refresh only after complete actual source review scope closes."
+      }
+    ],
+    "excludedCacheOnly": [
+      "Unpromoted Windows observer/gate sources",
+      "Unpromoted actual midboot test draft"
+    ],
+    "requirementsBeforeCheckpoint": [
+      "Freeze current shared source once actual timing window ends; batch ownership/index/source pin audit in one environment.",
+      "List every unreviewed or stale actual file and changed declaration/caller relation; resolve concrete findings through bounded owners.",
+      "Reuse already reviewed evidence only where actual file and relevant dependency semantics are unchanged; record source review separately from runtime/native tests.",
+      "Review user-authored note changes as data for preservation; do not rewrite them as implementation.",
+      "Root reviews exact candidate,updates source attestation honestly,checks branch/no merge,commits and pushes only feature checkpoint,verifies remote commit.",
+      "Run actual native foundation CI against pushed commit and review real evidence; checkpoint does not pass P02 or unlock next phase."
+    ]
+  },
+  "currentState": {
+    "productionOwnerBridgePin": "9cfd0a38d4b40c060759200dbef226cc5bf9dd60d7759f67e756f2d9949e19f2",
+    "promotedFailureFixturePin": "e7a7c87b76d16a95be9285f12ce48ae63ca0ded306165ffe87d67a9e517212c2",
+    "promotedHistoryControlPin": "334a9b3b42b99d7d0b19c51db322ec1b6318b1ad840215bf346c39012464fd42",
+    "globalSourceDigestCurrently": "e19016993a361d4d7e0418905ea2b8a3c09afb5fce8b9ceb4df0cc29f19d324b",
+    "sourceDigestRefreshAuthorized": false,
+    "fullSharedAuditStarted": false,
+    "timingWindowHeld": true
+  },
+  "limits": [
+    "Light read-only review and cache record only; no builds/tests/engine/Git mutations/shared metadata.",
+    "Pin-only delta review does not approve all prior workflow semantics or execute third-party actions.",
+    "No native,full phase or later-phase acceptance."
+  ]
+}

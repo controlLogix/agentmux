@@ -1,0 +1,53 @@
+FFFFF
+======================================================================
+FAIL: test_review_compiler_requires_numeric_version (native_compose.Controls.test_review_compiler_requires_numeric_version)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ryan/.cache/agentmux-governance/p02-native-compose-review-first-20261014/tests/platform/native_compose.py", line 663, in test_review_compiler_requires_numeric_version
+    self.assertFalse(valid_apple_compiler('Apple clang version malformed'))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_review_package_start_required_before_test_and_terminal_events (native_compose.Controls.test_review_package_start_required_before_test_and_terminal_events)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ryan/.cache/agentmux-governance/p02-native-compose-review-first-20261014/tests/platform/native_compose.py", line 671, in test_review_package_start_required_before_test_and_terminal_events
+    self.assertEqual(admit_native_events(raw, 0, PACKAGE, NAMES)['status'], 'failed')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'passed' != 'failed'
+- passed
++ failed
+
+
+======================================================================
+FAIL: test_review_lock_access_denial_cannot_qualify (native_compose.Controls.test_review_lock_access_denial_cannot_qualify)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ryan/.cache/agentmux-governance/p02-native-compose-review-first-20261014/tests/platform/native_compose.py", line 679, in test_review_lock_access_denial_cannot_qualify
+    self.assertFalse(completion_admitted(record))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_review_warm_status_file_is_allowlisted (native_compose.Controls.test_review_warm_status_file_is_allowlisted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ryan/.cache/agentmux-governance/p02-native-compose-review-first-20261014/tests/platform/native_compose.py", line 682, in test_review_warm_status_file_is_allowlisted
+    self.assertIn('warm-reuse-status.json', SAFE_FILES)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'warm-reuse-status.json' not found in {'concurrent-reuse-status.json', 'incomplete-bootstrap-cleanup.json', 'fixture.json', 'concurrent-warm.json', 'cold-owner-status.json', 'recovery.json', 'warm-owner-status.json', 'recovered-owner-status.json', 'bootstrap-call-results.json', 'cleanup-unverified.json', 'cleanup.json', 'baseline.json', 'recovery-failure.json', 'baseline-difference.json', 'warm-failure.json'}
+
+======================================================================
+FAIL: test_review_minimal_cleanup_without_identity_or_reaping_is_refused (native_compose.Controls.test_review_minimal_cleanup_without_identity_or_reaping_is_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ryan/.cache/agentmux-governance/p02-native-compose-review-first-20261014/tests/platform/native_compose.py", line 692, in test_review_minimal_cleanup_without_identity_or_reaping_is_refused
+    with self.assertRaises(ValueError): collect_fixture_artifacts(home, evidence)
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.029s
+
+FAILED (failures=5)

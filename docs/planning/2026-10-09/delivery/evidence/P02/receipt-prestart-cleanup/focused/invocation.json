@@ -1,0 +1,28 @@
+{
+  "recordedAfterExecution": true,
+  "origin": "Exact direct tool-call invocation; not a claimed preexisting producer script.",
+  "cwd": "/home/ryan/.cache/agentmux-governance/p02-receipt-prestart-repaired-7ycwc9dc/src/platform",
+  "commands": [
+    [
+      "go",
+      "test",
+      "-race",
+      "./runtime",
+      "-run",
+      "^TestBootstrapReceipt(PrestartCleanup|GenuinePrestartCancellation)",
+      "-count=1",
+      "-json"
+    ],
+    [
+      "go",
+      "vet",
+      "./runtime"
+    ]
+  ],
+  "goExecutable": "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+  "env": {
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GORACE": "atexit_sleep_ms=0"
+  }
+}

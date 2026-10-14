@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "1.0.0",
+  "phase": "P02",
+  "kind": "Preserved failed actual installed CLI/Compose evidence",
+  "createdUtc": "2026-10-14T08:58:31.245964+00:00",
+  "testExit": 1,
+  "tests": [
+    {
+      "name": "TestInstalledCLIRealComposeAuthenticatedPending",
+      "result": "fail",
+      "elapsedSeconds": 15.24,
+      "started": "2026-10-14T04:54:54.418772-04:00",
+      "ended": "2026-10-14T04:55:09.663081518-04:00"
+    }
+  ],
+  "safeErrors": [
+    "installed_cli_compose_integration_linux_test.go:471: actual factory broker start failed"
+  ],
+  "sourceHashes": [
+    {
+      "path": "platform/launcher/bootstrap_docker_integration_test.go",
+      "sha256": "aa5c9c663c7f83150a439053cc28f00f69454b4ec6db19bc02a3a2dc4307b57f",
+      "currentMatches": true
+    },
+    {
+      "path": "platform/launcher/installed_cli_compose_integration_linux_test.go",
+      "sha256": "cdae2bb510e5c5c707e53e94d68ab553a956e5c2abc6f7d28b1d6748b1e188ba",
+      "currentMatches": true
+    },
+    {
+      "path": "platform/launcher/owner_bridge.go",
+      "sha256": "f691230aa5892015f75025cbf9b70a9a2056e5009cce99fe91b15a879f366c5c",
+      "currentMatches": true
+    },
+    {
+      "path": "platform/cmd/agentmux-runtime/main.go",
+      "sha256": "a8686ad179f76b2dacdb3096a19d00f3e05af2c037fb9ed7fa83a121b6ac7c9b",
+      "currentMatches": true
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "producer.sh",
+      "sha256": "e4bf08332fb5c7b5149b0443c4892749efcc4bbe604792898d6bb2933e3ca2ba",
+      "bytes": 1629
+    },
+    {
+      "path": "invocation.json",
+      "sha256": "4d3e9ceef275f66641315006c4e9b6ba40d543aa51066cfb6795396b22806cff",
+      "bytes": 427
+    },
+    {
+      "path": "events.jsonl",
+      "sha256": "fe5846afea67f1323782c3a8109fb47605536b4922e75e8eb342e7c32c7b189e",
+      "bytes": 1919
+    },
+    {
+      "path": "stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "exit.txt",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "bytes": 2
+    }
+  ],
+  "actualFixtureOutputs": [
+    {
+      "test": "TestInstalledCLIRealComposeAuthenticatedPending",
+      "privateCacheDirectoryName": "p02-bootstrap-private-1952847670",
+      "association": "fixture metadata write time falls inside exact named test window",
+      "artifacts": [
+        {
+          "path": "failed-public-fixtures/TestInstalledCLIRealComposeAuthenticatedPending/baseline-guard-34bece57.json",
+          "sha256": "9a27cd80c7c7f2bc1eb65c38748bfef88b3c8adb0ef721a34f03e8150090fac1"
+        },
+        {
+          "path": "failed-public-fixtures/TestInstalledCLIRealComposeAuthenticatedPending/baseline-guard-9e5bd6a1.json",
+          "sha256": "41599c505350250f0b8fe26f2867d1af74180d016c884831556d15a346d335d7"
+        },
+        {
+          "path": "failed-public-fixtures/TestInstalledCLIRealComposeAuthenticatedPending/baseline.json",
+          "sha256": "f4ab629e0c7b086279494ab711b8a9ed2a24a93510ceeb48555a0066903820fa"
+        },
+        {
+          "path": "failed-public-fixtures/TestInstalledCLIRealComposeAuthenticatedPending/fixture.json",
+          "sha256": "82466f819f6f43e2138d5021a974c3872533008d502da673e43fadff166189ff"
+        },
+        {
+          "path": "failed-public-fixtures/TestInstalledCLIRealComposeAuthenticatedPending/pending-start-failure.json",
+          "sha256": "549c1ed0fd6e75dd836421c26cbb3dababd42774e767df1db69f3f5e70a62379"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "No passing final four-case acceptance claimed.",
+    "No vet executed after the failed suite; earlier focused passes remain separate.",
+    "No native Linux or macOS qualification from selected WSL environment.",
+    "Root owns actual engine diagnosis and any exact fixture resource cleanup; no pruning or budget changes by worker.",
+    "The diagnostic pending failure precedes frontend startup, with actual lease held and unexpired context."
+  ]
+}

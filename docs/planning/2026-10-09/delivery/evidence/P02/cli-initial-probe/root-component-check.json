@@ -1,0 +1,21 @@
+{
+  "recordedAt": "2026-10-14T13:00:51.874168+00:00",
+  "scope": "Initial CLI probe integration; component checks only, actual installed CLI and phase acceptance remain open.",
+  "sourceHashes": {
+    "platform/cmd/agentmux-runtime/main.go": "f65aab165f50b2ac3ed9c608ac61d6d22c1f12031cc91b8f2c61ff1587a69426",
+    "platform/cmd/agentmux-runtime/main_test.go": "0801bfbe98da6b23f4fb2d7d7aee4c3db616ea83bcdc5d4502e4d8b321c3a8a8",
+    "platform/launcher/owner_bridge.go": "6c3cbf40f22cf00f16f1285f839506218bc0b4ccbed0a6465575580cac1fd76a",
+    "platform/launcher/owner_bridge_probe.go": "43c07411aac19e5047381ce3f83786a5cf4f96478e47bef6e6f3d20ad9886130",
+    "platform/launcher/host_policy.go": "25ebb1c850399530433e7c8a2c79d2f63f222b85557881509568130c3c16d2a3"
+  },
+  "command": "WSL Ubuntu-26.04: prepared Go gofmt on main.go/main_test.go, then go test -race ./cmd/agentmux-runtime -count=1 && go vet ./cmd/agentmux-runtime from platform/",
+  "exitCode": 0,
+  "observedOutput": "ok github.com/controlLogix/agentmux/platform/cmd/agentmux-runtime 5.637s",
+  "evidenceOrigin": "Root exec session 86260 terminal output, chunk 9f7c7a; output was not redirected to a separate raw log.",
+  "preservedBehavior": [
+    "Status uses ordinary Request.",
+    "Post-receipt ensure uses ordinary Request.",
+    "Original frontend deadlines remain unchanged.",
+    "Only exact initial ensure unavailable outcomes permit ordinary host admission; joined cleanup errors remain failures."
+  ]
+}

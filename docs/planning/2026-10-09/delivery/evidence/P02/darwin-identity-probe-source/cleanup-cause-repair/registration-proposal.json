@@ -1,0 +1,50 @@
+{
+  "scope": "Cache-only update proposal for root's already registered PLAT-02 probe; no shared metadata writes",
+  "priorProposalSHA256": "90ddec5e5e0b39245bd572ce89d67b52e9cce73ac2b2aed9f964db3602029e66",
+  "files": [
+    {
+      "path": "platform/runtime/testdata/darwin_identity_probe/main_darwin.go",
+      "componentIds": ["PLAT-02"],
+      "workingFileSha256": "c9e6f7b8c83c5d5441e647814a72106dd9f066264015cc75bc7552822eeeb9d3",
+      "declarations": [
+        {"name": "Error", "line": 81, "kind": "go-function"},
+        {"name": "Unwrap", "line": 82, "kind": "go-function"},
+        {"name": "closeOwned", "line": 84, "kind": "go-function"},
+        {"name": "closeSetupFailure", "line": 91, "kind": "go-function"},
+        {"name": "sameIdentity", "line": 101, "kind": "go-function"},
+        {"name": "newControl", "line": 106, "kind": "go-function"},
+        {"name": "pinChild", "line": 141, "kind": "go-function"},
+        {"name": "live", "line": 211, "kind": "go-function"},
+        {"name": "signal", "line": 228, "kind": "go-function"},
+        {"name": "observeExit", "line": 240, "kind": "go-function"},
+        {"name": "join", "line": 256, "kind": "go-function"},
+        {"name": "close", "line": 289, "kind": "go-function"},
+        {"name": "childMode", "line": 318, "kind": "go-function"},
+        {"name": "runControl", "line": 367, "kind": "go-function"},
+        {"name": "run", "line": 448, "kind": "go-function"},
+        {"name": "main", "line": 491, "kind": "go-function"}
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "Two additional cleanup cause findings repaired and independently source-reviewed; compilation and native controls remain unexecuted."
+    },
+    {
+      "path": "platform/runtime/testdata/darwin_identity_probe/native_darwin.go",
+      "componentIds": ["PLAT-02"],
+      "workingFileSha256": "a120f2ce87b049852941efc3e38c9de013173e7998d842ed510eddadb2c6b972",
+      "declarations": [
+        {"name": "nativeAdmission", "line": 144, "kind": "go-function"},
+        {"name": "observe", "line": 158, "kind": "go-function"},
+        {"name": "nativePath", "line": 167, "kind": "go-function"},
+        {"name": "nativeArguments", "line": 179, "kind": "go-function"},
+        {"name": "identitySignal", "line": 210, "kind": "go-function"}
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "Unchanged native bridge; source review does not qualify ABI or native behavior."
+    }
+  ],
+  "documentation": {"path": "platform/runtime/testdata/darwin_identity_probe/README.md", "sha256": "03c38baa4dfeeab76339d0eaf72e42d564844bbc296791e7eef4df0793719388"},
+  "newDeclarations": ["probeCloseFailure", "probeCloseFailure.Error", "probeCloseFailure.Unwrap", "closeOwned", "closeSetupFailure"],
+  "namedGoFunctionCount": 21,
+  "note": "Four added Go functions/methods and one type. Existing named declarations retained with shifted lines; embedded C and native bridge unchanged. Root must check its authoritative parser before applying.",
+  "qualificationAccepted": false
+}

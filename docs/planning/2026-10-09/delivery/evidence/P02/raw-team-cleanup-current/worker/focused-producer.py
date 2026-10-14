@@ -1,0 +1,7 @@
+from pathlib import Path
+import shutil,uuid,json,subprocess,os
+out=Path('/home/ryan/.cache/agentmux-governance')/('p02-raw-cleanup-'+uuid.uuid4().hex[:8]);out.mkdir();shutil.copytree('/mnt/c/Users/RyanHelms/GitHub/agentmux/platform',out/'platform');old=Path('/home/ryan/.cache/agentmux-governance/p02-team-privatefs-b1297fc6/platform');(out/'historical').mkdir()
+for p in ['deployment/observe.go','deployment/team_connection.go','deployment/probe_cleanup.go']:shutil.copyfile(old/p,out/'historical'/Path(p).name)
+go='/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go';args=[go,'test','-race','-count=1','-json','./deployment','-run','^TestRawTransportCleanup'];fixed={'GOTOOLCHAIN':'local','GOPROXY':'off','GOSUMDB':'off','GOWORK':'off','GORACE':'atexit_sleep_ms=0','AGENTMUX_TEST_NATS':'/home/ryan/.cache/agentmux-governance/tools/nats-server'};env=os.environ.copy();env.update(fixed);(out/'focused-invocation.json').write_text(json.dumps({'args':args,'cwd':str(out/'platform'),'fixedEnvironment':fixed},indent=2)+'\n');print(out,flush=True)
+with(out/'focused.jsonl').open('wb')as stdout,(out/'focused.stderr').open('wb')as stderr:r=subprocess.run(args,cwd=out/'platform',env=env,stdout=stdout,stderr=stderr)
+(out/'focused-exit.json').write_text(json.dumps({'exitCode':r.returncode})+'\n');print('exit',r.returncode)

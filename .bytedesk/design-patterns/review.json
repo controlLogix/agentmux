@@ -1,7 +1,22 @@
 {
   "reviewer": "Codex; corrected P01 native evidence and complete preservation review",
-  "sourceDigest": "e19016993a361d4d7e0418905ea2b8a3c09afb5fce8b9ceb4df0cc29f19d324b",
+  "sourceDigest": "e93a8ae3204b04ca2c1c2f68b8fca0eafef5c04ecbbf9837e4dbe7fe5d190e58",
   "incrementalReviews": [
+    {
+      "date": "2026-10-13",
+      "scope": "Managed single HTTP review-server lifecycle",
+      "reviewer": "Codex; focused independent review completed",
+      "sourceDigestRefreshed": false,
+      "evidence": [
+        "docs/reviews/server-lifecycle-verification.json",
+        "docs/reviews/open.mjs",
+        "docs/reviews/src/features/review-server.mjs",
+        "docs/reviews/src/features/review-server.test.mjs",
+        "docs/reviews/src/features/local-review.mjs",
+        ".agents/skills/review-inbox/SKILL.md"
+      ],
+      "rationale": "Reviewed repository-scoped OS lifetime exclusion, private authenticated owner state, saved bound port, exact-instance reuse, conservative unknown-owner handling and explicit drain/restart/shutdown. Shared Git-common-directory state covers worktrees on the same tested host. PID values are diagnostic only and never authorize termination. Port-only conventions and PID takeover were rejected because they permit duplicate or unrelated-process shutdown. HTTP closure and pending handler promises both drain before releasing ownership, including a disconnected note client. The launcher clears Git redirect variables but keeps effective identity configuration. Normal opens reuse an owned server; another checkout/document requires explicit closure. Browser-tab closure is not used as an unreliable save/lifecycle signal. Thirteen lifecycle regressions and all fifty-seven affected review-tool tests passed on native Windows; both note files remain valid. The known legacy process was replaced only after observing saved notes, and repeated live launch returned the same instance/PID with one 4317 listener and none on 4318. The browser was reloaded successfully with original note-version attribution preserved. Independent findings and the race-test gap were repaired. No GoF/EIP pattern or registered product-runtime relationship is introduced; these are local tooling resource ownership primitives, not a product singleton or NATS control channel. Frontend state/service logic remains under features. Native POSIX and cross-Windows/WSL behavior remain unqualified. Concurrent platform, audit, delivery and user-note changes are preserved and not accepted by this scoped review; the global source digest stays unchanged. No phase advancement, real note sharing, merge or release is claimed."
+    },
     {
       "date": "2026-10-13",
       "scope": "Universal Claude/Codex review inbox skill",
@@ -854,6 +869,66 @@
         "docs/planning/2026-10-09/delivery/evidence/P01/component-acceptance-review-d3f8d9d.json"
       ],
       "rationale": "Reviewed 22 raw files and 1,712 actual source-map observations against 259 committed inputs. Both native hosts pass all 23 required checks, 52 contracts and 27 storage cases. Independent source and execution reviews close L04/S03 findings, and a finite audit finds no other missing explicit P01 promise. All 35 original component definitions and historical source-equivalent evidence remain; two new checks are fully qualified. Review covers byte-preserved evidence, completed task records and the corrected gate package only; no runtime or later-phase source changes. Earlier gate remains preserved as superseded history. All later host, production storage, kernel and real-hub obligations remain; no merge or release. The final tracker transition changes only reviewed gate status and generated board metadata; remote candidate identity was checked by the tracker. No execution input changed."
+    },
+    {
+      "date": "2026-10-14",
+      "scope": "P02 current connection ownership, operation receipt, team credential admission and diagram repairs",
+      "reviewer": "Codex; independent proposal reviewed and applied, final peer verification pending",
+      "sourceDigestRefreshed": false,
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/foundation-stable-current/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/real-compose-stable-current/review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/raw-team-cleanup-current/worker/review.json"
+      ],
+      "rationale": "Reviewed current source-bound repairs and preserved prior registry/diagram history. Registered the same-interface net.Conn close wrappers as an observed Decorator from the pinned catalog. Raw deployment failure serials are distinct from local TLS closure accounting. Team private reader retains bounded ancestor descriptors and native final admission; Darwin without CGO refuses. Actual service lease precedes the one bounded operation, admission/preparation and private entry; bound owner revalidation precedes historical receipt. Exact operation cancellation joins before resource release and retains both startup and cleanup causes. Current full Go race suite and vet passed; WSL actual Compose cold/concurrent/warm/normal recovery passed, with six baseline guards and owned cleanup. Real installed CLI Docker/native platform/abrupt crash qualifications remain open. No global digest approval, full phase acceptance or merge authorization."
+    },
+    {
+      "date": "2026-10-14",
+      "scope": "P02 pattern semantic and exact history closure",
+      "reviewer": "Codex; independent final verification complete",
+      "sourceDigestRefreshed": false,
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/independent-final-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json"
+      ],
+      "rationale": "Independent review verifies three corrected previous-field snapshots against exact archived original registry SHA, preserves all older revisions and33 original entries, and accepts only the observed Decorator addition. Scoped source/diagram relations are accurate. The root shallow-array history mistake and correction are retained as resolved remediation. New actual installed CLI test work remains active and outside this completed scoped review; global sourceDigest, native qualification and P02 advancement remain unapproved."
+    },
+    {
+      "date": "2026-10-14",
+      "scope": "P02 initial scoped owner probe, pre-start receipt cleanup and test-only joined stream capture",
+      "reviewer": "Codex with bounded independent source/evidence reviews",
+      "sourceDigestRefreshed": false,
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/initial-owner-probe/independent-cli-source-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/receipt-prestart-cleanup/root-closure.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/cli-joined-stderr-capture/independent-ordering-closure.json",
+        "docs/planning/2026-10-09/delivery/decisions/P02-history-cleanup-ownership.md"
+      ],
+      "rationale": "Reviewed existing PLAN-04 scoped facade extension and unchanged status/final request path, exact native hint and authentication/cleanup refusals.293 affected probe race entries and vet passed; CLI component checks passed, but actual pending startup failed and is retained as failed qualification. Pre-start pipe cleanup now preserves both concrete close causes behind fixed safe presentation;43 affected receipt race entries and vet passed. Test-only capture ordering now saves both joined streams privately before fallible public writes; current affected capture checks remain separate. Existing pattern registry revisions, declaration histories and native/installed acceptance requirements are retained. Cache-only terminal-history H01/H02/H03 findings remain open; amended cleanup decision preserves optional-history retry independence without releasing core incomplete-worker ownership. These scoped reviews do not accept the remaining P02 source or refresh the global source digest. No phase advancement, merge or release."
+    },
+    {
+      "date": "2026-10-14T19:57:22.300352+00:00",
+      "scope": "P02 collector bounded owned cleanup",
+      "reviewer": "Codex; independent source/evidence review completed",
+      "sourceDigestRefreshed": false,
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/collector-bounded-owned-cleanup/root-promotion.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/collector-bounded-owned-cleanup/independent-review.json"
+      ],
+      "rationale": "Synchronous builtin Popen cleanup uses original remaining deadline and existing reserve. Exact retained process owner serializes bounded retry and atexit fallback; incomplete results expose no private cause and never admit raw events as successful completion. No spawned reaper or arbitrary PID adoption. Physical OS reaping/interpreter exit remain unbounded. Five durable regressions plus existing interruption controls passed, and all37 affected RunnerTests passed on WSL Python3.14.4. No new GoF/EIP pattern or product communication relationship. Native collection, CI3.12, global checkpoint and P02 acceptance remain open."
+    },
+    {
+      "date": "2026-10-14T20:17:29.493785+00:00",
+      "scope": "Reviewed P02 feature-branch source checkpoint",
+      "reviewer": "Codex; independent source readiness audit and scoped component reviews completed",
+      "previousSourceDigest": "e19016993a361d4d7e0418905ea2b8a3c09afb5fce8b9ceb4df0cc29f19d324b",
+      "sourceDigestRefreshed": true,
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/feature-checkpoint-source-review/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/feature-checkpoint-source-review/reviewed-source-map.json"
+      ],
+      "rationale": "Reviewed all current changed production/tooling/contracts/workflow/module source against accepted2740 baseline through115 exact-pinned semantic rows/34 raw records;130 component test/fixture and35 document/metadata entries retain separate scope and root review. Collector cleanup finding resolved with durable controls. Registry, diagrams, remediation and source/tracking histories retained. Raw evidence has scoped -text attributes; actual source is LF. Cache-only observers/midboot drafts and runtime/native gaps remain unqualified. This attests current source freshness for a feature checkpoint, not P02 acceptance or merge/release."
     }
   ],
   "rules": {
@@ -1264,13 +1339,25 @@
     }
   ],
   "finalVerification": {
-    "date": "2026-10-09",
+    "date": "2026-10-14T20:20:46.891671+00:00",
     "command": "node .bytedesk/design-patterns/check.mjs check --root .",
     "result": {
       "baselineVersion": "1.1.0",
       "ok": true,
-      "errors": [],
-      "assurance": "Validates review attestations, source freshness and remediation; does not prove semantic correctness or execute build/tests."
+      "errors": []
+    },
+    "scope": "Current feature checkpoint source freshness/pattern attestation; no P02 runtime acceptance."
+  },
+  "finalVerificationHistory": [
+    {
+      "date": "2026-10-09",
+      "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+      "result": {
+        "baselineVersion": "1.1.0",
+        "ok": true,
+        "errors": [],
+        "assurance": "Validates review attestations, source freshness and remediation; does not prove semantic correctness or execute build/tests."
+      }
     }
-  }
+  ]
 }

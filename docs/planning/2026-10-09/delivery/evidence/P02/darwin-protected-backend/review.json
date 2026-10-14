@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "candidate awaiting independent review and actual native macOS qualification",
+  "phase": "P02",
+  "nativeQualification": false,
+  "sourceHashes": {
+    "platform/runtime/acl_darwin.go": "bfcd89538837b9ffd94c46882f231a1930091d3b21d3e5bb5cb475659acfe609",
+    "platform/runtime/snapshot_darwin.go": "0cabe456009fbf30016958b82070c89deb0e3e457509505828ea651c509eb2d9",
+    "platform/runtime/snapshot_darwin_install_test.go": "0165adcb9769541c8c48788754e91638b3ead7a584ede9b9f697add85aa321c9",
+    "platform/runtime/snapshot_darwin_policy_test.go": "ee352985d318f8afbe277cd40dc812fdaeed041346d4acd11f2ea4394b3aae0b",
+    "platform/runtime/snapshot_unsupported.go": "522a77bf706c8522363438e033e64d9478c85a7483d72d65e37b54edb3d8aaec"
+  },
+  "buildLimitation": "CGO-disabled cross-compilation excludes the new native backend and native tests. The small native adapter has not compiled or run against an Apple SDK yet. Parser environment test added after this cross-build is Darwin+cgo-only and therefore also excluded.",
+  "supervisorInterface": "optional validateForStart(context.Context) error, checked immediately before cmd.Start by root-owned supervisor",
+  "installation": "Fixed root-owned local APFS version tree, no ordinary-user fallback or elevation at launch. Directory digest is a version identifier, not independently claimed assembly binding.",
+  "trust": "Actual runtime Prepare retains external assembly/member digest authority. Narrow installed fixture constructs private admitted images and tests supervision; it is not a production release signature or installer qualification.",
+  "limits": [
+    "Actual native four-role NATS boot, EOF parent lifetime, retained role lease behavior, Compose and full P02 qualification remain pending.",
+    "Production Developer ID, hardened runtime, notarization and privileged installer/updater with active-version retention are separate requirements.",
+    "Root/admin or explicitly privileged updater is trusted. Non-elevated runner process behavior does not qualify a genuinely non-admin account.",
+    "Only thin native architecture Mach-O and exact OS dyld/libSystem dependency names are admitted. Apple-protected system loader/shared cache is a platform trust assumption, not a user-file digest proof.",
+    "Mount policy conservatively accepts root-owned local ownership-enforcing APFS only. Actual unsupported remote/ownership-disabled mounts have not been provisioned or exercised.",
+    "New native tests perform bounded explicitly authorized privileged fixture setup, retain the fresh installed version, and never recursively delete protected paths.",
+    "Design-pattern checker failed only stale sourceDigest; root owns attestation renewal after independent source review."
+  ],
+  "primarySources": [
+    "https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/acl_get_fd_np.3.html",
+    "https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/acl_get_entry.3.html",
+    "https://raw.githubusercontent.com/apple-oss-distributions/Libc/main/include/sys/acl.h",
+    "https://raw.githubusercontent.com/apple-oss-distributions/Libc/main/posix1e/acl_entry.c",
+    "https://raw.githubusercontent.com/apple-oss-distributions/Libc/main/posix1e/acl.c"
+  ],
+  "privacy": "No privileged operation was performed on Windows/WSL. No provider prompts, auth values, user profiles or credentials were read or copied. Logs contain compilation output only."
+}

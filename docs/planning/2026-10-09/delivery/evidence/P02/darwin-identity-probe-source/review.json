@@ -1,0 +1,35 @@
+{
+  "recordedDate": "2026-10-14",
+  "scope": "Additive standalone test-only Darwin process identity probe; source review only",
+  "rootApproval": "New files only under platform/runtime/testdata/darwin_identity_probe; no existing runtime, CLI or shared fixture edits and no builds or native jobs before coordination",
+  "sourceSHA256": {
+    "platform/runtime/testdata/darwin_identity_probe/main_darwin.go": "455febb1b76fb2395bb8bcfd8783eb8adf9743c2916f98dbd0c36ca6c4d85bf4",
+    "platform/runtime/testdata/darwin_identity_probe/native_darwin.go": "a120f2ce87b049852941efc3e38c9de013173e7998d842ed510eddadb2c6b972",
+    "platform/runtime/testdata/darwin_identity_probe/README.md": "fc2c08846cea4b3b00c74f8799e9a20990101c5ad1aaa9faac4330f30cbaea63"
+  },
+  "independentReviewer": {"name": "Plato", "agentId": "01a137e6-481f-7441-9095-89ea4bb76f8c"},
+  "reviewHistory": [
+    {
+      "reviewedSourceSHA256": {"main": "fa6edbe34d430b7bd0b906605154b6abcd3365fb40498cc4bef3ca310f5980e8", "native": "a120f2ce87b049852941efc3e38c9de013173e7998d842ed510eddadb2c6b972", "readme": "d475c02b0973fc7dbbe91d47636286515deecdb09be023d71164f591e66f7120"},
+      "findings": ["Invented wrong-version identifier could address a replacement process if the sole Wait reaped the original child before signalling.", "Successful-start reader close and fresh protected-image close failures were discarded, bypassing cleanup reporting."],
+      "limits": "No native PID reuse was observed; these were source safety findings, not execution failures."
+    },
+    {
+      "reviewedMainSHA256": "455febb1b76fb2395bb8bcfd8783eb8adf9743c2916f98dbd0c36ca6c4d85bf4",
+      "reviewedNativeSHA256": "a120f2ce87b049852941efc3e38c9de013173e7998d842ed510eddadb2c6b972",
+      "reviewedReadmeSHA256": "fc2c08846cea4b3b00c74f8799e9a20990101c5ad1aaa9faac4330f30cbaea63",
+      "result": "Both prior findings closed. Sole Wait starts only in join after signal decisions; direct child remains unreaped during wrong-version control. Reader, fresh-image and failed-admission watch close failures prevent false cleanup success. Exact WaitStatus and registered exit event share one deadline. No further actionable safety finding within probe-only scope."
+    }
+  ],
+  "checks": {
+    "gofmt": {"status": "passed", "scope": "Go parsing and formatting only; no typecheck or C compilation", "command": "gofmt -l <two owned Go files>", "exitCode": 0, "output": "empty"},
+    "compiler": {"status": "unexecuted"},
+    "nativeABI": {"status": "unexecuted"},
+    "nativeControls": {"status": "unexecuted"},
+    "actualPIDReuse": {"status": "unexecuted"},
+    "realInstalledCLI": {"status": "unexecuted"}
+  },
+  "claims": {"sourceReviewClosed": true, "compiled": false, "nativeQualified": false, "installedCLIQualified": false, "productSpawnPathProven": false, "phaseAccepted": false},
+  "assumptions": ["Existing immutable active root-owned protected installation and retained descriptor/ACL/mount/image admission.", "Private Apple identity layout and system symbol locations remain SDK/OS candidates pending native verification.", "Only probe-created disposable children are controlled; no arbitrary PID or token control input.", "Metadata-derived PID/version identifier is not authenticated credentials; kernel checks the actual caller's permission.", "No raw PID signal fallback, task/debugger entitlement workaround, emulated native evidence or product control hook."],
+  "next": ["Root review and global source registration by its owner", "Coordinate focused build and native positive/refusal controls", "Complete actual PID reuse, admission-race, UID, image and argument refusal coverage", "Review actual frontend/host/role integration before shared extraction", "Retain all four native targets and full phase acceptance"]
+}

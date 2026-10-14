@@ -1,0 +1,395 @@
+//go:build linux && agentmux_bootstrap_docker
+
+package launcher
+
+import (
+	"bytes"
+	"context"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
+	"github.com/controlLogix/agentmux/platform/privatefs"
+	"os"
+	"path/filepath"
+	"reflect"
+	"testing"
+	"time"
+)
+
+func TestYxcRetainedFixtureExactRecovery(t *testing.T) {
+	if os.Getenv("AMX_YXC_EXACT_RECOVERY_AUTHORIZED") != "1" {
+		t.Fatal("exact recovery authorization absent")
+	}
+	out := os.Getenv("AMX_YXC_QUALIFICATION_OUTPUT")
+	root := "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2194878452"
+	rows := map[string]any{"mutationExecuted": false, "qualified": false, "originalKnownOwnedIDsEmpty": true, "originalHostHandleEstablished": false, "directory": filepath.Base(root)}
+	archive := func(name string, value any) {
+		raw, err := json.MarshalIndent(value, "", "  ")
+		if err != nil || os.WriteFile(filepath.Join(out, name), append(raw, '\n'), 0600) != nil {
+			t.Fatal("private qualification archive unavailable")
+		}
+	}
+	var leases []*BootstrapLock
+	defer func() {
+		released := 0
+		failures := []string{}
+		for _, lease := range leases {
+			if err := lease.Close(); err != nil {
+				failures = append(failures, bootstrapFixtureFailureCode(err))
+			} else {
+				released++
+			}
+		}
+		rows["actualLeasesReleased"] = released
+		rows["leaseCloseCodes"] = failures
+		if len(failures) != 0 {
+			rows["qualified"] = false
+		}
+		archive("qualification.json", rows)
+	}()
+	guard := func(stage string, err error) {
+		rows["stage"] = stage
+		rows["failureCode"] = bootstrapFixtureFailureCode(err)
+		if err != nil {
+			t.Fatal("fixed read-only qualification stage failed")
+		}
+	}
+	originalPath := "/home/ryan/.cache/agentmux-governance/p02-probe-pending-real-Yxc908/failure-review.json"
+	originalRaw, err := os.ReadFile(originalPath)
+	guard("original_failed_record", err)
+	if releaseDigest(originalRaw) != "sha256:f1e4616e249de623e2421f73aeee8833e7f00ec00812366d06bf9c0158f93971" {
+		t.Fatal("original failed record changed")
+	}
+	var original struct {
+		Tests []struct {
+			Name    string `json:"name"`
+			Started string `json:"started"`
+			Ended   string `json:"ended"`
+		} `json:"tests"`
+		Outputs []struct {
+			Test      string `json:"test"`
+			Directory string `json:"privateCacheDirectoryName"`
+			Artifacts []struct {
+				Path   string `json:"path"`
+				SHA256 string `json:"sha256"`
+			} `json:"artifacts"`
+		} `json:"actualFixtureOutputs"`
+	}
+	guard("original_record_shape", json.Unmarshal(originalRaw, &original))
+	var started, ended time.Time
+	for _, test := range original.Tests {
+		if test.Name == "TestInstalledCLIRealComposeAuthenticatedPending" {
+			started, err = time.Parse(time.RFC3339Nano, test.Started)
+			guard("original_test_start", err)
+			ended, err = time.Parse(time.RFC3339Nano, test.Ended)
+			guard("original_test_end", err)
+		}
+	}
+	if started.IsZero() || ended.IsZero() {
+		t.Fatal("original named test interval absent")
+	}
+	baselinePins := map[string]string{}
+	for _, fixture := range original.Outputs {
+		if fixture.Test == "TestInstalledCLIRealComposeAuthenticatedPending" && fixture.Directory == filepath.Base(root) {
+			for _, artifact := range fixture.Artifacts {
+				for _, name := range []string{"baseline.json", "network-baseline.json"} {
+					if artifact.Path == "failed-public-fixtures/TestInstalledCLIRealComposeAuthenticatedPending/"+name {
+						if baselinePins[name] != "" {
+							t.Fatal("ambiguous original baseline pin")
+						}
+						baselinePins[name] = artifact.SHA256
+					}
+				}
+			}
+		}
+	}
+	if len(baselinePins) != 2 {
+		t.Fatal("original baseline pins absent")
+	}
+	selected, pin := loadBootstrapFixtureSelection(t)
+	workspace, err := filepath.EvalSymlinks(selected.WorkspaceRoot)
+	guard("selected_workspace", err)
+	h, err := LoadEnrolledHostPolicy(HostPolicySelection{Path: filepath.Join(root, "installed/host-policy.json"), OwnerUID: uint32(os.Geteuid()), WorkspaceRoots: []string{workspace}})
+	guard("private_signed_policy", err)
+	c, ownerStatus, err := h.Load()
+	guard("private_full_admission", err)
+	if ownerStatus == nil {
+		t.Fatal("enrolled owner absent")
+	}
+	loaded, err := LoadProfile(c.ProfilePolicy)
+	guard("private_profile", err)
+	p := loaded.Declaration()
+	if p.Docker == nil || p.Docker.EngineID != selected.Docker.EngineID || p.Docker.Executable != selected.Docker.Executable || p.Docker.Context != selected.Docker.Context || p.Docker.Endpoint != selected.Docker.Endpoint {
+		t.Fatal("selected actual engine changed")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	defer cancel()
+	identities := append([]string{p.Docker.EngineID, "owner-status-service"}, bootstrapFixtureRoleLeaseIDs(p.Docker.EngineID)...)
+	for _, identity := range identities {
+		lease, err := AcquireBootstrapLock(ctx, p.ProfileDirectory, p.InstanceID, identity)
+		guard("actual_lease_exclusion", err)
+		leases = append(leases, lease)
+	}
+	if len(leases) != 6 {
+		t.Fatal("six actual exclusions absent")
+	}
+	rows["actualLeasesHeld"] = len(leases)
+	validateHeldLeasePaths := func(stage string) {
+		for index, lease := range leases {
+			identity := sha256.Sum256([]byte(p.InstanceID + "\x00" + identities[index]))
+			expected := filepath.Join(p.ProfileDirectory, "bootstrap-"+hex.EncodeToString(identity[:])+".lock")
+			if lease == nil || lease.file == nil || lease.file.Name() != expected {
+				t.Fatal("held canonical lease binding missing")
+			}
+			held, heldErr := lease.file.Stat()
+			guard(stage+"_held", heldErr)
+			current, pathErr := os.Lstat(expected)
+			guard(stage+"_path", pathErr)
+			if !os.SameFile(held, current) || !privateProfileInfo(held, uint32(os.Geteuid()), false) || !privateProfileInfo(current, uint32(os.Geteuid()), false) || privatefs.CheckDescriptor(lease.file, privatefs.PrivateObject) != nil {
+				t.Fatal("held lease separated from current private profile path")
+			}
+		}
+		rows[stage] = true
+	}
+	validateHeldLeasePaths("leasePathsAfterSixExclusions")
+	revalidateEnrollment := func(stage string) {
+		fresh, reloadErr := LoadEnrolledHostPolicy(h.selection)
+		guard(stage+"_policy", reloadErr)
+		freshConfig, freshOwner, reloadErr := fresh.Load()
+		guard(stage+"_admission", reloadErr)
+		if freshOwner == nil || !reflect.DeepEqual(h.record, fresh.record) || !sameLocalBrokerEnrollment(c, freshConfig) || !reflect.DeepEqual(ownerStatus.policy.Enrollment, freshOwner.policy.Enrollment) {
+			t.Fatal("private enrollment or runtime binding drift")
+		}
+		rows[stage] = true
+	}
+	revalidateEnrollment("enrollmentAfterSixExclusions")
+	driver, err := NewDocker(selected.dockerConfig())
+	guard("selected_driver", err)
+	_, err = driver.Inspect(ctx)
+	guard("actual_selected_engine", err)
+	owner := OwnershipPreflight{Project: p.ComposeProject, InstanceID: p.InstanceID, ProfileID: p.ProfileID, ReleaseDigest: p.ReleaseFingerprint, ConfigDigest: sha256.Sum256(c.Compose)}
+	f := &bootstrapDockerFixture{Driver: driver, Profile: p, Config: c, Owner: owner, Project: p.ComposeProject, EvidenceDirectory: out}
+	beforeContainers, err := f.inventory(ctx)
+	guard("complete_container_before", err)
+	beforeNetworks, err := f.networkInventory(ctx)
+	guard("complete_network_before", err)
+	archive("private-container-before.json", beforeContainers)
+	archive("private-network-before.json", beforeNetworks)
+	port, err := urlPort(p.NATSEndpoint)
+	guard("enrolled_port", err)
+	broker, err := driver.InspectOwnedTLSBroker(ctx, owner, c.BrokerImage, port, c.BrokerConfigDigest, sha256.Sum256(c.LocalTLS.ServerCertificatePEM()), sha256.Sum256(c.LocalTLS.ServerKeyPEM()))
+	guard("full_actual_tls_broker", err)
+	if broker.State != "running" || !fullID.MatchString(broker.ContainerID) {
+		t.Fatal("qualified running broker unavailable")
+	}
+	if _, exists := beforeContainers[broker.ContainerID]; !exists {
+		t.Fatal("actual broker absent from complete roster")
+	}
+	originalContainersRaw, err := os.ReadFile(filepath.Join(root, "baseline.json"))
+	guard("original_container_baseline", err)
+	if releaseDigest(originalContainersRaw) != "sha256:"+baselinePins["baseline.json"] {
+		t.Fatal("original container baseline drift")
+	}
+	var originalContainers map[string]json.RawMessage
+	guard("original_container_baseline_shape", json.Unmarshal(originalContainersRaw, &originalContainers))
+	if _, preexisting := originalContainers[broker.ContainerID]; preexisting {
+		t.Fatal("current broker was preexisting")
+	}
+	attachments, err := f.networkAttachments(ctx, broker.ContainerID)
+	guard("sole_current_attachment", err)
+	a, present := attachments[p.ComposeProject+"_default"]
+	if len(attachments) != 1 || !present || !fullID.MatchString(a.NetworkID) || !fullID.MatchString(a.EndpointID) {
+		t.Fatal("running exact attachment refused")
+	}
+	network, err := f.networkByID(ctx, a.NetworkID)
+	guard("exact_current_network", err)
+	endpoint, exclusive := network.Endpoints[broker.ContainerID]
+	if network.ID != a.NetworkID || network.Name != p.ComposeProject+"_default" || !owner.matches(network.Labels) || network.Driver != "bridge" || network.Scope != "local" || network.Internal || network.Ingress || network.ConfigOnly || len(network.Endpoints) != 1 || !exclusive || endpoint != a.EndpointID {
+		t.Fatal("exact exclusive running network refused")
+	}
+	originalNetworksRaw, err := os.ReadFile(filepath.Join(root, "network-baseline.json"))
+	guard("original_network_baseline", err)
+	if releaseDigest(originalNetworksRaw) != "sha256:"+baselinePins["network-baseline.json"] {
+		t.Fatal("original network baseline drift")
+	}
+	var originalNetworks map[string]string
+	guard("original_network_baseline_shape", json.Unmarshal(originalNetworksRaw, &originalNetworks))
+	if _, preexisting := originalNetworks[network.ID]; preexisting {
+		t.Fatal("current network was preexisting")
+	}
+	createdRaw, err := driver.run(ctx, nil, "container", "inspect", broker.ContainerID, "--format", "{{json .Created}}")
+	guard("exact_container_created", err)
+	var created string
+	guard("created_string", json.Unmarshal(createdRaw, &created))
+	containerCreated, err := time.Parse(time.RFC3339Nano, created)
+	guard("created_time", err)
+	networkCreated, err := time.Parse(time.RFC3339Nano, network.Created)
+	guard("network_created_time", err)
+	if networkCreated.Before(started) || networkCreated.After(ended) || containerCreated.Before(networkCreated) || containerCreated.After(ended) {
+		t.Fatal("original actual creation interval refused")
+	}
+	volume, err := f.volume(ctx)
+	guard("exact_volume", err)
+	archive("private-volume.json", volume)
+	fullContainer, err := driver.run(ctx, nil, "container", "inspect", broker.ContainerID)
+	guard("private_full_container", err)
+	if os.WriteFile(filepath.Join(out, "private-full-container.json"), fullContainer, 0600) != nil {
+		t.Fatal("private full container archive failed")
+	}
+	fullNetwork, err := driver.run(ctx, nil, "network", "inspect", network.ID)
+	guard("private_full_network", err)
+	if os.WriteFile(filepath.Join(out, "private-full-network.json"), fullNetwork, 0600) != nil {
+		t.Fatal("private full network archive failed")
+	}
+	afterContainers, err := f.inventory(ctx)
+	guard("complete_container_after", err)
+	afterNetworks, err := f.networkInventory(ctx)
+	guard("complete_network_after", err)
+	archive("private-container-after.json", afterContainers)
+	archive("private-network-after.json", afterNetworks)
+	rows["completeContainerBaselineUnchanged"] = reflect.DeepEqual(beforeContainers, afterContainers)
+	rows["completeNetworkBaselineUnchanged"] = sameBootstrapNetworkBaseline(beforeNetworks, afterNetworks)
+	rows["containerId"] = broker.ContainerID
+	rows["networkId"] = network.ID
+	rows["containerState"] = broker.State
+	rows["networkCreated"] = network.Created
+	rows["containerCreated"] = created
+	rows["networkFullDigest"] = network.Digest
+	rows["networkImmutableDigest"] = network.ImmutableDigest
+	rows["selectionPin"] = pin
+	rows["engineId"] = p.Docker.EngineID
+	rows["containerBaselineCount"] = len(beforeContainers)
+	rows["networkBaselineCount"] = len(beforeNetworks)
+	rows["exclusiveEndpointCount"] = len(network.Endpoints)
+	rows["fullPrivateTLSIdentityQualified"] = true
+	rows["originalCIDAndNetworkAbsent"] = true
+	rows["originalCreationIntervalBound"] = true
+	rows["noFreshCreatorPinMinted"] = true
+	if !reflect.DeepEqual(beforeContainers, afterContainers) || !sameBootstrapNetworkBaseline(beforeNetworks, afterNetworks) {
+		t.Fatal("complete read-only preservation failed")
+	}
+
+	// Literal targets are fixed by the independently reviewed prior proof. This
+	// snapshot authorizes comparison of this action, never a new creator pin.
+	if broker.ContainerID != "0f9097fa55ff273b69b8c8e5f85154400b830ef163b9b846808888edd46e746b" || network.ID != "d3fb496020e151168142b14664ca1b7d1a6199870f0ba288351385a585a343d9" || network.Digest != "sha256:159383285586dfc66aa22a62378df1d5123d348d9d29211617e8e9b8668855db" {
+		t.Fatal("qualified literal target drift")
+	}
+	// Fresh actual resource reads under the same six held exclusions.
+	immediateBroker, err := driver.InspectOwnedTLSBroker(ctx, owner, c.BrokerImage, port, c.BrokerConfigDigest, sha256.Sum256(c.LocalTLS.ServerCertificatePEM()), sha256.Sum256(c.LocalTLS.ServerKeyPEM()))
+	guard("immediate_full_actual_tls_broker", err)
+	immediateNetwork, err := f.networkByID(ctx, network.ID)
+	guard("immediate_actual_network", err)
+	immediateAttachments, err := f.networkAttachments(ctx, broker.ContainerID)
+	guard("immediate_actual_attachment", err)
+	ia, exists := immediateAttachments[network.Name]
+	immediateVolume, err := f.volume(ctx)
+	guard("immediate_actual_volume", err)
+	immediateCreatedRaw, err := driver.run(ctx, nil, "container", "inspect", broker.ContainerID, "--format", "{{json .Created}}")
+	guard("immediate_actual_created", err)
+	var immediateCreated string
+	guard("immediate_created_shape", json.Unmarshal(immediateCreatedRaw, &immediateCreated))
+	if immediateBroker.ContainerID != broker.ContainerID || immediateBroker.State != "running" || immediateNetwork.ID != network.ID || immediateNetwork.Digest != network.Digest || len(immediateNetwork.Endpoints) != 1 || immediateNetwork.Endpoints[broker.ContainerID] != a.EndpointID || len(immediateAttachments) != 1 || !exists || ia.NetworkID != network.ID || ia.EndpointID != a.EndpointID || !reflect.DeepEqual(volume, immediateVolume) || immediateCreated != created {
+		t.Fatal("immediate exact owned resource readmission drift")
+	}
+	rows["immediateActualResourcesReadmitted"] = true
+	revalidateEnrollment("enrollmentImmediatelyBeforeMutation")
+	validateHeldLeasePaths("leasePathsImmediatelyBeforeMutation")
+	guard("original_action_context", ctx.Err())
+	rows["actionOriginalAllocationBound"] = true
+	rows["mutationExecuted"] = nil // Outcome unknown until the exact stop returns.
+	rows["stopAttempted"] = true
+	stopRaw, stopErr := driver.run(ctx, nil, "container", "stop", "--time", "10", broker.ContainerID)
+	if os.WriteFile(filepath.Join(out, "stop.stdout.private"), stopRaw, 0600) != nil {
+		t.Fatal("actual stop output archive failed")
+	}
+	rows["stopReturnedExactID"] = bytes.Equal(bytes.TrimSpace(stopRaw), []byte(broker.ContainerID))
+	guard("literal_exact_stop", stopErr)
+	if !bytes.Equal(bytes.TrimSpace(stopRaw), []byte(broker.ContainerID)) {
+		t.Fatal("exact stop returned other identity")
+	}
+	rows["mutationExecuted"] = true
+	stopped, err := driver.InspectOwnedTLSBroker(ctx, owner, c.BrokerImage, port, c.BrokerConfigDigest, sha256.Sum256(c.LocalTLS.ServerCertificatePEM()), sha256.Sum256(c.LocalTLS.ServerKeyPEM()))
+	guard("full_stopped_tls_broker", err)
+	if stopped.ContainerID != broker.ContainerID || stopped.State != "stopped" {
+		t.Fatal("same exact stopped broker unqualified")
+	}
+	stoppedVolume, err := f.volume(ctx)
+	guard("retained_stopped_volume", err)
+	if !reflect.DeepEqual(volume, stoppedVolume) {
+		t.Fatal("selected volume changed")
+	}
+	stoppedNetwork, err := f.networkByID(ctx, network.ID)
+	guard("same_stopped_network", err)
+	stoppedAttachments, err := f.networkAttachments(ctx, broker.ContainerID)
+	guard("same_stopped_attachment", err)
+	sa, present := stoppedAttachments[network.Name]
+	if !sameBootstrapNetworkIdentity(network, stoppedNetwork) || !validBootstrapCounterTransition(network, stoppedNetwork, broker.ContainerID) || len(stoppedNetwork.Endpoints) != 0 || len(stoppedAttachments) != 1 || !present || sa.NetworkID != network.ID || sa.EndpointID != "" {
+		t.Fatal("exact empty network or known one-allocation release refused")
+	}
+	rows["knownCounterReleaseQualified"] = true
+	rows["stoppedDanglingRelationRetained"] = true
+	revalidateEnrollment("enrollmentBeforeNetworkRemoval")
+	validateHeldLeasePaths("leasePathsBeforeNetworkRemoval")
+	guard("original_remove_context", ctx.Err())
+	// Fresh actual empty-roster inspection immediately before the one rm. Full
+	// static/unknown identity and exact counters remain equal to the stopped view.
+	empty, err := f.networkByID(ctx, network.ID)
+	guard("fresh_empty_network", err)
+	if empty.Digest != stoppedNetwork.Digest || len(empty.Endpoints) != 0 {
+		t.Fatal("empty removal target drift")
+	}
+	rows["removeAttempted"] = true
+	guard("original_remove_context_after_fresh_read", ctx.Err())
+	removeRaw, removeErr := driver.run(ctx, nil, "network", "rm", network.ID)
+	if os.WriteFile(filepath.Join(out, "remove.stdout.private"), removeRaw, 0600) != nil {
+		t.Fatal("actual removal output archive failed")
+	}
+	rows["removeReturnedExactID"] = bytes.Equal(bytes.TrimSpace(removeRaw), []byte(network.ID))
+	guard("literal_exact_network_rm", removeErr)
+	if !bytes.Equal(bytes.TrimSpace(removeRaw), []byte(network.ID)) {
+		t.Fatal("exact removal returned other identity")
+	}
+	finalNetworks, err := f.networkInventory(ctx)
+	guard("complete_final_network", err)
+	if finalNetworks[network.ID].ID != "" {
+		t.Fatal("exact removed network remains")
+	}
+	originalOthers := make(map[string]bootstrapNetworkObservation, len(beforeNetworks))
+	for id, n := range beforeNetworks {
+		if id != network.ID {
+			originalOthers[id] = n
+		}
+	}
+	rows["allForeignNetworksUnchanged"] = sameBootstrapNetworkBaseline(originalOthers, finalNetworks)
+	finalContainers, err := f.inventory(ctx)
+	guard("complete_final_container", err)
+	foreignUnchanged := len(beforeContainers) == len(finalContainers)
+	for id, old := range beforeContainers {
+		if id != broker.ContainerID && !reflect.DeepEqual(old, finalContainers[id]) {
+			foreignUnchanged = false
+		}
+	}
+	rows["allForeignContainerProjectionsUnchanged"] = foreignUnchanged
+	archive("private-container-final.json", finalContainers)
+	archive("private-network-final.json", finalNetworks)
+	finalBroker, err := driver.InspectOwnedTLSBroker(ctx, owner, c.BrokerImage, port, c.BrokerConfigDigest, sha256.Sum256(c.LocalTLS.ServerCertificatePEM()), sha256.Sum256(c.LocalTLS.ServerKeyPEM()))
+	guard("full_final_retained_broker", err)
+	finalVolume, err := f.volume(ctx)
+	guard("full_final_retained_volume", err)
+	finalAttachments, err := f.networkAttachments(ctx, broker.ContainerID)
+	guard("final_stopped_relation", err)
+	fa, present := finalAttachments[network.Name]
+	if finalBroker.ContainerID != broker.ContainerID || finalBroker.State != "stopped" || !reflect.DeepEqual(volume, finalVolume) || len(finalAttachments) != 1 || !present || fa.NetworkID != network.ID || fa.EndpointID != "" {
+		t.Fatal("retained broker volume or honest dangling relation changed")
+	}
+	rows["sameStoppedContainerAndVolumeRetained"] = true
+	rows["finalContainerState"] = "stopped"
+	rows["networkRemoved"] = true
+	rows["finalNetworkCount"] = len(finalNetworks)
+	if !foreignUnchanged || !sameBootstrapNetworkBaseline(originalOthers, finalNetworks) {
+		t.Fatal("full foreign preservation failed")
+	}
+
+	rows["qualified"] = true
+	rows["stage"] = "exact_recovery_complete"
+}

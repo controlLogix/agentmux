@@ -1,0 +1,5 @@
+from pathlib import Path
+import json,os,subprocess
+out=Path('/home/ryan/.cache/agentmux-governance/p02-raw-cleanup-e6120d5e');go='/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go';fixed=json.loads((out/'focused-invocation.json').read_text())['fixedEnvironment'];fixed.update(GOOS='darwin',GOARCH='arm64',CGO_ENABLED='0');env=os.environ.copy();env.update(fixed);args=[go,'test','-c','-o',str(out/'darwin-cgo0-deployment.test'),'./deployment'];(out/'crosscompile-invocation.json').write_text(json.dumps({'args':args,'cwd':str(out/'platform'),'fixedEnvironment':fixed,'limits':'Crosscompile only; no native Darwin execution.'},indent=2)+'\n')
+with(out/'crosscompile.stdout').open('wb')as stdout,(out/'crosscompile.stderr').open('wb')as stderr:r=subprocess.run(args,cwd=out/'platform',env=env,stdout=stdout,stderr=stderr)
+(out/'crosscompile-exit.json').write_text(json.dumps({'exitCode':r.returncode})+'\n');print(r.returncode)

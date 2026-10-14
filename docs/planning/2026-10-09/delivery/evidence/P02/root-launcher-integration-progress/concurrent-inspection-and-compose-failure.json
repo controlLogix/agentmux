@@ -1,0 +1,90 @@
+{
+  "recordedAt": "2026-10-14T02:02:08.680026+00:00",
+  "reviewer": "Codex",
+  "phaseAccepted": false,
+  "results": {
+    "concurrentActualReadOnlyInspection": {
+      "testPasses": 3,
+      "actualInspectionCalls": 6,
+      "wholeInspectionBudgetSeconds": 4,
+      "resourceMutations": false,
+      "observations": [
+        "bootstrap_integration_test.go:216: read-only concurrent absent inspection: elapsedMs=1275 failureCode=none stage=unknown",
+        "bootstrap_integration_test.go:216: read-only concurrent absent inspection: elapsedMs=1365 failureCode=none stage=unknown",
+        "bootstrap_integration_test.go:216: read-only concurrent absent inspection: elapsedMs=1277 failureCode=none stage=unknown",
+        "bootstrap_integration_test.go:216: read-only concurrent absent inspection: elapsedMs=1341 failureCode=none stage=unknown",
+        "bootstrap_integration_test.go:216: read-only concurrent absent inspection: elapsedMs=1429 failureCode=none stage=unknown",
+        "bootstrap_integration_test.go:216: read-only concurrent absent inspection: elapsedMs=1462 failureCode=none stage=unknown"
+      ]
+    },
+    "latestComposeRun": {
+      "passed": false,
+      "failure": "Both Bootstrap calls returned Docker command timeout; fixture ownership verification for cleanup also failed. This run is not accepted.",
+      "exactProject": "amx-p02-bootstrap-b13fd6a91709f1b3",
+      "followupReadOnlyObservation": {
+        "command": "Windows-owned docker.exe --context desktop-linux ps --all --quiet --no-trunc --filter label=com.docker.compose.project=amx-p02-bootstrap-b13fd6a91709f1b3",
+        "exitCode": 0,
+        "returnedContainerIds": [],
+        "limitations": "Exact-project label query only; not a full cleanup or baseline comparison. No stop or removal was performed."
+      }
+    }
+  },
+  "files": [
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/p02-compose-receipt-rzRoeq-preflight.jsonl",
+      "sha256": "e6c865dd36b62916d43187e167404ef7f4b933c14c09e2877b71ebc5bd8ebffe"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/p02-compose-receipt-rzRoeq-preflight.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/p02-compose-receipt-rzRoeq-preflight-exit.txt",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/p02-compose-receipt-rzRoeq-compose.jsonl",
+      "sha256": "f9c9f60e12fcd3cc394d646331a40e589399a3c04ed27a85ba2d4a026cfb3834"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/p02-compose-receipt-rzRoeq-compose.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/p02-compose-receipt-rzRoeq-compose-exit-code.txt",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/p02-compose-receipt-rzRoeq-source-hashes.json",
+      "sha256": "97768725e53870d6d77ff78be203f1ffdd0b49afd2b948ab1033a9595b7a5cab"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/p02-concurrent-absent-inspection-JL7QgE-concurrent.jsonl",
+      "sha256": "cf8e9cbd358fcee518277b5b79691caf05dd053774a60e6652fc36315cb904a7"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/p02-concurrent-absent-inspection-JL7QgE-concurrent.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/p02-concurrent-absent-inspection-JL7QgE-exit-code.txt",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/p02-concurrent-absent-inspection-JL7QgE-source-hashes.json",
+      "sha256": "1489aad0a63d28d6063a5140d80c19aa78bd40e692dd92d23f2afa3761bfc4f1"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/failed-compose-864389266-fixture.json",
+      "sha256": "b898d4d5d5e3358453f4dea99f586dd2be68d8305a8179c96d2e24de6f0844d4"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/failed-compose-864389266-bootstrap-call-results.json",
+      "sha256": "d7c833b8944a0349d87ae665be4fee3527aae982ef3f9e829aaea036d0bd68f1"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/failed-compose-864389266-cleanup-unverified.json",
+      "sha256": "608e428bd985dc793e6dcbd9b2f14aa88497498e72a51b47b246eb412282ab52"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "reviewer": "Codex",
+  "date": "2026-10-14T18:50:45.287884+00:00",
+  "scope": "Actual eight-file current runtime/launcher/Compose/kernel-command source review for P02 checkpoint preparation",
+  "files": [
+    {
+      "path": "platform/runtime/snapshot_linux.go",
+      "sha256": "2adf8ef1a70fa737f36bc015dc5bdb18e164baf2e4fd13437ac1c6d73f14addb",
+      "semanticReview": "Reviewed bounded rooted source reads, trusted digest checks before and after sealing, required write/grow/shrink/seal/exec seals, static ELF type/architecture/dependency admission and execution through the retained read-only descriptor. No pathname fallback. Source and staging close calls consume their Go owners; this source review does not prove physical close-error detection or native execution on every target.",
+      "decision": "No new concrete finding from actual source review",
+      "runtimeAcceptance": "not_claimed"
+    },
+    {
+      "path": "platform/runtime/parent_unix.go",
+      "sha256": "7fe95fe66db69c01889f60fd2c4428579daf080d379dff25fc80064962c4a9be",
+      "semanticReview": "Reviewed private inherited read-pipe admission, effective UID/mode/access checks, polling setup, actual EOF cancellation, once-only cancellation join and lease duplicate SameFile validation. The pipe carries lifecycle control only. Lease authority/canonical lock binding belongs to the validated caller; this helper does not independently prove an acquired flock.",
+      "decision": "No new concrete finding from actual source review",
+      "runtimeAcceptance": "not_claimed"
+    },
+    {
+      "path": "platform/runtime/stop_role.go",
+      "sha256": "04be379b36456a781a26fa0d3f78da84253501e0fff5bd599acede45c97a8b1d",
+      "semanticReview": "Reviewed four fixed protected role names, exact Group-owned child selection, shared stop-token exclusion, original combined grace/reap context, TERM/KILL through owned process handles and reuse of the sole Wait completion. Exhausted reaping reports incomplete work; no PID lookup or process adoption.",
+      "decision": "No new concrete finding from actual source review",
+      "runtimeAcceptance": "not_claimed"
+    },
+    {
+      "path": "platform/launcher/docker_environment.go",
+      "sha256": "b575d40d285f7f6b4419905ad0e472472e7d253f798457e8daf348ff4d569c29",
+      "semanticReview": "Reviewed removal of ambient COMPOSE_* and Docker endpoint/context overrides and fixed orphan-removal/environment-file settings. Config/auth discovery and host interoperability remain available but require separate enrolled driver validation. This environment filter does not supply engine identity or authorization.",
+      "decision": "No new concrete finding from actual source review",
+      "runtimeAcceptance": "not_claimed"
+    },
+    {
+      "path": "platform/launcher/release.go",
+      "sha256": "8ca1ea1507b1cbcb45190bdc897eee82b816d9d693a436c06f9bf1c90aa4cd8d",
+      "semanticReview": "Reviewed independent expected public key/authority/version/parent digest, signed authorization, closed bounded metadata including duplicate/alias/Unicode/trailing-data checks, same-file no-follow bounded package reads, exact official broker/version pins and four-member verification. Returned verified members are private fixed arrays/value fields; assembly bytes are copied. Package verification is distinct from immutable executable preparation.",
+      "decision": "No new concrete finding from actual source review",
+      "runtimeAcceptance": "not_claimed"
+    },
+    {
+      "path": "platform/launcher/doctor.go",
+      "sha256": "39bf88cf0d98cae330ca35f6134cca46a18e1da095766424cab482ecc2e6f8ce",
+      "semanticReview": "Reviewed read-only explicit selection, client/config classification, fixed public status/code allowlists, omitted private paths/raw errors, total five-second bound with reserved driver cleanup and unknown missing probes. Probe callbacks are trusted cooperative integration code; the source explicitly does not promise preemption of arbitrary Go callbacks or application readiness.",
+      "decision": "No new concrete finding from actual source review",
+      "runtimeAcceptance": "not_claimed"
+    },
+    {
+      "path": "platform/deployment/compose.go",
+      "sha256": "2ed62e60ac9c6b1f56afef8156e7def69de8cdcb6918f89bf8e0a3412e0935c1",
+      "semanticReview": "Reviewed deterministic one-broker composition, exact official image digest, loopback binding, named persistent data, ownership labels, fixed private config target and credential size/UTF8/NUL checks. Dollar escaping and disabled HTML escaping preserve actual NATS configuration. Inline content requires writable root and remains accessible to container/Docker administrators; rendered private bytes grant no readiness or ownership.",
+      "decision": "No new concrete finding from actual source review",
+      "runtimeAcceptance": "not_claimed"
+    },
+    {
+      "path": "platform/cmd/agentmux-kernel/main.go",
+      "sha256": "27e6bb75c3d41cc2367a4590bcf0bf12fe420ae76f020ac484fa0ea399f95cad",
+      "semanticReview": "Reviewed fixed no-argument role dispatcher, signal plus inherited parent-lifetime context, fixed four roles and hub-bound NATS subject derivation. Inherited lifetime lease remains open through process exit. This command delegates authority/config/error handling to the reviewed protocol and role implementations; it provides no general plugin or command executor.",
+      "decision": "No new concrete finding from actual source review",
+      "runtimeAcceptance": "not_claimed"
+    }
+  ],
+  "dependencyInspected": "assembly.Verified uses private fixed [4]Member values and returns copies; no shared mutable member slice is exported.",
+  "limits": [
+    "Source semantics only; no new test, native runtime, lifecycle or whole-phase pass.",
+    "Global sourceDigest/checkpoint not authorized by this partial record.",
+    "Other source, contracts, tooling, generated content and actual prior component review pins must be reconciled before global approval.",
+    "Unpromoted Windows observer and mid-boot cache drafts are excluded."
+  ],
+  "phaseAccepted": false,
+  "checkpointAccepted": false
+}

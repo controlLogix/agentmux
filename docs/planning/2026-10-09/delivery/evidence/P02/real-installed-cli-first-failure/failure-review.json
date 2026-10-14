@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "1.0.0",
+  "phase": "P02",
+  "result": "Failed real installed cold refresh",
+  "testExit": 1,
+  "frontendElapsedNanoseconds": 3413026163,
+  "frontendOutput": "Historical accepted bootstrap receipt; current instance unknown",
+  "refreshResult": "Repeated five-second unavailable transport attempts; no completed observation",
+  "sourceHashes": [
+    {
+      "path": "platform/launcher/bootstrap_docker_integration_test.go",
+      "sha256": "aa5c9c663c7f83150a439053cc28f00f69454b4ec6db19bc02a3a2dc4307b57f"
+    },
+    {
+      "path": "platform/launcher/installed_cli_compose_integration_linux_test.go",
+      "sha256": "086b35f58f4cfa6b4f13139cb710b21dc5fd4b20a7f08b09f3373388efa7265c"
+    },
+    {
+      "path": "platform/launcher/owner_bridge.go",
+      "sha256": "5447740219199671a63ef106350e9ceb112fd01ccae1b0a94d51ed028a291ae7"
+    },
+    {
+      "path": "platform/launcher/local_broker_authority.go",
+      "sha256": "665d3bfa44c0fef97dd4a49ab10b9c1a4a799f391d1694e5d3eceab75a918a1d"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "producer.sh",
+      "sha256": "a390edf7b9e282835a4a51c253ab9fa29fd99cd46b8207a07c75e12fcd535062"
+    },
+    {
+      "name": "invocation.json",
+      "sha256": "d89d1ad5325892cb232ffdb55f7e1a3a7af71451236da691f74a60b1c156153d"
+    },
+    {
+      "name": "events.jsonl",
+      "sha256": "8a4a3ae70d8a8d162746e6115903c981697490ca134e3368acd6772a7e3addf6"
+    },
+    {
+      "name": "stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "exit.txt",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    }
+  ],
+  "safeFixtureArtifacts": [
+    {
+      "name": "cold-timing.json",
+      "sha256": "388240eba14ce6c384e1616775e122adbbb3e226018dcd9280e1f35896ad77fd"
+    },
+    {
+      "name": "cold.json",
+      "sha256": "c2cff8bfad95c7b19a1767ed8ae65b3cdb125867073b5f9bfc2874e588861cec"
+    },
+    {
+      "name": "fixture.json",
+      "sha256": "9ca0c3ebe6384e45a3eaf60d37cbc666e7546efe6c109eedc4e65287c69616ac"
+    },
+    {
+      "name": "cleanup.json",
+      "sha256": "aeff9b59357d7aa33c9871b04ba9786e334a703e427f55f0fb3a3627ec9e9c2e"
+    }
+  ],
+  "limits": [
+    "No passing installed lifecycle acceptance claimed.",
+    "Preserve first compile failure ETwHn8 separately.",
+    "C owns production refresh finding repair.",
+    "No native Linux or macOS qualification from this WSL run."
+  ]
+}

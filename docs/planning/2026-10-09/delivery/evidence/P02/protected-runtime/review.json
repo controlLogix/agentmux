@@ -1,0 +1,162 @@
+{
+  "recordedAt": "2026-10-13T21:10:12.723604+00:00",
+  "baseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "status": "bounded-Linux-supervisor-slice-qualified",
+  "phaseAccepted": false,
+  "taskCompleted": false,
+  "scope": "P02-T02 descriptor-backed protected process staging/start/stop/reap; no NATS readiness or detached lifecycle integration.",
+  "environment": {
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "sourceFilesystem": "native WSL Linux cache",
+    "goVersion": "go1.27.2 linux/amd64",
+    "sourceCopy": "/home/ryan/.cache/agentmux-tests/p02-runtime-igjl5x9v/platform",
+    "networkDependencies": "GOPROXY=off/GOSUMDB=off/GOTOOLCHAIN=local/-mod=readonly",
+    "fixtureBuild": "Static CGO-disabled Go helper executed; separate CGO-enabled dynamic helper built only for rejection, never executed."
+  },
+  "command": "prepared go test -race -json ./runtime ./kernel/assembly",
+  "exitCode": 0,
+  "seconds": 19.731,
+  "testCounts": {
+    "runtime": {
+      "topLevel": 14,
+      "subtests": 8
+    },
+    "kernel/assembly": {
+      "topLevel": 10,
+      "subtests": 47
+    }
+  },
+  "namedPassEntries": 79,
+  "sourceUnchangedDuringRun": true,
+  "sourceBindings": [
+    {
+      "path": "platform/go.mod",
+      "sha256": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+      "testedSha256": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+      "currentMatchesTested": true
+    },
+    {
+      "path": "platform/go.sum",
+      "sha256": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+      "testedSha256": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+      "currentMatchesTested": true
+    },
+    {
+      "path": "platform/runtime/README.md",
+      "sha256": "51bd1399f410da9bc0899eba02028e76d987b14dbd22df1495c2a7fbb5b11b17",
+      "testedSha256": "51bd1399f410da9bc0899eba02028e76d987b14dbd22df1495c2a7fbb5b11b17",
+      "currentMatchesTested": true
+    },
+    {
+      "path": "platform/runtime/snapshot_darwin_test.go",
+      "sha256": "29823b7772b37e6935c3d4261016dcc05cb9c3ba1a84deff8e69ff1dc6f5b93d",
+      "testedSha256": "29823b7772b37e6935c3d4261016dcc05cb9c3ba1a84deff8e69ff1dc6f5b93d",
+      "currentMatchesTested": true
+    },
+    {
+      "path": "platform/runtime/snapshot_linux.go",
+      "sha256": "fea9f5daf47c79f1f65a9f81f90a3df99cc324dcc3cc23a20585922b35aea43b",
+      "testedSha256": "fea9f5daf47c79f1f65a9f81f90a3df99cc324dcc3cc23a20585922b35aea43b",
+      "currentMatchesTested": true
+    },
+    {
+      "path": "platform/runtime/snapshot_unsupported.go",
+      "sha256": "8455c45f2628914a95a897b5539888d597035a01d345487a061b1bf79fccb182",
+      "testedSha256": "8455c45f2628914a95a897b5539888d597035a01d345487a061b1bf79fccb182",
+      "currentMatchesTested": true
+    },
+    {
+      "path": "platform/runtime/supervisor.go",
+      "sha256": "25c83fd49ff7fea03ec239f32b57ece8c3ddd756000deee4e01eea99da1cfa5d",
+      "testedSha256": "25c83fd49ff7fea03ec239f32b57ece8c3ddd756000deee4e01eea99da1cfa5d",
+      "currentMatchesTested": true
+    },
+    {
+      "path": "platform/runtime/supervisor_linux_test.go",
+      "sha256": "37355c6a6d87f75d62f6af9fa0963d135b48d9f349502603448ad390c629d1f7",
+      "testedSha256": "37355c6a6d87f75d62f6af9fa0963d135b48d9f349502603448ad390c629d1f7",
+      "currentMatchesTested": true
+    },
+    {
+      "path": "platform/runtime/testdata/dynamic/main.go",
+      "sha256": "3cac6809a685f4986b167bf231ecfeb0fca298bc4ee700b124b7d6c93d97fe84",
+      "testedSha256": "3cac6809a685f4986b167bf231ecfeb0fca298bc4ee700b124b7d6c93d97fe84",
+      "currentMatchesTested": true
+    },
+    {
+      "path": "platform/runtime/testdata/role/main.go",
+      "sha256": "ce544b3b6027ab8d224388787d15d4793fee63c05cce1847e20c623898848c82",
+      "testedSha256": "ce544b3b6027ab8d224388787d15d4793fee63c05cce1847e20c623898848c82",
+      "currentMatchesTested": true
+    },
+    {
+      "path": "platform/kernel/assembly/README.md",
+      "sha256": "d9c9934bd2562ae2f5696de8696b4162cbc57a6fbf9518943b5d3deac7d36eb7",
+      "testedSha256": "d9c9934bd2562ae2f5696de8696b4162cbc57a6fbf9518943b5d3deac7d36eb7",
+      "currentMatchesTested": true
+    },
+    {
+      "path": "platform/kernel/assembly/verify.go",
+      "sha256": "d28ef2e43d2e8536373321c7021ace5d902903dac8b8ed5ed9a8bbb4f2b6c6f9",
+      "testedSha256": "d28ef2e43d2e8536373321c7021ace5d902903dac8b8ed5ed9a8bbb4f2b6c6f9",
+      "currentMatchesTested": true
+    },
+    {
+      "path": "platform/kernel/assembly/verify_test.go",
+      "sha256": "138b42bae577380b9abbc00f18c699d5f4abd8b9ea8e548bb1330e82d8c6374d",
+      "testedSha256": "138b42bae577380b9abbc00f18c699d5f4abd8b9ea8e548bb1330e82d8c6374d",
+      "currentMatchesTested": true
+    }
+  ],
+  "repairs": [
+    {
+      "finding": "Source-buffer hash did not bind actual memfd bytes if changed before seal.",
+      "repair": "Seal and verify kernel seals first, then re-read/hash immutable descriptor against trusted digest, then ELF-check immutable bytes.",
+      "actualNegative": "TestChangedMemfdBeforeSealIsRejected alters a real memfd after approved source copy, then calls same sealAndVerify path. Refusal occurs after F_GET_SEALS proves write seal."
+    },
+    {
+      "finding": "ET_EXEC/ET_DYN allowed unchecked interpreter/library dependencies.",
+      "repair": "Initial protected foundation rejects PT_INTERP/DT_NEEDED; static Go fixture CGO disabled.",
+      "actualNegative": "Real native CGO ELF has interpreter and needed library; original denied; variant replaces only PT_INTERP header with PT_NULL and is denied by DT_NEEDED. Neither dynamic image executed."
+    }
+  ],
+  "actualProcessChecks": [
+    "Four distinct actual fixture PIDs, literal special-character arguments and isolated explicit environment.",
+    "TERM-to-KILL escalation, wait-based exit state, idempotent Stop and unrelated sentinel survives.",
+    "Parent cancellation after start, canceled-before-start and cancellation during partial startup all reap owned children.",
+    "Partial Start failure cleans earlier child; no caller PID adoption or process-group kill API.",
+    "Concurrent Stop honors waiting caller deadline without preventing first owner from reaping.",
+    "Prepared image survives original source replacement and seal denies write even after same owner restores write permission bit.",
+    "Actual immediate exit status and bounded/truncated child output observed."
+  ],
+  "publicAPI": [
+    "Prepare(ctx, rawAssembly, packageDir, assembly.Trust, Limits) -> *Prepared",
+    "Prepared.Start(ctx, [4]RoleOptions, Deadlines) -> *Group",
+    "Prepared.Close, Group.Status, Group.Output, Group.Done, Group.Stop"
+  ],
+  "ownership": [
+    "Only platform/runtime source/tests/README and this evidence written. Initial approved platform module pins unchanged.",
+    "No global tracker/manifest/pattern attestation, launcher/Compose, P01 schema, legacy runtime or Docker change.",
+    "No model/provider or business-state process launched; only compiled disposable fixture children."
+  ],
+  "historicalEvidence": "Earlier full runs and observer test failure retained. The old source-buffer-only snapshots are preserved externally at before-sealed-rehash/source-hashes.json and runtime/; they do not establish current staging security. Earlier seal test EACCES was a test setup issue, fixed by restoring owner write permission then observing kernel EPERM.",
+  "darwin": {
+    "product": "ErrPlatformUnqualified, no insecure path fallback",
+    "researchSource": "platform/runtime/snapshot_darwin_test.go",
+    "execution": "not-run-on-this-WSL-host",
+    "requiredNext": "Actual native macOS CI run of unlinked descriptor probe, including RO write/reopened writer and actual child execution; review immutable-object strategy and implement qualified Darwin backend. Mandatory native macOS boot/Compose acceptance remains unchanged. Successful probe alone is not same-UID immutability proof."
+  },
+  "limits": [
+    "Not a sandbox for same-UID trusted plugins or privileged debuggers; package checksums do not enroll authority.",
+    "OS syscall stalls cannot be guaranteed interruptible at an exact wall-clock deadline. Local regular-file size/context checks and descriptor starts have explicit lifecycle budgets.",
+    "Processes are started, not application-ready. NATS role/account/readiness and healthy detachment integration remain required.",
+    "Only directly created children are owned. Trusted protected roles must not daemonize or create unmanaged descendants; no unknown process-group kill is used.",
+    "Static protected Go policy does not restrict ordinary language-neutral P03 plugins.",
+    "Native macOS/Linux host qualification and phase gate remain separate; this execution is actual WSL Linux."
+  ],
+  "patternCheck": {
+    "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+    "exitCode": 1,
+    "error": "Review is stale or missing: inspect changes and refresh sourceDigest"
+  }
+}

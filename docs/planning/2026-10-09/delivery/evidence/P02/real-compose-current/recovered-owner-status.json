@@ -1,0 +1,116 @@
+{
+  "schemaVersion": "1.0.0",
+  "observationId": "observation_a3041255b9d7e34a24f7c9402d51b0ae",
+  "observedAt": "2026-10-14T05:19:41.33681Z",
+  "sourceRevision": 4,
+  "startupAttemptId": "attempt_2737d2736be026e8003a2b9d9dabe7f2",
+  "disposition": "started",
+  "caller": {
+    "principalId": "fixture_owner",
+    "kind": "human",
+    "authenticatedIdentityRef": {
+      "id": "fixture_owner_record",
+      "ownerHubId": "fixture_hub",
+      "revision": 1
+    },
+    "scope": {
+      "organizationId": "fixture_org",
+      "projectId": null,
+      "workspaceId": null
+    }
+  },
+  "errors": [],
+  "instance": {
+    "instanceId": "instance_643d25eff3a4aa853546813ddeef1b45",
+    "displayName": "Disposable bootstrap hub",
+    "profileId": "profile_107bd5b589120b042623ca47ea10f2a4",
+    "installedVersion": "1.2.3",
+    "runningVersion": "1.2.3",
+    "mode": "local",
+    "composeProject": "amx-p02-bootstrap-5d936af80fd71c39",
+    "contextDisplayName": "desktop-linux",
+    "contextFingerprint": "sha256:ab6cc18d43efafb0badbc1cb403c59d7855248af1172938858a6f154febe2331",
+    "endpoint": "tls://127.0.0.1:1498",
+    "dashboard": null,
+    "readiness": "degraded",
+    "services": [
+      {
+        "serviceId": "boot",
+        "availability": "available",
+        "unavailableReason": null,
+        "readiness": "ready",
+        "observedAt": "2026-10-14T05:19:41.312792Z",
+        "sourceRevision": 3
+      },
+      {
+        "serviceId": "kernel-lifecycle",
+        "availability": "available",
+        "unavailableReason": null,
+        "readiness": "ready",
+        "observedAt": "2026-10-14T05:19:41.312165Z",
+        "sourceRevision": 3
+      },
+      {
+        "serviceId": "internal-communication",
+        "availability": "available",
+        "unavailableReason": null,
+        "readiness": "ready",
+        "observedAt": "2026-10-14T05:19:40.325266Z",
+        "sourceRevision": 2
+      },
+      {
+        "serviceId": "exported-status",
+        "availability": "available",
+        "unavailableReason": null,
+        "readiness": "ready",
+        "observedAt": "2026-10-14T05:19:40.327193Z",
+        "sourceRevision": 2
+      },
+      {
+        "serviceId": "work",
+        "availability": "unavailable",
+        "unavailableReason": "not_implemented",
+        "readiness": "unknown",
+        "observedAt": null,
+        "sourceRevision": null
+      },
+      {
+        "serviceId": "hub_federation",
+        "availability": "unavailable",
+        "unavailableReason": "not_implemented",
+        "readiness": "unknown",
+        "observedAt": null,
+        "sourceRevision": null
+      }
+    ]
+  },
+  "persistence": {
+    "availability": "available",
+    "backend": "nats_jetstream",
+    "profile": "profile_107bd5b589120b042623ca47ea10f2a4",
+    "serverId": "fixture_server",
+    "domainId": "fixture_domain",
+    "readiness": "ready",
+    "storagePressure": {
+      "state": "unknown",
+      "percentUsed": null
+    },
+    "replicationHealth": {
+      "state": "unknown",
+      "replicas": null
+    },
+    "observedAt": "2026-10-14T05:19:39.300701Z"
+  },
+  "work": {
+    "state": "unavailable",
+    "active": null,
+    "projects": null,
+    "reserved": null,
+    "sourceCursor": null,
+    "observedAt": null
+  },
+  "hubs": {
+    "inventoryState": "unavailable",
+    "entries": []
+  }
+}

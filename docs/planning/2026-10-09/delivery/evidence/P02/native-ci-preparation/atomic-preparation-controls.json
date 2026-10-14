@@ -1,0 +1,33 @@
+{
+  "recordKind": "atomic-checkpoint-and-owned-preparation-controls",
+  "sourceBaseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "phaseAccepted": false,
+  "nativeCIExecuted": false,
+  "preservesEarlierPreparationRecords": true,
+  "sourceHashes": {
+    "tests/platform/native_go.py": "f717188676d0e21fa5c8fa674a7289bb1ba7462a590d577dea9c266ab33aa8a3",
+    ".github/workflows/platform-foundation.yml": "291c0bc23d8c313f90eb45e8ef9691e0caf45fdf0524263a1ab1e87947a9201b"
+  },
+  "controls": {
+    "command": "python tests/platform/native_go.py --self-test",
+    "exitCode": 0,
+    "tests": 16,
+    "kind": "Synthetic controls; no native execution, download or real process signaling"
+  },
+  "refinements": [
+    "A timed-out scope is failed even when its eventual wait reports exit zero.",
+    "Checkpoint files are written to a private temporary file, flushed, then atomically replace result.json.",
+    "An interrupted checkpoint publication preserves the previous valid report.",
+    "Tool preparation runs in one owned fixed self-script process, bounded by the shared deadline; timeout kills and reaps only that owned session.",
+    "No thread is left downloading after a pretend timeout, and no shared downloader globals are replaced.",
+    "Git/Go subprocess queries use the remaining collection budget.",
+    "Budget exhaustion before preparation prevents preparation launch and marks all planned scopes unexecuted.",
+    "Research remains separate, and runtime/boot platform qualification distinctions are unchanged."
+  ],
+  "independentReview": "Pending final closure on these refinements",
+  "limits": [
+    "No native CI dispatch, candidate push, task acceptance or phase advancement.",
+    "Root's new profile-boundary and real-bootstrap candidate freeze remains the basis for its final all-source qualification.",
+    "Old source-bound execution and preparation reports are preserved, not relabeled as current acceptance."
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "scope": "Direct source review of new pinned Go module declarations and checksum data; no external library source or native acceptance",
+  "sourceSHA256": {
+    "platform/go.mod": "d2449cddbd7671d0e73998ae6057abf56b371f4e422b213db0e00a24a30d3fb9",
+    "platform/go.sum": "421240c9a0e5f903b47f996949937448ce9aeace1eca369342418e18a1ce2c90"
+  },
+  "review": [
+    "Read both complete module files and current production import declarations. Module path is fixed github.com/controlLogix/agentmux/platform, compiler declaration is explicit1.27.2. NATS client1.54.0 supplies communication; JSONschema6.0.3 and regexp2 1.11.0 validate fixed HOST/history schemas. x/sys0.48.0 supplies held-descriptor/OS primitives; remaining crypto/text/compression/key/ID modules are explicit versions.",
+    "No replace, exclude, retract, local filesystem substitution, floating version or arbitrary external command directive exists. go.sum contains exactly18 module/module-metadata checksum rows for the nine declared dependencies, with no duplicate module/version keys.",
+    "This declaration/data review binds exact checkout bytes. Existing compiled component evidence binds module manifests separately; incidental copied module hashes do not claim a third-party source-security audit."
+  ],
+  "checks": {
+    "noSubstitution": true,
+    "checksumRows": 18,
+    "duplicateKeys": false
+  },
+  "findings": [],
+  "limits": [
+    "No network resolution, package download, module upgrade, new build or test.",
+    "Does not newly verify upstream checksum authenticity, external library source, dependency vulnerability status or native runtime support.",
+    "No shared metadata or Git change."
+  ]
+}

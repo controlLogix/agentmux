@@ -1,0 +1,35 @@
+{
+  "recordKind": "native-ci-preparation-not-acceptance",
+  "sourceCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "workingTreeChanges": true,
+  "phaseAccepted": false,
+  "nativeFoundationExecuted": false,
+  "independentReview": {
+    "reviewer": "Codex subagent Mencius",
+    "scope": "Read-only workflow and runner review, not native execution or phase acceptance",
+    "findingsResolved": 4,
+    "additionalRegressionCoverageIssueResolved": true,
+    "remainingFindings": 0,
+    "reviewedRunnerSha256": "db0561185f13d56b3143569c3045a7ad5bcf004058e423b8f711684b439d473f"
+  },
+  "sourceHashes": {
+    "tests/platform/native_go.py": "db0561185f13d56b3143569c3045a7ad5bcf004058e423b8f711684b439d473f",
+    ".github/workflows/platform-foundation.yml": "0533c5492f58d8a6d1a393ea99cff284d20b69a6c9b98b9733617a9dadb90acb"
+  },
+  "environment": "Native Windows, PowerShell, preparation checks only",
+  "checks": [
+    {"command": "python tests/platform/native_go.py --self-test", "exitCode": 0, "tests": 7},
+    {"command": "python -m unittest discover -s tests/platform -p test_inventory.py -v", "exitCode": 0, "tests": 23},
+    {"command": "python -m unittest discover -s tests/platform -p test_source_surface.py -v", "exitCode": 0, "tests": 7},
+    {"check": "Python AST parsing and workflow YAML parsing", "exitCode": 0},
+    {"check": "Unsupported Windows native runner invocation", "exitCode": 1, "expectedRefusal": true, "downloadsStarted": false, "childTestsStarted": false},
+    {"command": "node .bytedesk/design-patterns/check.mjs check --root .", "exitCode": 1, "failure": "Review is stale or missing: inspect changes and refresh sourceDigest"}
+  ],
+  "limits": [
+    "These preparation results cannot accept a delivery task or phase gate.",
+    "Native Linux/macOS workflows have not run for this harness candidate.",
+    "Compose, real protected boot, WSL and all required supported-environment evidence remain outstanding.",
+    "The coordinator owns source registration, final candidate review, commit/push and remote evidence review.",
+    "No tracker changes, CI dispatch, commit, push, merge or release by this worker."
+  ]
+}

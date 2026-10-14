@@ -1,0 +1,98 @@
+{
+  "scope": "Independent read-only current P02 inline config and renderer review; blocked, no phase acceptance",
+  "reviewedSourceHashes": {
+    "platform/launcher/docker.go": "01e7fa8434d370fc0ccc00df49c418bf6960d6046f3a0689facab21229965dae",
+    "platform/launcher/docker_config_test.go": "88c2887ff9836f2f81d4e5b988041f0a295afea74c6709e59ebff47ca012c833",
+    "platform/deployment/compose.go": "f045ad9172e3e5fde14e69b9e8450c78287387f79e540caca7968e4cf8af130b",
+    "platform/deployment/compose_test.go": "752d446218b30f15728140f45b80384247aa7ff3c45a73c5f191b8bc80aba131"
+  },
+  "providedEvidence": {
+    "reviewSHA256": "4455d1c41be5703102474823a7ed921814ee0939ba159abbf54d82f179012b95",
+    "manifestSHA256": "0eb15dcd967e28f5b8be47073d93b21509a8c606064e18023714e147845d8977",
+    "verifiedArtifactCount": 31,
+    "actualCounts": {
+      "inline-tests": {
+        "pass": 16,
+        "fail": 0,
+        "skip": 0
+      },
+      "launcher-race": {
+        "pass": 130,
+        "fail": 0,
+        "skip": 0
+      }
+    },
+    "scope": "Controlled subprocess launcher tests, not actual Docker full-stack boot"
+  },
+  "offlineReproduction": {
+    "snapshot": "/home/ryan/.cache/agentmux-tests/p02-inline-independent-tfmco7tc",
+    "sourceHashes": {
+      "go.mod": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+      "go.sum": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+      "launcher/docker_config_test.go": "88c2887ff9836f2f81d4e5b988041f0a295afea74c6709e59ebff47ca012c833",
+      "launcher/profile_test.go": "a89a5f71c3b411912359556736480dfbe2d4f5d8caf21c2ee71e634f54001b80",
+      "launcher/profile.go": "1766879285d724d3fe38df73e955471a5521f45e82c27866ede28628ba3efc67",
+      "launcher/review_admission_test.go": "e20b280d2bc3327d915b0b5f1815418e0271bd07d2b5513117091afb054963c2",
+      "launcher/lock_unix.go": "b8232a239d47e43d8fac3759d137abfe3b2502adaae6e62d25691323872f9859",
+      "launcher/doctor.go": "39bf88cf0d98cae330ca35f6134cca46a18e1da095766424cab482ecc2e6f8ce",
+      "launcher/doctor_test.go": "04468e954cda5014c02722162fdebc10fd8c8927d1481d2140020a49d9339584",
+      "launcher/docker_test.go": "c134b20a73191c5def882bc0c29277dd5b479af09791294935809eed6a35f35c",
+      "launcher/lock_unix_test.go": "2c22f87e9b9fa6fdfdbf22976f11179d18ca475bdb189df27f2595dec6ba2896",
+      "launcher/docker.go": "01e7fa8434d370fc0ccc00df49c418bf6960d6046f3a0689facab21229965dae"
+    },
+    "command": "GOPROXY=off GOSUMDB=off GOTOOLCHAIN=local GOFLAGS=-mod=readonly go test -json ./launcher -run TestIndependentInlineAdmissionBoundaries",
+    "actualExitCode": 1,
+    "expectedNegativeFixtureFailureCount": 10,
+    "failedBoundaries": [
+      "command_interpolation",
+      "environment_interpolation",
+      "image_interpolation",
+      "mount_interpolation",
+      "healthcheck_interpolation",
+      "label_interpolation",
+      "duplicate_content",
+      "duplicate_configs",
+      "wrong_command_shape",
+      "invalid_utf8_content"
+    ],
+    "actualCLIOrDockerInvocations": 0,
+    "explanation": "Each test requires unsafe input rejection; each failed because validateCompose returned nil. Supplied ConfigDigest was correctly recalculated for each synthetic input, so this isolates admission semantics rather than an unrelated hash mismatch."
+  },
+  "findings": [
+    {
+      "severity": "blocking",
+      "issue": "Interpolation outside config content remains accepted",
+      "proof": "Command,environment,image repository,volume target,healthcheck and extra label values accepted ${SYNTHETIC...}; subprocess inherits ambient environment and working directory, so exact body hash does not freeze interpolated values.",
+      "smallestFix": "Reject interpolation in all other inline-document values and use typed literal command/healthcheck; simpler still, admit only the fixed renderer inline shape with exact config argv and no optional environment or healthcheck."
+    },
+    {
+      "severity": "blocking",
+      "issue": "Duplicate and malformed JSON shapes are accepted before commands",
+      "proof": "Duplicate content and top-level configs keys, object-shaped command, and raw invalidUTF8 content all pass validateCompose. DisallowUnknownFields does not reject duplicate keys; any-typed fields have no shape validation; UTF8 validation after JSON decode misses replacement of malformed raw bytes.",
+      "smallestFix": "Check raw UTF8 and duplicate decoded object keys at every depth before closed typed decoding. Restrict Command and Healthcheck shapes, or omit those options from the inline branch."
+    }
+  ],
+  "nonFindings": [
+    "Renderer escapes every dollar in supplied BrokerConfig, produces deterministic JSON with no ambient interpolation in other generated values, uses exact config target/uid/gid/mode and official digest-pinned NATS image.",
+    "Decoded content limit correctly accounts for dollar pairs; raw128KiB and decoded64KiB limits tested.",
+    "Inline file sources,extra configs,duplicate refs,wrong target/uid/mode and read_only root are denied by existing tests.",
+    "StartOwned checks configured Compose5.5.1 before commands, then independently observes exact version/context/endpoint/engine before mutation.",
+    "Actual safe qualified Docker artifact separately observed file0400 uid0 gid0 and literal bytes; copied writable-layer file is documented honestly, not claimed read-only mount."
+  ],
+  "limits": [
+    "No Docker/network/model/provider execution in this independent fixture. The fixture proves admission acceptance, not actual engine mutation or an exploit.",
+    "Duplicate/malformed documents may be rejected later by Compose; that does not satisfy pre-command strict admission.",
+    "Current fixed renderer output does not itself introduce these unsafe values. Gaps are in the adapter admission contract.",
+    "Native macOS/Linux/WSL acceptance and full stack health remain separate gate obligations."
+  ],
+  "sources": [
+    "https://docs.docker.com/reference/compose-file/interpolation/",
+    "https://docs.docker.com/reference/compose-file/configs/"
+  ],
+  "artifactHashes": {
+    "findings.jsonl": "c800c9bc1ffaa613393806ffe02eeb7b95737da853446e25b9846d4292bc370c",
+    "manifest.json": "8166df3bf42b3990c2fd67bfae70c72915a1537b5c6d5e5b9930721767615cdd",
+    "offline-boundary-probe.go.txt": "e20b280d2bc3327d915b0b5f1815418e0271bd07d2b5513117091afb054963c2",
+    "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

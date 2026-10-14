@@ -1,0 +1,47 @@
+{
+  "scope": "Independent read-only startup cleanup cause repair review; not phase acceptance",
+  "source": {
+    "platform/runtime/supervisor.go": "45437190fd61616c18c35c79ff4fc02c97b558d607bf2043bea2e6b14d40d824",
+    "platform/runtime/startup_cleanup_cause.go": "ab782c24cb286edd246f390f393fcb910b9a6735284609ea2a79fa9a548d6708",
+    "platform/runtime/startup_cleanup_cause_test.go": "593341080daec653c737e4aa341a80248c24a3d782e2b6c84cb0b1607afbd1cd"
+  },
+  "originalEvidence": "/home/ryan/.cache/agentmux-governance/p02-startup-cleanup-cause-Y0FwcH",
+  "originalExits": {
+    "exit.txt": "0",
+    "affected.exit": "0",
+    "vet.exit": "0"
+  },
+  "focusedTests": [
+    "TestStartupCleanupRetainsOriginalCauseWithoutPublishingPrivatePath",
+    "TestPartialStartFailureReapsEarlierChild"
+  ],
+  "affectedTests": [
+    "TestParentCancellationReapsProcesses",
+    "TestCanceledStartupCreatesNoProcesses",
+    "TestCancellationDuringPartialStartupReapsOwnedChildren"
+  ],
+  "findings": [],
+  "assessment": "The repaired partial-start cleanup-failure branch returns the same Group and a safe fixed wrapper that unwraps both actual startup and cleanup errors. This adds no process lookup, adoption, Wait or signal path. Value and pointer presentation/JSON are fixed while errors.Is and errors.As retain exact original cause.",
+  "negative": {
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-json",
+      "./runtime",
+      "-run",
+      "^TestStartupCleanupRetainsOriginalCauseWithoutPublishingPrivatePath$"
+    ],
+    "exit": 1,
+    "seconds": 12.302872469001159,
+    "expectedFailureObserved": true,
+    "originalSHA256": "ab782c24cb286edd246f390f393fcb910b9a6735284609ea2a79fa9a548d6708",
+    "mutantSHA256": "aead9ecaa6ca513f1d53f5ac5c4cf16f16e571a2ccf08b6cf385281f03329f7c"
+  },
+  "limits": [
+    "The cause combination/privacy test is a unit contract proof.",
+    "Existing real partial-start/cancel/parent controls passed; no actual simultaneous Start and Stop failure was forced.",
+    "No broad tests repeated or production changes made."
+  ]
+}

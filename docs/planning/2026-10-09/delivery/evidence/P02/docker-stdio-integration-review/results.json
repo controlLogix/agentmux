@@ -1,0 +1,57 @@
+{
+  "scope": "Independent P02 Docker inspection integration and doctor test review",
+  "source": {
+    "platform/launcher/docker.go": "69f62b583d5c9165777496e6b931b4c31da00a75f26a4b53f8c4d136cfd67135",
+    "platform/launcher/docker_stdio_inspection_test.go": "09e918eb774685a3a9f69ae8eafaf4f18986b375e1aeccfd9ce199c0a9701f46",
+    "platform/launcher/doctor_test.go": "0f18795d4a9de0a642ecd3f987ee4bc5910829dd2f11c2808de5e14475aeb043",
+    "platform/launcher/docker_reads.go": "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813",
+    "platform/launcher/docker_stdio.go": "151b05060ce4ed601f9985f745834f73c97808645da5008cca48cc501d638197"
+  },
+  "sourceReview": {
+    "reviewers": ["Collaborating Codex session", "Plato independent source reviewer"],
+    "findings": [],
+    "checks": [
+      "Selected endpoint admission precedes all other inspection reads.",
+      "Actual client, server and Compose pins must pass before the qualified Windows helper runs.",
+      "The qualified helper has no fallback; errors return no trusted observation.",
+      "Native Unix retains the three literal parallel reads and engine/Linux identity checks.",
+      "Caller deadlines, sibling cancellation and joins remain enforced.",
+      "Doctor requires endpoint first and each remaining permitted command exactly once, without requiring their completion order."
+    ],
+    "limits": "Plato reviewed source only. The collaborating Codex session ran the controlled checks below. Neither performed actual Docker execution or changed shared production source."
+  },
+  "execution": {
+    "candidate": "/home/ryan/.cache/agentmux-governance/docker-stdio-integration-review/candidate-BvPagO/platform",
+    "sourceFiles": 120,
+    "sourceListSha256": "91dc729db7ed17dc8cfe193ac6bfe834f54547f1a0089d42d34d524eda539d74",
+    "sourceUnchanged": true,
+    "focused": {
+      "command": "go test -race -count=1 -timeout=90s -run '^TestDockerWindowsInspectionVerifiesSelectionBeforeStdio$' -json ./launcher",
+      "exit": 0,
+      "passedTestEntries": 7,
+      "packageSeconds": 2.828,
+      "rawSha256": "b2ee66107b8bf57086119d924a5d6f333864d8094afa4e89c6b3c84096fa1c44"
+    },
+    "affected": {
+      "command": "go test -race -count=1 -timeout=180s -run '^Test(Docker|Doctor)' -json ./launcher",
+      "exit": 0,
+      "passedTestEntries": 107,
+      "packageSeconds": 25.249,
+      "rawSha256": "4033890da0911a1eaef85c12a2dd7d44dbea42da87837610932a87d3a6e8ab8d"
+    },
+    "failedOrSkippedEntries": 0,
+    "stderrEmpty": true,
+    "vetCommand": "go vet ./launcher",
+    "vetExit": 0,
+    "vetOutputEmpty": true,
+    "limits": "Owned Linux CLI fixtures only. GORACE removes only the post-exit sleep. This affected selection is not the full launcher suite."
+  },
+  "preservedHistory": "Root retains its old-source controlled failure on hvwh18; the separate helper record retains earlier wider launcher failures and the intermediate compilation failure. These later passes do not replace or relabel those records.",
+  "remaining": [
+    "Root-owned actual Windows read-only preflight and integration evidence.",
+    "Full launcher suite after other owners close their failures.",
+    "Global registration, required phase checks and branch candidate acceptance."
+  ],
+  "phaseAccepted": false,
+  "actualWindowsTransportQualified": false
+}

@@ -1,0 +1,36 @@
+{
+  "kind": "independent-host-contract-checkpoint-source-review",
+  "sourceSHA256": {
+    "contracts/v1/schemas/host-owner-status-request.schema.json": "4ec02e90dd0d2c0c2d772c46ad4657e0389b0ecd42822d0c98c64863f720a380",
+    "contracts/v1/schemas/host-owner-status-reply.schema.json": "b615bf04490cf7e2c4f4047fd318327e5f10ab628140e17dc60092e8901d553d",
+    "tests/contracts/test_owner_bridge.py": "628930ed27d8c72de8372765ebaab06d95f488996cf4168a4420dac5196496d8",
+    "tests/contracts/test_conformance.py": "a1cde5fd3745899e5b062b3f3784be2ed531b170c46f0848bf469099450d7959",
+    "sdk/python/agentmux_contracts/validation.py": "54b3e233ab3cc3e6f3350872897fd3f2b5ba651f6a9c26741e367af017030242",
+    "sdk/typescript/src/index.ts": "7ef0e8f0663e03073b6ba1e558f95f2e745562a409e8ac3b6e3facfeea643a52",
+    "platform/launcher/owner_bridge_validation.go": "03c24f0ab8c9f59866fee2fd286dd3b61e6fe40d70a7c79b515a1d8626fa84b3"
+  },
+  "actualReview": [
+    "Both standalone HOST schemas exact closed required7fields. Request only ensure/status; full6field protected scope; fixed nonce and attempt patterns; microsecond timestamp contract. Reply embeds existing unchanged L04 observation. Description explicitly says shape/correlation do not grant authority.",
+    "Runtime embedded schema string bytes exactly reproduce current public request/reply SHA256; no convenience contract or changed L04 schema introduced. Optional NATS Msg.Reply is transport metadata, not an extra JSON field.",
+    "Owner SDK test exercises both independent clients,validensure/status/unchangedreply and missingeveryrequiredfield,aliases/extras/wildcards/version/timestamp/unknownoperation/nullattempt refusals. Client.many enforces output count before zip loop; empty/truncated vectors cannot pass silently.",
+    "Existing Python and TS schema loaders discover *.schema.json resources and compile references; no SDKsource or businessregistry diff fromHEAD. Standalone HOST validation does not register a business envelope route or confer external kernel permission."
+  ],
+  "findings": [],
+  "publicSchemaMatchesRuntimeEmbedded": {
+    "request": true,
+    "reply": true
+  },
+  "sdkSourceChangesFromHEAD": [],
+  "businessRegistryChangesFromHEAD": [],
+  "sourceSliceReviewed": true,
+  "executionPerformed": false,
+  "actualSDKCohortQualified": false,
+  "globalSourceDigestRefreshAuthorized": false,
+  "phaseAccepted": false,
+  "limits": [
+    "Source review only; no SDK tests/build/provider/engine execution by reviewer.",
+    "Previously recorded SDKshape controls are preserved separately; actual current pending starting/reused outputs still need independently assigned SDKqualification.",
+    "JSON shape is not fullscope/nonce/freshness/authenticatedproducer authority; client/server enforce those separately.",
+    "No shared source,index,tracker,Git or generated assets changed."
+  ]
+}

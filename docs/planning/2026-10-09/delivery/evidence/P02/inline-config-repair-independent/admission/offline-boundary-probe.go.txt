@@ -1,0 +1,31 @@
+package launcher
+
+import (
+ "crypto/sha256"
+ "encoding/json"
+ "strings"
+ "testing"
+)
+
+func TestIndependentInlineAdmissionBoundaries(t *testing.T) {
+ t.Run("valid_control",func(t *testing.T){c:=inlineFixture();raw,_:=json.Marshal(c);owner:=fixtureOwner();owner.ConfigDigest=sha256.Sum256(raw);if err:=validateCompose(raw,owner);err!=nil{t.Fatal("valid repaired fixture refused")}})
+ cases:=map[string]func(*composeDocument){
+  "command_interpolation":func(c *composeDocument){s:=c.Services["broker"];s.Command=[]string{"--config","${SYNTHETIC_CONFIG_TARGET}"};c.Services["broker"]=s},
+  "environment_interpolation":func(c *composeDocument){s:=c.Services["broker"];s.Environment=map[string]string{"SYNTHETIC":"${SYNTHETIC_ENV_VALUE}"};c.Services["broker"]=s},
+  "image_interpolation":func(c *composeDocument){s:=c.Services["broker"];s.Image="${SYNTHETIC_IMAGE_REPO}@sha256:"+strings.Repeat("c",64);c.Services["broker"]=s},
+  "mount_interpolation":func(c *composeDocument){s:=c.Services["broker"];s.Volumes=[]string{"data:/${SYNTHETIC_MOUNT_TARGET}"};c.Services["broker"]=s},
+  "healthcheck_interpolation":func(c *composeDocument){s:=c.Services["broker"];s.Healthcheck=map[string]any{"test":[]string{"CMD","${SYNTHETIC_COMMAND}"}};c.Services["broker"]=s},
+  "label_interpolation":func(c *composeDocument){s:=c.Services["broker"];s.Labels["synthetic.extra"]="${SYNTHETIC_LABEL}";c.Services["broker"]=s},
+ }
+ for name,change:=range cases{t.Run(name,func(t *testing.T){c:=inlineFixture();change(&c);raw,_:=json.Marshal(c);owner:=fixtureOwner();owner.ConfigDigest=sha256.Sum256(raw);if validateCompose(raw,owner)==nil{t.Error("unbound Compose interpolation accepted")}})}
+ for _,kind:=range []string{"duplicate_content","duplicate_configs","wrong_command_shape","invalid_utf8_content"}{t.Run(kind,func(t *testing.T){
+  c:=inlineFixture();raw,_:=json.Marshal(c)
+  switch kind {
+  case "duplicate_content":raw=[]byte(strings.Replace(string(raw),`"content":`, `"content":"${SYNTHETIC}","content":`,1))
+  case "duplicate_configs":raw=append([]byte(`{"configs":null,`),raw[1:]...)
+  case "wrong_command_shape":s:=c.Services["broker"];s.Command=map[string]any{"synthetic":true};c.Services["broker"]=s;raw,_=json.Marshal(c)
+  case "invalid_utf8_content":raw=[]byte(strings.Replace(string(raw),`"content":"`,"\"content\":\""+string([]byte{0xff}),1))
+  }
+  owner:=fixtureOwner();owner.ConfigDigest=sha256.Sum256(raw);if validateCompose(raw,owner)==nil{t.Error("ambiguous or malformed Compose shape accepted")}
+ })}
+}

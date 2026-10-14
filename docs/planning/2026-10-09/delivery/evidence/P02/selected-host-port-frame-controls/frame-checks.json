@@ -1,0 +1,38 @@
+{
+  "checks": [
+    {
+      "name": "frame",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "./portobserver",
+        "-run",
+        "^Test(FixedRequestBoundary|FixedResultBoundaryAndCorrelation)$",
+        "-race",
+        "-count=1",
+        "-json"
+      ],
+      "environment": {},
+      "exit": 0,
+      "elapsedSeconds": 3.6256815180022386
+    },
+    {
+      "name": "frame-build",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "build",
+        "-o",
+        "/home/ryan/.cache/agentmux-governance/p02-port-observer-first-slice/observer-frame-windows-amd64.exe",
+        "./cmd/agentmux-host-observer"
+      ],
+      "environment": {
+        "GOOS": "windows",
+        "GOARCH": "amd64",
+        "CGO_ENABLED": "0"
+      },
+      "exit": 0,
+      "elapsedSeconds": 4.743060911998327
+    }
+  ],
+  "sourceStable": true
+}

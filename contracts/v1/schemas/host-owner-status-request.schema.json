@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:host-owner-status-request",
+  "title": "Local host owner status request",
+  "description": "A request through the separately enrolled local HOST account. Scope and identifiers are correlation data; broker authentication and host policy grant access.",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "kernelScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "hubId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "instanceId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "profileId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "assemblyDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "releaseManifestDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "releaseVersion": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/version"
+        }
+      },
+      "required": [
+        "hubId",
+        "instanceId",
+        "profileId",
+        "assemblyDigest",
+        "releaseManifestDigest",
+        "releaseVersion"
+      ]
+    }
+  },
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "kind": {
+      "const": "host-owner-status-request"
+    },
+    "operation": {
+      "enum": [
+        "ensure",
+        "status"
+      ]
+    },
+    "requestId": {
+      "type": "string",
+      "pattern": "^request_[a-f0-9]{32}$"
+    },
+    "invocationId": {
+      "type": "string",
+      "pattern": "^attempt_[a-f0-9]{32}$"
+    },
+    "scope": {
+      "$ref": "#/$defs/kernelScope"
+    },
+    "sentAt": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "kind",
+    "operation",
+    "requestId",
+    "invocationId",
+    "scope",
+    "sentAt"
+  ]
+}

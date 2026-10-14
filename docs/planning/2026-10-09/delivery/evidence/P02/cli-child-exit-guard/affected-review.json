@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.0.0",
+  "focusedReviewSHA256": "175b07e3c7162c9b5499009a62e1aa5e77f0f9883264fc0fa29da3e04e4913c9",
+  "candidateSource": "The same frozen platform copy as the focused pass and isolated child.Done mutant failure.",
+  "invocation": {
+    "cwd": "/home/ryan/.cache/agentmux-governance/p02-cli-child-guard-305b4b1e/platform",
+    "commands": {
+      "affected": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-race",
+        "-count=1",
+        "-json",
+        "./cmd/agentmux-runtime"
+      ],
+      "vet": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "vet",
+        "./cmd/agentmux-runtime"
+      ]
+    },
+    "fixedEnvironment": {
+      "GOTOOLCHAIN": "local",
+      "GOPROXY": "off",
+      "GOSUMDB": "off",
+      "GOWORK": "off",
+      "GORACE": "atexit_sleep_ms=0"
+    }
+  },
+  "exitCodes": {
+    "affected": 0,
+    "vet": 0
+  },
+  "namedResults": {
+    "pass": 8,
+    "fail": 0,
+    "skip": 0
+  },
+  "artifactsSHA256": {
+    "affected.py": "cb66012c9cc4b5890d5c7e17299c6f15269a23e4cb5d3be68b8ff473f4467ceb",
+    "affected-invocation.json": "f22b0d8b570584d6edef42722fea0d1044eb76443f48f391a4e3ebe02529638a",
+    "affected-exits.json": "b7f08cd2898048b203ec23ce5dbe46dce9aa194c6bf8a64fe5a2f2b36a0831e8",
+    "affected.stdout": "f0d1a8ecbadbe6c132aa06ed8f93e8e36688300f871f440db96640b4a453a746",
+    "affected.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vet.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vet.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "scope": "Affected installed runtime command package only; no launcher or real Compose qualification."
+}

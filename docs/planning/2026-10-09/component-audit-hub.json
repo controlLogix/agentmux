@@ -30,7 +30,10 @@
         "contracts/v1/schemas/status-query.schema.json",
         "contracts/v1/schemas/task-inspect.schema.json",
         "contracts/v1/schemas/task-reserve.schema.json",
-        "hub/names.py"
+        "hub/names.py",
+        "contracts/v1/schemas/host-owner-status-reply.schema.json",
+        "contracts/v1/schemas/host-owner-status-request.schema.json",
+        "tests/contracts/test_owner_bridge.py"
       ],
       "role": "runtime",
       "baselineGroups": [
@@ -1855,6 +1858,881 @@
           "note": "Bounded single-task aggregate admission fixture; existing production and20storage assertions retained. Actual fixture qualification and independent review remain separate evidence."
         }
       ]
+    },
+    {
+      "id": "PLAT-04",
+      "name": "Additive Go source coverage qualification",
+      "files": [
+        "tests/platform/test_source_surface.py"
+      ],
+      "role": "test-support",
+      "baselineGroups": [],
+      "ownerPhase": "P02",
+      "disposition": "extend",
+      "currentBehavior": [
+        "The existing guard requires component and source ownership for current languages; it had no Go runtime source to qualify in P01."
+      ],
+      "reusePlan": "Extend only eligible suffixes and test-file exclusion; preserve the rest of the guard byte for byte.",
+      "enhancements": [
+        "Check real Go missing, stale and duplicate surface records and test ownership."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "PLAT-04-C01",
+          "description": "Go runtime sources require ownership and fresh unique surface records; test files retain inventory ownership. Missing/stale/duplicate controls must fail.",
+          "existingTests": [
+            "tests/platform/test_source_surface.py"
+          ],
+          "requiredEnvironment": "Python and disposable Git repositories on native Linux/macOS/WSL; focused Windows review also recorded.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "PLAT-04-C02",
+          "description": "Preserve all original Python/JS/TS/mjs/shell eligibility assertions and historical evidence; no historical Go qualification claim.",
+          "existingTests": [
+            "tests/platform/test_source_surface.py"
+          ],
+          "requiredEnvironment": "Exact guard source comparison and focused language controls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "No runtime or data migration. Preserve every old inventory record and qualification owner."
+      ],
+      "reviewHistory": [
+        {
+          "date": "2026-10-13T20:34:17.124060+00:00",
+          "reviewer": "Codex",
+          "scope": "Actual Go guard fixtures only",
+          "note": "Approved P02 preflight mapping; no fictional future source or test pass attestation in component manifest."
+        }
+      ]
+    },
+    {
+      "id": "PLAT-01",
+      "name": "Opt-in Go launcher/profile/bootstrap",
+      "files": [
+        "platform/go.mod",
+        "platform/go.sum",
+        "platform/launcher/lock_unix.go",
+        "platform/launcher/lock_unix_test.go",
+        "platform/launcher/docker.go",
+        "platform/launcher/docker_test.go",
+        "platform/launcher/bootstrap.go",
+        "platform/launcher/bootstrap_config.go",
+        "platform/launcher/bootstrap_config_test.go",
+        "platform/launcher/bootstrap_integration_test.go",
+        "platform/launcher/docker_config_test.go",
+        "platform/launcher/docker_environment.go",
+        "platform/launcher/docker_environment_test.go",
+        "platform/launcher/docker_instance.go",
+        "platform/launcher/docker_instance_test.go",
+        "platform/launcher/doctor.go",
+        "platform/launcher/doctor_test.go",
+        "platform/launcher/host_config.go",
+        "platform/launcher/host_config_test.go",
+        "platform/launcher/kernel_status.go",
+        "platform/launcher/kernel_status_test.go",
+        "platform/launcher/profile.go",
+        "platform/launcher/profile_boundary_test.go",
+        "platform/launcher/profile_test.go",
+        "platform/launcher/release.go",
+        "platform/launcher/release_test.go",
+        "platform/launcher/startup_session.go",
+        "platform/launcher/startup_session_lifecycle_test.go",
+        "platform/launcher/startup_session_test.go",
+        "platform/launcher/startup_status.go",
+        "platform/launcher/startup_status_test.go",
+        "platform/cmd/agentmux-runtime/main.go",
+        "platform/cmd/agentmux-runtime/main_test.go",
+        "platform/launcher/authority_proof_test.go",
+        "platform/launcher/bootstrap_compose_binding.go",
+        "platform/launcher/bootstrap_invocation_test.go",
+        "platform/launcher/docker_archive_linux_test.go",
+        "platform/launcher/docker_archive_test.go",
+        "platform/launcher/docker_archives.go",
+        "platform/launcher/docker_reads.go",
+        "platform/launcher/docker_reads_linux_test.go",
+        "platform/launcher/docker_reads_test.go",
+        "platform/launcher/docker_stdio.go",
+        "platform/launcher/docker_stdio_inspection_test.go",
+        "platform/launcher/docker_stdio_test.go",
+        "platform/launcher/docker_tls.go",
+        "platform/launcher/docker_tls_test.go",
+        "platform/launcher/host_policy.go",
+        "platform/launcher/host_policy_test.go",
+        "platform/launcher/kernel_status_stage_test.go",
+        "platform/launcher/kernel_status_tls_test.go",
+        "platform/launcher/local_broker_authority.go",
+        "platform/launcher/local_server_trust.go",
+        "platform/launcher/local_server_trust_test.go",
+        "platform/launcher/lock_acl_darwin_test.go",
+        "platform/launcher/owner_bridge.go",
+        "platform/launcher/owner_bridge_admission_test.go",
+        "platform/launcher/owner_bridge_host_loader_test.go",
+        "platform/launcher/owner_bridge_test.go",
+        "platform/launcher/owner_bridge_validation.go",
+        "platform/launcher/session_cleanup.go",
+        "platform/launcher/session_cleanup_test.go",
+        "platform/launcher/startup_session_deadline_test.go",
+        "platform/launcher/startup_write_proof.go",
+        "platform/launcher/startup_write_proof_test.go",
+        "platform/launcher/transport_cleanup.go",
+        "platform/launcher/transport_cleanup_test.go",
+        "platform/privatefs/access.go",
+        "platform/privatefs/access_darwin.go",
+        "platform/privatefs/access_darwin_nocgo.go",
+        "platform/privatefs/access_darwin_nocgo_test.go",
+        "platform/privatefs/access_darwin_test.go",
+        "platform/privatefs/access_linux.go",
+        "platform/privatefs/access_linux_test.go",
+        "platform/privatefs/access_test.go",
+        "platform/privatefs/access_unsupported.go",
+        "platform/launcher/bootstrap_operation.go",
+        "platform/launcher/bootstrap_operation_test.go",
+        "platform/launcher/startup_pending_test.go",
+        "platform/launcher/host_receipt_binding.go",
+        "platform/launcher/host_receipt_binding_test.go",
+        "platform/launcher/host_receipt_server.go",
+        "platform/launcher/owner_bridge_receipt.go",
+        "platform/launcher/owner_bridge_pending_test.go",
+        "platform/launcher/installed_cli_startup_test.go",
+        "platform/launcher/owner_bridge_receipt_test.go",
+        "platform/cmd/agentmux-runtime/main_child_exit_linux_test.go",
+        "platform/launcher/owner_bridge_refresh_test.go",
+        "platform/launcher/installed_cli_compose_integration_linux_test.go",
+        "platform/cmd/agentmux-runtime/main_frontend_budget_test.go",
+        "platform/launcher/request_diagnostic.go",
+        "platform/launcher/request_diagnostic_test.go",
+        "platform/cmd/agentmux-runtime/main_diagnostic_test.go",
+        "platform/launcher/installed_cli_compose_failures_integration_test.go",
+        "platform/launcher/owner_bridge_probe.go",
+        "platform/launcher/owner_bridge_probe_test.go",
+        "platform/launcher/bootstrap_history.go",
+        "platform/launcher/bootstrap_history_fs.go",
+        "platform/launcher/bootstrap_history_root.go",
+        "platform/launcher/bootstrap_history_stage.go",
+        "platform/launcher/bootstrap_history.schema.json",
+        "platform/launcher/bootstrap_history_test.go",
+        "platform/launcher/bootstrap_history_linux_test.go",
+        "platform/launcher/bootstrap_history_fault_test.go",
+        "platform/launcher/bootstrap_history_close_cause_test.go",
+        "platform/launcher/host_history_policy.go",
+        "platform/launcher/host_history_policy_test.go",
+        "platform/launcher/host_history_policy_linux_test.go",
+        "platform/launcher/owner_bridge_history.go",
+        "platform/launcher/bootstrap_history_owner_integration_test.go",
+        "platform/cmd/agentmux-runtime/main_history.go",
+        "platform/cmd/agentmux-runtime/main_history_test.go",
+        "platform/launcher/owner_bridge_request_permission_test.go",
+        "platform/launcher/owner_bridge_nonce_window_linux_test.go",
+        "platform/launcher/bootstrap_docker_current_qualification_controls_test.go",
+        "platform/launcher/installed_cli_history_controls_test.go"
+      ],
+      "role": "platform-foundation",
+      "baselineGroups": [],
+      "ownerPhase": "P02",
+      "disposition": "extend",
+      "currentBehavior": [
+        "New isolated opt-in P02 source; no legacy entrypoint or business writer is replaced."
+      ],
+      "reusePlan": "Retain legacy sources and assertion history; add only the approved foundation boundary.",
+      "enhancements": [
+        "Explicit release/profile/endpoint and fixed assembly validation before spawn; deterministic no-Jev/no-LLM boot.",
+        "Process-held advisory lock; context/daemon/resource identity, cold/warm/concurrent/crashed-owner and persistent reuse checks with real Compose.",
+        "Bounded doctor/readiness/error/status shape; later services unavailable and zero distinct from unknown."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "PLAT-01-C01",
+          "description": "Explicit release/profile/endpoint and fixed assembly validation before spawn; deterministic no-Jev/no-LLM boot.",
+          "existingTests": [
+            "platform/launcher/lock_unix_test.go"
+          ],
+          "requiredEnvironment": "Actual native Linux/macOS and WSL process/broker/Compose fixtures as applicable; unit tests do not substitute for integration.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "PLAT-01-C02",
+          "description": "Process-held advisory lock; context/daemon/resource identity, cold/warm/concurrent/crashed-owner and persistent reuse checks with real Compose.",
+          "existingTests": [
+            "platform/launcher/lock_unix_test.go"
+          ],
+          "requiredEnvironment": "Actual native Linux/macOS and WSL process/broker/Compose fixtures as applicable; unit tests do not substitute for integration.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "PLAT-01-C03",
+          "description": "Bounded doctor/readiness/error/status shape; later services unavailable and zero distinct from unknown.",
+          "existingTests": [
+            "platform/launcher/lock_unix_test.go"
+          ],
+          "requiredEnvironment": "Actual native Linux/macOS and WSL process/broker/Compose fixtures as applicable; unit tests do not substitute for integration.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "PLAT-01-C04",
+          "description": "Actual installed ensure/status/host with fully authenticated NATS L04; exact invocation and owner/full-scope freshness; malformed/revoked replies; cold/warm/concurrent/owner recovery, frontend-exit survival, ten-second legitimate starting and refresh. Separately validate receipt-only bootstrap-progress: it records admitted request acceptance, leaves current instance state unknown, never replaces NATS L04, and never hides authority, revoked enrollment, malformed replies, completed child or concrete cleanup failure. Verify the real installed candidate within ten seconds from invocation entry.",
+          "existingTests": [
+            "platform/launcher/owner_bridge_test.go",
+            "platform/launcher/owner_bridge_admission_test.go",
+            "platform/launcher/owner_bridge_host_loader_test.go",
+            "platform/launcher/bootstrap_integration_test.go",
+            "platform/cmd/agentmux-runtime/main_test.go",
+            "platform/launcher/bootstrap_operation_test.go",
+            "platform/launcher/startup_pending_test.go",
+            "platform/launcher/owner_bridge_pending_test.go",
+            "platform/launcher/host_receipt_binding_test.go",
+            "platform/launcher/installed_cli_startup_test.go",
+            "platform/launcher/owner_bridge_receipt_test.go",
+            "platform/cmd/agentmux-runtime/main_child_exit_linux_test.go",
+            "platform/launcher/owner_bridge_refresh_test.go",
+            "platform/launcher/installed_cli_compose_integration_linux_test.go",
+            "platform/cmd/agentmux-runtime/main_frontend_budget_test.go",
+            "platform/launcher/request_diagnostic_test.go",
+            "platform/cmd/agentmux-runtime/main_diagnostic_test.go",
+            "platform/launcher/installed_cli_compose_failures_integration_test.go",
+            "platform/launcher/owner_bridge_probe_test.go",
+            "platform/launcher/bootstrap_history_test.go",
+            "platform/launcher/bootstrap_history_linux_test.go",
+            "platform/launcher/bootstrap_history_fault_test.go",
+            "platform/launcher/bootstrap_history_close_cause_test.go",
+            "platform/launcher/host_history_policy_test.go",
+            "platform/launcher/host_history_policy_linux_test.go",
+            "platform/launcher/bootstrap_history_owner_integration_test.go",
+            "platform/cmd/agentmux-runtime/main_history_test.go",
+            "platform/launcher/owner_bridge_request_permission_test.go",
+            "platform/launcher/owner_bridge_nonce_window_linux_test.go",
+            "platform/launcher/bootstrap_docker_current_qualification_controls_test.go",
+            "platform/launcher/installed_cli_history_controls_test.go"
+          ],
+          "requiredEnvironment": "Native Linux, native macOS and approved WSL actual installed CLI with pinned Compose and NATS; component TLS/socket passes are separate. Require Linux amd64 and arm64, native macOS amd64 and arm64, and approved WSL. Darwin cgo-enabled execution and cgo-disabled refusal are distinct checks; cross-compilation alone is insufficient.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P02"
+        },
+        {
+          "id": "PLAT-01-C05",
+          "description": "Actual held-descriptor owner/mode/nlink/no-follow/ancestry plus Darwin private-object/public-ancestor ACL and local ownership-enabled mount admission; bound secret/trust files and refusal without cgo.",
+          "existingTests": [
+            "platform/privatefs/access_darwin_test.go",
+            "platform/privatefs/access_darwin_nocgo_test.go",
+            "platform/privatefs/access_linux_test.go",
+            "platform/launcher/lock_acl_darwin_test.go",
+            "platform/launcher/local_server_trust_test.go"
+          ],
+          "requiredEnvironment": "Linux/WSL and actual native Darwin cgo; native ownership-disabled mount control remains required. Require Linux amd64 and arm64, native macOS amd64 and arm64, and approved WSL. Darwin cgo-enabled execution and cgo-disabled refusal are distinct checks; cross-compilation alone is insufficient.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P02"
+        }
+      ],
+      "migrationChecks": [
+        "Distinct profile/account/process/volume ownership; no business migration or legacy policy changes. Stop only exact-owned new resources; retain new and old persistent state."
+      ],
+      "reviewHistory": [
+        {
+          "date": "2026-10-13T20:38:37.464979+00:00",
+          "reviewer": "Codex",
+          "scope": "Register actual files during implementation",
+          "note": "Implementation remains under review. Current files do not establish that all planned checks pass."
+        },
+        {
+          "date": "2026-10-14T14:55:59.382784+00:00",
+          "reviewer": "Codex",
+          "scope": "Promote reviewed diagnostic history foundation",
+          "note": "Private fixed-schema history grants no readiness or ownership; actual Run and CLI integration remain pending."
+        }
+      ]
+    },
+    {
+      "id": "KERN-01",
+      "name": "Fixed assembly and boot role",
+      "files": [
+        "platform/kernel/assembly/README.md",
+        "platform/kernel/assembly/verify.go",
+        "platform/kernel/assembly/verify_test.go",
+        "platform/cmd/agentmux-kernel/main.go",
+        "platform/kernel/assembly/limits_test.go",
+        "platform/kernel/assembly/open_unix.go",
+        "platform/kernel/assembly/open_unix_test.go",
+        "platform/kernel/assembly/open_unsupported.go",
+        "platform/kernel/assembly/root_test.go",
+        "platform/kernel/boot/integration_test.go",
+        "platform/kernel/boot/process_integration_test.go",
+        "platform/kernel/boot/run.go"
+      ],
+      "role": "platform-foundation",
+      "baselineGroups": [],
+      "ownerPhase": "P02",
+      "disposition": "extend",
+      "currentBehavior": [
+        "New isolated opt-in P02 source; no legacy entrypoint or business writer is replaced."
+      ],
+      "reusePlan": "Retain legacy sources and assertion history; add only the approved foundation boundary.",
+      "enhancements": [
+        "Four distinct approved roles, manifest/release/binary/API checks and contained entrypoints; substitutions rejected before spawn.",
+        "Boot dependency readiness via NATS; no hosted prerequisite or domain mutation; exact partial failure/recovery status."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "KERN-01-C01",
+          "description": "Four distinct approved roles, manifest/release/binary/API checks and contained entrypoints; substitutions rejected before spawn.",
+          "existingTests": [
+            "platform/kernel/assembly/verify_test.go"
+          ],
+          "requiredEnvironment": "Actual native Linux/macOS and WSL process/broker/Compose fixtures as applicable; unit tests do not substitute for integration.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "KERN-01-C02",
+          "description": "Boot dependency readiness via NATS; no hosted prerequisite or domain mutation; exact partial failure/recovery status.",
+          "existingTests": [
+            "platform/kernel/assembly/verify_test.go"
+          ],
+          "requiredEnvironment": "Actual native Linux/macOS and WSL process/broker/Compose fixtures as applicable; unit tests do not substitute for integration.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Distinct profile/account/process/volume ownership; no business migration or legacy policy changes. Stop only exact-owned new resources; retain new and old persistent state."
+      ],
+      "reviewHistory": [
+        {
+          "date": "2026-10-13T20:38:37.464979+00:00",
+          "reviewer": "Codex",
+          "scope": "Register actual files during implementation",
+          "note": "Implementation remains under review. Current files do not establish that all planned checks pass."
+        }
+      ]
+    },
+    {
+      "id": "KERN-03",
+      "name": "Protected internal communication role",
+      "files": [
+        "platform/kernel/communication/README.md",
+        "platform/kernel/communication/config.go",
+        "platform/kernel/communication/config_test.go",
+        "platform/kernel/communication/run.go",
+        "platform/kernel/protocol/README.md",
+        "platform/kernel/protocol/aliases_test.go",
+        "platform/kernel/protocol/codec.go",
+        "platform/kernel/protocol/codec_test.go",
+        "platform/kernel/protocol/credentials.go",
+        "platform/kernel/protocol/credentials_unix_test.go",
+        "platform/kernel/protocol/private_unix.go",
+        "platform/kernel/protocol/private_unsupported.go",
+        "platform/kernel/protocol/transport.go",
+        "platform/kernel/protocol/server_trust.go",
+        "platform/kernel/protocol/server_trust_darwin.go",
+        "platform/kernel/protocol/server_trust_linux.go",
+        "platform/kernel/protocol/server_trust_test.go",
+        "platform/kernel/protocol/server_trust_unix.go",
+        "platform/kernel/protocol/server_trust_unsupported.go",
+        "platform/kernel/protocol/transport_cleanup_test.go",
+        "platform/localtls/client.go",
+        "platform/localtls/client_test.go"
+      ],
+      "role": "platform-foundation",
+      "baselineGroups": [],
+      "ownerPhase": "P02",
+      "disposition": "extend",
+      "currentBehavior": [
+        "New isolated P02 source; actual integrated protected role processes and native boot remain under implementation."
+      ],
+      "reusePlan": "Retain legacy application/bridge/config identities; add only approved protected account or infrastructure execution boundary.",
+      "enhancements": [
+        "Real account/credentials/exports prove approved reads and denial of internal subscriptions/publications, forged status, wildcard/request commands and system/JetStream administration."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "KERN-03-C01",
+          "description": "Real account/credentials/exports prove approved reads and denial of internal subscriptions/publications, forged status, wildcard/request commands and system/JetStream administration.",
+          "existingTests": [
+            "platform/kernel/communication/config_test.go"
+          ],
+          "requiredEnvironment": "Real supported native Linux/macOS and WSL process/NATS fixtures; initial isolated nativeWSL evidence does not prove full platform boot.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "KERN-03-C02",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T03",
+          "description": "Validate closed bounded protected-role wire objects and exact field casing; reject duplicate/unknown/UTF8/context/release/role/revision/freshness errors. Preserve broker-bound role identity, private canonical per-role credentials, owned bounded NATS transport and fail-closed faults. No ordinary plugin ABI or general auth service is qualified.",
+          "existingTests": [
+            "platform/kernel/communication/config_test.go",
+            "platform/kernel/protocol/aliases_test.go",
+            "platform/kernel/protocol/codec_test.go",
+            "platform/kernel/protocol/credentials_unix_test.go"
+          ],
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "requiredEnvironment": "Current candidate-bound native Linux/macOS/WSL environment and real broker/artifact evidence as applicable; source/unit checks do not imply product boot."
+        },
+        {
+          "id": "KERN-03-C03",
+          "description": "All credential-bearing installed local clients use explicit enrolled roots/DNS/leaf pin and TLS before CONNECT, original loopback only, no discovery/downgrade/system roots; copied complete scope and bounded reconnect/retained cleanup. Actual optional HOST matrix denies protected/internal/SYS/JS/business/other-hub/inverted publish and subscribe and account crossover.",
+          "existingTests": [
+            "platform/localtls/client_test.go",
+            "platform/kernel/protocol/server_trust_test.go",
+            "platform/kernel/protocol/transport_cleanup_test.go",
+            "platform/launcher/kernel_status_tls_test.go",
+            "platform/launcher/owner_bridge_test.go"
+          ],
+          "requiredEnvironment": "Actual TLS peers/NATS plus final installed candidate; mocked inspection and plaintext historical APIs cannot qualify installed admission. Require Linux amd64 and arm64, native macOS amd64 and arm64, and approved WSL. Component-only fixture results are separate from actual supported-environment qualification.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P02"
+        }
+      ],
+      "migrationChecks": [
+        "No legacy business migration/account changes. Exact owned process/resources only; preserve data and report partial or unsupported states."
+      ],
+      "reviewHistory": [
+        {
+          "date": "2026-10-13T20:59:21.490926+00:00",
+          "reviewer": "Codex",
+          "scope": "Actual source registration during active P02",
+          "note": "No future files or test pass claims; separate independent review/execution evidence required."
+        }
+      ],
+      "qualificationRevisions": [
+        {
+          "date": "2026-10-14T06:47:22.657439+00:00",
+          "reviewer": "Codex",
+          "checkId": "KERN-03-C03",
+          "previousRequiredEnvironment": "Actual TLS peers/NATS plus final installed candidate; mocked inspection and plaintext historical APIs cannot qualify installed admission.",
+          "reason": "Make the existing supported architecture matrix explicit after independent metadata review; all checks remain not-run."
+        }
+      ]
+    },
+    {
+      "id": "PLAT-02",
+      "name": "Narrow infrastructure supervision",
+      "files": [
+        "platform/runtime/README.md",
+        "platform/runtime/snapshot_darwin_test.go",
+        "platform/runtime/snapshot_linux.go",
+        "platform/runtime/snapshot_unsupported.go",
+        "platform/runtime/supervisor.go",
+        "platform/runtime/supervisor_linux_test.go",
+        "platform/kernel/boot/parent_lifetime_test.go",
+        "platform/runtime/parent_linux_test.go",
+        "platform/runtime/parent_unix.go",
+        "platform/runtime/stop_role.go",
+        "platform/runtime/stop_role_linux_test.go",
+        "platform/runtime/testdata/dynamic/main.go",
+        "platform/runtime/testdata/role/main.go",
+        "platform/runtime/acl_darwin.go",
+        "platform/runtime/installed_host.go",
+        "platform/runtime/installed_host_darwin.go",
+        "platform/runtime/installed_host_darwin_install_test.go",
+        "platform/runtime/installed_host_darwin_nocgo.go",
+        "platform/runtime/installed_host_linux.go",
+        "platform/runtime/installed_host_linux_test.go",
+        "platform/runtime/installed_host_test.go",
+        "platform/runtime/installed_host_unsupported.go",
+        "platform/runtime/macho_entry.go",
+        "platform/runtime/macho_entry_test.go",
+        "platform/runtime/snapshot_darwin.go",
+        "platform/runtime/snapshot_darwin_install_test.go",
+        "platform/runtime/snapshot_darwin_policy_test.go",
+        "platform/runtime/start_validation_linux_test.go",
+        "platform/runtime/bootstrap_receipt.go",
+        "platform/runtime/bootstrap_receipt_test.go",
+        "platform/runtime/bootstrap_receipt_linux_test.go",
+        "platform/runtime/startup_cleanup_cause.go",
+        "platform/runtime/startup_cleanup_cause_test.go",
+        "platform/runtime/testdata/darwin_identity_probe/main_darwin.go",
+        "platform/runtime/testdata/darwin_identity_probe/native_darwin.go",
+        "platform/runtime/testdata/darwin_identity_probe/README.md",
+        "platform/runtime/bootstrap_receipt_prestart_cleanup_test.go"
+      ],
+      "role": "platform-foundation",
+      "baselineGroups": [],
+      "ownerPhase": "P02",
+      "disposition": "extend",
+      "currentBehavior": [
+        "New isolated P02 source; actual integrated protected role processes and native boot remain under implementation."
+      ],
+      "reusePlan": "Retain legacy application/bridge/config identities; add only approved protected account or infrastructure execution boundary.",
+      "enhancements": [
+        "Exact owned process handles, bounded startup/teardown/broker/member recovery; protect unrelated processes/listeners/homes and use NATS for plugin traffic."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "PLAT-02-C01",
+          "description": "Exact owned process handles, bounded startup/teardown/broker/member recovery; protect unrelated processes/listeners/homes and use NATS for plugin traffic.",
+          "existingTests": [
+            "platform/runtime/snapshot_darwin_test.go",
+            "platform/runtime/supervisor_linux_test.go"
+          ],
+          "requiredEnvironment": "Real supported native Linux/macOS and WSL process/NATS fixtures; initial isolated nativeWSL evidence does not prove full platform boot.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "PLAT-02-C02",
+          "description": "Native protected installed images and observed Apple library dependencies/ACL/inode/digest boundaries; immediate spawn revalidation; exact child Stop/Wait and frontend exit, cancellation and replacement refusal without PID adoption. Receipt controls must bind full scope, enrollment, actual cold invocation and held runtime digest; require one closed frame of at most 4096 bytes including header, EOF, inherited descriptor/CLOEXEC checks, bounded canceled I/O joins and exact child retention after post-spawn cleanup failure. A Linux frontend fixture cannot qualify Darwin execution.",
+          "existingTests": [
+            "platform/runtime/installed_host_linux_test.go",
+            "platform/runtime/installed_host_darwin_install_test.go",
+            "platform/runtime/snapshot_darwin_install_test.go",
+            "platform/runtime/snapshot_darwin_policy_test.go",
+            "platform/runtime/start_validation_linux_test.go",
+            "platform/runtime/bootstrap_receipt_test.go",
+            "platform/runtime/bootstrap_receipt_linux_test.go",
+            "platform/runtime/startup_cleanup_cause_test.go",
+            "platform/runtime/bootstrap_receipt_prestart_cleanup_test.go"
+          ],
+          "requiredEnvironment": "Actual Linux/WSL sealed processes and native macOS protected installation; crossbuilds and research-only fixtures are not native product proof. Require Linux amd64 and arm64, native macOS amd64 and arm64, and approved WSL. Darwin cgo-enabled execution and cgo-disabled refusal are distinct checks; cross-compilation alone is insufficient.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P02"
+        }
+      ],
+      "migrationChecks": [
+        "No legacy business migration/account changes. Exact owned process/resources only; preserve data and report partial or unsupported states."
+      ],
+      "reviewHistory": [
+        {
+          "date": "2026-10-13T20:59:21.490926+00:00",
+          "reviewer": "Codex",
+          "scope": "Actual source registration during active P02",
+          "note": "No future files or test pass claims; separate independent review/execution evidence required."
+        },
+        {
+          "date": "2026-10-14T11:22:24.910640+00:00",
+          "reviewer": "Codex",
+          "scope": "Test-only Darwin identity probe source registration",
+          "note": "Source declarations and hashes verified; this helper is not product runtime and does not qualify PLAT-02-C02. No compiler, native ABI, process controls or installed CLI execution. Remaining cleanup error handling is under further source review."
+        }
+      ]
+    },
+    {
+      "id": "KERN-02",
+      "name": "Protected lifecycle role",
+      "ownerPhase": "P02",
+      "status": "implementation-under-review-not-qualified",
+      "plannedPaths": [
+        "platform/kernel/lifecycle/**"
+      ],
+      "primaryTask": "P02-T02",
+      "collaboratingTasks": [
+        "P02-T04"
+      ],
+      "behaviorChecks": [
+        {
+          "id": "KERN-02-C01",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T02",
+          "assertion": "Protected lifecycle via NATS, bounded ordered exact-owned start/stop and failed-member recovery; no external membership mutation.",
+          "status": "not-run",
+          "description": "Protected lifecycle via NATS, bounded ordered exact-owned start/stop and failed-member recovery; no external membership mutation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "requiredEnvironment": "Actual native Linux/macOS and WSL scoped NATS/process/Compose fixtures as required; no mock or cross-build substitute.",
+          "existingTests": [
+            "platform/kernel/boot/integration_test.go",
+            "platform/kernel/boot/process_integration_test.go",
+            "platform/runtime/stop_role_linux_test.go"
+          ]
+        }
+      ],
+      "actualFiles": [
+        "platform/kernel/lifecycle/run.go"
+      ],
+      "registrationStatus": "append-proposed-component-with-actual-files-only",
+      "historicalPlannedPathsRetained": [
+        "platform/kernel/lifecycle/**"
+      ],
+      "role": "runtime",
+      "baselineGroups": [],
+      "disposition": "extend",
+      "replacementReason": null,
+      "files": [
+        "platform/kernel/lifecycle/run.go"
+      ],
+      "migrationChecks": [
+        "Retain legacy source, caller interfaces, credentials and data; no legacy business store conversion in this slice.",
+        "Keep the new namespace and profile ownership explicit; never let a fixture or partial implementation qualify a later owner."
+      ],
+      "currentBehavior": [
+        "The real lifecycle actor publishes its own readiness and four observed peers through NATS.",
+        "Its current command handler supports announce only; process controls and complete recovery qualification remain separate."
+      ],
+      "reusePlan": "Retain the fixed role and shared stateless protocol; integrate only approved protected lifecycle controls without external membership writes.",
+      "enhancements": [
+        "Complete the originally planned bounded lifecycle and failed-member recovery contract, with actual owned processes and denial tests."
+      ],
+      "limitations": [
+        "Current observation slice is not full KERN-02-C01 acceptance."
+      ],
+      "reviewHistory": [
+        {
+          "date": "2026-10-13T23:51:33.417100+00:00",
+          "reviewer": "Codex",
+          "scope": "Register previously reserved component at actual P02 source paths",
+          "note": "Actual source ownership only; original assertions and planned paths retained. Full native/Compose/remote qualification remains open."
+        }
+      ]
+    },
+    {
+      "id": "KERN-04",
+      "name": "Protected exported-status role",
+      "ownerPhase": "P02",
+      "status": "implementation-under-review-not-qualified",
+      "plannedPaths": [
+        "platform/kernel/status/**"
+      ],
+      "primaryTask": "P02-T04",
+      "collaboratingTasks": [
+        "P02-T02",
+        "P02-T03"
+      ],
+      "behaviorChecks": [
+        {
+          "id": "KERN-04-C01",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T04",
+          "assertion": "Consistent late-subscriber snapshot/revisioned update, gap/reconnect/stale/slow-consumer tests using accepted L04 reply; kernel exports information only.",
+          "status": "not-run",
+          "description": "Consistent late-subscriber snapshot/revisioned update, gap/reconnect/stale/slow-consumer tests using accepted L04 reply; kernel exports information only.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "requiredEnvironment": "Actual native Linux/macOS and WSL scoped NATS/process/Compose fixtures as required; no mock or cross-build substitute.",
+          "existingTests": [
+            "platform/kernel/boot/integration_test.go",
+            "platform/kernel/boot/process_integration_test.go",
+            "platform/kernel/protocol/codec_test.go",
+            "platform/launcher/kernel_status_test.go",
+            "platform/launcher/startup_status_test.go",
+            "platform/launcher/startup_session_test.go"
+          ]
+        }
+      ],
+      "actualFiles": [
+        "platform/kernel/status/run.go"
+      ],
+      "registrationStatus": "append-proposed-component-with-actual-files-only",
+      "historicalPlannedPathsRetained": [
+        "platform/kernel/status/**"
+      ],
+      "role": "runtime",
+      "baselineGroups": [],
+      "disposition": "extend",
+      "replacementReason": null,
+      "files": [
+        "platform/kernel/status/run.go"
+      ],
+      "migrationChecks": [
+        "Retain legacy source, caller interfaces, credentials and data; no legacy business store conversion in this slice.",
+        "Keep the new namespace and profile ownership explicit; never let a fixture or partial implementation qualify a later owner."
+      ],
+      "currentBehavior": [
+        "The real protected status actor publishes full kernel-info snapshots and updates with scope, incarnation, revision and expiry.",
+        "The frame reports four peer observations and does not invent business work or connected hubs."
+      ],
+      "reusePlan": "Keep protected kernel information separate from the surrounding owner-scoped L04 mapper and enforce the original permissions/freshness requirements.",
+      "enhancements": [
+        "Complete late-subscriber, gap, reconnect, stale and slow-consumer qualification and the accepted outer status reply integration."
+      ],
+      "limitations": [
+        "Kernel-info is not itself L04 or application readiness."
+      ],
+      "reviewHistory": [
+        {
+          "date": "2026-10-13T23:51:33.417100+00:00",
+          "reviewer": "Codex",
+          "scope": "Register previously reserved component at actual P02 source paths",
+          "note": "Actual source ownership only; original assertions and planned paths retained. Full native/Compose/remote qualification remains open."
+        }
+      ]
+    },
+    {
+      "id": "PLAT-03",
+      "name": "Owned Compose/NATS profiles",
+      "ownerPhase": "P02",
+      "status": "implementation-under-review-not-qualified",
+      "plannedPaths": [
+        "deploy/compose/**"
+      ],
+      "primaryTask": "P02-T05",
+      "collaboratingTasks": [
+        "P02-T03",
+        "P02-T07"
+      ],
+      "behaviorChecks": [
+        {
+          "id": "PLAT-03-C01",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T05",
+          "assertion": "Pinned tested images/Compose, R1 storage/domain/limits/account/health and declared team connection profile; idempotent provision and mismatch/interruption failure checks.",
+          "status": "not-run",
+          "description": "Pinned tested images/Compose, R1 storage/domain/limits/account/health and declared team connection profile; idempotent provision and mismatch/interruption failure checks.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "requiredEnvironment": "Actual native Linux/macOS and WSL scoped NATS/process/Compose fixtures as required; no mock or cross-build substitute.",
+          "existingTests": [
+            "platform/deployment/compose_test.go",
+            "platform/deployment/observe_test.go",
+            "platform/deployment/probe_test.go",
+            "platform/deployment/profile_test.go",
+            "platform/deployment/sync_policy_test.go"
+          ]
+        },
+        {
+          "id": "PLAT-03-C02",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T07",
+          "assertion": "Actual labels/authenticated instance/project/volume identity and durable probes across cold/warm/restart; reject incompatible release/context/endpoint, no deletion/migration.",
+          "status": "not-run",
+          "description": "Actual labels/authenticated instance/project/volume identity and durable probes across cold/warm/restart; reject incompatible release/context/endpoint, no deletion/migration.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "requiredEnvironment": "Actual native Linux/macOS and WSL scoped NATS/process/Compose fixtures as required; no mock or cross-build substitute.",
+          "existingTests": [
+            "platform/launcher/bootstrap_docker_integration_test.go",
+            "platform/launcher/bootstrap_network_cleanup_integration_test.go"
+          ]
+        },
+        {
+          "id": "PLAT-03-C03",
+          "description": "Explicit per-profile TLS enrollment/material copies/redaction, complete canonical CA/leaf admission, secure factory and Compose cert/key binding, health/read-only transport authentication before CONNECT and retained concrete cleanup on every exit; separately qualify declared team TLS/JWT/basic profiles.",
+          "existingTests": [
+            "platform/deployment/local_tls_material_test.go",
+            "platform/deployment/local_tls_probe_test.go",
+            "platform/deployment/local_tls_adversary_test.go",
+            "platform/deployment/probe_cleanup_test.go",
+            "platform/deployment/owner_bridge_config_test.go",
+            "platform/deployment/secure_compose_test.go",
+            "platform/deployment/team_connection_test.go",
+            "platform/deployment/team_credentials_test.go",
+            "platform/deployment/team_credentials_privatefs_linux_test.go",
+            "platform/deployment/team_credentials_privatefs_darwin_test.go",
+            "platform/deployment/team_credentials_privatefs_darwin_nocgo_test.go",
+            "platform/deployment/raw_transport_cleanup_test.go",
+            "platform/launcher/bootstrap_network_cleanup_integration_test.go"
+          ],
+          "requiredEnvironment": "Actual NATS TLS-first and private file fixtures; supported-platform Compose/native filesystem proof separately required. Require Linux amd64 and arm64, native macOS amd64 and arm64, and approved WSL. Component-only fixture results are separate from actual supported-environment qualification.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P02"
+        }
+      ],
+      "actualFiles": [
+        "platform/deployment/README.md",
+        "platform/deployment/compose.go",
+        "platform/deployment/compose_test.go",
+        "platform/deployment/observe.go",
+        "platform/deployment/observe_test.go",
+        "platform/deployment/probe.go",
+        "platform/deployment/probe_test.go",
+        "platform/deployment/profile.go",
+        "platform/deployment/profile_test.go",
+        "platform/launcher/bootstrap_docker_integration_test.go",
+        "platform/launcher/bootstrap_network_cleanup_integration_test.go"
+      ],
+      "registrationStatus": "append-proposed-component-with-actual-files-only",
+      "historicalPlannedPathsRetained": [
+        "deploy/compose/**"
+      ],
+      "role": "runtime",
+      "baselineGroups": [],
+      "disposition": "extend",
+      "replacementReason": null,
+      "files": [
+        "platform/deployment/README.md",
+        "platform/deployment/compose.go",
+        "platform/deployment/compose_test.go",
+        "platform/deployment/observe.go",
+        "platform/deployment/observe_test.go",
+        "platform/deployment/probe.go",
+        "platform/deployment/probe_test.go",
+        "platform/deployment/profile.go",
+        "platform/deployment/profile_test.go",
+        "platform/launcher/bootstrap_docker_integration_test.go",
+        "platform/deployment/sync_policy_test.go",
+        "platform/deployment/local_tls_adversary_test.go",
+        "platform/deployment/local_tls_material.go",
+        "platform/deployment/local_tls_material_test.go",
+        "platform/deployment/local_tls_probe_test.go",
+        "platform/deployment/local_tls_probe_transport.go",
+        "platform/deployment/owner_bridge_config.go",
+        "platform/deployment/owner_bridge_config_test.go",
+        "platform/deployment/probe_cancellation_test.go",
+        "platform/deployment/probe_cleanup.go",
+        "platform/deployment/probe_cleanup_test.go",
+        "platform/deployment/secure_compose.go",
+        "platform/deployment/secure_compose_test.go",
+        "platform/deployment/secure_local_config.go",
+        "platform/deployment/secure_local_config_test.go",
+        "platform/deployment/team_basic_test.go",
+        "platform/deployment/team_connection.go",
+        "platform/deployment/team_connection_test.go",
+        "platform/deployment/team_credentials.go",
+        "platform/deployment/team_credentials_test.go",
+        "platform/deployment/team_credentials_unix.go",
+        "platform/deployment/team_credentials_unsupported.go",
+        "platform/deployment/team_jwt_test.go",
+        "platform/deployment/team_tls_fixture_test.go",
+        "platform/launcher/bootstrap_docker_selection_test.go",
+        "platform/launcher/bootstrap_docker_selection_controls_test.go",
+        "platform/launcher/bootstrap_docker_native_linux_test.go",
+        "platform/launcher/bootstrap_docker_native_darwin_test.go",
+        "platform/deployment/team_credentials_privatefs_linux_test.go",
+        "platform/deployment/team_credentials_privatefs_darwin_test.go",
+        "platform/deployment/team_credentials_privatefs_darwin_nocgo_test.go",
+        "platform/deployment/raw_transport_cleanup.go",
+        "platform/deployment/raw_transport_cleanup_test.go",
+        "platform/launcher/bootstrap_network_cleanup_integration_test.go",
+        "platform/launcher/docker_refusal.go"
+      ],
+      "migrationChecks": [
+        "Retain legacy source, caller interfaces, credentials and data; no legacy business store conversion in this slice.",
+        "Keep the new namespace and profile ownership explicit; never let a fixture or partial implementation qualify a later owner."
+      ],
+      "currentBehavior": [
+        "The actual deployment package builds bounded local file-backed NATS/health configuration and private pinned Compose data.",
+        "Real probes and read-only observations distinguish stored infrastructure evidence from protected process and business readiness."
+      ],
+      "reusePlan": "Keep the existing Kubernetes/federation deployment scripts unchanged; add only explicit selected local profile provisioning and owned storage checks.",
+      "enhancements": [
+        "Finish declared team profile, full native Compose matrix, mismatch/restart behavior and current always-sync source qualification."
+      ],
+      "limitations": [
+        "Current local health storage is not business-state/R3/completion reserve proof; source remains under current sync-policy review."
+      ],
+      "reviewHistory": [
+        {
+          "date": "2026-10-13T23:51:33.417100+00:00",
+          "reviewer": "Codex",
+          "scope": "Register previously reserved component at actual P02 source paths",
+          "note": "Actual source ownership only; original assertions and planned paths retained. Full native/Compose/remote qualification remains open."
+        }
+      ],
+      "qualificationRevisions": [
+        {
+          "date": "2026-10-14T06:47:22.657439+00:00",
+          "reviewer": "Codex",
+          "checkId": "PLAT-03-C03",
+          "previousRequiredEnvironment": "Actual NATS TLS-first and private file fixtures; supported-platform Compose/native filesystem proof separately required.",
+          "reason": "Make the existing supported architecture matrix explicit after independent metadata review; all checks remain not-run."
+        }
+      ]
     }
   ],
   "reviewHistory": [
@@ -1913,6 +2791,18 @@
       "qualificationPhase": "P06",
       "qualificationTask": "P06-T03",
       "assertionsUnchanged": true
+    },
+    {
+      "date": "2026-10-13T20:34:17.124060+00:00",
+      "reviewer": "Codex",
+      "note": "Initial additive Go test ownership; remaining approved components enter when created."
+    },
+    {
+      "date": "2026-10-13T23:51:33.417100+00:00",
+      "reviewer": "Codex",
+      "scope": "P02 actual component/source ownership",
+      "evidence": "delivery/evidence/P02/component-registration-review/proposal.json",
+      "note": "Added actual files and reserved components/checks. Existing baseline records and behavior assertions retained. Qualification is not implied."
     }
   ]
 }

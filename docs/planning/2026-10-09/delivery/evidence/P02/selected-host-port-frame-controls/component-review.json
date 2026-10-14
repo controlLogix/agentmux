@@ -1,0 +1,80 @@
+{
+  "checks": {
+    "checks": [
+      {
+        "name": "frame",
+        "argv": [
+          "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+          "test",
+          "./portobserver",
+          "-run",
+          "^Test(FixedRequestBoundary|FixedResultBoundaryAndCorrelation)$",
+          "-race",
+          "-count=1",
+          "-json"
+        ],
+        "environment": {},
+        "exit": 0,
+        "elapsedSeconds": 3.6256815180022386
+      },
+      {
+        "name": "frame-build",
+        "argv": [
+          "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+          "build",
+          "-o",
+          "/home/ryan/.cache/agentmux-governance/p02-port-observer-first-slice/observer-frame-windows-amd64.exe",
+          "./cmd/agentmux-host-observer"
+        ],
+        "environment": {
+          "GOOS": "windows",
+          "GOARCH": "amd64",
+          "CGO_ENABLED": "0"
+        },
+        "exit": 0,
+        "elapsedSeconds": 4.743060911998327
+      }
+    ],
+    "sourceStable": true
+  },
+  "namedPasses": [
+    "TestFixedRequestBoundary/nonce",
+    "TestFixedRequestBoundary/duplicate",
+    "TestFixedRequestBoundary/nested",
+    "TestFixedRequestBoundary/fractional",
+    "TestFixedRequestBoundary/overflow",
+    "TestFixedRequestBoundary/binding",
+    "TestFixedRequestBoundary/address",
+    "TestFixedRequestBoundary/alias",
+    "TestFixedRequestBoundary/unknown",
+    "TestFixedRequestBoundary/oversize",
+    "TestFixedRequestBoundary/trailing",
+    "TestFixedRequestBoundary/zero",
+    "TestFixedRequestBoundary",
+    "TestFixedResultBoundaryAndCorrelation/unknown",
+    "TestFixedResultBoundaryAndCorrelation/oversize",
+    "TestFixedResultBoundaryAndCorrelation/nonce",
+    "TestFixedResultBoundaryAndCorrelation/state",
+    "TestFixedResultBoundaryAndCorrelation/duplicate",
+    "TestFixedResultBoundaryAndCorrelation/alias",
+    "TestFixedResultBoundaryAndCorrelation/nested",
+    "TestFixedResultBoundaryAndCorrelation/trailing",
+    "TestFixedResultBoundaryAndCorrelation/binding",
+    "TestFixedResultBoundaryAndCorrelation"
+  ],
+  "failOrSkip": [],
+  "artifacts": {
+    "frame-tested-manifest.json": "9929fdd341b60cc55bbb6575ecaf3d73f22578dea054559941d5436f98cfcb0f",
+    "frame-stdout.log": "ae90bf3d9398be26cba77a8c84cbdb65654e990a667a31605c0ea580ead6be9b",
+    "frame-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "frame-build-stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "frame-build-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "frame-checks.json": "e19e302d964c332774daedceefc358926f2b64df0ae514e58c4e4cba9f36ac8e",
+    "observer-frame-windows-amd64.exe": "c4e584f5497fbee508ff4cfa0372324a4c6f4887fd84e2e3b013d0f3def29486"
+  },
+  "limits": [
+    "Actual fixed frame pure controls and Windows cross-build only.",
+    "No native helper/observer or port/engine qualification.",
+    "No shared source edits."
+  ]
+}

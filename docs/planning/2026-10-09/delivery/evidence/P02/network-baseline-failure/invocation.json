@@ -1,0 +1,21 @@
+{
+  "argv": [
+    "go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "-tags=agentmux_bootstrap_docker",
+    "./launcher",
+    "-run",
+    "^TestInstalledCLIRealComposeAuthenticatedPending$"
+  ],
+  "environment": {
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "1"
+  },
+  "startedUtc": "2026-10-14T09:52:11.838434+00:00"
+}

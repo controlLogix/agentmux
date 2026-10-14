@@ -1,0 +1,73 @@
+{
+  "reviewer": "/root/p02_installed_launcher",
+  "sourceHashes": {
+    "platform/runtime/snapshot_darwin.go": "01c92e4d4dadacdbdc4ef0671e49c74367e01e61f9bef1916a93ea9a930365e4",
+    "platform/runtime/macho_entry.go": "1b7c6d66207108601889bccc416f2cb689cfa134a8563f7ddfc3d05ba06f42bb",
+    "platform/runtime/macho_entry_test.go": "8a2d6b91053e0446f07fdf0e78188e7cff17f2de534ac5446fb9f18f474bd95f"
+  },
+  "allThreeSourcesMatchCurrent": true,
+  "findings": [],
+  "resolvedFindings": [
+    "Actual AMD64 product images LC_UNIXTHREAD were refused; exact flavor/count/state and CPU-specific entry admission added.",
+    "Declared __TEXT range could exceed actual source file; real stat image size now bounds fileoff/filesz before address validation.",
+    "Execute-only __TEXT was admitted despite RX requirement; exact Prot5 is now required."
+  ],
+  "inspection": "One supported entrypoint only. AMD64 thread command exact184/flavor4/count42, onlyRIP nonzero; LC_MAIN exact24/zero stack/bounded offset/ARM alignment. Exactly one file-backed read-execute __TEXT with overflow-safe bounds. Full actual parser still denies other dependencies, weak/reexport/lazy/upward/rpath/environment loads and duplicate dependency/loader identities. Actual supervisor and installed-host code construct fixed child environments; no inherited dyld variables.",
+  "passEntries": 55,
+  "failures": [],
+  "skips": [],
+  "invocation": {
+    "cwd": "/home/ryan/.cache/agentmux-governance/p02-macho-final-independent-2793e37f",
+    "argv": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-json"
+    ],
+    "fixedEnvironment": {
+      "GOTOOLCHAIN": "local",
+      "GOPROXY": "off",
+      "GOSUMDB": "off",
+      "GOWORK": "off",
+      "GORACE": "atexit_sleep_ms=0"
+    }
+  },
+  "exit": {
+    "returncode": 0
+  },
+  "artifacts": {
+    "macho_entry_test.go": "a2add3263fd37d8def887b2bbbe2480561f688c957aaabea66bbc9f2c8799f41",
+    "parser.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "entry_mutation_test.go": "fad97d8fa44a20c0314731d6bfa0d2589d36581fa41a0107827db24bb123ea93",
+    "go.mod": "e11799a1bdbde989c2a4d08f0c00592572adb46e68c4bc87486a2ac47e8f4e50",
+    "parser_test.go": "cce85d8742cfa0179f82c707b0846c1307831e60e1b59f5ac76fed83f567c3eb",
+    "parser.jsonl": "0c4189a1fcfb493aa07da2afdde3b6c41ae19795ecb009ac80cdfcb46c24d4f3",
+    "exit.json": "df4d721d233a2334088d2d2e0110346ae9e509ff46bf0b379fbcfa85c715af4d",
+    "parser.go": "174ed2ef7f3ce5731d4352a0d70b4c7318cd963592903afd54bb33d285cc051c",
+    "bounds_test.go": "7b5ba7e25d2798fbd325fc5dfe29144358b187126e81e6222b0ed8c146075ef0",
+    "macho_entry.go": "e62e622641bff2c0dc04f0a55dd40386acd4de8199edfa3a430fc54d952a1625",
+    "source-hashes.json": "3e3205a687a255eb23941e820a2cd175526cebe35395ea81e26d418545736ae9",
+    "invocation.json": "750a03d2ac3f3c55a0ebe0b7481f28af44076ad68d08ab8340fe23f201885541",
+    "run.py": "417a839e2a9951f8a05635744e544c6f457e9a90d78d575eee8dbd5a050941b6"
+  },
+  "verifiedActualImportEvidence": "p02-localtls-cancel-repair-ErSurd/review.json",
+  "entrypointPayloadEvidence": "p02-darwin-loader-independent-a525dffa/entrypoint-inspection.json",
+  "historicalFailures": [
+    "p02-darwin-loader-independent-a525dffa/parser.jsonl",
+    "p02-macho-repaired-independent-e86cf27d/parser.jsonl"
+  ],
+  "controls": [
+    "Eight actual baseline/candidate amd64/arm64 product Mach-O positives with verified exact image/import hashes.",
+    "Actual image mutations: unauthorized/relative/rpath/traversal/directory dependency names; weak/rpath/reexport/lazy/upward/dyld-environment commands.",
+    "Actual image entry mutations: flavor/count/other register/RIP/duplicate-conflicting MAIN, ARM stack/alignment/offset, file range beyond actual source and missing read permission.",
+    "Exact root helper tests compiled unchanged except review package rename."
+  ],
+  "limits": [
+    "Portable parser review executed on Linux, not native Darwin execution.",
+    "The exact full darwinImage body is copied into a review-only package. Only its two goruntime.GOARCH operands become per-fixture reviewArch so both supported CPU artifacts can be checked on Linux. Helper is unchanged apart from package name. Original source bytes/hashes retained under original/.",
+    "Cross-built images are historical CGO0 product artifacts. Supported native CGO1 production build/run, protected installation/shared-cache and actual Compose matrix remain required.",
+    "Original flawed-bounds portable probe has raw test failure evidence; its shell exit-wrapper also failed, so no separate test exit proof is claimed for that historical probe.",
+    "Read-only source/slice review closure, not whole-phase acceptance."
+  ]
+}

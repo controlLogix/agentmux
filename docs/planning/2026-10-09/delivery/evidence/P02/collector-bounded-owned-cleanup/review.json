@@ -1,0 +1,86 @@
+{
+  "scope": "Cache-only thread-free collector cleanup repair; durable focused RunnerTests, not native collection or phase acceptance",
+  "sourceSHA256": {
+    "original.py": "5089b6dcdbbf55f38837644c69ff1877006518407e1ea23c4d098071cbd99fcd",
+    "native_go.py": "743f28e7d17e9f95448ac5375b3a5864efe00bfad09c2eda099f3434d5632682",
+    "run_controls.py": "0d79c51c60839368c825ba260fcc9fa6718e0514864136f716f98f94bfd0e8d8",
+    "bounded_api_control.py": "a63c3ff6bb3bc36bea4f6384c8c07144ee1cceb46c2027f8dab009b587dca26d",
+    "producer.py": "b1c063d3d8e0ddf95d9fd394ed94686934b40d39e6ded389fe0ef03ec291b1be"
+  },
+  "sourceStable": true,
+  "runs": [
+    {
+      "name": "before",
+      "command": [
+        "/usr/bin/python3",
+        "/home/ryan/.cache/agentmux-governance/p02-native-collector-cleanup-repair-v3/bounded_api_control.py",
+        "original.py"
+      ],
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "seconds": 0.16506862499227282,
+      "stdoutSHA256": "b163b6e31f57ad1098099c40098a9cd8b554eff13db246ddf6a716d64d1a25ea",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "after",
+      "command": [
+        "/usr/bin/python3",
+        "/home/ryan/.cache/agentmux-governance/p02-native-collector-cleanup-repair-v3/bounded_api_control.py",
+        "native_go.py"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 0.21547066600760445,
+      "stdoutSHA256": "453900549ab2180fe98f8b96042182cbf910dd5795895f0395ef65c1d408bb30",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "focused",
+      "command": [
+        "/usr/bin/python3",
+        "/home/ryan/.cache/agentmux-governance/p02-native-collector-cleanup-repair-v3/run_controls.py",
+        "focused"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 0.4580372019991046,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "5221db3ddf0279ffbfd64c8f7ce4cf20b1bab0788f344fd78185de02e3f8fb33"
+    },
+    {
+      "name": "affected",
+      "command": [
+        "/usr/bin/python3",
+        "/home/ryan/.cache/agentmux-governance/p02-native-collector-cleanup-repair-v3/run_controls.py",
+        "affected"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 0.968502465999336,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "0242ce4f12fe85a1fd62a71d76e388beb5ecf042cbc7b321ceed6972ac214688"
+    }
+  ],
+  "counts": {
+    "focused": 7,
+    "affectedRunnerTests": 37
+  },
+  "runtime": {
+    "implementation": "CPython",
+    "version": "3.14.4"
+  },
+  "history": {
+    "v1ReviewSHA256": "1b1b51981b377446a0713fd501661310affc753042a1ec4011fa521727113c39",
+    "v2ReviewSHA256": "49ba6f521f605649e126835d9cc87d1ab4c003970521b33b3894e90ae0ae1b3c",
+    "v3PreControlsSHA256": "5d538d91c73f0895cee31721c3c05a7a1cd627dfc44ef8485dcd6d04b28029c9"
+  },
+  "limits": [
+    "Builtin Popen wait uses the original remaining collection deadline and existing five-second reserve; no spawned cleanup thread exists.",
+    "If a bounded wait cannot confirm exit, its exact owner is retained and a serialized atexit fallback waits after the earlier waiter returned. Physical kernel wait, collector exit and artifact upload remain unbounded.",
+    "Actual owned-child reap and shutdown are real; timeout/interruption/stop-failure boundaries use test-only mocks/wrappers, not native kernel failure injection.",
+    "V1/v2 delayed subclass ignored the wait contract and is historical diagnostic evidence only, not this acceptance requirement. V1/v2 review findings and structural setup failure remain preserved.",
+    "Five new durable tests are in RunnerTests, with two existing interruption assertions updated to require timeout-bearing cleanup.",
+    "No Docker, native Linux/macOS collection, CI Python3.12 execution, shared source or global metadata change."
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "sourceCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "sourceSha256": {
+    "hub/__init__.py": "2fa2e5fedd0cf0b155aca3ec64c7f0ae8241f7806272c9f1828e280730e1fcfe",
+    "hub/fed/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "hub/fed/admin.py": "ce6b0b048a4fcaa5e0b4432ed920ba587bad21d54cb2a84187a09e5022a2b74a",
+    "hub/fed/conn.py": "7c4d226c777256c2228ec76254aca526039d7c7c5dc4fb7c61933816397f9bab"
+  },
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+  "natsPy": "2.16.0",
+  "brokerVersion": "nats-server: v2.15.0",
+  "brokerSha256": "387ce54e7a0a249d877a579ed641d715bab047d7e061bfa42b4d07f6a0401341",
+  "cases": [
+    {
+      "id": "interrupted-after-first-resource",
+      "seconds": 0.0086,
+      "createdResources": [
+        "AM_MSG"
+      ],
+      "adminClosedConnectionOnError": false,
+      "observation": "Provision leaves first stream and open connection after exception; driver owns cleanup.",
+      "driverClosedConnection": true
+    }
+  ],
+  "limits": [
+    "Native Linux filesystem fixture on WSL2, not a separate native Linux host or macOS.",
+    "Synthetic token-authenticated loopback broker; no JWT operator/TLS enrollment production qualification.",
+    "Only listed failures executed; missing credentials, revoked account and full failure matrix remain not-run.",
+    "No Docker/user configuration/live account or private credential reads; generated test TLS keys stay private and are removed.",
+    "Original provision source copied unchanged. External connection wrapper adds synthetic broker token and records handles; original connect path remains unchanged."
+  ],
+  "cleanup": {
+    "allOwnedBrokerProcessesExited": true,
+    "allCapturedConnectionsClosed": true,
+    "runtimeDirectoryRemoved": true
+  },
+  "status": "characterized",
+  "sourcesUnchanged": true
+}

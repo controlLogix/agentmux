@@ -1,0 +1,123 @@
+{
+  "schemaVersion": "1.0.0",
+  "observationId": "observation_58f2f9fd902e1564e4e588412b51b078",
+  "observedAt": "2026-10-14T08:01:41.817346Z",
+  "sourceRevision": 2,
+  "startupAttemptId": "attempt_1e51404aa30bc1329fb73145816e2955",
+  "disposition": "reused",
+  "caller": {
+    "principalId": "fixture_owner",
+    "kind": "human",
+    "authenticatedIdentityRef": {
+      "id": "fixture_owner_record",
+      "ownerHubId": "fixture_hub",
+      "revision": 1
+    },
+    "scope": {
+      "organizationId": "fixture_org",
+      "projectId": null,
+      "workspaceId": null
+    }
+  },
+  "errors": [
+    {
+      "component": "persistence",
+      "code": "write_readiness_unobserved",
+      "message": "Current persistence write readiness has not been observed.",
+      "retryable": true
+    }
+  ],
+  "instance": {
+    "instanceId": "instance_3e41a924f0089792be651575e3d24375",
+    "displayName": "Disposable bootstrap hub",
+    "profileId": "profile_0767a4492437e634ed7df0261f244fd3",
+    "installedVersion": "1.2.3",
+    "runningVersion": "1.2.3",
+    "mode": "local",
+    "composeProject": "amx-p02-bootstrap-b4a42663a78f3906",
+    "contextDisplayName": "desktop-linux",
+    "contextFingerprint": "sha256:ab6cc18d43efafb0badbc1cb403c59d7855248af1172938858a6f154febe2331",
+    "endpoint": "tls://127.0.0.1:12416",
+    "dashboard": null,
+    "readiness": "degraded",
+    "services": [
+      {
+        "serviceId": "boot",
+        "availability": "available",
+        "unavailableReason": null,
+        "readiness": "ready",
+        "observedAt": "2026-10-14T08:01:40.787444Z",
+        "sourceRevision": 6
+      },
+      {
+        "serviceId": "kernel-lifecycle",
+        "availability": "available",
+        "unavailableReason": null,
+        "readiness": "ready",
+        "observedAt": "2026-10-14T08:01:40.788073Z",
+        "sourceRevision": 6
+      },
+      {
+        "serviceId": "internal-communication",
+        "availability": "available",
+        "unavailableReason": null,
+        "readiness": "ready",
+        "observedAt": "2026-10-14T08:01:40.788698Z",
+        "sourceRevision": 6
+      },
+      {
+        "serviceId": "exported-status",
+        "availability": "available",
+        "unavailableReason": null,
+        "readiness": "ready",
+        "observedAt": "2026-10-14T08:01:40.788427Z",
+        "sourceRevision": 6
+      },
+      {
+        "serviceId": "work",
+        "availability": "unavailable",
+        "unavailableReason": "not_implemented",
+        "readiness": "unknown",
+        "observedAt": null,
+        "sourceRevision": null
+      },
+      {
+        "serviceId": "hub_federation",
+        "availability": "unavailable",
+        "unavailableReason": "not_implemented",
+        "readiness": "unknown",
+        "observedAt": null,
+        "sourceRevision": null
+      }
+    ]
+  },
+  "persistence": {
+    "availability": "available",
+    "backend": "nats_jetstream",
+    "profile": "profile_0767a4492437e634ed7df0261f244fd3",
+    "serverId": "fixture_server",
+    "domainId": "fixture_domain",
+    "readiness": "unknown",
+    "storagePressure": {
+      "state": "unknown",
+      "percentUsed": null
+    },
+    "replicationHealth": {
+      "state": "unknown",
+      "replicas": null
+    },
+    "observedAt": "2026-10-14T08:01:41.7924Z"
+  },
+  "work": {
+    "state": "unavailable",
+    "active": null,
+    "projects": null,
+    "reserved": null,
+    "sourceCursor": null,
+    "observedAt": null
+  },
+  "hubs": {
+    "inventoryState": "unavailable",
+    "entries": []
+  }
+}

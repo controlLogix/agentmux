@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "1.0.0",
+  "scope": "Read-only review of cache-only mid-boot detector and private saved-input decoder controls",
+  "workerReview": {
+    "path": "/home/ryan/.cache/agentmux-governance/p02-midboot-local-controls-f34d8bqe/review.json",
+    "sha256": "83782fde542da3cdcc2b9b17cb5a39f0dcd16775efa33e6374f8887eb1cd0b41"
+  },
+  "sourcePins": {
+    "installed_cli_midboot_compose_integration_linux_test.go": "42618072d38b1357a6ab9e5f12682799ffac3e729acbcac6fa7bba4dde09ab90",
+    "installed_cli_midboot_discovery_controls_test.go": "42adf83611a4e8b6d0de42e426fa4990e2551cd7a087694126e4a541f748bb57",
+    "midboot_private_docker_parser_test.go": "fbd974aa97c88e918a30f610b5b644d44a4afccc9efe40d636b36ec653d9fc00",
+    "midboot_private_docker_parser_controls_test.go": "c3e3f2ca7c4aed52c6bacab38d357077c2551edabdc94dc2285bd23dbb56c09f"
+  },
+  "verifiedArtifacts": {
+    "parser-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "current-after.json": "c966294189e6f06ebb584deeaf8b5edba6beb9a1568f9c4c2334fa3ab4a1e6bb",
+    "parser-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "captured-parser-safe-facts.json": "a3d0c9083cad7ea336d87d86edc4f2a853c0d37e4c41e0b8c73f22eff7242d64",
+    "added-source.json": "2c758219f47a46bcb99aaf5a88b6addfd6da43704e815852a7ff9a090d9dbab8",
+    "source-after.json": "c966294189e6f06ebb584deeaf8b5edba6beb9a1568f9c4c2334fa3ab4a1e6bb",
+    "detector-repair.diff": "9c8eee43fb500c4acd27b88677b06c39dde8a250a18afde39da5633d5b3caf8a",
+    "parser-events.jsonl": "d5b0b1841e928e0fab4829e02d83652b35a0d36dc25b10082b9aa09e51cea553",
+    "detector-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "detector-events.jsonl": "4fb8462e80efbadd1b4dc7e04418844825c8834195474304291a51553b874016",
+    "invocation.json": "b9a0585d5671b13d7e24c9d41d66c2c50a08b24e0eada2eb6431e3189dc4077e",
+    "detector-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source-before.json": "c966294189e6f06ebb584deeaf8b5edba6beb9a1568f9c4c2334fa3ab4a1e6bb",
+    "run.py": "1bb6ecefd834689b7b45c2f528cd8757307c256725fc9c91e116f25c0915fafe"
+  },
+  "sourceBindings": {
+    "sharedManifestEntries": 260,
+    "sourceBeforeCopyAfterEqual": true,
+    "copyMismatches": [],
+    "addedSourcesExact": true,
+    "capturedPrivateInputHashAndSizeMatch": true
+  },
+  "rawResults": {
+    "detector": {
+      "passedNamed": 5,
+      "failures": 0,
+      "skips": 0,
+      "packageElapsedSeconds": [
+        1.674
+      ],
+      "directExit": 0
+    },
+    "parser": {
+      "passedNamed": 8,
+      "failures": 0,
+      "skips": 0,
+      "packageElapsedSeconds": [
+        0.14
+      ],
+      "directExit": 0
+    }
+  },
+  "findings": [
+    {
+      "id": "MIDBOOT-FINAL-LIVE-CHECK",
+      "status": "open",
+      "file": "installed_cli_midboot_compose_integration_linux_test.go",
+      "lines": [
+        246,
+        255
+      ],
+      "problem": "Final pre-crash role revalidation polls its retained pidfd before executable, parent, credential and argument reads. It has no same-descriptor live poll after those reads.",
+      "repair": "Move or repeat the live poll after the final identity read and reject an exited or invalid descriptor before returning. Preserve the existing held descriptor and all identity checks.",
+      "qualificationImpact": "Discovery controls pass, but they do not execute this final revalidation path. Resolve this source gap before the later actual mid-boot crash selection."
+    }
+  ],
+  "closedSourceProperties": [
+    "Discovery acquires pidfd before metadata and checks that same pidfd after the executable read. Rejected candidates close only their minted descriptor.",
+    "Candidate admission requires expected executed-image digest, exact profile role-credential path, direct host parent and one command argument. It grants no process signaling authority.",
+    "Actual owned control processes register stop and sole Wait joining before assertions. The four cases check positive admission and credential/image/argument denial.",
+    "The private decoder bounds raw bytes and depth, validates complete JSON grammar and duplicate literal keys, rejects known-field case aliases, projects exact required driver fields, then uses the closed typed decoder. Unknown Docker fields do not grant ownership.",
+    "The captured replay input is private and hash-bound. Public facts contain digest/size and bounded outcome only; no raw private inspection is copied into this review."
+  ],
+  "limits": [
+    "No tests, builds, Docker calls, native observer calls or process controls were run by this reviewer.",
+    "The five detector and eight parser named passes are component evidence only. No installed startup, crash injection, engine recovery, readiness or complete retained-resource qualification is established.",
+    "The parser depth negative also has an invalid row shape; it is not isolated depth-limit proof. Its source guard is explicit.",
+    "Final pre-crash revalidation remains open. The later actual mid-boot selection is not authorized by this record."
+  ],
+  "recommendation": "Retain the passing local discovery/parser evidence. Apply the narrow final live-poll repair, source-review it, and let root decide the serialized actual mid-boot test. No broad rerun is needed for this review."
+}

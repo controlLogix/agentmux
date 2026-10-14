@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0.0",
+  "scope": "P02 final exact process-descriptor revalidation controls only",
+  "result": {
+    "namedPasses": 5,
+    "failures": 0,
+    "skips": 0,
+    "directExit": 0,
+    "packageElapsedSeconds": [
+      2.121
+    ]
+  },
+  "sourcePins": {
+    "installed_cli_midboot_compose_integration_linux_test.go": "ab3d3e16db345e4b30aca208e1474066cbf9c247f3c5a8fda3b912fed58f2b05",
+    "installed_cli_midboot_discovery_controls_test.go": "e4c26f7f65303a5ef37c46e4041073deefe71073cb331e63edfacd42d04fbfcb",
+    "midboot_private_docker_parser_test.go": "fbd974aa97c88e918a30f610b5b644d44a4afccc9efe40d636b36ec653d9fc00",
+    "midboot_private_docker_parser_controls_test.go": "c3e3f2ca7c4aed52c6bacab38d357077c2551edabdc94dc2285bd23dbb56c09f"
+  },
+  "sourceBeforeCopyAfterEqual": true,
+  "actualAuthorizationEnvironment": "AMX_BOOTSTRAP_DOCKER_AUTHORIZED=0",
+  "resolvedFinding": "Final pre-crash role identity reads now precede the final live poll of the same retained pidfd. Actual matching owned process and joined exited process exercise that exact helper.",
+  "priorReview": {
+    "path": "/home/ryan/.cache/agentmux-governance/p02-midboot-local-controls-f34d8bqe/review.json",
+    "sha256": "83782fde542da3cdcc2b9b17cb5a39f0dcd16775efa33e6374f8887eb1cd0b41",
+    "provenanceCorrectionSHA256": "d27eda2f9311917715d261b1228661cf0a2b02048f65f17191e9b3cdc98490a6"
+  },
+  "artifacts": {
+    "current-after.json": "c966294189e6f06ebb584deeaf8b5edba6beb9a1568f9c4c2334fa3ab4a1e6bb",
+    "installed_cli_midboot_compose_integration_linux_test.go.diff": "0ca48e375e17d6a4acff332b93e6969de97e0a8031d616de9868a94804758905",
+    "installed_cli_midboot_discovery_controls_test.go.diff": "ac45631efe88289ff15dd43182f72a39f99fe38d39d4470ca6b747ee777dfdbf",
+    "added-source.json": "26548f38e547a1e8b7905205824713b4f44fd3e675e44c2e194fb119ac2c47d2",
+    "source-after.json": "c966294189e6f06ebb584deeaf8b5edba6beb9a1568f9c4c2334fa3ab4a1e6bb",
+    "detector-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "detector-events.jsonl": "9522ca3600216f9bdc6fd4ba0bdd2e5f74242abe6ed45aecae4510cdc7772aa1",
+    "invocation.json": "88de6b88001f8ee6eec45b4a927467347de328a0787d7b3476f09cb0a0a47ea6",
+    "detector-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source-before.json": "c966294189e6f06ebb584deeaf8b5edba6beb9a1568f9c4c2334fa3ab4a1e6bb",
+    "run.py": "e55bc165925ec74fb3d3cff0e534169125d3439c06a30cefa69cd459341f27cf"
+  },
+  "limits": [
+    "No Docker calls, crash injection, installed bootstrap or readiness proof.",
+    "The real mid-boot case has not run on this source.",
+    "No repeated parser selection; prior parser replay evidence remains separately source-bound.",
+    "P02 and native environment acceptance remain open."
+  ]
+}

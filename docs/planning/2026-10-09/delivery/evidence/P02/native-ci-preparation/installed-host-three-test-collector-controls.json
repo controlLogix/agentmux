@@ -1,0 +1,68 @@
+{
+  "scope": "Add actual owned-stop-and-wait coverage to the separate Darwin installed-host collector selection",
+  "sourceHashes": {
+    "tests/platform/native_go.py": "97a7a01df1340d2bbb331af79601298a8a401f674aed6f42f574e1e7765b2b32",
+    ".github/workflows/platform-foundation.yml": "cdf1deb7b97062009c2d8306bbb593bfaebb2643530fb716c286637581e9b462"
+  },
+  "selections": {
+    "darwin-protected-install": [
+      "TestDarwinProtectedInstalledExecutable",
+      "TestDarwinProtectedPathPolicy",
+      "TestDarwinMachODependencyPolicy",
+      "TestDarwinProductRemainsFailClosed"
+    ],
+    "darwin-installed-host-lifecycle": [
+      "TestDarwinInstalledHostSurvivesFrontendExit",
+      "TestDarwinInstalledHostReplacementRefusal",
+      "TestDarwinInstalledHostOwnedStopAndWait"
+    ]
+  },
+  "checks": {
+    "selfTest": {
+      "command": "python tests/platform/native_go.py --self-test",
+      "exit": 0,
+      "passed": 31,
+      "raw": "installed-host-three-test-collector-self-test.log",
+      "rawSha256": "14e8e23383d7e4a591c6e8a89415cd072e763d907d356040caa84cb786cbfdad",
+      "limits": "Synthetic collector tests on Windows; not actual native macOS execution."
+    },
+    "sourceGuardRegressions": {
+      "command": "python -m unittest tests.platform.test_source_surface",
+      "exit": 0,
+      "passed": 7
+    },
+    "diffCheck": {
+      "command": "git diff --check -- tests/platform/native_go.py .github/workflows/platform-foundation.yml",
+      "exit": 0
+    },
+    "requiredPatternCheck": {
+      "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+      "exit": 1,
+      "error": "Review is stale or missing: inspect changes and refresh sourceDigest",
+      "owner": "Root coordinator; no global review attestation changed by this slice."
+    }
+  },
+  "independentReview": {
+    "reviewer": "Plato",
+    "agentId": "01a137e6-481f-7441-9095-89ea4bb76f8c",
+    "findings": [],
+    "result": "Exact collector and workflow source review closed. All seven declarations and separate own-set top-level passes are required. Each missing host test is rejected; passing the original four cannot hide a failed host scope.",
+    "limits": "Source review only. The reviewer did not rerun tests, inspect the raw control log or execute native fixtures."
+  },
+  "nativeFixtureObservation": {
+    "path": "platform/runtime/installed_host_darwin_install_test.go",
+    "sha256": "cdb7e8f50d25628af7d20355a61e7f7d1c070dbc316e8a422ba9062d5ce6cac1",
+    "limits": "Three actual test declarations were inspected. This changing worker-owned fixture is not accepted by collector source review; root owns its final source review and native execution. The collector binds current source hashes again at execution."
+  },
+  "preservedHistory": "installed-host-collector-controls.json and its separate 30-test raw log remain unchanged as evidence of the earlier two-test host selection, not the expanded selection.",
+  "limits": [
+    "The original four-test scope is unchanged; the three host tests run as a separate scope.",
+    "Any missing, skipped, failed, malformed, timed-out, unexecuted or changed-source scope fails the collection and keeps both evidence flags false.",
+    "Native macOS, non-root authorization, actual compiler/SDK, source bindings and failure artifacts remain required.",
+    "The shared twelve-minute collection budget, 180-second Go timeout and twenty-minute workflow limit remain unchanged.",
+    "No native NATS, EOF, four-role boot, Compose, signed production installer, product or phase acceptance is inferred."
+  ],
+  "nativeExecuted": false,
+  "nativeFixtureAccepted": false,
+  "phaseAccepted": false
+}

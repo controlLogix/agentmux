@@ -1,0 +1,38 @@
+--- original/deployment/observe.go
++++ instrumented/deployment/observe.go
+@@ -122,6 +122,7 @@
+ 		return nil, err
+ 	}
+ 	owned := &observeOwnedConnection{Conn: connection, owner: d}
++	rawPublicArmSocket(owned)
+ 	d.mu.Lock()
+ 	if d.sockets == nil {
+ 		d.sockets = make(map[*observeOwnedConnection]observeSocket)
+@@ -266,6 +267,7 @@
+ 	var nc *nats.Conn
+ 	defer func() {
+ 		var failed bool
++		rawPublicCapture(historicalPlain, result, err)
+ 		err, failed = closeProbeTransport(ownedTLS, historicalPlain, err, "observe_connection_cleanup_failed")
+ 		if failed {
+ 			result = Observation{PersistenceEvidence: PersistenceUnknown, Code: "observation_incomplete", Scope: "Read-only infrastructure observation; not write, recovery or application readiness proof."}
+--- original/deployment/team_connection.go
++++ instrumented/deployment/team_connection.go
+@@ -177,6 +177,7 @@
+ 	var nc *nats.Conn
+ 	defer func() {
+ 		var failed bool
++		rawPublicCapture(dialer, out, err)
+ 		err, failed = closeRawTransport(dialer, err, "team_connection_cleanup_failed")
+ 		if failed {
+ 			out = TeamConnectionObservation{DomainAvailability: "unavailable", KernelAvailability: "unavailable", Code: "cleanup_failed"}
+--- original/deployment/probe.go
++++ instrumented/deployment/probe.go
+@@ -105,6 +105,7 @@
+ 	var nc *nats.Conn
+ 	defer func() {
+ 		var failed bool
++		rawPublicCapture(historicalPlain, result, err)
+ 		err, failed = closeProbeTransport(ownedTLS, historicalPlain, err, "health_connection_cleanup_failed")
+ 		if failed {
+ 			result = ProbeResult{}

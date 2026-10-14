@@ -1,0 +1,150 @@
+{
+  "scope": "Independent read-only test-instrumented public caller fault review; not original candidate execution",
+  "workerReviewSHA256": "01ec611ba7607700ff5f65dcf64866597910b5fb66d6922b7ded496b8dff8560",
+  "verifiedSourceBinding": {
+    "instrumentationOnly": true,
+    "phaseAccepted": false,
+    "changes": {
+      "observe.go": {
+        "originalSHA256": "3e0d3e5f299820b30975c466a407e01c338012008578fcbf6ff515a7ec4e313d",
+        "instrumentedSHA256": "d5f6db2eb6bce1a5100f3a26fdbb96063230bc1753445ba07a94b8297db84122"
+      },
+      "team_connection.go": {
+        "originalSHA256": "5f931e6e8f933b834f7da827033242859400c5e5e77f68b4cebf630b8c185b6b",
+        "instrumentedSHA256": "c5c41f6d10610d1145ce0aac56394c60f23082df2daae60f5dce5a95e8b6413f"
+      },
+      "probe.go": {
+        "originalSHA256": "3d5751789092bf9684dd9f12d77da8c6724ed3db10d4d3bd6dfeb35d3eabc78f",
+        "instrumentedSHA256": "8aae30398c3d58ec99a68bd6f7fcba9775711ca97b27111b5008fcbdeb53a471"
+      }
+    },
+    "testSHA256": "79f522cce23e539767732e92051f6ff326ed5437de8364eae373b4fa9164a3bf"
+  },
+  "exactInstrumentationDelta": [
+    {
+      "file": "observe.go",
+      "insertions": [
+        "\trawPublicArmSocket(owned)",
+        "\t\trawPublicCapture(historicalPlain, result, err)"
+      ]
+    },
+    {
+      "file": "team_connection.go",
+      "insertions": [
+        "\t\trawPublicCapture(dialer, out, err)"
+      ]
+    },
+    {
+      "file": "probe.go",
+      "insertions": [
+        "\t\trawPublicCapture(historicalPlain, result, err)"
+      ]
+    }
+  ],
+  "otherDeploymentSourceDifferencesFromCurrent": [],
+  "instrumentedDependencySHA256": {
+    "deployment/team_credentials.go": "172226041ed2f6515be48808ef71a5baac84fa6f3e61b5a838ff1565eb456755",
+    "deployment/team_credentials_privatefs_darwin_test.go": "ee20b6394e36fd847af0e56c7722033a63793d0f19db3c52685e2509e40c4283",
+    "deployment/local_tls_probe_test.go": "97a757abfe5702527246acb3a0df90c0afbbb8ca70d8b8a42f0022c09fdbbb12",
+    "deployment/secure_local_config_test.go": "04eaf9f7f1d1c1a66ef19e2e8fb07dc84868c3d8eb63463b53df7d1c3cd298b5",
+    "deployment/team_credentials_unix.go": "d8a8fb0f17c7bb701bd610de69b0f3869e90665d53b7bd5d0f376b59b6f946b5",
+    "deployment/profile_test.go": "3e36d029e3cd4c06b72ca046d05dec82c92efa32d21c3dd5a90c2eab09491aec",
+    "deployment/owner_bridge_config_test.go": "313e20a23690e2fb22de4cf6c46240b20726a535277d23131b67ce63cd499380",
+    "deployment/secure_compose.go": "614077efd26b3828f54b25639d9531b7b7be6744fe48e69558429b77a27821ab",
+    "deployment/sync_policy_test.go": "968989e83ac321c81a3aa5df41017d3fb2cc144a0c00031c7f3b8803f5111427",
+    "deployment/probe_test.go": "0ccac91b33d9b7330fbc8b17446540ceb51b5157be840ee457b3f61e0ccce786",
+    "deployment/raw_transport_cleanup.go": "a2cb64865e09e7e98f378887833814b3fbd332ff2e70507dbdf11a93b2a0f13a",
+    "deployment/local_tls_material_test.go": "e67d773c79a0bf96213a27f4c097fdf98509ba5f4bc4919bf0fad741ce2b3730",
+    "deployment/local_tls_material.go": "a07b3f4b8913f977a89aa2787227b85ee4b62b4add4cfd968b53ebe51a8cdcfa",
+    "deployment/local_tls_probe_transport.go": "243448843b4003f56e44d46c9cb59a4de85c83be073c7c888b48b0fcefb6e60d",
+    "deployment/probe_cleanup.go": "3a5f8e9c510d63268799216fcc46a0d07d2f94a11ad60a599606c35abddf0993",
+    "deployment/team_credentials_privatefs_darwin_nocgo_test.go": "77c59213f00eea9b6463ab73accb3fe78861ae0a671c124cb452ecd7d27f634b",
+    "deployment/profile.go": "f15a34a2111492fc83f3c5e85aad2cb869c4c6487bac9f3cc10aa2de9de767e7",
+    "deployment/team_credentials_test.go": "f9abac6ade5245eccf7967126a34e044994ae259737f8f37a4f24a2d9467b59e",
+    "deployment/local_tls_adversary_test.go": "2358cce497e494dd79d6dc6527ad971b11b72dffb1788a6037050bfbbce4bc4c",
+    "deployment/team_credentials_privatefs_linux_test.go": "c9303445fd429526f24a129c279eede5ebe42ee3f0e06138fe71b90e095c8605",
+    "deployment/secure_local_config.go": "1f28903775933ad41644691c1e96590a92fcccab71eb636fc8f5b4572c9294f5",
+    "deployment/team_credentials_unsupported.go": "d5d0d009c94ce19a32c81cf73342d810adb2d8e7548c508e25ca7cbbb787b45e",
+    "deployment/team_jwt_test.go": "32d9fe2fc75b7aa842b386a6dcef266cbe560ecdc7a5cd316e5fbd70b65b0d55",
+    "deployment/probe_cancellation_test.go": "b3328239175ab4155ab8effaac9451e86d9b8aca0a8e8d724690a835cd53140d",
+    "deployment/owner_bridge_config.go": "a1bd6e104b5c935e972f716306de163a095427340bbbf35557e15dace5fce20a",
+    "deployment/team_basic_test.go": "97e8fecb21d689f03ba434db5b436ec6626cfd3349d294e8b6cabbf29b63ecc0",
+    "deployment/observe_test.go": "9c4ba6091f07176ca73a11a856b3790e6cce92df08ac95e9e255dc6c339f11d1",
+    "deployment/raw_transport_cleanup_test.go": "c887ac63f6c0e5084769310753fe3f336e3917bde57fcd02cf3e0bc85385d73d",
+    "deployment/team_connection_test.go": "00419001f3e8e45e0fb8bc4c3b416a17f8eedb8f77093c9357626672e4c223eb",
+    "deployment/secure_compose_test.go": "c050baca8f25694ab9f26f9e54f3d4b85b8d918f487fa5470303272f53fff3b0",
+    "deployment/team_tls_fixture_test.go": "460e3abb390d1fe7bf20ea5f037b958f51de2811907746ca7615c8e3513eddfb",
+    "deployment/probe_cleanup_test.go": "0e078c17c2c8e080ed914d4a9aa85d4efc9e1a579418ebaa86bc36929bdaa864",
+    "deployment/compose_test.go": "4fdafc941427c9ac0cd6bd5334688c7019066c7bd0f20bdeb8440928765a26f8",
+    "deployment/compose.go": "2ed62e60ac9c6b1f56afef8156e7def69de8cdcb6918f89bf8e0a3412e0935c1"
+  },
+  "resultsVerifiedFromRaw": {
+    "small-team": {
+      "exit": 0,
+      "pass": 2,
+      "fail": 0,
+      "skip": 0,
+      "testNames": [
+        "TestRawPublicCallerCleanupInvalidatesFacts/team",
+        "TestRawPublicCallerCleanupInvalidatesFacts"
+      ]
+    },
+    "all-callers": {
+      "exit": 0,
+      "pass": 4,
+      "fail": 0,
+      "skip": 0,
+      "testNames": [
+        "TestRawPublicCallerCleanupInvalidatesFacts/team",
+        "TestRawPublicCallerCleanupInvalidatesFacts/probe",
+        "TestRawPublicCallerCleanupInvalidatesFacts/observe",
+        "TestRawPublicCallerCleanupInvalidatesFacts"
+      ]
+    },
+    "team-reset-negative": {
+      "exit": 1,
+      "pass": 0,
+      "fail": 2,
+      "skip": 0,
+      "testNames": [
+        "TestRawPublicCallerCleanupInvalidatesFacts/team",
+        "TestRawPublicCallerCleanupInvalidatesFacts"
+      ]
+    },
+    "probe-reset-negative": {
+      "exit": 1,
+      "pass": 0,
+      "fail": 2,
+      "skip": 0,
+      "testNames": [
+        "TestRawPublicCallerCleanupInvalidatesFacts/probe",
+        "TestRawPublicCallerCleanupInvalidatesFacts"
+      ]
+    },
+    "observe-reset-negative": {
+      "exit": 1,
+      "pass": 0,
+      "fail": 2,
+      "skip": 0,
+      "testNames": [
+        "TestRawPublicCallerCleanupInvalidatesFacts/observe",
+        "TestRawPublicCallerCleanupInvalidatesFacts"
+      ]
+    }
+  },
+  "findings": [],
+  "assessment": [
+    "Only four inserted calls across three copied source files arm an already minted socket or capture real precleanup facts/primary cause. No facts or broker replies are supplied by instrumentation.",
+    "Real public TeamConnection.Observe TLS/auth scoped snapshot, Probe authenticated health write/readback, and Observe read-only persisted record have baseline and precleanup positive controls.",
+    "Exact concrete raw owner survives first Close failure; bounded repeated retry empties owned map and actual TCP write returns net.ErrClosed. Probe/Observe additionally check real broker connection count zero. Direct peer EOF is not measured here and not claimed.",
+    "Each reset-removal mutant is exactly its original instrumented caller minus one result-reset statement; genuine corresponding assertion fails, not setup/admission failure.",
+    "Initial observer-mutant producer anchor failure is explicitly preserved as unexecuted and corrected before actual observer negative execution."
+  ],
+  "limits": [
+    "Instrumented copies only. Not an unmodified candidate test, native Darwin, engine/Compose, total phase or TLS-first enrolled-local qualification.",
+    "No tests rerun, source/shared metadata edits, downloads, providers or native actions.",
+    "All listed artifact/source hashes verified, current original three files match; source evidence remains bounded to this diagnostic copy."
+  ],
+  "phaseAccepted": false,
+  "sourceDigestAuthorized": false
+}

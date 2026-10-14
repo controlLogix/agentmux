@@ -1,0 +1,5 @@
+from pathlib import Path
+import shutil,uuid,subprocess,os,json
+out=Path('/home/ryan/.cache/agentmux-governance')/('p02-cli-child-guard-'+uuid.uuid4().hex[:8]);out.mkdir();shutil.copytree('/mnt/c/Users/RyanHelms/GitHub/agentmux/platform',out/'platform');go='/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go';args=[go,'test','-race','-count=1','-json','./cmd/agentmux-runtime','-run','^TestOwnedBootstrapProgressChecksActualChildAndCaller$'];fixed={'GOTOOLCHAIN':'local','GOPROXY':'off','GOSUMDB':'off','GOWORK':'off','GORACE':'atexit_sleep_ms=0'};env=os.environ.copy();env.update(fixed);print(out,flush=True);(out/'invocation.json').write_text(json.dumps({'args':args,'cwd':str(out/'platform'),'fixedEnvironment':fixed},indent=2)+'\n');
+with(out/'test.jsonl').open('wb')as stdout,(out/'test.stderr').open('wb')as stderr:r=subprocess.run(args,cwd=out/'platform',env=env,stdout=stdout,stderr=stderr)
+(out/'exit.json').write_text(json.dumps({'exitCode':r.returncode})+'\n');print('exit',r.returncode,flush=True)

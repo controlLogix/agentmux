@@ -1,0 +1,72 @@
+{
+  "reviewer": "Codex",
+  "date": "2026-10-14T16:32:59.569635+00:00",
+  "decision": "Three focused actual compiled CLI cases pass on frozen candidate",
+  "sourcePins": {
+    "platform/cmd/agentmux-runtime/main.go": "9ba174b070fe08d76944d2a2f6cbd5da448f0a02f6e1c70c6aabc0a15ad17620",
+    "platform/cmd/agentmux-runtime/main_history.go": "9a27cfcd3c4fdb4c8489ea0bae105c2332786eb31d1ffbc89a7c3aeafb027c2e",
+    "platform/launcher/owner_bridge.go": "c73c5c40d770535a49f03a2a14e43e7598daf6a4528973fb0591fba326c5df95",
+    "platform/launcher/owner_bridge_probe.go": "1879bfda9cf0e1ba4d7efc25ea0c2ed8a539c2475a119342d1339fa868dea894",
+    "platform/launcher/host_history_policy.go": "e76acbe79b31d9c207d5b040cc591bb413a0323ef87d798380fb281d4bf86e59",
+    "platform/launcher/host_history_cli_linux_test.go": "a0c417072aed2f0e97058a705823c2f1b05ebfc1de858f70fb27928cd47412e3"
+  },
+  "verifiedArtifactCount": 49,
+  "cases": [
+    {
+      "case": "history",
+      "command": {
+        "contextExpired": false,
+        "entryToExitNanoseconds": 3537942059,
+        "exitStatus": 1,
+        "stderrBytes": 204,
+        "stderrSHA256": "sha256:2a09ae1d1fe71d9aeb95314c8a552b9818fecc8789aad6f18b1c3603609dfd09",
+        "stdoutBytes": 495,
+        "stdoutSHA256": "sha256:78fd390f3a1e8cf3dc464c6c9b9430e678c98abb02fb582aab26a1e0823ea52a",
+        "waitJoined": true
+      },
+      "outcome": "qualified past record, original nonzero request failure, strict canonical stderr",
+      "namedPassingEntries": 2
+    },
+    {
+      "case": "nats_priority",
+      "command": {
+        "contextExpired": false,
+        "entryToExitNanoseconds": 1446498145,
+        "exitStatus": 0,
+        "stderrBytes": 0,
+        "stderrSHA256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdoutBytes": 2595,
+        "stdoutSHA256": "sha256:a08d3d087d81fa033bb4f457d83209b330beb3a5f43a02e1e8c6c7ab8875ad4e",
+        "waitJoined": true
+      },
+      "outcome": "authenticated current L04 wins over independently eligible historical record",
+      "namedPassingEntries": 2
+    },
+    {
+      "case": "auth_refusal",
+      "command": {
+        "contextExpired": false,
+        "entryToExitNanoseconds": 385362822,
+        "exitStatus": 1,
+        "stderrBytes": 243,
+        "stderrSHA256": "sha256:048789999efec1f9356840d93d2952e57af4b37450d3e4ecbca56bb9cec4945c",
+        "stdoutBytes": 0,
+        "stdoutSHA256": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "waitJoined": true
+      },
+      "outcome": "genuine CLIENT authentication rejection stays hard, no history or progress",
+      "namedPassingEntries": 2
+    }
+  ],
+  "limitations": [
+    "Original history config-encoding and stderr-stream failures remain historical, not rewritten.",
+    "First history run may briefly overlap C nonce setup/build; exact successful deadline remains measured, with no quiet-window claim.",
+    "Later priority and auth cases followed C explicit no-active-job confirmation and ran serially.",
+    "Private operation enter/complete seeds real admitted history as a component seam. HOST priority service uses real TLS NATS, actual role actors and FILE storage with an explicit controlled Docker inspector.",
+    "No actual Docker, owning installed host Run, creator fallback, full phase or native macOS acceptance.",
+    "Raw outputs/configuration/certificates/logs stay private; this record includes only closed outcomes, times, sizes and hashes."
+  ],
+  "phaseAccepted": false,
+  "independentReview": "independent-review.json",
+  "independentReviewSHA256": "beda813148b36aab684b1298992d3c5f941534cbd6f0d6bc04633adacb4862a9"
+}

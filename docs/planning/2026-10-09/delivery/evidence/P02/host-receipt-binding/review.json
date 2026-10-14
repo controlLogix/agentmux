@@ -1,0 +1,23 @@
+{
+  "reviewer": "Codex",
+  "command": "go test -race -json -count=1 -timeout=90s ./launcher -run '^TestInstalledReceiptBinding'",
+  "exitCode": 0,
+  "namedTestsPassed": 2,
+  "sources": {
+    "platform/launcher/host_receipt_binding.go": "16f5eca18bcdccc911494f51efbbfff359518fbee4a7ecb8ca7d6ca1aabb5b51",
+    "platform/launcher/host_receipt_binding_test.go": "3a5bba6e4aa4ebf35cb465b1ebc6449f3d9cd6128a1aa4ae371dbc7d4670a44a"
+  },
+  "environment": "Native Linux amd64 in Ubuntu-26.04 WSL; prepared offline Go cache; isolated source and private fixtures.",
+  "evidence": [
+    "events.jsonl",
+    "stderr.log",
+    "exit.txt",
+    "producer.sh"
+  ],
+  "limitations": [
+    "Only the policy correlation getter and changed-enrollment/invalid-invocation refusal are covered.",
+    "Fixture executable is declaration-only; actual held executable admission belongs to runtime receipt tests.",
+    "This does not qualify installed CLI startup, receipt emission, native macOS or the P02 gate.",
+    "The immutable module snapshot includes concurrent draft integration; only the two owned source hashes are attested here."
+  ]
+}

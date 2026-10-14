@@ -572,3 +572,382 @@ flowchart LR
 ```
 
 The status schema preserves unavailable and forbidden states; its runtime producer remains later work. Capacity fixtures use one task aggregate and conservative stream framing headroom. An unguarded writer control shows why a full stream cannot promise final-result admission.
+
+
+## P02 initial verification and bootstrap ownership
+
+PLAN-03 remains planned for the complete protected composition. The implementation binds the fixed four-role assembly to separately enrolled release authority. File locks and the EOF-only parent lifetime pipe are OS lifecycle mechanisms; ordinary role communication uses NATS.
+
+```mermaid
+flowchart LR
+  Policy[Separately enrolled release key and policy] --> Release[Signed installed release loader]
+  Package[Exact release and assembly bytes] --> Release
+  Release --> Verify[Held-root bounded member verification]
+  Verify --> Supervisor[Sealed Linux snapshots and owned supervision]
+  Profile[Private enrolled profile and role credentials] --> Config[LoadBootstrapConfig]
+  Release --> Config
+  Config --> Bootstrap[Bounded Bootstrap]
+  Bootstrap --> Inspect[Exact Compose broker ownership and identity]
+  Inspect --> Lock[OS startup lease and per-role lifetime leases]
+  Lock --> Broker[Owned Compose and persistent NATS health probe]
+  Broker --> Supervisor
+  Supervisor --> Roles[Four separate protected role processes]
+  Roles --> Internal[Scoped protected NATS subjects]
+  Internal --> Export[Read-only exported kernel information]
+  Export --> Observe[Ready snapshot observation]
+  Observe --> Reuse[Same instance reuse without process ownership]
+```
+
+Actual four-process boot, parent-death cleanup, signed release loading and private configuration checks have source-bound WSL evidence. Complete Compose startup, concurrent reuse and recovery are now being integrated; native macOS boot and the full L04 producer remain open. Reuse is read-only and does not claim current write permission from a retained health record. A concurrent terminal waits for the startup lease and checks readiness again before mutation. PID and file age never authorize takeover. Linux runtime state remains in WSL when using the approved Windows-owned Docker CLI backend.
+
+<details>
+<summary>Earlier P02 diagram and qualification state</summary>
+
+## P02 initial verification and bootstrap ownership
+
+PLAN-03 remains planned for the complete protected composition. Its new verification boundary binds the four-role assembly to separately trusted release policy before supervision. The advisory lock is an OS bootstrap mechanism, not a new application messaging channel or a new catalog pattern.
+
+```mermaid
+flowchart LR
+  Policy[Externally trusted release policy] --> Verify[platform/kernel/assembly.Verify]
+  Package[Assembly bytes and contained binaries] --> Verify
+  Verify --> Supervisor[Sealed Linux snapshots and owned supervision]
+  Supervisor --> Roles[Four separate protected role processes]
+  Roles --> Internal[Scoped protected NATS subjects]
+  Internal --> Export[Read-only exported kernel information]
+  Profile[Private Linux or macOS profile] --> Lock[Process-held advisory file lock]
+  Lock --> Bootstrap[Owned Compose bootstrap: under implementation]
+  Bootstrap --> Broker[NATS readiness and identity: pending integration]
+```
+
+The supervisor and role implementations have focused tests. Their complete four-process startup, host automation and native macOS execution remain under verification; these paths do not establish phase acceptance. Lock acquisition requires a bounded context; PID and file age never authorize takeover. Linux runtime state remains in WSL when using the approved Windows-owned Docker CLI backend.
+
+</details>
+
+## P02 local broker authentication
+
+PLAN-04 keeps its narrow owner-status facade. The approved TLS repair is under implementation; this diagram does not claim supported-environment qualification or P02 acceptance.
+
+```mermaid
+flowchart LR
+  Policy[Private host and full-scope trust enrollment] --> Client[Installed owner client]
+  Policy --> Factory[Exact secure broker and Compose factory]
+  Policy --> Trust[Enrolled roots, DNS identity and leaf pin]
+  Client --> Inspect[Selected Docker and owned config inspection]
+  Inspect --> TLS[Fixed TLS connection before NATS credentials]
+  Trust --> TLS
+  Factory --> Broker[Owned strict TLS-first NATS broker]
+  TLS --> Broker
+  Broker --> HostAccount[Isolated HOST request and reply subjects]
+  HostAccount --> Owner[Host service with an OS lifetime lease]
+  Owner --> Bootstrap[Actual invocation and owning session]
+  Bootstrap --> Roles[Four protected role processes with enrolled trust]
+  Roles --> Broker
+  Broker --> Observations[Current scoped kernel and FILE record evidence]
+  Observations --> Owner
+  Owner --> Reply[Correlated unchanged L04 reply]
+  Reply --> HostAccount
+  HostAccount --> Client
+```
+
+Ownership inspection and cryptographic peer authentication prove different facts. Neither cached broker claims nor a successful process spawn establishes a current accepted owner observation. Full TLS Compose, native execution, startup progress and phase review remain open.
+
+<details>
+<summary>Earlier P02 owner-status transport diagram</summary>
+
+## P02 scoped local owner status
+
+PLAN-04 now includes the local owner-status facade under implementation. The full common plugin context remains planned. The status bridge is a surrounding host service; it adds no protected kernel command grants.
+
+```mermaid
+flowchart LR
+  Policy[Private external host enrollment] --> Client[Installed owner client]
+  Policy --> Factory[Exact broker factory and credential binding]
+  Factory --> HostAccount[Isolated NATS HOST account]
+  Client -->|Scoped ensure or status request| HostAccount
+  HostAccount --> Owner[Host service with an OS lifetime lease]
+  Owner -->|Actual invocation| Bootstrap[Owned Bootstrap session]
+  Bootstrap --> Roles[Fixed four protected processes]
+  Roles -->|Read-only exports| Observations[Current kernel observations]
+  Observations --> Owner
+  Broker[Selected broker and FILE record evidence] --> Owner
+  Owner -->|Correlated L04 reply| HostAccount
+  HostAccount --> Client
+```
+
+Only the actual owning startup can supply a cold write proof. Read-only reuse does not acquire another host's children or manufacture current write readiness. Transport, private policy, native boot and complete Compose evidence remain separate verification requirements.
+
+</details>
+
+
+## P02 enrolled local transport adapter
+
+P02-TLS-01 records the observed adapter. Protocol, observer and bridge cleanup findings have independently reviewed repairs. Installed Compose startup and native platform qualification remain open. Historical open findings remain in their original evidence.
+
+```mermaid
+flowchart LR
+  Enrollment[Private profile trust and scope] --> Trust[Immutable ClientTrust]
+  Protocol[Kernel protocol client] --> Adapter[P02-TLS-01 NATS custom dialer]
+  Probe[Health and status clients] --> Adapter
+  Trust --> Adapter
+  Adapter -->|TLS chain, DNS, validity and leaf pin| Broker[Enrolled local NATS broker]
+  Adapter -->|Authenticated socket only| NATS[NATS CONNECT; NoReconnect and fixed endpoint]
+  Cancel[Caller cancellation] --> Adapter
+  Adapter --> Cleanup[Close owned sockets and report cleanup errors]
+  Docker[Separate exact Docker ownership inspection] -.-> Broker
+```
+
+## P02 retained host cleanup ownership
+
+```mermaid
+flowchart LR
+  Run[Host facade Run] --> Session[Actual Bootstrap Session]
+  Session --> Group[Exact direct child handles]
+  Group --> Reaper[Existing completion notification]
+  Group --> Causes[Retain startup and cleanup causes behind safe presentation]
+  Run --> Failure[RuntimeCleanupError with exact Session and service lease]
+  Failure --> Retry[Bounded Close retry]
+  Retry --> Session
+  Reaper --> Release[Release transferred service lease]
+  Session --> Release
+  Transport[Authenticated owned TLS dialer] --> TransportFailure[TransportCleanupError with exact dialer]
+  TransportFailure --> TransportRetry[Bounded dialer Close retry]
+  TransportRetry --> Transport
+  RawDialer[Owned raw deployment dialer] --> Conn[P02-CONN-01 net.Conn close decorator]
+  Conn --> RawFailure[RawTransportCleanupError with exact owner]
+  RawFailure --> RawRetry[Caller-bounded Close retry]
+```
+
+Cleanup errors preserve concrete ownership and fixed safe messages. They do not grant authority to adopt another process, socket or lease. Focused actual-process and socket controls passed; installed end-to-end and native evidence remain separate.
+
+## P02 inspection within one bootstrap observation
+
+```mermaid
+flowchart LR
+  Bootstrap[Bootstrap facade] --> Enrollment[Reload private enrollment]
+  Enrollment --> Identity[Selected engine and exact broker ownership]
+  Identity --> Archives[Three fixed private archives checked concurrently]
+  Archives --> Join[Join every owned read]
+  Join --> Proof[Private one-use context-bound proof]
+  Proof --> Recheck[Recheck unchanged private enrollment]
+  Recheck --> TLS[Authenticate actual TLS peer before CONNECT]
+  TLS --> Snapshot[Validate current scoped kernel snapshot]
+  Snapshot --> Status[Honest startup observation]
+  Mutation[Provisioning or process startup] --> Discard[Discard earlier proof]
+  Expiry[Expired proof] --> Identity
+```
+
+The public observer still performs its own inspection. The proof stays out of configuration, sessions and caches. It never replaces cryptographic authentication or establishes readiness by itself. Real WSL Compose cold, concurrent, warm and normal recovery checks pass; installed frontend, abrupt host crash and native platform qualification remain open.
+
+## P02 startup request receipt
+
+```mermaid
+flowchart LR
+  Frontend[Installed frontend with total invocation budget] --> Image[Held verified host image]
+  Image --> Host[Exact newly spawned host]
+  Host --> Lease[Actual service lease]
+  Lease --> Operation[One bounded Bootstrap operation]
+  Operation --> Admission[Real admission and protected preparation]
+  Admission --> Enter[Actual private operation entry]
+  Enter --> Fresh[Fresh bound owner and profile revalidation]
+  Fresh --> Receipt[One historical lifecycle receipt]
+  Receipt --> Request[Request accepted; current instance state unknown]
+  Enter --> Pending[Entered operation still in flight]
+  Pending --> NATS[Authenticated scoped NATS owner service]
+  NATS --> Details[Current starting, readiness and instance details]
+  Operation --> Join[Cancel and join exact operation before cleanup]
+  Join --> Cause[Retain actual completion and cleanup causes]
+  Exit[Exact child exit or caller cancellation] --> Refusal[Refuse receipt fallback success]
+```
+
+The pipe carries process lifecycle control only. It does not carry application status or agent communication. Fresh owner/profile revalidation and joined completion repairs have reviewed Linux component evidence. Receipt acceptance records earlier admission and cannot prove current execution. Installed frontend timing and the full supported-environment qualification remain separate.
+
+<details>
+<summary>Earlier P02 startup request receipt diagram</summary>
+
+## P02 startup request receipt
+
+```mermaid
+flowchart LR
+  Frontend[Installed frontend with total invocation budget] --> Image[Held verified host image]
+  Image --> Host[Exact newly spawned host]
+  Host --> Admission[Real bootstrap admission and protected preparation]
+  Admission --> Lease[Actual service lease and operation entry]
+  Lease --> Receipt[One private lifecycle receipt]
+  Receipt --> Request[Request accepted; current instance state unknown]
+  Host --> NATS[Authenticated scoped NATS owner service]
+  NATS --> Details[Current starting, readiness and instance details]
+  Exit[Exact child exit or caller cancellation] --> Refusal[Refuse receipt fallback success]
+```
+
+The pipe carries process lifecycle control only. It does not carry application status or agent communication. Receipt acceptance records earlier admission and cannot prove current execution. Installed CLI timing and fresh owner revalidation remain under implementation; component receipt tests are not phase acceptance.
+
+</details>
+
+## P02 private configuration descriptor admission
+
+This supports PLAN-03 trust boundaries. Descriptor retention is a security mechanism, not an additional design pattern.
+
+```mermaid
+flowchart LR
+  Scope[Separately enrolled configuration] --> Walk[Hold every ancestor descriptor; cap128]
+  Walk --> Initial[Initial native owner/mode/ACL admission]
+  Initial --> Read[Contained private regular-file bounded read]
+  Read --> Final[Recheck held ancestors, final private directory and file]
+  Final --> Bytes[Return bytes only after complete admission]
+  Unsupported[Darwin without CGO] --> Refusal[Fail closed; not native qualification]
+```
+
+This diagram describes the team credential reader. Native platform qualification remains open.
+
+## P02 owner-status refresh
+
+```mermaid
+flowchart LR
+  Request[Bounded authenticated owner request] --> Enrollment[Fresh private profile and full scope]
+  Enrollment --> Inspect[One exact Docker ownership inspection]
+  Inspect --> Proof[Same-context single-use kernel proof]
+  Inspect --> Persistence[Current authenticated persistence observation]
+  Proof --> Kernel[Current TLS-authenticated kernel observation]
+  Kernel --> Facts[Honest current status]
+  Persistence --> Facts
+  Kernel --> Failure[Retain concrete cleanup causes]
+  Persistence --> Failure
+  Failure --> Run[Service loop returns before reply]
+  Run --> Join[Run joins operation and preserves Session and lease cleanup]
+  Next[Later request] --> Enrollment
+```
+
+The proof is consumed once and is never cached in a Session. Ordinary unavailable readiness remains status information. Concrete cleanup failures retain their exact owner behind fixed safe messages. This component repair does not qualify native platforms or the full phase.
+
+## P02 initial owner lookup
+
+This extends the scoped PLAN-04 facade. Component checks pass; real installed startup qualification remains open.
+
+```mermaid
+flowchart LR
+  Ensure[Initial ensure lookup] --> Probe[Bounded scoped authenticated probe]
+  Probe --> Hint[Exact native no-responder hint]
+  Hint --> Admit[Existing ordinary host admission]
+  Probe --> Reply[Validated current owner reply]
+  Probe --> Hard[Authentication, malformed reply or cleanup failure]
+  Admit --> Receipt[Exact child lifecycle receipt]
+  Receipt --> Final[Existing final authenticated request]
+  Status[Status command] --> Normal[Existing authenticated request]
+```
+
+The hint does not establish owner absence or startup authority. The original lease and profile checks still govern admission.
+
+## P02 proposed history cleanup boundary
+
+This is an unintegrated PLAN-04 facade proposal. Independent filesystem findings remain open.
+
+```mermaid
+flowchart LR
+  Publication[Actual leased history publication] --> Joined[All publication work joined]
+  Joined --> Release[Release history-only lease duplicate]
+  Joined --> Pending[Retain exact root, staging name and inode]
+  Release --> Retry[New attempt uses normal lease and admission]
+  Pending --> Remove[Remove only the same unpublished staging object]
+  Retry --> Newer[Newer history generation]
+  Remove --> Preserve[Preserve newer slot and foreign replacements]
+  Core[Incomplete core worker cleanup] --> Held[Retain original core lease and cleanup owner]
+```
+
+## Promoted startup history foundation; runtime integration pending
+
+```mermaid
+flowchart LR
+  Operation[Actual startup operation and service lease] --> Store[Private bootstrapHistoryStore]
+  Store --> Guard[Canonical root and held lease checks]
+  Guard --> Slot[One bounded diagnostic history slot]
+  Store --> Stage[Exact unpublished staging cleanup owner]
+  Stage --> Retired[Publication joined and retired]
+  Retired --> Release[Close history duplicate lease]
+  Stage --> Cleanup[Remove only original staging inode]
+  Reader[Independent binding and lease proof] --> Slot
+  Slot --> Past[Past failure only]
+```
+
+The foundation is in source; host and CLI wiring still require implementation and actual qualification. NATS supplies current status.
+
+## Installed history reader facade; main wiring pending
+
+```mermaid
+flowchart LR
+  Installed[Fresh installed policy] --> Binding[Derived owner and runtime binding]
+  General[General history reader] --> Free[Actual free service lease]
+  Creator[Exact original factory child] --> Receipt[Validated receipt for this invocation]
+  Free --> History[Bounded private past-failure record]
+  Receipt --> History
+  Binding --> History
+  History --> Display[Seven fixed historical fields]
+  NATS[Authenticated NATS] --> Current[Current status]
+```
+
+The facade is implemented and component-tested. Main and host Run integration still require qualification.
+
+## Owner history integration in source; running qualification pending
+
+```mermaid
+flowchart LR
+  Factory[Installed factory binding] --> Worker[Sole Bootstrap worker]
+  Worker --> Begin[Actual protected entry records attempt]
+  Worker --> Terminal[Actual completed result]
+  Terminal --> Healthy[Healthy runtime retires optional duplicate]
+  Terminal --> Failed[Failed startup pending finalization]
+  Failed --> Join[Run joins actual worker and publication]
+  Join --> Envelope[One existing core cleanup envelope]
+  Envelope --> Finalize[Bounded terminal publication and history cleanup]
+  Envelope --> Core[Remaining budget for exact core cleanup]
+  Finalize --> Retained[Private root and staging owner if unresolved]
+  Core --> Lease[Retain core lease if cleanup incomplete]
+```
+
+Six component controls and independent source review support this wiring. Actual Run, CLI and native qualification remain open. NATS continues to supply current status.
+
+## CLI history wiring in source; real CLI checks pending
+
+```mermaid
+flowchart LR
+  CLI[CLI request] --> NATS[Authenticated NATS request]
+  NATS --> Valid[Valid reply returns current status]
+  NATS --> Missing[Exact unavailable result]
+  Missing --> Status[Status reads with free service lease]
+  Missing --> Creator[Ensure reads after exact accepted creator proof]
+  Status --> History[Separate historical failure document]
+  Creator --> History
+  History --> Failure[Original nonzero request result]
+  Hard[Authority or malformed or cleanup failure] --> Failure
+```
+
+History receives at most 200 milliseconds within the original frontend deadline. It does not replace an authenticated reply, skip a new ensure attempt, or establish readiness.
+
+## Owner request authority checks
+
+```mermaid
+flowchart LR
+  Connection[Private connection factory] --> Fixed[Fixed NATS callback handler]
+  Fixed --> LastError[NATS records protocol error]
+  LastError --> Boundary[Ordered request boundaries]
+  Boundary --> Known[Known permission or authentication error]
+  Known --> Hard[Hard authority failure]
+  Boundary --> Reply[Strict authenticated reply validation]
+```
+
+The callback publishes no arbitrary error text. Known authority failures remain hard errors; probe also refuses unknown protocol errors. This component proof does not establish installed CLI or full phase acceptance.
+
+## Same accepted request across core completion
+
+```mermaid
+flowchart LR
+  Request[Authenticated request with consumed nonce] --> Pending[Actual pending mapping]
+  Pending --> Canceled[Trusted canceled core refusal]
+  Canceled --> Binding[Full binding and canonical held lease checks]
+  Binding --> Wait[Wait for actual completion within original context]
+  Wait --> Result[Map actual completed result]
+  Result --> Reply[At most one publication]
+  Wait --> Expired[Expired context emits no reply]
+```
+
+The wait releases its state lock first. It never resets replay, changes the request nonce, or adds a new deadline. Linux component evidence does not establish the original intermittent Run cause or native phase acceptance.

@@ -1,0 +1,45 @@
+{
+  "reviewer": "Codex",
+  "recordedAt": "2026-10-14T13:19:39.832920+00:00",
+  "scope": "Read-only diagnostic against retained enrolled broker, not installed startup acceptance.",
+  "reviewed": "Exact original/diagnostic diff adds only monotonic stage timing calls around credential, authority inspection and TLS connection. Original5s timeout and admission/cleanup checks remain.",
+  "observed": {
+    "diagnosticOnly": true,
+    "disposition": "",
+    "originalProbeBoundNanoseconds": 5000000000,
+    "parentCanceled": false,
+    "returnedCode": "owner_bridge_no_responders",
+    "stages": [
+      {
+        "stage": "policy_load",
+        "elapsedNanoseconds": 79302438
+      },
+      {
+        "stage": "credential",
+        "elapsedNanoseconds": 16500185
+      },
+      {
+        "stage": "owned_authority_inspect",
+        "elapsedNanoseconds": 2105462821
+      },
+      {
+        "stage": "tls_info_connect",
+        "elapsedNanoseconds": 26501694
+      },
+      {
+        "stage": "connect",
+        "elapsedNanoseconds": 2132122722
+      },
+      {
+        "stage": "total_probe",
+        "elapsedNanoseconds": 2215985231
+      }
+    ],
+    "startupInvoked": false
+  },
+  "limits": [
+    "Current success does not explain earlier uncaptured204-byte stderr.",
+    "Timing is from an instrumented private source copy.",
+    "No engine mutation, process startup or phase acceptance."
+  ]
+}

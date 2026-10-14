@@ -1,0 +1,110 @@
+{
+  "phase": "P02",
+  "kind": "One targeted read-only retained-broker initial Probe diagnostic",
+  "diagnosticOnly": true,
+  "testExit": 0,
+  "result": {
+    "diagnosticOnly": true,
+    "disposition": "",
+    "originalProbeBoundNanoseconds": 5000000000,
+    "parentCanceled": false,
+    "returnedCode": "owner_bridge_no_responders",
+    "stages": [
+      {
+        "stage": "policy_load",
+        "elapsedNanoseconds": 79302438
+      },
+      {
+        "stage": "credential",
+        "elapsedNanoseconds": 16500185
+      },
+      {
+        "stage": "owned_authority_inspect",
+        "elapsedNanoseconds": 2105462821
+      },
+      {
+        "stage": "tls_info_connect",
+        "elapsedNanoseconds": 26501694
+      },
+      {
+        "stage": "connect",
+        "elapsedNanoseconds": 2132122722
+      },
+      {
+        "stage": "total_probe",
+        "elapsedNanoseconds": 2215985231
+      }
+    ],
+    "startupInvoked": false
+  },
+  "artifacts": [
+    {
+      "path": "preparation.json",
+      "sha256": "a14fe7669a49c3897c8d5f46c7753205a35ecda59d9ea02b2e91deea324f42a3"
+    },
+    {
+      "path": "instrumentation.diff",
+      "sha256": "5e75a55b65404fa173e41c889d09c3c2e0c70e1609676840e1c31fb60204249f"
+    },
+    {
+      "path": "producer.sh",
+      "sha256": "22e1fffd19344cf5827607a818b87f3552d404cb3d0f0a77e1dcd6b1396d80f9"
+    },
+    {
+      "path": "invocation.json",
+      "sha256": "da95d6cb9b543d5bf5116fae394da841dafae577a02065a683de905ac3f03e4a"
+    },
+    {
+      "path": "events.jsonl",
+      "sha256": "327a715c08f6b18dd0d8d146469f2c27b43a52cc29852a2516c6b3cbc1e7a50d"
+    },
+    {
+      "path": "stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "exit.txt",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "result.json",
+      "sha256": "9e82a9ef9d387023232111714f670c2aa0251e470eb84ac83bda85ca83ab9769"
+    }
+  ],
+  "diagnosticSources": [
+    {
+      "path": "platform/launcher/owner_bridge.go",
+      "sha256": "06a0876cb586a03873d9f07102e9cabbb4e4e145cdb8576aa3a0b160b26994c6"
+    },
+    {
+      "path": "platform/launcher/owner_bridge_probe.go",
+      "sha256": "9a173124f2325d0b66dbf80ba2fdc102e007b045f13c1811d2d6abd375275595"
+    },
+    {
+      "path": "platform/launcher/host_policy.go",
+      "sha256": "25ebb1c850399530433e7c8a2c79d2f63f222b85557881509568130c3c16d2a3"
+    },
+    {
+      "path": "platform/launcher/retained_probe_trace.go",
+      "sha256": "c61d38dc91cd3d05d4e8b4d14f86449b86a8b39628b1c2a9497bd16ac0226d7e"
+    },
+    {
+      "path": "platform/launcher/retained_probe_diagnostic_test.go",
+      "sha256": "2c15f52f7e29587238881a6b15a5a6c31e01aeae159a1ebbcd4ca59c58b724f6"
+    }
+  ],
+  "privateSelectionHashes": [
+    {
+      "kind": "Retained installed policy",
+      "sha256": "7ea39b413f89887b59584412be849f1c468b4a24842b29dd978a089936d21b81"
+    }
+  ],
+  "limits": [
+    "One initial authenticated read-only Probe; no frontend StartHost, runtime roles or engine resource mutation.",
+    "Original5s bound and actual full signed private enrollment/Docker ownership/pinned TLS checks remain.",
+    "Private diagnostic copy only records <=16 fixed stage names and monotonic elapsed numbers with a mutex; original production bytes unchanged.",
+    "Current owner_bridge_no_responders is proven; original failed frontend204-byte stderr remains unrecoverable and its cause is not established.",
+    "No installed lifecycle, native platform or phase acceptance.",
+    "Root owns any future retained fixture recovery decision."
+  ]
+}

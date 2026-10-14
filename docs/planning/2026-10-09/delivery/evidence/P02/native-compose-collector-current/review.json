@@ -1,0 +1,465 @@
+{
+  "scope": "Native Compose collector source, offline SDK shape controls and WSL descriptor component verification",
+  "sourceSHA256": {
+    "tests/platform/native_compose.py": "c4182bb87a0a82bd677d8361fa0b4d60d3d3eb8a7ee853ef9b2e2dd6665ac7a4",
+    "tests/platform/native_go.py": "5089b6dcdbbf55f38837644c69ff1877006518407e1ea23c4d098071cbd99fcd",
+    ".github/workflows/platform-compose.yml": "397e3db7986f251e6b546bf6c6f965c9de0b5c0e9a93365f4b074ddd0d1e7b8d"
+  },
+  "supportSourceSHA256": {
+    "sdk/python/README.md": "34a29603b12e7418219097dfc3ae1690205190e412184a33f424b3ac673db738",
+    "sdk/python/pyproject.toml": "d0b333827071711c7f3ffb4be4abc9ebf663d9cfed0edad8f3efbca88bd94743",
+    "sdk/python/requirements.lock": "10f1a795ebbc6624f1bb29d484b983781feaf94e178336b87aede0204f50eca6",
+    "sdk/python/agentmux_contracts/validation.py": "54b3e233ab3cc3e6f3350872897fd3f2b5ba651f6a9c26741e367af017030242",
+    "sdk/python/agentmux_contracts/__main__.py": "41951a02453da0bb10febf76cf151aac67a2dd9bdf5fff2fa5efd413b94b22b1",
+    "sdk/python/agentmux_contracts/attestation.py": "d7bb81a998c2b3e243177a000f94f97e19dad54ff89090d22c41103a991dc70b",
+    "sdk/python/agentmux_contracts/wire.py": "1de4b46902ed683e01b4734a1cc6db2c1a5edc61dcefaf071c28990a32274b3b",
+    "sdk/python/agentmux_contracts/__init__.py": "94d4eb1d149b82e405251e3cba9e9186f92e287c91a03dc8d794b12ab2ebd00a",
+    "sdk/python/agentmux_contracts/state_models.py": "87cb70f10e8da77c22ce1da3a7598141764a0b673d4be89969311499f530986b",
+    "sdk/python/tests/test_contracts.py": "4e27ba59a2704bda976542686f068b03ae0ad20e2d97c3616a9757f977869c16",
+    "sdk/python/tests/test_state_models.py": "7ccf19dbb656b497b796ee771b158cf3a31cc916a4613f9dfca756b0db0835f6",
+    "contracts/v1/README.md": "61e61a80f72f24aa51f68d1b57de5aae98260d71bf240b53858ec0ae724fd0d4",
+    "contracts/v1/registry.json": "a574e1dd54fec0d1b55df50c4ff1b604e0eac1d2eb4c23b7c914f68674eb6381",
+    "contracts/v1/recovery.md": "9a2bf74eb17123d349683a8d7b64a20c3126fe65d39e3072a2ec98c1fabcafee",
+    "contracts/v1/schemas/plugin-manifest.schema.json": "6514e16035b92ac3edeaf4ea906502ab97c64d5dc2c396f87ab0be723a4163d5",
+    "contracts/v1/schemas/message-envelope.schema.json": "de2366fff9b34b85cf8689c890c8f9eedce1da55848af8e7bfe3cfdab3d466e6",
+    "contracts/v1/schemas/execution-report.schema.json": "a15213506f2ac3e6d02816c225e58fb82c61f55e0f0fe108e534285b55a0f736",
+    "contracts/v1/schemas/delegation-decision.schema.json": "e11c9904e873a805327664c14641b17bf4a65622bba8849ff959d165f3b698ed",
+    "contracts/v1/schemas/plugin-lifecycle.schema.json": "cb8a5afd734c1a32d67998b527e1aec5602ee976c9de70610ad98988dfae216f",
+    "contracts/v1/schemas/protected-assembly.schema.json": "86a2238a6a81ceffcba378a79b3badf752116090faa5fc9428ad962492052148",
+    "contracts/v1/schemas/host-owner-status-reply.schema.json": "b615bf04490cf7e2c4f4047fd318327e5f10ab628140e17dc60092e8901d553d",
+    "contracts/v1/schemas/cancellation-request.schema.json": "81b797594e094b7acb4c3836bcec9714f2a1f3104bb6105051d438e78e2e19cb",
+    "contracts/v1/schemas/plugin-context.schema.json": "2976cb2ece3e6572c9428c08e19d3fe442ef5fed17358ae4cefe27f972e06e5c",
+    "contracts/v1/schemas/owner-record.schema.json": "bc9d1249ce52a8630ee1dd77b356d3988f30b17ff282d84ad9fac7999ebcde16",
+    "contracts/v1/schemas/delivery-receipt.schema.json": "8d2915c592ee2ea7631a46b36c8a8a78d47126507990c67d1ae3dde4c1eba903",
+    "contracts/v1/schemas/delegation-offer.schema.json": "faa29cff84f21d02b04c1af7d380dcb8bd28d56b7c55fde061052055fb842748",
+    "contracts/v1/schemas/host-owner-status-request.schema.json": "4ec02e90dd0d2c0c2d772c46ad4657e0389b0ecd42822d0c98c64863f720a380",
+    "contracts/v1/schemas/startup-status-observation.schema.json": "d4f6f50bd1adc03ffc5fd904e61ce723646624a7357e83595bf6e818f12bf0a0",
+    "contracts/v1/schemas/status-query.schema.json": "1602ff586698c26b8f2cc8ab7be90297cd86dbd0d83c41124421b684707f0a2c",
+    "contracts/v1/schemas/operation-outcome.schema.json": "9f09ed1e73622d5d07e67e863f209a1be0c77fe56d59b20e066d5b5089a9c019",
+    "contracts/v1/schemas/ingress-attestation.schema.json": "f388117c05f99a8f2a2f7fbfa7275df7522063014e12f41248564ddb7564e09d",
+    "contracts/v1/schemas/task-reserve.schema.json": "42e89db4f7661939cda9a97526e0e09e4fe67f0aeea6b6d653adb1bfe04506f2",
+    "contracts/v1/schemas/common.schema.json": "65e1c256048e311da082a59a592ad2291740863807cebe12f96ecd20f3192ddb",
+    "contracts/v1/schemas/operation-context.schema.json": "ce6bae5e685687df4ebc581dcbcc2a191bd089739257ad1558fa732a241343f7",
+    "contracts/v1/schemas/task-inspect.schema.json": "96f0103ed42e0b8354cdbb7b37631ad93df149e91bcd4ef3c79b3d0072f822f3",
+    "contracts/v1/models/README.md": "5eb4fc1147c968ba8dad4f0d53aa0fbbc16442ffcb7b3162251888a2ae96eed2",
+    "contracts/v1/models/state-machines.json": "b3de8382ae529d7ccf449f88ee567bd6b267e13d8fc3519c2762be718e1bc10d"
+  },
+  "sdkDependencyVersions": {
+    "attrs": "26.1.0",
+    "cffi": "2.1.1",
+    "jsonschema": "4.26.0",
+    "jsonschema-specifications": "2025.9.1",
+    "pycparser": "3.0",
+    "PyNaCl": "1.6.2",
+    "referencing": "0.37.0",
+    "rfc8785": "0.1.4",
+    "rpds-py": "2026.9.1"
+  },
+  "controlResult": {
+    "focusedCommand": [
+      "/home/ryan/.cache/agentmux-governance/p01-contracts-python/bin/python",
+      "-m",
+      "unittest",
+      "native_compose.Controls.test_review_complete_l04_records_required",
+      "native_compose.Controls.test_review_nested_baseline_port_projection_required"
+    ],
+    "focusedExit": 0,
+    "selftestCommand": [
+      "/home/ryan/.cache/agentmux-governance/p01-contracts-python/bin/python",
+      "/home/ryan/.cache/agentmux-governance/p02-native-compose-sdk-final-20261014/tests/platform/native_compose.py",
+      "--self-test"
+    ],
+    "selftestExit": 0,
+    "sourceSHA256": "c4182bb87a0a82bd677d8361fa0b4d60d3d3eb8a7ee853ef9b2e2dd6665ac7a4",
+    "sourceStable": true,
+    "nativeTargetQualified": false
+  },
+  "controlsPassed": 27,
+  "rawArtifactsSHA256": {
+    "focused.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "focused.stderr": "4d298783f13094827fefbebbb14aa3b4681972518e92b76a85f0edf6912e63fa",
+    "selftest.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "selftest.stderr": "ad9a7fab8952757b3d1eb80a281ed88506f0a7ab4b2973bf56fbe691b9af6258",
+    "controls-result.json": "510a2c80cc243d03ac92721aa21d0657943e970bd233e9acab4397e01454d3a3"
+  },
+  "history": {
+    "p02-native-compose-review-first-20261014": {
+      "path": "/home/ryan/.cache/agentmux-governance/p02-native-compose-review-first-20261014/first-result.json",
+      "sha256": "3855609557ee9d89a481eada87093c67a9c16720f2d43171f5bab190eddff5d5",
+      "record": {
+        "command": [
+          "python3",
+          "-m",
+          "unittest",
+          "native_compose.Controls.test_review_compiler_requires_numeric_version",
+          "native_compose.Controls.test_review_package_start_required_before_test_and_terminal_events",
+          "native_compose.Controls.test_review_lock_access_denial_cannot_qualify",
+          "native_compose.Controls.test_review_warm_status_file_is_allowlisted",
+          "native_compose.Controls.test_review_minimal_cleanup_without_identity_or_reaping_is_refused"
+        ],
+        "exit": 1,
+        "sourceSHA256": "bd50ab99550646efe6748f850c1173e9e0977c771179400db712bcc5021814a4",
+        "sourceStable": true,
+        "nativeExecutionPerformed": false
+      }
+    },
+    "p02-native-compose-l04-first-20261014": {
+      "path": "/home/ryan/.cache/agentmux-governance/p02-native-compose-l04-first-20261014/first-result.json",
+      "sha256": "7499a32ecac693e59ede7ee94c994b6cdb2d790e04185dae5faa3f5a57229cc8",
+      "record": {
+        "command": [
+          "/home/ryan/.cache/agentmux-governance/p01-contracts-python/bin/python",
+          "-m",
+          "unittest",
+          "native_compose.Controls.test_review_complete_l04_records_required",
+          "native_compose.Controls.test_review_nested_baseline_port_projection_required"
+        ],
+        "exit": 1,
+        "sourceSHA256": "a45b869e28b8a66c28a234a788f888cd68d51f0eba18661d7cdbbae04d22c369",
+        "sourceStable": true,
+        "nativeExecutionPerformed": false
+      }
+    },
+    "p02-native-compose-fd-first-20261014": {
+      "path": "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-first-20261014/bridge-result.json",
+      "sha256": "76159acf3eb6e7308d0b396c8645da915debb542edea92701ebcb8afd383afd1",
+      "record": {
+        "scope": "Actual isolated WSL Linux-component inherited-descriptor bridge only",
+        "host": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+        "actualWSL": true,
+        "collectorSourceSHA256": "fe26140b4f8f1508057d3803a81f7987fa90cdfc918556d804b27f10eba07ab7",
+        "sourceUnchanged": true,
+        "helperSourceSHA256": "5f40e4517a0bfc19a33801ecfdfcbbbc5b769685058bb6d4d93fdc8617ccecd3",
+        "binarySHA256": "4dea813b55758875a5b16b30db583262ee19ce6ebd8db44cd2443a58a91fb89a",
+        "goExecutableSHA256": "548d3c32f83fa81152f543eb1526be7884cfe0526eb5e9ce29d3eca14786e7e0",
+        "goVersion": "go version go1.27.2 linux/amd64",
+        "moduleSources": {
+          "go.mod": "d2449cddbd7671d0e73998ae6057abf56b371f4e422b213db0e00a24a30d3fb9",
+          "go.sum": "421240c9a0e5f903b47f996949937448ce9aeace1eca369342418e18a1ce2c90",
+          "privatefs/access_test.go": "13b3c9d5e0913e565a52f6abff92c2f44c5ac3fcb0b3966f72cc45f376f6c52d",
+          "privatefs/access_darwin.go": "09eb387cf9bb75bbf8afbbed0e3c72c6af44526ba68cabdd6b9c7a643372de82",
+          "privatefs/access_unsupported.go": "47bf8dfcb47e9d83bf0da4f2d667a7bf548c86d2e7fdd06c9c2d41f6e02615cb",
+          "privatefs/access_linux_test.go": "72da545f6dbaa99a19f866f3cdf50a8d138e7a08643b9e2c302aac6854ff22da",
+          "privatefs/access_darwin_nocgo.go": "8adba4f7cf8a9955479162ea0632b557857d848dd1d288288773e528a14d4453",
+          "privatefs/access.go": "5373922675f09a0b229e6f4fae1c0941529cbc5f7e842abc1be48319df0a92b8",
+          "privatefs/access_linux.go": "ee3ee960f6c9a237381a9e2864c782281d5997918f88eab6bed3c37d4b95f1e8",
+          "privatefs/access_darwin_test.go": "9113bb935b8a4953d5450270ebf3dc2fe2537657bd2283ff0363e38086ba77be",
+          "privatefs/access_darwin_nocgo_test.go": "a4d1b9c8eed29b0afe22b91e72f7a1d799e96d2f5a09d681b578ba86d0391565"
+        },
+        "moduleSourcesUnchanged": true,
+        "buildCommand": [
+          "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+          "build",
+          "-mod=readonly",
+          "-trimpath",
+          "-o",
+          "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-first-20261014/held-private-gate",
+          "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-first-20261014/held-private-gate.go"
+        ],
+        "buildExit": 0,
+        "environment": {
+          "HOME": "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-first-20261014/home",
+          "PATH": "/usr/bin:/bin",
+          "TMPDIR": "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-first-20261014/home",
+          "GOTOOLCHAIN": "local",
+          "GOPROXY": "off",
+          "GOSUMDB": "off",
+          "GOENV": "off",
+          "GOWORK": "off",
+          "CGO_ENABLED": "0",
+          "GOMODCACHE": "/home/ryan/go/pkg/mod",
+          "GOCACHE": "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-first-20261014/go-cache",
+          "GOPATH": "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-first-20261014/go-path"
+        },
+        "controls": [
+          {
+            "name": "positive",
+            "argv": [
+              "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-first-20261014/held-private-gate",
+              "ancestor=3",
+              "ancestor=4",
+              "ancestor=6",
+              "ancestor=7",
+              "ancestor=8",
+              "ancestor=9",
+              "private=10",
+              "private=11"
+            ],
+            "exit": 0,
+            "expected": "admitted",
+            "passed": true,
+            "stdoutSHA256": "dcd2e591cc14dcda79651f2ad9a49b645e6d6982c196a09eb912a8ca874bb100",
+            "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "name": "unregistered-kind",
+            "argv": [
+              "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-first-20261014/held-private-gate",
+              "ancestor=3",
+              "ancestor=4",
+              "ancestor=6",
+              "ancestor=7",
+              "ancestor=8",
+              "ancestor=9",
+              "private=10",
+              "unknown=11"
+            ],
+            "exit": 2,
+            "expected": "refused",
+            "passed": true,
+            "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "name": "closed-descriptor",
+            "argv": [
+              "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-first-20261014/held-private-gate",
+              "ancestor=3",
+              "ancestor=4",
+              "ancestor=6",
+              "ancestor=7",
+              "ancestor=8",
+              "ancestor=9",
+              "private=10",
+              "private=900000"
+            ],
+            "exit": 3,
+            "expected": "refused",
+            "passed": true,
+            "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "name": "wrong-final-object-type",
+            "argv": [
+              "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-first-20261014/held-private-gate",
+              "ancestor=3",
+              "ancestor=4",
+              "ancestor=6",
+              "ancestor=7",
+              "ancestor=8",
+              "ancestor=9",
+              "private=10",
+              "private=10"
+            ],
+            "exit": 0,
+            "expected": "refused",
+            "passed": false,
+            "stdoutSHA256": "dcd2e591cc14dcda79651f2ad9a49b645e6d6982c196a09eb912a8ca874bb100",
+            "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "name": "unsafe-directory-mode",
+            "argv": [
+              "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-first-20261014/held-private-gate",
+              "ancestor=3",
+              "ancestor=4",
+              "ancestor=6",
+              "ancestor=7",
+              "ancestor=8",
+              "ancestor=9",
+              "private=10",
+              "private=11"
+            ],
+            "exit": 0,
+            "expected": "refused",
+            "passed": false,
+            "stdoutSHA256": "dcd2e591cc14dcda79651f2ad9a49b645e6d6982c196a09eb912a8ca874bb100",
+            "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "parentLeaseRetainedAfterChildExit": true,
+        "ownedDescriptorCount": 8,
+        "closedDescriptorCount": 8,
+        "status": "failed",
+        "engineContacted": false,
+        "brokerStarted": false,
+        "toolsInstalled": false,
+        "nativeTargetQualified": false,
+        "phaseAccepted": false,
+        "limits": [
+          "This executes a Linux helper in WSL, not native Linux/macOS Compose or Darwin ACL/mount qualification.",
+          "Linux shared privatefs relies on caller ownership/mode checks; mode and exact object kinds must be enforced at this bridge.",
+          "No real engine selection, NATS broker, protected role, Docker job or administrative install was used."
+        ]
+      }
+    },
+    "p02-native-compose-fd-fixed-20261014": {
+      "path": "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/bridge-result.json",
+      "sha256": "1e8f3435357e4cee5144249666a0523d5c93455ca208fd1cbaddfbecff5d43da",
+      "record": {
+        "scope": "Actual isolated WSL Linux-component inherited-descriptor bridge only",
+        "host": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+        "actualWSL": true,
+        "collectorSourceSHA256": "c4182bb87a0a82bd677d8361fa0b4d60d3d3eb8a7ee853ef9b2e2dd6665ac7a4",
+        "sourceUnchanged": true,
+        "helperSourceSHA256": "11754ba818cd0bcfbfb589383da63be6acc3c33669b8a8a627a8689faad86df8",
+        "binarySHA256": "8254536e3d25062dc74928ce0a8ce948fe854150887b4da75ce4d205b6ac456c",
+        "goExecutableSHA256": "548d3c32f83fa81152f543eb1526be7884cfe0526eb5e9ce29d3eca14786e7e0",
+        "goVersion": "go version go1.27.2 linux/amd64",
+        "moduleSources": {
+          "go.mod": "d2449cddbd7671d0e73998ae6057abf56b371f4e422b213db0e00a24a30d3fb9",
+          "go.sum": "421240c9a0e5f903b47f996949937448ce9aeace1eca369342418e18a1ce2c90",
+          "privatefs/access_test.go": "13b3c9d5e0913e565a52f6abff92c2f44c5ac3fcb0b3966f72cc45f376f6c52d",
+          "privatefs/access_darwin.go": "09eb387cf9bb75bbf8afbbed0e3c72c6af44526ba68cabdd6b9c7a643372de82",
+          "privatefs/access_unsupported.go": "47bf8dfcb47e9d83bf0da4f2d667a7bf548c86d2e7fdd06c9c2d41f6e02615cb",
+          "privatefs/access_linux_test.go": "72da545f6dbaa99a19f866f3cdf50a8d138e7a08643b9e2c302aac6854ff22da",
+          "privatefs/access_darwin_nocgo.go": "8adba4f7cf8a9955479162ea0632b557857d848dd1d288288773e528a14d4453",
+          "privatefs/access.go": "5373922675f09a0b229e6f4fae1c0941529cbc5f7e842abc1be48319df0a92b8",
+          "privatefs/access_linux.go": "ee3ee960f6c9a237381a9e2864c782281d5997918f88eab6bed3c37d4b95f1e8",
+          "privatefs/access_darwin_test.go": "9113bb935b8a4953d5450270ebf3dc2fe2537657bd2283ff0363e38086ba77be",
+          "privatefs/access_darwin_nocgo_test.go": "a4d1b9c8eed29b0afe22b91e72f7a1d799e96d2f5a09d681b578ba86d0391565"
+        },
+        "moduleSourcesUnchanged": true,
+        "buildCommand": [
+          "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+          "build",
+          "-mod=readonly",
+          "-trimpath",
+          "-o",
+          "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/held-private-gate",
+          "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/held-private-gate.go"
+        ],
+        "buildExit": 0,
+        "environment": {
+          "HOME": "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/home",
+          "PATH": "/usr/bin:/bin",
+          "TMPDIR": "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/home",
+          "GOTOOLCHAIN": "local",
+          "GOPROXY": "off",
+          "GOSUMDB": "off",
+          "GOENV": "off",
+          "GOWORK": "off",
+          "CGO_ENABLED": "0",
+          "GOMODCACHE": "/home/ryan/go/pkg/mod",
+          "GOCACHE": "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/go-cache",
+          "GOPATH": "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/go-path"
+        },
+        "controls": [
+          {
+            "name": "positive",
+            "argv": [
+              "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/held-private-gate",
+              "ancestor=3",
+              "ancestor=4",
+              "ancestor=6",
+              "ancestor=7",
+              "ancestor=8",
+              "ancestor=9",
+              "private=10",
+              "private=11"
+            ],
+            "exit": 0,
+            "expected": "admitted",
+            "passed": true,
+            "stdoutSHA256": "dcd2e591cc14dcda79651f2ad9a49b645e6d6982c196a09eb912a8ca874bb100",
+            "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "name": "unregistered-kind",
+            "argv": [
+              "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/held-private-gate",
+              "ancestor=3",
+              "ancestor=4",
+              "ancestor=6",
+              "ancestor=7",
+              "ancestor=8",
+              "ancestor=9",
+              "private=10",
+              "unknown=11"
+            ],
+            "exit": 2,
+            "expected": "refused",
+            "passed": true,
+            "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "name": "closed-descriptor",
+            "argv": [
+              "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/held-private-gate",
+              "ancestor=3",
+              "ancestor=4",
+              "ancestor=6",
+              "ancestor=7",
+              "ancestor=8",
+              "ancestor=9",
+              "private=10",
+              "private=900000"
+            ],
+            "exit": 3,
+            "expected": "refused",
+            "passed": true,
+            "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "name": "wrong-final-object-type",
+            "argv": [
+              "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/held-private-gate",
+              "ancestor=3",
+              "ancestor=4",
+              "ancestor=6",
+              "ancestor=7",
+              "ancestor=8",
+              "ancestor=9",
+              "private=10",
+              "private=10"
+            ],
+            "exit": 3,
+            "expected": "refused",
+            "passed": true,
+            "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          {
+            "name": "unsafe-directory-mode",
+            "argv": [
+              "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/held-private-gate",
+              "ancestor=3",
+              "ancestor=4",
+              "ancestor=6",
+              "ancestor=7",
+              "ancestor=8",
+              "ancestor=9",
+              "private=10",
+              "private=11"
+            ],
+            "exit": 3,
+            "expected": "refused",
+            "passed": true,
+            "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        ],
+        "parentLeaseRetainedAfterChildExit": true,
+        "ownedDescriptorCount": 8,
+        "closedDescriptorCount": 8,
+        "status": "passed",
+        "engineContacted": false,
+        "brokerStarted": false,
+        "toolsInstalled": false,
+        "nativeTargetQualified": false,
+        "phaseAccepted": false,
+        "limits": [
+          "This executes a Linux helper in WSL, not native Linux/macOS Compose or Darwin ACL/mount qualification.",
+          "Linux shared privatefs relies on caller ownership/mode checks; mode and exact object kinds must be enforced at this bridge.",
+          "No real engine selection, NATS broker, protected role, Docker job or administrative install was used."
+        ]
+      }
+    }
+  },
+  "sourceMatchesCurrentAtRead": true,
+  "authorFindingStatus": "Five original source gaps, full L04/nested port gaps and two actual bridge gaps repaired; final independent review pending.",
+  "actualWSLComponentBridgePassed": true,
+  "nativeTargetQualified": false,
+  "phaseAccepted": false,
+  "limits": [
+    "The 27 controls are pure data, mocked early failure and isolated filesystem/lock checks, not a successful end-to-end collector or engine run.",
+    "The actual Go helper was compiled/executed only as a WSL Linux component. Darwin ACL/mount behavior and four native targets remain unexecuted.",
+    "No Docker/NATS/engine/job/administrative install or global dependency change was performed by this slice.",
+    "The workflow requires explicit per-target prepared Python/tool/engine enrollment; no settings or registration were changed.",
+    "Actual installed CLI, new network cleanup qualification, complete native supported-host matrix and P02 acceptance remain separate.",
+    "Source bindings are read-time checks. Earlier source-bound failures and historical successes remain distinct."
+  ]
+}

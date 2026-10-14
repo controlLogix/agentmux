@@ -1,0 +1,31 @@
+{
+  "status": "Read-only source review: no concrete finding; no current CLI execution acceptance",
+  "sourceSHA256": {
+    "platform/cmd/agentmux-runtime/main.go": "f65aab165f50b2ac3ed9c608ac61d6d22c1f12031cc91b8f2c61ff1587a69426",
+    "platform/cmd/agentmux-runtime/main_test.go": "0801bfbe98da6b23f4fb2d7d7aee4c3db616ea83bcdc5d4502e4d8b321c3a8a8"
+  },
+  "findings": [],
+  "review": [
+    "Initial ensure only calls invocation.Probe. Status and final post-receipt lookup retain Request.",
+    "Same EnsureInvocation ID and independently admitted policy/scope survive into PrepareHost and receipt binding.",
+    "Initial start selector accepts only ensure plus three exact internal unavailable/hint error strings. Deadline, malformed reply, authority and distinct cleanup errors remain hard. Joined cleanup string cannot match one eligible scalar code.",
+    "Original frontend total/work/cleanup contexts and their entry time remain unchanged. Host prepare and start still use the original remaining work context; no deadline or scope override.",
+    "Actual host process and its single wait/receipt ownership remain unchanged. Probe does not establish startup/readiness authority."
+  ],
+  "testCoverage": "Source includes three positive hints with ensure/status negative; joined cleanup per hint; nil/auth/malformed/deadline negatives; final fallback refuses no-responders. Reviewer did not execute these tests.",
+  "probeAffectedSupplement": {
+    "reviewSHA256": "09759c73f347fa7a398c8114765a16bdd7c66914c8ced5f6a7d586985ffb88ca",
+    "verifiedArtifacts": 8,
+    "actualNamedPasses": 293,
+    "testExit": 0,
+    "vetExit": 0,
+    "vetOutput": "empty stdout/stderr",
+    "scope": "Unchanged four probe component source pins; not new CLI wiring runtime evidence"
+  },
+  "limits": [
+    "No reviewer tests/builds/Docker/engine calls or shared metadata writes.",
+    "Current CLI source acceptance still requires root stable-candidate controls and actual installed Compose qualification.",
+    "Exact error text matching is valid for reviewed private fixed-code callers; no public arbitrary-error classification guarantee.",
+    "Prior no-responder hint remains interest only, with original native/actual scope limits."
+  ]
+}

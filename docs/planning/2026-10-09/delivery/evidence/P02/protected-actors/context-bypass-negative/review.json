@@ -1,0 +1,23 @@
+{
+  "sourceGuardSha256": "7f3c9b3903512ddcc0dbb5501918a600fa34654d0b71d77beffd589e10c9dbd9",
+  "mutatedGuardSha256": "df7f9456ce16fd645c228e3b4fb5ef0dd4403b9248c1e635d84377088e40fa34",
+  "testSha256": "c1342271ba7bd47fd3768cff2f6e6f130c1f51ae44c3b2dca6de6ca8147c4c98",
+  "mutation": "Remove only event scope equality guard; actual NATS publisher continuously sends fresh wrong-release peer observations",
+  "command": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-json",
+    "-count=1",
+    "-timeout=15s",
+    "-run",
+    "^TestBootNeverReadyWithMissingProtectedPeer$",
+    "./kernel/boot"
+  ],
+  "expectedFailureExit": 1,
+  "expectedFailureObserved": true,
+  "seconds": 1.17118939500142,
+  "limitations": [
+    "External source copy; no repository changes",
+    "Negative failure is expected, not accepted kernel behavior"
+  ]
+}

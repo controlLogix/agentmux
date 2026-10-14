@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "-tags=agentmux_bootstrap_docker",
+    "./launcher",
+    "-run",
+    "^TestInstalledCLIRealComposeAuthenticatedPending$"
+  ],
+  "environment": {
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "1",
+    "AGENTMUX_TEST_NATS": "/home/ryan/.cache/agentmux-governance/tools/nats-server"
+  },
+  "startedUtc": "2026-10-14T17:01:43.153454+00:00",
+  "producerSHA256": "43fee88aa20dc62874eb91a5f6fe77a7c460397452e8087fdbad1afdee7ea80d",
+  "requiredPins": {
+    "platform/launcher/owner_bridge.go": "9cfd0a38d4b40c060759200dbef226cc5bf9dd60d7759f67e756f2d9949e19f2",
+    "platform/launcher/bootstrap_operation.go": "3d4a7531863e2f1ee03820a13767c9eace5bbd3812fcef7eccf48124277c7562",
+    "platform/cmd/agentmux-runtime/main.go": "9ba174b070fe08d76944d2a2f6cbd5da448f0a02f6e1c70c6aabc0a15ad17620",
+    "platform/launcher/bootstrap_network_cleanup_integration_test.go": "5347669150b3bf622cde6634389e564ef67b9eabbe5849393f6ffd711f57b00e",
+    "platform/launcher/installed_cli_compose_integration_linux_test.go": "6d0021d99531507ea5232ff81f1d18477ce1def1a8c228b3069d1d785895073c"
+  },
+  "snapshotSeconds": 9.96340777700243,
+  "snapshotFileCount": 258,
+  "batchSourceVerification": true
+}

@@ -1,0 +1,16 @@
+{
+  "reviewer": "Codex independent subagent p02_installed_launcher",
+  "scope": "Current CLI source and test coverage; no actual CLI acceptance.",
+  "findings": [],
+  "sourceHashes": {
+    "platform/cmd/agentmux-runtime/main.go": "f65aab165f50b2ac3ed9c608ac61d6d22c1f12031cc91b8f2c61ff1587a69426",
+    "platform/cmd/agentmux-runtime/main_test.go": "0801bfbe98da6b23f4fb2d7d7aee4c3db616ea83bcdc5d4502e4d8b321c3a8a8"
+  },
+  "reviewedBehavior": [
+    "Only initial ensure calls Probe.",
+    "Status and post-receipt final Request preserved.",
+    "Exact initial unavailable hints permit ordinary admission; auth, deadline, malformed reply and joined cleanup remain hard failures.",
+    "Original request context and invocation binding preserved."
+  ],
+  "recordedAt": "2026-10-14T13:01:42.042992+00:00"
+}

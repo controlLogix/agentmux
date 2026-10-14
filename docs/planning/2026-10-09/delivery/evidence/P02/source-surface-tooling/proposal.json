@@ -1,0 +1,684 @@
+{
+  "schemaVersion": "1.0.0",
+  "scope": "Five-file source-surface reconciliation proposal only; root remains sole repository index writer.",
+  "method": "Python AST declarations use existing FunctionDef/AsyncFunctionDef/ClassDef kinds; JS named function declarations use existing javascript-function kind. Anonymous callbacks, object methods and named arrow expressions are outside the existing mechanical declaration convention and were inspected separately for behavior.",
+  "inventorySHA256": "fca3e55dbc64a1e46cf3d70b87d14686e79edfe45103f2c69cf07641a8723897",
+  "priorSurfaceIndexSHA256": "5f67930fe650e71639df9e86a481e094fd6dd0645c8bf02dbd68f3490991e8f4",
+  "files": [
+    {
+      "path": "docs/reviews/open.mjs",
+      "componentIds": [
+        "REPO-10"
+      ],
+      "workingFileSha256": "b1bbdcb659032de64e608425fe58fce2c4f75d0c7e9c447b1b4b6c87cc9a169a",
+      "declarations": [
+        {
+          "name": "source",
+          "line": 22,
+          "kind": "javascript-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "Named declarations and literal paths reviewed against current source. Separate source behavior review completed within the stated tooling scope; runtime and platform acceptance require their own evidence."
+    },
+    {
+      "path": "docs/reviews/src/features/local-review.mjs",
+      "componentIds": [
+        "REPO-10"
+      ],
+      "workingFileSha256": "b01d1889e8bd3156c590e57cd259ea59486b3877bdfc67e1d9088749578d4286",
+      "declarations": [
+        {
+          "name": "createLocalReview",
+          "line": 14,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "inside",
+          "line": 21,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "setting",
+          "line": 31,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "identity",
+          "line": 34,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "current",
+          "line": 55,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "share",
+          "line": 63,
+          "kind": "javascript-function"
+        }
+      ],
+      "httpPathLiterals": [
+        "/",
+        "/_review/health",
+        "/_review/stop",
+        "/api/session",
+        "/api/identity",
+        "/api/notes",
+        "/api/share"
+      ],
+      "reviewStatus": "Named declarations and literal paths reviewed against current source. Separate source behavior review completed within the stated tooling scope; runtime and platform acceptance require their own evidence."
+    },
+    {
+      "path": "docs/reviews/src/features/notes-controller.mjs",
+      "componentIds": [
+        "REPO-10"
+      ],
+      "workingFileSha256": "fd6324494a48e5d907d5aeb9d2b9702c780f9e4a6416125cea463bb2016b7f89",
+      "declarations": [
+        {
+          "name": "attachReviewNotes",
+          "line": 5,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "reflectVersion",
+          "line": 48,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "probeStorage",
+          "line": 54,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "setStatus",
+          "line": 65,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "setSaved",
+          "line": 71,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "clock",
+          "line": 75,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "hasText",
+          "line": 79,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "reflect",
+          "line": 83,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "snapshot",
+          "line": 95,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "rememberReviewer",
+          "line": 103,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "saveDraft",
+          "line": 110,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "restore",
+          "line": 134,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "buildMarkdown",
+          "line": 179,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "showExport",
+          "line": 183,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "download",
+          "line": 191,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "applyImported",
+          "line": 213,
+          "kind": "javascript-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "Named declarations and literal paths reviewed against current source. Separate source behavior review completed within the stated tooling scope; runtime and platform acceptance require their own evidence."
+    },
+    {
+      "path": "docs/reviews/src/features/review-server.mjs",
+      "componentIds": [
+        "REPO-10"
+      ],
+      "workingFileSha256": "2ed39e72f1202c7b5fac018dfc34aab8a9852ec982a45798a69b3927583c7522",
+      "declarations": [
+        {
+          "name": "reviewEnvironment",
+          "line": 10,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "serverPaths",
+          "line": 14,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "readRecord",
+          "line": 26,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "store",
+          "line": 32,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "valid",
+          "line": 37,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "probe",
+          "line": 43,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "manageReview",
+          "line": 56,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "confirmAbsent",
+          "line": 61,
+          "kind": "javascript-function"
+        },
+        {
+          "name": "reuse",
+          "line": 133,
+          "kind": "javascript-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "Named declarations and literal paths reviewed against current source. Separate source behavior review completed within the stated tooling scope; runtime and platform acceptance require their own evidence."
+    },
+    {
+      "path": "tests/platform/native_go.py",
+      "componentIds": [
+        "REPO-03"
+      ],
+      "workingFileSha256": "5573f0c12e65ee6aafd2887ae54dd0e404670e94f123157070ab61b4904cf2b2",
+      "declarations": [
+        {
+          "name": "digest",
+          "line": 56,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "atomic_report",
+          "line": 60,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "remaining_timeout",
+          "line": 76,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "stop_owned",
+          "line": 83,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "wait_owned",
+          "line": 96,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "admit_preparation_workspace",
+          "line": 106,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "prepare_tools",
+          "line": 118,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "source_hashes",
+          "line": 135,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "download",
+          "line": 145,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "broker_downloader",
+          "line": 150,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "toolchain",
+          "line": 157,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "validate_module",
+          "line": 176,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "validate_package_matrix",
+          "line": 183,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "validate_install_selection",
+          "line": 215,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "admit_install_events",
+          "line": 236,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "admit_required_events",
+          "line": 242,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "validate_cgo0_private_selection",
+          "line": 255,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "admit_events",
+          "line": 275,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "AdmissionTests",
+          "line": 305,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "test_interrupted_checkpoint_publication_preserves_prior_report",
+          "line": 306,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_actual_pass",
+          "line": 316,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_empty_skip_failure_and_malformed_are_not_passes",
+          "line": 323,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_nonzero_exit_and_package_only_are_not_passes",
+          "line": 330,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_a_pass_cannot_hide_skip_failure_or_missing_package_end",
+          "line": 335,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_missing_mismatched_and_incomplete_package_events_fail",
+          "line": 349,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_module_pins_are_structured_and_replacements_refused",
+          "line": 358,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_downloader_import_does_not_write_checkout_bytecode",
+          "line": 367,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "observed",
+          "line": 369,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_package_matrix_cannot_hide_missing_new_or_incomplete_tests",
+          "line": 376,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_runtime_command_package_cannot_be_omitted_or_declared_without_tests",
+          "line": 391,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_local_tls_package_cannot_be_omitted_or_declared_without_tests",
+          "line": 401,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_private_files_package_cannot_be_omitted_or_declared_without_tests",
+          "line": 411,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "RunnerTests",
+          "line": 422,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "test_interrupted_owned_wait_stops_and_reaps_before_propagation",
+          "line": 425,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_interruption_after_reaping_never_signals_saved_identity",
+          "line": 436,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "interrupted_wait",
+          "line": 439,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_hidden_preparation_refuses_populated_workspace_before_writes",
+          "line": 452,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_preparation_accepts_only_empty_regular_marker",
+          "line": 464,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "exercise",
+          "line": 475,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "prepared",
+          "line": 504,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "query",
+          "line": 508,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "spawn",
+          "line": 533,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "timed_wait",
+          "line": 569,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_install_requires_native_host_authorization_and_nonroot_before_effects",
+          "line": 605,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_install_selection_is_separate_and_never_qualifies_full_boot",
+          "line": 613,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_install_admission_requires_every_reviewed_top_level_test",
+          "line": 639,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_install_inventory_refuses_missing_tests_or_cgo",
+          "line": 651,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_host_scope_cannot_borrow_protected_image_passes",
+          "line": 666,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_host_selection_failure_or_source_drift_never_qualifies_collection",
+          "line": 679,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_protected_image_pass_cannot_hide_failed_host_scope",
+          "line": 687,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_install_inventory_requires_all_host_declarations_exactly_once",
+          "line": 696,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_install_refuses_malformed_apple_compiler_version_before_tests",
+          "line": 710,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_install_and_research_flags_are_mutually_exclusive",
+          "line": 719,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_preparation_rejects_combined_install_and_research_markers",
+          "line": 723,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_synthetic_normal_runner_records_every_scope_and_isolates_environment",
+          "line": 732,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_unsupported_host_refuses_before_tools_or_tests",
+          "line": 746,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_normal_native_selection_executes_runtime_command_on_both_hosts",
+          "line": 752,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_normal_native_selection_executes_local_tls_on_both_hosts",
+          "line": 764,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_darwin_normal_matrix_requires_actual_cgo_compiler_sdk_for_private_files",
+          "line": 776,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_darwin_cgo0_refusal_is_exact_separate_and_not_product_qualification",
+          "line": 795,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_cgo0_inventory_and_named_events_cannot_hide_missing_or_wrong_test",
+          "line": 811,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_setup_failure_retains_failed_report_without_private_error_text",
+          "line": 838,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_synthetic_test_failure_and_changed_execution_source_cannot_pass",
+          "line": 845,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_research_has_separate_results_and_actual_fail_closed_control",
+          "line": 851,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_darwin_normal_matrix_never_claims_native_protected_boot",
+          "line": 864,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "test_timeout_is_checkpointed_and_exhausted_scopes_are_unexecuted",
+          "line": 872,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "main",
+          "line": 889,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "checkpoint",
+          "line": 946,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "native_query",
+          "line": 1015,
+          "kind": "FunctionDef"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "Named declarations and literal paths reviewed against current source. Separate source behavior review completed within the stated tooling scope; runtime and platform acceptance require their own evidence."
+    }
+  ],
+  "literalExports": {
+    "docs/reviews/open.mjs": [],
+    "docs/reviews/src/features/local-review.mjs": [
+      {
+        "name": "createLocalReview",
+        "line": 14
+      }
+    ],
+    "docs/reviews/src/features/notes-controller.mjs": [
+      {
+        "name": "attachReviewNotes",
+        "line": 5
+      }
+    ],
+    "docs/reviews/src/features/review-server.mjs": [
+      {
+        "name": "reviewEnvironment",
+        "line": 10
+      },
+      {
+        "name": "serverPaths",
+        "line": 14
+      },
+      {
+        "name": "manageReview",
+        "line": 56
+      }
+    ],
+    "tests/platform/native_go.py": []
+  },
+  "sourceReviewNotes": {
+    "docs/reviews/open.mjs": {
+      "howWhereWhy": "Delegates open/status/stop/restart to the common-Git-directory manager, isolates Git redirect environment, validates canonical build/artifact paths, reports reused older built versions, and stops its own server on signals. This prevents duplicate review servers across worktrees.",
+      "componentBoundary": "REPO-10 document review tooling; not the product dashboard or P06."
+    },
+    "docs/reviews/src/features/local-review.mjs": {
+      "howWhereWhy": "Adds separate manager-token health/stop routes, counts and drains active handler promises, and supplies injected notes-lock acquisition for existing save/share controls. Host/origin checks, page-token gates, identity/revision/path bounds and note-only branch-safe sharing remain. Draining prevents lock release while writes or Git sharing are unfinished.",
+      "httpMethods": {
+        "/": "GET",
+        "/api/session": "GET",
+        "/api/identity": "POST",
+        "/api/notes": "POST",
+        "/api/share": "POST",
+        "/_review/health": "GET",
+        "/_review/stop": "POST"
+      },
+      "evidenceLimit": "No new runtime execution. Existing server-lifecycle summary reports57 passing native Windows tests; record hashes bind this source, but its full raw suite output is not supplied by that summary."
+    },
+    "docs/reviews/src/features/notes-controller.mjs": {
+      "howWhereWhy": "A live document version relabel now says its repository save is pending. The standalone unload warning defers to attachLocalReview, whose actual notes-local sequence/sharing warning was inspected; it tracks pending writes even when browser storage is unavailable. Offline export/storage behavior remains.",
+      "evidenceLimit": "The server-lifecycle record does not individually hash this module. This current source review binds its bytes; existing passing suite claims are not a new test run."
+    },
+    "docs/reviews/src/features/review-server.mjs": {
+      "howWhereWhy": "Uses an OS-owned notes lifetime lock in the shared Git directory, private authenticated state and persisted loopback port. Reuse requires a matching live protocol/token/instance/checkout/document; unresponsive lock owners stay unknown. Shutdown closes/drains its exact server before state removal and unlock; recorded PIDs are never killed.",
+      "limits": [
+        "Native POSIX and simultaneous Windows/WSL ownership are explicitly unqualified in existing evidence.",
+        "Shutdown may wait for unfinished handlers; there is no forced takeover."
+      ]
+    },
+    "tests/platform/native_go.py": {
+      "howWhereWhy": "Collects exact native foundation package evidence from immutable copied source. Checks pinned toolchain/module/checksums, actual host/compiler/SDK, ten test-bearing packages, separate exact Darwin image/host selections and CGO0 refusal. Bounded owned preparation/test process sessions are stopped/reaped on timeout or interruption, with atomic checkpoints and closed test-event/exit/source-drift admission.",
+      "limits": [
+        "Collector controls are synthetic, not native execution.",
+        "Normal Darwin runtime selection remains exact fail-closed control only.",
+        "Separate installed-image/lifecycle evidence is not real protected four-role boot, actual Compose, WSL or phase acceptance."
+      ],
+      "externalUrlLiterals": [
+        "https://go.dev/dl/?mode=json&include=all",
+        "https://go.dev/dl/",
+        "https://proxy.golang.org"
+      ],
+      "dependencyInspection": "Actual fixed tests/contracts/ci.py downloader import, not an arbitrary provider command.",
+      "httpPathExplanation": "No HTTP handler routes. Bare slash expressions are module/path manipulation; Go/proxy URLs are external collector dependencies."
+    }
+  },
+  "concreteProductionFindings": [],
+  "evidenceReadAndCompared": {
+    "docs/reviews/server-lifecycle-verification.json": {
+      "sourceHashMatches": [
+        "docs/reviews/open.mjs",
+        "docs/reviews/src/features/local-review.mjs",
+        "docs/reviews/src/features/review-server.mjs"
+      ],
+      "notesControllerIndividuallyBound": false
+    },
+    "native-ci-preparation": {
+      "collectorHashMatches": [
+        "ten-package-controls.json",
+        "architecture-matrix-review.json"
+      ],
+      "historicalRawSHA256Verified": {
+        "ten-package-final-self-test.log": "2c5edf149ffe27e1ea43428b4735e7b57c3a18807f135e0f38f8c24586085b58",
+        "ten-package-matrix/command.jsonl": "066fb9c799e4df6772962337e408b55e7474b4377912ba61dc0c6b63aba236f1",
+        "ten-package-matrix/matrix.json": "66590ae88631214d368efa27b3316a8313fc6bf4e97bd2003da08d7afda2edfa"
+      },
+      "storedCommandAndVetExitCodes": [
+        0,
+        0
+      ],
+      "rawSelfTestCount": 39,
+      "qualification": "Historical collector and three-package evidence, not current full-platform acceptance."
+    }
+  },
+  "runtimeActionsPerformed": [],
+  "repositoryEditsPerformed": [],
+  "runtimeAccepted": false,
+  "phaseAccepted": false
+}

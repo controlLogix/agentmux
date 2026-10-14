@@ -1,0 +1,88 @@
+{
+  "schemaVersion": "1.0.0",
+  "phase": "P02",
+  "recordedAt": "2026-10-13T22:28:40.280843+00:00",
+  "status": "proposal-not-implementation",
+  "sourceHashes": {
+    "platform/runtime/snapshot_unsupported.go": "8455c45f2628914a95a897b5539888d597035a01d345487a061b1bf79fccb182",
+    "platform/runtime/snapshot_darwin_test.go": "29823b7772b37e6935c3d4261016dcc05cb9c3ba1a84deff8e69ff1dc6f5b93d",
+    "platform/runtime/snapshot_linux.go": "2adf8ef1a70fa737f36bc015dc5bdb18e164baf2e4fd13437ac1c6d73f14addb",
+    "platform/runtime/supervisor.go": "8768d4fa02dddb0bc63c2c429810bed3c2454b88ca6f722fd0fbab3b139df944",
+    "platform/runtime/README.md": "51bd1399f410da9bc0899eba02028e76d987b14dbd22df1495c2a7fbb5b11b17",
+    "platform/kernel/assembly/open_unix.go": "f39acc55f3633bddf82fed8c09f454d20321ea3fdd514e8809d5640ed6577769",
+    ".github/workflows/platform-foundation.yml": "0533c5492f58d8a6d1a393ea99cff284d20b69a6c9b98b9733617a9dadb90acb",
+    "tests/platform/native_go.py": "4e2b5ad207d0f9ca9ea25092fe2c4def1d151e27769a0b622c337be63d36c47a",
+    "platform/go.mod": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+    "platform/go.sum": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+    "docs/planning/2026-10-09/implementation-plan.md": "ec6e308cdc95e5ed08c63c09b010398ab8b103dcab4a26227413609c7943ef71",
+    "docs/planning/2026-10-09/delivery/decisions/runtime-and-deployment.md": "146ab3da80d6c97c3d8d05478f47cb5a5ae84cdfaee8502612602ff565410a98"
+  },
+  "scope": "Native macOS protected executable strategy research; no runtime or CI source changes.",
+  "nativeMacExecuted": false,
+  "phaseAccepted": false,
+  "sourceStability": "Hashes bind inspected inputs at report creation; root may change unrelated implementation afterward.",
+  "pinnedSourceInspection": {
+    "toolchain": "Go1.27.2",
+    "machoLinker": "cmd/link/internal/ld/macho.go lines831,883,986,1514",
+    "findings": [
+      "Dyld path and libSystem dependency exist independently of CGO-disabled claim.",
+      "Go linker supports ad-hoc signing, which is not release-authority enrollment."
+    ],
+    "xsys": "golang.org/x/sys v0.48.0",
+    "apiFindings": [
+      "Fstatfs Darwin wrappers and ATTR_CMN_EXTENDED_SECURITY constants exist.",
+      "No generated acl_get_fd_np or Getattrlist wrapper was found in pinned Darwin source."
+    ]
+  },
+  "privacy": "No credentials, private profiles, installation, signing key access, provider prompts or native executable qualification.",
+  "primarySources": [
+    {
+      "url": "https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/execve.2.html",
+      "role": "Path execution contract"
+    },
+    {
+      "url": "https://go.dev/src/syscall/exec_libc.go",
+      "role": "Go Darwin exec path"
+    },
+    {
+      "url": "https://developer.apple.com/library/archive/documentation/Security/Conceptual/AuthenticationAndAuthorizationGuide/Permissions/Permissions.html",
+      "role": "Ownership, ACL precedence and ownership-disabled mounts"
+    },
+    {
+      "url": "https://developer.apple.com/library/archive/documentation/Security/Conceptual/SecureCodingGuide/Articles/RaceConditions.html",
+      "role": "File, ancestor, link and filesystem checks"
+    },
+    {
+      "url": "https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/statfs.2.html",
+      "role": "Mount inspection"
+    },
+    {
+      "url": "https://developer.apple.com/library/archive/documentation/Security/Conceptual/SecureCodingGuide/Articles/AccessControl.html",
+      "role": "Privilege separation"
+    },
+    {
+      "url": "https://developer.apple.com/library/archive/documentation/Security/Conceptual/CodeSigningGuide/Procedures/Procedures.html",
+      "role": "Signature validation versus explicit signer requirement"
+    },
+    {
+      "url": "https://developer.apple.com/documentation/xcode/creating-distribution-signed-code-for-the-mac/",
+      "role": "Production signing guidance"
+    },
+    {
+      "url": "https://go.dev/src/cmd/link/internal/ld/macho.go",
+      "role": "Go Mach-O linker dependencies and ad-hoc signing"
+    },
+    {
+      "url": "https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/acl_get_fd_np.3.html",
+      "role": "Descriptor ACL inspection"
+    },
+    {
+      "url": "https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/acl_get_entry.3.html",
+      "role": "ACL entry inspection"
+    },
+    {
+      "url": "https://github.com/apple-oss-distributions/dyld/blob/main/doc/dyld4.md",
+      "role": "OS shared-cache loading"
+    }
+  ]
+}

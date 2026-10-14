@@ -1,0 +1,73 @@
+{
+  "scope": "Explicit enrollment and read-only profile loading; no installed-host or phase acceptance",
+  "platform": "Native Linux in WSL; Go1.27.2 linux/amd64",
+  "snapshot": "/home/ryan/.cache/agentmux-tests/p02-profile-final-c8spmljs",
+  "command": "GOPROXY=off GOSUMDB=off GOTOOLCHAIN=local GOFLAGS=-mod=readonly go test -race -json ./launcher",
+  "result": {
+    "exitCode": 0,
+    "passedEntries": 84,
+    "topLevelTests": 21,
+    "profilePassedEntries": 37,
+    "profileTopLevelTests": 6,
+    "elapsedSeconds": 126.274,
+    "stderrBytes": 0
+  },
+  "testedSourceHashes": {
+    "go.mod": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+    "go.sum": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+    "launcher/docker.go": "284bbd9cb4ced94c73cc2f29a173ad7c62eec2014076059db7b96597f511c7e0",
+    "launcher/docker_test.go": "c134b20a73191c5def882bc0c29277dd5b479af09791294935809eed6a35f35c",
+    "launcher/doctor.go": "00c1feb792beaf43bc2752a79e515a21008f929577683d3ce873379248e4b06b",
+    "launcher/lock_unix.go": "b8232a239d47e43d8fac3759d137abfe3b2502adaae6e62d25691323872f9859",
+    "launcher/lock_unix_test.go": "2c22f87e9b9fa6fdfdbf22976f11179d18ca475bdb189df27f2595dec6ba2896",
+    "launcher/profile.go": "1766879285d724d3fe38df73e955471a5521f45e82c27866ede28628ba3efc67",
+    "launcher/profile_test.go": "a89a5f71c3b411912359556736480dfbe2d4f5d8caf21c2ee71e634f54001b80"
+  },
+  "snapshotUnchanged": true,
+  "currentSourceHashes": {
+    "go.mod": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+    "go.sum": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+    "launcher/docker.go": "284bbd9cb4ced94c73cc2f29a173ad7c62eec2014076059db7b96597f511c7e0",
+    "launcher/docker_test.go": "c134b20a73191c5def882bc0c29277dd5b479af09791294935809eed6a35f35c",
+    "launcher/doctor.go": "39bf88cf0d98cae330ca35f6134cca46a18e1da095766424cab482ecc2e6f8ce",
+    "launcher/lock_unix.go": "b8232a239d47e43d8fac3759d137abfe3b2502adaae6e62d25691323872f9859",
+    "launcher/lock_unix_test.go": "2c22f87e9b9fa6fdfdbf22976f11179d18ca475bdb189df27f2595dec6ba2896",
+    "launcher/profile.go": "1766879285d724d3fe38df73e955471a5521f45e82c27866ede28628ba3efc67",
+    "launcher/profile_test.go": "a89a5f71c3b411912359556736480dfbe2d4f5d8caf21c2ee71e634f54001b80"
+  },
+  "workingSourceMatchesTested": false,
+  "ownSourceFiles": [
+    "platform/launcher/profile.go",
+    "platform/launcher/profile_test.go"
+  ],
+  "assertions": [
+    "Two concurrent enrollments publish exactly one complete profile without overwrite",
+    "Missing-file loading creates no files",
+    "Load refuses escaped/nested duplicate keys, unknown/missing/null fields, oversized/trailing JSON and separately trusted fingerprint mismatch",
+    "Private real file and directory modes, UID mismatch, symlink and hard-link refusals",
+    "Remote TLS declaration never selects or invokes local Docker, even with conflicting ambient Docker environment",
+    "No endpoint, credential reference, executable or private directory in default public summary",
+    "Local Docker and NATS endpoint declarations are explicit; local NATS is loopback-only"
+  ],
+  "limits": [
+    "Actual native macOS execution remains required; portable source is not native qualification",
+    "Installed release policy must come from trusted launcher installation; comparing fingerprints does not prove signature validation or key enrollment",
+    "Profiles declare credential references; this slice does not read credentials, authenticate NATS, validate runtime config integrity or authorize organization/project access",
+    "Caller supplies existing canonical private directory and workspace roots; full installer/enrollment discovery and terminal hook integration remain later work",
+    "Same-UID or privileged filesystem mutation is not sandboxed; failures after exclusive publication may leave a complete profile, never overwrite an existing profile",
+    "No broker, Docker engine, provider, legacy state, or Jev access in profile operations"
+  ],
+  "patternCheck": {
+    "exitCode": 1,
+    "finding": "Review is stale or missing: inspect changes and refresh sourceDigest",
+    "owner": "root reviewer"
+  },
+  "artifactHashes": {
+    "initial-manifest.json": "d551675c8c2f3075e6e05b07b618431763d78303036ac0fddb71cb6f88c77654",
+    "initial-profile-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "initial-profile-test.jsonl": "a69e1191d9b59d0310a6b2578017b8fb2b7e2cb44c97f546312e9d649d21890a",
+    "launcher-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "launcher-test.jsonl": "b63f90513278a25c24a479e9da1c896a08cf6e585728965e7748d1f874903358",
+    "manifest.json": "376811b61cdb04018a1bdf2d05771bdda12d42d5b19c21fe0059ab5b19771b0d"
+  }
+}

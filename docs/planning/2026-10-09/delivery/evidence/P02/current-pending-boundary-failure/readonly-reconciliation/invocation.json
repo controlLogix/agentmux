@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-overlay",
+    "/home/ryan/.cache/agentmux-governance/p02-ld3-reconciliation-srUYJk/overlay.json",
+    "-race",
+    "-count=1",
+    "-json",
+    "-tags=agentmux_bootstrap_docker",
+    "./launcher",
+    "-run",
+    "^TestLD3ReadOnlyReconciliation$"
+  ],
+  "environment": {
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "1",
+    "AMX_LD3_READONLY_AUTHORIZED": "1",
+    "AMX_YXC_QUALIFICATION_OUTPUT": "/home/ryan/.cache/agentmux-governance/p02-ld3-reconciliation-srUYJk"
+  },
+  "sourceSHA256": "f8a09d074435cc40dd3c6a69170e6b428293d806cee07723c7d65ae281adb90e",
+  "producerSHA256": "4fc9f1081c2f29ec4b4486b096c087c2b7af56077e37cb0c1c9bac46d045cedb",
+  "frozenManifestSHA256": "ec1ab45b8e0284419df004c032390e03263ceaf69ed4d1a16ed48f8c17331cc2",
+  "startedUtc": "2026-10-14T14:56:23.663253+00:00",
+  "engineMutations": 0
+}

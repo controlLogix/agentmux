@@ -1,0 +1,56 @@
+{
+  "scope": "P02 offline per-profile TLS certificate material only; factory and client integration remain unfinished",
+  "sourceHashes": {
+    "platform/deployment/local_tls_material.go": "7382eeed82a548ecba4d6d8d3e8cc962db3f62b1749839ef36fb00d044208b0d",
+    "platform/deployment/local_tls_material_test.go": "c290772695d4aa2fcf4e1ac34cf7e0f47c00fb1e6c94a1cdfd45572f80b2e4ea"
+  },
+  "frozenCandidate": "/home/ryan/.cache/agentmux-governance/local-tls-enrollment/candidate-JxNbWM/platform",
+  "checks": {
+    "sourceFiles": 131,
+    "sourceUnchanged": true,
+    "sourceListSha256": "2fab8962dbfd2a9598741fcfe9e8e1b49eca2f82753e26b8419b28b75fabd0e3",
+    "command": "go test -race -count=1 -timeout=60s -run '^TestLocalTLSMaterial' -json ./deployment",
+    "exit": 0,
+    "passedTestEntries": 13,
+    "failedOrSkippedTestEntries": 0,
+    "packageSeconds": 0.031,
+    "rawJsonlSha256": "b5d278e8388c57645ec3c31798f31902c2d629910a9f66c3fa825a56c5fe4585",
+    "directory": "material-repair",
+    "vetCommand": "go vet ./deployment",
+    "vetExit": 0
+  },
+  "independentReview": {
+    "reviewer": "Plato",
+    "agentId": "01a137e6-481f-7441-9095-89ea4bb76f8c",
+    "findingsRemaining": [],
+    "closedFindings": [
+      "Value receiver formatting protects both pointers and dereferenced values; formatting tests do not print private material.",
+      "Single BEGIN/END marker admission prevents pem.Decode from skipping malformed leading blocks; root, leaf and key regressions cover this."
+    ],
+    "limits": "Exact two-file source review only. The reviewer did not edit files, rerun tests or qualify integration."
+  },
+  "history": {
+    "directory": "material-initial",
+    "candidate": "candidate-cYbdly",
+    "result": "The initial 13 focused entries and vet passed, but independent source review found two real gaps. Those initial results remain history and are not acceptance of the repaired source."
+  },
+  "materialPolicy": [
+    "Profile-specific valid DNS is profile-<32 lowercase hex>.agentmux.invalid.",
+    "An offline P256 CA issues a P256 server leaf with server-auth usage, normal current-time chain and hostname verification, matching private key and bounded lifetime.",
+    "CA validity is 730 days; leaf validity is 90 days. Each begins one minute before issuance to allow small clock skew.",
+    "The exact leaf DER pin uses sha256:<64 lowercase hex>.",
+    "The CA signing key is never encoded, returned or persisted. Scalar clearing is best effort and does not prove Go heap erasure.",
+    "Inputs and getters are copied; material formatting and JSON are redacted.",
+    "No file is written by enrollment. Rotation requires new explicit enrollment and pin acceptance, not automatic renewal."
+  ],
+  "remaining": [
+    "Add secure local factories and deterministic three-object Compose rendering without changing legacy plain factories.",
+    "Use the shared immutable ClientTrust and its authenticated fixed-endpoint dialer in health and read-only observation paths.",
+    "Validate strict TLS-first/minimum TLS1.3 with actual disposable NATS2.15 positive and adversarial tests.",
+    "Run the affected deployment suite after the complete slice is stable.",
+    "Root owns installed policy integration, Docker byte inspection, actual supported-environment evidence, registration and phase acceptance."
+  ],
+  "actualNATSTLSExecuted": false,
+  "installedCredentialTransportSecured": false,
+  "phaseAccepted": false
+}

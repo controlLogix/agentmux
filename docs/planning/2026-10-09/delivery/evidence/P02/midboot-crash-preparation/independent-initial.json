@@ -1,0 +1,43 @@
+{
+  "kind": "independent-midboot-source-review",
+  "workerReviewSHA256": "df5368b83983e6900c36012916a3edc2344d88100d90cdd9d773be4bb0252a53",
+  "sourceSHA256": "d7643ec00a3dce05be670a633636ca304c668f7bfce41dd6ca578edf2cda70c3",
+  "batchVerification": {
+    "snapshotFiles": 261,
+    "currentSharedFiles": 260,
+    "artifacts": 8,
+    "mismatches": []
+  },
+  "compileOnly": {
+    "directExit": 0,
+    "testsExecuted": 0,
+    "engineCalls": 0
+  },
+  "improvements": [
+    "Kernel observation500ms nested original startup deadline.",
+    "Actual startup exclusion requires typed StartingElsewhereError and DeadlineExceeded while parent phase still alive.",
+    "Broker, volume, provisioned record and baseline reads use the original phase context.",
+    "Genuine partial descendant roster is pinned immediately and rechecked before crash; exact held creator PIDFD only receives signals.",
+    "Postcrash descendants and six exclusion leases share one stop/reap deadline; recovered invocation is distinct and original data preservation asserted."
+  ],
+  "findings": [
+    {
+      "id": "MIDBOOT-FOREIGN-BASELINE",
+      "lines": "105-107",
+      "finding": "Full inventory and network maps include new owned broker and network. Comparing directly with prefixture foreign-only baseline always fails.",
+      "required": "Exclude only exact freshly fully admitted broker/network after complete identity and sole reciprocal endpoint qualification, under original phase deadline. Preserve all original foreign entries and refuse unknown added resources."
+    },
+    {
+      "id": "MIDBOOT-LAST-DEADLINE",
+      "lines": "129-132",
+      "finding": "Phase deadline is checked before final revalidation rather than after its multiple proc/executable reads. SIGKILL can execute after original phase deadline.",
+      "required": "Recheck original phase context immediately after final role revalidation and before crash signal; no new deadline."
+    }
+  ],
+  "decision": "Source is reviewable but actual engine execution should remain blocked pending these narrow repairs.",
+  "limits": [
+    "Source and compile-only evidence reviewed; no tests/build/engine run by independent reviewer.",
+    "Compile pass does not qualify actual midboot selection, waiting status, crash, parent lifetime EOF, recovery or phase acceptance.",
+    "Existing local filesystem reads use current standard filesystem assumptions; no claim of interrupting a blocked kernel read."
+  ]
+}

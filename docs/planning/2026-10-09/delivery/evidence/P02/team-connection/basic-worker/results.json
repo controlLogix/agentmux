@@ -1,0 +1,48 @@
+{
+  "scope": "P02 team connection basic compatibility and setup cancellation tests only",
+  "status": "focused-tests-passed",
+  "environment": "Go 1.27.2 linux/amd64 in WSL; prepared disposable NATS 2.15.0; nats.go 1.54.0; nkeys 0.4.16",
+  "command": "go test -race -count=1 -timeout=90s -run ^TestTeamBasic -json ./deployment",
+  "exitCode": 0,
+  "packageElapsedSeconds": 1.474,
+  "topLevelTestsPassed": 2,
+  "subtestsPassed": 10,
+  "skips": 0,
+  "snapshot": "/home/ryan/.cache/agentmux-governance/basic-worker-LMrGGW",
+  "rawEvidenceDirectory": "basic-worker-LMrGGW",
+  "sourceManifest": "basic-worker-LMrGGW/source-before.sha256",
+  "sourceRecheck": "basic-worker-LMrGGW/source-after.txt",
+  "frozenSourceUnchanged": true,
+  "sourceSha256": {
+    "platform/deployment/team_basic_test.go": "0c39bf69f41dd75fd807fa4dc9583053618a75b713204d8b525b5f0f14c67185",
+    "platform/deployment/team_connection.go": "585517a1e0c44d1e742e5fd1e41d8bf72e9847b57b7c307e1ef226d46ec0b545",
+    "platform/deployment/team_credentials.go": "172226041ed2f6515be48808ef71a5baac84fa6f3e61b5a838ff1565eb456755",
+    "platform/deployment/team_tls_fixture_test.go": "460e3abb390d1fe7bf20ea5f037b958f51de2811907746ca7615c8e3513eddfb",
+    "platform/deployment/probe_cancellation_test.go": "b3328239175ab4155ab8effaac9451e86d9b8aca0a8e8d724690a835cd53140d",
+    "platform/deployment/profile.go": "f15a34a2111492fc83f3c5e85aad2cb869c4c6487bac9f3cc10aa2de9de767e7",
+    "platform/go.mod": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+    "platform/go.sum": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542"
+  },
+  "checkedBehavior": [
+    "BuildLocalConfig retains protected ACLs; only the fixture TLS block is added. The KERNEL exported-status user publishes a fresh snapshot received by the scoped APPLICATION ordinary-plugin user.",
+    "Explicit CA and hostname trust, basic authentication, server name/version and exact scoped snapshot pass. Wrong password, wrong hostname and wrong trust fail without trusted setup facts.",
+    "The same private resolver reads updated credentials on each observation: valid authentication, wrong-password rejection and restored authentication all pass. Credential files bind the selected reference and full team scope, remain outside the workspace and use private directory/file modes.",
+    "Attempted domain INFO without APPLICATION permission stays unavailable and does not claim BrokerVerified. Authenticated TLS, server identity and scoped snapshot evidence remain available.",
+    "Actual accepted greeting and TLS ClientHello stalls are reached with a TLS-only TeamConnection policy. Caller cancellation and an earlier 300 ms deadline each return within 500 ms with no TLS/authentication/server/domain/snapshot facts, and the peer closes before forced cleanup.",
+    "Observation JSON and closed error codes do not disclose fixture credentials, usernames, endpoint or the selected private credential directory. Broker configuration and TLS keys are private and never copied into evidence.",
+    "Broker and publisher cleanup is registered before starting each owned process/goroutine. Cleanup signals and joins only owned work. All focused tests and cleanup passed with the race detector."
+  ],
+  "findings": [],
+  "patternCheck": {
+    "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+    "exitCode": 1,
+    "error": "Review is stale or missing: inspect changes and refresh sourceDigest",
+    "owner": "Root integration owner; this worker did not modify pattern review evidence."
+  },
+  "limitations": [
+    "This is bounded worker evidence, not phase acceptance or exact final main-candidate evidence. The root owner must review source and run the affected suites after freezing its candidate.",
+    "No broad deployment suite, native macOS, R3 storage, federation or JWT acceptance is claimed.",
+    "The worker changed only the new team_basic_test.go source and its scoped basic-worker evidence. Existing helpers, production source, module files, profile/bootstrap/status/tracker and Git commit/push remain with their owners.",
+    "No Docker, provider, privileged or global configuration changes were made."
+  ]
+}

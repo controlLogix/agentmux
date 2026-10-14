@@ -1,0 +1,29 @@
+{
+  "reviewer": "Codex",
+  "recordedAt": "2026-10-13T23:13:08.098403+00:00",
+  "scope": "Source and synthetic admission/control review of seven-package native evidence collector",
+  "phaseAccepted": false,
+  "nativeJobExecuted": false,
+  "sourceHashes": {
+    "tests/platform/native_go.py": "be1ab6f401c5f16f507da7bd270eae704aeb76270e3126170d6b1b093059e6d2",
+    ".github/workflows/platform-foundation.yml": "291c0bc23d8c313f90eb45e8ef9691e0caf45fdf0524263a1ab1e87947a9201b"
+  },
+  "command": [
+    "C:\\Users\\RyanHelms\\AppData\\Local\\Programs\\Python\\Python314\\python.exe",
+    "tests/platform/native_go.py",
+    "--self-test"
+  ],
+  "exitCode": 0,
+  "syntheticTests": 15,
+  "review": [
+    "Actual Go package inventory must match all seven test-bearing packages; malformed/missing/new packages fail rather than disappear from evidence.",
+    "Every selected package needs actual terminal test/package events. Skips, hidden failures, timeouts and changed execution-source hashes cannot pass.",
+    "Collector checkpoints retain setup and per-scope failures; the overall collection budget preserves time to upload evidence.",
+    "Linux sealed-process fixtures and Darwin refusal/research are explicitly distinct from actual native protected boot and full Compose qualification.",
+    "Workflow is feature-branch scoped for execution, has read-only contents permission and contains no merge or tracking update."
+  ],
+  "limits": [
+    "This local run uses synthetic runner controls; no downloaded toolchain, native CI job or macOS boot execution was performed.",
+    "Tagged actual Docker Bootstrap selection is separate mandatory evidence and is not silently covered by the default native matrix."
+  ]
+}

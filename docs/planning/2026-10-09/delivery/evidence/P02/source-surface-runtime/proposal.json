@@ -1,0 +1,552 @@
+{
+  "schemaVersion": "1.0.0",
+  "proposalOnly": true,
+  "scope": "Nine assigned runtime source surface records; no production or metadata writes",
+  "phaseAccepted": false,
+  "nativeQualified": false,
+  "sourceDigestAttestationAuthorized": false,
+  "sourceSurfaceWritePerformed": false,
+  "sourceStableAcrossRead": true,
+  "files": [
+    {
+      "path": "platform/runtime/acl_darwin.go",
+      "workingFileSha256": "bfcd89538837b9ffd94c46882f231a1930091d3b21d3e5bb5cb475659acfe609",
+      "inventoryOwners": [
+        [
+          "PLAT-02"
+        ]
+      ],
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C02",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "how": "Read and validate actual extended ACL entries and local root-owned APFS mount metadata from admitted descriptors. Reject mutation ALLOW entries and unknown retrieval results.",
+      "where": "platform/runtime/acl_darwin.go",
+      "why": "Protect path immutability on macOS where Linux seals are unavailable.",
+      "tradeoffs": "Requires actual Darwin CGO/Apple SDK; fixed conservative mount/ACL policy can reject other valid platforms.",
+      "proposedSurfaceRecord": {
+        "path": "platform/runtime/acl_darwin.go",
+        "componentIds": [
+          "PLAT-02"
+        ],
+        "workingFileSha256": "bfcd89538837b9ffd94c46882f231a1930091d3b21d3e5bb5cb475659acfe609",
+        "declarations": [
+          {
+            "name": "darwinDescriptorPolicy",
+            "line": 57,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "Current source inspected; declaration registration and component evidence do not qualify native boot or phase acceptance."
+      },
+      "nativeAdapterFunctions": [
+        "agentmux_acl_safe",
+        "agentmux_mount_safe"
+      ]
+    },
+    {
+      "path": "platform/runtime/installed_host.go",
+      "workingFileSha256": "94cb640c7422bd3725af089511958699bb7d7418455273bccc7ba3dde06df780",
+      "inventoryOwners": [
+        [
+          "PLAT-02"
+        ]
+      ],
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C02",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "how": "Consume a held verified image once, construct literal host/policy/workspace/attempt arguments and fixed environment, detach only the newly started exact child, retain sole Wait and owned Stop. Receipt descriptor added only by the private start path.",
+      "where": "platform/runtime/installed_host.go",
+      "why": "Let frontend exit without killing an admitted host; preserve exact process ownership and observe readiness separately.",
+      "tradeoffs": "Detached spawn is not readiness or startup acceptance. Stop targets exact child TERM only and returns bounded wait; no PID/process-group adoption.",
+      "proposedSurfaceRecord": {
+        "path": "platform/runtime/installed_host.go",
+        "componentIds": [
+          "PLAT-02"
+        ],
+        "workingFileSha256": "94cb640c7422bd3725af089511958699bb7d7418455273bccc7ba3dde06df780",
+        "declarations": [
+          {
+            "name": "hostExecutionError",
+            "line": 45,
+            "kind": "go-function"
+          },
+          {
+            "name": "InstalledHostImage.Close",
+            "line": 49,
+            "kind": "go-method"
+          },
+          {
+            "name": "literalHostPath",
+            "line": 66,
+            "kind": "go-function"
+          },
+          {
+            "name": "hostArguments",
+            "line": 70,
+            "kind": "go-function"
+          },
+          {
+            "name": "installedHostEnvironment",
+            "line": 86,
+            "kind": "go-function"
+          },
+          {
+            "name": "InstalledHostImage.StartHost",
+            "line": 110,
+            "kind": "go-method"
+          },
+          {
+            "name": "InstalledHostImage.startHost",
+            "line": 114,
+            "kind": "go-method"
+          },
+          {
+            "name": "HostProcess.Done",
+            "line": 182,
+            "kind": "go-method"
+          },
+          {
+            "name": "HostProcess.Wait",
+            "line": 188,
+            "kind": "go-method"
+          },
+          {
+            "name": "HostProcess.Stop",
+            "line": 201,
+            "kind": "go-method"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "Current source inspected; declaration registration and component evidence do not qualify native boot or phase acceptance."
+      },
+      "nativeAdapterFunctions": []
+    },
+    {
+      "path": "platform/runtime/installed_host_darwin.go",
+      "workingFileSha256": "dfb82e401929befde882136522c9fe4380c06d8ed8c7bc12980e2086a080aa07",
+      "inventoryOwners": [
+        [
+          "PLAT-02"
+        ]
+      ],
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C02",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "how": "Refuse mutable user-file staging; admit only existing protected release path through openDarwinProtected, retaining descriptors for immediate spawn revalidation.",
+      "where": "platform/runtime/installed_host_darwin.go",
+      "why": "Use macOS protected installation as executable immutability boundary.",
+      "tradeoffs": "Root/admin/updater and Apple OS remain trusted; production signed installer/update/native full-stack proof is separate.",
+      "proposedSurfaceRecord": {
+        "path": "platform/runtime/installed_host_darwin.go",
+        "componentIds": [
+          "PLAT-02"
+        ],
+        "workingFileSha256": "dfb82e401929befde882136522c9fe4380c06d8ed8c7bc12980e2086a080aa07",
+        "declarations": [
+          {
+            "name": "PrepareInstalledHost",
+            "line": 13,
+            "kind": "go-function"
+          },
+          {
+            "name": "PrepareProtectedInstalledHost",
+            "line": 20,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "Current source inspected; declaration registration and component evidence do not qualify native boot or phase acceptance."
+      },
+      "nativeAdapterFunctions": []
+    },
+    {
+      "path": "platform/runtime/installed_host_darwin_nocgo.go",
+      "workingFileSha256": "a611abb5d22dc5ccfe398bc58cc0336bfac4de917dda257d58ebd6dce0c779db",
+      "inventoryOwners": [
+        [
+          "PLAT-02"
+        ]
+      ],
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C02",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "how": "Both image preparation APIs return ErrPlatformUnqualified when Darwin lacks CGO.",
+      "where": "platform/runtime/installed_host_darwin_nocgo.go",
+      "why": "Never substitute unverified ACL/mount checks for native APIs.",
+      "tradeoffs": "Refusal is deliberate unsupported behavior, not native execution or platform acceptance.",
+      "proposedSurfaceRecord": {
+        "path": "platform/runtime/installed_host_darwin_nocgo.go",
+        "componentIds": [
+          "PLAT-02"
+        ],
+        "workingFileSha256": "a611abb5d22dc5ccfe398bc58cc0336bfac4de917dda257d58ebd6dce0c779db",
+        "declarations": [
+          {
+            "name": "PrepareInstalledHost",
+            "line": 10,
+            "kind": "go-function"
+          },
+          {
+            "name": "PrepareProtectedInstalledHost",
+            "line": 13,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "Current source inspected; declaration registration and component evidence do not qualify native boot or phase acceptance."
+      },
+      "nativeAdapterFunctions": []
+    },
+    {
+      "path": "platform/runtime/installed_host_linux.go",
+      "workingFileSha256": "72e1c8cefd8f3c06ff8c8fba4be53e444aa14de9e24ea773ef1fa67bff815627",
+      "inventoryOwners": [
+        [
+          "PLAT-02"
+        ]
+      ],
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C02",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "how": "Check held private current-UID regular executable, copy to executable memfd and delegate sealAndVerify against separately expected digest; refuse pathname alternative.",
+      "where": "platform/runtime/installed_host_linux.go",
+      "why": "Bind actual executed immutable snapshot rather than a mutable verified source path.",
+      "tradeoffs": "Needs qualified executable memfd/kernel seals and static ELF. Same-UID host plugins and privileged debugger are not sandboxed.",
+      "proposedSurfaceRecord": {
+        "path": "platform/runtime/installed_host_linux.go",
+        "componentIds": [
+          "PLAT-02"
+        ],
+        "workingFileSha256": "72e1c8cefd8f3c06ff8c8fba4be53e444aa14de9e24ea773ef1fa67bff815627",
+        "declarations": [
+          {
+            "name": "PrepareInstalledHost",
+            "line": 16,
+            "kind": "go-function"
+          },
+          {
+            "name": "PrepareProtectedInstalledHost",
+            "line": 64,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "Current source inspected; declaration registration and component evidence do not qualify native boot or phase acceptance."
+      },
+      "nativeAdapterFunctions": []
+    },
+    {
+      "path": "platform/runtime/installed_host_unsupported.go",
+      "workingFileSha256": "f13d55cdcc403ba172d637318a30b0bf92547cad261d79cebbf82622677b65b9",
+      "inventoryOwners": [
+        [
+          "PLAT-02"
+        ]
+      ],
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C02",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "how": "Non-Linux/non-Darwin API stubs refuse preparation, start, wait and stop with ErrPlatformUnqualified.",
+      "where": "platform/runtime/installed_host_unsupported.go",
+      "why": "Prevent implicit unsupported Windows/native fallback.",
+      "tradeoffs": "No process execution occurs here; Close and Done stubs do not qualify a runtime.",
+      "proposedSurfaceRecord": {
+        "path": "platform/runtime/installed_host_unsupported.go",
+        "componentIds": [
+          "PLAT-02"
+        ],
+        "workingFileSha256": "f13d55cdcc403ba172d637318a30b0bf92547cad261d79cebbf82622677b65b9",
+        "declarations": [
+          {
+            "name": "PrepareInstalledHost",
+            "line": 18,
+            "kind": "go-function"
+          },
+          {
+            "name": "InstalledHostImage.Close",
+            "line": 21,
+            "kind": "go-method"
+          },
+          {
+            "name": "InstalledHostImage.StartHost",
+            "line": 22,
+            "kind": "go-method"
+          },
+          {
+            "name": "HostProcess.Done",
+            "line": 25,
+            "kind": "go-method"
+          },
+          {
+            "name": "HostProcess.Wait",
+            "line": 26,
+            "kind": "go-method"
+          },
+          {
+            "name": "HostProcess.Stop",
+            "line": 27,
+            "kind": "go-method"
+          },
+          {
+            "name": "PrepareProtectedInstalledHost",
+            "line": 29,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "Current source inspected; declaration registration and component evidence do not qualify native boot or phase acceptance."
+      },
+      "nativeAdapterFunctions": []
+    },
+    {
+      "path": "platform/runtime/macho_entry.go",
+      "workingFileSha256": "1b7c6d66207108601889bccc416f2cb689cfa134a8563f7ddfc3d05ba06f42bb",
+      "inventoryOwners": [
+        [
+          "PLAT-02"
+        ]
+      ],
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C02",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "how": "Validate bounded thin native 64-bit little-endian Mach-O text segment and one supported AMD64 thread or LC_MAIN entrypoint inside executable bytes.",
+      "where": "platform/runtime/macho_entry.go",
+      "why": "Deny malformed entrypoints before protected loader can start them.",
+      "tradeoffs": "Structural parser proof is distinct from dependency, signature, descriptor immutability and actual native execution checks.",
+      "proposedSurfaceRecord": {
+        "path": "platform/runtime/macho_entry.go",
+        "componentIds": [
+          "PLAT-02"
+        ],
+        "workingFileSha256": "1b7c6d66207108601889bccc416f2cb689cfa134a8563f7ddfc3d05ba06f42bb",
+        "declarations": [
+          {
+            "name": "validateDarwinEntrypoint",
+            "line": 14,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "Current source inspected; declaration registration and component evidence do not qualify native boot or phase acceptance."
+      },
+      "nativeAdapterFunctions": []
+    },
+    {
+      "path": "platform/runtime/snapshot_darwin.go",
+      "workingFileSha256": "01c92e4d4dadacdbdc4ef0671e49c74367e01e61f9bef1916a93ea9a930365e4",
+      "inventoryOwners": [
+        [
+          "PLAT-02"
+        ]
+      ],
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C02",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "how": "Walk fixed release path with no-follow directory descriptors, enforce root ownership/modes/ACL/APFS, hash held member and validate Mach-O architecture/entrypoint/exact Apple dependency whitelist. Reopen and compare all retained inode identities immediately before path-based execution.",
+      "where": "platform/runtime/snapshot_darwin.go",
+      "why": "Provide a conservative macOS backend without pretending an unlinked file supplies Linux-style seals.",
+      "tradeoffs": "Trusted privileged updater must not replace active versions; OS libraries are trusted rather than digested user dependencies. Full native installation/boot/EOF/leases/Compose evidence remains separately required.",
+      "proposedSurfaceRecord": {
+        "path": "platform/runtime/snapshot_darwin.go",
+        "componentIds": [
+          "PLAT-02"
+        ],
+        "workingFileSha256": "01c92e4d4dadacdbdc4ef0671e49c74367e01e61f9bef1916a93ea9a930365e4",
+        "declarations": [
+          {
+            "name": "protectedDarwinExecutable.command",
+            "line": 31,
+            "kind": "go-method"
+          },
+          {
+            "name": "protectedDarwinExecutable.close",
+            "line": 35,
+            "kind": "go-method"
+          },
+          {
+            "name": "protectedDarwinExecutable.validateForStart",
+            "line": 46,
+            "kind": "go-method"
+          },
+          {
+            "name": "prepareExecutable",
+            "line": 71,
+            "kind": "go-function"
+          },
+          {
+            "name": "darwinReleaseRoot",
+            "line": 82,
+            "kind": "go-function"
+          },
+          {
+            "name": "openDarwinProtected",
+            "line": 94,
+            "kind": "go-function"
+          },
+          {
+            "name": "darwinImage",
+            "line": 157,
+            "kind": "go-function"
+          },
+          {
+            "name": "approvedDarwinSystemLibrary",
+            "line": 248,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "Current source inspected; declaration registration and component evidence do not qualify native boot or phase acceptance."
+      },
+      "nativeAdapterFunctions": []
+    },
+    {
+      "path": "platform/runtime/bootstrap_receipt.go",
+      "workingFileSha256": "d18adf5539e70ff66d39b19a405bcbdfe3de8147fb19e90a60e515fa5f3a5519",
+      "inventoryOwners": [
+        [
+          "PLAT-02"
+        ]
+      ],
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C02",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "how": "Pass private one-way descriptor only to newly owned verified host, bind full scope/enrollment digest/cold attempt/runtime digest, admit one <=4096-byte closed strict frame plus EOF and cancel/join receipt I/O. Writer marks CLOEXEC and closes after one bounded write.",
+      "where": "platform/runtime/bootstrap_receipt.go",
+      "why": "Provide narrow OS lifecycle control before broker is reachable while NATS remains application/current status bus.",
+      "tradeoffs": "Accepted is historical admitted entry, never L04/current readiness. Exposed Contended encoding alone proves no actual lock contention; current launcher does not emit it from scalar refusal. Binding digest is typed Go correlation, not signature or cross-language canonicalization.",
+      "proposedSurfaceRecord": {
+        "path": "platform/runtime/bootstrap_receipt.go",
+        "componentIds": [
+          "PLAT-02"
+        ],
+        "workingFileSha256": "d18adf5539e70ff66d39b19a405bcbdfe3de8147fb19e90a60e515fa5f3a5519",
+        "declarations": [
+          {
+            "name": "BootstrapReceiptRequested",
+            "line": 40,
+            "kind": "go-function"
+          },
+          {
+            "name": "receiptError",
+            "line": 55,
+            "kind": "go-function"
+          },
+          {
+            "name": "boundedReceiptContext",
+            "line": 56,
+            "kind": "go-function"
+          },
+          {
+            "name": "BootstrapReceiptBinding.valid",
+            "line": 63,
+            "kind": "go-method"
+          },
+          {
+            "name": "BootstrapControlReceipt.valid",
+            "line": 67,
+            "kind": "go-method"
+          },
+          {
+            "name": "InstalledHostImage.StartHostWithBootstrapReceipt",
+            "line": 94,
+            "kind": "go-method"
+          },
+          {
+            "name": "bootstrapReceiptReader.closeFile",
+            "line": 116,
+            "kind": "go-method"
+          },
+          {
+            "name": "ReceiptHostProcess.BootstrapReceipt",
+            "line": 126,
+            "kind": "go-method"
+          },
+          {
+            "name": "ReceiptHostProcess.CloseBootstrapReceipt",
+            "line": 177,
+            "kind": "go-method"
+          },
+          {
+            "name": "OpenBootstrapReceiptWriter",
+            "line": 212,
+            "kind": "go-function"
+          },
+          {
+            "name": "BootstrapReceiptWriter.Accepted",
+            "line": 237,
+            "kind": "go-method"
+          },
+          {
+            "name": "BootstrapReceiptWriter.Contended",
+            "line": 238,
+            "kind": "go-method"
+          },
+          {
+            "name": "BootstrapReceiptWriter.Failed",
+            "line": 241,
+            "kind": "go-method"
+          },
+          {
+            "name": "BootstrapReceiptWriter.closeFile",
+            "line": 242,
+            "kind": "go-method"
+          },
+          {
+            "name": "BootstrapReceiptWriter.Close",
+            "line": 249,
+            "kind": "go-method"
+          },
+          {
+            "name": "BootstrapReceiptWriter.emit",
+            "line": 263,
+            "kind": "go-method"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "Current source inspected; declaration registration and component evidence do not qualify native boot or phase acceptance."
+      },
+      "nativeAdapterFunctions": []
+    }
+  ],
+  "metadataHashes": {
+    "component-inventory.json": "b384c11899072c59b72d35d5e9857cac8323f511b6945ca57eb75821a724150c",
+    "source-surface-index.json": "5d8c01522fba3c8de885887421aeb797a5a1299412497e30027ea9171b7de6a2",
+    "component-audit-hub.json": "6e3c83b6b243c0df45fcf2c6914ef306d1bc912d3830d22e79463e1897e08822"
+  },
+  "evidenceReviewed": [
+    "delivery/evidence/P02/bootstrap-receipt-independent/independent-review.json",
+    "delivery/evidence/P02/bootstrap-receipt-independent/worker-review.json",
+    "delivery/evidence/P02/darwin-protected-backend/review.json",
+    "delivery/evidence/P02/native-ci-preparation/darwin-install-final-controls.json"
+  ],
+  "actualEvidenceLimits": [
+    "Current receipt+installed host component independent archive binds26 passing Linux race entries and vet0 to matching current source; not Darwin/product/Compose/ten-second acceptance.",
+    "Older Darwin backend record snapshot hash differs; preserve it as historical. ACL hash matches. Native execution was not run or inferred.",
+    "Synthetic Darwin collector controls and CGO-disabled crossbuilds exclude the native CGO backend and cannot qualify actual native Darwin execution.",
+    "Windows unsupported and Darwin CGO0 refusal are separate behavior surfaces.",
+    "Existing independently repaired test-descriptor/child failure-path findings are retained in receipt archive; no new source defect reproduced in this read-only slice."
+  ],
+  "findings": [
+    {
+      "kind": "stale-documentation",
+      "path": "platform/runtime/README.md",
+      "description": "The macOS paragraph says product preparation returns ErrPlatformUnqualified unconditionally. Current darwin&&cgo protected installation path can admit; user-owned staging and darwin&&!cgo still refuse. Update wording without claiming actual native qualification.",
+      "owner": "Root documentation/source-index writer"
+    }
+  ],
+  "actionsNotPerformed": [
+    "No source/index/workflow/tracker changes",
+    "No tests/native execution/install/engine/provider actions",
+    "No sourceDigest approval"
+  ]
+}

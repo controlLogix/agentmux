@@ -1,0 +1,41 @@
+{
+  "recordedDate": "2026-10-14",
+  "scope": "Two additional test-probe cleanup cause findings; source-only repair",
+  "sourceBefore": {
+    "platform/runtime/testdata/darwin_identity_probe/main_darwin.go": "455febb1b76fb2395bb8bcfd8783eb8adf9743c2916f98dbd0c36ca6c4d85bf4",
+    "platform/runtime/testdata/darwin_identity_probe/native_darwin.go": "a120f2ce87b049852941efc3e38c9de013173e7998d842ed510eddadb2c6b972",
+    "platform/runtime/testdata/darwin_identity_probe/README.md": "fc2c08846cea4b3b00c74f8799e9a20990101c5ad1aaa9faac4330f30cbaea63"
+  },
+  "sourceAfter": {
+    "platform/runtime/testdata/darwin_identity_probe/main_darwin.go": "c9e6f7b8c83c5d5441e647814a72106dd9f066264015cc75bc7552822eeeb9d3",
+    "platform/runtime/testdata/darwin_identity_probe/native_darwin.go": "a120f2ce87b049852941efc3e38c9de013173e7998d842ed510eddadb2c6b972",
+    "platform/runtime/testdata/darwin_identity_probe/README.md": "03c38baa4dfeeab76339d0eaf72e42d564844bbc296791e7eef4df0793719388"
+  },
+  "findings": [
+    {"id": "setup-close-causes", "before": "Pipe/nonce/Start failures discard acquired close results and return nil control, bypassing later owned cleanup.", "repair": "closeSetupFailure attempts every acquired reader/gate/image close and joins primary plus each safe wrapper retaining the actual cause.", "status": "source repair independently reviewed"},
+    {"id": "gate-overwrites-prior", "before": "Gate-close error assignment replaces retained earlier cleanup causes in close().", "repair": "Gate cleanup calls closeOwned(previous, stage, gate); failed close joins rather than replaces earlier error state.", "status": "source repair independently reviewed"}
+  ],
+  "independentReview": {
+    "reviewer": "Plato",
+    "agentId": "01a137e6-481f-7441-9095-89ea4bb76f8c",
+    "beforeReview": "Both additional findings confirmed. Old paths already returned failure with cleanupVerified=false; not a demonstrated false pass. No retryable image ownership after Close failure.",
+    "afterReview": "Both findings closed in source. All acquired closes attempted; primary and returned causes retained. Fixed Error text and Unwrap preserve safe diagnostics and error identity. Gate close joins earlier errors; image attempted once. No further actionable finding in this repair.",
+    "reviewedMainSHA256": "c9e6f7b8c83c5d5441e647814a72106dd9f066264015cc75bc7552822eeeb9d3",
+    "reviewedNativeSHA256": "a120f2ce87b049852941efc3e38c9de013173e7998d842ed510eddadb2c6b972",
+    "reviewedReadmeSHA256": "03c38baa4dfeeab76339d0eaf72e42d564844bbc296791e7eef4df0793719388"
+  },
+  "structuralCheckHistory": [
+    {"exitCode": 1, "scope": "Five source-text guards, not compiled or native tests", "results": {"allThreeSetupBranches": true, "primaryJoinedWithSafeCause": true, "gateJoinsEarlier": true, "gateReplacementAbsent": true, "safeErrorAndUnwrap": false}, "reason": "Harness expected an exact spacing count in a formatted method declaration. Product source was not changed for this harness error."},
+    {"exitCode": 0, "scope": "Same five source-text guards; whitespace-tolerant method matching", "results": {"allThreeSetupBranches": true, "primaryJoinedWithSafeCause": true, "gateJoinsEarlier": true, "gateReplacementAbsent": true, "safeErrorAndUnwrap": true}, "limit": "Confirms source structure only, not errors.Is behavior or native close effects."}
+  ],
+  "gofmt": {"exitCode": 0, "unformattedFiles": [], "scope": "Go parsing and formatting only"},
+  "controlsStillRequired": "See control-plan.md for constructor success/failure combinations, multiple close failures, prior-plus-gate retention, exact cause assertions and safe diagnostics. No counting-closer or native controls executed.",
+  "historyPolicy": "Earlier source-review records remain unchanged; these findings qualify the prior narrow cleanup review. Before pins and both additional findings are retained here.",
+  "globalMetadataChanged": false,
+  "compilerRun": false,
+  "nativeJobsRun": false,
+  "dockerJobsRun": false,
+  "nativeQualified": false,
+  "installedCLIQualified": false,
+  "phaseAccepted": false
+}

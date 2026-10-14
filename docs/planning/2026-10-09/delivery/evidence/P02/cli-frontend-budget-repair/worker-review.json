@@ -1,0 +1,281 @@
+{
+  "schemaVersion": "1.0.0",
+  "phase": "P02",
+  "kind": "CLI internal deadline reserve repair, not real engine qualification",
+  "createdUtc": "2026-10-14T10:27:23.831655+00:00",
+  "ownedSourceHashes": [
+    {
+      "path": "platform/cmd/agentmux-runtime/main.go",
+      "sha256": "ff6147c74685e72f9d1dddc5d4c222601c7fe5c0b7557d156858df5d5d935a5a",
+      "declarations": [
+        {
+          "name": "frontendTotalContext",
+          "line": 39
+        },
+        {
+          "name": "frontendWorkContext",
+          "line": 47
+        },
+        {
+          "name": "frontendCleanupContext",
+          "line": 59
+        },
+        {
+          "name": "emitObservation",
+          "line": 63
+        },
+        {
+          "name": "parse",
+          "line": 73
+        },
+        {
+          "name": "run",
+          "line": 90
+        },
+        {
+          "name": "emitOwnedBootstrapProgress",
+          "line": 174
+        },
+        {
+          "name": "progressObservationUnavailable",
+          "line": 188
+        },
+        {
+          "name": "emitBootstrapProgress",
+          "line": 203
+        },
+        {
+          "name": "main",
+          "line": 226
+        }
+      ]
+    },
+    {
+      "path": "platform/cmd/agentmux-runtime/main_frontend_budget_test.go",
+      "sha256": "9c7bea3cb442026a8260b5b3aadea276485bf2eb41c41ad5b24f68ce8f81286f",
+      "declarations": [
+        {
+          "name": "TestFrontendBudgetReservesResponseAndCleanup",
+          "line": 14
+        },
+        {
+          "name": "TestFrontendCleanupNeverExtendsTotal",
+          "line": 32
+        },
+        {
+          "name": "TestFrontendStatusUsesOriginalFiveSecondTotal",
+          "line": 48
+        },
+        {
+          "name": "TestFrontendEarlierCancelledCallerDoesNotGainTime",
+          "line": 58
+        },
+        {
+          "name": "TestFrontendNearExpiryOwnedReceiptRetainsUnknownFactsAndCleanup",
+          "line": 74
+        }
+      ]
+    }
+  ],
+  "originalSourcePreserved": {
+    "path": "/home/ryan/.cache/agentmux-governance/p02-cli-budget-before-vw6jdrky/historical-original-main.go",
+    "sha256": "a8686ad179f76b2dacdb3096a19d00f3e05af2c037fb9ed7fa83a121b6ac7c9b"
+  },
+  "beforeScope": "Original ten-second work and fresh Background one-second cleanup policies were extracted into fixed private helpers before repair; controls executed that policy reference, not the original installed CLI nor KpKu40.",
+  "copiedSourceManifestSHA256": "a058c272eef45a9927678de1ae99b75baf8585cd12a2305f2dd6fdc5b50625d2",
+  "copiedSourceFiles": 199,
+  "copiedSourceStillExact": true,
+  "ownedCurrentSourcesExact": true,
+  "unrelatedWorkingTreeDrift": [
+    "platform/launcher/installed_cli_compose_failures_integration_test.go"
+  ],
+  "results": [
+    {
+      "path": "/home/ryan/.cache/agentmux-governance/p02-cli-budget-before-vw6jdrky",
+      "prefix": "before",
+      "directExit": 1,
+      "namedPassed": [],
+      "namedFailed": [
+        "TestFrontendBudgetReservesResponseAndCleanup",
+        "TestFrontendCleanupNeverExtendsTotal",
+        "TestFrontendStatusUsesOriginalFiveSecondTotal",
+        "TestFrontendEarlierCancelledCallerDoesNotGainTime"
+      ],
+      "namedSkipped": [],
+      "eventsSHA256": "3e90a51ecdff1ca99db77b2a9d90a216988b584224727310a7f5783b380cefbb",
+      "exitSHA256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "path": "/home/ryan/.cache/agentmux-governance/p02-cli-budget-before-vw6jdrky",
+      "prefix": "before-receipt",
+      "directExit": 1,
+      "namedPassed": [],
+      "namedFailed": [
+        "TestFrontendNearExpiryOwnedReceiptRetainsUnknownFactsAndCleanup"
+      ],
+      "namedSkipped": [],
+      "eventsSHA256": "ffba72699dd3082341b2bbf357fe94fcebfab44f98a787528eba04084e8f89b7",
+      "exitSHA256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "path": "/home/ryan/.cache/agentmux-governance/p02-cli-budget-repaired-vs881n_6",
+      "prefix": "repaired",
+      "directExit": 0,
+      "namedPassed": [
+        "TestFrontendBudgetReservesResponseAndCleanup",
+        "TestFrontendCleanupNeverExtendsTotal",
+        "TestFrontendStatusUsesOriginalFiveSecondTotal",
+        "TestFrontendEarlierCancelledCallerDoesNotGainTime"
+      ],
+      "namedFailed": [],
+      "namedSkipped": [],
+      "eventsSHA256": "c97606d89863a21411a51d778f029cb6e0ed55c1f6ee90002a86aac68e823cfb",
+      "exitSHA256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "/home/ryan/.cache/agentmux-governance/p02-cli-budget-repaired-vs881n_6",
+      "prefix": "repaired-receipt",
+      "directExit": 0,
+      "namedPassed": [
+        "TestFrontendNearExpiryOwnedReceiptRetainsUnknownFactsAndCleanup"
+      ],
+      "namedFailed": [],
+      "namedSkipped": [],
+      "eventsSHA256": "215e727ee62dd941ca2c33e86856f0a32ddc207a4b740bcc2e52a0c1ff9097c3",
+      "exitSHA256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "/home/ryan/.cache/agentmux-governance/p02-cli-budget-repaired-vs881n_6",
+      "prefix": "affected",
+      "directExit": 0,
+      "namedPassed": [
+        "TestOwnedBootstrapProgressChecksActualChildAndCaller/accepted_then_exited",
+        "TestOwnedBootstrapProgressChecksActualChildAndCaller/cancelled_caller",
+        "TestOwnedBootstrapProgressChecksActualChildAndCaller/live_child_has_unknown_instance",
+        "TestOwnedBootstrapProgressChecksActualChildAndCaller",
+        "TestFrontendBudgetReservesResponseAndCleanup",
+        "TestFrontendCleanupNeverExtendsTotal",
+        "TestFrontendStatusUsesOriginalFiveSecondTotal",
+        "TestFrontendEarlierCancelledCallerDoesNotGainTime",
+        "TestFrontendNearExpiryOwnedReceiptRetainsUnknownFactsAndCleanup",
+        "TestInstalledLauncherLiteralCommands",
+        "TestInstalledLauncherFailedEnsureEmitsEvidenceAndFails",
+        "TestInstalledLauncherReceiptDoesNotInventInstanceDetails",
+        "TestInstalledLauncherProgressNeverMasksAuthorityOrCleanupFailure"
+      ],
+      "namedFailed": [],
+      "namedSkipped": [],
+      "eventsSHA256": "c0c4dcfd2845015648ca22c3c56799fcd5b03ca72eca17eafb494bc4b57070cc",
+      "exitSHA256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    }
+  ],
+  "vetDirectExit": 0,
+  "policy": {
+    "ensureTotalSeconds": 10,
+    "statusTotalSeconds": 5,
+    "hostStartupSeconds": 60,
+    "receiptCleanupMaxSeconds": 1,
+    "responseAndNormalExitAllowanceMilliseconds": 500,
+    "internalReserveMilliseconds": 1500,
+    "earlierCallerDeadlinePreserved": true,
+    "cleanupUsesOriginalTotalParent": true,
+    "backgroundExtensionRemoved": true
+  },
+  "actualOwnedReceiptControl": "Real sealed fixture child/pipe accepted its fixed separately bound receipt; after work deadline the actual still-live child emits only accepted bootstrap-control/unknown instance, receipt Close runs before total expiry and child remains alive. Fixture receipt is transport/control proof, not actual admitted Bootstrap/NATS/Compose.",
+  "hardFailureProof": "Authority, enrollment and joined cleanup errors remain ineligible for unavailable-only progress fallback; actual existing exited-child guard also passed in affected package.",
+  "artifacts": [
+    {
+      "path": "affected-events.jsonl",
+      "sha256": "c0c4dcfd2845015648ca22c3c56799fcd5b03ca72eca17eafb494bc4b57070cc",
+      "bytes": 14234
+    },
+    {
+      "path": "affected-exit.txt",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "affected-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "historical-original-main.go",
+      "sha256": "a8686ad179f76b2dacdb3096a19d00f3e05af2c037fb9ed7fa83a121b6ac7c9b",
+      "bytes": 7174
+    },
+    {
+      "path": "invocations.json",
+      "sha256": "8d07ecaffa725b7fc6c1291a1d89d54f53ae7eb364ca14440e29d0633d2ec9d7",
+      "bytes": 1345
+    },
+    {
+      "path": "producer-record.sh",
+      "sha256": "c83f950d9f40fea98ea3f3c04decf27f4dd5cbf24e357805032abdace9dceb8f",
+      "bytes": 878
+    },
+    {
+      "path": "repaired-events.jsonl",
+      "sha256": "c97606d89863a21411a51d778f029cb6e0ed55c1f6ee90002a86aac68e823cfb",
+      "bytes": 4569
+    },
+    {
+      "path": "repaired-exit.txt",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "repaired-receipt-events.jsonl",
+      "sha256": "215e727ee62dd941ca2c33e86856f0a32ddc207a4b740bcc2e52a0c1ff9097c3",
+      "bytes": 1786
+    },
+    {
+      "path": "repaired-receipt-exit.txt",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "repaired-receipt-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "repaired-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "scope.json",
+      "sha256": "08f222007f1f13668bd1522b63898f25c22d0bc7c9ee4abff147d8a54b48e86c",
+      "bytes": 284
+    },
+    {
+      "path": "source.json",
+      "sha256": "a058c272eef45a9927678de1ae99b75baf8585cd12a2305f2dd6fdc5b50625d2",
+      "bytes": 22825
+    },
+    {
+      "path": "vet-exit.txt",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    {
+      "path": "vet-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "vet.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "limits": [
+    "No KpKu40 cause claim from source; safe original stage evidence remains necessary.",
+    "500ms allowance is policy, not an OS scheduling guarantee. External Start-to-Wait10s and status5s still require actual installed source-exact qualification.",
+    "Local private file loading, synchronous image Close and stdout writes are not preemptible. Supported local filesystem/consuming output assumptions remain explicit; no unjoined goroutine added.",
+    "Receipt cleanup still has its original full one-second bound within total; no required cleanup work or honest status semantics removed.",
+    "No Docker/NATS/provider/source outside main+newfocused test/global metadata/module/schema modifications.",
+    "Generic public diagnostics remain separate required work; no phase/native acceptance."
+  ]
+}

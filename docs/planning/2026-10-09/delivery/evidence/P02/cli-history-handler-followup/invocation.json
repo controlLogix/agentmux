@@ -1,0 +1,31 @@
+{
+  "argv": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "./launcher",
+    "-run",
+    "^TestHostHistoryCLIStatusPastFailureAndNATSPriority$/^history$"
+  ],
+  "environment": {
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "0",
+    "AGENTMUX_TEST_NATS": "/home/ryan/.cache/agentmux-governance/tools/nats-server",
+    "AGENTMUX_HISTORY_CLI_EVIDENCE_ROOT": "/home/ryan/.cache/agentmux-governance/p02-history-cli-handler-rerun-o2owWZ/private-output"
+  },
+  "expected": {
+    "platform/cmd/agentmux-runtime/main.go": "9ba174b070fe08d76944d2a2f6cbd5da448f0a02f6e1c70c6aabc0a15ad17620",
+    "platform/cmd/agentmux-runtime/main_history.go": "9a27cfcd3c4fdb4c8489ea0bae105c2332786eb31d1ffbc89a7c3aeafb027c2e",
+    "platform/launcher/host_history_cli_linux_test.go": "a0c417072aed2f0e97058a705823c2f1b05ebfc1de858f70fb27928cd47412e3",
+    "platform/launcher/owner_bridge.go": "c73c5c40d770535a49f03a2a14e43e7598daf6a4528973fb0591fba326c5df95",
+    "platform/launcher/owner_bridge_probe.go": "1879bfda9cf0e1ba4d7efc25ea0c2ed8a539c2475a119342d1339fa868dea894"
+  },
+  "startedUtc": "2026-10-14T16:23:15.912779+00:00",
+  "producerSHA256": "e36bb1f66117952d9e2a604ef81ade807c33a95af80091f88cfdb0ea887462bf",
+  "engineMutations": 0
+}

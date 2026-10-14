@@ -1,0 +1,29 @@
+{
+  "scope": "Read-only fail-before nonce boundary evidence and bounded repair design review; no source/build/test/engine/global writes.",
+  "reviewSHA256": "d90b60dd64ad2c97974c676d9583fbbafcba61f13d92306816bce560e50c4dff",
+  "testSHA256": "f9c0fa22499f003276d20f3f247dbd901f45ed3b8b3303ca0706f04c7d0b2ed1",
+  "ownerSourceSHA256": "c73c5c40d770535a49f03a2a14e43e7598daf6a4528973fb0591fba326c5df95",
+  "verified": "All five artifact hashes plus frozen source/test/review pins match. Actual named failure/direct1 retained; safe logs show canceled core, no premature reply, actual completion, identical request nonce/body, final reply deadline.",
+  "design": "Same accepted request may wait for actual operation completion only when trusted mapper reports exact not_pending and private actual state proves entered, unfinished, canceled core with intact binding. Release all locks before select on operation.done/request.Done; map actual result under same original request context. Keep replay consumed at all times and publish at most once.",
+  "requiredGuards": [
+    "pending currently checks cancellation BEFORE scope/profile/enrollment. New wait guard must independently verify actual server/owner/fullscope/profile/enrollment/heldlease, not rely on not_pending string alone.",
+    "Use bounded state gate and release before waiting; never hold owner.mu or operation.state.mu across completion wait. No detached waiter or new timer/request lifetime.",
+    "Operation completion race must use actual retained Session/error and fresh current enrollment/Docker/TLS observation. No cached state, retimestamp or receipt status promotion.",
+    "Authority/profile/lease/mapper/cancellation and concrete cleanup failures stay hard; only canceled entered pending core can gain this wait.",
+    "Expired original request produces no fabricated observation; nonce remains consumed even after ambiguous publish/flush or failed reply."
+  ],
+  "minimalControls": [
+    "Exact existing genuine NATS canceled-before-completed same nonce returns correlated failed observation after repair.",
+    "Still-uncompleted canceled core reaches same request deadline and no reply; consumed replay state remains unchanged.",
+    "Canceled core with changed scope/enrollment or wrong owner/lease refuses wait despite initial not_pending.",
+    "Unentered/livecore/arbitrarymappererror/contextcanceled controls refuse wait immediately; completed race maps actual result only if originalctx remains valid.",
+    "Existing ambiguous Publish/Flush errors preserve consumed nonce and actual Run cleanup/error ancestry."
+  ],
+  "limits": [
+    "200ms receive interval is scheduling evidence rather than internal handler acceptance marker.",
+    "Direct private operation enter/complete are documented component seams, not production Bootstrap substitution.",
+    "No proof this boundary caused historical intermittent installed Run failure.",
+    "No current repaired source or integration/native/phase acceptance from design review."
+  ],
+  "status": "Design supports bounded cache repair subject to explicit binding-before-wait guard and frozen repaired source/control review."
+}

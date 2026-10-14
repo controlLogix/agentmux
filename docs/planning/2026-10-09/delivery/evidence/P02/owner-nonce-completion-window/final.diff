@@ -1,0 +1,363 @@
+--- a/owner_bridge.go
++++ b/owner_bridge.go
+@@ -731,6 +731,14 @@
+ 					complete()
+ 					observation, err = s.observeBridgeRequest(ctx, request, coldInvocationID, session, bootErr)
+ 				default:
++					completed, completionErr := operation.awaitCanceledCoreCompletion(ctx, err)
++					if completionErr != nil {
++						err = completionErr
++					}
++					if completed {
++						complete()
++						observation, err = s.observeBridgeRequest(ctx, request, coldInvocationID, session, bootErr)
++					}
+ 				}
+ 			}
+ 		} else {
+--- a/bootstrap_operation.go
++++ b/bootstrap_operation.go
+@@ -16,6 +16,7 @@
+ 	"time"
+ 
+ 	"github.com/controlLogix/agentmux/platform/kernel/protocol"
++	"github.com/controlLogix/agentmux/platform/privatefs"
+ )
+ 
+ // bootstrapOperation belongs to one actual service-lease-owning Run. The
+@@ -49,7 +50,15 @@
+ func (bootstrapOperation) MarshalJSON() ([]byte, error) {
+ 	return json.Marshal("[private bootstrap operation]")
+ }
+-func operationError(code string) error { return errors.New("bootstrap_operation_" + code) }
++
++var errOperationNotPending = errors.New("bootstrap_operation_not_pending")
++
++func operationError(code string) error {
++	if code == "not_pending" {
++		return errOperationNotPending
++	}
++	return errors.New("bootstrap_operation_" + code)
++}
+ 
+ func newBootstrapOperation(startup, lifetime context.Context, server *OwnerBridgeServer, lease *BootstrapLock, attemptID string) (*bootstrapOperation, error) {
+ 	if startup == nil || lifetime == nil || startup.Err() != nil || lifetime.Err() != nil {
+@@ -181,3 +190,78 @@
+ 	}
+ 	return nil
+ }
++
++// awaitCanceledCoreCompletion handles only the trusted pending-state refusal
++// from this entered operation. It never retries a mapper or releases a nonce.
++func (o *bootstrapOperation) awaitCanceledCoreCompletion(ctx context.Context, refusal error) (bool, error) {
++	if ctx == nil || ctx.Err() != nil {
++		return false, operationError("context_invalid")
++	}
++	deadline, bounded := ctx.Deadline()
++	if !bounded || !time.Now().Before(deadline) {
++		return false, operationError("deadline_missing")
++	}
++	if refusal != errOperationNotPending {
++		return false, nil
++	}
++	if o == nil || o.state == nil || o.server == nil || o.server.owner == nil || o.leaseFile == nil {
++		return false, nil
++	}
++	owner := o.server.owner
++	c := o.server.config
++	identity := sha256.Sum256([]byte(o.scope.InstanceID + "\x00owner-status-service"))
++	expected := filepath.Join(c.ProfilePolicy.Directory, "bootstrap-"+hex.EncodeToString(identity[:])+".lock")
++	info, leaseErr := o.leaseFile.Stat()
++	if leaseErr != nil || o.leaseFile.Name() != expected || !privateProfileInfo(info, c.ProfilePolicy.OwnerUID, false) {
++		return false, operationError("lease_invalid")
++	}
++	if err := ctx.Err(); err != nil {
++		return false, err
++	}
++	root, rootErr := openProfileDirectory(c.ProfilePolicy)
++	if rootErr != nil {
++		return false, operationError("lease_invalid")
++	}
++	current, pathErr := root.Lstat(filepath.Base(expected))
++	closeErr := root.Close()
++	// The pinned Unix Go Root consumes its handle and returns nil; it does not
++	// expose physical close failure. Check its public result without raw-FD retry.
++	if closeErr != nil {
++		return false, historyError("cleanup_failed", closeErr)
++	}
++	if pathErr != nil || !privateProfileInfo(current, c.ProfilePolicy.OwnerUID, false) ||
++		!os.SameFile(info, current) || privatefs.CheckDescriptor(o.leaseFile, privatefs.PrivateObject) != nil {
++		return false, operationError("lease_invalid")
++	}
++	if err := ctx.Err(); err != nil {
++		return false, err
++	}
++	if err := lockOwnerObservation(ctx, &o.state.mu); err != nil {
++		return false, err
++	}
++	// pending checks cancellation before binding; do not inherit that ordering
++	// when granting a wait exception for a consumed authenticated request.
++	bound := o.scope == owner.policy.KernelScope && c.Kernel.Scope == o.scope &&
++		reflect.DeepEqual(owner.profile, &o.profile) &&
++		reflect.DeepEqual(o.server.enrollment.Owner, owner.policy.Enrollment) &&
++		reflect.DeepEqual(c.ProfilePolicy, owner.policy.Profile) &&
++		sha256.Sum256(c.Compose) == o.compose && sha256.Sum256(c.Assembly) == o.assembly
++	eligible := bound && o.state.entered && o.state.core != nil && o.state.core.Err() != nil
++	o.state.mu.Unlock()
++	if !bound {
++		return false, operationError("binding_invalid")
++	}
++	if !eligible {
++		return false, nil
++	}
++	// No mutex, filesystem operation or detached goroutine is held while waiting.
++	select {
++	case <-ctx.Done():
++		return false, ctx.Err()
++	case <-o.done:
++		if err := ctx.Err(); err != nil {
++			return false, err
++		}
++		return true, nil
++	}
++}
+--- /dev/null
++++ b/owner_bridge_nonce_window_linux_test.go
+@@ -0,0 +1,237 @@
++//go:build linux
++
++package launcher
++
++import (
++	"context"
++	"encoding/json"
++	"errors"
++	"github.com/controlLogix/agentmux/platform/kernel/protocol"
++	"github.com/nats-io/nats.go"
++	"os"
++	"path/filepath"
++	"strings"
++	"testing"
++	"time"
++)
++
++// The native TLS broker, authenticated service handler and acquired owner
++// lease are real. enter/complete below are documented private operation
++// transitions, not a substituted production Bootstrap or the historical
++// intermittent Run cause. No Docker/installed-host acceptance is claimed.
++func TestOwnerBridgeNonceCancellationBeforeCompletionKeepsReply(t *testing.T) {
++	f := newBridgeFixture(t)
++	f.startBroker(t)
++	op, err := func() (*bootstrapOperation, error) {
++		server, e := LoadOwnerBridgeServer(f.config, f.owner, f.enrollment)
++		if e != nil {
++			return nil, e
++		}
++		startup, cancel := context.WithTimeout(context.Background(), 10*time.Second)
++		t.Cleanup(cancel)
++		lifetime, stop := context.WithCancel(context.Background())
++		t.Cleanup(stop)
++		lease, e := AcquireBootstrapLock(startup, f.profile.ProfileDirectory, f.profile.InstanceID, "owner-status-service")
++		if e != nil {
++			return nil, e
++		}
++		t.Cleanup(func() {
++			if lease.Close() != nil {
++				t.Error("actual lease cleanup failed")
++			}
++		})
++		return newBootstrapOperation(startup, lifetime, server, lease, "attempt_"+strings.Repeat("a", 32))
++	}()
++	if err != nil {
++		t.Fatal("actual private operation admission failed")
++	}
++	core, cancelCore := context.WithCancel(op.startup)
++	t.Cleanup(cancelCore)
++	if op.enter(core, f.config, f.profile, op.attemptID) != nil {
++		t.Fatal("component actual entry unavailable")
++	}
++	ready := make(chan struct{})
++	done := make(chan error, 1)
++	lifetime, cancelLifetime := context.WithCancel(op.lifetime)
++	joined := false
++	go func() { done <- op.server.serveLoop(lifetime, op.startup, op.attemptID, nil, nil, ready, op) }()
++	t.Cleanup(func() {
++		cancelLifetime()
++		if !joined {
++			select {
++			case <-done:
++				joined = true
++			case <-time.After(3 * time.Second):
++				t.Error("owned service handler not joined")
++			}
++		}
++	})
++	select {
++	case <-ready:
++	case <-op.startup.Done():
++		t.Fatal("actual handler subscription unavailable")
++	}
++	requestCtx, stopRequest := context.WithTimeout(op.startup, 5*time.Second)
++	defer stopRequest()
++	credential, subjects, err := loadBridgeCredential(f.config, f.enrollment, "runtime-client")
++	if err != nil {
++		t.Fatal("actual client credential unavailable")
++	}
++	nc, dialer, err := bridgeConnect(requestCtx, f.config, credential)
++	if err != nil {
++		t.Fatal("authenticated TLS client unavailable")
++	}
++	t.Cleanup(func() {
++		if closeBridgeConnection(nc, dialer, nil) != nil {
++			t.Error("exact connection cleanup failed")
++		}
++	})
++	nonce := "request_" + strings.Repeat("b", 32)
++	invocation := "attempt_" + strings.Repeat("c", 32)
++	sub, err := nc.SubscribeSync(subjects.ReplyPrefix + strings.TrimPrefix(nonce, "request_"))
++	if err != nil || nc.FlushWithContext(requestCtx) != nil {
++		t.Fatal("actual reply subscription unavailable")
++	}
++	defer sub.Unsubscribe()
++	raw, err := json.Marshal(ownerBridgeRequest{protocol.Version, "host-owner-status-request", "status", nonce, invocation, f.config.Kernel.Scope, bridgeTime(time.Now())})
++	if err != nil {
++		t.Fatal("fixed request unavailable")
++	}
++	cancelCore() // The admitted core is canceled, but completion has not occurred.
++	if nc.Publish(subjects.Request, raw) != nil || nc.FlushWithContext(requestCtx) != nil {
++		t.Fatal("authenticated canceled-core request unavailable")
++	}
++	before, stopBefore := context.WithTimeout(requestCtx, 200*time.Millisecond)
++	premature, receiveErr := sub.NextMsgWithContext(before)
++	stopBefore()
++	if premature != nil || !errors.Is(receiveErr, context.DeadlineExceeded) {
++		t.Fatal("boundary did not remain completion-in-flight")
++	}
++	t.Log("safe boundary: canceled core, completion still open, first authenticated request flushed, no premature response")
++	if op.complete(nil, core.Err()) != nil {
++		t.Fatal("actual component completion transition failed")
++	}
++	// Same immutable request ID/body; no new nonce or extended deadline.
++	if nc.Publish(subjects.Request, raw) != nil || nc.FlushWithContext(requestCtx) != nil {
++		t.Fatal("same request retransmission failed")
++	}
++	msg, replyErr := sub.NextMsgWithContext(requestCtx)
++	if replyErr != nil {
++		t.Logf("safe completed boundary: nonceUnchanged=true completed=true replyDeadline=%t replyClosed=%t serviceJoined=%t", errors.Is(replyErr, context.DeadlineExceeded), errors.Is(replyErr, nats.ErrConnectionClosed), joined)
++		t.Fatal("accepted canceled-core nonce lost its completed reply")
++	}
++	var reply ownerBridgeReply
++	if decodeBridgeReply(msg.Data, &reply) != nil || reply.RequestID != nonce || reply.InvocationID != invocation || reply.Observation.Disposition != "failed" {
++		t.Fatal("completed reply shape/correlation invalid")
++	}
++	select {
++	case result := <-done:
++		joined = true
++		if result == nil {
++			t.Fatal("actual failed service outcome lost")
++		}
++	case <-requestCtx.Done():
++		t.Fatal("actual completed service did not join")
++	}
++}
++
++func TestOwnerBridgeNonceWaitEligibilityBoundaries(t *testing.T) {
++	for _, fault := range []string{"unbounded", "non_cancelled", "spoofed_refusal", "scope", "profile", "enrollment", "closed_lease", "replacement", "symlink", "already_completed", "expires"} {
++		t.Run(fault, func(t *testing.T) {
++			op, f, lease, _, _ := pendingOperationFixture(t)
++			core, cancel := context.WithCancel(op.startup)
++			defer cancel()
++			if op.enter(core, f.config, f.profile, op.attemptID) != nil {
++				t.Fatal("actual component entry failed")
++			}
++			if fault != "non_cancelled" {
++				cancel()
++			}
++			ctx, stop := context.WithTimeout(op.startup, 100*time.Millisecond)
++			defer stop()
++			refusal := errOperationNotPending
++			switch fault {
++			case "unbounded":
++				ctx = context.Background()
++			case "spoofed_refusal":
++				refusal = errors.New("bootstrap_operation_not_pending")
++			case "scope":
++				op.scope.HubID = "foreign_hub"
++			case "profile":
++				op.profile.DisplayName = "changed"
++			case "enrollment":
++				op.server.enrollment.Owner.Identity.Revision++
++			case "closed_lease":
++				if lease.Close() != nil {
++					t.Fatal("fixture exact lease close failed")
++				}
++			case "replacement", "symlink":
++				name := op.leaseFile.Name()
++				saved := name + ".original"
++				if os.Rename(name, saved) != nil {
++					t.Fatal("fixture original lease retention failed")
++				}
++				if fault == "replacement" {
++					if os.WriteFile(name, []byte("foreign"), 0600) != nil {
++						t.Fatal("replacement fixture failed")
++					}
++				} else {
++					if os.Symlink(filepath.Base(saved), name) != nil {
++						t.Fatal("symlink fixture failed")
++					}
++				}
++				t.Cleanup(func() {
++					if os.Remove(name) != nil || os.Rename(saved, name) != nil {
++						t.Error("fixture exact canonical lease restore failed")
++					}
++				})
++			case "already_completed":
++				if op.complete(nil, core.Err()) != nil {
++					t.Fatal("actual completed transition failed")
++				}
++			}
++			waited, err := op.awaitCanceledCoreCompletion(ctx, refusal)
++			if fault == "already_completed" {
++				if !waited || err != nil || ctx.Err() != nil {
++					t.Fatal("completed cancellation race rejected")
++				}
++				return
++			}
++			if waited {
++				t.Fatal("unqualified boundary authorized completion")
++			}
++			if fault == "expires" {
++				if !errors.Is(err, context.DeadlineExceeded) {
++					t.Fatal("original remaining context not honored")
++				}
++				if op.complete(nil, core.Err()) != nil {
++					t.Fatal("late component completion failed")
++				}
++				late, lateErr := op.awaitCanceledCoreCompletion(ctx, refusal)
++				if late || lateErr == nil {
++					t.Fatal("expired original context accepted late completion")
++				}
++				return
++			}
++			if ctx.Err() != nil {
++				t.Fatal("refusal waited until deadline instead of rejecting")
++			}
++			if fault == "non_cancelled" || fault == "spoofed_refusal" {
++				if err != nil {
++					t.Fatal("non-canceled or spoofed refusal changed result")
++				}
++				return
++			}
++			expected := "bootstrap_operation_binding_invalid"
++			switch fault {
++			case "unbounded":
++				expected = "bootstrap_operation_deadline_missing"
++			case "closed_lease", "replacement", "symlink":
++				expected = "bootstrap_operation_lease_invalid"
++			}
++			if err == nil || err.Error() != expected {
++				t.Fatal("exact boundary refusal missing")
++			}
++		})
++	}
++}

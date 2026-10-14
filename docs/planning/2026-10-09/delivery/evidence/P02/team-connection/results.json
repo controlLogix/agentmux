@@ -1,0 +1,94 @@
+{
+  "recordKind": "team-read-only-connection-boundary",
+  "phaseAccepted": false,
+  "sourceBaseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "environment": "Go 1.27.2 linux/amd64 in Ubuntu-26.04 WSL, prepared NATS 2.15.0, race detector enabled",
+  "sourceHashes": {
+    "platform/deployment/team_connection.go": "5a6a3a283d808be0126041d9b379e1531d694402b989c145f2768051b174f4b7",
+    "platform/deployment/team_connection_test.go": "00419001f3e8e45e0fb8bc4c3b416a17f8eedb8f77093c9357626672e4c223eb",
+    "platform/deployment/team_credentials.go": "172226041ed2f6515be48808ef71a5baac84fa6f3e61b5a838ff1565eb456755",
+    "platform/deployment/team_credentials_unix.go": "ba8be5c9628423e785e95aa8609ac8cc704fa2cab69c8e8097e33276a37eac17",
+    "platform/deployment/team_credentials_unsupported.go": "d5d0d009c94ce19a32c81cf73342d810adb2d8e7548c508e25ca7cbbb787b45e",
+    "platform/deployment/team_credentials_test.go": "f9abac6ade5245eccf7967126a34e044994ae259737f8f37a4f24a2d9467b59e",
+    "platform/deployment/team_basic_test.go": "97e8fecb21d689f03ba434db5b436ec6626cfd3349d294e8b6cabbf29b63ecc0",
+    "platform/deployment/team_jwt_test.go": "32d9fe2fc75b7aa842b386a6dcef266cbe560ecdc7a5cd316e5fbd70b65b0d55",
+    "platform/deployment/team_tls_fixture_test.go": "460e3abb390d1fe7bf20ea5f037b958f51de2811907746ca7615c8e3513eddfb"
+  },
+  "sourceBinding": {
+    "snapshot": "candidate-MMuiZV",
+    "goAndModuleFiles": 98,
+    "sourceList": "combined-final/source-before.sha256",
+    "sourceListSha256": "c8539db008a3de82cc37016ba0214458817d610b0421d434f8bea0431c8cd1ec",
+    "afterCheck": "combined-final/source-after.txt"
+  },
+  "focused": {
+    "command": "go test -race -count=1 -timeout=90s -run '^TestTeamCancellationAfterUnavailableSetupRetainsValidatedFacts$' -json ./deployment",
+    "exitCode": 0,
+    "passedTestAndSubtestEntries": 3,
+    "failures": 0,
+    "skips": 0,
+    "packageSeconds": 1.555,
+    "raw": "combined-final/focused.jsonl",
+    "rawSha256": "8bd58773301c9821f4b703b00dcea08a723f20d11a9ff1f2c974c22c2b81ce2b"
+  },
+  "affected": {
+    "command": "go test -race -count=1 -timeout=180s -json ./deployment",
+    "exitCode": 0,
+    "passedTestAndSubtestEntries": 133,
+    "failures": 0,
+    "skips": 0,
+    "packageSeconds": 9.375,
+    "raw": "combined-final/affected.jsonl",
+    "rawSha256": "7893b3df627e167ba06fc5b60b5c0d55a13e579bf5e3e9e29b2db52e262ddc3a"
+  },
+  "vet": {"command": "go vet ./deployment", "exitCode": 0, "raw": "combined-final/vet.stderr"},
+  "earlierCombinedRun": {
+    "snapshot": "candidate-4aZGRp",
+    "directory": "combined",
+    "allTeamSelection": "^TestTeam",
+    "allTeamPassedEntries": 47,
+    "affectedPassedEntries": 133,
+    "interpretation": "Actual combined race evidence before two cancellation assertions were strengthened; not relabeled as the final test source."
+  },
+  "implementedBoundary": [
+    "Explicit enrolled TLS roots and server name; expected endpoint/server/domain/version and protected scope; no generic TLS or NATS options injection.",
+    "Standard decorated JWT credentials verified by the actual configured broker, and explicitly selected basic authentication compatibility.",
+    "Private reference resolver outside workspaces with owner/permission/ancestor checks, no-follow descriptor traversal, regular single-link files, bounded reads and before/open/after identity and change-metadata comparison.",
+    "Reference and scope binding is not authorization. Broker ACLs and application authorization remain authoritative.",
+    "Read-only snapshot subscription and opt-in account INFO only, with no reconnect, discovered-server fallback, Compose startup, health write or stream provisioning.",
+    "Caller cancellation closes only owned sockets and retains independently validated TLS/server/snapshot observations with an explicit cancellation error.",
+    "Absent or denied services remain unavailable; omitted INFO stays unavailable and makes no domain publication. No unobserved work, cluster or federation facts are invented."
+  ],
+  "realFixtureChecks": [
+    "Real TLS/JWT operator/account/user chain, nonce signing, trusted CA/hostname, wrong CA/name/seed/signature/issuer and scope refusals.",
+    "Actual permitted/forbidden INFO, no-INFO request audit, and broker denials for protected internal subjects.",
+    "Real TLS/basic authentication through the private resolver and scoped imported snapshot; wrong password/trust/name refusal.",
+    "Stalled accepted greeting/TLS ClientHello, caller cancellation and earlier deadlines, peer-observed closure before fixture cleanup, and joined owned goroutines.",
+    "Controlled equal-length in-place credential rewrite, writable ancestor refusal, file aliases/permissions/FIFO/size/mixed-auth and exact JSON field checks."
+  ],
+  "history": [
+    "The initial positive private-file fixture had nonprivate directory permissions and was correctly refused; the test fixture was changed to 0700 without weakening production checks.",
+    "Independent review found ancestor, same-size-change and cancellation-return gaps; repairs and exact controlled assertions were added.",
+    "The SDK supplied nil subscription handles for asynchronous permission errors. Subscription-specific synchronous errors were enabled instead.",
+    "Unavailable INFO before consuming an imported snapshot caused bounded queue overflow. Historical worker failures and the direct SDK control are retained in basic-worker/follow-up-results.json.",
+    "An earlier TLS socket deadline could race context timer delivery. Elapsed deadline now also produces the closed deadline error; exact failing selections passed before wider reruns."
+  ],
+  "independentReview": {
+    "reviewer": "Independent Codex agent Lovelace",
+    "status": "Bounded source and final raw-evidence review closed",
+    "checks": [
+      "All nine current team-file hashes match the final manifest; exactly 98 source-after entries are OK.",
+      "Focused 3 and affected 133 passing entries include all 47 team entries; every started test passed with no failures, skips, race warnings or panics.",
+      "Test/vet exits are zero and stderr files are empty; historical records remain separate."
+    ],
+    "limits": "No reruns or service operations. Cache label is reported by the owned runner, not independently established by this file review. P02 acceptance remains separate."
+  },
+  "governance": {"exitCode": 1, "errors": ["Review is stale or missing: inspect changes and refresh sourceDigest"]},
+  "limits": [
+    "TLS transport, broker authentication and ACL checks use real brokers. Snapshot payloads are controlled fixtures, not evidence of actual four-role team boot.",
+    "WSL results do not qualify native macOS/Linux. Platform-private file and installer behavior still require their owning native checks.",
+    "No R3 cluster provisioning, failure tolerance, P10 federation readiness, worker completion or origin acceptance is claimed.",
+    "No Docker, provider authentication discovery/copy, privileged machine setup, global tracking, commit or push was performed by this slice.",
+    "Coordinator owns remote Profile/Bootstrap/status integration, final source registration and complete P02 review."
+  ]
+}

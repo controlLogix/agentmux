@@ -1,0 +1,67 @@
+{
+  "kind": "Default owner request fixed console handling and authority checks",
+  "sourceHashes": {
+    "owner_bridge.go": "c73c5c40d770535a49f03a2a14e43e7598daf6a4528973fb0591fba326c5df95",
+    "owner_bridge_probe.go": "1879bfda9cf0e1ba4d7efc25ea0c2ed8a539c2475a119342d1339fa868dea894",
+    "owner_bridge_request_permission_test.go": "49afcf0b7d421dd1791758020205fbc72ccb96aead26ddbb5f228e2947bd2d96"
+  },
+  "focused": {
+    "pass": 3,
+    "fail": 0,
+    "skip": 0
+  },
+  "affected": {
+    "pass": 42,
+    "fail": 0,
+    "skip": 0
+  },
+  "directFocusedExit": 0,
+  "directAffectedExit": 0,
+  "directVetExit": 0,
+  "history": [
+    {
+      "directory": "p02-default-request-before-Epab7z",
+      "directExit": 1,
+      "meaning": "Both real denied operations failed the combined hard-authority, empty-observation and fixed-diagnostic assertion before repair; the exact old returned error code was not saved."
+    },
+    {
+      "directory": "p02-default-request-fixed-clLDQK",
+      "directExit": 1,
+      "meaning": "Unused errors import compile failure retained; no tests executed."
+    }
+  ],
+  "changes": [
+    "Fixed non-capturing error handler is installed as a Connect option before callbacks start.",
+    "Default Request inspects known authentication/account-expiry/permission LastError sentinels after ordered flushes, before unavailable/timeout mapping and before accepting a reply.",
+    "Probe reuses the known sentinel helper and keeps its unknown error to reply_invalid behavior.",
+    "Connect rejects account authentication expiry too."
+  ],
+  "limits": [
+    "No caller-supplied handler or routing API was added.",
+    "Malformed frame checks, original deadlines and concrete owned transport cleanup are unchanged.",
+    "Actual NATS component controls use an explicit controlled Docker inspector; this is not actual engine or full installed CLI acceptance.",
+    "No CLI rerun, Docker fixture, full phase suite or global metadata update was run.",
+    "The original default-request return code is a source-derived unavailable mapping, not an independently saved error-code field in the failing log."
+  ],
+  "artifacts": {
+    "affected-completion.json": "c716eef8cbbc5ababb6b9e66092696ece77abd1aa38d3ca82d65718c90087022",
+    "affected-events.jsonl": "0d8a1d2b832614a711ee2b4249019a7d274e5165e3558f2f742da784202af891",
+    "affected-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "affected-invocation.json": "2b07959d80d7d4d898198f630385ae5958dde48bff6f566113205f68152c1458",
+    "affected-producer.sh": "f3e3b481953fcdfc8d4ed0edf0de88ac5ce093dc23ec8425e015115e390006f6",
+    "affected-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "completion.json": "48e92928648b4b0f95f9bc43297e7af4f1d0d74c48383099f742386fea4f9b28",
+    "events.jsonl": "1442002b904898d1805bc98aadd686c70dd3b22e305d019101d6355bae075402",
+    "exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "invocation.json": "8dd3c2aa2a2deadff2b71974c9e9c28a72cc6e012890793c300bd45fc3f6bf50",
+    "producer.sh": "324ac2b23ddac4bcdd06b786ccef0f7c816ba9248e9bb1cd3e394db77912434c",
+    "shared-after.json": "35bebe893c891ca0108b8e8f89b0419f86d33d79ae61fc007613afd0c0abb481",
+    "shared-before.json": "35bebe893c891ca0108b8e8f89b0419f86d33d79ae61fc007613afd0c0abb481",
+    "source-manifest.json": "6e49b64e45f64566bea2609ebcb9d613e06cc1fcd6b222c8d0d30c921c93e2cc",
+    "source.diff": "89ee12ada2b51ca57cd86226da20a7f1a13f850dbd57830ecabe646fde317c2e",
+    "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vet-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "vet.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vet.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

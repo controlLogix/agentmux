@@ -1,0 +1,110 @@
+{
+  "recordKind": "private-host-configuration-loader-verification",
+  "owningTask": "P02-T01",
+  "sourceBaseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "workingTreeChanges": true,
+  "phaseAccepted": false,
+  "taskAccepted": false,
+  "sourceHashes": {
+    "platform/launcher/host_config.go": "e00fdda82a8478f95b426de66b36e504592783ab9c31a3fb9298dacd5c1209ce",
+    "platform/launcher/host_config_test.go": "d101bd453d184bd95cd13a892ce05b00e41e2375c09badfb37d71dde44156a25",
+    "platform/launcher/profile.go": "1fd077dfcacebb6fb95e8d2507d586f0f6f929eb8bff2b1bc3af7ac21f677841",
+    "platform/kernel/protocol/codec.go": "4921211e9fa9767b3f17826e66cd66542b690a569f49729b11d765d6c11b3d64"
+  },
+  "environment": {
+    "distribution": "Ubuntu-26.04, explicitly selected in WSL2",
+    "goVersion": "go1.27.2 linux/amd64",
+    "brokerVersion": "nats-server: v2.15.0",
+    "brokerSha256": "387ce54e7a0a249d877a579ed641d715bab047d7e061bfa42b4d07f6a0401341",
+    "runId": "final-ni5kEo",
+    "workspacePlacement": "Persistent native Linux home cache",
+    "dependencyResolution": "GOTOOLCHAIN=local, GOPROXY=off, GOSUMDB=off, -mod=readonly",
+    "raceOption": "GORACE=atexit_sleep_ms=0 removes controlled child post-exit delay only; instrumentation and assertions remain enabled"
+  },
+  "hostRace": {
+    "commandArguments": ["test", "-race", "-mod=readonly", "-count=1", "-timeout=60s", "-run", "TestHostConfig", "-json", "./launcher"],
+    "exitCode": 0,
+    "passedTestAndSubtestRecords": 36,
+    "raw": "final/host-race.jsonl",
+    "rawSha256": "ffe677aa8340666e74816e3b93f54a8be4b65a1a3da0bf8ec9b281b5503da569"
+  },
+  "affectedLauncherRace": {
+    "commandArguments": ["test", "-race", "-mod=readonly", "-count=1", "-timeout=180s", "-json", "./launcher"],
+    "exitCode": 0,
+    "passedTestAndSubtestRecords": 365,
+    "failureRecords": 0,
+    "skipRecords": 0,
+    "packageElapsedSeconds": 51.932,
+    "raw": "final/launcher-race.jsonl",
+    "rawSha256": "07ec0379cfbbe9a787cb18ec55304568c20e48305bf7061d6a9d68362edd3777"
+  },
+  "protocolSetupFailure": {
+    "commandArguments": ["test", "-race", "-mod=readonly", "-count=1", "-timeout=90s", "-json", "./kernel/protocol"],
+    "exitCode": 1,
+    "raw": "final/protocol-race.jsonl",
+    "failedTest": "TestExactFrameNamesAfterRealBrokerDelivery",
+    "cause": "Worker omitted the required AGENTMUX_TEST_NATS setting for this new real-broker test.",
+    "usedForAcceptance": false
+  },
+  "exactProtocolRepair": {
+    "commandArguments": ["test", "-race", "-mod=readonly", "-count=1", "-timeout=60s", "-run", "^TestExactFrameNamesAfterRealBrokerDelivery$", "-json", "./kernel/protocol"],
+    "preparedBrokerSettingSupplied": true,
+    "exitCode": 0,
+    "raw": "protocol-env-repair/exact-protocol.jsonl"
+  },
+  "affectedProtocolRace": {
+    "commandArguments": ["test", "-race", "-mod=readonly", "-count=1", "-timeout=90s", "-json", "./kernel/protocol"],
+    "preparedBrokerSettingSupplied": true,
+    "exitCode": 0,
+    "passedTestAndSubtestRecords": 55,
+    "failureRecords": 0,
+    "skipRecords": 0,
+    "packageElapsedSeconds": 0.227,
+    "raw": "protocol-env-repair/protocol-fixed.jsonl",
+    "rawSha256": "60eedb198930597645b3997d8dc8cf1e5ec88ff84034ec86d49b369925adde95"
+  },
+  "affectedAssemblyRace": {
+    "commandArguments": ["test", "-race", "-mod=readonly", "-count=1", "-timeout=90s", "-json", "./kernel/assembly"],
+    "exitCode": 0,
+    "passedTestAndSubtestRecords": 65,
+    "failureRecords": 0,
+    "skipRecords": 0,
+    "packageElapsedSeconds": 0.148,
+    "raw": "protocol-env-repair/assembly-race.jsonl",
+    "rawSha256": "e7df3fc6be178b9350e25e7f3f8fde91f3d76295761a8e3a5d138ee355041c4c"
+  },
+  "vet": {
+    "commandArguments": ["vet", "./launcher", "./kernel/protocol", "./kernel/assembly"],
+    "exitCode": 0,
+    "stdout": "protocol-env-repair/vet.stdout",
+    "stderr": "protocol-env-repair/vet.stderr",
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  "sourceBinding": {
+    "allCopiedGoAndModuleFiles": "final/source-before.sha256",
+    "sourceListSha256": "743ae15bc932e4ff46915b25a700f529f5b96af48aedcbd1442fca9c3655369c",
+    "fileCount": 68,
+    "beforeAndAfterRepairSha256CheckExitCode": 0,
+    "copiedSourceUnchanged": true,
+    "repairUsedSameFrozenSource": true,
+    "artifactsCopiedBeforeOwnedExecutionReturned": true
+  },
+  "independentReview": {
+    "reviewer": "Codex subagent Mencius",
+    "scope": "Bounded host-loader and prerequisite source review, not phase acceptance",
+    "roleCaseAliasFindingResolved": true,
+    "profileSpecialFileOpenFindingResolved": true,
+    "exactLargeIntegerBindingRegressionInspected": true,
+    "remainingFindings": 0
+  },
+  "limits": [
+    "Loader performs no Docker/NATS call, filesystem write, enrollment or process start; tests use generated private-file/signature fixtures.",
+    "Returned BootstrapConfig contains secrets and must stay inside trusted bootstrap code.",
+    "IPv4 plain-NATS local configuration only; remote/team, local TLS and IPv6 qualification remain open, not silently remapped or dropped.",
+    "Actual bootstrap/CLI wiring, installation policy, native macOS/Linux, complete boot/Compose/recovery and phase acceptance remain required.",
+    "No global metadata, tracker, profile or protocol edits by this worker; prerequisite source changes belong to their root owners.",
+    "Pattern review still needs coordinator registration and final attestation on the stable candidate.",
+    "No commits, pushes, CI dispatch, merges or releases by this worker."
+  ]
+}

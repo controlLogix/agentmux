@@ -1,0 +1,28 @@
+{
+  "cwd": "/home/ryan/.cache/agentmux-governance/p02-combined-cleanup-independent-dbc05e15/platform",
+  "commands": {
+    "focused": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-json",
+      "./launcher",
+      "-run",
+      "^(TestOwnerBridgeTerminalFailureReleasesServiceLease|TestRuntimeCleanup|TestSessionCloseHonorsHeldLockDeadline|TestTransportCleanup)"
+    ],
+    "vet": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "vet",
+      "./launcher"
+    ]
+  },
+  "fixedEnvironment": {
+    "GOTOOLCHAIN": "local",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GORACE": "atexit_sleep_ms=0",
+    "AGENTMUX_TEST_NATS": "/home/ryan/.cache/agentmux-governance/tools/nats-server"
+  }
+}

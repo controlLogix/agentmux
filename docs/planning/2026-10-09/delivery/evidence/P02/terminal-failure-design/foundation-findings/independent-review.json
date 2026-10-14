@@ -1,0 +1,61 @@
+{
+  "status": "Open three source findings; cache-only foundation not ready for promotion",
+  "workerReviewSHA256": "b982deed0499310f3c194321e75ac4bac9ab2f82655aecc1801d19b56fde91f3",
+  "sourceSHA256": {
+    "bootstrap_history.go": "232b770cb8a72efe65c1449e5546cfc03040cccecc1c51d5c765f39a15d060e6",
+    "bootstrap_history_fs.go": "8c4fe57a0f62565109b9ec9be5b886f4816e742cd3e7b5304a4c4b67a619f835",
+    "bootstrap_history_test.go": "de3aea186c0bdadfd279958fa5c8511b3701bd9217894f1254868e8d5160e77c",
+    "bootstrap_history_linux_test.go": "ebdcf5549a02c1765a2ced9509185a5b7f79d0ffa578fbbaaab45572f15551bf",
+    "bootstrap_history.schema.json": "c65618379b8aa45f1074fdc22e4b39c989b2d1e1d0e35b37abca136beb9a0ea6"
+  },
+  "findings": [
+    {
+      "id": "H01",
+      "where": "bootstrap_history_fs.go checkLease83, verifyExpected95, readers root admission/final return; bootstrap_history.go openBootstrapHistory",
+      "problem": "Held root identity is never compared to the current canonical profile directory after initial open. Fresh historyBinding loads pathname policy while leases/history use the older held root. Replacement with equivalent valid declarations can pass binding yet read or publish an obsolete directory, including observing an old free lease while a replacement owner holds its current lease. Directory/ancestor ACL policy is also not rechecked before final publication/reader return.",
+      "required": "Bind an exact held private directory identity to its independently admitted canonical path and original ancestor identities. Recheck held directory PrivateObject and actual held ancestors PublicAncestor UID/mode/ACL policy before staging/commit and before returning reader facts. Reject root replacement even when all declared bytes match. Use existing shared privatefs policy; no path-based adoption/reopen of unknown roots.",
+      "controls": "Owned fixture root rename/replacement with equivalent valid contents must deny store writes and old-root reading. Persistent private-dir and ancestor policy changes must reject/nil facts. Native Darwin ACL controls remain native-unexecuted here unless real host runs."
+    },
+    {
+      "id": "H02",
+      "where": "bootstrap_history_fs.go publish127-180, especially OpenFile147/Write174/Sync177",
+      "problem": "After initial verifyExpected the code performs generation/schema work, opens staging, writes and syncs before the next bounded.Err check. The caller can expire during these phases and still start subsequent mutations. The nonpreemptible-filesystem limitation does not justify initiating a new mutation after observed expiry.",
+      "required": "Check the original bounded context immediately before each new mutation phase and after potentially blocking validation/FS calls. Keep safe cleanup under the remaining approved cleanup budget and retain its exact owner on failure; do not reset work deadlines or add detached syscall goroutines.",
+      "controls": "Deterministic bounded-phase expiry must prevent subsequent staging/write/commit. Use real owned private files and concrete internal phases; describe any cache-only instrumentation separately. Blocked syscall remains an honest unsupported timing case."
+    },
+    {
+      "id": "H03",
+      "where": "bootstrap_history_fs.go publish defer tempName/tempInfo cleanup159-169 and initial-link unlink196; store state/Close",
+      "problem": "If exact owned staging unlink fails, only a scalar safe cleanup wrapper/OS cause survives. Local tempName/tempInfo/root cleanup capability is discarded when publish returns; the store does not record that owned staging object for bounded retry, and Close closes its root. This loses concrete temporary cleanup ownership.",
+      "required": "Retain the actual minted staging cleanup capability with its original root/held identity and exact temp inode. Retry only that retained owner, refuse replacement/unknown inode, and keep it accessible when cleanup fails. Never reconstruct deletion authority from PathError text or a numeric FD. Propagate original publication/operation cause plus retained cleanup ownership with fixed safe formatting.",
+      "controls": "Real owned staging cleanup failure retains the same exact owner; retry removes only that inode. Replacement at the name must be preserved/refused. Successful cleanup joins/closes exact descriptors and does not affect service-lease ownership unexpectedly."
+    }
+  ],
+  "acceptedSourceProperties": [
+    "CLOEXEC duplicate via SyscallConn/F_DUPFD_CLOEXEC retains actual acquired flock; no reopen adoption.",
+    "CAS checks exact prior bytes/metadata/generation under lease; repeated completion calls verifyExpected. Malformed/foreign slots preserved.",
+    "Strict closed4096-byte embedded proposal schema with calendar/order/null/conditional checks. Latest neutral/completed states suppress old failure,24h is historical relevance only.",
+    "Creator reader uses corrected runtime2c771944 proof before and after reading, complete binding and exact newest cold invocation. Exited original child may retain past provenance, never liveness/current failure/readiness.",
+    "Fixed safe value/pointer error/store formatting preserves original causes; no mutex copy.",
+    "Existing bounded contexts/cancelable gates and explicit nonpreemptible FS limit are retained; product budget reserves/integration remain unqualified."
+  ],
+  "evidenceVerification": {
+    "ownedFiles": 5,
+    "finalArtifactHashes": 10,
+    "historicalArtifactHashes": 38,
+    "actualNamedRacePasses": 28,
+    "topLevelTests": 14,
+    "raceExit": 0,
+    "vetExit": 0,
+    "namedFailures": 0,
+    "namedSkips": 0,
+    "invocation": "Recorded after execution from exact original tool commands, not an original saved producer claim",
+    "sourceDrift": "Two unrelated current bridge/hostpolicy changes explicitly enumerated; tested snapshot contains corrected runtime proof2c771944",
+    "oldRegressions": "CAS before/direct1 then repair; boundedClose before/direct1 then repair; reopen-not-dup mutant/direct1 preserved"
+  },
+  "limits": [
+    "No reviewer tests/build/Docker/engine or shared source/index/tracker writes.",
+    "Five files remain cache-only; no Run/CLI integration, registry/SDK/native/selected-host/phase acceptance.",
+    "No source acceptance from28 narrow passes while H01-H03 remain open."
+  ]
+}

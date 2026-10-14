@@ -1,0 +1,32 @@
+{
+  "recordKind": "native-collector-hardening-not-acceptance",
+  "sourceBaseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "phaseAccepted": false,
+  "nativeCIExecuted": false,
+  "preservesEarlierPackageMatrixRecord": true,
+  "sourceHashes": {
+    "tests/platform/native_go.py": "be1ab6f401c5f16f507da7bd270eae704aeb76270e3126170d6b1b093059e6d2",
+    ".github/workflows/platform-foundation.yml": "291c0bc23d8c313f90eb45e8ef9691e0caf45fdf0524263a1ab1e87947a9201b"
+  },
+  "controls": {
+    "command": "python tests/platform/native_go.py --self-test",
+    "exitCode": 0,
+    "tests": 15,
+    "kind": "Synthetic runner controls only; timeout process and signal actions are mocked"
+  },
+  "changes": [
+    "GOWORK=off for all Go subprocesses prevents discovered workspace replacements outside the source snapshot.",
+    "A shared 35-minute normal or 12-minute research collection budget restricts each process wait and preserves workflow upload margin.",
+    "result.json starts with failed/incomplete status and is checkpointed after every scope and on collector exit.",
+    "Timeout results retain actual waited exit code and timedOut rather than claiming a pass.",
+    "Budget exhaustion records remaining scopes as unexecuted with null exit code and collectionComplete false.",
+    "Workflow job limits are 50 minutes for the expanded matrix and 20 minutes for the separate research controls; test correctness timeouts are unchanged."
+  ],
+  "review": "Independent closure pending on these refinements",
+  "limits": [
+    "These controls do not execute native Linux/macOS tests or prove actual boot.",
+    "Setup network operations retain their existing request timeouts; the shared process budget is not a claim of syscall preemption.",
+    "Native Mac boot, WSL, Compose, full recovery and every phase requirement remain open.",
+    "Root owns stable candidate registration, commit/push, dispatch and final evidence review."
+  ]
+}

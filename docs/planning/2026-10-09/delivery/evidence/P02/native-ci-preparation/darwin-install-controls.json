@@ -1,0 +1,36 @@
+{
+  "recordKind": "separate-native-darwin-install-harness-controls",
+  "phaseAccepted": false,
+  "nativeCIExecuted": false,
+  "sourceBaseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "sourceHashes": {
+    "tests/platform/native_go.py": "391f0b17d8a317418d5d82822598b8064960370a8634c8146e043fcf3147892d",
+    ".github/workflows/platform-foundation.yml": "57192ad2d6b250158847be830e264c240aaedc4dbe5d33d71459b096b6885dcc"
+  },
+  "controls": [
+    {"command": "python -B tests/platform/native_go.py --self-test", "exitCode": 0, "tests": 26, "kind": "Synthetic runner controls on Windows; no native execution, downloads, privilege or CI dispatch"},
+    {"command": "python -B -m unittest discover -s tests/platform -p 'test_*.py' -v", "exitCode": 0, "tests": 30, "kind": "Affected inventory and source-surface regressions"}
+  ],
+  "requiredActualTests": [
+    "TestDarwinProtectedInstalledExecutable",
+    "TestDarwinProtectedPathPolicy",
+    "TestDarwinMachODependencyPolicy",
+    "TestDarwinProductRemainsFailClosed"
+  ],
+  "refinements": [
+    "Separate --darwin-install mode and macOS 15 artifact/job, with explicit authorization and non-root native-host admission before preparation.",
+    "Actual Apple clang/SDK metadata and explicit cgo/compiler/SDK environment; no inherited provider environment.",
+    "Tagged cgo test inventory and all-four-name result admission; a partial passing run cannot become install evidence.",
+    "No broker preparation for this isolated fixture mode; only its fixed private marker is admitted in a fresh workspace.",
+    "Research remains separate. Its current refusal flag accurately names unprotected-image refusal; earlier reports retain their original field.",
+    "Installed-image proof cannot set native runtime, four-role, Compose or phase qualification flags."
+  ],
+  "independentReview": "Pending final source/control closure",
+  "governance": {"exitCode": 1, "errors": ["Review is stale or missing: inspect changes and refresh sourceDigest"]},
+  "limits": [
+    "No native Darwin install test or privileged fixture was run by this worker.",
+    "Runtime fixture source, native execution, source registration, commit/push and acceptance remain owned by the coordinator.",
+    "Actual native NATS, four-role boot, Compose, EOF and production signed installer requirements remain open.",
+    "Historical source-bound control and execution reports are preserved, not relabeled."
+  ]
+}

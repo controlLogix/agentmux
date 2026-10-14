@@ -1,0 +1,170 @@
+{
+  "schemaVersion": "1.0.0",
+  "kind": "component-test-review",
+  "recordedUtc": "2026-10-14T16:56:43.596133+00:00",
+  "scope": "One actual installed-factory OwnerBridge Run regression after the reviewed nonce repair",
+  "directExit": 0,
+  "namedPasses": 1,
+  "failures": 0,
+  "skips": 0,
+  "testElapsedSeconds": 11.49,
+  "invocation": {
+    "argv": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-json",
+      "./launcher",
+      "-run",
+      "^TestOwnerBridgeHistoryActualRunFailurePublishesAndReleases$"
+    ],
+    "environment": {
+      "GOPROXY": "off",
+      "GOSUMDB": "off",
+      "GOWORK": "off",
+      "GORACE": "atexit_sleep_ms=0",
+      "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "0",
+      "AGENTMUX_TEST_NATS": "/home/ryan/.cache/agentmux-governance/tools/nats-server",
+      "AGENTMUX_OWNER_BRIDGE_FIXTURE_ROOT": "/home/ryan/.cache/agentmux-governance/p02-history-run-postnonce-iah6TS/private-output"
+    },
+    "startedUtc": "2026-10-14T16:52:44.983067+00:00",
+    "producerSHA256": "b23f1540025807a89d6f986828ade3beafe4573c9b52d18d8cd76e5c8217bc72",
+    "companionSHA256": "aafaea629d3b943d20f5c65a77ce8079f5b17f2b0c9c194a93ba6c034deae397",
+    "snapshotSeconds": 15.137743111001328,
+    "snapshotFileCount": 259,
+    "batchSourceVerification": true,
+    "engineMutations": 0
+  },
+  "stages": [
+    {
+      "stage": "startup_created",
+      "elapsedMicroseconds": 22,
+      "category": "ok"
+    },
+    {
+      "stage": "starting_rpc",
+      "elapsedMicroseconds": 1745208,
+      "category": "ok"
+    },
+    {
+      "stage": "marker_read",
+      "elapsedMicroseconds": 75,
+      "category": "ok"
+    },
+    {
+      "stage": "run_returned",
+      "elapsedMicroseconds": 2541922,
+      "category": "request_failed"
+    },
+    {
+      "stage": "completion_rpc",
+      "elapsedMicroseconds": 801931,
+      "category": "ok"
+    },
+    {
+      "stage": "run_join",
+      "elapsedMicroseconds": 52,
+      "category": "request_failed"
+    },
+    {
+      "stage": "terminal_read",
+      "elapsedMicroseconds": 88,
+      "category": "ok"
+    },
+    {
+      "stage": "service_lease_reacquire",
+      "elapsedMicroseconds": 263,
+      "category": "ok"
+    }
+  ],
+  "sourceVerification": {
+    "beforeEqualsAfter": true,
+    "snapshotFilesVerified": 259,
+    "sharedFilesStillMatch": 258,
+    "snapshotDrift": [],
+    "currentDrift": [],
+    "sourceManifestSHA256": "04669f3bc1eeb440f5e94e80ccbfbd9c77746ca015103f090634eab27c61576b"
+  },
+  "actualAssertions": [
+    "The installed policy constructs the real enrolled bridge server.",
+    "Actual Bootstrap and Run enter under the original contexts.",
+    "The genuine authenticated starting reply identifies the actual attempt.",
+    "The first completion request returns an authenticated failed result.",
+    "The actual Run joins and same-attempt terminal history remains readable.",
+    "The actual service lease is released and reacquired."
+  ],
+  "limits": [
+    "The Docker inspector is an explicit controlled component seam; no real Docker calls were authorized.",
+    "This is not installed CLI, creator fallback, native macOS, native Linux environment, or phase acceptance.",
+    "Earlier intermittent Run failures remain historical; this pass does not prove their cause.",
+    "No vet or broader selection was run for this exact follow-up."
+  ],
+  "artifacts": {
+    "exit.txt": {
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2,
+      "private": false
+    },
+    "completion.json": {
+      "sha256": "2bcadc33dbdce62b2a3eabf4be8fb0ed0357c4249496e024730f33e4959a734c",
+      "bytes": 72,
+      "private": false
+    },
+    "shared-after.json": {
+      "sha256": "d29fa6965dd419ead3fd9e58deb7396f2efa37b6c403031db51bc6a8449c111f",
+      "bytes": 29885,
+      "private": false
+    },
+    "stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "private": false
+    },
+    "events.jsonl": {
+      "sha256": "42375f426280c25290bbb31dea089e26f4d8af0ac1a7fa0e8dc7c9c712e5a682",
+      "bytes": 4491,
+      "private": false
+    },
+    "producer.sh": {
+      "sha256": "b23f1540025807a89d6f986828ade3beafe4573c9b52d18d8cd76e5c8217bc72",
+      "bytes": 3705,
+      "private": false
+    },
+    "invocation.json": {
+      "sha256": "57021b28449a71fa510217072f64be53d29c55fbfb0ac7414cf9b788bfb6c50b",
+      "bytes": 985,
+      "private": false
+    },
+    "source-manifest.json": {
+      "sha256": "04669f3bc1eeb440f5e94e80ccbfbd9c77746ca015103f090634eab27c61576b",
+      "bytes": 30019,
+      "private": false
+    },
+    "shared-before.json": {
+      "sha256": "d29fa6965dd419ead3fd9e58deb7396f2efa37b6c403031db51bc6a8449c111f",
+      "bytes": 29885,
+      "private": false
+    },
+    "private-output/broker-27944828/server-cert.pem": {
+      "sha256": "d7752269229fc39ddb7d38e9edc1ef766070c8e80c9865f010b67008fac0546d",
+      "bytes": 757,
+      "private": true
+    },
+    "private-output/broker-27944828/private.log": {
+      "sha256": "7290e60fa2d961ed598da432bdf98c3a5a04e666358cde093dd49d198589842e",
+      "bytes": 2495,
+      "private": true
+    },
+    "private-output/broker-27944828/private.json": {
+      "sha256": "47aed4c22fbb99ae9779494ec5fd767dd0ee4ac46a40c65846f41907b21342a3",
+      "bytes": 5647,
+      "private": true
+    },
+    "private-output/broker-27944828/server-key.pem": {
+      "sha256": "0387a5393c7db018f73a2fd81d5c6dfdb5497154c1d649bb2f124c3c8ba427cb",
+      "bytes": 227,
+      "private": true
+    }
+  }
+}

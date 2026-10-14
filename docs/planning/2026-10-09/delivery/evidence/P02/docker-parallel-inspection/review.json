@@ -1,0 +1,55 @@
+{
+  "phase": "P02",
+  "accepted": false,
+  "sourceHashes": {
+    "platform/launcher/docker.go": "6dd3eb64c438e1d60b4bc4fe2095abfbc9e3aea17d530f1bc5726e17cb9f6d55",
+    "platform/launcher/docker_instance.go": "ba43b242cc348d093e9fa12a111a2991dbd9f4be4c194c2b954d90ebbac707af",
+    "platform/launcher/docker_reads.go": "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813",
+    "platform/launcher/docker_reads_test.go": "9db58c895a92624f0264f7930e95bb4cacbfcaf43038a4392ef3f051937104f8",
+    "platform/launcher/docker_reads_linux_test.go": "33d4ac55987bbec4f3a3fb412ae81c561dbb21b5202c43685846ada890d0ed7c"
+  },
+  "sourceStable": true,
+  "runs": {
+    "originalSequentialBarrier": {
+      "exitCode": 1,
+      "expectedFailure": true,
+      "testElapsedSeconds": 2.05
+    },
+    "focused": {
+      "exitCode": 0,
+      "topLevelTests": 5,
+      "passedEntries": 22,
+      "failed": 0,
+      "skipped": 0,
+      "testElapsedSeconds": 1.701
+    },
+    "affectedDockerAndInspector": {
+      "exitCode": 0,
+      "topLevelTests": 13,
+      "passedEntries": 91,
+      "failed": 0,
+      "skipped": 0,
+      "testElapsedSeconds": 11.519
+    },
+    "negativeNoSiblingCancellation": {
+      "exitCode": 1,
+      "expectedFailure": true,
+      "testElapsedSeconds": 2.13
+    }
+  },
+  "behavior": [
+    "Endpoint context inspection remains the first sequential operation. Its parsed endpoint must match before any independent identity commands start.",
+    "Version, engine info and Compose version run in at most three joined bounded commands. All checks and original safe error codes remain; private fixed stage labels are added.",
+    "Only after engine verification do the three exact project/name roster queries overlap. Their union retains full ID, cardinality, foreign-name and subsequent broker identity/config/data checks.",
+    "The first actual failed read cancels siblings and is preserved through sync.Once; all commands join before return. A failed or expired batch returns no partial outputs.",
+    "Closed literal read forms exclude mutations and private archive reads. Existing d.run argv, environment sanitization, output cap, read deadline and WaitDelay remain unchanged.",
+    "Actual controlled CLI barriers prove overlap, and Linux pidfds prove exact controlled children exit before return. The mutation without sibling cancellation fails this same bounded regression."
+  ],
+  "privacy": "No real Docker calls, credentials, user profiles or provider prompts. Raw logs are controlled test output; source copies contain only repository code and synthetic fixture data.",
+  "limitations": [
+    "Windows-owned CLI interoperability and real Compose performance are not qualified by Linux controlled-process tests. Root retains the genuine failed fixtures and diagnoses actual bounded reads separately.",
+    "Native macOS execution and whole phase acceptance remain pending.",
+    "A first negative-control preparation attempt stopped before Go execution because the expected formatting needle was wrong; its external disposable source copy is retained as an unexecuted preparation, not passing or failing test evidence.",
+    "The design-pattern checker still reports a stale sourceDigest; root owns its reviewed renewal."
+  ]
+}

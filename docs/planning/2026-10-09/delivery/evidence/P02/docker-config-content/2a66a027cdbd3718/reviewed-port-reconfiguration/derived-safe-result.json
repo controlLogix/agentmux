@@ -1,0 +1,253 @@
+{
+  "scope": "One reviewed SAME-project fixture port reconfiguration and configs.content qualification; historical diagnostics unchanged, not production adoption.",
+  "recordedAtUtc": "2026-10-13T21:22:51.542915+00:00",
+  "guards": [
+    {
+      "stage": "before_compose_up",
+      "existingContainerCount": 14,
+      "IDsStatesPortsEqualFreshBaseline": true
+    },
+    {
+      "stage": "after_compose_up",
+      "existingContainerCount": 14,
+      "IDsStatesPortsEqualFreshBaseline": true
+    },
+    {
+      "stage": "final_after_exact_stop",
+      "existingContainerCount": 14,
+      "IDsStatesPortsEqualFreshBaseline": true
+    }
+  ],
+  "cleanup": {
+    "exactOwnedContainerStopped": true,
+    "containerRetained": true,
+    "dataVolumeRetained": true,
+    "originalIDsStatesPortsPreserved": true
+  },
+  "findings": [],
+  "project": "amx-p02-config-2a66a027cdbd3718",
+  "sourceHashes": {
+    "fixtureCaller": "768ffefadd0ad7bbff5b5dc118f349709098fe9519a30e4210d14d95a5daa339",
+    "communicationBuilder": "b54e90bbf5d5c37fa7e60ffdc878ddd4204bfba411665e2c35311c1fe5b9a883",
+    "builderBinary": "5617f9adcd611a2b9c824136a6921bbf926f874eb63ff03c21a2268bd7609309"
+  },
+  "redactionControls": {
+    "syntheticSecretAndPathCases": 5,
+    "expectedReasonPreserved": true,
+    "passed": true
+  },
+  "engine": {
+    "context": "desktop-linux",
+    "endpoint": "npipe:////./pipe/dockerDesktopLinuxEngine",
+    "engineID": "e0f1f93d-abf1-44f2-b62a-5bfee21d2b5c",
+    "versions": {
+      "Client": "29.8.0",
+      "Server": "29.8.0",
+      "Compose": "5.5.1"
+    }
+  },
+  "sameProjectPreflight": {
+    "oldContainerID": "fe012aa16fff8f11a35bf101e34cb0f3d893de79bf9c2f564b4d315c880d2cc8",
+    "oldStatus": "created",
+    "sameVolume": "amx-p02-config-2a66a027cdbd3718_data",
+    "privateHostIP": "127.0.0.1",
+    "privateHostPort": 42741,
+    "expectedLabelsMatched": true,
+    "oldConfigMountAbsent": true
+  },
+  "freshBaseline": [
+    {
+      "id": "17b0b488550b3cf7f5f4cf8044cef7ec522ff432919d0136db175024a78b1afd",
+      "status": "running",
+      "running": true,
+      "ports": {}
+    },
+    {
+      "id": "fbad33075b4bb2598fe70c8b0d01f5cd8b1e1de40a425dc75c3bde2802165bea",
+      "status": "running",
+      "running": true,
+      "ports": {}
+    },
+    {
+      "id": "994f62931fd630b87538cd6cd345a585ed6e76b1551fe532958c356d270cdba0",
+      "status": "exited",
+      "running": false,
+      "ports": {}
+    },
+    {
+      "id": "6e85dd21cd4838a68e37e2cb771c572274f540c5310ae9c62c9f9bf3e25c5958",
+      "status": "running",
+      "running": true,
+      "ports": {
+        "5432/tcp": null
+      }
+    },
+    {
+      "id": "e0c2187c521f632534a9b17b3ebfb394b364e12c2572b20c3dabc716f3e556a9",
+      "status": "running",
+      "running": true,
+      "ports": {
+        "6379/tcp": null
+      }
+    },
+    {
+      "id": "8e3a3642e10585748a69e88b7d93fafc7476c7e43cb08cba1fa2c9e1793ece48",
+      "status": "exited",
+      "running": false,
+      "ports": {}
+    },
+    {
+      "id": "19ba9bafd0bec6d55712376a9bb23eaaeda5ab5f8ffdda9b236b49ac5e7e112f",
+      "status": "running",
+      "running": true,
+      "ports": {}
+    },
+    {
+      "id": "f897dc6256ae92abab01209626c68eb1eccf0afe32d5d5b7ea83dfa3a64a1c65",
+      "status": "running",
+      "running": true,
+      "ports": {
+        "3000/tcp": null
+      }
+    },
+    {
+      "id": "33a41abf4f05dffbec7739b2af02881cbe9e1959431a8d68fead75d126e555e4",
+      "status": "running",
+      "running": true,
+      "ports": {
+        "8080/tcp": null,
+        "8081/tcp": null
+      }
+    },
+    {
+      "id": "72529c6278aa9e02446cd5d645ccca78fe59f06c1bcc391b20f28e0f1aa556b8",
+      "status": "running",
+      "running": true,
+      "ports": {
+        "8080/tcp": null
+      }
+    },
+    {
+      "id": "0e5c9775738f1e524f1f10833bd3e14fd7a3e812df3f000265a36d8739d8f853",
+      "status": "running",
+      "running": true,
+      "ports": {
+        "8791/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "8791"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "8791"
+          }
+        ]
+      }
+    },
+    {
+      "id": "3a616ddd9203c143162f77089d8750c7f19d9a612589908ba89ff2f17d39dff5",
+      "status": "running",
+      "running": true,
+      "ports": {
+        "3000/tcp": null
+      }
+    },
+    {
+      "id": "a222086bb9ef99f2626124a53b04dff9103692f6cdda13e80ff768060eb60c8e",
+      "status": "running",
+      "running": true,
+      "ports": {
+        "3000/tcp": null
+      }
+    },
+    {
+      "id": "8c113bdda041e4aad4b4db837951e4a739c35d5b558b18d71e5d5fc200eac855",
+      "status": "running",
+      "running": true,
+      "ports": {
+        "443/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "443"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "443"
+          }
+        ],
+        "80/tcp": [
+          {
+            "HostIp": "0.0.0.0",
+            "HostPort": "80"
+          },
+          {
+            "HostIp": "::",
+            "HostPort": "80"
+          }
+        ]
+      }
+    }
+  ],
+  "image": {
+    "pinnedManifest": "docker.io/library/nats@sha256:fdae708d900cb150ce13f203359719bdd9cefd3dbbbc32a4c6224b23ea3e0b2c",
+    "imageID": "sha256:fdae708d900cb150ce13f203359719bdd9cefd3dbbbc32a4c6224b23ea3e0b2c",
+    "RepoDigestMatched": true
+  },
+  "reviewedPortReconfiguration": {
+    "oldPort": 42741,
+    "newPort": 40765,
+    "host": "127.0.0.1",
+    "windowsHostApproval": {
+      "listenerClosed": true,
+      "host": "127.0.0.1",
+      "rangeObservationCount": 12,
+      "excluded": false,
+      "occupied": false,
+      "candidate": 40765,
+      "windowsBindSucceeded": true
+    },
+    "nativeWSLClientEndpoint": "nats://127.0.0.1:40765",
+    "declaredClientEndpointMatchesHostPublish": true,
+    "actualReachabilityNotYetProved": true,
+    "oneCandidateOnly": true
+  },
+  "configStructuralDelta": {
+    "originalThreeAccountsAndACLsUnchanged": true,
+    "addedAccount": "FIXTURE_HEALTH",
+    "fixtureOnlyJetStream": true,
+    "globalStorageDirectory": "/data",
+    "maxFileBytes": 16777216,
+    "streamMaxBytes": 1048576,
+    "streamMaxMessages": 8,
+    "privateConfigDigestRetainedInPrivateResult": true,
+    "literalDollarEscapingApplied": true,
+    "secretConfigBytesStoredInEvidence": false
+  },
+  "fixtureContainerID": "92ebb7b277baa7264adbc265d8221f34e884ee7c2baa0ec12bcc7438263db607",
+  "sameProjectContainerIdentity": {
+    "oldID": "fe012aa16fff8f11a35bf101e34cb0f3d893de79bf9c2f564b4d315c880d2cc8",
+    "newID": "92ebb7b277baa7264adbc265d8221f34e884ee7c2baa0ec12bcc7438263db607",
+    "recreatedOwnedNeverStartedContainer": true
+  },
+  "qualificationPassed": false,
+  "failureCode": "config_or_data_mount_shape_mismatch",
+  "limits": [
+    "No production adoption.",
+    "No full driver config admission changes.",
+    "No broker restart or power-loss durability proof.",
+    "No WSL integration, engine or settings changes.",
+    "No raw secret config, cache source paths or provider output retained."
+  ],
+  "recordKind": "Derived safe reviewed same-project port reconfiguration result. Original report retained externally.",
+  "originalExternalBinding": {
+    "path": "/home/ryan/.cache/agentmux-governance/amx-p02-config-2a66a027cdbd3718-xxbs3w6x/result.json",
+    "sha256": "4375ab9d05dd0a2a5423d07b242a4e67b941167b197c297ac111ecc4aea96bc5",
+    "bytes": 7192,
+    "omittedFields": [
+      "expectedMountedConfigSha256",
+      "outputDirectory"
+    ]
+  },
+  "observerFinding": "The original caller required a config bind-mount entry. Installed Compose materialized the exact private file in the container filesystem instead; the failed mount-shape assertion stopped the owned broker before client probes.",
+  "acceptanceLimit": "Authentication, FILE probe and full configs-content qualification were not reached. Later read-only file observations are separate, not a passing original result."
+}

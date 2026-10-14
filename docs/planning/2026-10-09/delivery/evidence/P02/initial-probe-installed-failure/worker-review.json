@@ -1,0 +1,113 @@
+{
+  "schemaVersion": "1.0.0",
+  "phase": "P02",
+  "kind": "Preserved failed actual installed CLI/Compose evidence",
+  "createdUtc": "2026-10-14T13:03:09.391926+00:00",
+  "testExit": 1,
+  "tests": [
+    {
+      "name": "TestInstalledCLIRealComposeAuthenticatedPending",
+      "result": "fail",
+      "elapsedSeconds": 24.66,
+      "started": "2026-10-14T09:01:10.340826-04:00",
+      "ended": "2026-10-14T09:01:34.998224831-04:00"
+    }
+  ],
+  "safeErrors": [
+    "installed_cli_compose_integration_linux_test.go:738: actual installed frontend failed or exceeded ten seconds",
+    "installed_cli_compose_integration_linux_test.go:156: newly spawned host ownership was not established; fixture retained"
+  ],
+  "sourceHashes": [
+    {
+      "path": "platform/launcher/bootstrap_docker_integration_test.go",
+      "sha256": "5b4e0e51881d862f5fa07fc50ff57f8572d5cd5164d91455dfe43f950e74b4f2",
+      "currentMatches": true
+    },
+    {
+      "path": "platform/launcher/installed_cli_compose_integration_linux_test.go",
+      "sha256": "68da67c8482bed9cbbd5b62921759013d2005641e3b91809c656d39a953b9cae",
+      "currentMatches": true
+    },
+    {
+      "path": "platform/launcher/owner_bridge.go",
+      "sha256": "6c3cbf40f22cf00f16f1285f839506218bc0b4ccbed0a6465575580cac1fd76a",
+      "currentMatches": true
+    },
+    {
+      "path": "platform/cmd/agentmux-runtime/main.go",
+      "sha256": "f65aab165f50b2ac3ed9c608ac61d6d22c1f12031cc91b8f2c61ff1587a69426",
+      "currentMatches": true
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "producer.sh",
+      "sha256": "7bdcc0be05c033319aa71f5e935aa28359cd44a60513d4a04061f7718c5ce06e",
+      "bytes": 1567
+    },
+    {
+      "path": "invocation.json",
+      "sha256": "e4e743a09707d45e775a26521dc33d22c6dd0c0f70ceed0a68f2fd4b4c0544bb",
+      "bytes": 512
+    },
+    {
+      "path": "events.jsonl",
+      "sha256": "f45998ba911ed368085b8e8de30d31198c3f9050b81df28bdb732bcf7017ed8c",
+      "bytes": 2285
+    },
+    {
+      "path": "stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "exit.txt",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "bytes": 2
+    }
+  ],
+  "actualFixtureOutputs": [
+    {
+      "test": "TestInstalledCLIRealComposeAuthenticatedPending",
+      "privateCacheDirectoryName": "p02-bootstrap-private-2194878452",
+      "association": "fixture metadata write time falls inside exact named test window",
+      "artifacts": [
+        {
+          "path": "failed-public-fixtures/TestInstalledCLIRealComposeAuthenticatedPending/baseline-guard-3f29f9ff.json",
+          "sha256": "d4a356aa5927490cdc811756302f7894cb02688d58c8bbd8a77c3597141742a1"
+        },
+        {
+          "path": "failed-public-fixtures/TestInstalledCLIRealComposeAuthenticatedPending/baseline.json",
+          "sha256": "78d216fd25328e8c8b6a540d223286be4bb0ed932d64154d371539f4274fcb35"
+        },
+        {
+          "path": "failed-public-fixtures/TestInstalledCLIRealComposeAuthenticatedPending/fixture.json",
+          "sha256": "0b81f2c577d839cddff5c2590a2a0e852ec5ec598c6e3c338aebb7bcf05d696c"
+        },
+        {
+          "path": "failed-public-fixtures/TestInstalledCLIRealComposeAuthenticatedPending/incomplete-bootstrap-cleanup.json",
+          "sha256": "c67a3980653e5c7ced43865d94b3474675ed74cfa7781a9d50f4b9c178c84732"
+        },
+        {
+          "path": "failed-public-fixtures/TestInstalledCLIRealComposeAuthenticatedPending/network-baseline.json",
+          "sha256": "7c8567723e20377834663c90e451b57031059f2d398b94816dd75cbd54ce5867"
+        },
+        {
+          "path": "failed-public-fixtures/TestInstalledCLIRealComposeAuthenticatedPending/pending-output-capture.json",
+          "sha256": "dfd0bdb3f2c31889ddabbf667d4714509b5d1f6cedb36298d0447542df3f4cdc"
+        },
+        {
+          "path": "failed-public-fixtures/TestInstalledCLIRealComposeAuthenticatedPending/pending-timing.json",
+          "sha256": "2ea4f6d8a302affca1180d149cba520fe671872e2d9e750510d9b0b9bdadb4b9"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "No passing final four-case acceptance claimed.",
+    "No vet executed after the failed suite; earlier focused passes remain separate.",
+    "No native Linux or macOS qualification from selected WSL environment.",
+    "Root owns actual engine diagnosis and any exact fixture resource cleanup; no pruning or budget changes by worker.",
+    "Joined frontend failed; no established newly spawned host handle. Fixture retained. Exact timing and privately captured stdout require offline review; no cause attribution or rerun."
+  ]
+}

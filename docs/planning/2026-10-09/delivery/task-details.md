@@ -763,22 +763,23 @@ A local installation boots deterministically with protected kernel plugins.
 
 ### P02-T01: Implement a minimal launcher that establishes the configured NATS substrate and loads the fixed protected boot assembly.
 
-**Status:** planned. **Owner:** Codex.
+**Status:** in_progress. **Owner:** Codex.
 
 **Dependencies:** P01-GATE, P02-T06.
 
 **Implementation plan**
 
-1. Inspect the existing source and callers for this exact work item: Implement a minimal launcher that establishes the configured NATS substrate and loads the fixed protected boot assembly.
-2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
-3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
-4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
-5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+1. Load the explicitly selected private host policy and enrolled owner. Verify private file ownership, trusted ancestor directories, the signed release, factory configuration and immutable executable bytes before starting a process.
+2. Provide installed ensure, status and host commands. Each frontend gets a fresh invocation ID; the detached host acquires the host-service lease before bootstrap and owns its protected children. Frontend exit must not stop the host or adopt another owner’s processes.
+3. Use the isolated NATS HOST account for every frontend status request and response. Bind both private credentials, subjects, broker identity, request nonce, invocation ID, enrolled owner and full kernel scope. Validate the complete unchanged L04 status contract before accepting a response.
+4. Cold ensure starts the pinned Compose substrate and fixed protected assembly. Warm ensure observes the existing owner. Status never starts a runtime. Failed startup returns an honest failure and leaves a bounded recovery path for a later ensure.
+5. Prove concurrent cold launch, warm reuse, terminal exit, cancellation, malformed or forged replies, revoked credentials and owner recovery with real local processes. Run affected suites and native supported-environment checks on a stable candidate; retain missing checks as open work.
 
 **Deliverables**
 
-1. Implement a minimal launcher that establishes the configured NATS substrate and loads the fixed protected boot assembly.
-2. Focused regression evidence and affected compatibility/migration records
+1. Installed agentmux-runtime CLI, private host policy and sealed or protected host launch implementation
+2. Authenticated NATS owner-status bridge preserving the full L04 contract
+3. Source-bound cold, warm, concurrent, failure and supported-environment evidence
 
 **Acceptance criteria**
 
@@ -786,6 +787,10 @@ A local installation boots deterministically with protected kernel plugins.
 2. P02-T01-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
 3. P02-T01-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
 4. P02-T01-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+5. P02-T01-AC05: Installed ensure and status use authenticated, fully validated L04 observations through NATS. The reply matches the actual invocation, enrolled owner, full scope and expected broker; malformed, stale, forged or incorrectly correlated replies fail.
+6. P02-T01-AC06: Concurrent terminal launches produce one owning host and one protected assembly. Closing a frontend preserves the host; reused callers never adopt or stop its children. Status does not create resources.
+7. P02-T01-AC07: A failed or unconfigured observation is not reported as command success. Failed startup and owner loss have a bounded, verified retry path without stealing leases or changing unrelated resources.
+8. P02-T01-AC08: The installed launcher is verified on native Linux, native macOS and the approved WSL environment. Synthetic process fixtures and cross-compilation do not replace supported-environment evidence.
 
 **Verification**
 
@@ -795,7 +800,7 @@ A local installation boots deterministically with protected kernel plugins.
 4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
 5. Exercise FAIL-55–FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12.
 
-**Evidence:** not yet recorded
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/go-source-guard/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-host-codec-evidence-review.json, docs/planning/2026-10-09/delivery/evidence/P02/host-config/source-bound-results.json, docs/planning/2026-10-09/delivery/evidence/P02/exact-json-fields/review.json, docs/planning/2026-10-09/delivery/evidence/P02/assembly-read-boundaries/review.json, docs/planning/2026-10-09/delivery/evidence/P02/component-registration-review/proposal.json, docs/planning/2026-10-09/delivery/evidence/P02/root-profile-evidence-review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/actual-docker-identity.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/concurrent-inspection-and-compose-failure.json, docs/planning/2026-10-09/delivery/decisions/P02-local-broker-authentication.md, docs/planning/2026-10-09/delivery/evidence/P02/installed-host-expanded-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-owner-bridge/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-secure-lock-review/review.json, docs/planning/2026-10-09/delivery/evidence/P02/secure-compose-diagnostics/review.json, docs/planning/2026-10-09/delivery/evidence/P02/shared-tls-cleanup-independent/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/shared-tls-cleanup-independent/root-source-check.json, docs/planning/2026-10-09/delivery/evidence/P02/native-tag-admission/review.json, docs/planning/2026-10-09/delivery/evidence/P02/source-surface-tooling/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/source-surface-go-existing/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/foundation-stable-current/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-compose-stable-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/collector-final-current/packaging-review.json, docs/planning/2026-10-09/delivery/evidence/P02/raw-team-cleanup-current/worker/review.json, docs/planning/2026-10-09/delivery/evidence/P02/notes-packaging-current/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/public-raw-fault-diagnostic/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-refresh-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-refresh-current/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-capacity-diagnosis/review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-capacity-recovery/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-installed-cli-failed-four-case/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-cleanup-final-controls/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-cleanup-final-controls/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-baseline-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-compose-collector-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-frontend-budget-repair/worker-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-allocation-counter-diagnosis/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/closed-request-diagnostics/worker-review.json, docs/planning/2026-10-09/delivery/evidence/P02/darwin-identity-probe-source/registration-proposal.json, docs/planning/2026-10-09/delivery/evidence/P02/darwin-identity-probe-source/cleanup-cause-repair/review.json, docs/planning/2026-10-09/delivery/evidence/P02/receipt-creator-proof/independent-closure.json, docs/planning/2026-10-09/delivery/evidence/P02/receipt-prestart-cleanup/root-closure.json
 
 **Commits:** not yet recorded
 
@@ -804,7 +809,7 @@ A local installation boots deterministically with protected kernel plugins.
 
 ### P02-T02: Implement boot, protected-plugin lifecycle, protected internal communication, and deliberate publication of kernel status.
 
-**Status:** planned. **Owner:** Codex.
+**Status:** in_progress. **Owner:** Codex.
 
 **Dependencies:** P01-GATE, P02-T06.
 
@@ -836,7 +841,7 @@ A local installation boots deterministically with protected kernel plugins.
 4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
 5. Exercise FAIL-55–FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12.
 
-**Evidence:** not yet recorded
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/protected-assembly/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-cold-proof-and-start-validation/review.json, docs/planning/2026-10-09/delivery/evidence/P02/darwin-protected-backend/review.json, docs/planning/2026-10-09/delivery/decisions/P02-local-broker-authentication.md, docs/planning/2026-10-09/delivery/evidence/P02/installed-host-expanded-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-owner-bridge/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/review.json, docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-receipt-independent/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/architecture-matrix-review.json, docs/planning/2026-10-09/delivery/evidence/P02/startup-cleanup-cause/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/source-surface-runtime/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/foundation-stable-current/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/collector-final-current/packaging-review.json, docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/receipt-glue-independent-current/root-archive-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/feature-only-trigger-review.json
 
 **Commits:** not yet recorded
 
@@ -845,22 +850,22 @@ A local installation boots deterministically with protected kernel plugins.
 
 ### P02-T03: Separate protected internal subjects/accounts from exported information and surrounding application services.
 
-**Status:** planned. **Owner:** Codex.
+**Status:** in_progress. **Owner:** Codex.
 
 **Dependencies:** P01-GATE, P02-T06.
 
 **Implementation plan**
 
-1. Inspect the existing source and callers for this exact work item: Separate protected internal subjects/accounts from exported information and surrounding application services.
-2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
-3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
-4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
-5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+1. Preserve the existing protected, ordinary and administration account permissions. Add the explicitly enabled HOST account only when both private enrolled credentials and the entire scope match the selected factory.
+2. Give the HOST server only request subscription and scoped reply publication; give its client only request publication and scoped reply subscription. Deny JetStream, account imports/exports, generic inboxes and kernel or business subjects.
+3. Keep request and reply schemas additive; preserve the accepted startup-status schema. Verify required fields, closed properties, ranges and conditional rules with the existing independent SDKs and the bridge consumer.
+4. Run real NATS permission and wrong-broker tests using disposable brokers. Show that ordinary, protected and HOST callers cannot cross their boundaries, including altered scope, credentials or permissions.
+5. Attach current source hashes and broker evidence, update component and pattern records, and retain all previous account assertions and historical evidence.
 
 **Deliverables**
 
-1. Separate protected internal subjects/accounts from exported information and surrounding application services.
-2. Focused regression evidence and affected compatibility/migration records
+1. Optional factory-bound HOST account and private credential admission
+2. Additive owner-status request/reply contracts and real broker isolation evidence
 
 **Acceptance criteria**
 
@@ -868,6 +873,8 @@ A local installation boots deterministically with protected kernel plugins.
 2. P02-T03-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
 3. P02-T03-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
 4. P02-T03-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+5. P02-T03-AC05: The optional HOST account admits only the two factory-bound enrolled credentials and exact scoped request/reply permissions. Real broker tests prove denial of protected subjects, business subjects, JetStream and account crossover.
+6. P02-T03-AC06: Every credential-bearing local installed NATS connection verifies the enrolled per-profile TLS server identity before CONNECT authentication. A fake local broker with matching advertised name/version cannot obtain credentials. Exact owned Docker/config/image/port inspection remains a separate prerequisite; system-root discovery, plaintext downgrade and alternate-broker fallback are refused.
 
 **Verification**
 
@@ -877,7 +884,7 @@ A local installation boots deterministically with protected kernel plugins.
 4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
 5. Exercise FAIL-55–FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12.
 
-**Evidence:** not yet recorded
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/root-host-codec-evidence-review.json, docs/planning/2026-10-09/delivery/evidence/P02/host-config/source-bound-results.json, docs/planning/2026-10-09/delivery/evidence/P02/exact-json-fields/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/concurrent-inspection-and-compose-failure.json, docs/planning/2026-10-09/delivery/decisions/P02-local-broker-authentication.md, docs/planning/2026-10-09/delivery/evidence/P02/installed-host-expanded-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-owner-bridge/review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-broker-authentication-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-secure-lock-review/review.json, docs/planning/2026-10-09/delivery/evidence/P02/secure-compose-diagnostics/review.json, docs/planning/2026-10-09/delivery/evidence/P02/shared-tls-cleanup-independent/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/shared-tls-cleanup-independent/root-source-check.json, docs/planning/2026-10-09/delivery/evidence/P02/foundation-stable-current/root-review.json
 
 **Commits:** not yet recorded
 
@@ -886,7 +893,7 @@ A local installation boots deterministically with protected kernel plugins.
 
 ### P02-T04: Provide readiness snapshots, bounded startup/shutdown, broker recovery, basic installer/doctor skeleton, and local bootstrap diagnostics.
 
-**Status:** planned. **Owner:** Codex.
+**Status:** in_progress. **Owner:** Codex.
 
 **Dependencies:** P01-GATE, P02-T06.
 
@@ -918,7 +925,7 @@ A local installation boots deterministically with protected kernel plugins.
 4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
 5. Exercise FAIL-55–FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12.
 
-**Evidence:** not yet recorded
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/local-owner-status/review.json, docs/planning/2026-10-09/delivery/evidence/P02/session-lifecycle/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-session-sync-checks/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-cold-proof-and-start-validation/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-status-deadline/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/actual-docker-identity.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/concurrent-inspection-and-compose-failure.json, docs/planning/2026-10-09/delivery/decisions/P02-local-broker-authentication.md, docs/planning/2026-10-09/delivery/evidence/P02/installed-host-expanded-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-owner-bridge/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/review.json, docs/planning/2026-10-09/delivery/evidence/P02/foundation-stable-current/root-review.json
 
 **Commits:** not yet recorded
 
@@ -927,7 +934,7 @@ A local installation boots deterministically with protected kernel plugins.
 
 ### P02-T05: Provision the approved local file-backed JetStream profile and team connection profile with explicit storage paths, limits, health and domain settings
 
-**Status:** planned. **Owner:** Codex.
+**Status:** in_progress. **Owner:** Codex.
 
 **Dependencies:** P01-GATE, P02-T06.
 
@@ -959,7 +966,7 @@ A local installation boots deterministically with protected kernel plugins.
 4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
 5. Exercise FAIL-55–FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12.
 
-**Evidence:** not yet recorded
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/local-sync-policy/results.json, docs/planning/2026-10-09/delivery/evidence/P02/root-session-sync-checks/review.json, docs/planning/2026-10-09/delivery/evidence/P02/foundation-stable-current/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-compose-stable-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/raw-team-cleanup-current/worker/review.json, docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/public-raw-fault-diagnostic/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/feature-only-trigger-review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-refresh-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-refresh-current/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-capacity-diagnosis/review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-capacity-recovery/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-installed-cli-failed-four-case/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-cleanup-final-controls/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-cleanup-final-controls/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-baseline-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-compose-collector-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-allocation-counter-diagnosis/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/third-legacy-network-readonly/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/third-legacy-network-recovery/root-recovery-review.json
 
 **Commits:** not yet recorded
 
@@ -968,7 +975,7 @@ A local installation boots deterministically with protected kernel plugins.
 
 ### P02-T06: Apply ADD-01 and the component preservation matrix to every changed source file and affected caller
 
-**Status:** planned. **Owner:** Codex.
+**Status:** done. **Owner:** Codex.
 
 **Dependencies:** P01-GATE.
 
@@ -999,26 +1006,36 @@ A local installation boots deterministically with protected kernel plugins.
 4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
 5. Exercise FAIL-55–FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12.
 
-**Evidence:** not yet recorded
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/P02-T06-acceptance-2740e31.json
 
-**Commits:** not yet recorded
+**Commits:** 2740e31d79c6b63fca54137b191c151afca91be5
 
 
 <a id="P02-T07"></a>
 
 ### P02-T07: Implement LOCAL-01 bootstrap with pinned Docker Compose configuration, persistent NATS volumes, explicit project identity, bounded health/readiness checks and one startup owner across concurrent terminals
 
-**Status:** planned. **Owner:** Codex.
+**Status:** in_progress. **Owner:** Codex.
 
 **Dependencies:** P01-GATE, P02-T06.
 
 **Implementation plan**
 
-1. Inspect the existing source and callers for this exact work item: Implement LOCAL-01 bootstrap with pinned Docker Compose configuration, persistent NATS volumes, explicit project identity, bounded health/readiness checks and one startup owner across concurrent terminals. Reuse an authorized compatible healthy instance without recreating it.
-2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
-3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
-4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
-5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+1. Load the separately enrolled release authority with LoadInstalledRelease, then bind the private profile, exact broker bytes and four role credential files through LoadBootstrapConfig before any Docker command.
+2. Inspect the selected Docker context, engine, pinned image, project, instance/profile/release labels, published port and actual private configuration. Refuse foreign, ambiguous or incompatible resources without mutation.
+3. Observe an existing runtime read-only. If startup may still be in progress, wait for its OS bootstrap lease and inspect again. Never use PID age or a retained health record as authority to start another runtime.
+4. For cold startup, retain per-role lifetime leases, start the exact Compose configuration, provision and probe the fixed file-backed health stream, start four verified protected processes and wait for a scoped ready snapshot within the startup budget.
+5. Qualify the complete path with a dedicated actual Docker fixture: one isolated project and enrolled port, real signed static role binaries, no fake broker, no Docker settings change, explicit baseline checks, exact owned-ID cleanup and retained data volume.
+6. Prove concurrent callers converge on one owned instance, warm reuse preserves container/process identity and retained persistence, closing a reused session leaves the owner running, and owner death releases child-held leases only after process exit.
+7. Qualify recovery and required failure cases, including bad identity/configuration, occupied port, wrong context, unavailable Docker/broker, partial startup and bounded cleanup. Preserve data and report unavailable services honestly.
+8. Complete native Linux/macOS/WSL boot qualification and the agreed status contract before acceptance. Terminal-specific automatic hooks retain their P06 owner; this P02 bootstrap must provide their callable startup/reuse foundation.
+9. For FAIL-55, run genuine warm ensure/status from another working directory with the same enrolled profile and explicit workspace roots; preserve instance, container, volume and retained record identities.
+10. For FAIL-56, interrupt the actual creator-proven startup owner before readiness using its held process handle. Prove waiting callers remain bounded, exact child and service leases release after exit, and retry converges on one selected instance. Keep the existing after-readiness crash case separate.
+11. For FAIL-57, qualify missing Docker or Compose, unavailable daemon, permission denial and pinned-image pull failure through genuine isolated installed environments. Do not uninstall user tools, alter the shared daemon or delete shared images to manufacture failures. Require actionable safe diagnostics, no retry storm and corrected recovery without data loss.
+12. For FAIL-58, qualify conflicting child selection, an occupied actual engine-host port, a foreign owner and an incompatible running release. An accepted bootstrap receipt can precede failure; require bounded specific ultimate failure, no false readiness, no running shadow stack and exact unrelated-resource preservation.
+13. For FAIL-59, qualify actual partial or unhealthy startup, readiness timeout and failed protected roles. Report the failing service, retain durable data and prove safe compatible recovery or explicit refusal. Running containers or genuine pending status alone do not prove readiness or failure recovery.
+14. During repair, diagnose the smallest failing boundary and rerun only its controls. Serialize actual Docker and timing-sensitive runs; batch stable-candidate evidence review. Keep all original deadlines, phase checks and supported-environment requirements.
+15. For failures after an accepted startup receipt, provide an owner-bound terminal failure report even when NATS has not started. Review the control protocol and persistence boundary before changing it: preserve pending startup deadlines, exact creator/enrollment/release scope, stale/replacement refusal and closed safe diagnostics. A clear selected-host port observation is not a reservation; recheck under the actual startup lease and do not classify generic Docker command failures as occupied ports. Keep WSL and the selected Windows engine host distinct. Qualify both the original waiting frontend and a subsequent status request, including failure, cleanup and corrected retry.
 
 **Deliverables**
 
@@ -1040,7 +1057,7 @@ A local installation boots deterministically with protected kernel plugins.
 4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
 5. Exercise FAIL-55–FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12.
 
-**Evidence:** not yet recorded
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-lock-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/inline-config-admission/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-integration-artifact-review.json, docs/planning/2026-10-09/delivery/evidence/P02/inline-config-admission-repair/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-host-codec-evidence-review.json, docs/planning/2026-10-09/delivery/evidence/P02/host-config/source-bound-results.json, docs/planning/2026-10-09/delivery/evidence/P02/exact-json-fields/review.json, docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-real-compose/failed-f06d63f86fee8f94/manifest.json, docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-compose-independent-review/first-attempt.json, docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-real-compose/failed-d6a66f7c70f49aeb/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/actual-docker-identity.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/concurrent-inspection-and-compose-failure.json, docs/planning/2026-10-09/delivery/decisions/P02-local-broker-authentication.md, docs/planning/2026-10-09/delivery/evidence/P02/installed-host-expanded-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-owner-bridge/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/review.json, docs/planning/2026-10-09/delivery/evidence/P02/host-receipt-binding/review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-receipt-draft/review.json, docs/planning/2026-10-09/delivery/evidence/P02/installed-cli-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/installed-cli-current/root-archive-review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-child-exit-guard/affected-review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-child-exit-guard/root-archive-review.json, docs/planning/2026-10-09/delivery/decisions/P02-bootstrap-control-receipt.md, docs/planning/2026-10-09/delivery/evidence/P02/source-surface-launcher/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/foundation-stable-current/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-compose-stable-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/receipt-glue-independent-current/root-archive-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-installed-cli-first-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-refresh-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-refresh-current/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-installed-cli-three-case-history/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-capacity-diagnosis/review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-capacity-recovery/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-installed-cli-failed-four-case/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-cleanup-final-controls/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-cleanup-final-controls/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-baseline-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/failure-case-scope-current/independent-audit.json, docs/planning/2026-10-09/delivery/evidence/P02/native-compose-collector-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-frontend-budget-repair/worker-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-allocation-counter-diagnosis/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/closed-request-diagnostics/worker-review.json, docs/planning/2026-10-09/delivery/evidence/P02/darwin-identity-probe-source/registration-proposal.json, docs/planning/2026-10-09/delivery/evidence/P02/installed-cli-failure-source-controls/review.json, docs/planning/2026-10-09/delivery/evidence/P02/darwin-identity-probe-source/cleanup-cause-repair/review.json, docs/planning/2026-10-09/delivery/evidence/P02/third-legacy-network-readonly/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/installed-cli-failure-source-controls/independent-source-closure.json, docs/planning/2026-10-09/delivery/evidence/P02/terminal-failure-design/independent-design-review.json, docs/planning/2026-10-09/delivery/evidence/P02/third-legacy-network-recovery/root-recovery-review.json, docs/planning/2026-10-09/delivery/evidence/P02/tracker-atomic-render/controls.json, docs/planning/2026-10-09/delivery/evidence/P02/tracker-atomic-render/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/receipt-creator-proof/independent-closure.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-initial-probe/root-component-check.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-initial-probe/independent-source-review.json, docs/planning/2026-10-09/delivery/evidence/P02/initial-owner-probe/affected-review.json, docs/planning/2026-10-09/delivery/evidence/P02/initial-probe-installed-failure/root-failure-review.json, docs/planning/2026-10-09/delivery/evidence/P02/terminal-failure-design/foundation-findings/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/receipt-prestart-cleanup/root-closure.json, docs/planning/2026-10-09/delivery/evidence/P02/retained-broker-probe-diagnosis/root-review.json, docs/planning/2026-10-09/delivery/decisions/P02-history-cleanup-ownership.md, docs/planning/2026-10-09/delivery/evidence/P02/cli-joined-stderr-capture/root-source-review.json, docs/planning/2026-10-09/delivery/evidence/P02/retained-fixture-readonly-qualification/root-readonly-review.json, docs/planning/2026-10-09/delivery/evidence/P02/retained-fixture-readonly-qualification/independent-proposal-review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-joined-stderr-capture/affected/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/retained-fixture-exact-recovery/root-execution-authorization.json, docs/planning/2026-10-09/delivery/evidence/P02/retained-fixture-exact-recovery/root-rm-only-authorization.json, docs/planning/2026-10-09/delivery/evidence/P02/retained-fixture-exact-recovery/rm-only-result/root-result-review.json, docs/planning/2026-10-09/delivery/evidence/P02/current-pending-boundary-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/history-foundation-promotion/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/history-foundation-promotion/current-checks/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/current-pending-boundary-failure/readonly-reconciliation/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-cleanup-evidence-repair/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration-draft/root-findings.json, docs/planning/2026-10-09/delivery/evidence/P02/host-history-policy/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-history-wiring/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration/composed-checks/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/history-running-failure-diagnosis/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/default-request-authority-repair/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-history-handler-followup/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-nonce-completion-window/root-diagnosis.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-history-threecase/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-nonce-completion-window/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/iteration-optimization/batch-source-verification.json, docs/planning/2026-10-09/delivery/evidence/P02/history-actual-run-postnonce/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/current-engine-admission-refusal/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/current-engine-qualification/root-decision.json, docs/planning/2026-10-09/delivery/evidence/P02/current-wsl-selector/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/current-wsl-actual-pending/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/current-wsl-actual-pending/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/selected-host-port-observer-pure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/occupied-history-output-controls/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/selected-host-port-frame-controls/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/action-pins-current.json, docs/planning/2026-10-09/delivery/evidence/P02/midboot-crash-preparation/root-execution-decision.json, docs/planning/2026-10-09/delivery/evidence/P02/midboot-real-child-admission-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/checkpoint-initial-source-review/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/checkpoint-collector-source-finding/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/checkpoint-remaining-platform-source-review/root-reconciliation.json, docs/planning/2026-10-09/delivery/evidence/P02/midboot-detector-final-controls/root-execution-decision.json, docs/planning/2026-10-09/delivery/evidence/P02/checkpoint-host-contract-controls/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/checkpoint-document-tooling-source/root-source-review.json, docs/planning/2026-10-09/delivery/evidence/P02/midboot-real-entry-status-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/midboot-entry-synchronization-controls/root-execution-decision.json, docs/planning/2026-10-09/delivery/evidence/P02/collector-bounded-owned-cleanup/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/midboot-real-proper-subset-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/feature-checkpoint-source-review/root-review.json
 
 **Commits:** not yet recorded
 
@@ -1088,7 +1105,7 @@ A local installation boots deterministically with protected kernel plugins.
 4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
 5. Exercise FAIL-55–FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12.
 
-**Evidence:** not yet recorded
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/collector-final-current/packaging-review.json, docs/planning/2026-10-09/delivery/evidence/P02/notes-packaging-current/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/raw-team-cleanup-current/worker/review.json, docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json
 
 **Commits:** not yet recorded
 
@@ -2688,6 +2705,7 @@ Authorized users can understand work across agents, projects, and hubs.
 3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
 4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
 5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+6. Carry Ryan Scene04 feedback into implementation and fixtures: Display suitable, unsuitable, uncertain, abstained, unavailable and disabled Jev advice with reason and freshness in the authorized routing views. Advice is visually separate from deterministic eligibility, permission, reservation and origin acceptance; unknown advice is never displayed as a zero score or Good Fit.
 
 **Deliverables**
 
@@ -2700,6 +2718,7 @@ Authorized users can understand work across agents, projects, and hubs.
 2. P07-T01-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
 3. P07-T01-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
 4. P07-T01-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+5. P07-T01-AC05: Display suitable, unsuitable, uncertain, abstained, unavailable and disabled Jev advice with reason and freshness in the authorized routing views. Advice is visually separate from deterministic eligibility, permission, reservation and origin acceptance; unknown advice is never displayed as a zero score or Good Fit.
 
 **Verification**
 
@@ -3074,6 +3093,7 @@ Plugins request bounded semantic advice with traceable evidence and safe fallbac
 3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
 4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
 5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+6. Carry Ryan Scene04 feedback into implementation and fixtures: Produce versioned suitable/unsuitable/uncertain/abstained/unavailable/disabled decision outcomes with provenance, reason and explicit unknown values. Test provider absence, disabled configuration, timeout, insufficient evidence and contradictory matches; no error becomes a fabricated successful score.
 
 **Deliverables**
 
@@ -3086,6 +3106,7 @@ Plugins request bounded semantic advice with traceable evidence and safe fallbac
 2. P08-T01-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
 3. P08-T01-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
 4. P08-T01-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+5. P08-T01-AC05: Produce versioned suitable/unsuitable/uncertain/abstained/unavailable/disabled decision outcomes with provenance, reason and explicit unknown values. Test provider absence, disabled configuration, timeout, insufficient evidence and contradictory matches; no error becomes a fabricated successful score.
 
 **Verification**
 
@@ -3114,6 +3135,7 @@ Plugins request bounded semantic advice with traceable evidence and safe fallbac
 3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
 4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
 5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+6. Carry Ryan Scene04 feedback into implementation and fixtures: For every Jev outcome, prove exact eligibility, permissions and data-export authority remain deterministic. Jev cannot grant permission, bypass a hard denial or disclose a hidden candidate; approved fallback behavior must be explicit.
 
 **Deliverables**
 
@@ -3126,6 +3148,7 @@ Plugins request bounded semantic advice with traceable evidence and safe fallbac
 2. P08-T02-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
 3. P08-T02-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
 4. P08-T02-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+5. P08-T02-AC05: For every Jev outcome, prove exact eligibility, permissions and data-export authority remain deterministic. Jev cannot grant permission, bypass a hard denial or disclose a hidden candidate; approved fallback behavior must be explicit.
 
 **Verification**
 
@@ -6155,6 +6178,7 @@ Independent teams share authorized work while retaining their own authority.
 3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
 4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
 5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+6. Carry Ryan Scene04 feedback into implementation and fixtures: Exercise real eligible hub routing with unsuitable, uncertain/abstaining and unavailable/disabled Jev advice. Choose another eligible candidate or use the approved queue/review/fallback policy; never silently treat missing advice as suitable. Keep accepted disconnected work reserved, and preserve origin ownership and acceptance.
 
 **Deliverables**
 
@@ -6167,6 +6191,7 @@ Independent teams share authorized work while retaining their own authority.
 2. P10-T06-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
 3. P10-T06-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
 4. P10-T06-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+5. P10-T06-AC05: Exercise real eligible hub routing with unsuitable, uncertain/abstaining and unavailable/disabled Jev advice. Choose another eligible candidate or use the approved queue/review/fallback policy; never silently treat missing advice as suitable. Keep accepted disconnected work reserved, and preserve origin ownership and acceptance.
 
 **Verification**
 

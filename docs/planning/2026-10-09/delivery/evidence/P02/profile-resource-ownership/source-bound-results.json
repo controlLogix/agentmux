@@ -1,0 +1,79 @@
+{
+  "sourceBindings": {
+    "go.mod": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+    "go.sum": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+    "deployment/compose.go": "2ed62e60ac9c6b1f56afef8156e7def69de8cdcb6918f89bf8e0a3412e0935c1",
+    "deployment/compose_test.go": "4fdafc941427c9ac0cd6bd5334688c7019066c7bd0f20bdeb8440928765a26f8",
+    "deployment/observe.go": "befbca0285fa7015915f7b3ef3fb636a321fb521e5b75429f464e9b610d408eb",
+    "deployment/observe_test.go": "9c4ba6091f07176ca73a11a856b3790e6cce92df08ac95e9e255dc6c339f11d1",
+    "deployment/probe.go": "df71842055c7f946d6579b1db499957a4c3dc7620bd4824ffd8acbb45f9995c7",
+    "deployment/probe_test.go": "0ccac91b33d9b7330fbc8b17446540ceb51b5157be840ee457b3f61e0ccce786",
+    "deployment/profile.go": "219b2c8742514699c0c12822576e580142e2f43b51d8405e3207a8ebb0a5f6fd",
+    "deployment/profile_test.go": "145e667f8f0dc39daadc11b9906067cb495bf1336a6ba7b1f11c915388610c74",
+    "kernel/communication/config.go": "b54e90bbf5d5c37fa7e60ffdc878ddd4204bfba411665e2c35311c1fe5b9a883",
+    "kernel/communication/config_test.go": "1d2e5d1e30f2f2880396ef427b2261a66ad9ce8f145d45fa9de774b15ea76885",
+    "kernel/communication/run.go": "1340ecbbca4b21a3354b0be3147207bbd1fbe9b5039c7825fb750b149a703069",
+    "kernel/protocol/codec.go": "7f3c9b3903512ddcc0dbb5501918a600fa34654d0b71d77beffd589e10c9dbd9",
+    "kernel/protocol/codec_test.go": "31b719a63e7563ee941f38685aef4fc4330684affbca47f329e9d770e3dd9d38",
+    "kernel/protocol/credentials.go": "45f51f19c6a06e77efad2e61cea93d2e8f7f0a50d5fe6d175ab054b687ccf4c3",
+    "kernel/protocol/credentials_unix_test.go": "e08e4bb148ebadd9447b9c90f74ccc76da2e050071b89e49fd0462475e8361cf",
+    "kernel/protocol/private_unix.go": "094a60606c9c37483b89415953a23b1bcf775a9787fcfd4e9e8ed23a1b91debd",
+    "kernel/protocol/private_unsupported.go": "608afc7538c80a0b157be6f3b15037da34923bfe6743ef4ad5c01449866a7a81",
+    "kernel/protocol/transport.go": "bd6d6c90f4968a547c046a45239796642bb2a0058ba361ad4437680a3aa2f947",
+    "launcher/docker.go": "cc4fa8e546cd1a90fbfc1f53a697a93778c74a61787738e53f36a78e959a6459",
+    "launcher/docker_environment.go": "b575d40d285f7f6b4419905ad0e472472e7d253f798457e8daf348ff4d569c29",
+    "launcher/docker_instance.go": "f02ee9131b0e52679e7965baa962822adbebe0381a3e1fcd6aad5b398702d5e8",
+    "launcher/docker_instance_test.go": "208509e4946d53b9c6ca8be74ec916ff243f618e28f1db8a00d73d6128bac699"
+  },
+  "results": [
+    {
+      "package": "deployment",
+      "exitCode": 0,
+      "command": [
+        "test",
+        "-race",
+        "-json",
+        "./deployment",
+        "-run",
+        "TestCompose"
+      ],
+      "output": "deployment-race.jsonl",
+      "passingTestAndSubtestRecords": 18,
+      "failedRecords": 0,
+      "elapsedSeconds": 1.101
+    },
+    {
+      "package": "launcher",
+      "exitCode": 0,
+      "command": [
+        "test",
+        "-race",
+        "-json",
+        "./launcher",
+        "-run",
+        "TestOwnedBroker"
+      ],
+      "output": "launcher-race.jsonl",
+      "passingTestAndSubtestRecords": 37,
+      "failedRecords": 0,
+      "elapsedSeconds": 6.997
+    }
+  ],
+  "scope": "Focused renderer and controlled read-only inspector boundary checks; no real Docker qualification.",
+  "vet": {
+    "command": [
+      "go",
+      "vet",
+      "./deployment",
+      "./launcher"
+    ],
+    "exitCode": 0,
+    "outputBytes": 0
+  },
+  "ownedSourcesStillMatch": true,
+  "limits": [
+    "Historical two-label fixtures prove the earlier materialization mechanism, not current product ownership acceptance.",
+    "No real Docker action or complete bootstrap qualification.",
+    "Root owns affected combined integration and phase acceptance."
+  ]
+}

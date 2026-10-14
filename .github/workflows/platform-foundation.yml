@@ -1,0 +1,120 @@
+name: P02 native foundation evidence
+
+on:
+  push:
+    branches: [feat/agentmux-platform-rearchitecture]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: p02-foundation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  foundation:
+    if: github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' || github.head_ref == 'feat/agentmux-platform-rearchitecture'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            arch: amd64
+          - os: ubuntu-24.04-arm
+            arch: arm64
+          - os: macos-15-intel
+            arch: amd64
+          - os: macos-15
+            arch: arm64
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5, official ref checked October 14, 2026
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6, official ref checked October 14, 2026
+        with:
+          python-version: '3.14.8'
+      - name: Test evidence admission rules
+        run: python tests/platform/native_go.py --self-test
+      - name: Check actual runner architecture
+        env:
+          AGENTMUX_EXPECTED_ARCH: ${{ matrix.arch }}
+        run: python -c "import os, platform; actual={'x86_64':'amd64','AMD64':'amd64','aarch64':'arm64','arm64':'arm64'}.get(platform.machine()); assert actual == os.environ['AGENTMUX_EXPECTED_ARCH'], 'runner architecture differs from qualification target'"
+      - name: Run reviewed P02 test-bearing package matrix
+        run: python tests/platform/native_go.py --workspace "${{ runner.temp }}/agentmux-p02" --evidence "${{ runner.temp }}/agentmux-p02-evidence"
+      - name: Preserve fresh evidence, including failures
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4, official ref checked October 14, 2026
+        with:
+          name: p02-foundation-${{ matrix.os }}-${{ github.sha }}
+          path: ${{ runner.temp }}/agentmux-p02-evidence/
+          if-no-files-found: error
+          retention-days: 30
+
+  darwin-research:
+    if: github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' || github.head_ref == 'feat/agentmux-platform-rearchitecture'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15-intel, macos-15]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5, official ref checked October 14, 2026
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6, official ref checked October 14, 2026
+        with:
+          python-version: '3.14.8'
+      - name: Run separate native descriptor research
+        run: python tests/platform/native_go.py --darwin-research --workspace "${{ runner.temp }}/agentmux-p02-research" --evidence "${{ runner.temp }}/agentmux-p02-research-evidence"
+      - name: Preserve research failures as failures
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4, official ref checked October 14, 2026
+        with:
+          name: p02-darwin-research-${{ matrix.os }}-${{ github.sha }}
+          path: ${{ runner.temp }}/agentmux-p02-research-evidence/
+          if-no-files-found: error
+          retention-days: 30
+
+  darwin-install:
+    if: github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' || github.head_ref == 'feat/agentmux-platform-rearchitecture'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15-intel, macos-15]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5, official ref checked October 14, 2026
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6, official ref checked October 14, 2026
+        with:
+          python-version: '3.14.8'
+      - name: Test evidence admission rules
+        run: python tests/platform/native_go.py --self-test
+      - name: Collect separate protected-image and installed-host evidence
+        env:
+          AMX_DARWIN_INSTALL_AUTHORIZED: '1'
+        run: python tests/platform/native_go.py --darwin-install --workspace "${{ runner.temp }}/agentmux-p02-install" --evidence "${{ runner.temp }}/agentmux-p02-install-evidence"
+      - name: Preserve actual install fixture failures and limits
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4, official ref checked October 14, 2026
+        with:
+          name: p02-darwin-install-${{ matrix.os }}-${{ github.sha }}
+          path: ${{ runner.temp }}/agentmux-p02-install-evidence/
+          if-no-files-found: error
+          retention-days: 30
+
+# Covers assembly, accounts, deployment, protocol, boot, launcher, runtime command, local TLS, private files and runtime.
+# Linux boot includes actual sealed-process fixtures, not complete Compose boot.
+# Darwin actor/refusal tests never qualify native protected-process boot.
+# WSL, full supported-host boot and phase acceptance remain separate requirements.
+# No tracker updates or merge occur.

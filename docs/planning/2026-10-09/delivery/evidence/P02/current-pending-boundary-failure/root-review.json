@@ -1,0 +1,47 @@
+{
+  "reviewer": "Codex",
+  "date": "2026-10-14T14:53:02.999462+00:00",
+  "decision": "focused failure evidence retained; P02 acceptance remains open",
+  "testedSourcePins": {
+    "platform/cmd/agentmux-runtime/main.go": "f65aab165f50b2ac3ed9c608ac61d6d22c1f12031cc91b8f2c61ff1587a69426",
+    "platform/runtime/bootstrap_receipt.go": "6c3ba5a49629b3a179b30560e7b552f08ab5236e898f53d72ef8ef7cee6f8c8a",
+    "platform/launcher/installed_cli_compose_integration_linux_test.go": "6d0021d99531507ea5232ff81f1d18477ce1def1a8c228b3069d1d785895073c",
+    "platform/launcher/owner_bridge_probe.go": "43c07411aac19e5047381ce3f83786a5cf4f96478e47bef6e6f3d20ad9886130"
+  },
+  "artifacts": {
+    "review.json": "04a900fbf543057e84423edeb7fe7039bba00a6113b6c6fb40077f8325be4993",
+    "invocation.json": "3485ea64fea3762779cb910163670e4ea54da935b1e5a7d2a0b08bf6611e6fc4",
+    "completion.json": "29bea176fed45c8a5b2133f70ebffbd38a89154b75f7800e41fb6c1162cb102d",
+    "source-manifest.json": "ec1ab45b8e0284419df004c032390e03263ceaf69ed4d1a16ed48f8c17331cc2"
+  },
+  "frontend": {
+    "exit": 0,
+    "seconds": 6.270132282,
+    "stdoutBytes": 2331,
+    "stderrBytes": 95,
+    "bothStreamsPrivatelyCaptured": true,
+    "authenticatedStartingValidated": true,
+    "exactOwnedHostPinned": true
+  },
+  "completionFailure": {
+    "line": 764,
+    "stage": "completion_refresh",
+    "message": "Actual installed runtime did not complete within the startup budget.",
+    "refreshStarting": 3,
+    "refreshDeadline": 2,
+    "refreshReplyUnavailable": 7
+  },
+  "cleanupCorrection": {
+    "originalRecordPreserved": true,
+    "originalNetworkRetainedClaim": "unproven",
+    "sourceOrder": "baseline_read follows successful exact network rm output validation",
+    "sourceSHA256": "c506ca3212ed150b0e0827f71a9ccae12d53fbd41d1137e6d5836090a0de80a0",
+    "currentAbsenceAndForeignBaseline": "not yet independently verified",
+    "nextAction": "Read-only reconciliation; do not repeat removal."
+  },
+  "limits": [
+    "Starting status is not readiness acceptance.",
+    "No raw private frontend output or engine inventory is published.",
+    "The complete actual lifecycle test failed; it remains required."
+  ]
+}

@@ -7,9 +7,11 @@
   "format": "agentmux-review-notes",
   "schemaVersion": 1,
   "documentId": "agentmux-visual-review",
-  "documentVersion": "sha256:21d50a8a450cefca5bfd3b81931df8d7293e7b89fd9535e3cd81cf7560e93adb",
+  "documentVersion": "sha256:a7af7783050d9de3dd213650b23a8dadf15db560e54d2e8d5f1d2df1fc56c17e",
+  "exportedAt": "2026-10-13T20:50:46.760Z",
   "reviewer": "Ryan Helms",
-  "exportedAt": "2026-10-13T15:09:47Z"
+  "reviewerId": "ryan",
+  "reviewerEmail": "ryanhelms@adaggroup.com"
 }
 ```
 
@@ -42,7 +44,7 @@
 **Question:** Are ownership, reserved work and unknown progress clear, and does the design explain Jev's advisory role and what happens when it abstains or is unavailable?
 
 ```review-note 04-connected-hubs
-
+It doesn't show me what happens when jev is anything but a "Good Fit". 
 ```
 
 ## 05 · Result review and acceptance
@@ -68,4 +70,3 @@
 ```review-note global
 
 ```
-

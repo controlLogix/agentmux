@@ -1,0 +1,38 @@
+{
+  "admitted": false,
+  "steps": [
+    {
+      "stage": "endpoint",
+      "elapsedSeconds": 0.2482307940008468,
+      "directExit": 0,
+      "stdoutBytes": 44,
+      "stderrBytes": 0,
+      "argv": [
+        "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+        "--context",
+        "desktop-linux",
+        "context",
+        "inspect",
+        "desktop-linux",
+        "--format",
+        "{{json .Endpoints.docker.Host}}"
+      ]
+    },
+    {
+      "stage": "engine",
+      "elapsedSeconds": 0.9663322670021444,
+      "directExit": 0,
+      "stdoutBytes": 39,
+      "stderrBytes": 0,
+      "argv": [
+        "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+        "--context",
+        "desktop-linux",
+        "info",
+        "--format",
+        "{{json .ID}}"
+      ]
+    }
+  ],
+  "failureType": "AssertionError"
+}

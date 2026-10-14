@@ -21,10 +21,15 @@ def read(path):
 
 
 def save(path, data):
+    write_text_atomic(path, json.dumps(data, indent=2, ensure_ascii=False) + '\n')
+
+
+def write_text_atomic(path, text):
+    """Replace generated text without truncating a file held by a reader."""
     fd, name = tempfile.mkstemp(dir=path.parent, prefix=path.name + '.', suffix='.tmp')
     try:
         with os.fdopen(fd, 'w', encoding='utf-8', newline='\n') as stream:
-            stream.write(json.dumps(data, indent=2, ensure_ascii=False) + '\n')
+            stream.write(text)
         os.replace(name, path)
     finally:
         if os.path.exists(name):
@@ -242,7 +247,7 @@ def render(data):
         for t in tasks.values():
             if t["phase"] == epic["id"]:
                 lines.append(f"| [{t['id']}](delivery/task-details.md#{t['id']}) | {t['status']} | {t['owner']} | {t['title'].replace('|', '/')} |")
-    (PLAN / "implementation-status.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+    write_text_atomic(PLAN / "implementation-status.md", "\n".join(lines) + "\n")
     detail = ["# Implementation tasks", "", "Generated from tasks.json. Status and evidence remain owned by that file.", ""]
     for epic in data['epics']:
         detail += ['## ' + epic['id'] + '. ' + epic['title'], '', epic['outcome'], '', '**Epic acceptance criteria**', '']
@@ -264,7 +269,7 @@ def render(data):
                        '**Commits:** ' + (', '.join(t['commits']) or 'not yet recorded'), '']
             if t.get('blocker'):
                 detail += ['**Blocker:** ' + t['blocker'], '']
-    (HERE / 'task-details.md').write_text('\n'.join(detail).rstrip() + '\n', encoding='utf-8', newline='\n')
+    write_text_atomic(HERE / 'task-details.md', '\n'.join(detail).rstrip() + '\n')
 
 
 def codex_review(record, decision_key, decision):

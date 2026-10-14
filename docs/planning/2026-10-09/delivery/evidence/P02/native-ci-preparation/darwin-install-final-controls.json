@@ -1,0 +1,46 @@
+{
+  "recordKind": "darwin-install-compiler-version-control-repair",
+  "phaseAccepted": false,
+  "nativeCIExecuted": false,
+  "sourceHashes": {
+    "tests/platform/native_go.py": "25d4cb987d5a56f9048a121fda97c51aba8bc081c940f19da79c8177192ed5b3",
+    ".github/workflows/platform-foundation.yml": "57192ad2d6b250158847be830e264c240aaedc4dbe5d33d71459b096b6885dcc"
+  },
+  "controls": {
+    "command": "python -B tests/platform/native_go.py --self-test",
+    "exitCode": 0,
+    "tests": 27,
+    "raw": "darwin-install-final-self-test.log",
+    "rawSha256": "71cda0bbbb6156520af98553d0d026a0c10f5977263419a8b29e7773e8137517",
+    "kind": "Synthetic controls on Windows; not native install execution"
+  },
+  "affectedGuards": {
+    "command": "python -B -m unittest discover -s tests/platform -p 'test_*.py' -v",
+    "exitCode": 0,
+    "tests": 30,
+    "seconds": 10.772
+  },
+  "workflowSyntax": {
+    "parser": "PyYAML safe_load",
+    "exitCode": 0,
+    "jobs": ["foundation", "darwin-research", "darwin-install"],
+    "installTimeoutMinutes": 20
+  },
+  "repair": "Require a numeric Apple clang major/minor/optional patch version, not just the vendor prefix. Empty, non-Apple, nonsense and malformed numeric version controls refuse before Go test execution.",
+  "independentReview": {
+    "reviewer": "Independent Codex agent Plato",
+    "status": "Bounded source review closed with no actionable findings",
+    "checks": [
+      "Both candidate source hashes matched and remained unchanged during review; numeric compiler-version validation is closed.",
+      "Native host, authorization and nonroot gates precede Git/preparation; actual compiler/SDK metadata and all four exact passing tests are required.",
+      "Failures, skips, malformed output, timeouts and source changes prevent install proof; owned wait/checkpoint/deadline handling is intact.",
+      "Separate macOS job, artifact retention, mode exclusivity, tools-only preparation and unqualified broader runtime flags are present."
+    ],
+    "limits": "Reviewer inspected the four fixture bodies but ran no tests, downloads, CI, privileged operations or pattern checker. Reported mocked controls were not independently rerun."
+  },
+  "limits": [
+    "No actual Darwin, compiler/SDK, elevated setup, install fixture, workflow dispatch or candidate push was performed.",
+    "Installed-image fixture evidence remains separate from native NATS, four-role, Compose, EOF, production signed installer and phase acceptance.",
+    "The coordinator owns final source registration, native execution, commit/push and phase review."
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1.0.0",
+  "kind": "prelaunch-selection-impediment",
+  "offlineDiffSHA256": "90b871375790c093574487d42ca5f83dbab936d5d3be8dd600e3806f89ec4672",
+  "exactChangedPathsVerified": true,
+  "originalContainerStatePortProjectionUnchanged": true,
+  "fullContainerProjectionUnchanged": false,
+  "currentFixtureSelectionSupported": false,
+  "source": {
+    "path": "platform/launcher/bootstrap_docker_selection_test.go",
+    "sha256": "7458b7ce2db475606466cd3d278bac2f63ec85f8a7dfaa0b519fc7be9f8481f3",
+    "function": "validateBootstrapFixtureSelection",
+    "boundary": "wsl-windows-interop requires exact bootstrapLegacyWSLSelection with historical e0 engine; native targets refuse WSL"
+  },
+  "noEngineReadOrMutationPerformed": true,
+  "nextRequirement": "Add and independently review a separately enrolled current WSL fixture selection path. Preserve the legacy tuple and all platform, endpoint, executable, versions and immutable image constraints. No old profile can be rebound."
+}

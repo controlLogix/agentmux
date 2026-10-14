@@ -1,0 +1,28 @@
+{
+  "cwd": "/home/ryan/.cache/agentmux-governance/p02-raw-cleanup-e6120d5e/platform",
+  "commands": {
+    "affected": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-json",
+      "./deployment",
+      "-run",
+      "^Test(Team|Observe|Probe|Provision|LocalTLSProbe|RawTransportCleanup)"
+    ],
+    "vet": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "vet",
+      "./deployment"
+    ]
+  },
+  "fixedEnvironment": {
+    "GOTOOLCHAIN": "local",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GORACE": "atexit_sleep_ms=0",
+    "AGENTMUX_TEST_NATS": "/home/ryan/.cache/agentmux-governance/tools/nats-server"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "recordKind": "signed-installed-protected-release-verification",
+  "owningTask": "P02-T01",
+  "sourceBaseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "workingTreeChanges": true,
+  "phaseAccepted": false,
+  "taskAccepted": false,
+  "sourceHashes": {
+    "platform/launcher/release.go": "8ca1ea1507b1cbcb45190bdc897eee82b816d9d693a436c06f9bf1c90aa4cd8d",
+    "platform/launcher/release_test.go": "944a752f3deb1d14bcb726f827298da45d745f4bdf9869b708584a29c08a96fb",
+    "platform/kernel/assembly/verify.go": "e915287f32b009b2b47bbaf7287f9ee29d0ed82fd8e57098260512b8c9826c83",
+    "platform/kernel/assembly/open_unix.go": "f39acc55f3633bddf82fed8c09f454d20321ea3fdd514e8809d5640ed6577769"
+  },
+  "environment": {
+    "distribution": "Ubuntu-26.04, explicitly selected in WSL2",
+    "goVersion": "go1.27.2 linux/amd64",
+    "brokerVersion": "nats-server: v2.15.0",
+    "brokerSha256": "387ce54e7a0a249d877a579ed641d715bab047d7e061bfa42b4d07f6a0401341",
+    "runId": "final-2Kr6ZN",
+    "workspacePlacement": "Persistent native Linux home cache",
+    "dependencyResolution": "GOTOOLCHAIN=local, GOPROXY=off, GOSUMDB=off, -mod=readonly",
+    "raceOption": "GORACE=atexit_sleep_ms=0 removes only controlled subprocess post-exit delay; race detection and assertions remain enabled"
+  },
+  "releaseRace": {
+    "commandArguments": ["test", "-race", "-mod=readonly", "-count=1", "-timeout=60s", "-run", "TestInstalledRelease|TestReleaseNonblocking", "-json", "./launcher"],
+    "exitCode": 0,
+    "passedTestAndSubtestRecords": 68,
+    "failureRecords": 0,
+    "skipRecords": 0,
+    "packageElapsedSeconds": 0.357,
+    "raw": "final/release-race.jsonl",
+    "rawSha256": "ebd4af5e9ab1e894fac04b74d899cab62c9b0ee6c5ea2a015a836060bb1b79ac"
+  },
+  "affectedLauncherRace": {
+    "commandArguments": ["test", "-race", "-mod=readonly", "-count=1", "-timeout=180s", "-json", "./launcher"],
+    "exitCode": 0,
+    "passedTestAndSubtestRecords": 283,
+    "failureRecords": 0,
+    "skipRecords": 0,
+    "packageElapsedSeconds": 53.961,
+    "raw": "final/launcher-race.jsonl",
+    "rawSha256": "7705d7343a96356fb94f070a06e71ff46dcc7a63a6a341f87c3aa91a7d7b53a8"
+  },
+  "affectedAssemblyRace": {
+    "commandArguments": ["test", "-race", "-mod=readonly", "-count=1", "-timeout=90s", "-json", "./kernel/assembly"],
+    "exitCode": 0,
+    "passedTestAndSubtestRecords": 65,
+    "failureRecords": 0,
+    "skipRecords": 0,
+    "packageElapsedSeconds": 0.137,
+    "raw": "final/assembly-race.jsonl",
+    "rawSha256": "d82378b6820327129d053df6fe999c11d3809788ec62293ea8b55b34b423241f"
+  },
+  "vet": {
+    "commandArguments": ["vet", "./launcher", "./kernel/assembly"],
+    "exitCode": 0,
+    "stdout": "final/vet.stdout",
+    "stderr": "final/vet.stderr",
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  "sourceBinding": {
+    "allCopiedGoAndModuleFiles": "final/source-before.sha256",
+    "sourceListSha256": "9bdece12211e940772e60d8fb03c0daf6d85f17103c5cd2abafccb284fcb32af",
+    "fileCount": 64,
+    "afterExecutionSha256CheckExitCode": 0,
+    "copiedSourceUnchanged": true,
+    "artifactsCopiedBeforeOwnedExecutionReturned": true
+  },
+  "independentReview": {
+    "reviewer": "Codex subagent Mencius",
+    "scope": "Bounded release signature, file/resource and root-binding source review, not execution or phase acceptance",
+    "metadataSpecialFileRaceResolved": true,
+    "reopenedDirectoryRootRaceResolved": true,
+    "remainingFindings": 0
+  },
+  "historicalSetupFailure": {
+    "raw": "historical-missing-status-api/focused.jsonl",
+    "rawSha256": "3a488c2a27eb75e3b0f94eca52af50cf31275be8c19fc34f6ba9d6ef87c8252c",
+    "exitCode": 1,
+    "cause": "In-progress bootstrap referenced KernelStatusOptions and ObserveKernel before their source files landed.",
+    "releaseTestsExecuted": false,
+    "usedForAcceptance": false,
+    "temporaryExplicitFileDebugPassSubstituted": false
+  },
+  "limits": [
+    "Real signatures and filesystem verification only; synthetic member files are not booted kernels.",
+    "Private signing keys remain ephemeral test memory only; none are written to repository or evidence.",
+    "The host must independently enroll and bind the trusted public key, parent digest, authority, version and API.",
+    "Authenticated image/version declarations do not inspect an actual image or running Docker daemon.",
+    "Runtime immutable-byte staging and verification remain mandatory; returned paths are not executable handles.",
+    "Byte limits do not preempt blocked filesystem calls or sandbox same-UID/privileged mutation.",
+    "Actual installed-host signing policy, native macOS/Linux boot, complete Compose/integration/recovery and phase criteria remain open.",
+    "No P04 identity/JWT or P03 ordinary-plugin manager, general kernel replacement, merge or release is implemented or authorized.",
+    "Pattern review remains stale during concurrent P02 changes; coordinator owns final registration and acceptance.",
+    "Worker changed only release.go/release_test.go and scoped evidence; root owns assembly changes, tracker, commit/push and phase advancement."
+  ]
+}

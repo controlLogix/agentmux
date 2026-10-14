@@ -1,0 +1,294 @@
+{
+  "schemaVersion": "1.0.0",
+  "phase": "P02",
+  "scope": "Actual protected role parent lifetime and retained lock release",
+  "accepted": false,
+  "externalFixtures": {
+    "final": "/home/ryan/.cache/agentmux-governance/kernel-lifetime-final-kt02bu1z",
+    "historicalUnstable": "/home/ryan/.cache/agentmux-governance/kernel-lifetime-affected-3kv8_cf1",
+    "historicalFocused": "/home/ryan/.cache/agentmux-governance/kernel-parent-lifetime-5i0gxf6p"
+  },
+  "files": [
+    {
+      "path": ".gitattributes",
+      "sha256": "e97602ab9cac70102245345c5ab0fc9830df8b17f1072b188265a662a3a547ae",
+      "bytes": 20
+    },
+    {
+      "path": "README.md",
+      "sha256": "eccc8561f27750926b1af18efb4fb141861173e6071bd4aa372d66e35c452736",
+      "bytes": 1988
+    },
+    {
+      "path": "final/affected-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "final/affected.jsonl",
+      "sha256": "d133f1825453a111fc1f757c1f8907413ceb63b1a11a0c7b1be9ddb9c0972a70",
+      "bytes": 166643
+    },
+    {
+      "path": "final/review.json",
+      "sha256": "084f98c8c8da155a33643dffa85279e85b93e3451cdefa03110b8abc450ec282",
+      "bytes": 5995
+    },
+    {
+      "path": "final/specific-repaired-boundary-stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "final/specific-repaired-boundary.jsonl",
+      "sha256": "1ba5569ea60395d7c7c1366afa701f1b412111618bd44d4c719fff2d3db7dc10",
+      "bytes": 1614
+    },
+    {
+      "path": "historical-focused-host-death/result.jsonl",
+      "sha256": "01737d2beb2d4526f4098cb4fffa2ed6ca11b8e75756f81d9bc5aa3ac7c85081",
+      "bytes": 3148
+    },
+    {
+      "path": "historical-focused-host-death/review.json",
+      "sha256": "38624739ffc682364870298e00968119f3fcf489c0e184b12ead685c8ce41b09",
+      "bytes": 4109
+    },
+    {
+      "path": "historical-focused-host-death/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "historical-unstable-assembly-failure/result.jsonl",
+      "sha256": "5fe9a8a67c1b99dc768408a33ecec2032c1f615ddccd23fe461e56981e8700c4",
+      "bytes": 166937
+    },
+    {
+      "path": "historical-unstable-assembly-failure/review.json",
+      "sha256": "8790942df266b484855a8ee3e4d98e7b52bf24bd6ec5886a590f66e0d1579f33",
+      "bytes": 5621
+    },
+    {
+      "path": "historical-unstable-assembly-failure/source/kernel/assembly/open_unix.go",
+      "sha256": "645ddf577c93d74e9b9fb00fdd05446dede24c2f0fec1b8e616abbce7f214851",
+      "bytes": 404
+    },
+    {
+      "path": "historical-unstable-assembly-failure/source/runtime/snapshot_linux.go",
+      "sha256": "382c70ad1cf9e24dcc8871e6e50ae64c4c9fec4c57e53fde313efef803fd04d0",
+      "bytes": 5085
+    },
+    {
+      "path": "historical-unstable-assembly-failure/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "source/cmd/agentmux-kernel/main.go",
+      "sha256": "27e6bb75c3d41cc2367a4590bcf0bf12fe420ae76f020ac484fa0ea399f95cad",
+      "bytes": 1876
+    },
+    {
+      "path": "source/go.mod",
+      "sha256": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+      "bytes": 337
+    },
+    {
+      "path": "source/go.sum",
+      "sha256": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+      "bytes": 998
+    },
+    {
+      "path": "source/kernel/assembly/README.md",
+      "sha256": "d9c9934bd2562ae2f5696de8696b4162cbc57a6fbf9518943b5d3deac7d36eb7",
+      "bytes": 2596
+    },
+    {
+      "path": "source/kernel/assembly/limits_test.go",
+      "sha256": "e7da242c4f51f53f2d6348d24782f63f739896bae110cef69d00d086b1417c5a",
+      "bytes": 1254
+    },
+    {
+      "path": "source/kernel/assembly/open_unix.go",
+      "sha256": "f39acc55f3633bddf82fed8c09f454d20321ea3fdd514e8809d5640ed6577769",
+      "bytes": 1341
+    },
+    {
+      "path": "source/kernel/assembly/open_unix_test.go",
+      "sha256": "55a52d368545db47f2f5a285b61ebbe8d4ccbd1e6947a2faa86a9173846e2652",
+      "bytes": 823
+    },
+    {
+      "path": "source/kernel/assembly/open_unsupported.go",
+      "sha256": "91100eeb4268ce69aeb5c6116d7ecd7a3f9dc89c806c6adeeda4ee84b5a987a0",
+      "bytes": 226
+    },
+    {
+      "path": "source/kernel/assembly/root_test.go",
+      "sha256": "9137eb5c1673149d6c8ef53ec506adccfcad587c7f1d345a8b9bbd2088ae9447",
+      "bytes": 1113
+    },
+    {
+      "path": "source/kernel/assembly/verify.go",
+      "sha256": "e915287f32b009b2b47bbaf7287f9ee29d0ed82fd8e57098260512b8c9826c83",
+      "bytes": 14987
+    },
+    {
+      "path": "source/kernel/assembly/verify_test.go",
+      "sha256": "138b42bae577380b9abbc00f18c699d5f4abd8b9ea8e548bb1330e82d8c6374d",
+      "bytes": 9639
+    },
+    {
+      "path": "source/kernel/boot/integration_test.go",
+      "sha256": "c1342271ba7bd47fd3768cff2f6e6f130c1f51ae44c3b2dca6de6ca8147c4c98",
+      "bytes": 7866
+    },
+    {
+      "path": "source/kernel/boot/parent_lifetime_test.go",
+      "sha256": "14dab46add3cd74ddf4cf3692c058a5f8ddaf1ad47a8937b19cb2fdf7eb704fc",
+      "bytes": 6163
+    },
+    {
+      "path": "source/kernel/boot/process_integration_test.go",
+      "sha256": "77356c4390a9d07c07fad4903aa4a6fcc7905a5bc84e2e6307d4d72609d06f1a",
+      "bytes": 10429
+    },
+    {
+      "path": "source/kernel/boot/run.go",
+      "sha256": "44d27d088332d7f3503c3c8dce04c3dfa807113d1b3f6084592feed60acd9dd1",
+      "bytes": 609
+    },
+    {
+      "path": "source/kernel/communication/README.md",
+      "sha256": "e6cdc9f7c3f227ab07c55e8eea4144747d851c4a1cea3cb40201d950e277b251",
+      "bytes": 3798
+    },
+    {
+      "path": "source/kernel/communication/config.go",
+      "sha256": "b54e90bbf5d5c37fa7e60ffdc878ddd4204bfba411665e2c35311c1fe5b9a883",
+      "bytes": 6035
+    },
+    {
+      "path": "source/kernel/communication/config_test.go",
+      "sha256": "1d2e5d1e30f2f2880396ef427b2261a66ad9ce8f145d45fa9de774b15ea76885",
+      "bytes": 11848
+    },
+    {
+      "path": "source/kernel/communication/run.go",
+      "sha256": "1340ecbbca4b21a3354b0be3147207bbd1fbe9b5039c7825fb750b149a703069",
+      "bytes": 505
+    },
+    {
+      "path": "source/kernel/lifecycle/run.go",
+      "sha256": "ddf748d4038b5099d605efffac8eee213e6479e7b27177f0b3f3fc9ffedb2dac",
+      "bytes": 678
+    },
+    {
+      "path": "source/kernel/protocol/README.md",
+      "sha256": "025b4dcbd14e4d77687f455c7c02fdc279287f873dd02076fc6754bbf2907891",
+      "bytes": 4442
+    },
+    {
+      "path": "source/kernel/protocol/codec.go",
+      "sha256": "7f3c9b3903512ddcc0dbb5501918a600fa34654d0b71d77beffd589e10c9dbd9",
+      "bytes": 9539
+    },
+    {
+      "path": "source/kernel/protocol/codec_test.go",
+      "sha256": "31b719a63e7563ee941f38685aef4fc4330684affbca47f329e9d770e3dd9d38",
+      "bytes": 6670
+    },
+    {
+      "path": "source/kernel/protocol/credentials.go",
+      "sha256": "45f51f19c6a06e77efad2e61cea93d2e8f7f0a50d5fe6d175ab054b687ccf4c3",
+      "bytes": 3074
+    },
+    {
+      "path": "source/kernel/protocol/credentials_unix_test.go",
+      "sha256": "e08e4bb148ebadd9447b9c90f74ccc76da2e050071b89e49fd0462475e8361cf",
+      "bytes": 2422
+    },
+    {
+      "path": "source/kernel/protocol/private_unix.go",
+      "sha256": "094a60606c9c37483b89415953a23b1bcf775a9787fcfd4e9e8ed23a1b91debd",
+      "bytes": 1598
+    },
+    {
+      "path": "source/kernel/protocol/private_unsupported.go",
+      "sha256": "608afc7538c80a0b157be6f3b15037da34923bfe6743ef4ad5c01449866a7a81",
+      "bytes": 180
+    },
+    {
+      "path": "source/kernel/protocol/transport.go",
+      "sha256": "bd6d6c90f4968a547c046a45239796642bb2a0058ba361ad4437680a3aa2f947",
+      "bytes": 8991
+    },
+    {
+      "path": "source/kernel/status/run.go",
+      "sha256": "6be86037c5ff514759af8d767284efae5baabdd406cfa187aaa4ef42fd97ea43",
+      "bytes": 996
+    },
+    {
+      "path": "source/runtime/README.md",
+      "sha256": "51bd1399f410da9bc0899eba02028e76d987b14dbd22df1495c2a7fbb5b11b17",
+      "bytes": 4897
+    },
+    {
+      "path": "source/runtime/parent_linux_test.go",
+      "sha256": "fe553e2041cac4a2af95012c51188e98af0aa2bcf68a138cd9689ae5f13802ce",
+      "bytes": 10628
+    },
+    {
+      "path": "source/runtime/parent_unix.go",
+      "sha256": "7fe95fe66db69c01889f60fd2c4428579daf080d379dff25fc80064962c4a9be",
+      "bytes": 3924
+    },
+    {
+      "path": "source/runtime/snapshot_darwin_test.go",
+      "sha256": "29823b7772b37e6935c3d4261016dcc05cb9c3ba1a84deff8e69ff1dc6f5b93d",
+      "bytes": 3072
+    },
+    {
+      "path": "source/runtime/snapshot_linux.go",
+      "sha256": "2adf8ef1a70fa737f36bc015dc5bdb18e164baf2e4fd13437ac1c6d73f14addb",
+      "bytes": 5110
+    },
+    {
+      "path": "source/runtime/snapshot_unsupported.go",
+      "sha256": "8455c45f2628914a95a897b5539888d597035a01d345487a061b1bf79fccb182",
+      "bytes": 198
+    },
+    {
+      "path": "source/runtime/stop_role.go",
+      "sha256": "04be379b36456a781a26fa0d3f78da84253501e0fff5bd599acede45c97a8b1d",
+      "bytes": 2358
+    },
+    {
+      "path": "source/runtime/stop_role_linux_test.go",
+      "sha256": "dbab48564a0c1986e90b6cbced36e06fde2609bb87ab7008d46bfb91e41df730",
+      "bytes": 4899
+    },
+    {
+      "path": "source/runtime/supervisor.go",
+      "sha256": "8768d4fa02dddb0bc63c2c429810bed3c2454b88ca6f722fd0fbab3b139df944",
+      "bytes": 13028
+    },
+    {
+      "path": "source/runtime/supervisor_linux_test.go",
+      "sha256": "37355c6a6d87f75d62f6af9fa0963d135b48d9f349502603448ad390c629d1f7",
+      "bytes": 17158
+    },
+    {
+      "path": "source/runtime/testdata/dynamic/main.go",
+      "sha256": "3cac6809a685f4986b167bf231ecfeb0fca298bc4ee700b124b7d6c93d97fe84",
+      "bytes": 157
+    },
+    {
+      "path": "source/runtime/testdata/role/main.go",
+      "sha256": "ce544b3b6027ab8d224388787d15d4793fee63c05cce1847e20c623898848c82",
+      "bytes": 765
+    }
+  ],
+  "privacy": "Only repository source, safe raw test results and source-bound reports; no generated private configuration or key material."
+}

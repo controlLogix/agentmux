@@ -1,0 +1,20 @@
+{
+  "expectedFailure": true,
+  "purpose": "Removing first-failure sibling cancellation must fail the real process join regression",
+  "exitCode": 1,
+  "command": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-mod=readonly",
+    "-race",
+    "-count=1",
+    "-json",
+    "-timeout=30s",
+    "./launcher",
+    "-run",
+    "^TestDockerParallelReadCancellationJoinsActualChildren/fail-after-start$"
+  ],
+  "elapsed": 7.845,
+  "originalSourceSHA256": "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813",
+  "mutatedSourceSHA256": "3503e7c2bac025f585c75218bf60e2956773e640e6f6cb70353296c512c0b36c"
+}

@@ -1,0 +1,20 @@
+{
+  "cwd": "/home/ryan/.cache/agentmux-governance/p02-fixed-archives-independent-2ccb83ba/platform",
+  "argv": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "./launcher",
+    "-run",
+    "^(TestFixedTLSArchiveReadsActuallyOverlap|TestFixedTLSArchiveFailureCancelsAndJoinsActualChildren|TestFixedTLSArchiveDeadlineJoinsActualChildren|TestFixedTLSArchiveOwnershipFailureStartsNoArchive)$"
+  ],
+  "fixedEnvironment": {
+    "GOTOOLCHAIN": "local",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GORACE": "atexit_sleep_ms=0"
+  }
+}

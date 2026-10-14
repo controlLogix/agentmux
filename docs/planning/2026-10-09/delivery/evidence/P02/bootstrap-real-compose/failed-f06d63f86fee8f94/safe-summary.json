@@ -1,0 +1,52 @@
+{
+  "scope": "Failed original real Compose bootstrap diagnostic with separately authorized controlled cleanup recovery; no phase acceptance.",
+  "originalRun": {
+    "exitCode": 1,
+    "elapsedSeconds": 124.81880300799821,
+    "testElapsedSeconds": 119.8,
+    "failedTest": "TestBootstrapRealComposeConcurrentColdWarmAndOwnerRecovery",
+    "cause": "Owned fixture volume helper omitted the outer JSON closing brace; exact stop was correctly refused.",
+    "rawSummaryExternalHash": "280352c878aff47cad9d6e63938c11c4c8ef7e584f32c3da2cc802975efcf027",
+    "rawLogHash": "15def470e96b44404a08045690062bb971530b188a2bf7e7fa8e6df2bdc5758e"
+  },
+  "actualFacts": {
+    "oneProject": "amx-p02-bootstrap-f06d63f86fee8f94",
+    "loopbackPort": 63311,
+    "exactContainerId": "fe8d4ec4d6e71089fbf43984cfad1117fb54c11f2639aeeb5281db5396903aac",
+    "baselineContainerCount": 15,
+    "baselineStageGuards": 5,
+    "baselineStageGuardsAllTrue": true,
+    "actualConcurrentColdWarmAndOwnerRecoveryRecords": "See exact separate records; these do not change failed original result.",
+    "composeUpCountNotObserved": true
+  },
+  "controlledCleanup": {
+    "separateAuthorization": true,
+    "exactStopOnce": true,
+    "allFiveActualLeasesAcquired": true,
+    "sameOwnedVolumeRetained": true,
+    "baseline15UnchangedAfterStop": true,
+    "sourcePreservedExternally": "cmd/fixture-recovery/main.go",
+    "sourceSha256": "929c6f51cfb80a8b2adb6af2317a93d5331b7ce0053cfadd856e35b003263ffb",
+    "outputBytes": 0
+  },
+  "sourceRepair": {
+    "helperSha256": "02d8a4fea21af4ad952580e21015ac5721bb3052674d612bff296f203643c40b",
+    "actualTemplateJSONRegressionPassed": true,
+    "taggedCompilePassed": true,
+    "taggedVetPassed": true,
+    "newLiveQualificationNotRun": true
+  },
+  "privacy": {
+    "rawPrivateFixtureLocatorOmitted": true,
+    "brokerConfigurationAndCredentialsOmitted": true,
+    "privateConfigDigestOmitted": true,
+    "rawLogsReviewedAgainstActualGeneratedSecretsAndPrivatePaths": true,
+    "privateTreeAndVolumeRetainedExternally": true
+  },
+  "limits": [
+    "Original run stays exit 1.",
+    "No actual Compose-up count or abrupt host-death claim.",
+    "No native macOS or full P02 acceptance.",
+    "Private fixture and recovery source remain external; only safe source hashes are archived."
+  ]
+}

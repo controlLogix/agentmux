@@ -1,0 +1,22 @@
+{
+  "args": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "./launcher",
+    "-run",
+    "^TestInstalledCLIGenuineStartupAndDetachedLifetime$"
+  ],
+  "cwd": "/home/ryan/.cache/agentmux-governance/p02-installed-cli-first-c0cce79e/platform",
+  "fixedEnvironment": {
+    "GOTOOLCHAIN": "local",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GORACE": "atexit_sleep_ms=0",
+    "AGENTMUX_TEST_NATS": "/home/ryan/.cache/agentmux-governance/tools/nats-server",
+    "AGENTMUX_INSTALLED_CLI_OUTPUTS": "/home/ryan/.cache/agentmux-governance/p02-installed-cli-first-c0cce79e"
+  }
+}

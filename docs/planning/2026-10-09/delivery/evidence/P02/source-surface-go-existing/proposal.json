@@ -1,0 +1,1575 @@
+{
+  "schemaVersion": "1.0.0",
+  "proposalOnly": true,
+  "scope": "Sixteen assigned current-source declaration and bounded semantic reviews",
+  "sourceCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "phaseAccepted": false,
+  "nativeQualified": false,
+  "sourceDigestAttestationAuthorized": false,
+  "sourceSurfaceWritePerformed": false,
+  "frozenInputHashes": {
+    "platform/launcher/docker.go": "3ec7762bcd60b868bd659158d5e8ebc0845cc8590af1ae234eab7fadbe13c2b1",
+    "platform/launcher/lock_unix.go": "8dce55b7daaf4d8233d0075f2593c9d5bdaf7511bfd029592bff88d69143a0a8",
+    "platform/launcher/bootstrap_config.go": "72866eaf4e0b8af2eb16bb59fd80de55eba7d9b281144927c502ee33599866ca",
+    "platform/launcher/host_config.go": "8acbb094876456bc22ae743fb4697fb22d5a722ad7a0231ee4578695a3c5de53",
+    "platform/launcher/docker_instance.go": "4d9353f586348f4ed2a8004379a3041669a1c74cdc3ff986e2bd2c0fe6952b56",
+    "platform/launcher/kernel_status.go": "1e67cdef72a65dd41d9ce319dd6b8f25058f70f14e9a85a6974647616da388f9",
+    "platform/launcher/profile.go": "d158be8c5bbe3d122dd59652485ed4ddbd288b870173d037c3f0e197f37ee45c",
+    "platform/launcher/startup_session.go": "bfa14fb2e0149d99ce82d93df6574105bc88e8287686e95b443d3f24627baae2",
+    "platform/deployment/observe.go": "164739271ada7fb0d94d8e1dc933bd8e34a0d202077d1e68f76ad4e452558b79",
+    "platform/deployment/probe.go": "3d5751789092bf9684dd9f12d77da8c6724ed3db10d4d3bd6dfeb35d3eabc78f",
+    "platform/deployment/profile.go": "f15a34a2111492fc83f3c5e85aad2cb869c4c6487bac9f3cc10aa2de9de767e7",
+    "platform/kernel/protocol/credentials.go": "0b73aef06b02db8225f732e543087b87b5634792346e148b6acac018682885b0",
+    "platform/kernel/protocol/private_unix.go": "19317232374f774060e51fc10530ab202f11a8d29cc5be879fb552c04be02d5b",
+    "platform/kernel/protocol/transport.go": "c4d602a3b349405334cb5b5a90367f9ebc5438bcc0edbffa7fd2c06e3efd77d1",
+    "platform/runtime/snapshot_unsupported.go": "522a77bf706c8522363438e033e64d9478c85a7483d72d65e37b54edb3d8aaec",
+    "platform/runtime/supervisor.go": "0623e52a70d5c4dd5dd7410a80376eb512d93f4779d438769e6bb2c42665b7ef",
+    "docs/planning/2026-10-09/source-surface-index.json": "5f67930fe650e71639df9e86a481e094fd6dd0645c8bf02dbd68f3490991e8f4",
+    "docs/planning/2026-10-09/component-inventory.json": "fca3e55dbc64a1e46cf3d70b87d14686e79edfe45103f2c69cf07641a8723897",
+    "docs/planning/2026-10-09/component-audit-hub.json": "33dcd08a7493cc1de4a48868cf5836eaf72eae5812f487ee57150082b11da34a",
+    "docs/planning/2026-10-09/component-audit-repository.json": "f5e30793b6da601d4b52e94debbc855aa2279277089b3f58cbdbedda315b1e72"
+  },
+  "parser": {
+    "parserBuildCommand": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "build",
+      "-o",
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/inspect",
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/inspect.go"
+    ],
+    "parserBuildExitCode": 0,
+    "parserCommand": [
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/inspect",
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/source/platform/launcher/docker.go",
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/source/platform/launcher/lock_unix.go",
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/source/platform/launcher/bootstrap_config.go",
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/source/platform/launcher/host_config.go",
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/source/platform/launcher/docker_instance.go",
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/source/platform/launcher/kernel_status.go",
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/source/platform/launcher/profile.go",
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/source/platform/launcher/startup_session.go",
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/source/platform/deployment/observe.go",
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/source/platform/deployment/probe.go",
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/source/platform/deployment/profile.go",
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/source/platform/kernel/protocol/credentials.go",
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/source/platform/kernel/protocol/private_unix.go",
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/source/platform/kernel/protocol/transport.go",
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/source/platform/runtime/snapshot_unsupported.go",
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/source/platform/runtime/supervisor.go"
+    ],
+    "parserExitCode": 0,
+    "parserSourceSHA256": "2642f53d7ceb6a53c30fec2a951309e757cb169f9864a2c57f2d0266319c50fa",
+    "goExecutableSHA256": "548d3c32f83fa81152f543eb1526be7884cfe0526eb5e9ce29d3eca14786e7e0"
+  },
+  "reviewArtifacts": {
+    "prepared.json": "97a34e910f6c9889433cd1b2e7b12cecd7092ae1db63dbffc8a198df38369d34",
+    "main-review.json": "6faa6884fe07d0ac6fedb3e0267e800808a7bf436e9af25308a07e56add487e6",
+    "peer-review.json": "7b2b3ec82bc5c0e5cb8eeaa5c9a643abb9350ed8739f6427f8e974687bc96002",
+    "prepare.py": "2e9fe927abf590e9dd5847d17f413fefc72be068bb42f8958e9bb96363d9435e",
+    "inspect.go": "2642f53d7ceb6a53c30fec2a951309e757cb169f9864a2c57f2d0266319c50fa",
+    "finalize.py": "46d70dde5833949cf89ec5136e8d31d46c4f10b8e1b813010c352b29dce8a3d6",
+    "update-supervisor.py": "243611fa08f44d8b9390771732ffef37190fa45beb947eedca0db8e118ac14b5",
+    "clarify-provenance.py": "12cbd27601a4a6006311675b3160e165f38aa9745b15d8cbd27cbb869513f843"
+  },
+  "files": [
+    {
+      "path": "platform/launcher/docker.go",
+      "sha256": "3ec7762bcd60b868bd659158d5e8ebc0845cc8590af1ae234eab7fadbe13c2b1",
+      "currentSHA256AtFinalRead": "3ec7762bcd60b868bd659158d5e8ebc0845cc8590af1ae234eab7fadbe13c2b1",
+      "sourceUnchangedSinceFreeze": true,
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "declarations": [
+        {
+          "name": "refusal",
+          "line": 56,
+          "kind": "go-function"
+        },
+        {
+          "name": "NewDocker",
+          "line": 57,
+          "kind": "go-function"
+        },
+        {
+          "name": "environment",
+          "line": 81,
+          "kind": "go-function"
+        },
+        {
+          "name": "Write",
+          "line": 95,
+          "kind": "go-function"
+        },
+        {
+          "name": "run",
+          "line": 106,
+          "kind": "go-function"
+        },
+        {
+          "name": "read",
+          "line": 136,
+          "kind": "go-function"
+        },
+        {
+          "name": "Inspect",
+          "line": 146,
+          "kind": "go-function"
+        },
+        {
+          "name": "valid",
+          "line": 195,
+          "kind": "go-function"
+        },
+        {
+          "name": "matches",
+          "line": 201,
+          "kind": "go-function"
+        },
+        {
+          "name": "inputLabels",
+          "line": 204,
+          "kind": "go-function"
+        },
+        {
+          "name": "labels",
+          "line": 212,
+          "kind": "go-function"
+        },
+        {
+          "name": "resources",
+          "line": 227,
+          "kind": "go-function"
+        },
+        {
+          "name": "WarmReuse",
+          "line": 253,
+          "kind": "go-function"
+        },
+        {
+          "name": "safeInlineConfig",
+          "line": 301,
+          "kind": "go-function"
+        },
+        {
+          "name": "uniqueComposeJSON",
+          "line": 318,
+          "kind": "go-function"
+        },
+        {
+          "name": "validateCompose",
+          "line": 369,
+          "kind": "go-function"
+        },
+        {
+          "name": "StartOwned",
+          "line": 461,
+          "kind": "go-function"
+        },
+        {
+          "name": "StopOwned",
+          "line": 511,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "previousSurfaceSHA256": "f36a06727a5f20773c06cefae3ff2c082195ebccf27ec82f98635ad4cf8b0e4f",
+      "declarationDelta": {
+        "addedNames": [],
+        "removedNames": [],
+        "linesChanged": true
+      },
+      "how": "Inspect the explicitly selected context, endpoint, engine and exact versions. Use fixed parallel reads and the separately qualified Windows stdio helper only for its admitted version tuple. Validate exact private inline Compose shape and resource labels before any owned mutation.",
+      "where": [
+        "Inspect:146",
+        "validateCompose:369",
+        "StartOwned:461",
+        "StopOwned:511"
+      ],
+      "why": "Ambient discovery, interpolated configuration or matching names alone cannot authorize adoption or stopping a resource.",
+      "tradeoffsOrLimits": "The qualified Windows helper and native CLI paths differ; inspection is not TLS authentication. The lock-held flag requires a real caller-owned OS lease and is not independently granted by this adapter.",
+      "historicalEvidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/inline-config-independent/review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/inline-config-repair-independent/review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/docker-stdio-integration-review/results.json"
+      ],
+      "evidenceLimit": "Earlier admission findings and their repairs have different source hashes. They remain historical; no new engine run or current whole-platform acceptance is inferred.",
+      "findings": [],
+      "proposedReviewStatus": "P02 bounded current-source/declaration review only; historical runtime evidence remains separate and native/phase acceptance is open"
+    },
+    {
+      "path": "platform/launcher/lock_unix.go",
+      "sha256": "8dce55b7daaf4d8233d0075f2593c9d5bdaf7511bfd029592bff88d69143a0a8",
+      "currentSHA256AtFinalRead": "8dce55b7daaf4d8233d0075f2593c9d5bdaf7511bfd029592bff88d69143a0a8",
+      "sourceUnchangedSinceFreeze": true,
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "declarations": [
+        {
+          "name": "Error",
+          "line": 35,
+          "kind": "go-function"
+        },
+        {
+          "name": "Unwrap",
+          "line": 36,
+          "kind": "go-function"
+        },
+        {
+          "name": "waitingError",
+          "line": 38,
+          "kind": "go-function"
+        },
+        {
+          "name": "AcquireBootstrapLock",
+          "line": 56,
+          "kind": "go-function"
+        },
+        {
+          "name": "Close",
+          "line": 156,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "previousSurfaceSHA256": "b8232a239d47e43d8fac3759d137abfe3b2502adaae6e62d25691323872f9859",
+      "declarationDelta": {
+        "addedNames": [],
+        "removedNames": [],
+        "linesChanged": true
+      },
+      "how": "Retain an existing private profile directory descriptor, open the hashed lock with no-follow, nonblocking and close-on-exec flags, check held descriptor access and recheck directory/file identity after flock before writing a random attempt marker.",
+      "where": "AcquireBootstrapLock lines 56-152; held access checks at 83, 105 and 131; Close lines 156-163.",
+      "why": "Prevent permissive access or replaced path identity from authorizing the startup lease. The lock inode is never unlinked, and observed metadata cannot authorize takeover.",
+      "tradeoffsOrLimits": "Canonical ancestry remains an enrollment prerequisite. Ordinary filesystem calls are synchronous; a finite context does not preempt them. An already canceled context is checked in the lock loop, not before every filesystem effect. The original lock-only evidence binds a different source hash.",
+      "historicalEvidence": [
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-lock-review/root-review.json",
+          "sha256": "59413d578d2acb07318a373443896cd1d8deb88f7707aa7c7d4f1eb386be1f15",
+          "binding": "Historical lock hash differs from this freeze."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/owner-status-deadline/review.json",
+          "sha256": "98f255474fb49eed8cd6591ee7fb988053f114ab2c5a0e8c68ef1e55fac654d4",
+          "binding": "Session hash matches; other historical source bindings vary."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/kernel-operation-proof/final-stage-review.json",
+          "sha256": "33ffea1ddb7e9751f1696307605c8e7a30241dddd09ae7be5141a2edbd8106bd",
+          "binding": "Kernel observer hash matches."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/shared-tls-cleanup-independent/independent-review.json",
+          "sha256": "8162637c4518915728e812f32da5a1ae642d98815a5bf0d427c5018c07a583df",
+          "binding": "All three assigned protocol source hashes match."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-cold-proof-and-start-validation/review.json",
+          "sha256": "2befcadaadc59bfee1456013a4f07543b276dd240f9c01f4f4d901e52d073bc3",
+          "binding": "Supervisor hash differs; pre-spawn failure test history only."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-secure-lock-review/review.json",
+          "sha256": "a8ce4e933b96e19a7f3ac3928c90626f4d4d23b146032d0152abdefe1db0b8bf",
+          "binding": "Supervisor and unsupported stub hashes match; lock hash differs."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/runtime-parent-lifetime/review.json",
+          "sha256": "d633e0ef69008030a500d9cee0ecd3dd9f09219c54211abbc30746c19e2a46a9",
+          "binding": "Historical bounded exact-child/descriptor lifetime review; no new raw execution audit."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/darwin-protected-backend/review.json",
+          "sha256": "e653c92dd50159a0194bcd29a65091a46b45bd48231a66c9a9e9b5fc07951450",
+          "binding": "Unsupported stub hash matches; Darwin implementation and qualification remain outside this review."
+        }
+      ],
+      "evidenceLimit": "Canonical ancestry remains an enrollment prerequisite. Ordinary filesystem calls are synchronous; a finite context does not preempt them. An already canceled context is checked in the lock loop, not before every filesystem effect. The original lock-only evidence binds a different source hash.",
+      "findings": [],
+      "proposedReviewStatus": "P02 bounded current-source/declaration review only; historical runtime evidence remains separate and native/phase acceptance is open"
+    },
+    {
+      "path": "platform/launcher/bootstrap_config.go",
+      "sha256": "72866eaf4e0b8af2eb16bb59fd80de55eba7d9b281144927c502ee33599866ca",
+      "currentSHA256AtFinalRead": "72866eaf4e0b8af2eb16bb59fd80de55eba7d9b281144927c502ee33599866ca",
+      "sourceUnchangedSinceFreeze": true,
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "declarations": [
+        {
+          "name": "bootstrapBrokerCredentials",
+          "line": 17,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "previousSurfaceSHA256": "7b4c43013122d2b64e5c19cc3522ea5a3ca154619a756494eb2add053e0405a7",
+      "declarationDelta": {
+        "addedNames": [],
+        "removedNames": [],
+        "linesChanged": false
+      },
+      "how": "Extract the fixed health, observer and optional HOST credentials, then rebuild the corresponding secure or historical factory configuration and compare complete decoded objects with json.Number values.",
+      "where": [
+        "bootstrapBrokerCredentials:17"
+      ],
+      "why": "Broker labels and selected usernames cannot establish the actual account permission boundary or exact storage configuration.",
+      "tradeoffsOrLimits": "Historical plaintext helper paths remain explicit, while the installed loader requires TLS. This private function returns secret-bearing credentials only to trusted bootstrap code.",
+      "historicalEvidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/host-config/source-bound-results.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/local-broker-authentication-review/review.json"
+      ],
+      "evidenceLimit": "The older loader record explicitly qualified a plaintext helper version, not this TLS-installed composition.",
+      "findings": [],
+      "proposedReviewStatus": "P02 bounded current-source/declaration review only; historical runtime evidence remains separate and native/phase acceptance is open"
+    },
+    {
+      "path": "platform/launcher/host_config.go",
+      "sha256": "8acbb094876456bc22ae743fb4697fb22d5a722ad7a0231ee4578695a3c5de53",
+      "currentSHA256AtFinalRead": "8acbb094876456bc22ae743fb4697fb22d5a722ad7a0231ee4578695a3c5de53",
+      "sourceUnchangedSinceFreeze": true,
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "declarations": [
+        {
+          "name": "hostConfigError",
+          "line": 51,
+          "kind": "go-function"
+        },
+        {
+          "name": "hostPrivateRead",
+          "line": 53,
+          "kind": "go-function"
+        },
+        {
+          "name": "hostPrivateReadWithOpen",
+          "line": 57,
+          "kind": "go-function"
+        },
+        {
+          "name": "hostReadMetadataEqual",
+          "line": 85,
+          "kind": "go-function"
+        },
+        {
+          "name": "hostRuntimeDecode",
+          "line": 106,
+          "kind": "go-function"
+        },
+        {
+          "name": "hostBrokerSecrets",
+          "line": 126,
+          "kind": "go-function"
+        },
+        {
+          "name": "LoadBootstrapConfig",
+          "line": 159,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "previousSurfaceSHA256": "e00fdda82a8478f95b426de66b36e504592783ab9c31a3fb9298dacd5c1209ce",
+      "declarationDelta": {
+        "addedNames": [
+          "hostPrivateReadWithOpen",
+          "hostReadMetadataEqual"
+        ],
+        "removedNames": [],
+        "linesChanged": true
+      },
+      "how": "Load separately enrolled policy, a signed installed release and held private files. Enforce stable inode/mode/size/mtime/ctime and descriptor access policy; bind per-profile server trust, role credentials, runtime storage, broker factory and regenerated Compose digest before returning private bootstrap configuration.",
+      "where": [
+        "hostPrivateReadWithOpen:57",
+        "hostReadMetadataEqual:85",
+        "LoadBootstrapConfig:159"
+      ],
+      "why": "A valid file or release signature alone cannot authorize a substituted profile, credentials, TLS server or storage configuration.",
+      "tradeoffsOrLimits": "Filesystem reads are synchronous and fail closed on changed metadata. Returned configuration contains secrets and is not a user-facing serialization or readiness observation.",
+      "historicalEvidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/host-config/preliminary-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/host-config/source-bound-results.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/installed-tls-admission-independent/review.json"
+      ],
+      "evidenceLimit": "Current source differs from the preliminary/final older plaintext loader records. Source review does not qualify installed startup or native private-file admission.",
+      "findings": [],
+      "proposedReviewStatus": "P02 bounded current-source/declaration review only; historical runtime evidence remains separate and native/phase acceptance is open"
+    },
+    {
+      "path": "platform/launcher/docker_instance.go",
+      "sha256": "4d9353f586348f4ed2a8004379a3041669a1c74cdc3ff986e2bd2c0fe6952b56",
+      "currentSHA256AtFinalRead": "4d9353f586348f4ed2a8004379a3041669a1c74cdc3ff986e2bd2c0fe6952b56",
+      "sourceUnchangedSinceFreeze": true,
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "declarations": [
+        {
+          "name": "InspectOwnedBroker",
+          "line": 51,
+          "kind": "go-function"
+        },
+        {
+          "name": "inspectOwnedBrokerIdentity",
+          "line": 68,
+          "kind": "go-function"
+        },
+        {
+          "name": "verifyBrokerConfigArchive",
+          "line": 164,
+          "kind": "go-function"
+        },
+        {
+          "name": "verifyPrivateFileArchive",
+          "line": 170,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "previousSurfaceSHA256": "f02ee9131b0e52679e7965baa962822adbebe0381a3e1fcd6aad5b398702d5e8",
+      "declarationDelta": {
+        "addedNames": [
+          "inspectOwnedBrokerIdentity",
+          "verifyPrivateFileArchive"
+        ],
+        "removedNames": [],
+        "linesChanged": true
+      },
+      "how": "Verify exact selected-engine broker roster, image identity, labels, process state, loopback port and named data volume before reading a private archive. Require exactly one bounded regular root-owned 0400 file with the expected digest and no extra entry or nonzero trailing bytes.",
+      "where": [
+        "InspectOwnedBroker:51",
+        "inspectOwnedBrokerIdentity:68",
+        "verifyPrivateFileArchive:170"
+      ],
+      "why": "Names, running state and labels alone do not bind the actual private broker configuration or justify readiness.",
+      "tradeoffsOrLimits": "Only bounded safe state projections are returned. Docker/config inspection remains distinct from cryptographic peer authentication; this older public helper checks one broker-config archive, while TLS-specific inspection has its separate adapter.",
+      "historicalEvidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/broker-inspector/source-bound-results.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/fixed-tls-archives-independent/independent-review.json"
+      ],
+      "evidenceLimit": "The original controlled executable tests were not real Docker execution and have older source identities.",
+      "findings": [],
+      "proposedReviewStatus": "P02 bounded current-source/declaration review only; historical runtime evidence remains separate and native/phase acceptance is open"
+    },
+    {
+      "path": "platform/launcher/kernel_status.go",
+      "sha256": "1e67cdef72a65dd41d9ce319dd6b8f25058f70f14e9a85a6974647616da388f9",
+      "currentSHA256AtFinalRead": "1e67cdef72a65dd41d9ce319dd6b8f25058f70f14e9a85a6974647616da388f9",
+      "sourceUnchangedSinceFreeze": true,
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "declarations": [
+        {
+          "name": "kernelStatusError",
+          "line": 33,
+          "kind": "go-function"
+        },
+        {
+          "name": "IsKernelStatusAuthorityError",
+          "line": 39,
+          "kind": "go-function"
+        },
+        {
+          "name": "Error",
+          "line": 48,
+          "kind": "go-function"
+        },
+        {
+          "name": "Unwrap",
+          "line": 58,
+          "kind": "go-function"
+        },
+        {
+          "name": "Format",
+          "line": 59,
+          "kind": "go-function"
+        },
+        {
+          "name": "MarshalJSON",
+          "line": 60,
+          "kind": "go-function"
+        },
+        {
+          "name": "inspectionStage",
+          "line": 61,
+          "kind": "go-function"
+        },
+        {
+          "name": "Dial",
+          "line": 84,
+          "kind": "go-function"
+        },
+        {
+          "name": "close",
+          "line": 114,
+          "kind": "go-function"
+        },
+        {
+          "name": "kernelStatusEndpoint",
+          "line": 134,
+          "kind": "go-function"
+        },
+        {
+          "name": "ObserveKernel",
+          "line": 155,
+          "kind": "go-function"
+        },
+        {
+          "name": "observeKernelWithProof",
+          "line": 159,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "previousSurfaceSHA256": "ac03d22aacec72dbaffff1d21cbd28fd514ccba4f74e26b7f440c1908d512478",
+      "declarationDelta": {
+        "addedNames": [
+          "IsKernelStatusAuthorityError",
+          "Error",
+          "Unwrap",
+          "Format",
+          "MarshalJSON",
+          "inspectionStage",
+          "observeKernelWithProof"
+        ],
+        "removedNames": [],
+        "linesChanged": true
+      },
+      "how": "Use a typed authority sentinel, safe stage diagnostics and an optional private operation proof. Bound authority requires exact options and enrolled TLS policy; refresh inspects the broker when needed. TLS is authenticated before CONNECT. Owned transport cleanup precedes NATS Close and invalidates a successful snapshot on failure.",
+      "where": "Authority/stage declarations lines 31-67; observeKernelWithProof lines 159-325, authority 180-213, cleanup 218-226 and secure dialer 227-249.",
+      "why": "Avoid redundant inspection within one authorized observation without substituting cached claims for TLS or readiness. Preserve authority and concrete cleanup errors while exposing only fixed diagnostics.",
+      "tradeoffsOrLimits": "The nil-trust standalone prototype branch remains plaintext; installed admission is a separate prerequisite. The proof implementation and installed loader are outside these eight files. Snapshot freshness is decoded rather than retimestamped. Final-stage historical review matches this file hash but its raw execution was not re-audited here.",
+      "historicalEvidence": [
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-lock-review/root-review.json",
+          "sha256": "59413d578d2acb07318a373443896cd1d8deb88f7707aa7c7d4f1eb386be1f15",
+          "binding": "Historical lock hash differs from this freeze."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/owner-status-deadline/review.json",
+          "sha256": "98f255474fb49eed8cd6591ee7fb988053f114ab2c5a0e8c68ef1e55fac654d4",
+          "binding": "Session hash matches; other historical source bindings vary."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/kernel-operation-proof/final-stage-review.json",
+          "sha256": "33ffea1ddb7e9751f1696307605c8e7a30241dddd09ae7be5141a2edbd8106bd",
+          "binding": "Kernel observer hash matches."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/shared-tls-cleanup-independent/independent-review.json",
+          "sha256": "8162637c4518915728e812f32da5a1ae642d98815a5bf0d427c5018c07a583df",
+          "binding": "All three assigned protocol source hashes match."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-cold-proof-and-start-validation/review.json",
+          "sha256": "2befcadaadc59bfee1456013a4f07543b276dd240f9c01f4f4d901e52d073bc3",
+          "binding": "Supervisor hash differs; pre-spawn failure test history only."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-secure-lock-review/review.json",
+          "sha256": "a8ce4e933b96e19a7f3ac3928c90626f4d4d23b146032d0152abdefe1db0b8bf",
+          "binding": "Supervisor and unsupported stub hashes match; lock hash differs."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/runtime-parent-lifetime/review.json",
+          "sha256": "d633e0ef69008030a500d9cee0ecd3dd9f09219c54211abbc30746c19e2a46a9",
+          "binding": "Historical bounded exact-child/descriptor lifetime review; no new raw execution audit."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/darwin-protected-backend/review.json",
+          "sha256": "e653c92dd50159a0194bcd29a65091a46b45bd48231a66c9a9e9b5fc07951450",
+          "binding": "Unsupported stub hash matches; Darwin implementation and qualification remain outside this review."
+        }
+      ],
+      "evidenceLimit": "The nil-trust standalone prototype branch remains plaintext; installed admission is a separate prerequisite. The proof implementation and installed loader are outside these eight files. Snapshot freshness is decoded rather than retimestamped. Final-stage historical review matches this file hash but its raw execution was not re-audited here.",
+      "findings": [],
+      "proposedReviewStatus": "P02 bounded current-source/declaration review only; historical runtime evidence remains separate and native/phase acceptance is open"
+    },
+    {
+      "path": "platform/launcher/profile.go",
+      "sha256": "d158be8c5bbe3d122dd59652485ed4ddbd288b870173d037c3f0e197f37ee45c",
+      "currentSHA256AtFinalRead": "d158be8c5bbe3d122dd59652485ed4ddbd288b870173d037c3f0e197f37ee45c",
+      "sourceUnchangedSinceFreeze": true,
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "declarations": [
+        {
+          "name": "Summary",
+          "line": 72,
+          "kind": "go-function"
+        },
+        {
+          "name": "Declaration",
+          "line": 78,
+          "kind": "go-function"
+        },
+        {
+          "name": "LocalDocker",
+          "line": 87,
+          "kind": "go-function"
+        },
+        {
+          "name": "profileError",
+          "line": 99,
+          "kind": "go-function"
+        },
+        {
+          "name": "privateProfileInfo",
+          "line": 101,
+          "kind": "go-function"
+        },
+        {
+          "name": "canonicalProfilePath",
+          "line": 106,
+          "kind": "go-function"
+        },
+        {
+          "name": "openProfileDirectory",
+          "line": 121,
+          "kind": "go-function"
+        },
+        {
+          "name": "validateProfile",
+          "line": 166,
+          "kind": "go-function"
+        },
+        {
+          "name": "checkProfileJSON",
+          "line": 238,
+          "kind": "go-function"
+        },
+        {
+          "name": "LoadProfile",
+          "line": 296,
+          "kind": "go-function"
+        },
+        {
+          "name": "loadProfile",
+          "line": 300,
+          "kind": "go-function"
+        },
+        {
+          "name": "EnrollProfile",
+          "line": 353,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "previousSurfaceSHA256": "684a8754fcfc6dc09a7129031c1852aa27a1d826efeab19e6635d09b2e1870c2",
+      "declarationDelta": {
+        "addedNames": [],
+        "removedNames": [],
+        "linesChanged": true
+      },
+      "how": "Use separately trusted profile policy, native private-directory/ancestor admission and no-follow held member reads. Validate exact bounded declarations, TLS trust references and immutable selection data; detect file metadata changes. Return copied private declarations or a restricted public summary. Enrollment exclusively publishes a complete file without replacing an existing profile.",
+      "where": [
+        "openProfileDirectory:121",
+        "validateProfile:166",
+        "loadProfile:300",
+        "EnrollProfile:353"
+      ],
+      "why": "Workspace-owned or substituted files cannot become host enrollment authority, and concurrent enrollment cannot overwrite user configuration.",
+      "tradeoffsOrLimits": "Generic remote TLS declarations do not connect or provision anything. Installed local TLS requirements are enforced by the host loader; generic historical profile APIs are not standalone authorization or native installation proof.",
+      "historicalEvidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/launcher-profile/review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/profile-boundaries/review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/profile-resource-ownership/source-bound-results.json"
+      ],
+      "evidenceLimit": "Historical profile findings and no-follow repairs retain their original hashes; the current ACL/TLS/private metadata path still needs supported-native qualification.",
+      "findings": [],
+      "proposedReviewStatus": "P02 bounded current-source/declaration review only; historical runtime evidence remains separate and native/phase acceptance is open"
+    },
+    {
+      "path": "platform/launcher/startup_session.go",
+      "sha256": "bfa14fb2e0149d99ce82d93df6574105bc88e8287686e95b443d3f24627baae2",
+      "currentSHA256AtFinalRead": "bfa14fb2e0149d99ce82d93df6574105bc88e8287686e95b443d3f24627baae2",
+      "sourceUnchangedSinceFreeze": true,
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "declarations": [
+        {
+          "name": "observationContextError",
+          "line": 15,
+          "kind": "go-function"
+        },
+        {
+          "name": "lockOwnerObservation",
+          "line": 24,
+          "kind": "go-function"
+        },
+        {
+          "name": "OwnerObservation",
+          "line": 49,
+          "kind": "go-function"
+        },
+        {
+          "name": "OwnerObservationContext",
+          "line": 58,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "previousSurfaceSHA256": "a689c6575d47b10a410f89b7d34434f115c4e45849469dc31a51223fe9543a23",
+      "declarationDelta": {
+        "addedNames": [
+          "observationContextError",
+          "lockOwnerObservation",
+          "OwnerObservationContext"
+        ],
+        "removedNames": [],
+        "linesChanged": true
+      },
+      "how": "The compatibility method delegates to a context-aware method. One five-second maximum covers both lock waits and mapping; TryLock retries do not leave a helper waiter. Copy member/probe values without refreshing observation time. Known owned exit or cleanup failure overrides cached readiness.",
+      "where": "Lock helper lines 24-44; compatibility entry lines 49-51; context method lines 58-125.",
+      "why": "Bound status observation and reject late success while preserving current invocation/owner correlation and honest stale or unavailable information.",
+      "tradeoffsOrLimits": "Ordinary filesystem work in the external mapper is not preemptible. Child status mutexes assume short in-process critical sections. This method maps retained observations; it neither authenticates a caller nor refreshes NATS state. The deadline review matches this file hash, not every current dependency.",
+      "historicalEvidence": [
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-lock-review/root-review.json",
+          "sha256": "59413d578d2acb07318a373443896cd1d8deb88f7707aa7c7d4f1eb386be1f15",
+          "binding": "Historical lock hash differs from this freeze."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/owner-status-deadline/review.json",
+          "sha256": "98f255474fb49eed8cd6591ee7fb988053f114ab2c5a0e8c68ef1e55fac654d4",
+          "binding": "Session hash matches; other historical source bindings vary."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/kernel-operation-proof/final-stage-review.json",
+          "sha256": "33ffea1ddb7e9751f1696307605c8e7a30241dddd09ae7be5141a2edbd8106bd",
+          "binding": "Kernel observer hash matches."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/shared-tls-cleanup-independent/independent-review.json",
+          "sha256": "8162637c4518915728e812f32da5a1ae642d98815a5bf0d427c5018c07a583df",
+          "binding": "All three assigned protocol source hashes match."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-cold-proof-and-start-validation/review.json",
+          "sha256": "2befcadaadc59bfee1456013a4f07543b276dd240f9c01f4f4d901e52d073bc3",
+          "binding": "Supervisor hash differs; pre-spawn failure test history only."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-secure-lock-review/review.json",
+          "sha256": "a8ce4e933b96e19a7f3ac3928c90626f4d4d23b146032d0152abdefe1db0b8bf",
+          "binding": "Supervisor and unsupported stub hashes match; lock hash differs."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/runtime-parent-lifetime/review.json",
+          "sha256": "d633e0ef69008030a500d9cee0ecd3dd9f09219c54211abbc30746c19e2a46a9",
+          "binding": "Historical bounded exact-child/descriptor lifetime review; no new raw execution audit."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/darwin-protected-backend/review.json",
+          "sha256": "e653c92dd50159a0194bcd29a65091a46b45bd48231a66c9a9e9b5fc07951450",
+          "binding": "Unsupported stub hash matches; Darwin implementation and qualification remain outside this review."
+        }
+      ],
+      "evidenceLimit": "Ordinary filesystem work in the external mapper is not preemptible. Child status mutexes assume short in-process critical sections. This method maps retained observations; it neither authenticates a caller nor refreshes NATS state. The deadline review matches this file hash, not every current dependency.",
+      "findings": [],
+      "proposedReviewStatus": "P02 bounded current-source/declaration review only; historical runtime evidence remains separate and native/phase acceptance is open"
+    },
+    {
+      "path": "platform/deployment/observe.go",
+      "sha256": "164739271ada7fb0d94d8e1dc933bd8e34a0d202077d1e68f76ad4e452558b79",
+      "currentSHA256AtFinalRead": "164739271ada7fb0d94d8e1dc933bd8e34a0d202077d1e68f76ad4e452558b79",
+      "sourceUnchangedSinceFreeze": true,
+      "componentIds": [
+        "PLAT-03"
+      ],
+      "declarations": [
+        {
+          "name": "observeError",
+          "line": 48,
+          "kind": "go-function"
+        },
+        {
+          "name": "Dial",
+          "line": 67,
+          "kind": "go-function"
+        },
+        {
+          "name": "close",
+          "line": 101,
+          "kind": "go-function"
+        },
+        {
+          "name": "observeFailure",
+          "line": 116,
+          "kind": "go-function"
+        },
+        {
+          "name": "Observe",
+          "line": 130,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "previousSurfaceSHA256": "befbca0285fa7015915f7b3ef3fb636a321fb521e5b75429f464e9b610d408eb",
+      "declarationDelta": {
+        "addedNames": [],
+        "removedNames": [],
+        "linesChanged": true
+      },
+      "how": "Authenticate the enrolled TLS transport, verify actual broker/account/domain and make only INFO or existing MSG.GET requests. Distinguish configuration and existing-record observations from a current write proof. Close the concrete raw transport owner before NATS cleanup and invalidate facts if cleanup fails, retaining the same retry owner.",
+      "where": [
+        "Observe:130"
+      ],
+      "why": "A retained health record cannot establish current write permission, application readiness or safe cleanup.",
+      "tradeoffsOrLimits": "The historical plaintext dialer is separate and does not authorize installed plaintext. Read-only observation performs no lifecycle mutation and cannot repair an absent or incompatible stream.",
+      "historicalEvidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/health-cleanup-independent/independent-review.json"
+      ],
+      "evidenceLimit": "The reviewed caller hash matches this frozen source. Earlier helper/socket and affected-suite results remain distinct from forced cleanup failures through the complete caller and installed/native qualification.",
+      "findings": [],
+      "proposedReviewStatus": "P02 bounded current-source/declaration review only; historical runtime evidence remains separate and native/phase acceptance is open"
+    },
+    {
+      "path": "platform/deployment/probe.go",
+      "sha256": "3d5751789092bf9684dd9f12d77da8c6724ed3db10d4d3bd6dfeb35d3eabc78f",
+      "currentSHA256AtFinalRead": "3d5751789092bf9684dd9f12d77da8c6724ed3db10d4d3bd6dfeb35d3eabc78f",
+      "sourceUnchangedSinceFreeze": true,
+      "componentIds": [
+        "PLAT-03"
+      ],
+      "declarations": [
+        {
+          "name": "HealthConfig",
+          "line": 38,
+          "kind": "go-function"
+        },
+        {
+          "name": "probeError",
+          "line": 42,
+          "kind": "go-function"
+        },
+        {
+          "name": "validateProbe",
+          "line": 46,
+          "kind": "go-function"
+        },
+        {
+          "name": "compatibleHealth",
+          "line": 67,
+          "kind": "go-function"
+        },
+        {
+          "name": "ProvisionAndProbe",
+          "line": 81,
+          "kind": "go-function"
+        },
+        {
+          "name": "Probe",
+          "line": 86,
+          "kind": "go-function"
+        },
+        {
+          "name": "runProbe",
+          "line": 88,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "previousSurfaceSHA256": "df71842055c7f946d6579b1db499957a4c3dc7620bd4824ffd8acbb45f9995c7",
+      "declarationDelta": {
+        "addedNames": [],
+        "removedNames": [],
+        "linesChanged": true
+      },
+      "how": "Require fixed loopback identity and a bounded context. Installed callers supply enrolled TLS. Create only an absent exact-compatible health stream on the provisioning path; never update incompatible state. Publish and read back a fixed disposable health record. Invalidate result facts on deadline or concrete cleanup failure.",
+      "where": [
+        "compatibleHealth:67",
+        "ProvisionAndProbe:81",
+        "runProbe:88"
+      ],
+      "why": "Current scoped health writes and read-only retained observations prove different facts; neither is a business completion or acceptance record.",
+      "tradeoffsOrLimits": "NATS 2.15 observed version metadata is admitted narrowly without authorizing arbitrary metadata/features. Historical plaintext helper calls remain outside installed TLS admission.",
+      "historicalEvidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/health-cleanup-independent/independent-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/local-health-retention/review.json"
+      ],
+      "evidenceLimit": "The cleanup source review matches this hash, but previous health fixtures are not final current installed/native acceptance.",
+      "findings": [],
+      "proposedReviewStatus": "P02 bounded current-source/declaration review only; historical runtime evidence remains separate and native/phase acceptance is open"
+    },
+    {
+      "path": "platform/deployment/profile.go",
+      "sha256": "f15a34a2111492fc83f3c5e85aad2cb869c4c6487bac9f3cc10aa2de9de767e7",
+      "currentSHA256AtFinalRead": "f15a34a2111492fc83f3c5e85aad2cb869c4c6487bac9f3cc10aa2de9de767e7",
+      "sourceUnchangedSinceFreeze": true,
+      "componentIds": [
+        "PLAT-03"
+      ],
+      "declarations": [
+        {
+          "name": "BuildLocalConfig",
+          "line": 34,
+          "kind": "go-function"
+        },
+        {
+          "name": "HealthStream",
+          "line": 85,
+          "kind": "go-function"
+        },
+        {
+          "name": "HealthSubject",
+          "line": 86,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "previousSurfaceSHA256": "219b2c8742514699c0c12822576e580142e2f43b51d8405e3207a8ebb0a5f6fd",
+      "declarationDelta": {
+        "addedNames": [],
+        "removedNames": [],
+        "linesChanged": false
+      },
+      "how": "Generate the fixed protected account configuration plus an isolated infrastructure health account, bounded R1 file storage, explicit domain/path/limits and sync_interval=always. Admit only the exact health subject and fixed domain/local API forms.",
+      "where": [
+        "BuildLocalConfig:34",
+        "HealthStream:85",
+        "HealthSubject:86"
+      ],
+      "why": "Durable local infrastructure probes require explicit storage/sync policy without giving health credentials protected, business or federation authority.",
+      "tradeoffsOrLimits": "This retained base factory contains secrets and is not a business-state/R3/reservation or power-loss durability implementation. Secure installed configuration is built by the separate TLS factory.",
+      "historicalEvidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/local-sync-policy/results.json"
+      ],
+      "evidenceLimit": "The factory hash matches the sync-policy record. Its actual WSL NATS flag/negative controls remain narrower than native Compose or P12 storage qualification.",
+      "findings": [],
+      "proposedReviewStatus": "P02 bounded current-source/declaration review only; historical runtime evidence remains separate and native/phase acceptance is open"
+    },
+    {
+      "path": "platform/kernel/protocol/credentials.go",
+      "sha256": "0b73aef06b02db8225f732e543087b87b5634792346e148b6acac018682885b0",
+      "currentSHA256AtFinalRead": "0b73aef06b02db8225f732e543087b87b5634792346e148b6acac018682885b0",
+      "sourceUnchangedSinceFreeze": true,
+      "componentIds": [
+        "KERN-03"
+      ],
+      "declarations": [
+        {
+          "name": "Now",
+          "line": 29,
+          "kind": "go-function"
+        },
+        {
+          "name": "Code",
+          "line": 33,
+          "kind": "go-function"
+        },
+        {
+          "name": "valid",
+          "line": 48,
+          "kind": "go-function"
+        },
+        {
+          "name": "prepared",
+          "line": 61,
+          "kind": "go-function"
+        },
+        {
+          "name": "LoadEnvironment",
+          "line": 91,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "previousSurfaceSHA256": "45f51f19c6a06e77efad2e61cea93d2e8f7f0a50d5fe6d175ab054b687ccf4c3",
+      "declarationDelta": {
+        "addedNames": [],
+        "removedNames": [],
+        "linesChanged": true
+      },
+      "how": "Config adds local ClientTrust. TLS endpoints require exact matching trust; mismatched trust on the retained nats prototype path is refused. LoadEnvironment loads the fixed trust-file reference alongside bound role credentials.",
+      "where": "Config lines 40-46, prepared lines 61-87 and LoadEnvironment lines 91-126.",
+      "why": "Carry independently enrolled server identity to protected role transport without inheriting a root broker client or accepting ambient system roots.",
+      "tradeoffsOrLimits": "Unchanged function names do not mean unchanged API: the exported Config shape changed. The plaintext prototype path is retained; installed policy enforcement and complete trust decoding are separate source owners.",
+      "historicalEvidence": [
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-lock-review/root-review.json",
+          "sha256": "59413d578d2acb07318a373443896cd1d8deb88f7707aa7c7d4f1eb386be1f15",
+          "binding": "Historical lock hash differs from this freeze."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/owner-status-deadline/review.json",
+          "sha256": "98f255474fb49eed8cd6591ee7fb988053f114ab2c5a0e8c68ef1e55fac654d4",
+          "binding": "Session hash matches; other historical source bindings vary."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/kernel-operation-proof/final-stage-review.json",
+          "sha256": "33ffea1ddb7e9751f1696307605c8e7a30241dddd09ae7be5141a2edbd8106bd",
+          "binding": "Kernel observer hash matches."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/shared-tls-cleanup-independent/independent-review.json",
+          "sha256": "8162637c4518915728e812f32da5a1ae642d98815a5bf0d427c5018c07a583df",
+          "binding": "All three assigned protocol source hashes match."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-cold-proof-and-start-validation/review.json",
+          "sha256": "2befcadaadc59bfee1456013a4f07543b276dd240f9c01f4f4d901e52d073bc3",
+          "binding": "Supervisor hash differs; pre-spawn failure test history only."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-secure-lock-review/review.json",
+          "sha256": "a8ce4e933b96e19a7f3ac3928c90626f4d4d23b146032d0152abdefe1db0b8bf",
+          "binding": "Supervisor and unsupported stub hashes match; lock hash differs."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/runtime-parent-lifetime/review.json",
+          "sha256": "d633e0ef69008030a500d9cee0ecd3dd9f09219c54211abbc30746c19e2a46a9",
+          "binding": "Historical bounded exact-child/descriptor lifetime review; no new raw execution audit."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/darwin-protected-backend/review.json",
+          "sha256": "e653c92dd50159a0194bcd29a65091a46b45bd48231a66c9a9e9b5fc07951450",
+          "binding": "Unsupported stub hash matches; Darwin implementation and qualification remain outside this review."
+        }
+      ],
+      "evidenceLimit": "Unchanged function names do not mean unchanged API: the exported Config shape changed. The plaintext prototype path is retained; installed policy enforcement and complete trust decoding are separate source owners.",
+      "findings": [],
+      "proposedReviewStatus": "P02 bounded current-source/declaration review only; historical runtime evidence remains separate and native/phase acceptance is open"
+    },
+    {
+      "path": "platform/kernel/protocol/private_unix.go",
+      "sha256": "19317232374f774060e51fc10530ab202f11a8d29cc5be879fb552c04be02d5b",
+      "currentSHA256AtFinalRead": "19317232374f774060e51fc10530ab202f11a8d29cc5be879fb552c04be02d5b",
+      "sourceUnchangedSinceFreeze": true,
+      "componentIds": [
+        "KERN-03"
+      ],
+      "declarations": [
+        {
+          "name": "readPrivateFile",
+          "line": 7,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "previousSurfaceSHA256": "094a60606c9c37483b89415953a23b1bcf775a9787fcfd4e9e8ed23a1b91debd",
+      "declarationDelta": {
+        "addedNames": [],
+        "removedNames": [
+          "privateOwner"
+        ],
+        "linesChanged": true
+      },
+      "how": "readPrivateFile delegates to the shared held-descriptor reader with the kernel_credential error prefix.",
+      "where": "readPrivateFile lines 7-9.",
+      "why": "Apply the same private file and enclosing-directory checks to role credentials and server trust, rather than maintaining a separate leaf-only owner helper.",
+      "tradeoffsOrLimits": "The delegated implementation is not copied into this file. Its prior independent security review is cited as historical context, not fresh execution or a new dependency audit.",
+      "historicalEvidence": [
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-lock-review/root-review.json",
+          "sha256": "59413d578d2acb07318a373443896cd1d8deb88f7707aa7c7d4f1eb386be1f15",
+          "binding": "Historical lock hash differs from this freeze."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/owner-status-deadline/review.json",
+          "sha256": "98f255474fb49eed8cd6591ee7fb988053f114ab2c5a0e8c68ef1e55fac654d4",
+          "binding": "Session hash matches; other historical source bindings vary."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/kernel-operation-proof/final-stage-review.json",
+          "sha256": "33ffea1ddb7e9751f1696307605c8e7a30241dddd09ae7be5141a2edbd8106bd",
+          "binding": "Kernel observer hash matches."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/shared-tls-cleanup-independent/independent-review.json",
+          "sha256": "8162637c4518915728e812f32da5a1ae642d98815a5bf0d427c5018c07a583df",
+          "binding": "All three assigned protocol source hashes match."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-cold-proof-and-start-validation/review.json",
+          "sha256": "2befcadaadc59bfee1456013a4f07543b276dd240f9c01f4f4d901e52d073bc3",
+          "binding": "Supervisor hash differs; pre-spawn failure test history only."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-secure-lock-review/review.json",
+          "sha256": "a8ce4e933b96e19a7f3ac3928c90626f4d4d23b146032d0152abdefe1db0b8bf",
+          "binding": "Supervisor and unsupported stub hashes match; lock hash differs."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/runtime-parent-lifetime/review.json",
+          "sha256": "d633e0ef69008030a500d9cee0ecd3dd9f09219c54211abbc30746c19e2a46a9",
+          "binding": "Historical bounded exact-child/descriptor lifetime review; no new raw execution audit."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/darwin-protected-backend/review.json",
+          "sha256": "e653c92dd50159a0194bcd29a65091a46b45bd48231a66c9a9e9b5fc07951450",
+          "binding": "Unsupported stub hash matches; Darwin implementation and qualification remain outside this review."
+        }
+      ],
+      "evidenceLimit": "The delegated implementation is not copied into this file. Its prior independent security review is cited as historical context, not fresh execution or a new dependency audit.",
+      "findings": [],
+      "proposedReviewStatus": "P02 bounded current-source/declaration review only; historical runtime evidence remains separate and native/phase acceptance is open"
+    },
+    {
+      "path": "platform/kernel/protocol/transport.go",
+      "sha256": "c4d602a3b349405334cb5b5a90367f9ebc5438bcc0edbffa7fd2c06e3efd77d1",
+      "currentSHA256AtFinalRead": "c4d602a3b349405334cb5b5a90367f9ebc5438bcc0edbffa7fd2c06e3efd77d1",
+      "sourceUnchangedSinceFreeze": true,
+      "componentIds": [
+        "KERN-03"
+      ],
+      "declarations": [
+        {
+          "name": "valid",
+          "line": 25,
+          "kind": "go-function"
+        },
+        {
+          "name": "copy",
+          "line": 37,
+          "kind": "go-function"
+        },
+        {
+          "name": "AllReadyExcept",
+          "line": 60,
+          "kind": "go-function"
+        },
+        {
+          "name": "Open",
+          "line": 89,
+          "kind": "go-function"
+        },
+        {
+          "name": "Error",
+          "line": 177,
+          "kind": "go-function"
+        },
+        {
+          "name": "Format",
+          "line": 178,
+          "kind": "go-function"
+        },
+        {
+          "name": "Unwrap",
+          "line": 179,
+          "kind": "go-function"
+        },
+        {
+          "name": "Close",
+          "line": 180,
+          "kind": "go-function"
+        },
+        {
+          "name": "openFailure",
+          "line": 186,
+          "kind": "go-function"
+        },
+        {
+          "name": "Close",
+          "line": 192,
+          "kind": "go-function"
+        },
+        {
+          "name": "Scope",
+          "line": 205,
+          "kind": "go-function"
+        },
+        {
+          "name": "StaleAfter",
+          "line": 206,
+          "kind": "go-function"
+        },
+        {
+          "name": "view",
+          "line": 207,
+          "kind": "go-function"
+        },
+        {
+          "name": "accept",
+          "line": 222,
+          "kind": "go-function"
+        },
+        {
+          "name": "emit",
+          "line": 261,
+          "kind": "go-function"
+        },
+        {
+          "name": "mustJSON",
+          "line": 304,
+          "kind": "go-function"
+        },
+        {
+          "name": "Serve",
+          "line": 307,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "previousSurfaceSHA256": "bd6d6c90f4968a547c046a45239796642bb2a0058ba361ad4437680a3aa2f947",
+      "declarationDelta": {
+        "addedNames": [
+          "Error",
+          "Format",
+          "Unwrap",
+          "Close",
+          "openFailure"
+        ],
+        "removedNames": [],
+        "linesChanged": true
+      },
+      "how": "Bind the TLS custom dialer before credential-bearing CONNECT and reuse it for bounded reconnect without discovery. Actor.Close attempts exact owned raw transport closure before NATS Close. Failed Open/Serve cleanup returns a typed error retaining the actor for explicit retry and joining the original operational cause with ErrCleanup.",
+      "where": "Open lines 89-165; cleanup declarations and methods lines 167-204; Serve cleanup defer lines 307-312.",
+      "why": "Authenticate the enrolled server before sending credentials and keep concrete cleanup ownership visible after constructor or service failure.",
+      "tradeoffsOrLimits": "Close now returns error, an API change that the AST name list alone cannot capture. There are two distinct Close methods in the prepared list. Existing role callers and privacy/cleanup tests were reviewed historically, not rerun here. Retained prototype plaintext calls are not installed TLS admission.",
+      "historicalEvidence": [
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-lock-review/root-review.json",
+          "sha256": "59413d578d2acb07318a373443896cd1d8deb88f7707aa7c7d4f1eb386be1f15",
+          "binding": "Historical lock hash differs from this freeze."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/owner-status-deadline/review.json",
+          "sha256": "98f255474fb49eed8cd6591ee7fb988053f114ab2c5a0e8c68ef1e55fac654d4",
+          "binding": "Session hash matches; other historical source bindings vary."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/kernel-operation-proof/final-stage-review.json",
+          "sha256": "33ffea1ddb7e9751f1696307605c8e7a30241dddd09ae7be5141a2edbd8106bd",
+          "binding": "Kernel observer hash matches."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/shared-tls-cleanup-independent/independent-review.json",
+          "sha256": "8162637c4518915728e812f32da5a1ae642d98815a5bf0d427c5018c07a583df",
+          "binding": "All three assigned protocol source hashes match."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-cold-proof-and-start-validation/review.json",
+          "sha256": "2befcadaadc59bfee1456013a4f07543b276dd240f9c01f4f4d901e52d073bc3",
+          "binding": "Supervisor hash differs; pre-spawn failure test history only."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-secure-lock-review/review.json",
+          "sha256": "a8ce4e933b96e19a7f3ac3928c90626f4d4d23b146032d0152abdefe1db0b8bf",
+          "binding": "Supervisor and unsupported stub hashes match; lock hash differs."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/runtime-parent-lifetime/review.json",
+          "sha256": "d633e0ef69008030a500d9cee0ecd3dd9f09219c54211abbc30746c19e2a46a9",
+          "binding": "Historical bounded exact-child/descriptor lifetime review; no new raw execution audit."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/darwin-protected-backend/review.json",
+          "sha256": "e653c92dd50159a0194bcd29a65091a46b45bd48231a66c9a9e9b5fc07951450",
+          "binding": "Unsupported stub hash matches; Darwin implementation and qualification remain outside this review."
+        }
+      ],
+      "evidenceLimit": "Close now returns error, an API change that the AST name list alone cannot capture. There are two distinct Close methods in the prepared list. Existing role callers and privacy/cleanup tests were reviewed historically, not rerun here. Retained prototype plaintext calls are not installed TLS admission.",
+      "findings": [],
+      "proposedReviewStatus": "P02 bounded current-source/declaration review only; historical runtime evidence remains separate and native/phase acceptance is open"
+    },
+    {
+      "path": "platform/runtime/snapshot_unsupported.go",
+      "sha256": "522a77bf706c8522363438e033e64d9478c85a7483d72d65e37b54edb3d8aaec",
+      "currentSHA256AtFinalRead": "522a77bf706c8522363438e033e64d9478c85a7483d72d65e37b54edb3d8aaec",
+      "sourceUnchangedSinceFreeze": true,
+      "componentIds": [
+        "PLAT-02"
+      ],
+      "declarations": [
+        {
+          "name": "prepareExecutable",
+          "line": 10,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "previousSurfaceSHA256": "8455c45f2628914a95a897b5539888d597035a01d345487a061b1bf79fccb182",
+      "declarationDelta": {
+        "addedNames": [],
+        "removedNames": [],
+        "linesChanged": false
+      },
+      "how": "Keep the unconditional ErrPlatformUnqualified implementation under !linux && (!darwin || !cgo). Darwin with cgo is now excluded from this refusal stub so its separate protected backend can be selected.",
+      "where": "Build constraint line 1 and prepareExecutable lines 10-12.",
+      "why": "Separate a native protected Darwin backend from unsupported platforms and Darwin without cgo; never fall back to unprotected path execution.",
+      "tradeoffsOrLimits": "No new function name was needed, but supported build selection changed. The build constraint does not prove Apple toolchain qualification, protected installation or native execution.",
+      "historicalEvidence": [
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-lock-review/root-review.json",
+          "sha256": "59413d578d2acb07318a373443896cd1d8deb88f7707aa7c7d4f1eb386be1f15",
+          "binding": "Historical lock hash differs from this freeze."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/owner-status-deadline/review.json",
+          "sha256": "98f255474fb49eed8cd6591ee7fb988053f114ab2c5a0e8c68ef1e55fac654d4",
+          "binding": "Session hash matches; other historical source bindings vary."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/kernel-operation-proof/final-stage-review.json",
+          "sha256": "33ffea1ddb7e9751f1696307605c8e7a30241dddd09ae7be5141a2edbd8106bd",
+          "binding": "Kernel observer hash matches."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/shared-tls-cleanup-independent/independent-review.json",
+          "sha256": "8162637c4518915728e812f32da5a1ae642d98815a5bf0d427c5018c07a583df",
+          "binding": "All three assigned protocol source hashes match."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-cold-proof-and-start-validation/review.json",
+          "sha256": "2befcadaadc59bfee1456013a4f07543b276dd240f9c01f4f4d901e52d073bc3",
+          "binding": "Supervisor hash differs; pre-spawn failure test history only."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-secure-lock-review/review.json",
+          "sha256": "a8ce4e933b96e19a7f3ac3928c90626f4d4d23b146032d0152abdefe1db0b8bf",
+          "binding": "Supervisor and unsupported stub hashes match; lock hash differs."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/runtime-parent-lifetime/review.json",
+          "sha256": "d633e0ef69008030a500d9cee0ecd3dd9f09219c54211abbc30746c19e2a46a9",
+          "binding": "Historical bounded exact-child/descriptor lifetime review; no new raw execution audit."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/darwin-protected-backend/review.json",
+          "sha256": "e653c92dd50159a0194bcd29a65091a46b45bd48231a66c9a9e9b5fc07951450",
+          "binding": "Unsupported stub hash matches; Darwin implementation and qualification remain outside this review."
+        }
+      ],
+      "evidenceLimit": "No new function name was needed, but supported build selection changed. The build constraint does not prove Apple toolchain qualification, protected installation or native execution.",
+      "findings": [],
+      "proposedReviewStatus": "P02 bounded current-source/declaration review only; historical runtime evidence remains separate and native/phase acceptance is open"
+    },
+    {
+      "path": "platform/runtime/supervisor.go",
+      "sha256": "45437190fd61616c18c35c79ff4fc02c97b558d607bf2043bea2e6b14d40d824",
+      "currentSHA256AtFinalRead": "45437190fd61616c18c35c79ff4fc02c97b558d607bf2043bea2e6b14d40d824",
+      "sourceUnchangedSinceFreeze": false,
+      "componentIds": [
+        "PLAT-02"
+      ],
+      "declarations": [
+        {
+          "name": "Prepare",
+          "line": 53,
+          "kind": "go-function"
+        },
+        {
+          "name": "Close",
+          "line": 100,
+          "kind": "go-function"
+        },
+        {
+          "name": "Write",
+          "line": 125,
+          "kind": "go-function"
+        },
+        {
+          "name": "copy",
+          "line": 137,
+          "kind": "go-function"
+        },
+        {
+          "name": "options",
+          "line": 172,
+          "kind": "go-function"
+        },
+        {
+          "name": "Start",
+          "line": 215,
+          "kind": "go-function"
+        },
+        {
+          "name": "Status",
+          "line": 354,
+          "kind": "go-function"
+        },
+        {
+          "name": "Output",
+          "line": 372,
+          "kind": "go-function"
+        },
+        {
+          "name": "Done",
+          "line": 380,
+          "kind": "go-function"
+        },
+        {
+          "name": "CleanupError",
+          "line": 385,
+          "kind": "go-function"
+        },
+        {
+          "name": "resourceCleanupError",
+          "line": 404,
+          "kind": "go-function"
+        },
+        {
+          "name": "Stop",
+          "line": 417,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "previousSurfaceSHA256": "8768d4fa02dddb0bc63c2c429810bed3c2454b88ca6f722fd0fbab3b139df944",
+      "declarationDelta": {
+        "addedNames": [],
+        "removedNames": [],
+        "linesChanged": true
+      },
+      "how": "Allow only the fixed trust-file environment key in addition to existing role values. Immediately before cmd.Start, invoke an optional validateForStart method for protected path backends and close inherited start files on refusal. Preserve explicit ExtraFiles, exact child handles, one Wait owner and bounded Stop/reap behavior. The dual-failure branch now retains startup and cleanup causes through a fixed safe error wrapper without changing the exact returned Group.",
+      "where": "Environment allowlist line 170; child lifetime/spawn lines 249-310; pre-spawn validation lines 279-285; startup failure handling lines 328-335.",
+      "why": "Revalidate mutable protected installation identity as close to spawn as possible while sealed descriptor backends retain their existing execution path.",
+      "tradeoffsOrLimits": "Historical start-validation evidence binds an earlier supervisor hash. Parent-lifetime and secure-lock records provide separate source-bound context. Neither them nor this read proves native Darwin or full Compose behavior. See F01 for the dual-failure cause loss.",
+      "historicalEvidence": [
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-lock-review/root-review.json",
+          "sha256": "59413d578d2acb07318a373443896cd1d8deb88f7707aa7c7d4f1eb386be1f15",
+          "binding": "Historical comparison against the original supervisor/source set, before the repair: Historical lock hash differs from this freeze."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/owner-status-deadline/review.json",
+          "sha256": "98f255474fb49eed8cd6591ee7fb988053f114ab2c5a0e8c68ef1e55fac654d4",
+          "binding": "Historical comparison against the original supervisor/source set, before the repair: Session hash matches; other historical source bindings vary."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/kernel-operation-proof/final-stage-review.json",
+          "sha256": "33ffea1ddb7e9751f1696307605c8e7a30241dddd09ae7be5141a2edbd8106bd",
+          "binding": "Historical comparison against the original supervisor/source set, before the repair: Kernel observer hash matches."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/shared-tls-cleanup-independent/independent-review.json",
+          "sha256": "8162637c4518915728e812f32da5a1ae642d98815a5bf0d427c5018c07a583df",
+          "binding": "Historical comparison against the original supervisor/source set, before the repair: All three assigned protocol source hashes match."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-cold-proof-and-start-validation/review.json",
+          "sha256": "2befcadaadc59bfee1456013a4f07543b276dd240f9c01f4f4d901e52d073bc3",
+          "binding": "Historical comparison against the original supervisor/source set, before the repair: Supervisor hash differs; pre-spawn failure test history only."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-secure-lock-review/review.json",
+          "sha256": "a8ce4e933b96e19a7f3ac3928c90626f4d4d23b146032d0152abdefe1db0b8bf",
+          "binding": "Historical comparison against the original supervisor/source set, before the repair: Supervisor and unsupported stub hashes match; lock hash differs."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/runtime-parent-lifetime/review.json",
+          "sha256": "d633e0ef69008030a500d9cee0ecd3dd9f09219c54211abbc30746c19e2a46a9",
+          "binding": "Historical comparison against the original supervisor/source set, before the repair: Historical bounded exact-child/descriptor lifetime review; no new raw execution audit."
+        },
+        {
+          "path": "docs/planning/2026-10-09/delivery/evidence/P02/darwin-protected-backend/review.json",
+          "sha256": "e653c92dd50159a0194bcd29a65091a46b45bd48231a66c9a9e9b5fc07951450",
+          "binding": "Historical comparison against the original supervisor/source set, before the repair: Unsupported stub hash matches; Darwin implementation and qualification remain outside this review."
+        }
+      ],
+      "evidenceLimit": "Source repair inspected; coordinating-session focused and actual partial-start/cancel evidence is still pending. No forced dual-failure runtime reproduction is claimed.",
+      "findings": [
+        {
+          "id": "F01",
+          "status": "closed-in-source-execution-evidence-pending",
+          "priority": "P2",
+          "path": "platform/runtime/supervisor.go",
+          "startLine": 328,
+          "endLine": 335,
+          "title": "Startup failure cause is lost when cleanup also fails",
+          "description": "After a concrete startup error, Start calls g.Stop. If Stop fails, line 333 wraps only cleanupErr and discards err. A caller can retain the returned exact Group and inspect the cleanup failure, but cannot recover the original canceled/deadline/pre-spawn/start cause through errors.Is or errors.As on the returned error. This is a source-proven diagnostic limitation of the dual-failure branch, not a claim that an actual native run failed.",
+          "nextAction": "Root should retain both operational and cleanup causes while preserving the exact Group and existing cleanup ownership/budgets, or explicitly track this limitation. Do not describe this branch as preserving the original startup cause.",
+          "executionEvidence": "Pending coordinating session focused and existing actual partial-start/cancel checks; no actual forced dual-failure reproduction.",
+          "originalSourceSHA256": "0623e52a70d5c4dd5dd7410a80376eb512d93f4779d438769e6bb2c42665b7ef",
+          "repairedSourceSHA256": "45437190fd61616c18c35c79ff4fc02c97b558d607bf2043bea2e6b14d40d824",
+          "sourceResolution": "Start returns the same exact Group and retainStartupCleanupCause(err, cleanupErr). The new wrapper exposes errors.Join through Unwrap but uses fixed Error/Format/JSON messages. The test checks original PathError pointer identity and both cancellation/deadline causes; it was read, not executed by this reviewer."
+        }
+      ],
+      "proposedReviewStatus": "P02 current-source/declaration review; supervisor cause-loss repaired in source, execution evidence pending; not native/phase acceptance",
+      "reviewSourceSnapshot": "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/repair-source/platform/runtime/supervisor.go",
+      "sourceUnchangedSinceReviewedRepairSnapshot": true
+    }
+  ],
+  "findings": [
+    {
+      "id": "F01",
+      "status": "closed-in-source-execution-evidence-pending",
+      "priority": "P2",
+      "path": "platform/runtime/supervisor.go",
+      "startLine": 328,
+      "endLine": 335,
+      "title": "Startup failure cause is lost when cleanup also fails",
+      "description": "After a concrete startup error, Start calls g.Stop. If Stop fails, line 333 wraps only cleanupErr and discards err. A caller can retain the returned exact Group and inspect the cleanup failure, but cannot recover the original canceled/deadline/pre-spawn/start cause through errors.Is or errors.As on the returned error. This is a source-proven diagnostic limitation of the dual-failure branch, not a claim that an actual native run failed.",
+      "nextAction": "Root should retain both operational and cleanup causes while preserving the exact Group and existing cleanup ownership/budgets, or explicitly track this limitation. Do not describe this branch as preserving the original startup cause.",
+      "executionEvidence": "Pending coordinating session focused and existing actual partial-start/cancel checks; no actual forced dual-failure reproduction.",
+      "originalSourceSHA256": "0623e52a70d5c4dd5dd7410a80376eb512d93f4779d438769e6bb2c42665b7ef",
+      "repairedSourceSHA256": "45437190fd61616c18c35c79ff4fc02c97b558d607bf2043bea2e6b14d40d824",
+      "sourceResolution": "Start returns the same exact Group and retainStartupCleanupCause(err, cleanupErr). The new wrapper exposes errors.Join through Unwrap but uses fixed Error/Format/JSON messages. The test checks original PathError pointer identity and both cancellation/deadline causes; it was read, not executed by this reviewer."
+    }
+  ],
+  "excluded": [
+    "platform/launcher/bootstrap.go",
+    "platform/launcher/startup_status.go",
+    "owner receipt drafts",
+    "docs/reviews files",
+    "tests/platform/native_go.py"
+  ],
+  "limits": [
+    "Methods follow the existing index schema: function name, line and go-function kind; receiver identities are not encoded.",
+    "Types, aliases, constants, configuration fields, signatures and public API compatibility are not proved by declaration coverage.",
+    "Current bodies and existing reviews were inspected. Earlier source hashes/results stay historical; no complete old-source parity or raw runtime evidence audit is claimed.",
+    "No engine, provider, broker, installed command, product runtime, native job or broad test suite was executed. A standard-library source parser was built and run only.",
+    "No repository source, global metadata, source index or design-pattern digest was edited. All new review artifacts are confined to native cache.",
+    "The supervisor dual-failure cause-loss finding is repaired in source; its execution evidence remains pending. Root owns helper registration and any index write."
+  ],
+  "allAssignedSourcesUnchangedSinceFreeze": false,
+  "declarationCount": 114,
+  "metadataCurrentHashes": {
+    "docs/planning/2026-10-09/source-surface-index.json": "8df2fda0b593949e5d39b5284e3a85ef68fa8dd29d22e4991840cae479d389de",
+    "docs/planning/2026-10-09/component-inventory.json": "fca3e55dbc64a1e46cf3d70b87d14686e79edfe45103f2c69cf07641a8723897",
+    "docs/planning/2026-10-09/component-audit-hub.json": "33dcd08a7493cc1de4a48868cf5836eaf72eae5812f487ee57150082b11da34a",
+    "docs/planning/2026-10-09/component-audit-repository.json": "f5e30793b6da601d4b52e94debbc855aa2279277089b3f58cbdbedda315b1e72"
+  },
+  "metadataDriftSinceFreeze": {
+    "docs/planning/2026-10-09/source-surface-index.json": {
+      "frozen": "5f67930fe650e71639df9e86a481e094fd6dd0645c8bf02dbd68f3490991e8f4",
+      "current": "8df2fda0b593949e5d39b5284e3a85ef68fa8dd29d22e4991840cae479d389de"
+    }
+  },
+  "repairSupplement": {
+    "originalProposal": "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/proposal-before-supervisor-repair.json",
+    "originalProposalSHA256": "122b046be7f9d2805d10f1a413ea564083bdfe66e23e62fe59c3e5a61fc1bd45",
+    "sourceHashes": {
+      "platform/runtime/supervisor.go": "45437190fd61616c18c35c79ff4fc02c97b558d607bf2043bea2e6b14d40d824",
+      "platform/runtime/startup_cleanup_cause.go": "ab782c24cb286edd246f390f393fcb910b9a6735284609ea2a79fa9a548d6708",
+      "platform/runtime/startup_cleanup_cause_test.go": "593341080daec653c737e4aa341a80248c24a3d782e2b6c84cb0b1607afbd1cd"
+    },
+    "supervisorDiff": [
+      "--- ",
+      "+++ ",
+      "@@ -330,7 +330,7 @@",
+      " \t\tdefer cleanupCancel()",
+      " \t\tcleanupErr := g.Stop(cleanupCtx)",
+      " \t\tif cleanupErr != nil {",
+      "-\t\t\treturn g, fmt.Errorf(\"startup failed; owned cleanup incomplete: %w\", cleanupErr)",
+      "+\t\t\treturn g, retainStartupCleanupCause(err, cleanupErr)",
+      " \t\t}",
+      " \t\treturn g, fmt.Errorf(\"protected startup failed: %w\", err)",
+      " \t}"
+    ],
+    "parserCommand": [
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/inspect",
+      "/home/ryan/.cache/agentmux-governance/p02-source-surface-review-EChdex/repair-source/platform/runtime/supervisor.go"
+    ],
+    "parserExitCode": 0,
+    "sourceReview": "Main and independent Plato inspected the one-line supervisor repair and complete helper/test source. Source-only F01 closure; execution remains pending.",
+    "executionEvidencePending": true,
+    "forcedDualFailureRuntimeReproduced": false,
+    "extraHelperOwnership": "Coordinating session owns inventory/index registration for the two new helper/test files; this proposal retains its original sixteen-entry scope.",
+    "independentReview": "Plato confirmed all three repair hashes and source closure; original-freeze and historical evidence bindings were corrected after independent proposal review."
+  },
+  "allAssignedSourcesMatchReviewedSnapshots": true,
+  "originalFreezeSourceDrift": {
+    "platform/runtime/supervisor.go": {
+      "original": "0623e52a70d5c4dd5dd7410a80376eb512d93f4779d438769e6bb2c42665b7ef",
+      "repaired": "45437190fd61616c18c35c79ff4fc02c97b558d607bf2043bea2e6b14d40d824",
+      "authority": "Coordinating session applied the bounded source repair after this review finding."
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "reviewer": "Codex",
+  "recordedAt": "2026-10-13T23:03:58.899466+00:00",
+  "scope": "Bounded member reads, held root verification and actual component-wise no-follow file opens",
+  "phaseAccepted": false,
+  "sourceBaseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "sourceHashes": {
+    "platform/kernel/assembly/root_test.go": "9137eb5c1673149d6c8ef53ec506adccfcad587c7f1d345a8b9bbd2088ae9447",
+    "platform/kernel/assembly/limits_test.go": "e7da242c4f51f53f2d6348d24782f63f739896bae110cef69d00d086b1417c5a",
+    "platform/kernel/assembly/open_unsupported.go": "91100eeb4268ce69aeb5c6116d7ecd7a3f9dc89c806c6adeeda4ee84b5a987a0",
+    "platform/kernel/assembly/verify.go": "e915287f32b009b2b47bbaf7287f9ee29d0ed82fd8e57098260512b8c9826c83",
+    "platform/kernel/assembly/verify_test.go": "138b42bae577380b9abbc00f18c699d5f4abd8b9ea8e548bb1330e82d8c6374d",
+    "platform/kernel/assembly/open_unix.go": "f39acc55f3633bddf82fed8c09f454d20321ea3fdd514e8809d5640ed6577769",
+    "platform/kernel/assembly/open_unix_test.go": "55a52d368545db47f2f5a285b61ebbe8d4ccbd1e6947a2faa86a9173846e2652"
+  },
+  "archiveHashes": {
+    "focused.jsonl": "db9775baab078fec9829f9c19fc13e0fe54def81c0dd6bdd1003ea357c1144fb",
+    "assembly-race.jsonl": "d45757c58a546875d6b7ea8bc6a9857ec93770d6c4f7e0be152c2f94e1df5d67",
+    "vet.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "hash-verification.txt": "f2481e9e64756023f6c3989a50cfa1f35401214eadbc21754935b8c825536734",
+    "source-hashes.txt": "68e30c8d6be6e71d7c9cb34b080b16bb55862c650512e7f01f54c9878ca7cfd8",
+    "previous-unsafe-open-failure.jsonl": "6683abd5d6b705f81906fee54c380e25de16b6c89ee9261921a516d53047428f"
+  },
+  "passingEntries": 65,
+  "packageResults": [
+    {
+      "Time": "2026-10-13T18:18:58.669767328-04:00",
+      "Action": "pass",
+      "Package": "github.com/controlLogix/agentmux/platform/kernel/assembly",
+      "Elapsed": 0.165
+    }
+  ],
+  "vetOutputBytes": 0,
+  "previousFailureTests": [
+    "TestMemberOpenRefusesSpecialFileAndSymlink"
+  ],
+  "repair": "Go os.Root.OpenFile resolved a regular-target symlink before the no-follow flag. Actual Unix openat now traverses each component with O_NOFOLLOW and opens the final file nonblocking; held directory identity and regular-file checks remain required.",
+  "limits": [
+    "Native Linux/WSL source-bound assembly tests only; no native macOS boot claim.",
+    "Filesystem syscalls are not forcibly preempted.",
+    "Whole Bootstrap and phase gate remain open."
+  ]
+}

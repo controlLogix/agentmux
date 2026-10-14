@@ -1,0 +1,83 @@
+{
+  "recordedAtUtc": "2026-10-13T20:56:40.072484+00:00",
+  "scope": "Controlled subprocess boundary tests only. No real Docker or broker qualification.",
+  "sourceBaseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "sourceHashes": {
+    "platform/launcher/docker.go": "284bbd9cb4ced94c73cc2f29a173ad7c62eec2014076059db7b96597f511c7e0",
+    "platform/launcher/docker_test.go": "c134b20a73191c5def882bc0c29277dd5b479af09791294935809eed6a35f35c"
+  },
+  "toolchainExecutable": "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+  "toolchainExecutableSha256": "548d3c32f83fa81152f543eb1526be7884cfe0526eb5e9ce29d3eca14786e7e0",
+  "race": {
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "./launcher",
+      "-run",
+      "TestDocker",
+      "-count=1",
+      "-json"
+    ],
+    "sourceBinding": "Corrected frozen source hashes verified after focused race and vet; no owned edits occurred during either command.",
+    "testAndSubtestPassRecords": 30,
+    "failureRecords": 0,
+    "packageElapsedSeconds": 93.706
+  },
+  "vet": {
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "vet",
+      "./launcher"
+    ],
+    "returncode": 0,
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  "environment": {
+    "GOTOOLCHAIN": "local",
+    "platform": "native Linux process inside Ubuntu-26.04 WSL"
+  },
+  "patternCheck": {
+    "returncode": 1,
+    "finding": "Review is stale or missing: inspect changes and refresh sourceDigest",
+    "rootOwnsAttestation": true
+  },
+  "limits": [
+    "The internal LockHeld assertion is not an OS lock proof.",
+    "Full boot config and secret file handling remains required; this slice refuses it.",
+    "Authenticated readiness, real cold/warm lifecycle, concurrency, killed-owner recovery, rollback and persistence are not qualified by this record.",
+    "Command timeout leaves the engine-side outcome unknown; no automatic retry is performed.",
+    "WarmReuse is read-only; callers must select it for healthy existing resources."
+  ],
+  "historicalArchive": {
+    "manifestSha256": "8774c06e6d95657299daf9160d7d3dcd1e89266a86af1ae11c7bd6d8d5d08310",
+    "classification": "Prior narrower passing result retained as historical; did not cover the reproduced hyphen-name collision."
+  },
+  "repair": {
+    "finding": "Foreign generated container names may use hyphens rather than underscores.",
+    "correction": "Check both naming families and fresh labels before Compose up.",
+    "reproduction": {
+      "classification": "Derived terminal observation, not a raw runner report",
+      "dockerSourceSha256": "c6034883fb210acc97aee9e8afe92d6110cd3b671dee7ec218217aacf2461457",
+      "testSourceSha256": "c134b20a73191c5def882bc0c29277dd5b479af09791294935809eed6a35f35c",
+      "command": [
+        "go",
+        "test",
+        "./launcher",
+        "-run",
+        "TestDockerOwnedBoundaries/hyphen-name-collision",
+        "-count=1"
+      ],
+      "exitCode": 1,
+      "failure": "accepted mismatch"
+    },
+    "focusedRepair": {
+      "sameSelection": true,
+      "exitCode": 0,
+      "elapsedSeconds": 0.036
+    },
+    "affectedRaceExitCode": 0,
+    "vetExitCode": 0
+  }
+}

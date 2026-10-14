@@ -1,0 +1,57 @@
+{
+  "scope": "Independent read-only cache entry synchronization review; not actual mid-boot execution or phase acceptance",
+  "workerReviewSHA256": "c4ac9e581117d09b2c970c66d492956f6951149d637679b9b7d1d7302a7327ec",
+  "sourceSHA256": {
+    "installed_cli_midboot_compose_integration_linux_test.go": "58f6f4c74f75191c5a117d9af03e6905010112741be09e9776c9a59c99990c38",
+    "installed_cli_midboot_discovery_controls_test.go": "e4c26f7f65303a5ef37c46e4041073deefe71073cb331e63edfacd42d04fbfcb",
+    "midboot_private_docker_parser_test.go": "fbd974aa97c88e918a30f610b5b644d44a4afccc9efe40d636b36ec653d9fc00",
+    "midboot_private_docker_parser_controls_test.go": "c3e3f2ca7c4aed52c6bacab38d357077c2551edabdc94dc2285bd23dbb56c09f",
+    "installed_cli_midboot_starting_controls_test.go": "e94be0efad75d27550d32dff6932919891fd1078ff06354d979449cafb94e9b6"
+  },
+  "artifactChecks": {
+    "source:installed_cli_midboot_compose_integration_linux_test.go": true,
+    "source:installed_cli_midboot_discovery_controls_test.go": true,
+    "source:midboot_private_docker_parser_test.go": true,
+    "source:midboot_private_docker_parser_controls_test.go": true,
+    "source:installed_cli_midboot_starting_controls_test.go": true,
+    "artifact:current-after.json": true,
+    "artifact:authenticated-entry-repair.diff": true,
+    "artifact:added-source.json": true,
+    "artifact:source-after.json": true,
+    "artifact:starting-stderr.log": true,
+    "artifact:invocation.json": true,
+    "artifact:source-before.json": true,
+    "artifact:run.py": true,
+    "artifact:starting-events.jsonl": true,
+    "artifact:starting-exit.txt": true,
+    "captured:midboot-entry-stdout.private": true,
+    "captured:pending.json": true,
+    "historical-failure": true,
+    "raw-results": true
+  },
+  "allBindingsMatch": true,
+  "rawNamedPasses": [
+    "TestComposeCLIMidBootStartingBoundary/ready",
+    "TestComposeCLIMidBootStartingBoundary/other_attempt",
+    "TestComposeCLIMidBootStartingBoundary/missing_attempt",
+    "TestComposeCLIMidBootStartingBoundary/readiness_overclaim",
+    "TestComposeCLIMidBootStartingBoundary/hard_authority",
+    "TestComposeCLIMidBootStartingBoundary/hard_cleanup",
+    "TestComposeCLIMidBootStartingBoundary/availability",
+    "TestComposeCLIMidBootStartingBoundary"
+  ],
+  "directExit": 0,
+  "findings": [],
+  "sourceReview": [
+    "The unchanged strict receipt helper validates historical shape and actual creator enrollment/runtime/cold attempt; accepted receipt remains historical and never satisfies current entry.",
+    "Only status requests run after a receipt. Every request is at most five seconds under original.started plus unchanged StartupTimeout; no ensure, replacement host or fresh startup deadline exists.",
+    "Current entered starting must have the original creator cold attempt and unknown readiness. Ready/reused, different or missing attempt, authority and cleanup failures refuse advancement. Only fixed unavailable/deadline outcomes permit another bounded status read.",
+    "Immediately before releasing the existing arbitration gate, the original pidfd is polled and the original startup deadline checked again. Signal authority still depends on the later independently reviewed exact protected-role roster and revalidation."
+  ],
+  "limits": [
+    "Eight pure saved-output checks only: no live NATS, engine, startup, signal or recovery occurred.",
+    "Saved genuine prior starting output establishes parser/boundary behavior only, not current creator or full scope authority. Actual Request performs authenticated full-scope admission in the later case.",
+    "The original DLa8zd case failed before entry; its historical receipt does not retroactively establish entered status or identify the original cause.",
+    "No shared source or metadata changed and no actual engine execution is authorized by this review."
+  ]
+}

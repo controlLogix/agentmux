@@ -1,0 +1,24 @@
+{
+  "recordKind": "read-only-local-storage-policy-gap",
+  "phaseAccepted": false,
+  "sourceBaseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "sourceHashes": {
+    "platform/deployment/profile.go": "219b2c8742514699c0c12822576e580142e2f43b51d8405e3207a8ebb0a5f6fd",
+    "platform/deployment/profile_test.go": "145e667f8f0dc39daadc11b9906067cb495bf1336a6ba7b1f11c915388610c74",
+    "docs/planning/2026-10-09/delivery/decisions/storage-contract.md": "19bb201cc3ffdc6d4e19213faee99ed584179d2fa0f34bbefb0371146e728fab"
+  },
+  "requirement": "STATE-01 S04 selects sync_interval: always for the local durable profile. P02-T05 provisions the approved local file-backed JetStream profile.",
+  "observedImplementation": "BuildLocalConfig emits store_dir, domain, max_memory_store and max_file_store. TestStorageFactoryPreservesProtectedBoundary requires exactly those four fields. The selected sync_interval setting is absent.",
+  "status": "Unresolved requirement-to-implementation gap sent to the implementation coordinator",
+  "nextAction": "Assign the deployment configuration owner to apply and verify the selected setting before freezing the final local broker configuration, or record a reviewed contract change with its consequences. Do not treat restart retention tests as proof that the intended setting is present.",
+  "verificationNeeded": [
+    "A factory regression binds the exact generated setting without changing protected account permissions.",
+    "The pinned real broker accepts the generated configuration and the affected local storage/launcher suites pass on the same source.",
+    "The final candidate records updated private configuration digests and refuses older incompatible configuration honestly."
+  ],
+  "limits": [
+    "This review did not change the deployment factory, run a broker, restart Docker or inspect private configuration.",
+    "The setting alone does not prove power-loss safety, replication health or the full P12 durability objectives.",
+    "The coordinator remains the sole tracker writer and phase advancement authority."
+  ]
+}

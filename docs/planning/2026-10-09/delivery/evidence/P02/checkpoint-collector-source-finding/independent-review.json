@@ -1,0 +1,21 @@
+{
+  "kind": "independent-native-collector-postkill-source-finding",
+  "source": "tests/platform/native_go.py",
+  "sourceSHA256": "5089b6dcdbbf55f38837644c69ff1877006518407e1ea23c4d098071cbd99fcd",
+  "hardeningRecord": "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/collector-hardening.json",
+  "hardeningRecordSHA256": "12289892767c509173f47c303693ff8dc9e2ed21a5fdc108589273602b76125a",
+  "finding": {
+    "id": "NATIVE-COLLECTOR-UNBOUNDED-REAP",
+    "lines": "86-106",
+    "actual": "stop_owned sends SIGKILL to actual created session then process.wait() has no timeout. wait_owned timeout and BaseException paths reach it.",
+    "contract": "Hardening record says shared35/12min budget restricts each process wait and preserves upload margin. Current postkill reaping is outside that bound.",
+    "evidenceLimit": "Mocks explicitly assert final call() without timeout; they prove ownership/join invocation,not actual bounded cleanup.",
+    "required": "Either repair bounded cleanup under original budget while retaining exact Popen/session/reaper ownership and truthful incomplete result,or record explicit unsupported postkill physical-reap limit and remove stronger deadline/upload guarantees before checkpoint approval. Do not drop owner,adopt numeric PID or forge actual exit."
+  },
+  "notFinding": "Exact owner is preserved and actual code does not manufacture successful reaping. No hung native process was reproduced by this source review.",
+  "limits": [
+    "Source-only,no tests/engine/build/shared edits.",
+    "No approval of global sourceDigest,collector native execution or phase acceptance.",
+    "Root owns any source,tracking or assurance wording repair."
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "reviewer": "Codex",
+  "date": "2026-10-14T19:12:13.608985+00:00",
+  "findingId": "NATIVE-COLLECTOR-UNBOUNDED-REAP",
+  "source": "tests/platform/native_go.py",
+  "sourceSHA256": "5089b6dcdbbf55f38837644c69ff1877006518407e1ea23c4d098071cbd99fcd",
+  "observation": "After timeout or interruption, stop_owned sends SIGKILL to its created session and calls process.wait without a timeout. The shared collection deadline bounds initial work waits, not post-kill reaping.",
+  "preservedGuarantees": [
+    "Exact created process/session ownership is retained.",
+    "Timed-out work cannot become a fabricated successful test result."
+  ],
+  "requiredResolution": "Preserve exact cleanup ownership and truthful incomplete results while enforcing the original collector work and cleanup budget; review ownership retention before changing waits.",
+  "status": "open",
+  "limits": [
+    "Source-confirmed finding, not an observed uninterruptible native process or a claim that an executed native run exceeded its deadline.",
+    "Synthetic current wait controls do not establish bounded native cleanup.",
+    "No global checkpoint, native platform or phase acceptance."
+  ],
+  "phaseAccepted": false
+}

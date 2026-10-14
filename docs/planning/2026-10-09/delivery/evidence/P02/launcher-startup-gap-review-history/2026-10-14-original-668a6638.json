@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "recordKind": "source-gap-review",
+  "reviewedAt": "2026-10-14T04:40:18Z",
+  "reviewer": "Codex",
+  "independentSourceReviewer": "Plato",
+  "phaseAccepted": false,
+  "implementationComplete": false,
+  "taskIds": ["P02-T01", "P02-T04", "P02-T07"],
+  "scope": "Documented startup progress and the warm-reuse inspection path. This is a bounded source review, not complete launcher qualification.",
+  "sourceHashes": {
+    "platform/launcher/bootstrap.go": "16fc4006546a30d5f27768e06731cc9dc0623d51794d853b29420b58042d4033",
+    "platform/launcher/kernel_status.go": "4278f8d7546f55d2bc1fcc38212edea1d1cc6288783119e23145cdcb65e187e8",
+    "platform/launcher/local_broker_authority.go": "267f9644be7aa7c2474b37ae8ec10a752b8538d732569007f93329bb7817f5bf",
+    "platform/launcher/docker_instance.go": "8db456430a4368c91829cb61c79883fc6df4df764d6da924ca7e3e023aaea91b",
+    "platform/launcher/docker_tls.go": "db7624b7f999e3fc96fa021bde4426fdb20e1970c8ffaab28c4ea4d523bebcec",
+    "platform/launcher/docker_reads.go": "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813",
+    "platform/launcher/owner_bridge.go": "69275921118866f2c4e131d3067cfbd25bf79613f8d4a1e4dbed4822cbd99ddd",
+    "platform/launcher/startup_status.go": "835da5322d10e73c8da1c89ea7fcd29e415c3b33903fc8c3ea4ff17adaf4aa7a",
+    "platform/cmd/agentmux-runtime/main.go": "67a6be16e1011cc3e86057fbbb081f45af79550d143f485732d26011e5bf5fc4",
+    "docs/planning/2026-10-09/delivery/decisions/startup-contract.md": "2c86650ad04978106ff011827c55708a7f02238f112177cefd4629ee857dc127"
+  },
+  "findings": [
+    {
+      "id": "pending-start-observation-missing",
+      "status": "open",
+      "classification": "confirmed source gap",
+      "requirement": "LOCAL-01 L02 documents a ten-second interactive wait followed by an honest starting observation for a qualified retained host operation. It also permits a qualified synchronous fallback on unsupported detached-helper hosts.",
+      "sourceEvidence": [
+        "OwnerBridgeServer.Run calls BootstrapForInvocation before entering serve and subscribing to status requests.",
+        "bridgeObservationBound admits started, reused and failed, but not starting.",
+        "OwnerStatus.mapObservationLocked does not produce a starting observation.",
+        "The runtime CLI uses startupBudget plus ten seconds as its outer deadline. emitObservation treats starting as an ensure failure.",
+        "A status request uses a fresh invocation ID; the reviewed path does not establish observation of the retained cold-start operation."
+      ],
+      "nextAction": "Implement and qualify authenticated progress for the same retained startup operation, or provide the contract's explicitly qualified synchronous fallback. Preserve private enrollment, scope, TLS, service and bootstrap leases, and the distinction between starting and ready.",
+      "verificationNeeded": [
+        "An actual installed frontend returns within the documented interactive budget while the qualified host keeps starting.",
+        "Status identifies the same actual retained operation, not an invented attempt or a cached readiness claim.",
+        "Frontend exit preserves the host; concurrent frontends do not start a second protected assembly.",
+        "Failure, owner loss and cleanup remain bounded and retain exact owned retry authority.",
+        "Protocol stdout remains clean and unsupported services remain unavailable."
+      ],
+      "limits": "No actual cold CLI failure or synchronous-fallback qualification was executed by these reviewers."
+    },
+    {
+      "id": "startup-retry-error-boundary",
+      "status": "open",
+      "classification": "confirmed source distinction; runtime effect requires reproduction",
+      "sourceEvidence": [
+        "OwnerBridgeClient.Request has one five-second context. A missing service can return reply_unavailable or deadline, depending on where that context expires.",
+        "The runtime ensure retry path accepts only connection_unavailable and reply_unavailable. It does not retry deadline.",
+        "Initial connection refusal can trigger host startup for ensure. Inspection, TLS and deadline errors do not. Status never starts a host or retries."
+      ],
+      "nextAction": "Exercise both missing-service expiry paths against a real retained startup. Distinguish a retryable service-start wait from authority, TLS and total-deadline failures without extending or resetting the caller's budget.",
+      "limits": "It is not accurate to claim that every missing-service wait returns deadline. No actual CLI failure is proved by this source distinction alone."
+    },
+    {
+      "id": "warm-reuse-duplicate-inspection",
+      "status": "open",
+      "classification": "confirmed source path; unproven failure cause",
+      "sourceEvidence": [
+        "Bootstrap's initial warm path shares one four-second context across preparation, InspectOwnedTLSBroker, the persistence observation and ObserveKernel.",
+        "ObserveKernel with installed authority calls inspectLocalBrokerAuthority, which reloads private enrollment and performs another complete InspectOwnedTLSBroker before NATS authentication.",
+        "Each present-broker inspection validates selected Docker identity, roster, container, image, volume and private config. The TLS wrapper then reads the certificate and key archives serially.",
+        "parallelDockerReadAllowed explicitly excludes private archives and cp. The existing parallelReads helper cannot batch these files."
+      ],
+      "nextAction": "Record the warm call's closed failure code, stage, elapsed time and ownership state. Measure both inspections before choosing a repair. Any optimization must preserve fresh authority, all private-file checks, bounded execution and joined cleanup; it must not simply skip inspection or raise the hard warm limit.",
+      "limits": "Source duplication is proved. Its contribution to the observed warm failure has not been measured. No archive batching helper or runtime source change was made by these reviewers."
+    }
+  ],
+  "observedFailedRun": {
+    "directory": "/home/ryan/.cache/agentmux-governance/p02-real-tls-compose-GOAUGD",
+    "test": "TestBootstrapRealComposeConcurrentColdWarmAndOwnerRecovery",
+    "rawEvents": {"file": "compose.jsonl", "sha256": "634f409c2bc1a13afb171473081b0f694aed08ae9a2f6797082d62dfa7c41e6c"},
+    "savedExit": {"file": "compose.exit", "value": 1, "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"},
+    "observations": [
+      "The raw events contain cold-owner and concurrent-reuse status receipts before the warm-reuse assertion failed.",
+      "The test fails at bootstrap_integration_test.go:447 with warm launch did not reuse without ownership.",
+      "The complete test result is failed, with elapsed time 54.69 seconds."
+    ],
+    "runCandidateComparedToReviewSources": false,
+    "commandAndRaceProvenanceReviewed": false,
+    "preservationAccepted": false,
+    "limits": "Only safe raw events and the saved exit were inspected. This record neither binds the run to the current source hashes nor proves the warm failure cause or final Docker inventory preservation. The coordinating session owns the actual run and full evidence collection."
+  },
+  "independentReviewScope": {
+    "startupProgress": "Plato independently confirmed the pending-start source gap and corrected the conditional missing-service error distinction. Main, status and contract hashes matched; the bridge hash above was stable during that review.",
+    "warmInspection": "Codex traced the duplicate inspection and the archive-batch guard. This part is not an independently measured timing result."
+  },
+  "unchanged": ["runtime source", "task tracker", "status board", "global review attestations", "Docker resources", "reviewer notes"],
+  "qualificationLimits": [
+    "P02-T01-AC08 and P02 gate criteria still require actual supported-environment installed-launcher evidence; package tests and cross-builds do not replace it.",
+    "No native macOS execution, full phase gate, commit, push or advancement is authorized or established by this record.",
+    "The design-pattern check still reports stale sourceDigest. The coordinating session owns deliberate source-inventory and review reconciliation."
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "phase": "P02",
+  "reviewer": "Codex",
+  "reviewedAt": "2026-10-14T09:41:45.983809+00:00",
+  "records": [
+    {
+      "run": "p02-old-network-preparation-_rh_f2nf",
+      "reviewSHA256": "b06a34b6a7f8fcdf5ce7a4630515a1c7717ac86b68308637e1444178edb028f8",
+      "sourceFilesVerified": 90,
+      "helperVerified": true
+    },
+    {
+      "run": "p02-old-network-removal-91fc5l_y",
+      "reviewSHA256": "83ef28391b8499963a310b3c79a82986df783c7aaf817e2e79214651cfd09303",
+      "sourceFilesVerified": 90,
+      "helperVerified": true
+    }
+  ],
+  "result": "Two exact legacy test networks removed; containers, volumes and unrelated infrastructure preserved.",
+  "limitations": [
+    "Historical fixture recovery only; not phase acceptance.",
+    "Stopped containers retain old network references. No product ownership check was weakened.",
+    "No fresh retained-record checksum was measured.",
+    "Private full engine projections remain in the local cache; their recorded hashes were verified.",
+    "The recovery producer was saved after execution, as recorded in its original review."
+  ]
+}

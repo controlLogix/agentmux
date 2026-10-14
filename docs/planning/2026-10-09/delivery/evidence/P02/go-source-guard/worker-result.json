@@ -1,0 +1,43 @@
+{
+  "recordedAt": "2026-10-13T20:32:53.177635+00:00",
+  "scope": "P02 additive Go source eligibility only; not phase acceptance",
+  "sourceHashes": {
+    "docs\\planning\\2026-10-09\\verify-component-coverage.py": "999d4274de2c52c2794573fd27eaa565a80bb128a5a0efe4ab106f39a238e050",
+    "tests\\platform\\test_source_surface.py": "c4993a835c95e8dee383b4701140e0854c1b9e3fff6ece20cba24a9795a7a562"
+  },
+  "previousGuardSha256": "6d53d1fbb4e93892029c2ebee3cf07b6c666b7336c0ac1a1a72f9120a70d1c54",
+  "unchangedOutsideEligibilityExpression": true,
+  "oldGuardNegativeControl": {
+    "testsRun": 1,
+    "failures": 1,
+    "errors": 0,
+    "expectedFailure": "Valid registered Go runtime surface was rejected by the old guard"
+  },
+  "focusedRuns": [
+    {
+      "command": "python tests/platform/test_source_surface.py",
+      "environment": "Windows Python3.14",
+      "tests": 7,
+      "languageSubcases": 7,
+      "seconds": 30.562,
+      "exitCode": 0
+    },
+    {
+      "command": "wsl.exe -d Ubuntu-26.04 -- /home/ryan/.cache/agentmux-governance/venv/bin/python /mnt/c/Users/RyanHelms/GitHub/agentmux/tests/platform/test_source_surface.py",
+      "environment": "WSL Ubuntu-26.04",
+      "tests": 7,
+      "languageSubcases": 7,
+      "seconds": 2.932,
+      "exitCode": 0
+    }
+  ],
+  "requiredFollowups": [
+    "Root must register tests/platform/test_source_surface.py in actual component inventory",
+    "Independent review and pattern sourceDigest reconciliation remain pending"
+  ],
+  "limitations": [
+    "Disposable real Git ownership fixtures only; no Go build or runtime execution",
+    "No native macOS or native Linux execution in this focused run",
+    "Legacy path exclusions are preserved exactly"
+  ]
+}

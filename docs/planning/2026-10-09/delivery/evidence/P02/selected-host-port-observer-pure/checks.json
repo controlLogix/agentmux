@@ -1,0 +1,37 @@
+{
+  "results": [
+    {
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "./portobserver",
+        "-run",
+        "^Test(AllRowsValidateBeforeOccupied|MappedIPv6LoopbackRemainsUnavailable|MappedIPv6WildcardRemainsUnavailable)$",
+        "-race",
+        "-count=1",
+        "-json"
+      ],
+      "environment": {},
+      "exit": 0,
+      "elapsedSeconds": 0.7379865889961366
+    },
+    {
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "build",
+        "-o",
+        "/home/ryan/.cache/agentmux-governance/p02-port-observer-first-slice/observer-windows-amd64.exe",
+        "./cmd/agentmux-host-observer"
+      ],
+      "environment": {
+        "GOOS": "windows",
+        "GOARCH": "amd64",
+        "CGO_ENABLED": "0"
+      },
+      "exit": 0,
+      "elapsedSeconds": 7.353013187996112
+    }
+  ],
+  "sourceStable": true,
+  "scope": "Pure table controls and Windows cross-build only. No native helper, port, Docker or installed qualification."
+}

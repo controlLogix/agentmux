@@ -1,0 +1,22 @@
+{
+  "scope": "Read-only final test assertion closure and source clearance for root-authorized bounded component selection. No tests/build/engine/shared edits.",
+  "previousSourceClearanceSHA256": "e3f303cc58ec59d807ab6b7fea20698d1e1a0aade7fcf59fa42b8b2976be1fb6",
+  "testSHA256": "f7fe5cb9d47ba580381ff242e6e0ebeb3c96a35d617c471d2d426fb4c561544b",
+  "testStrengthRecordSHA256": "ec2644897cea8b3ad622d2307a56a20600fb9733df29da3ba80d7466ec2d0cd2",
+  "preservedOldTestSHA256": "d82a50f116d75e95fb42dd0020c00f250a4d9d71f69b299871a27753020581eb",
+  "productionUnchangedSHA256": {
+    "operation": "3d4a7531863e2f1ee03820a13767c9eace5bbd3812fcef7eccf48124277c7562",
+    "owner": "9cfd0a38d4b40c060759200dbef226cc5bf9dd60d7759f67e756f2d9949e19f2"
+  },
+  "actualFinalBytesRead": true,
+  "closure": [
+    "Scope/profile/enrollment require exact binding_invalid and originalctx unexpired.",
+    "Closed/replaced/symlink lease require exact lease_invalid and ctx unexpired.",
+    "Unbounded ctx requires exact deadline_missing; no timeout invention.",
+    "Noncancel/spoof require false,nil and unexpired ctx; incorrect delay-to-timeout can no longer pass.",
+    "Alreadycompleted actual canceledcore requires true,nil unexpired; expires actualDeadline and latecompletion refusal unchanged."
+  ],
+  "findings": [],
+  "clearedSelection": "^TestOwnerBridge(NonceCancellationBeforeCompletionKeepsReply|NonceWaitEligibilityBoundaries|ActualNATSCorrelatedL04AndRefusals)$",
+  "status": "NONCE-REFUSAL-CONTROL-STRENGTH closed. Source clear for root-approved tests; no executed test/production promotion/native/phase acceptance."
+}

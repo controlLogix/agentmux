@@ -1,0 +1,21 @@
+{
+  "reviewer": "Codex",
+  "sources": {
+    "platform/runtime/supervisor.go": "45437190fd61616c18c35c79ff4fc02c97b558d607bf2043bea2e6b14d40d824",
+    "platform/runtime/startup_cleanup_cause.go": "ab782c24cb286edd246f390f393fcb910b9a6735284609ea2a79fa9a548d6708",
+    "platform/runtime/startup_cleanup_cause_test.go": "593341080daec653c737e4aa341a80248c24a3d782e2b6c84cb0b1607afbd1cd"
+  },
+  "focusedNamedPasses": 2,
+  "affectedActualProcessControls": 3,
+  "directExits": {
+    "focused": 0,
+    "affected": 0,
+    "vet": 0
+  },
+  "independentReview": "independent-review.json",
+  "limits": [
+    "Unit controls retain original startup and cleanup errors and redact private paths.",
+    "Actual process controls cover partial startup and cancellation, not forced simultaneous actual Start and Stop failure.",
+    "Native Linux amd64 WSL; native Darwin and complete P02 acceptance remain separate."
+  ]
+}

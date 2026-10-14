@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.0.0",
+  "scope": "Cache-only mid-boot authenticated entry synchronization repair",
+  "namedPasses": 8,
+  "failures": 0,
+  "skips": 0,
+  "directExit": 0,
+  "packageElapsedSeconds": [
+    0.104
+  ],
+  "sourcePins": {
+    "installed_cli_midboot_compose_integration_linux_test.go": "58f6f4c74f75191c5a117d9af03e6905010112741be09e9776c9a59c99990c38",
+    "installed_cli_midboot_discovery_controls_test.go": "e4c26f7f65303a5ef37c46e4041073deefe71073cb331e63edfacd42d04fbfcb",
+    "midboot_private_docker_parser_test.go": "fbd974aa97c88e918a30f610b5b644d44a4afccc9efe40d636b36ec653d9fc00",
+    "midboot_private_docker_parser_controls_test.go": "c3e3f2ca7c4aed52c6bacab38d357077c2551edabdc94dc2285bd23dbb56c09f",
+    "installed_cli_midboot_starting_controls_test.go": "e94be0efad75d27550d32dff6932919891fd1078ff06354d979449cafb94e9b6"
+  },
+  "sourceBeforeCopyAfterEqual": true,
+  "authorization": "AMX_BOOTSTRAP_DOCKER_AUTHORIZED=0",
+  "actualCapturedInputs": {
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-3088270586/midboot-entry-stdout.private": {
+      "sha256": "5e75613bf2fcebf201334149463b2ea483a5f8fa695c3691a1e0a5ea25dad04b",
+      "bytes": 999
+    },
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-77534881/pending.json": {
+      "sha256": "1a0124ac6443ea78f7da7274559fd365badea5ba2bfac90c6c6c226034fe7442",
+      "bytes": 3148
+    }
+  },
+  "behavior": [
+    "Save actual expected creator cold ID, admitted runtime digest, full scope and enrollment before observation assertions.",
+    "Validate accepted historical receipt with unchanged strict shape and creator binding helper; it does not satisfy current phase entry.",
+    "Keep same arbitration gate and creator while status-only authenticated reads await actual starting tied to original cold attempt within the original startup deadline.",
+    "Every status request is capped at five seconds inside that same deadline; only closed availability failures allow another read.",
+    "Ready, other attempt, authority, cleanup, missing status and expired deadline all refuse advancement.",
+    "Check actual original host pidfd and original deadline again before releasing the gate."
+  ],
+  "artifacts": {
+    "current-after.json": "c966294189e6f06ebb584deeaf8b5edba6beb9a1568f9c4c2334fa3ab4a1e6bb",
+    "authenticated-entry-repair.diff": "7c7edf78a8711261805132f4b308f1423b295ed8a626a07ccaf97b7a9a1893d3",
+    "added-source.json": "2bba0151557aecaf63dce2059d6ea3ac2402c3928f256d25d935c284a5ed8aca",
+    "source-after.json": "c966294189e6f06ebb584deeaf8b5edba6beb9a1568f9c4c2334fa3ab4a1e6bb",
+    "starting-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "invocation.json": "893645722fc0902a0a7f552a9207403b8982619ed596b5a07b257308a1ffb920",
+    "source-before.json": "c966294189e6f06ebb584deeaf8b5edba6beb9a1568f9c4c2334fa3ab4a1e6bb",
+    "run.py": "2601d9b51fbdc1d09aaaa714ffe7367e43124d23f7b4c5904ef708bd041951aa",
+    "starting-events.jsonl": "f58574e0b6511b41583ae3e4786dcf4e5da23f6c03a80f3a0091c3896446acdd",
+    "starting-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  },
+  "historicalFailedCaseReviewSHA256": "50ab6deda9db61c64d5ccf9b8f6a48e1058e80be6573fb1efa627d67561b993d",
+  "limits": [
+    "Pure saved-output boundary controls only; no NATS request, engine call, installed startup, signal or recovery executed.",
+    "The actual mid-boot case has not run on this repaired source.",
+    "Historical initial receipt cannot establish current readiness, original failure cause or retrospective expected creator correlation.",
+    "No shared repository files or phase metadata changed."
+  ]
+}

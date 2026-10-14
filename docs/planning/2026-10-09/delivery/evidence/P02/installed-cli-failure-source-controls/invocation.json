@@ -1,0 +1,24 @@
+{
+  "args": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "-tags=agentmux_bootstrap_docker",
+    "./launcher",
+    "-run",
+    "^TestInstalledCLIFailureDiagnosticMatcherIsClosed$"
+  ],
+  "cwd": "/home/ryan/.cache/agentmux-governance/p02-negative-matcher-pure-d05e2bc5/platform",
+  "fixedEnvironment": {
+    "GOTOOLCHAIN": "local",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GOFLAGS": "-mod=readonly",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "0"
+  },
+  "scope": "One pure diagnostic matcher test plus actual tagged package compile, no Docker fixture selected"
+}

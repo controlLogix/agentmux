@@ -1,0 +1,61 @@
+{
+  "reviewer": "Codex",
+  "recordedAt": "2026-10-14T13:34:59.388348+00:00",
+  "scope": "Actual read-only qualification of exact retained failed-test fixture.",
+  "reviewedSource": "Entire helper inspected: original failed-record and baseline hashes, named creation interval, six actual exclusions, current signed private enrollment, complete broker TLS/config/image/engine checks, exclusive network endpoint and before/after ledger comparison.",
+  "result": {
+    "actualLeasesHeld": 6,
+    "actualLeasesReleased": 6,
+    "completeContainerBaselineUnchanged": true,
+    "completeNetworkBaselineUnchanged": true,
+    "containerBaselineCount": 40,
+    "containerCreated": "2026-10-14T13:01:27.804571389Z",
+    "containerId": "0f9097fa55ff273b69b8c8e5f85154400b830ef163b9b846808888edd46e746b",
+    "containerState": "running",
+    "directory": "p02-bootstrap-private-2194878452",
+    "engineId": "e0f1f93d-abf1-44f2-b62a-5bfee21d2b5c",
+    "exclusiveEndpointCount": 1,
+    "failureCode": "none",
+    "fullPrivateTLSIdentityQualified": true,
+    "leaseCloseCodes": [],
+    "mutationExecuted": false,
+    "networkBaselineCount": 32,
+    "networkCreated": "2026-10-14T13:01:27.724076269Z",
+    "networkFullDigest": "sha256:159383285586dfc66aa22a62378df1d5123d348d9d29211617e8e9b8668855db",
+    "networkId": "d3fb496020e151168142b14664ca1b7d1a6199870f0ba288351385a585a343d9",
+    "networkImmutableDigest": "sha256:56ac5a15b38577f81855c93ab31bbf0ae446a52f3c56b8796640490c33989e81",
+    "noFreshCreatorPinMinted": true,
+    "originalCIDAndNetworkAbsent": true,
+    "originalCreationIntervalBound": true,
+    "originalHostHandleEstablished": false,
+    "originalKnownOwnedIDsEmpty": true,
+    "qualified": true,
+    "selectionPin": "qualified-wsl-literal",
+    "stage": "all_readonly_qualification_complete"
+  },
+  "publicArtifactsSHA256": {
+    "qualification.json": "7367f6f555a804d1c537b81510a0ce1b7a7295cc34112a3f1b5213283c46a0de",
+    "producer.sh": "047fb50c0987491fa0d3656de286b0f456fd65403ffd4ffe9fa40b793b388f0d",
+    "invocation.json": "1bd5e7e57392d408283ad507958e628b367d53efa901074bf7619101a209e5d9",
+    "events.jsonl": "e0ca019dd2d083594011d4b41c92cce979405e2c92ff9865f00beec22330b4d4",
+    "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "qualification-helper.source": "ee3df16bd20d4f8dc93eb58878b682c810006e3a85475e15168438806dc33c76"
+  },
+  "privateArtifactsSHA256": {
+    "private-container-before.json": "6b932b08da6e3f8bf78296fbfd649bc3deec474a4c2c924845bbd5f4b05b4702",
+    "private-container-after.json": "6b932b08da6e3f8bf78296fbfd649bc3deec474a4c2c924845bbd5f4b05b4702",
+    "private-network-before.json": "07139ab22c0640dce298423121e0f854a5cefe8e63f0fcdc36ea5b1b2821cf67",
+    "private-network-after.json": "07139ab22c0640dce298423121e0f854a5cefe8e63f0fcdc36ea5b1b2821cf67",
+    "private-full-container.json": "a8be9849698852235034fee6f265aa51182b62700f30548627edf20a45016f3f",
+    "private-full-network.json": "cb71f8a689ac874dc45e0ef3207170fc91ca04e1544753377cd203fa29db6544",
+    "private-volume.json": "ae767814b016915bad0ca696ad66a545c7fdc9c0d2ea8fa64ffb417ae1ae2737"
+  },
+  "decision": "Supports review of a fresh exact guarded recovery proposal; no mutation authorized by this record alone.",
+  "limits": [
+    "Original knownOwnedIDs empty and host ownership handle absent; no process or PID authority inferred.",
+    "A current running broker proof is not a fresh factory creator pin or installed startup acceptance.",
+    "Private projections remain outside repository.",
+    "Stop/removal must reacquire six exclusions and freshly revalidate all ownership and preservation checks."
+  ]
+}

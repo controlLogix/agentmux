@@ -1,0 +1,52 @@
+{
+  "scope": "Cache-only proposed pre-start receipt cleanup repair; no shared promotion, process launch, installed boot, native matrix or phase acceptance",
+  "originalSourceSHA256": "2c771944be744cfa58cef440d852b7cea525f1730912f43bcd03f122de9b0a54",
+  "ownedSourceSHA256": {
+    "bootstrap_receipt_prestart_cleanup_test.go": "ea22363e846f962474f29492d464b18d6308b019057b20434246a85c7d791e11",
+    "bootstrap_receipt.go": "6c3ba5a49629b3a179b30560e7b552f08ab5236e898f53d72ef8ef7cee6f8c8a"
+  },
+  "before": {
+    "path": "/home/ryan/.cache/agentmux-governance/p02-receipt-prestart-before-gfj54k8v",
+    "mechanism": "Mechanically extracted original r.Close/w.Close/return-start-error behavior with real preclosed pipe files. Prospective wrapper unused. This is injected-helper evidence, not failed actual installed boot.",
+    "directExit": 1,
+    "failedSubcases": [
+      "TestBootstrapReceiptPrestartCleanupRetainsBothCloseCauses/reader",
+      "TestBootstrapReceiptPrestartCleanupRetainsBothCloseCauses/writer",
+      "TestBootstrapReceiptPrestartCleanupRetainsBothCloseCauses/both"
+    ],
+    "artifacts": {
+      "exit.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "events.jsonl": "bec8cf6c3de1bd8134670ee8d54af0a775fc3f5ef1419c1d7f3c19e51f97efae",
+      "manifest.json": "205fd0c84a43dc373b1d392ebca7b5873b06a8fb99ee157a9e38e18a933a5a11"
+    }
+  },
+  "after": {
+    "directRaceExit": 0,
+    "directVetExit": 0,
+    "namedPassEntries": 7,
+    "fail": 0,
+    "skip": 0,
+    "packageElapsedSeconds": 5.082,
+    "timingLimit": "Named cases round to0.00s; separate compiler/init/setup/cleanup times not collected. Package elapsed is not a close duration."
+  },
+  "review": {
+    "bothAttempts": "Unconditionally capture both concrete file Close results; no short circuit",
+    "identity": "Original start error returned exactly when both closes succeed",
+    "retention": "Safe wrapper preserves original start plus each distinct actual os.PathError close cause",
+    "presentation": "Fixed bootstrap_receipt_cleanup_failed Error, Format and JSON for pointer/value; no raw cause output",
+    "ownership": "os.File.Close consumes each handle; no retry/raw-FD/PID adoption or generic closer seam",
+    "healthyImpact": "Binding, pipe allocation, successful/post-spawn branch, frame, EOF and deadline code unchanged"
+  },
+  "artifacts": {
+    "exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "source.diff": "9fc6005b2390aa28f8673cd29d92a1fb0893b926b6e7738e32753a8107c0ba3a",
+    "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "events.jsonl": "523282a61924088474c3a9f4262d6544d13992913cdc783f92cec37ba6f13170",
+    "manifest.json": "187375218646171b1e817d996662528b4fea0d278952002f98d3a0f0995a4a95",
+    "vet-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vet.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vet-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "invocation.json": "94dfce97c280a903a6aa303bd0005b1a4cd421bcc4ec619b070653e92c33d4c3"
+  }
+}

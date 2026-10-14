@@ -1,0 +1,32 @@
+{
+  "sources": {
+    "launcher/bootstrap.go": "78c221f2b137927990200711985c3e75c372bcd162f028ceaaf26dac4053fd8b",
+    "launcher/owner_bridge.go": "0ba0c706e5c511dd10113666d4a22b90a1674dc0e149deba4dd72b360b8315d8",
+    "launcher/lock_unix.go": "8dce55b7daaf4d8233d0075f2593c9d5bdaf7511bfd029592bff88d69143a0a8",
+    "runtime/supervisor.go": "0623e52a70d5c4dd5dd7410a80376eb512d93f4779d438769e6bb2c42665b7ef",
+    "runtime/parent_unix.go": "7fe95fe66db69c01889f60fd2c4428579daf080d379dff25fc80064962c4a9be",
+    "cmd/agentmux-runtime/main.go": "67a6be16e1011cc3e86057fbbb081f45af79550d143f485732d26011e5bf5fc4",
+    "cmd/agentmux-kernel/main.go": "27e6bb75c3d41cc2367a4590bcf0bf12fe420ae76f020ac484fa0ea399f95cad",
+    "launcher/startup_session_lifecycle_test.go": "6173569476e4cff53b458b8cbc035d87d96c661e537e3cc26283a116044108b5"
+  },
+  "cliExit": "Runtime main prints only fixed safe message then os.Exit1 on Run error. OS exit closes descriptors; protected role parent-EOF behavior is separate lifecycle proof. Process exit is not library-level joined cleanup or retry evidence.",
+  "controls": {
+    "namedPasses": 2,
+    "meaning": "Actual four signed sealed fixture children; canceled Session.Close retains exact Group and actual acquired lease; contender times out; explicit owned retry reaps and releases. Historical error with no group/lock still reports failure separately.",
+    "rawSHA256": "11e8a1869d31f02acd1fc59748ddfcfc06a9e530cd8d8ac21a940d7362ae46c5",
+    "exitCode": 0
+  },
+  "finding": {
+    "recommendation": "Typed safe concrete Session cleanup error with Close(context.Context) retry and fixed Error/Format; preserve cause safely. Wrap only actual unresolved resources or expose explicit pending ownership state, not merely any historical cleanup error. Keep service lease with unresolved owned runtime until retry/reaping is joined.",
+    "distinction": "The bootstrap Group.Done watcher retains Session until actual reaping and can release its bootstrap lock. This prevents claiming all resources are immediately abandoned; it does not provide caller-visible bounded cleanup retry authority.",
+    "code": "owner_bridge_run_scalarizes_retained_session",
+    "path": "Run joins scalar runtime_cleanup_failed when Session.Close fails, without returning the exact Session retry handle. Bootstrap cleanup already returns a concrete Session result on failure."
+  },
+  "leaseClose": "BootstrapLock.Close delegates to os.File.Close, which Go1.27.2 marks closed and invalidates Sysfd even on returned close error. Never retry a raw descriptor number or assume this returned error means live lease ownership.",
+  "reviewScope": "P02 outer Session/lease cleanup ownership, read-only",
+  "limits": [
+    "No real Run+Docker invocation or forced uninterruptible real child; concrete lower Session behavior and exact outer Run scalarization reviewed.",
+    "No engine/provider/privilege calls; no shared edits.",
+    "Native Mac qualification remains separate."
+  ]
+}

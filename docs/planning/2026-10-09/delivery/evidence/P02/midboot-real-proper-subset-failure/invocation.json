@@ -1,0 +1,38 @@
+{
+  "argv": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "-tags=agentmux_bootstrap_docker",
+    "./launcher",
+    "-run",
+    "^TestInstalledCLIRealComposeMidBootCreatorCrash$"
+  ],
+  "environment": {
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "1",
+    "AGENTMUX_TEST_NATS": "/home/ryan/.cache/agentmux-governance/tools/nats-server",
+    "AMX_BOOTSTRAP_SELECTION_FILE": "/home/ryan/.cache/agentmux-governance/p02-current-wsl-selection-draft-674dc329/selection.json",
+    "AMX_BOOTSTRAP_SELECTION_SHA256": "724f2d7863838b26114a45ab335a93cce9b9a44b47df9bb3ecb5bff3d53c11fb"
+  },
+  "startedUtc": "2026-10-14T19:53:41.842311+00:00",
+  "producerSHA256": "7cc9f1c565dc1f1a0cec47168d0dee66430630ff908ca51f9878e6947fad340b",
+  "requiredPins": {
+    "platform/launcher/owner_bridge.go": "9cfd0a38d4b40c060759200dbef226cc5bf9dd60d7759f67e756f2d9949e19f2",
+    "platform/launcher/bootstrap_operation.go": "3d4a7531863e2f1ee03820a13767c9eace5bbd3812fcef7eccf48124277c7562",
+    "platform/cmd/agentmux-runtime/main.go": "9ba174b070fe08d76944d2a2f6cbd5da448f0a02f6e1c70c6aabc0a15ad17620",
+    "platform/launcher/bootstrap_network_cleanup_integration_test.go": "5347669150b3bf622cde6634389e564ef67b9eabbe5849393f6ffd711f57b00e",
+    "platform/launcher/installed_cli_compose_integration_linux_test.go": "6d0021d99531507ea5232ff81f1d18477ce1def1a8c228b3069d1d785895073c",
+    "platform/launcher/bootstrap_docker_selection_test.go": "6b5e550b2cc89f0b9fc873a4891623ed01c1277ee8947dbcb147650c312b34ae",
+    "platform/launcher/bootstrap_docker_current_qualification_controls_test.go": "f4b578067fcecf022600f818709ac95185e787e7c5727f6b602485f178bfc831"
+  },
+  "snapshotSeconds": 51.101008591009304,
+  "snapshotFileCount": 261,
+  "companionSHA256": "58f6f4c74f75191c5a117d9af03e6905010112741be09e9776c9a59c99990c38",
+  "batchSourceVerification": true
+}

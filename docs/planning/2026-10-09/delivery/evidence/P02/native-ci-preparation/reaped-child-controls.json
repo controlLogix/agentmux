@@ -1,0 +1,45 @@
+{
+  "recordKind": "reaped-child-identity-cleanup-controls",
+  "sourceBaseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "phaseAccepted": false,
+  "nativeCIExecuted": false,
+  "sourceHashes": {
+    "tests/platform/native_go.py": "96505948f00059961c7cffe9f45512c33d70b36322df1cf177ffe683e7af570d",
+    ".github/workflows/platform-foundation.yml": "291c0bc23d8c313f90eb45e8ef9691e0caf45fdf0524263a1ab1e87947a9201b"
+  },
+  "controls": {
+    "command": "python -B tests/platform/native_go.py --self-test",
+    "exitCode": 0,
+    "tests": 20,
+    "kind": "Synthetic controls; no native qualification, download or real process signaling"
+  },
+  "refinements": [
+    "Cleanup skips group signaling when the child return code is already known, but still waits for it.",
+    "An interrupted wait that already reaped its child cannot cause signaling through a recycled saved process ID.",
+    "Timeout results use the actual cleanup wait return code, not a later attribute read."
+  ],
+  "repairHistory": {
+    "intermediateSourceHash": "db14cc8172f9a564662f0296ae44772ca164300c6408f5a5d186f81c307a930a",
+    "intermediateSuite": {"tests": 20, "failures": 1},
+    "failure": "Synthetic timeout cleanup returned None instead of -9 because its mock did not update returncode.",
+    "focusedRepairCommand": "python -B -m unittest tests.platform.native_go.RunnerTests.test_timeout_is_checkpointed_and_exhausted_scopes_are_unexecuted",
+    "focusedRepairExitCode": 0,
+    "followedByFullControlSuite": true
+  },
+  "independentReview": {
+    "reviewer": "Independent Codex agent Mencius",
+    "reviewedSourceHash": "96505948f00059961c7cffe9f45512c33d70b36322df1cf177ffe683e7af570d",
+    "status": "Closed on source inspection; no remaining actionable finding in this bounded change",
+    "checks": [
+      "Cleanup skips signaling a reaped child, always waits and returns outside finally, preserving signal errors.",
+      "Timeout admission remains failed for cleanup exits of both -9 and zero.",
+      "Fresh preparation workspace admission was closed in the preceding review."
+    ],
+    "limits": "Reviewer ran no tests, signals, downloads or CI. This is not native qualification or phase acceptance."
+  },
+  "limits": [
+    "Earlier source-bound records are preserved as historical evidence.",
+    "The design-pattern check still reports stale review sourceDigest; the coordinator owns final review and registration.",
+    "Native Linux/macOS, full Compose, recovery, security and supported-environment evidence remain required."
+  ]
+}

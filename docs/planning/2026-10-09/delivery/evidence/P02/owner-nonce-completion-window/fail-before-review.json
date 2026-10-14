@@ -1,0 +1,38 @@
+{
+  "scope": "Fail-before real authenticated native NATS handler boundary with private operation entry/completion seams and actual service flock; not production Bootstrap substitution, historical intermittent-cause proof, Docker/native phase acceptance.",
+  "sourceOwnerSHA256": "c73c5c40d770535a49f03a2a14e43e7598daf6a4528973fb0591fba326c5df95",
+  "sourceManifestSHA256": "7824fd91abab36868d9d0834a8c7a546b003531084b150514220932c959244b6",
+  "invocation": {
+    "argv": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "./launcher",
+      "-run",
+      "^TestOwnerBridgeNonceCancellationBeforeCompletionKeepsReply$",
+      "-count=1",
+      "-json"
+    ],
+    "exit": 1,
+    "elapsedSeconds": 12.774374408996664,
+    "testSHA256": "f9c0fa22499f003276d20f3f247dbd901f45ed3b8b3303ca0706f04c7d0b2ed1",
+    "ownerSHA256": "c73c5c40d770535a49f03a2a14e43e7598daf6a4528973fb0591fba326c5df95",
+    "sourceStable": true
+  },
+  "actualOutcome": "Named test fails after canceled entered core, first authenticated request flushed, no premature response, genuine component completion, same immutable request nonce/body retransmission; original5s reply context expires without completed reply. Handler lifetime cancellation and owned connection cleanup joined on all failure paths.",
+  "schedulingLimit": "200ms receive interval allows real handler processing before component completion; no handler-internal acceptance marker exists. Correlated current source and same-nonce failure are evidence of the reproduced handler boundary; not proof of original intermittent Run cause.",
+  "proposedRepair": "After trusted pending mapper reports canceled-core not_pending while operation.done is still open, inspect actual entered/core cancellation under bounded private state lock, then await actual op.done within SAME remaining request context without holding locks or adding a goroutine. On completion use actual result and map same accepted request. Keep nonce consumed and publish at most once; never reopen replay for errors/ambiguous publish/authority failures. Context expiry returns no fabricated state or new budget.",
+  "requiredControls": [
+    "Existing reproduced canceled-core/completion window must return exact correlated failed observation with same nonce.",
+    "Uncompleted canceled operation expires in original request context and remains consumed; no invented response or detached waiter.",
+    "Wrong scope/enrollment and non-cancellation mapper errors never gain this completion wait/retry exception.",
+    "Ambiguous Publish/Flush failures leave nonce consumed and terminal outcome/error retention intact."
+  ],
+  "artifactSHA256": {
+    "before.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "before.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "before.jsonl": "c212c2139ef953a88f9c184b9002014e480a3a06cd8508edf684a02e5f1a8677",
+    "invocation.json": "df29533485181c91362ad1828c5879f9ba018dd8d648022de2e5d68e7495c92c",
+    "source-manifest.json": "7824fd91abab36868d9d0834a8c7a546b003531084b150514220932c959244b6"
+  }
+}

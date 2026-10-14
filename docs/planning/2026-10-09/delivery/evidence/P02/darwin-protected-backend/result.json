@@ -1,0 +1,34 @@
+{
+  "nativeQualification": false,
+  "host": "Windows-owned WSL Linux",
+  "purpose": "CGO-disabled Darwin compilation preserves unsupported backend; no macOS execution",
+  "command": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-mod=readonly",
+    "-c",
+    "-o",
+    "/home/ryan/.cache/agentmux-governance/darwin-backend-final-build-xxjcx0jo/darwin-cgo-disabled.test",
+    "./runtime"
+  ],
+  "environment": {
+    "GOTOOLCHAIN": "local",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOENV": "off",
+    "CGO_ENABLED": "0",
+    "GOOS": "darwin",
+    "GOARCH": "arm64"
+  },
+  "exitCode": 0,
+  "durationSeconds": 1.75,
+  "sources": {
+    "platform/runtime/acl_darwin.go": "bfcd89538837b9ffd94c46882f231a1930091d3b21d3e5bb5cb475659acfe609",
+    "platform/runtime/snapshot_darwin.go": "0cabe456009fbf30016958b82070c89deb0e3e457509505828ea651c509eb2d9",
+    "platform/runtime/snapshot_darwin_install_test.go": "0165adcb9769541c8c48788754e91638b3ead7a584ede9b9f697add85aa321c9",
+    "platform/runtime/snapshot_darwin_policy_test.go": "dfcc45ca7b4f3a94d2acbe3b9ed710cf7198ef52183a0fc0f0bf1588e3e60f18",
+    "platform/runtime/snapshot_unsupported.go": "522a77bf706c8522363438e033e64d9478c85a7483d72d65e37b54edb3d8aaec"
+  },
+  "sourcesUnchanged": true,
+  "outputSHA256": "fff224e3927d71bd74deaf96e20f6408f41bd21835d6e3454a99d02c778781f8"
+}

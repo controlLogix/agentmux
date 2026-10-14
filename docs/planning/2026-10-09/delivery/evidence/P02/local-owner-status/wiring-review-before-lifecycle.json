@@ -1,0 +1,46 @@
+{
+  "scope": "Independent read-only P02 Session owner-status wiring review, before lifecycle finding repair; no phase acceptance",
+  "recordedAt": "2026-10-13T23:30:19.970697+00:00",
+  "sourceHashes": {
+    "platform/launcher/bootstrap.go": "b3211aa730e87980b2cbac0fb2e6ae479c580f4bba722c6cdae12b2512edb524",
+    "platform/launcher/startup_session.go": "a689c6575d47b10a410f89b7d34434f115c4e45849469dc31a51223fe9543a23",
+    "platform/launcher/startup_session_test.go": "120cd030a6aea9239188056f2501ddf679f4571b106beb3553b12de1625ad8de",
+    "platform/launcher/startup_status.go": "3ddbe8fcecb149dd40d9d0b9738d40af3a7e706f47b1b799ccc28c5038f3f107",
+    "platform/launcher/startup_status_test.go": "e26631c82ae070143dae8f93d4324750ebfeb1ca5bba42cf1c95e61b6a11a320",
+    "platform/runtime/supervisor.go": "8768d4fa02dddb0bc63c2c429810bed3c2454b88ca6f722fd0fbab3b139df944"
+  },
+  "implementationReview": [
+    "Bootstrap generates one real current invocation attempt identifier before inspection and retains it in both reused and started Session paths. Lock-owner arbitration metadata is distinct.",
+    "Session receipt time is assigned only after actual persistence/kernel observations; OwnerObservation does not replace the retained time with the current clock.",
+    "OwnerObservation copies the member slice while holding Session.mu, then releases that lock before mapping and local owner/profile reauthentication. This prevents the slice copy from aliasing mutable Session members.",
+    "The separately enrolled owner handle is required. Caller identity/scope come from actual local owner enrollment and OS checks in the adapter, not from request strings or role broker credentials.",
+    "Completed scoped cold health probe evidence is private and currently not passed into any ready mapping path. Warm retained records remain available with unknown write readiness."
+  ],
+  "blockingFindings": [
+    {
+      "id": "session-known-lifecycle-omitted",
+      "file": "platform/launcher/startup_session.go",
+      "line": 13,
+      "finding": "The locked snapshot includes only Status, receipt time and attempt. It ignores retained cleanupFailure, actual Group child Exited/Done state and retiredGroup. A known-ended or cleanup-failed owned session can therefore still emit a successful started/degraded observation from a kernel snapshot within its three-second freshness interval.",
+      "proofKind": "Concrete source-path review; no new runtime reproduction claimed",
+      "minimalCorrection": "Include actual known owned lifecycle/cleanup observations under Session.mu and map them to fixed safe failed/non-ready status errors. Distinguish a reused session with no owned Group from an owned Group that exited or retired. Never refresh the receipt or expose PIDs, output, private paths or raw errors."
+    }
+  ],
+  "proposedFocusedChecks": [
+    "Fresh real-owner Session snapshot with retained cleanupFailure must produce a safe failed/non-ready observation instead of successful started/reused.",
+    "An actual owned four-child Group with one child stopped must report known role exit even before Group.Done closes.",
+    "Actual whole-group stop or natural retirement must invalidate owned Session success; a genuine non-owned reused Session with nil Group must remain supported.",
+    "Concurrent Close, Group watcher and OwnerObservation race check must preserve coherent lifecycle/error state and retained receipt time.",
+    "Real current Bootstrap integration must bind actual generated invocation/time for both early and post-lock reuse plus cold start; private cold probe values alone must not become readiness."
+  ],
+  "testEvidence": {
+    "rootFocusedHandle": "44304",
+    "result": "Awaiting root source-bound result; this reviewer did not repeat its tests or mutate Docker."
+  },
+  "limitations": [
+    "No full suite, provider, model, Docker or live console action was performed by this review.",
+    "Local host same-UID trust is not a sandbox or remote/business authorization claim.",
+    "Actual cold probe readiness promotion remains intentionally pending.",
+    "Native macOS, shared lifecycle qualification and phase acceptance remain separately owned."
+  ]
+}

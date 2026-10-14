@@ -1,0 +1,54 @@
+{
+  "recordedDate": "2026-10-14",
+  "scope": "Cache-only source-surface proposal for the root writer; no shared inventory, tracker or index mutation",
+  "componentMapping": "PLAT-02 proposed because this is a runtime process-identity test helper. Root must select the exact behavior-check mapping; source review does not establish product qualification.",
+  "files": [
+    {
+      "path": "platform/runtime/testdata/darwin_identity_probe/main_darwin.go",
+      "componentIds": ["PLAT-02"],
+      "workingFileSha256": "455febb1b76fb2395bb8bcfd8783eb8adf9743c2916f98dbd0c36ca6c4d85bf4",
+      "declarations": [
+        {"name": "sameIdentity", "line": 74, "kind": "go-function"},
+        {"name": "newControl", "line": 79, "kind": "go-function"},
+        {"name": "pinChild", "line": 121, "kind": "go-function"},
+        {"name": "live", "line": 191, "kind": "go-function"},
+        {"name": "signal", "line": 208, "kind": "go-function"},
+        {"name": "observeExit", "line": 220, "kind": "go-function"},
+        {"name": "join", "line": 236, "kind": "go-function"},
+        {"name": "close", "line": 269, "kind": "go-function"},
+        {"name": "childMode", "line": 300, "kind": "go-function"},
+        {"name": "runControl", "line": 349, "kind": "go-function"},
+        {"name": "run", "line": 430, "kind": "go-function"},
+        {"name": "main", "line": 473, "kind": "go-function"}
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "Independent probe-only source review closed two findings. Compilation, native ABI, controls, actual PID reuse and installed-CLI qualification remain unexecuted."
+    },
+    {
+      "path": "platform/runtime/testdata/darwin_identity_probe/native_darwin.go",
+      "componentIds": ["PLAT-02"],
+      "workingFileSha256": "a120f2ce87b049852941efc3e38c9de013173e7998d842ed510eddadb2c6b972",
+      "declarations": [
+        {"name": "nativeAdmission", "line": 144, "kind": "go-function"},
+        {"name": "observe", "line": 158, "kind": "go-function"},
+        {"name": "nativePath", "line": 167, "kind": "go-function"},
+        {"name": "nativeArguments", "line": 179, "kind": "go-function"},
+        {"name": "identitySignal", "line": 210, "kind": "go-function"}
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "Pinned private ABI and native bridge inspected as source; native symbol, ABI and security controls remain unexecuted."
+    }
+  ],
+  "additionalReviewedSurfaces": {
+    "mainTypes": ["controlResult", "report", "processProof", "ownedControl"],
+    "nativeTypes": ["identity"],
+    "embeddedCFunctions": ["amx_system_symbol", "amx_admit", "amx_sdk", "amx_observe", "amx_identifier", "amx_image_path", "amx_send", "amx_wipe", "amx_arguments", "amx_free_arguments"],
+    "embeddedCStructures": ["amx_unique", "amx_combined", "amx_identity"],
+    "embeddedCFunctionPointerTypes": ["amx_info_fn", "amx_path_fn", "amx_signal_fn"],
+    "documentation": {"path": "platform/runtime/testdata/darwin_identity_probe/README.md", "sha256": "fc2c08846cea4b3b00c74f8799e9a20990101c5ad1aaa9faac4330f30cbaea63"}
+  },
+  "verificationLimit": "Declaration lines were enumerated from current source without building. Root should validate with its authoritative source parser before registration. No test success, compiled ABI or phase acceptance is implied.",
+  "goFunctionCount": 17,
+  "nativeTargetsPreserved": ["linux-amd64", "linux-arm64", "darwin-amd64", "darwin-arm64"],
+  "qualificationAccepted": false
+}

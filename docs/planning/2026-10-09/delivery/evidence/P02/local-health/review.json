@@ -1,0 +1,163 @@
+{
+  "scope": "P02 local infrastructure health slice; not phase acceptance",
+  "platform": "Native Linux in WSL; Go1.27.2 linux/amd64",
+  "command": "AGENTMUX_TEST_NATS=<prepared NATS> GOPROXY=off GOSUMDB=off GOTOOLCHAIN=local GOFLAGS=-mod=readonly go test -race -json ./deployment",
+  "snapshot": "/home/ryan/.cache/agentmux-tests/p02-health-final-3021reyu",
+  "testedSourceHashes": {
+    "go.mod": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+    "go.sum": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+    "deployment/probe.go": "df71842055c7f946d6579b1db499957a4c3dc7620bd4824ffd8acbb45f9995c7",
+    "deployment/probe_test.go": "c79d53aa30b33308b7b838bfad06a7abde99c99704e47c7322f2a1e9dce7471a",
+    "deployment/profile.go": "219b2c8742514699c0c12822576e580142e2f43b51d8405e3207a8ebb0a5f6fd",
+    "deployment/profile_test.go": "145e667f8f0dc39daadc11b9906067cb495bf1336a6ba7b1f11c915388610c74",
+    "deployment/README.md": "dc7789d3b5698cf9baee080e02137e10e6658706502822b88500c882ae60b45d",
+    "kernel/communication/config.go": "b54e90bbf5d5c37fa7e60ffdc878ddd4204bfba411665e2c35311c1fe5b9a883",
+    "kernel/communication/config_test.go": "1d2e5d1e30f2f2880396ef427b2261a66ad9ce8f145d45fa9de774b15ea76885",
+    "kernel/communication/README.md": "e6cdc9f7c3f227ab07c55e8eea4144747d851c4a1cea3cb40201d950e277b251",
+    "kernel/communication/run.go": "1340ecbbca4b21a3354b0be3147207bbd1fbe9b5039c7825fb750b149a703069"
+  },
+  "currentSourceHashes": {
+    "go.mod": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+    "go.sum": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+    "deployment/probe.go": "df71842055c7f946d6579b1db499957a4c3dc7620bd4824ffd8acbb45f9995c7",
+    "deployment/probe_test.go": "c79d53aa30b33308b7b838bfad06a7abde99c99704e47c7322f2a1e9dce7471a",
+    "deployment/profile.go": "219b2c8742514699c0c12822576e580142e2f43b51d8405e3207a8ebb0a5f6fd",
+    "deployment/profile_test.go": "145e667f8f0dc39daadc11b9906067cb495bf1336a6ba7b1f11c915388610c74",
+    "deployment/README.md": "dc7789d3b5698cf9baee080e02137e10e6658706502822b88500c882ae60b45d",
+    "kernel/communication/config.go": "b54e90bbf5d5c37fa7e60ffdc878ddd4204bfba411665e2c35311c1fe5b9a883",
+    "kernel/communication/config_test.go": "1d2e5d1e30f2f2880396ef427b2261a66ad9ce8f145d45fa9de774b15ea76885",
+    "kernel/communication/README.md": "e6cdc9f7c3f227ab07c55e8eea4144747d851c4a1cea3cb40201d950e277b251",
+    "kernel/communication/run.go": "1340ecbbca4b21a3354b0be3147207bbd1fbe9b5039c7825fb750b149a703069"
+  },
+  "snapshotUnchanged": true,
+  "workingSourceMatchesTested": true,
+  "broker": {
+    "version": "2.15.0",
+    "sha256": "387ce54e7a0a249d877a579ed641d715bab047d7e061bfa42b4d07f6a0401341"
+  },
+  "result": {
+    "exitCode": 0,
+    "topLevelTests": 9,
+    "passingEntries": 38,
+    "elapsedSeconds": 2.273,
+    "stderrBytes": 0,
+    "failedEntries": 0
+  },
+  "actualCases": [
+    "Warm absent stream remains absent",
+    "Cold create then repeat validates exact policy and advances retained sequence",
+    "Actual owned broker stop/restart retains the first record; warm call preserves stream creation/config",
+    "Seven independently created incompatible real streams (subjects,storage,noAck,limits,retention,dedupe,transform) remain unchanged with no records added",
+    "Wrong endpoint/auth/domain/logical-name/exact-version calls fail within one bounded deadline and do not provision",
+    "Denied health publish after successful CREATE leaves the compatible empty stream; no rollback delete",
+    "Real permission violations observed for SYS, other-stream CREATE, health UPDATE and DELETE",
+    "Earlier50ms caller deadline respected despite2s option; server monitoring proves probe connection closure",
+    "Factory output preserves all three communication accounts exactly; health principal has only nine exact publish subjects and inbox subscriptions"
+  ],
+  "pureBoundaryCases": [
+    "Replica2,mirror,sealed,rollup,direct and extra metadata configuration refusal; no actual multi-node replica claim",
+    "Invalid factory identity,path/root/control,limits,credential distinctness and role membership"
+  ],
+  "history": [
+    {
+      "kind": "initial-domain-acl",
+      "sourceSnapshot": "/home/ryan/.cache/agentmux-tests/p02-health-first-j0kxl9ag",
+      "sourceHashes": {
+        "deployment/profile_test.go": "f25fd5f582f79afcb75c7ed07c6d2d2b6e42219ffc73015160b5c85ceded92a9",
+        "deployment/probe_test.go": "ed1c2024aea64e2dc9910b7a79641e8c77e6e989b4f34cf32e1f66c6605e2329",
+        "deployment/profile.go": "71cb39f09bc15ae0619342f5b0f5bd11c1d16372ea2f8ee93eddea14be856118",
+        "deployment/probe.go": "a2dfe18761b5ab9709c5513d55822c53f7780b71ff7433e319b4dad58c51219f"
+      },
+      "log": "initial-domain-acl.jsonl",
+      "diagnosticCopyOnly": false
+    },
+    {
+      "kind": "fixture-encoding",
+      "sourceSnapshot": "/home/ryan/.cache/agentmux-tests/p02-health-repair-6xu1pcrq",
+      "sourceHashes": {
+        "deployment/profile_test.go": "32db5333a467bd2a18e9077b3b3a40a573f36ded38ce17a3f630a02818fd9847",
+        "deployment/probe_test.go": "69ede07280bde10bd2f1a0bc2c04ca928d7da2209ed434d449fb892a7486aebe",
+        "deployment/profile.go": "219b2c8742514699c0c12822576e580142e2f43b51d8405e3207a8ebb0a5f6fd",
+        "deployment/probe.go": "17aa7b2b11b8df694f3b52c9e1090ef383e0fed1b5b30c353f1adc0777417a72"
+      },
+      "log": "fixture-encoding.jsonl",
+      "diagnosticCopyOnly": false
+    },
+    {
+      "kind": "strict-metadata",
+      "sourceSnapshot": "/home/ryan/.cache/agentmux-tests/p02-health-encoding-in20floi",
+      "sourceHashes": {
+        "deployment/profile_test.go": "32db5333a467bd2a18e9077b3b3a40a573f36ded38ce17a3f630a02818fd9847",
+        "deployment/probe_test.go": "9b939d7bbef50ecb1303ca0683420d937b48133afe6ca6348a8d625553e9861f",
+        "deployment/profile.go": "219b2c8742514699c0c12822576e580142e2f43b51d8405e3207a8ebb0a5f6fd",
+        "deployment/probe.go": "17aa7b2b11b8df694f3b52c9e1090ef383e0fed1b5b30c353f1adc0777417a72"
+      },
+      "log": "strict-metadata.jsonl",
+      "diagnosticCopyOnly": false
+    },
+    {
+      "kind": "metadata-diagnostic",
+      "sourceSnapshot": "/home/ryan/.cache/agentmux-tests/p02-health-defaults-wor7bcvz",
+      "sourceHashes": {
+        "deployment/profile_test.go": "32db5333a467bd2a18e9077b3b3a40a573f36ded38ce17a3f630a02818fd9847",
+        "deployment/probe_test.go": "e3018c211733d44af546d1973df114b2bbf7fd1f73b13057e881b8562b042438",
+        "deployment/profile.go": "219b2c8742514699c0c12822576e580142e2f43b51d8405e3207a8ebb0a5f6fd",
+        "deployment/probe.go": "17aa7b2b11b8df694f3b52c9e1090ef383e0fed1b5b30c353f1adc0777417a72"
+      },
+      "log": "metadata-diagnostic.jsonl",
+      "diagnosticCopyOnly": true
+    },
+    {
+      "kind": "focused-repair",
+      "sourceSnapshot": "/home/ryan/.cache/agentmux-tests/p02-health-metadata-xc58c8d2",
+      "sourceHashes": {
+        "deployment/profile_test.go": "32db5333a467bd2a18e9077b3b3a40a573f36ded38ce17a3f630a02818fd9847",
+        "deployment/probe_test.go": "c79d53aa30b33308b7b838bfad06a7abde99c99704e47c7322f2a1e9dce7471a",
+        "deployment/profile.go": "219b2c8742514699c0c12822576e580142e2f43b51d8405e3207a8ebb0a5f6fd",
+        "deployment/probe.go": "df71842055c7f946d6579b1db499957a4c3dc7620bd4824ffd8acbb45f9995c7"
+      },
+      "log": "focused-repair.jsonl",
+      "diagnosticCopyOnly": false
+    }
+  ],
+  "findingsResolved": [
+    "Domain-qualified API permission mapping required exact normalized counterparts in HEALTH only; root repaired factory, protected/application accounts unchanged",
+    "Test-only JSON re-encoding must disable HTML escapes so NATS accepts inbox wildcard",
+    "NATS2.15 adds {_nats.level:5,_nats.req.level:0,_nats.ver:2.15.0}; only this exact observed metadata is normalized, all other config fields fully compared"
+  ],
+  "limits": [
+    "BuildLocalConfig returns private bytes, not filesystem/volume ownership proof",
+    "Health stream is ephemeral R1 infrastructure policy, not business storage or completion reserve",
+    "Successful probe is infrastructure write/read and identity observation, not protected process/application readiness",
+    "Installed enrollment/profile/volume lifecycle and native macOS/Linux matrix remain gate requirements",
+    "No Docker/provider/model/legacy state/credentials or business stores accessed",
+    "Same-UID/privileged isolation is not claimed"
+  ],
+  "ownSourceFiles": [
+    "platform/deployment/probe.go",
+    "platform/deployment/probe_test.go",
+    "platform/deployment/profile_test.go",
+    "platform/deployment/README.md"
+  ],
+  "factoryOwner": "root",
+  "artifactHashes": {
+    "deployment.jsonl": "eff77259dc81083186b2071728e7a7b4481a1ee0bcc4d4cbbf217a32d1ec1fc4",
+    "fixture-encoding-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "fixture-encoding.jsonl": "2f48552dc9a45a7d60aff9e18eb34bb7ef38969811345c88ec8ef1e96f18efb4",
+    "focused-repair-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "focused-repair.jsonl": "dfc719f76ea538e0647d663010e144ffe81fe5982241a0e6505cdffd3ed88730",
+    "initial-domain-acl-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "initial-domain-acl.jsonl": "8b5432ce57cc75548e8cc8e49d57a1f5b6855a694517e8550488d49a2c93fe41",
+    "manifest.json": "21b4d4fe62169663ede0d62f083a1a65f497fcc0e1c961044499675a1485e82d",
+    "metadata-diagnostic-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "metadata-diagnostic.jsonl": "7dd8b5182a6493963175c033c146b48a23687357792641aef1d7eb89258ca2a0",
+    "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "strict-metadata-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "strict-metadata.jsonl": "e3b79ad2a5060cc6a726c22df16fdbd117fce7a6f93563eacf1b19ec7f46de79"
+  },
+  "patternCheck": {
+    "exitCode": 1,
+    "finding": "Review is stale or missing: inspect changes and refresh sourceDigest",
+    "owner": "root reviewer"
+  }
+}

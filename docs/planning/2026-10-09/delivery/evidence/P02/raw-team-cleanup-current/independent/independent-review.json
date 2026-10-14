@@ -1,0 +1,97 @@
+{
+  "scope": "Independent combined team private reader/raw transport cleanup repair review only",
+  "workerReviewSHA256": "ec5fab70ff7adf48926726345e65e0c01b2c5f8653d50c42f8103419997ecea1",
+  "reviewedOwnedSourceSHA256": {
+    "deployment/team_credentials_unix.go": "d8a8fb0f17c7bb701bd610de69b0f3869e90665d53b7bd5d0f376b59b6f946b5",
+    "deployment/team_credentials_privatefs_linux_test.go": "c9303445fd429526f24a129c279eede5ebe42ee3f0e06138fe71b90e095c8605",
+    "deployment/team_credentials_privatefs_darwin_test.go": "ee20b6394e36fd847af0e56c7722033a63793d0f19db3c52685e2509e40c4283",
+    "deployment/team_credentials_privatefs_darwin_nocgo_test.go": "77c59213f00eea9b6463ab73accb3fe78861ae0a671c124cb452ecd7d27f634b",
+    "deployment/observe.go": "3e0d3e5f299820b30975c466a407e01c338012008578fcbf6ff515a7ec4e313d",
+    "deployment/team_connection.go": "5f931e6e8f933b834f7da827033242859400c5e5e77f68b4cebf630b8c185b6b",
+    "deployment/probe_cleanup.go": "3a5f8e9c510d63268799216fcc46a0d07d2f94a11ad60a599606c35abddf0993",
+    "deployment/raw_transport_cleanup.go": "a2cb64865e09e7e98f378887833814b3fbd332ff2e70507dbdf11a93b2a0f13a",
+    "deployment/raw_transport_cleanup_test.go": "c887ac63f6c0e5084769310753fe3f336e3917bde57fcd02cf3e0bc85385d73d"
+  },
+  "currentSourcesMatch": true,
+  "verifiedOriginalArtifactHashes": {
+    "crosscompile-invocation.json": "a2ba7badc7bb02c657b836963cebe0614ca17dc0f265dc1f548ecd45f47ce75d",
+    "affected.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "crosscompile.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "focused-invocation.json": "a7da226ef430137d3ea2f83a76f093eaa15a63a3cf79cb86090d9e1df82de438",
+    "crosscompile.py": "7fa1d61953e3183beac0e3023525a533d8bd8eed376c0bccb9831ae282c824ae",
+    "affected.py": "fac07b67d902e89106dd19b0b7a9b57256332abf10387e5075261e1e9e67b170",
+    "focused-producer.py": "568ce84b832d4f724779f578b7dedf7b8be9f7aaa18e86a328458bfcaf8b04f3",
+    "focused.jsonl": "572de4f9d3d4ae2512908bc75a6f8713bd1cfa9e9f355f91829b5ddafd8f4186",
+    "darwin-cgo0-deployment.test": "f63280e51ce668fb853d1c7b2887bd19cac344a27e5eafd2beb72e96754cfe60",
+    "affected.stdout": "c448aef7b7ff8764332d34da3d5d5fd2c89113bd036f0bf3a70a598a2a506856",
+    "vet.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vet.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "crosscompile.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "focused.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "crosscompile-exit.json": "982b9e9bfb10ffe83cad665807abcfd3fa97b37822db5ab7831157a499548a9e",
+    "affected-exits.json": "b7f08cd2898048b203ec23ce5dbe46dce9aa194c6bf8a64fe5a2f2b36a0831e8",
+    "affected-invocation.json": "747828e5affbeba9a323512a0652879b5818341515b66f954a834abde869b952",
+    "focused-exit.json": "982b9e9bfb10ffe83cad665807abcfd3fa97b37822db5ab7831157a499548a9e"
+  },
+  "reviewedOriginalEvidence": {
+    "focused": {
+      "pass": 6,
+      "fail": 0,
+      "skip": 0
+    },
+    "affected": {
+      "pass": 106,
+      "fail": 0,
+      "skip": 0
+    },
+    "directExits": {
+      "focused-exit.json": {
+        "exitCode": 0
+      },
+      "affected-exits.json": {
+        "affected": 0,
+        "vet": 0
+      },
+      "crosscompile-exit.json": {
+        "exitCode": 0
+      }
+    }
+  },
+  "independentFocused": {
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-json",
+      "./deployment",
+      "-run",
+      "^TestRawTransportCleanup(ActualSocketFailureAndRetry|CancellationHookHasBoundedJoin)$"
+    ],
+    "exit": 0,
+    "seconds": 1.8700609900006384,
+    "namedPass": 5,
+    "namedFail": 0,
+    "skip": 0,
+    "sourceStable": true
+  },
+  "findings": [],
+  "controlsReviewed": [
+    "Every ancestor descriptor remains held until return and the directory count cap128 is enforced before any path-open I/O. Initial and final UID/mode/PublicAncestor checks plus final root PrivateObject ACL check deny mutation discovered during read. Final selected path inode and bounded private file before/open/after identity checks remain.",
+    "Darwin source uses actual native descriptor ACL/mount checks; granting directory/ancestor ACL injected during read is denied by final checks. Native fixtures and CGO0 refusal are separate from unexecuted CGO-enabled proof.",
+    "Only observeDialer-minted concrete raw sockets are retained. Wrapper Close records failed owner/SDK/cancel closes under serial bookkeeping so later physical close cannot erase initial cleanup failure.",
+    "Closing marks owner closed before active Dial/gate/hook joining. Initial fixed1s cleanup and caller-bounded explicit retry retain exact owner on incomplete join; no new waiter or generic socket adoption seam.",
+    "RawTransportCleanupError value and pointer formatting and JSON reveal fixed allowlisted codes only; Unwrap retains original cause and concrete retry ownership. Actual three-origin socket controls preserve exact owner and real peer EOF after retry.",
+    "Probe zeroes ProbeResult, read-only Observe returns unknown persistence and clears facts, Team clears domain/kernel facts if cleanup failed. Full caller injected-close-failure execution is not claimed.",
+    "Historical initial missing directory ACL recheck and intermediate hook/ancestor repairs remain preserved.",
+    "Existing scalarize/discard owner negative mutant exact artifacts match; three actual socket origins fail at expected ownership assertion."
+  ],
+  "limits": [
+    "Native Linux/WSL exact socket controls only; no duplicate106 suite, actual engine, provider or native Darwin action performed.",
+    "Darwin ARM64 CGO0 success is compilation only; no native ACL execution or runtime/product qualification.",
+    "Test-only replacement wraps an already owned real TCP socket; blocked synchronous platform Close/filesystem syscalls are unsupported hard-timing cases, not preemptible by this API.",
+    "Caller invalidation is source-reviewed with existing affected success evidence, not injected whole Team/Probe/Observe cleanup failure execution."
+  ],
+  "phaseAccepted": false,
+  "sourceDigestAuthorized": false
+}

@@ -1,0 +1,47 @@
+{
+  "recordedAt": "2026-10-14T02:45:52.968674+00:00",
+  "reviewer": "Codex",
+  "phaseAccepted": false,
+  "scope": "Controlled owned-process Docker inspector tests. Certificate/key archives are synthetic; no actual TLS engine/Compose or product credential authentication is asserted.",
+  "affectedPassEntries": 50,
+  "exitCode": 0,
+  "ownedSourceMatches": {
+    "launcher/docker_tls.go": true,
+    "launcher/docker_tls_test.go": true,
+    "launcher/docker_instance.go": true,
+    "launcher/docker_instance_test.go": true
+  },
+  "sourceHashesFile": "source-hashes.json",
+  "sourceHashesFileSHA256": "80eae17f6751db45eb3bf91a827bb769f7d9aefde39fb2b1e88889325a239006",
+  "files": [
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/focused.jsonl",
+      "sha256": "d9e240dd15689f5be80cd52c508f87b231492967dc82719d5385742f72dafa82"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/focused.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/focused-exit.txt",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/affected.jsonl",
+      "sha256": "7f10d8d285e2e75c29f74fd7e00d4664db3650f3638e69c2b89adab2b4fcf2c8"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/affected.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/affected-exit.txt",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    }
+  ],
+  "limitations": [
+    "Subsequent secure Compose, enrollment and Bootstrap integration changes are not covered by this snapshot.",
+    "Actual root-owned0400 TLS files in a Docker container still require real supported-environment qualification.",
+    "Native Darwin private ACL and exact Apple product loader checks remain incomplete."
+  ]
+}

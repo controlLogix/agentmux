@@ -1,0 +1,16 @@
+{
+  "reviewer": "Codex with independent source/evidence review from thread 01a123e5-27ba-7592-9f16-627cfeeefe74",
+  "finding": "In-place exported HostProcess object overwrite could preserve pointer equality",
+  "status": "closed in source and focused component evidence",
+  "currentSources": {
+    "runtime/bootstrap_receipt.go": "2c771944be744cfa58cef440d852b7cea525f1730912f43bcd03f122de9b0a54",
+    "runtime/bootstrap_receipt_test.go": "27cc503ccc844093b78e80d7e42d174267e0731114796b9890084f7c25b662e4",
+    "runtime/bootstrap_receipt_linux_test.go": "7e52e67a0f04d8f4422e4ba43b9f6632a70831d2bfd823f17fac602334430f6f"
+  },
+  "verified": "Independent reviewer checked current and frozen pins, all repair and failure-first artifacts, five before failures, five repaired passes, 36 affected race passes and vet0. Retained private original command/completion identities now detect zero/transplant independently of mutable public alias.",
+  "limits": [
+    "Receipt transport/historical correlation only; no current readiness or lifetime authority.",
+    "No history reader integration, native Darwin, Docker lifecycle or P02 acceptance.",
+    "Constructor pre-start pipe-close error retention remains a separately tracked review item."
+  ]
+}

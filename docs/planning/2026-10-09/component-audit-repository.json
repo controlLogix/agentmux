@@ -164,7 +164,11 @@
       "files": [
         ".github/workflows/contracts.yml",
         ".github/workflows/design-patterns.yml",
-        ".github/workflows/tests.yml"
+        ".github/workflows/tests.yml",
+        ".github/workflows/platform-foundation.yml",
+        "tests/platform/native_go.py",
+        "tests/platform/native_compose.py",
+        ".github/workflows/platform-compose.yml"
       ],
       "role": "configuration",
       "baselineGroups": [
@@ -192,6 +196,21 @@
           "requiredEnvironment": "CI with declared Node, Python and supported OS jobs",
           "baselineStatus": "not-run",
           "targetStatus": "not-run"
+        },
+        {
+          "id": "REPO-03-C02",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T01",
+          "description": "Run candidate-bound native Go foundation checks and independently review version/archive pins, real broker commands, closed terminal Go event admission, all source maps and artifact hashes. Keep Darwin research/fail-closed control separate; no skipped/mocked result or foundation-only pass qualifies native product boot, Compose or a phase gate. Preserve existing CI jobs and P01 REPO-03-C01. Also review the native Compose collector, complete SDK status-shape admission, exact engine enrollment and held-descriptor guards. Collector controls and WSL helper proof remain separate from actual supported-environment Compose and installed CLI qualification.",
+          "existingTests": [
+            "tests/platform/native_go.py",
+            ".github/workflows/platform-foundation.yml",
+            "tests/platform/native_compose.py",
+            ".github/workflows/platform-compose.yml"
+          ],
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "requiredEnvironment": "Current candidate-bound native Linux/macOS/WSL environment and real broker/artifact evidence as applicable; source/unit checks do not imply product boot."
         }
       ],
       "migrationChecks": [
@@ -207,6 +226,25 @@
             "governance-repairs.md",
             "governance-repair-evidence.json"
           ]
+        },
+        {
+          "date": "2026-10-14T10:15:57.206889+00:00",
+          "reviewer": "Codex",
+          "scope": "Native Compose verification tooling registration",
+          "previousCheck": {
+            "id": "REPO-03-C02",
+            "qualificationPhase": "P02",
+            "ownerTask": "P02-T01",
+            "description": "Run candidate-bound native Go foundation checks and independently review version/archive pins, real broker commands, closed terminal Go event admission, all source maps and artifact hashes. Keep Darwin research/fail-closed control separate; no skipped/mocked result or foundation-only pass qualifies native product boot, Compose or a phase gate. Preserve existing CI jobs and P01 REPO-03-C01.",
+            "existingTests": [
+              "tests/platform/native_go.py",
+              ".github/workflows/platform-foundation.yml"
+            ],
+            "baselineStatus": "not-run",
+            "targetStatus": "not-run",
+            "requiredEnvironment": "Current candidate-bound native Linux/macOS/WSL environment and real broker/artifact evidence as applicable; source/unit checks do not imply product boot."
+          },
+          "note": "REPO-03-C02 owns verification tooling; PLAT-03 retains product acceptance. REPO-10-C08 review-server coverage and P01 REPO-03-C01 are unchanged."
         }
       ]
     },
@@ -495,7 +533,10 @@
         ".claude/skills/review-inbox/SKILL.md",
         ".agents/skills/review-inbox/scripts/inbox.test.mjs",
         ".agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs",
-        "docs/reviews/review-inbox-verification.json"
+        "docs/reviews/review-inbox-verification.json",
+        "docs/reviews/server-lifecycle-verification.json",
+        "docs/reviews/src/features/review-server.mjs",
+        "docs/reviews/src/features/review-server.test.mjs"
       ],
       "role": "tooling",
       "baselineGroups": [],
@@ -587,6 +628,19 @@
           "baselineStatus": "not-run",
           "targetStatus": "not-run",
           "qualificationPhase": "P06"
+        },
+        {
+          "id": "REPO-10-C08",
+          "description": "One authenticated review server slot per repository/worktrees; concurrent open reuse, explicit requested port, unknown/starting/unresponsive owners never falsely inactive; explicit stop/restart drains connected and disconnected note handlers before exact ownership release, preserving notes/drafts/settings/unrelated listeners.",
+          "existingTests": [
+            "docs/reviews/src/features/review-server.test.mjs",
+            "docs/reviews/src/features/local-review.test.mjs",
+            "docs/reviews/src/features/notes-controller.test.mjs"
+          ],
+          "requiredEnvironment": "Native local Node with disposable repositories/worktrees/processes, not product-dashboard or terminal-host acceptance.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P02"
         }
       ],
       "migrationChecks": [
@@ -810,6 +864,13 @@
         "docs/reviews/review-inbox-verification.json": "eadc96d7d9b4d67613b343f435e60a07d7b27929ef1a671ec65523c82d5ef42f"
       },
       "contractReview": "Shared workflow still requires explicit selection, latest branch/source version, isolated safe workspace, verified owned server and supported browser. Date ordering, authoredAt and per-ref version clarifications remain inside C06; installed opening remains C07/P06. No new scope or acceptance claim."
+    },
+    {
+      "date": "2026-10-13T23:51:33.417100+00:00",
+      "reviewer": "Codex",
+      "scope": "P02 actual component/source ownership",
+      "evidence": "delivery/evidence/P02/component-registration-review/proposal.json",
+      "note": "Added actual files and reserved components/checks. Existing baseline records and behavior assertions retained. Qualification is not implied."
     }
   ]
 }

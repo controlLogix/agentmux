@@ -1,0 +1,127 @@
+--- before/owner_bridge_history.go
++++ after/owner_bridge_history.go
+@@ -130,22 +130,20 @@
+ 
+ // Run invokes this only after both the actual operation and worker are joined.
+ // History receives one capped portion of the existing core cleanup envelope.
+-func (server *OwnerBridgeServer) finalizeBootstrapHistory(ctx context.Context, op *bootstrapOperation) {
++func (server *OwnerBridgeServer) finalizeBootstrapHistory(ctx context.Context, op *bootstrapOperation) error {
+ 	if server.history == nil {
+-		return
++		return nil
+ 	}
+ 	state := server.history
+ 	select {
+ 	case <-state.returned:
+ 	default:
+-		state.warn(historyError("state_invalid", nil))
+-		return
++		return historyError("state_invalid", nil)
+ 	}
+ 	bounded, cancel := context.WithTimeout(ctx, bootstrapHistoryIOBudget)
+ 	defer cancel()
+ 	if err := lockHistory(bounded, &state.cleanupGate); err != nil {
+-		state.warn(err)
+-		return
++		return err
+ 	}
+ 	defer state.cleanupGate.Unlock()
+ 	next := *state.snapshot.Load()
+@@ -163,7 +161,7 @@
+ 	}
+ 	next = *state.snapshot.Load()
+ 	if next.store == nil {
+-		return
++		return nil
+ 	}
+ 	// Even exhausted IO cannot authorize more publication. Retirement closes only
+ 	// our consumed duplicate and retains exact staging/root cleanup ownership.
+@@ -174,8 +172,11 @@
+ 	next.warning = errors.Join(next.warning, err)
+ 	state.publishSnapshot(next)
+ 	if retired {
+-		state.warn(next.store.Close(bounded))
+-	}
++		closeErr := next.store.Close(bounded)
++		state.warn(closeErr)
++		return closeErr
++	}
++	return err
+ }
+ 
+ // CloseBootstrapHistory retries only retained unpublished stage cleanup after
+@@ -206,7 +207,6 @@
+ 	}
+ 	defer cancel()
+ 	if err = lockHistory(bounded, &state.cleanupGate); err != nil {
+-		state.warn(err)
+ 		return err
+ 	}
+ 	defer state.cleanupGate.Unlock()
+@@ -216,13 +216,13 @@
+ }
+ func (server *OwnerBridgeServer) BootstrapHistoryWarning(ctx context.Context) error {
+ 	if ctx == nil || ctx.Err() != nil {
+-		return historyError("context_invalid", nil)
++		return errors.New("bootstrap_history_context_invalid")
+ 	}
+ 	if server == nil || server.history == nil {
+ 		return nil
+ 	}
+ 	if server.history.snapshot.Load().warning != nil {
+-		return historyError("publication_failed", nil)
++		return errors.New("bootstrap_history_publication_failed")
+ 	}
+ 	return nil
+ }
+--- before/tests
++++ after/tests
+@@ -138,3 +138,48 @@
+ 		t.Fatal("active public warning exposed cleanup capability")
+ 	}
+ }
++
++func TestBootstrapHistoryRefusedWritersPreserveSnapshot(t *testing.T) {
++	store, op, _, _, binding := historyFixture(t)
++	state := newOwnerBridgeHistoryState(binding)
++	state.returned = make(chan struct{})
++	retained := errors.New("private_original_warning")
++	original := &ownerBridgeHistorySnapshot{store: store, warning: retained, retired: true}
++	state.snapshot.Store(original)
++	op.server.history = state
++	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
++	defer cancel()
++	op.server.finalizeBootstrapHistory(ctx, op)
++	prejoinUnchanged := state.snapshot.Load() == original
++	// Closing returned represents the joined producer for this component seam.
++	close(state.returned)
++	state.snapshot.Store(original)
++	state.cleanupGate.Lock()
++	short, stop := context.WithTimeout(ctx, 20*time.Millisecond)
++	done := make(chan error, 2)
++	go func() { op.server.finalizeBootstrapHistory(short, op); done <- nil }()
++	go func() { done <- op.server.CloseBootstrapHistory(short) }()
++	first, second := <-done, <-done
++	stop()
++	gateUnchanged := state.snapshot.Load() == original
++	state.cleanupGate.Unlock()
++	if store.Close(ctx) != nil {
++		t.Fatal("exact retained store cleanup failed")
++	}
++	if !prejoinUnchanged || !gateUnchanged || (first == nil && second == nil) {
++		t.Fatal("refused producer changed immutable snapshot or dropped refusal")
++	}
++}
++func TestBootstrapHistoryPublicWarningHasNoUnwrapMethods(t *testing.T) {
++	store, op, _, _, binding := historyFixture(t)
++	state := newOwnerBridgeHistoryState(binding)
++	state.returned = make(chan struct{})
++	state.snapshot.Store(&ownerBridgeHistorySnapshot{store: store, warning: errors.New("private-warning")})
++	op.server.history = state
++	warning := op.server.BootstrapHistoryWarning(op.startup)
++	_, single := warning.(interface{ Unwrap() error })
++	_, multiple := warning.(interface{ Unwrap() []error })
++	if warning == nil || single || multiple {
++		t.Fatal("public warning exposes ancestry method")
++	}
++}

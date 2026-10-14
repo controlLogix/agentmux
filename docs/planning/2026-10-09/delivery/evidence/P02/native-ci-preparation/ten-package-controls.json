@@ -1,0 +1,88 @@
+{
+  "scope": "Native collector coverage for ten test-bearing packages and a separate exact Darwin CGO0 private-file refusal",
+  "sourceHashes": {
+    "tests/platform/native_go.py": "5573f0c12e65ee6aafd2887ae54dd0e404670e94f123157070ab61b4904cf2b2",
+    ".github/workflows/platform-foundation.yml": "b35b220b7c00e535ac93e8edd9d2eb46d0d80f22879677b8c279a00af3ef91e7"
+  },
+  "controls": {
+    "command": "python tests/platform/native_go.py --self-test",
+    "exit": 0,
+    "passed": 39,
+    "raw": "ten-package-final-self-test.log",
+    "rawSha256": "2c5edf149ffe27e1ea43428b4735e7b57c3a18807f135e0f38f8c24586085b58",
+    "limits": "Synthetic controls on Windows; no actual macOS execution."
+  },
+  "actualLinuxChecks": {
+    "candidate": "/home/ryan/.cache/agentmux-governance/runtime-command-matrix/candidate-l7sqnI",
+    "sourceFiles": 159,
+    "sourceUnchanged": true,
+    "sourceListSha256": "51e7d5eca4972d18bd798bdda09a9523c2d224ee20643cab8061ae5f971bf47c",
+    "inventoryCommand": "go list -mod=readonly -json ./...",
+    "inventoryExit": 0,
+    "packages": 13,
+    "testBearingPackagesSelected": 10,
+    "matrixExit": 0,
+    "matrixSha256": "66590ae88631214d368efa27b3316a8313fc6bf4e97bd2003da08d7afda2edfa",
+    "command": "go test -race -count=1 -timeout=180s -json ./cmd/agentmux-runtime ./localtls ./privatefs",
+    "exit": 0,
+    "passedTestEntries": {"cmd/agentmux-runtime": 2, "localtls": 30, "privatefs": 2},
+    "failedOrSkippedEntries": 0,
+    "rawSha256": "066fb9c799e4df6772962337e408b55e7474b4377912ba61dc0c6b63aba236f1",
+    "vetCommand": "go vet ./cmd/agentmux-runtime ./localtls ./privatefs",
+    "vetExit": 0,
+    "directory": "ten-package-matrix",
+    "limits": "Only these three affected packages executed here; neither the full ten-package matrix nor native Darwin jobs were executed."
+  },
+  "darwinSelection": {
+    "positiveEnvironment": "CGO_ENABLED=1 with validated actual /usr/bin/clang and xcrun SDK; normal job does not receive install authorization.",
+    "refusalEnvironment": "Separate CGO_ENABLED=0, on a verified native Darwin host only.",
+    "refusalTest": "TestDarwinWithoutCGORefusesDescriptorAccessQualification",
+    "refusalAdmission": "Require the exact declaration in Go's selected test files, no cgo files, exact named pass, complete package events, zero exit and no skip/failure/timeout/source drift.",
+    "limits": "CGO0 proves platform refusal, never usable private-store or product qualification. The existing seven separately authorized tagged install tests and runtime refusal selection remain intact."
+  },
+  "independentReview": {
+    "reviewer": "Plato",
+    "agentId": "01a137e6-481f-7441-9095-89ea4bb76f8c",
+    "findings": [],
+    "result": "Exact collector/workflow source review closed; no package omission, native environment substitution, masked refusal failure or atomic-checkpoint weakening.",
+    "limits": "Source review only; reviewer did not rerun the controls or inspect their raw logs."
+  },
+  "preservedHistory": [
+    {
+      "sourceSha256": "ac2e531e9149f558b8d59e491399cd3e47a395135cff9c978a39c30288dbb466",
+      "raw": "ten-package-initial-failure.log",
+      "rawSha256": "8e0a0b97e1be14bd479e0c9df7a8286d90e8c4ae268831057000525f132f75bd",
+      "exit": 1,
+      "result": "Initial compiler change matched the authorization condition instead of the compiler condition. Controls caught missing normal CGO metadata and weakened install refusal. The original install-only authorization condition was restored before wider checks."
+    },
+    {
+      "sourceSha256": "ceb0b4fc403c47aa66097cf67167b252bb66bd8648e68aa67c9a07fcaea842f2",
+      "raw": "cgo0-selection-initial-failure.log",
+      "rawSha256": "ed492e8a9bce9b27dfd90cc1dbcade01a0e195a7f58837122cf9c9698e2ee2a3",
+      "exit": 1,
+      "result": "The original normal-privatefs count assertion included the newly separate refusal invocation. It now counts only the complete positive package run; the refusal has its own exact assertions."
+    },
+    {
+      "sourceSha256": "5573f0c12e65ee6aafd2887ae54dd0e404670e94f123157070ab61b4904cf2b2",
+      "initialExit": 1,
+      "result": "A subsequent control run reported Windows PermissionError during os.replace in an existing synthetic checkpoint test. Its cause is unproven. No atomic publication code was changed.",
+      "exactRerun": "python -m unittest tests.platform.native_go.RunnerTests.test_host_selection_failure_or_source_drift_never_qualifies_collection",
+      "exactRerunExit": 0,
+      "exactRerunRaw": "cgo0-publication-error-rerun.log",
+      "exactRerunRawSha256": "a1c9074041d82c30b988528e9419fca016360fe48d36c4f2dd90fd0bfe7f0747"
+    }
+  ],
+  "historyLimits": "Earlier seven/eight-package records and their passing counts remain historical source bindings, not acceptance of the expanded collector.",
+  "nativeMacExecuted": false,
+  "additionalChecks": {
+    "sourceGuardCommand": "python -m unittest tests.platform.test_source_surface",
+    "sourceGuardPassed": 7,
+    "sourceGuardExit": 0,
+    "workflowParse": "PyYAML safe_load: three jobs, fifty-minute foundation job and twenty-minute install job; passed",
+    "patternCheckExit": 1,
+    "patternCheckError": "Review is stale or missing: inspect changes and refresh sourceDigest",
+    "patternOwner": "Root coordinator; no global attestation changed by this slice."
+  },
+  "fullTenPackageSuiteExecuted": false,
+  "phaseAccepted": false
+}

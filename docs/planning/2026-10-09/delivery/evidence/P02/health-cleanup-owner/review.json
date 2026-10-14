@@ -1,0 +1,62 @@
+{
+  "sourceDirectory": "/home/ryan/.cache/agentmux-governance/p02-health-cleanup-affected-DN0Tmq/platform",
+  "currentOwnedBytesEqual": true,
+  "sources": {
+    "deployment/local_tls_probe_transport.go": "243448843b4003f56e44d46c9cb59a4de85c83be073c7c888b48b0fcefb6e60d",
+    "deployment/probe.go": "3d5751789092bf9684dd9f12d77da8c6724ed3db10d4d3bd6dfeb35d3eabc78f",
+    "deployment/observe.go": "164739271ada7fb0d94d8e1dc933bd8e34a0d202077d1e68f76ad4e452558b79",
+    "deployment/probe_cleanup.go": "69b6b1e14070a203d03747fd86bea2a7b7986d15c9359d8b572f0b33d0e374a0",
+    "deployment/probe_cleanup_test.go": "e8881e8cb10bcc4c342deeb49393ae09005d3f9437b055c70a0bf35b3237982a"
+  },
+  "baselineFinding": {
+    "sha256": "d42521b2954f551c5e52813cc96a69945c0f7d1ec737dadab61625f3c044840d",
+    "run": "p02-host-isolation-current-zZqBus/health-cleanup-review.json"
+  },
+  "focused": {
+    "namedPasses": 7,
+    "actualExitCode": 0,
+    "commandPattern": "^TestProbeCleanupFailureRetainsConcreteOwner$",
+    "run": "p02-health-cleanup-first-nqzJDp"
+  },
+  "command": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-race",
+    "-json",
+    "./deployment",
+    "-count=1"
+  ],
+  "controls": [
+    "Actual enrolled TLS1.3 socket exchanged bytes before reflection-only fail-once close control.",
+    "Both health/observe fixed codes; original success, primary failure and parent cancellation.",
+    "Same owned dialer retained; original cause errors.Is/As preserved; pointer/value formatting and JSON fixed.",
+    "Peer remained open before explicit retry; exact repeated Close succeeded and actual peer EOF followed.",
+    "Both production callers invalidate result facts on cleanup failure, including an existing primary error; raw TLS owner cleanup precedes NATS Close."
+  ],
+  "rawSHA256": "356ca6dcae88ecada6e5d7122e2743c248a86877bedf726b22ea21c75ca0da55",
+  "failures": 0,
+  "vet": {
+    "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "actualExitCode": 0,
+    "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "vet",
+      "./deployment"
+    ]
+  },
+  "actualTestExitCode": 0,
+  "limits": [
+    "No engine/provider calls or forced production net.Conn error; concrete helper fault control and callers source review are distinct.",
+    "Native Darwin/installed Compose/whole-phase acceptance remains separate.",
+    "Explicit historical plaintext owner boundary remains separate; no installed admission waiver.",
+    "No launcher/localtls/protocol or global metadata edits."
+  ],
+  "failureFirst": {
+    "actualExitCode": 1,
+    "meaning": "Actual authenticated socket close failed once; bare Dialer.Close sentinel (the unchanged original cleanup closure result) contained no Close retry owner. Original caller suppression/lost ownership is separately source-reviewed.",
+    "run": "p02-health-cleanup-negative-PNhMxI"
+  },
+  "namedPasses": 191,
+  "skips": 0
+}

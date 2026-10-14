@@ -1,0 +1,20 @@
+{
+  "argv": [
+    "go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "./launcher",
+    "-run",
+    "^TestOwnerBridge(NativeNoRespondersFrame|InitialProbeNoResponderHint|ProbeNativeHintShapeRefusals|OptionalReplyMustMatchValidatedNonce|ProbeAvailablePreservesLegacyRouting|ProbeRejectsActualMalformedHint|ProbePermissionFailureStaysHard|ProbeCanceledContextHasNoHint|DelayedSubscriptionRepeatsExactRequest)$"
+  ],
+  "environment": {
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "0"
+  },
+  "startedUtc": "2026-10-14T12:43:32.995579+00:00"
+}

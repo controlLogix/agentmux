@@ -1,0 +1,39 @@
+{
+  "reviewer": "Codex",
+  "date": "2026-10-14T09:09:46.646004+00:00",
+  "environment": "Explicitly selected Windows Docker Desktop desktop-linux engine used by WSL tests",
+  "engineId": "e0f1f93d-abf1-44f2-b62a-5bfee21d2b5c",
+  "networkCount": 32,
+  "bridgeNetworkCount": 30,
+  "retainedTestNetworkCount": 20,
+  "capacityProbe": {
+    "probeName": "amx-p02-capacity-7b24aa4952c64acca54ccb174b90a5d9",
+    "failureCode": "network_address_pool_exhausted",
+    "engineId": "e0f1f93d-abf1-44f2-b62a-5bfee21d2b5c",
+    "existingNetworksMutated": false,
+    "createExit": 1
+  },
+  "inventorySHA256": "968526d80d354ae11ba2c182ef50c7a1afb03f123868541c82f1011ffdfb8392",
+  "probeSHA256": "daa1b759332828e047e195e8a18dcb65706cf5a612059af750865b0b95b903a7",
+  "networkIdentitySetSHA256": "0d2d25528ce02bcb76b9dfb8db7c60c3ef08869e7bab581f548f2244410888a2",
+  "probeNetworkCreated": false,
+  "exactBeforeAfterNetworkIdentitiesUnchanged": true,
+  "diagnosis": "Actual Docker network creation returned the known address-pool exhaustion error. This confirms a test-host prerequisite failure, not just a network-count inference.",
+  "nextAction": "Review exact creation provenance, stopped state, private enrollment and leases before releasing a small set of owned historical test networks. Add qualified current-fixture network cleanup to prevent recurrence.",
+  "constraints": [
+    "Preserve fixture containers, named volumes, configuration and stored records.",
+    "Never select cleanup authority from names or labels alone.",
+    "No global prune, daemon restart, address-pool reconfiguration or unrelated resource changes.",
+    "Unknown ownership retains state and fails qualification.",
+    "Rerun the failed pending selection before the complete four-case suite."
+  ],
+  "limits": [
+    "No cleanup or test acceptance is claimed by this diagnosis.",
+    "The complete four-case suite remains failed.",
+    "No full inventory of unrelated network names or IP addresses is published."
+  ],
+  "sources": [
+    "https://docs.docker.com/reference/cli/docker/network/disconnect/",
+    "https://docs.docker.com/reference/cli/docker/network/rm/"
+  ]
+}

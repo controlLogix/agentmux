@@ -1,0 +1,36 @@
+{
+  "status": "Proposed; await the root coordinator's installed-host worker freeze before changing the collector",
+  "scope": "Extend the existing separately authorized native Darwin install collector, not phase or product acceptance",
+  "retain": {
+    "name": "darwin-protected-install",
+    "tests": [
+      "TestDarwinProtectedInstalledExecutable",
+      "TestDarwinProtectedPathPolicy",
+      "TestDarwinMachODependencyPolicy",
+      "TestDarwinProductRemainsFailClosed"
+    ]
+  },
+  "add": {
+    "name": "darwin-installed-host-lifecycle",
+    "package": "./runtime",
+    "tag": "agentmux_darwin_install",
+    "tests": [
+      "TestDarwinInstalledHostSurvivesFrontendExit",
+      "TestDarwinInstalledHostReplacementRefusal"
+    ],
+    "resultField": "installedHostLifecycleEvidence"
+  },
+  "admission": [
+    "Require all six exact declarations in the native tagged cgo inventory before execution.",
+    "Run the original four and the new two in separate source-bound invocations with distinct scope labels.",
+    "Require every selected top-level test to pass in its own invocation; missing, skipped, failed, malformed, timed-out or changed-source runs fail.",
+    "Keep the native macOS, non-root, explicit authorization, Apple compiler and actual SDK checks.",
+    "Keep the shared 12-minute collection budget, 180-second Go command timeout and 20-minute workflow limit.",
+    "Keep protected-install and installed-host results separate; any incomplete or failed scope fails the overall collection."
+  ],
+  "limits": [
+    "Synthetic admission controls are collector tests, not native macOS execution evidence.",
+    "No native NATS, EOF, four-role boot, Compose, signed production installer or phase acceptance is inferred.",
+    "The collector does not add installation or elevation beyond the separately authorized reviewed fixtures."
+  ]
+}

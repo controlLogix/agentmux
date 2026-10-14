@@ -1,0 +1,16 @@
+{
+  "finding": "Concrete local TLS cleanup owner is hidden behind a function closure; runProbe and Observe discard cleanup errors when a primary error already exists and otherwise return only scalar errors. Failed-close retained sockets have no caller-visible retry owner.",
+  "ordering": "defer nc.Close runs before owned raw TLS dialer cleanup.",
+  "proofBoundary": "Source finding plus previously qualified localtls retained failed-close contract, not a forced deployment production socket error. No health edits or engine calls.",
+  "causeSuppression": "Both cleanup defers use cleanup()!=nil && err==nil.",
+  "sources": {
+    "deployment/local_tls_probe_transport.go": "04d5d12797037063545a3d6819f519e57247d1a6105d83a630946aa0526821bc",
+    "deployment/probe.go": "234c24933fdef9258593d394d5794c3062947b7ba5c03c01ee71c107c2332b77",
+    "deployment/observe.go": "d944585825872d3ee168f88f5a17832b74d95ee5fff19fe762fbc13de6303c31"
+  },
+  "recommendation": "Return only concrete owned TLS dialer, safe typed cleanup retention on every exit, preserve original error, invalidate result claims, explicit exact Close retry, raw owner close before NATS close.",
+  "exactCodes": [
+    "health_connection_cleanup_failed",
+    "observe_connection_cleanup_failed"
+  ]
+}

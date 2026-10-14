@@ -1,0 +1,91 @@
+{
+  "createdAt": "2026-10-14T04:18:28.834119+00:00",
+  "status": "scoped worker verification passed; independent review and P02 gate remain separate",
+  "snapshot": "/home/ryan/.cache/agentmux-tests/p02-owner-bridge-tls-candidate-6uw4vk_o",
+  "sourceRecord": "current-6uw4vk_o/freeze.json",
+  "ownedSource": {
+    "platform/launcher/owner_bridge.go": "0ba0c706e5c511dd10113666d4a22b90a1674dc0e149deba4dd72b360b8315d8",
+    "platform/launcher/owner_bridge_test.go": "3adfd5d8aae54112d6878e6eec979489cb1cac811722f7643c7b030433da2595",
+    "platform/launcher/kernel_status.go": "4278f8d7546f55d2bc1fcc38212edea1d1cc6288783119e23145cdcb65e187e8",
+    "platform/launcher/kernel_status_test.go": "2b9198ce2ac970ffbd0655baa72d97d4c5f440a81c41b02029c20725021d194c",
+    "platform/launcher/kernel_status_tls_test.go": "50d8e36ea4e5c35a2641578a0e78fd95459cace9863eaca09d6867e0ef9c5a1d",
+    "platform/launcher/owner_bridge_host_loader_test.go": "e821154a4ddab84933bc3557104fa6d609e315d0c1a039f7a652fc5a7997429a",
+    "platform/launcher/transport_cleanup.go": "5f8dd922dd9cf934594612866ec25146e95c70faf17ce1832f48859a498562cc",
+    "platform/launcher/transport_cleanup_test.go": "d3237b6860ebe5d752efb27779d383062e8db164c2074cecac82cabab1d26dcb"
+  },
+  "ownedCurrentExact": true,
+  "otherWorkingSourceDrift": {
+    "platform/launcher/bootstrap.go": {
+      "tested": "5c783291cfda97922ed1195632b246c73b5bfbb66231717111f8403176da61e0",
+      "current": "44f4509e8a08313b000342344f36e4106966a58a2093764ff47cf49acd810da0"
+    },
+    "platform/launcher/session_cleanup.go": {
+      "tested": "c1c4dadc00dfe9a1554b014768529c831e7300fa82032dd47448d7da20e1d815",
+      "current": "9187e95a14aeac4c33cae93c34ceba7abe0aa57be290ab08c46d327e730855cb"
+    }
+  },
+  "race": {
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-json",
+      "./launcher",
+      "-run",
+      "^(TestOwnerBridge|TestKernelStatus|TestKernelObserver|TestTransportCleanup)"
+    ],
+    "exit": 0,
+    "seconds": 54.69710625500011,
+    "sourceStable": true,
+    "namedPass": 166,
+    "namedFail": 0,
+    "skips": 0
+  },
+  "vet": {
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "vet",
+      "./launcher"
+    ],
+    "exit": 0,
+    "seconds": 2.2636501050001243
+  },
+  "sdk": {
+    "ok": true,
+    "checks": 46,
+    "mutationCases": 18,
+    "generatedL04Outputs": 5,
+    "sourceCompiledBindings": "current-6uw4vk_o/sdk-result.json"
+  },
+  "proved": [
+    "Full closed raw reply/L04 admission uses unchanged immutable authoritative schema resources and both independent SDKs.",
+    "Installed private full enrollment and exact selected Docker configuration/certificate/key inspection precede every HOST connection. Changed controlled facts produce hard refusal with zero HOST dial.",
+    "Actual TLS1.3 chain/DNS/time/leaf-pin authentication precedes NATS CONNECT; plaintext and rogue authorities receive no HOST credentials. NATS server name/version, scope and reply correlation remain required.",
+    "Real native TLS NATS2.15 and four real in-process protected actors provide full scoped snapshots and FILE health reads; the fixture adapts listener/store/certificate paths and does not represent an actual inspected container.",
+    "A deterministically missing service subscription repeats identical read-only bytes/nonce at fixed500ms, at most10 publications within original5s. One accepted correlated output; invalid replies stop retry.",
+    "Only proven retained receipt/kernel expiry may refresh genuine infrastructure in the same deadline; scoped malformed frames and authority failures do not authorize it.",
+    "Typed cleanup retains the concrete owned TLS dialer. Real owned socket close failure, physical peer EOF after exact retry, hook/peer joins, idempotence and secret-safe value/pointer output pass. A scalar-error mutant fails all three retention controls."
+  ],
+  "historical": "Historical162/SDK46 candidate passed before independent cleanup finding; retained in historical-rqt8hc4z. All failed, intermediate and deadline-masked fixtures are preserved under history and do not qualify current assertions.",
+  "limits": [
+    "Controlled Docker responses plus a real adapted native TLS broker are partial integration, not actual Docker Engine/Compose authority qualification.",
+    "Native Linux inside WSL only; no native macOS execution or P02 phase acceptance.",
+    "Authenticated ten-second pending/starting behavior remains unimplemented.",
+    "Run Session/service-lease cleanup retention is a separate in-progress root/A repair; this concreteDialer helper does not claim it.",
+    "Local private file operations remain supported-filesystem assumptions and are not preemptible syscall guarantees."
+  ],
+  "privacy": {
+    "events": 680,
+    "reviewedOutputLines": 346,
+    "unexpectedGrammar": 0,
+    "excluded": [
+      "broker configs",
+      "private keys",
+      "password records",
+      "private broker logs",
+      "raw panes/model reasoning"
+    ]
+  },
+  "pattern": "Required check previously failed only stale sourceDigest; root owns registry/source refresh and gate."
+}

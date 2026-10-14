@@ -1,0 +1,28 @@
+{
+  "recordedAt": "2026-10-13T20:50:19.737714+00:00",
+  "reviewer": "Codex",
+  "baseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "phaseAccepted": false,
+  "scope": "Real OS advisory bootstrap lock only",
+  "rootInspection": {
+    "archiveFilesVerified": 11,
+    "workingSourceMatchesTestedCopy": true,
+    "rawTestPassEntriesVerified": 17,
+    "rawTestFailureEntries": 0,
+    "sourceHashes": {
+      "platform/launcher/lock_unix.go": "b8232a239d47e43d8fac3759d137abfe3b2502adaae6e62d25691323872f9859",
+      "platform/launcher/lock_unix_test.go": "2c22f87e9b9fa6fdfdbf22976f11179d18ca475bdb189df27f2595dec6ba2896"
+    }
+  },
+  "review": [
+    "Finite context required and thirty-second maximum lock wait enforced. Metadata never grants takeover.",
+    "Held descriptors retain the same inode; Close never unlinks. Actual child kill/reacquisition was tested.",
+    "Final symlink and hardlink targets are refused without modifying target data. Metadata diagnostics accept exactly sixteen decoded bytes or unknown.",
+    "Historical full-package failures used draft Docker files and are preserved, not reclassified as a passing combined candidate."
+  ],
+  "limits": [
+    "Linux filesystem syscalls themselves are not preempted by context; local profile filesystem qualification remains necessary.",
+    "Enrollment must validate canonical ancestry and user ownership; this helper does not sandbox a hostile same-user process.",
+    "No Compose startup, NATS identity/readiness, native macOS or whole T07 acceptance is proved."
+  ]
+}

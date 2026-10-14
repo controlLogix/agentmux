@@ -1,0 +1,68 @@
+{
+  "status": "narrow_pure_and_crossbuild_pass",
+  "checks": {
+    "results": [
+      {
+        "argv": [
+          "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+          "test",
+          "./portobserver",
+          "-run",
+          "^Test(AllRowsValidateBeforeOccupied|MappedIPv6LoopbackRemainsUnavailable|MappedIPv6WildcardRemainsUnavailable)$",
+          "-race",
+          "-count=1",
+          "-json"
+        ],
+        "environment": {},
+        "exit": 0,
+        "elapsedSeconds": 0.7379865889961366
+      },
+      {
+        "argv": [
+          "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+          "build",
+          "-o",
+          "/home/ryan/.cache/agentmux-governance/p02-port-observer-first-slice/observer-windows-amd64.exe",
+          "./cmd/agentmux-host-observer"
+        ],
+        "environment": {
+          "GOOS": "windows",
+          "GOARCH": "amd64",
+          "CGO_ENABLED": "0"
+        },
+        "exit": 0,
+        "elapsedSeconds": 7.353013187996112
+      }
+    ],
+    "sourceStable": true,
+    "scope": "Pure table controls and Windows cross-build only. No native helper, port, Docker or installed qualification."
+  },
+  "namedPasses": [
+    "TestAllRowsValidateBeforeOccupied",
+    "TestMappedIPv6LoopbackRemainsUnavailable",
+    "TestMappedIPv6WildcardRemainsUnavailable"
+  ],
+  "failOrSkip": [],
+  "artifacts": {
+    "check0-stdout.log": "d46010e29789f4e438835b16621fa1cd81a94eaf0e31afa8fa36cc9bcc60d497",
+    "check0-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "check1-stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "check1-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "checks.json": "bdfa3705826fce6fcbacfc787596e11e2c07659693715c1fe456eb54a44f50f9",
+    "tested-source-manifest.json": "f54b78880a734f3397200d1be3e770d1b2b29ffdab14180984fff495161e139d",
+    "observer-windows-amd64.exe": "1033387119daed3b0fdaf2178b8c5b0a9003fb2e187e15e9e3bd3047788812b6"
+  },
+  "testedSourceSHA256": {
+    "portobserver/observe_windows.go": "ad32f312917e69e10886913933e0517d422ce2cebb02da4769b5dce673c1557d",
+    "portobserver/table_test.go": "cb3770de6fdd2adf7a41eb2e71f4675e399c04ef62e8d8d7223c79d8534bb7d1",
+    "portobserver/frame.go": "c26ca474c65f0651c13a7848a57ad95265a840892dd46d4de9726646e4f73098",
+    "portobserver/table.go": "aa540423f5d9a1f4b358fef945d18857064e207a6e64ccc6fcb6d8fad217445c",
+    "cmd/agentmux-host-observer/main_windows.go": "99af73b6da5f472bdd03a40d5d95e1271d8c2840a213d3d5796265888b3d359a"
+  },
+  "limits": [
+    "Three actual pure parser tests ran under race; no native TCP observer or gate was executed.",
+    "Windows amd64 cross-build succeeded and is not Windows execution qualification.",
+    "The separately enrolled native host/namespace loader and verify-to-exec Job gate remain incomplete.",
+    "Shared production source was not edited."
+  ]
+}

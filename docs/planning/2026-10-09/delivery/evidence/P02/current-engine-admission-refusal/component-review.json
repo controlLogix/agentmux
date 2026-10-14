@@ -1,0 +1,112 @@
+{
+  "schemaVersion": "1.0.0",
+  "kind": "pre-test-admission-refusal",
+  "recordedUtc": "2026-10-14T17:02:45.757762+00:00",
+  "producerDirectExit": 1,
+  "testDispatched": false,
+  "fixtureCreated": false,
+  "engineMutations": 0,
+  "failureStage": "engine",
+  "failureCode": "engine_identity_mismatch",
+  "expectedEngineID": "e0f1f93d-abf1-44f2-b62a-5bfee21d2b5c",
+  "actualEngineID": "772de646-ba89-42ac-8675-45b2025fbdee",
+  "endpointMatched": true,
+  "sourceSnapshotFilesVerified": 258,
+  "batchBeforeCopyAfterMatched": true,
+  "preflight": {
+    "admitted": false,
+    "steps": [
+      {
+        "stage": "endpoint",
+        "elapsedSeconds": 0.2482307940008468,
+        "directExit": 0,
+        "stdoutBytes": 44,
+        "stderrBytes": 0,
+        "argv": [
+          "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+          "--context",
+          "desktop-linux",
+          "context",
+          "inspect",
+          "desktop-linux",
+          "--format",
+          "{{json .Endpoints.docker.Host}}"
+        ]
+      },
+      {
+        "stage": "engine",
+        "elapsedSeconds": 0.9663322670021444,
+        "directExit": 0,
+        "stdoutBytes": 39,
+        "stderrBytes": 0,
+        "argv": [
+          "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+          "--context",
+          "desktop-linux",
+          "info",
+          "--format",
+          "{{json .ID}}"
+        ]
+      }
+    ],
+    "failureType": "AssertionError"
+  },
+  "limits": [
+    "The actual Docker engine identity changed; no new engine is enrolled by this diagnostic.",
+    "Image and capacity reads were not reached.",
+    "No test, installed frontend, host, role or cleanup action ran.",
+    "The named pending regression remains unexecuted; this is not a test failure or phase acceptance."
+  ],
+  "artifacts": {
+    "engine-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "private": true
+    },
+    "shared-after.json": {
+      "sha256": "d29fa6965dd419ead3fd9e58deb7396f2efa37b6c403031db51bc6a8449c111f",
+      "bytes": 29885,
+      "private": false
+    },
+    "engine-stdout.private": {
+      "sha256": "6d55604f0ba68ca5feeb8edeaf2294bf533f17e299bed0970b6d3b964edc9e65",
+      "bytes": 39,
+      "private": true
+    },
+    "producer.sh": {
+      "sha256": "43fee88aa20dc62874eb91a5f6fe77a7c460397452e8087fdbad1afdee7ea80d",
+      "bytes": 5479,
+      "private": false
+    },
+    "endpoint-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "private": true
+    },
+    "invocation.json": {
+      "sha256": "a73a271ff7b972bb3321bc9808f91fa0c2ba9c7e7603c9182cae965832bbcaf5",
+      "bytes": 1409,
+      "private": false
+    },
+    "source-manifest.json": {
+      "sha256": "d29fa6965dd419ead3fd9e58deb7396f2efa37b6c403031db51bc6a8449c111f",
+      "bytes": 29885,
+      "private": false
+    },
+    "endpoint-stdout.private": {
+      "sha256": "0d1284cdbf15f9de9be8524a923374e8dffede3d62a65a022b0c8f58bfaa26b7",
+      "bytes": 44,
+      "private": true
+    },
+    "shared-before.json": {
+      "sha256": "d29fa6965dd419ead3fd9e58deb7396f2efa37b6c403031db51bc6a8449c111f",
+      "bytes": 29885,
+      "private": false
+    },
+    "preflight.json": {
+      "sha256": "d41860030d4f73f2dece871b9ad51633e2cc5d64cde998c49752c1c2ee942ec2",
+      "bytes": 902,
+      "private": false
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "kind": "independent-failed-midboot-evidence-review",
+  "workerReview": "/home/ryan/.cache/agentmux-governance/p02-current-wsl-midboot-corrected-lgyYtQ/review.json",
+  "workerReviewSHA256": "f9a75e56d6ae6da392c330c6f2a36b9e125a4143f46424f4c29008e1458f89c9",
+  "sourceSHA256": "c555fb92e6d6cf08c00d3b640628be71811e8c80fc61da2a926e30c768776e0f",
+  "batchVerification": {
+    "snapshotFiles": 261,
+    "currentSharedFiles": 260,
+    "runArtifacts": 24,
+    "fixtureArtifacts": 12,
+    "mismatches": 0
+  },
+  "proven": {
+    "directExit": 1,
+    "namedFailures": 1,
+    "namedPasses": 0,
+    "skips": 0,
+    "elapsedSeconds": 48.61,
+    "frontendElapsedNanoseconds": 6930020294,
+    "frontendBoundNanoseconds": 10000000000,
+    "frontendExitSuccess": true,
+    "frontendDisposition": "starting",
+    "frontendActualCreatorPinned": true,
+    "frontendStdoutBytes": 2332,
+    "frontendStderrBytes": 0,
+    "joinedPrivateCapture": true,
+    "firstFailure": "midboot_actual_creator_child_identity_refused",
+    "crashInjected": false,
+    "waitingTerminalReached": false,
+    "recoveryReached": false,
+    "cleanupVerificationSucceeded": false,
+    "fixtureRetained": true
+  },
+  "sourceFindings": [
+    {
+      "id": "MIDBOOT-GENUINE-ROLE-DETECTOR",
+      "finding": "First child gate accepts any direct child before SIGSTOP, but later combined predicate expects signed protected role. An interop helper or pre-exec child can satisfy gate and fail admission. Original failing predicate was not saved, so neither hypothesis is proven for this run.",
+      "next": "Cache-only genuine-role selection control and closed per-predicate evidence. Do not pause on an arbitrary helper; preserve original creator/role ownership and missed partial-phase refusal."
+    },
+    {
+      "id": "MIDBOOT-CLEANUP-CAUSE-LOSS",
+      "finding": "Cleanup reports exact_stopped_state_unverifiable after StopOwned returned nil, then either ObserveBroker error, CID mismatch or non-stopped state. ObserveBroker combines actual TLS broker/config/image checks with network provenance; no exact failing predicate/cause is saved.",
+      "next": "Inspect already-saved private broker/network projections offline if available. No saved raw inspection exists in the36-artifact worker map or fixture evidence root. A was asked for exact separate path; absence cannot be filled by a guessed state."
+    }
+  ],
+  "ownership": "No arbitrary child or report PID is approved for signaling/recovery. Existing creator-handle cleanup resumed the paused exact host before normal teardown; failed original evidence does not independently establish full descendant/exclusion cleanup.",
+  "smallestSafeNext": [
+    "Pure cache detector regression with real creator-owned candidate classification and fixed failure codes, no engine/startup.",
+    "Offline decode/admission controls on exact saved private cleanup projection when available; preserve original absent-raw cause limit.",
+    "If original inspection was never saved, separately authorized read-only retained-fixture qualification is required before any mutation; it cannot establish original failure cause."
+  ],
+  "limits": [
+    "No crash, lifetime EOF, release, recovery or phase acceptance.",
+    "No independent builds/tests/engine/read-only live diagnosis or recovery action.",
+    "Current state remains unknown; this review grants no delete, stop retry or recovery authority.",
+    "Source closure and compile-only controls remain historical; actual scheduling/identity result failed.",
+    "Checkpoint source audit resumes separately after this review; action-pin-only review remains scoped."
+  ]
+}

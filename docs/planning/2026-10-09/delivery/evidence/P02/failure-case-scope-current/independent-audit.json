@@ -1,0 +1,2293 @@
+{
+  "schemaVersion": "1.0.0",
+  "phase": "P02",
+  "kind": "Current read-only AC03/AC07 and FAIL55-59 evidence audit",
+  "createdUtc": "2026-10-14T10:03:08.219932+00:00",
+  "requiredGateCriteria": [
+    {
+      "id": "P02-GATE-AC03",
+      "text": "Bad configuration, occupied ports, unavailable broker, and failed protected plugin produce actionable bounded failures."
+    },
+    {
+      "id": "P02-GATE-AC07",
+      "text": "Simultaneous launches and a crashed startup owner converge on one owned instance. Wrong Docker context, conflicting ports, incompatible versions and partial startup produce bounded, specific diagnostics without deleting volumes, starting a shadow stack or attaching to another user."
+    }
+  ],
+  "assignedFailureRequirements": [
+    {
+      "id": "FAIL-55",
+      "scenario": "Cold launch with no selected instance, then warm launch from another project directory",
+      "oracle": "One owned Compose project reaches actual service and application readiness; the next launch reuses its identity and volumes unchanged. Both display the same scoped status schema.",
+      "phases": [
+        "P02",
+        "P06",
+        "P12"
+      ],
+      "status": "not-run"
+    },
+    {
+      "id": "FAIL-56",
+      "scenario": "Two terminals or WSL sessions start together; startup owner crashes mid-boot",
+      "oracle": "One startup owner and one selected instance; waiting callers receive bounded progress or failure. Stale ownership recovery cannot create duplicate stacks or trust an unrelated PID.",
+      "phases": [
+        "P02",
+        "P06",
+        "P12"
+      ],
+      "status": "not-run"
+    },
+    {
+      "id": "FAIL-57",
+      "scenario": "Docker or Compose absent, daemon unavailable, permission denied or image pull fails",
+      "oracle": "Bounded actionable diagnostics; no false readiness, privileged installation, secret leakage or retry storm. A later corrected launch can recover without losing data.",
+      "phases": [
+        "P02",
+        "P06",
+        "P12"
+      ],
+      "status": "not-run"
+    },
+    {
+      "id": "FAIL-58",
+      "scenario": "Wrong Docker context, another user instance, occupied endpoint or incompatible running release",
+      "oracle": "Reject ambiguous or unauthorized attachment; identify selected context and safe next action. Do not start a shadow stack, mutate a remote daemon, silently upgrade or delete volumes.",
+      "phases": [
+        "P02",
+        "P06",
+        "P12"
+      ],
+      "status": "not-run"
+    },
+    {
+      "id": "FAIL-59",
+      "scenario": "Partially started or unhealthy stack; readiness timeout; restart after persistent data was written",
+      "oracle": "Report the failing service and observed readiness state. Compatible owned recovery retains instance identity and durable data; unsafe recovery stops for a deliberate action. Running containers alone never qualify success.",
+      "phases": [
+        "P02",
+        "P12"
+      ],
+      "status": "not-run"
+    }
+  ],
+  "requirementBindings": [
+    {
+      "path": "docs/planning/2026-10-09/delivery/tasks.json",
+      "sha256": "d8b4483627df5fd0494d49998fae26132ed5d07fec9ebffbd85802d635f2feed"
+    },
+    {
+      "path": "docs/planning/2026-10-09/verification-matrix.json",
+      "sha256": "516813fd034d6c73b4b0d6f9eaaf4b1b54798828e137336324605d0b956085bc"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/decisions/startup-contract.md",
+      "sha256": "2c86650ad04978106ff011827c55708a7f02238f112177cefd4629ee857dc127"
+    },
+    {
+      "path": "docs/planning/2026-10-09/implementation-plan.md",
+      "sha256": "ec6e308cdc95e5ed08c63c09b010398ab8b103dcab4a26227413609c7943ef71"
+    }
+  ],
+  "currentSourceBindings": [
+    {
+      "path": "platform/launcher/bootstrap.go",
+      "sha256": "7db76af164be1110f1352da993833fc3613c09ab42b4557094bcd4661edb9bcd",
+      "testFunctions": []
+    },
+    {
+      "path": "platform/launcher/docker.go",
+      "sha256": "3ec7762bcd60b868bd659158d5e8ebc0845cc8590af1ae234eab7fadbe13c2b1",
+      "testFunctions": []
+    },
+    {
+      "path": "platform/launcher/docker_instance.go",
+      "sha256": "4d9353f586348f4ed2a8004379a3041669a1c74cdc3ff986e2bd2c0fe6952b56",
+      "testFunctions": []
+    },
+    {
+      "path": "platform/launcher/docker_test.go",
+      "sha256": "c134b20a73191c5def882bc0c29277dd5b479af09791294935809eed6a35f35c",
+      "testFunctions": [
+        {
+          "name": "TestMain",
+          "line": 16
+        },
+        {
+          "name": "TestDockerOwnedBoundaries",
+          "line": 154
+        },
+        {
+          "name": "TestDockerConfigAdmission",
+          "line": 248
+        },
+        {
+          "name": "TestDockerSelection",
+          "line": 281
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/docker_instance_test.go",
+      "sha256": "9c415fd7f5f4484ad5c88cf23343f775fc2a6419ac4a1993b664c6cca66b1c7b",
+      "testFunctions": [
+        {
+          "name": "TestOwnedBrokerReadOnlyStates",
+          "line": 210
+        },
+        {
+          "name": "TestOwnedBrokerRefusesUnverifiableState",
+          "line": 234
+        },
+        {
+          "name": "TestOwnedBrokerMissingExpectations",
+          "line": 248
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/docker_tls_test.go",
+      "sha256": "ccb682a4897f2c74d49fe9b018d6e0a1f046cef03caa6bedc2d9e3b9cf31c286",
+      "testFunctions": [
+        {
+          "name": "TestOwnedTLSBrokerBindsBothPrivateFiles",
+          "line": 54
+        },
+        {
+          "name": "TestOwnedTLSBrokerMissingDigestsHaveNoEffects",
+          "line": 75
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/bootstrap_integration_test.go",
+      "sha256": "2c991a1bffd6412f79e56a3a6992b626bc1831b4d9bed65518da97d7fd55d317",
+      "testFunctions": [
+        {
+          "name": "TestBootstrapFixtureFailureCodesDoNotExposePrivateText",
+          "line": 187
+        },
+        {
+          "name": "TestBootstrapRealDockerIdentityPreflight",
+          "line": 200
+        },
+        {
+          "name": "TestBootstrapRealDockerConcurrentAbsentInspection",
+          "line": 221
+        },
+        {
+          "name": "TestBootstrapRealComposeConcurrentColdWarmAndOwnerRecovery",
+          "line": 296
+        },
+        {
+          "name": "TestBootstrapFixtureIdentifiesBoundedOwnerWait",
+          "line": 546
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/bootstrap_docker_integration_test.go",
+      "sha256": "5b4e0e51881d862f5fa07fc50ff57f8572d5cd5164d91455dfe43f950e74b4f2",
+      "testFunctions": [
+        {
+          "name": "TestBootstrapVolumeTemplateProducesCompleteJSON",
+          "line": 698
+        },
+        {
+          "name": "TestBootstrapInventoryBatchRequiresCompleteExactRoster",
+          "line": 718
+        },
+        {
+          "name": "TestBootstrapRealDockerBatchedPreservationInventory",
+          "line": 735
+        },
+        {
+          "name": "TestBootstrapInventoryRequiresCompleteStateAndPortFields",
+          "line": 769
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/installed_cli_compose_integration_linux_test.go",
+      "sha256": "cdae2bb510e5c5c707e53e94d68ab553a956e5c2abc6f7d28b1d6748b1e188ba",
+      "testFunctions": [
+        {
+          "name": "TestInstalledCLIRealComposeColdWarmAndRefresh",
+          "line": 340
+        },
+        {
+          "name": "TestInstalledCLIRealComposeConcurrentCold",
+          "line": 404
+        },
+        {
+          "name": "TestInstalledCLIRealComposeAuthenticatedPending",
+          "line": 453
+        },
+        {
+          "name": "TestInstalledCLIRealComposeAbruptHostRestart",
+          "line": 488
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/lock_unix.go",
+      "sha256": "8dce55b7daaf4d8233d0075f2593c9d5bdaf7511bfd029592bff88d69143a0a8",
+      "testFunctions": []
+    },
+    {
+      "path": "platform/launcher/lock_unix_test.go",
+      "sha256": "d954632aad86bfa551632123b97633a2d58f5f99c167c172096d79263ab8c015",
+      "testFunctions": [
+        {
+          "name": "TestLockWaitsForDescriptorAndRetainsIdentity",
+          "line": 19
+        },
+        {
+          "name": "TestLockRejectsPublicDirectoryAndSymlink",
+          "line": 52
+        },
+        {
+          "name": "TestLockRequiresFiniteDeadline",
+          "line": 97
+        },
+        {
+          "name": "TestLockRefusesFileAliasesWithoutChangingTarget",
+          "line": 113
+        },
+        {
+          "name": "TestLockWaitReportsOwnerAndPreservesMetadata",
+          "line": 158
+        },
+        {
+          "name": "TestLockDoesNotTrustMalformedOwnerMetadata",
+          "line": 198
+        },
+        {
+          "name": "TestLockChildOwner",
+          "line": 228
+        },
+        {
+          "name": "TestKilledChildReleasesLockWithoutRemovingIdentity",
+          "line": 245
+        },
+        {
+          "name": "TestLockNormalizesObservedAttemptWithoutGrantingOwnership",
+          "line": 318
+        },
+        {
+          "name": "TestCancelledUnownedLockDoesNotAcquireOrWriteAttempt",
+          "line": 352
+        },
+        {
+          "name": "TestLockMissingOrNonDirectoryProfileReturnsError",
+          "line": 373
+        },
+        {
+          "name": "TestLockWaitHasHardMaximum",
+          "line": 387
+        },
+        {
+          "name": "TestLockRejectsFIFOWithoutBlocking",
+          "line": 412
+        },
+        {
+          "name": "TestLockRejectsNilContextBeforeCreatingLease",
+          "line": 443
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/owner_bridge.go",
+      "sha256": "f691230aa5892015f75025cbf9b70a9a2056e5009cce99fe91b15a879f366c5c",
+      "testFunctions": []
+    },
+    {
+      "path": "platform/deployment/probe_test.go",
+      "sha256": "0ccac91b33d9b7330fbc8b17446540ceb51b5157be840ee457b3f61e0ccce786",
+      "testFunctions": [
+        {
+          "name": "TestHealthColdRepeatWarmAndRealRestart",
+          "line": 163
+        },
+        {
+          "name": "TestHealthIncompatibleStreamIsNotChanged",
+          "line": 221
+        },
+        {
+          "name": "TestHealthWrongEndpointAuthAndIdentity",
+          "line": 266
+        },
+        {
+          "name": "TestHealthPrincipalCannotMutateOtherResources",
+          "line": 302
+        },
+        {
+          "name": "TestHealthRespectsEarlierTotalDeadline",
+          "line": 339
+        },
+        {
+          "name": "TestHealthPartialProvisionFailureRetainsStream",
+          "line": 353
+        }
+      ]
+    },
+    {
+      "path": "platform/kernel/boot/process_integration_test.go",
+      "sha256": "77356c4390a9d07c07fad4903aa4a6fcc7905a5bc84e2e6307d4d72609d06f1a",
+      "testFunctions": [
+        {
+          "name": "TestFourSealedProtectedProcessesSignedReleaseAndOwnedShutdown",
+          "line": 159
+        }
+      ]
+    }
+  ],
+  "caseMap": [
+    {
+      "id": "FAIL-55",
+      "currentActualSource": [
+        "TestInstalledCLIRealComposeColdWarmAndRefresh:340",
+        "TestInstalledCLIRealComposeConcurrentCold:404"
+      ],
+      "reusableProof": "Historical3 realinstalled/Compose passes and historical stable coreCompose reuse/samecontainer/volume/oldrecord; current4 acceptance awaits serialized final source artifacts/SDKs.",
+      "remaining": "Add actual warm ensure/status from a different working directory. composeCLIPrepare:93 leaves cmd.Dir unset, so existing selection does not assert this explicit scenario. Same profile/project/instance/volume/oldrecord and L04 semantics must remain.",
+      "independentAuthoringSlice": "Separate NEW cross-directory test can reuse existing admitted fixture and change only child cmd.Dir, preserving fixed explicit policy/workspace roots. No engine run during authoring."
+    },
+    {
+      "id": "FAIL-56",
+      "currentActualSource": [
+        "TestInstalledCLIRealComposeConcurrentCold:404",
+        "TestInstalledCLIRealComposeAuthenticatedPending:453",
+        "TestInstalledCLIRealComposeAbruptHostRestart:488"
+      ],
+      "reusableProof": "Real concurrency/pending history plus real OS killed-lock-owner and parent EOF/role lease release components. Ready-owner SIGKILL source first observes ready kernel and durable record, then injects at521.",
+      "remaining": "Add actual startup-owner SIGKILL while its admitted genuine operation is still pending, not after ready. Use already creator-proven host pidfd, actual existing bootstrap arbitration gate, exact service/role lease release, bounded waiting callers, later actual ensure and one same selected instance. Never infer ownership from PID metadata.",
+      "independentAuthoringSlice": "NEW midboot-crash test only, using pending fixture gate and creator handle APIs without editing shared fixture. Keep ready-owner abrupt test as separate coverage; execute serialized after root review."
+    },
+    {
+      "id": "FAIL-57",
+      "currentActualSource": [
+        "Docker.run:106",
+        "TestDockerOwnedBoundaries:154",
+        "TestHealthWrongEndpointAuthAndIdentity:266"
+      ],
+      "reusableProof": "Controlled subprocess driver failures/selection/versions, native real NATS wrong endpoint/auth/domain/name/version/deadline and corrected stream restart components; none is full actualinstalled negative matrix.",
+      "remaining": "Actual installed missing Docker, absent Compose, daemon unavailable, denied permission and pinned image pull failure with bounded distinct safe diagnostic/no false readiness/no privileged install/no retry storm; later corrected same-profile launch preserves durable data. Source Docker.run collapses executable/daemon subprocess failures to docker_command_failed, so actual tests must verify whether outward diagnostic distinctions satisfy L02/AC03. This is an uncovered assertion, not an already executed production failure.",
+      "independentAuthoringSlice": "NEW separately guarded environment-failure fixtures using genuine installed CLI/tool/environment absence; do not uninstall/change user Docker or delete shared cached images to force faults. Missing safe isolated environment remains a real evidence blocker, not a wrapper substitute."
+    },
+    {
+      "id": "FAIL-58",
+      "currentActualSource": [
+        "TestDockerOwnedBoundaries:154",
+        "TestOwnedBrokerRefusesUnverifiableState:234",
+        "TestInstalledHostPolicyRejectsPrivateBoundaryAndDeclarations:181"
+      ],
+      "reusableProof": "Driver simulated wrong context/endpoint/engine/versions/owner/volume/ports and closed private admission/realTLS adversary controls. Current real installed4 has no conflict negative case.",
+      "remaining": "Actual child-only wrong/remote/changed selection and actual selected-engine occupied port; actual other-owner resource and incompatible running release/version refusal. Require bounded specific non-ready failure, no shadow stack, remote mutation, upgrade or volume deletion and unchanged exact unrelated state.",
+      "independentAuthoringSlice": "Root assigned D NEW installed_cli_compose_failures_integration_test.go only for context/selection +occupied port. Use actual engine-host loopback occupancy, not WSL-only socket unless proven same endpoint; establish blocker after fixture free-port setup. Other-owner/incompatible cases remain full plan."
+    },
+    {
+      "id": "FAIL-59",
+      "currentActualSource": [
+        "TestHealthIncompatibleStreamIsNotChanged:221",
+        "TestHealthPartialProvisionFailureRetainsStream:353",
+        "TestFourSealedProtectedProcessesSignedReleaseAndOwnedShutdown:159",
+        "TestInstalledCLIRealComposeAbruptHostRestart:488"
+      ],
+      "reusableProof": "Native real health incompatible/partial creation/no destructive repair, signed four-process single-role StopRole+stale status and normal fullCompose persistence recovery are mechanism proofs.",
+      "remaining": "Actual installed/Compose partial or unhealthy stack/readiness timeout and failed protected role with genuine named service/failure status, no running-container false readiness, bounded cleanup; compatible corrected recovery preserves instance/volume/oldrecord, incompatible recovery refuses safely. Pending genuine starting is not a partial-stack failure demonstration.",
+      "independentAuthoringSlice": "Separate NEW incompatible/partial tests can use real scoped health incompatibility and exact already-owned role handles in disposable fixture only; no synthetic inspector/server and no mutable shared source. Root must approve actual injection/serialized engine execution."
+    }
+  ],
+  "reviewedReusableHistoricalRecords": [
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/docker-driver/source-bound-results.json",
+      "sha256": "cd24e7d7851bc88e6f977ab34e29204c0322b51f991ac607c23bc436ee474252",
+      "declaredSourceComparison": [
+        {
+          "path": "platform/launcher/docker.go",
+          "recordedSHA256": "c6034883fb210acc97aee9e8afe92d6110cd3b671dee7ec218217aacf2461457",
+          "currentSHA256": "3ec7762bcd60b868bd659158d5e8ebc0845cc8590af1ae234eab7fadbe13c2b1",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/launcher/docker_test.go",
+          "recordedSHA256": "7860bdf48340eb2f83179b1e7a08b02a4d6e7007c7b313aa9d4c478afc4c68dd",
+          "currentSHA256": "c134b20a73191c5def882bc0c29277dd5b479af09791294935809eed6a35f35c",
+          "sameBytes": false
+        }
+      ],
+      "scope": "Controlled subprocess boundary tests only. No real Docker or broker qualification.",
+      "actualCases": null,
+      "actualProcessProof": null,
+      "limits": [
+        "The internal LockHeld assertion is not an OS lock proof.",
+        "Full boot config and secret file handling remains required; this slice refuses it.",
+        "Authenticated readiness, real cold/warm lifecycle, concurrency, killed-owner recovery, rollback and persistence are not qualified by this record.",
+        "Command timeout leaves the engine-side outcome unknown; no automatic retry is performed.",
+        "WarmReuse is read-only; callers must select it for healthy existing resources."
+      ]
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-lock-review/lock-only-review.json",
+      "sha256": "d117615c8ecf7ec454e7790c75c59bb838353a283b40ebb9e6d1c60984d334a6",
+      "declaredSourceComparison": [
+        {
+          "path": "platform/go.mod",
+          "recordedSHA256": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+          "currentSHA256": "d2449cddbd7671d0e73998ae6057abf56b371f4e422b213db0e00a24a30d3fb9",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/go.sum",
+          "recordedSHA256": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+          "currentSHA256": "421240c9a0e5f903b47f996949937448ce9aeace1eca369342418e18a1ce2c90",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/launcher/lock_unix.go",
+          "recordedSHA256": "b8232a239d47e43d8fac3759d137abfe3b2502adaae6e62d25691323872f9859",
+          "currentSHA256": "8dce55b7daaf4d8233d0075f2593c9d5bdaf7511bfd029592bff88d69143a0a8",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/launcher/lock_unix_test.go",
+          "recordedSHA256": "2c22f87e9b9fa6fdfdbf22976f11179d18ca475bdb189df27f2595dec6ba2896",
+          "currentSHA256": "d954632aad86bfa551632123b97633a2d58f5f99c167c172096d79263ab8c015",
+          "sameBytes": false
+        }
+      ],
+      "scope": null,
+      "actualCases": null,
+      "actualProcessProof": null,
+      "limits": [
+        "Lock scope only; concurrent Docker wrapper test failures remain in prior full-package result",
+        "WSL Linux only; no macOS / actual Docker / phase acceptance",
+        "30-second contention deadline cannot interrupt blocking filesystem calls",
+        "Caller enrollment must canonicalize parent paths and exclude hostile same-user lock inode removal"
+      ]
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/local-health-retention/review.json",
+      "sha256": "de0a696b2214a2b2a9c42ee4a67fe7c38b8d2c5b96e18e52804cb19ff65b141d",
+      "declaredSourceComparison": [
+        {
+          "path": "platform/go.mod",
+          "recordedSHA256": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+          "currentSHA256": "d2449cddbd7671d0e73998ae6057abf56b371f4e422b213db0e00a24a30d3fb9",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/go.sum",
+          "recordedSHA256": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+          "currentSHA256": "421240c9a0e5f903b47f996949937448ce9aeace1eca369342418e18a1ce2c90",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/deployment/probe.go",
+          "recordedSHA256": "df71842055c7f946d6579b1db499957a4c3dc7620bd4824ffd8acbb45f9995c7",
+          "currentSHA256": "3d5751789092bf9684dd9f12d77da8c6724ed3db10d4d3bd6dfeb35d3eabc78f",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/deployment/probe_test.go",
+          "recordedSHA256": "0ccac91b33d9b7330fbc8b17446540ceb51b5157be840ee457b3f61e0ccce786",
+          "currentSHA256": "0ccac91b33d9b7330fbc8b17446540ceb51b5157be840ee457b3f61e0ccce786",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/profile.go",
+          "recordedSHA256": "219b2c8742514699c0c12822576e580142e2f43b51d8405e3207a8ebb0a5f6fd",
+          "currentSHA256": "f15a34a2111492fc83f3c5e85aad2cb869c4c6487bac9f3cc10aa2de9de767e7",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/deployment/profile_test.go",
+          "recordedSHA256": "145e667f8f0dc39daadc11b9906067cb495bf1336a6ba7b1f11c915388610c74",
+          "currentSHA256": "3e36d029e3cd4c06b72ca046d05dec82c92efa32d21c3dd5a90c2eab09491aec",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/deployment/README.md",
+          "recordedSHA256": "dc7789d3b5698cf9baee080e02137e10e6658706502822b88500c882ae60b45d",
+          "currentSHA256": "dc7789d3b5698cf9baee080e02137e10e6658706502822b88500c882ae60b45d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/communication/config.go",
+          "recordedSHA256": "b54e90bbf5d5c37fa7e60ffdc878ddd4204bfba411665e2c35311c1fe5b9a883",
+          "currentSHA256": "b54e90bbf5d5c37fa7e60ffdc878ddd4204bfba411665e2c35311c1fe5b9a883",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/communication/config_test.go",
+          "recordedSHA256": "1d2e5d1e30f2f2880396ef427b2261a66ad9ce8f145d45fa9de774b15ea76885",
+          "currentSHA256": "1d2e5d1e30f2f2880396ef427b2261a66ad9ce8f145d45fa9de774b15ea76885",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/communication/README.md",
+          "recordedSHA256": "e6cdc9f7c3f227ab07c55e8eea4144747d851c4a1cea3cb40201d950e277b251",
+          "currentSHA256": "e6cdc9f7c3f227ab07c55e8eea4144747d851c4a1cea3cb40201d950e277b251",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/communication/run.go",
+          "recordedSHA256": "1340ecbbca4b21a3354b0be3147207bbd1fbe9b5039c7825fb750b149a703069",
+          "currentSHA256": "1340ecbbca4b21a3354b0be3147207bbd1fbe9b5039c7825fb750b149a703069",
+          "sameBytes": true
+        }
+      ],
+      "scope": "P02 local infrastructure health slice; not phase acceptance",
+      "actualCases": [
+        "Warm absent stream remains absent",
+        "Cold create then repeat validates exact policy and advances retained sequence",
+        "Actual owned broker stop/restart retains identical first-record bytes, subject and timestamp; warm call preserves stream creation/config",
+        "Seven independently created incompatible real streams (subjects,storage,noAck,limits,retention,dedupe,transform) remain unchanged with no records added",
+        "Wrong endpoint/auth/domain/logical-name/exact-version calls fail within one bounded deadline and do not provision",
+        "Denied health publish after successful CREATE leaves the compatible empty stream; no rollback delete",
+        "Real permission violations observed for SYS, other-stream CREATE, health UPDATE and DELETE",
+        "Earlier50ms caller deadline respected despite2s option; server monitoring proves probe connection closure",
+        "Factory output preserves all three communication accounts exactly; health principal has only nine exact publish subjects and inbox subscriptions"
+      ],
+      "actualProcessProof": null,
+      "limits": [
+        "BuildLocalConfig returns private bytes, not filesystem/volume ownership proof",
+        "Health stream is ephemeral R1 infrastructure policy, not business storage or completion reserve",
+        "Successful probe is infrastructure write/read and identity observation, not protected process/application readiness",
+        "Installed enrollment/profile/volume lifecycle and native macOS/Linux matrix remain gate requirements",
+        "No Docker/provider/model/legacy state/credentials or business stores accessed",
+        "Same-UID/privileged isolation is not claimed"
+      ]
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/protected-actors/final-affected/review.json",
+      "sha256": "01c39410680943b0c8e1a697282109cf36d1201077a249227863d9e80451c1ff",
+      "declaredSourceComparison": [
+        {
+          "path": "platform/go.mod",
+          "recordedSHA256": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+          "currentSHA256": "d2449cddbd7671d0e73998ae6057abf56b371f4e422b213db0e00a24a30d3fb9",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/go.sum",
+          "recordedSHA256": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+          "currentSHA256": "421240c9a0e5f903b47f996949937448ce9aeace1eca369342418e18a1ce2c90",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/runtime/README.md",
+          "recordedSHA256": "51bd1399f410da9bc0899eba02028e76d987b14dbd22df1495c2a7fbb5b11b17",
+          "currentSHA256": "f28aa22af8218c96670e3a42e701e4c25c2f2b79e37c34b5276cdfedc837a20f",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/runtime/snapshot_darwin_test.go",
+          "recordedSHA256": "29823b7772b37e6935c3d4261016dcc05cb9c3ba1a84deff8e69ff1dc6f5b93d",
+          "currentSHA256": "29823b7772b37e6935c3d4261016dcc05cb9c3ba1a84deff8e69ff1dc6f5b93d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/snapshot_linux.go",
+          "recordedSHA256": "fea9f5daf47c79f1f65a9f81f90a3df99cc324dcc3cc23a20585922b35aea43b",
+          "currentSHA256": "2adf8ef1a70fa737f36bc015dc5bdb18e164baf2e4fd13437ac1c6d73f14addb",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/runtime/snapshot_unsupported.go",
+          "recordedSHA256": "8455c45f2628914a95a897b5539888d597035a01d345487a061b1bf79fccb182",
+          "currentSHA256": "522a77bf706c8522363438e033e64d9478c85a7483d72d65e37b54edb3d8aaec",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/runtime/stop_role.go",
+          "recordedSHA256": "04be379b36456a781a26fa0d3f78da84253501e0fff5bd599acede45c97a8b1d",
+          "currentSHA256": "04be379b36456a781a26fa0d3f78da84253501e0fff5bd599acede45c97a8b1d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/stop_role_linux_test.go",
+          "recordedSHA256": "dbab48564a0c1986e90b6cbced36e06fde2609bb87ab7008d46bfb91e41df730",
+          "currentSHA256": "dbab48564a0c1986e90b6cbced36e06fde2609bb87ab7008d46bfb91e41df730",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/supervisor.go",
+          "recordedSHA256": "25c83fd49ff7fea03ec239f32b57ece8c3ddd756000deee4e01eea99da1cfa5d",
+          "currentSHA256": "45437190fd61616c18c35c79ff4fc02c97b558d607bf2043bea2e6b14d40d824",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/runtime/supervisor_linux_test.go",
+          "recordedSHA256": "37355c6a6d87f75d62f6af9fa0963d135b48d9f349502603448ad390c629d1f7",
+          "currentSHA256": "37355c6a6d87f75d62f6af9fa0963d135b48d9f349502603448ad390c629d1f7",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/testdata/dynamic/main.go",
+          "recordedSHA256": "3cac6809a685f4986b167bf231ecfeb0fca298bc4ee700b124b7d6c93d97fe84",
+          "currentSHA256": "3cac6809a685f4986b167bf231ecfeb0fca298bc4ee700b124b7d6c93d97fe84",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/testdata/role/main.go",
+          "recordedSHA256": "ce544b3b6027ab8d224388787d15d4793fee63c05cce1847e20c623898848c82",
+          "currentSHA256": "ce544b3b6027ab8d224388787d15d4793fee63c05cce1847e20c623898848c82",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/assembly/README.md",
+          "recordedSHA256": "d9c9934bd2562ae2f5696de8696b4162cbc57a6fbf9518943b5d3deac7d36eb7",
+          "currentSHA256": "d9c9934bd2562ae2f5696de8696b4162cbc57a6fbf9518943b5d3deac7d36eb7",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/assembly/verify.go",
+          "recordedSHA256": "d28ef2e43d2e8536373321c7021ace5d902903dac8b8ed5ed9a8bbb4f2b6c6f9",
+          "currentSHA256": "e915287f32b009b2b47bbaf7287f9ee29d0ed82fd8e57098260512b8c9826c83",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/kernel/assembly/verify_test.go",
+          "recordedSHA256": "138b42bae577380b9abbc00f18c699d5f4abd8b9ea8e548bb1330e82d8c6374d",
+          "currentSHA256": "138b42bae577380b9abbc00f18c699d5f4abd8b9ea8e548bb1330e82d8c6374d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/boot/integration_test.go",
+          "recordedSHA256": "c1342271ba7bd47fd3768cff2f6e6f130c1f51ae44c3b2dca6de6ca8147c4c98",
+          "currentSHA256": "c1342271ba7bd47fd3768cff2f6e6f130c1f51ae44c3b2dca6de6ca8147c4c98",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/boot/process_integration_test.go",
+          "recordedSHA256": "77356c4390a9d07c07fad4903aa4a6fcc7905a5bc84e2e6307d4d72609d06f1a",
+          "currentSHA256": "77356c4390a9d07c07fad4903aa4a6fcc7905a5bc84e2e6307d4d72609d06f1a",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/boot/run.go",
+          "recordedSHA256": "44d27d088332d7f3503c3c8dce04c3dfa807113d1b3f6084592feed60acd9dd1",
+          "currentSHA256": "44d27d088332d7f3503c3c8dce04c3dfa807113d1b3f6084592feed60acd9dd1",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/communication/config.go",
+          "recordedSHA256": "b54e90bbf5d5c37fa7e60ffdc878ddd4204bfba411665e2c35311c1fe5b9a883",
+          "currentSHA256": "b54e90bbf5d5c37fa7e60ffdc878ddd4204bfba411665e2c35311c1fe5b9a883",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/communication/config_test.go",
+          "recordedSHA256": "1d2e5d1e30f2f2880396ef427b2261a66ad9ce8f145d45fa9de774b15ea76885",
+          "currentSHA256": "1d2e5d1e30f2f2880396ef427b2261a66ad9ce8f145d45fa9de774b15ea76885",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/communication/README.md",
+          "recordedSHA256": "e6cdc9f7c3f227ab07c55e8eea4144747d851c4a1cea3cb40201d950e277b251",
+          "currentSHA256": "e6cdc9f7c3f227ab07c55e8eea4144747d851c4a1cea3cb40201d950e277b251",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/communication/run.go",
+          "recordedSHA256": "1340ecbbca4b21a3354b0be3147207bbd1fbe9b5039c7825fb750b149a703069",
+          "currentSHA256": "1340ecbbca4b21a3354b0be3147207bbd1fbe9b5039c7825fb750b149a703069",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/lifecycle/run.go",
+          "recordedSHA256": "ddf748d4038b5099d605efffac8eee213e6479e7b27177f0b3f3fc9ffedb2dac",
+          "currentSHA256": "ddf748d4038b5099d605efffac8eee213e6479e7b27177f0b3f3fc9ffedb2dac",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/codec.go",
+          "recordedSHA256": "7f3c9b3903512ddcc0dbb5501918a600fa34654d0b71d77beffd589e10c9dbd9",
+          "currentSHA256": "4921211e9fa9767b3f17826e66cd66542b690a569f49729b11d765d6c11b3d64",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/kernel/protocol/codec_test.go",
+          "recordedSHA256": "31b719a63e7563ee941f38685aef4fc4330684affbca47f329e9d770e3dd9d38",
+          "currentSHA256": "31b719a63e7563ee941f38685aef4fc4330684affbca47f329e9d770e3dd9d38",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/credentials.go",
+          "recordedSHA256": "45f51f19c6a06e77efad2e61cea93d2e8f7f0a50d5fe6d175ab054b687ccf4c3",
+          "currentSHA256": "0b73aef06b02db8225f732e543087b87b5634792346e148b6acac018682885b0",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/kernel/protocol/credentials_unix_test.go",
+          "recordedSHA256": "e08e4bb148ebadd9447b9c90f74ccc76da2e050071b89e49fd0462475e8361cf",
+          "currentSHA256": "e08e4bb148ebadd9447b9c90f74ccc76da2e050071b89e49fd0462475e8361cf",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/private_unix.go",
+          "recordedSHA256": "094a60606c9c37483b89415953a23b1bcf775a9787fcfd4e9e8ed23a1b91debd",
+          "currentSHA256": "19317232374f774060e51fc10530ab202f11a8d29cc5be879fb552c04be02d5b",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/kernel/protocol/private_unsupported.go",
+          "recordedSHA256": "608afc7538c80a0b157be6f3b15037da34923bfe6743ef4ad5c01449866a7a81",
+          "currentSHA256": "608afc7538c80a0b157be6f3b15037da34923bfe6743ef4ad5c01449866a7a81",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/README.md",
+          "recordedSHA256": "025b4dcbd14e4d77687f455c7c02fdc279287f873dd02076fc6754bbf2907891",
+          "currentSHA256": "025b4dcbd14e4d77687f455c7c02fdc279287f873dd02076fc6754bbf2907891",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/transport.go",
+          "recordedSHA256": "bd6d6c90f4968a547c046a45239796642bb2a0058ba361ad4437680a3aa2f947",
+          "currentSHA256": "c4d602a3b349405334cb5b5a90367f9ebc5438bcc0edbffa7fd2c06e3efd77d1",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/kernel/status/run.go",
+          "recordedSHA256": "6be86037c5ff514759af8d767284efae5baabdd406cfa187aaa4ef42fd97ea43",
+          "currentSHA256": "6be86037c5ff514759af8d767284efae5baabdd406cfa187aaa4ef42fd97ea43",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/cmd/agentmux-kernel/main.go",
+          "recordedSHA256": "8960fa96fdea989543ade1c6ce01f0ae7096bef614861e61bcf7c48de0e6f432",
+          "currentSHA256": "27e6bb75c3d41cc2367a4590bcf0bf12fe420ae76f020ac484fa0ea399f95cad",
+          "sameBytes": false
+        }
+      ],
+      "scope": null,
+      "actualCases": null,
+      "actualProcessProof": "TestFourSealedProtectedProcessesSignedReleaseAndOwnedShutdown builds staticCGO0 binary, verifies signed release against separate fixture enrollment key, runs4 sealed actual children through runtime.Prepare/Start and real NATS, verifies late export, owned single-role stop/reap, stale observation and all-child shutdown.",
+      "limits": [
+        "WSL nativeLinux only; Darwin remains unqualified product backend",
+        "External fixture signature verification is not production installer/key enrollment acceptance",
+        "Full protected lifecycle recovery/broker restart, long-lived helper ownership and wholeL04 producer remain required",
+        "No legacy state, shared Docker, providers/models or task/phase acceptance"
+      ]
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/protected-parent-lifetime/final/review.json",
+      "sha256": "084f98c8c8da155a33643dffa85279e85b93e3451cdefa03110b8abc450ec282",
+      "declaredSourceComparison": [
+        {
+          "path": "platform/go.mod",
+          "recordedSHA256": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+          "currentSHA256": "d2449cddbd7671d0e73998ae6057abf56b371f4e422b213db0e00a24a30d3fb9",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/go.sum",
+          "recordedSHA256": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+          "currentSHA256": "421240c9a0e5f903b47f996949937448ce9aeace1eca369342418e18a1ce2c90",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/runtime/stop_role_linux_test.go",
+          "recordedSHA256": "dbab48564a0c1986e90b6cbced36e06fde2609bb87ab7008d46bfb91e41df730",
+          "currentSHA256": "dbab48564a0c1986e90b6cbced36e06fde2609bb87ab7008d46bfb91e41df730",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/README.md",
+          "recordedSHA256": "51bd1399f410da9bc0899eba02028e76d987b14dbd22df1495c2a7fbb5b11b17",
+          "currentSHA256": "f28aa22af8218c96670e3a42e701e4c25c2f2b79e37c34b5276cdfedc837a20f",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/runtime/snapshot_unsupported.go",
+          "recordedSHA256": "8455c45f2628914a95a897b5539888d597035a01d345487a061b1bf79fccb182",
+          "currentSHA256": "522a77bf706c8522363438e033e64d9478c85a7483d72d65e37b54edb3d8aaec",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/runtime/parent_linux_test.go",
+          "recordedSHA256": "fe553e2041cac4a2af95012c51188e98af0aa2bcf68a138cd9689ae5f13802ce",
+          "currentSHA256": "fe553e2041cac4a2af95012c51188e98af0aa2bcf68a138cd9689ae5f13802ce",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/snapshot_linux.go",
+          "recordedSHA256": "2adf8ef1a70fa737f36bc015dc5bdb18e164baf2e4fd13437ac1c6d73f14addb",
+          "currentSHA256": "2adf8ef1a70fa737f36bc015dc5bdb18e164baf2e4fd13437ac1c6d73f14addb",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/stop_role.go",
+          "recordedSHA256": "04be379b36456a781a26fa0d3f78da84253501e0fff5bd599acede45c97a8b1d",
+          "currentSHA256": "04be379b36456a781a26fa0d3f78da84253501e0fff5bd599acede45c97a8b1d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/supervisor.go",
+          "recordedSHA256": "8768d4fa02dddb0bc63c2c429810bed3c2454b88ca6f722fd0fbab3b139df944",
+          "currentSHA256": "45437190fd61616c18c35c79ff4fc02c97b558d607bf2043bea2e6b14d40d824",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/runtime/supervisor_linux_test.go",
+          "recordedSHA256": "37355c6a6d87f75d62f6af9fa0963d135b48d9f349502603448ad390c629d1f7",
+          "currentSHA256": "37355c6a6d87f75d62f6af9fa0963d135b48d9f349502603448ad390c629d1f7",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/parent_unix.go",
+          "recordedSHA256": "7fe95fe66db69c01889f60fd2c4428579daf080d379dff25fc80064962c4a9be",
+          "currentSHA256": "7fe95fe66db69c01889f60fd2c4428579daf080d379dff25fc80064962c4a9be",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/snapshot_darwin_test.go",
+          "recordedSHA256": "29823b7772b37e6935c3d4261016dcc05cb9c3ba1a84deff8e69ff1dc6f5b93d",
+          "currentSHA256": "29823b7772b37e6935c3d4261016dcc05cb9c3ba1a84deff8e69ff1dc6f5b93d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/testdata/dynamic/main.go",
+          "recordedSHA256": "3cac6809a685f4986b167bf231ecfeb0fca298bc4ee700b124b7d6c93d97fe84",
+          "currentSHA256": "3cac6809a685f4986b167bf231ecfeb0fca298bc4ee700b124b7d6c93d97fe84",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/testdata/role/main.go",
+          "recordedSHA256": "ce544b3b6027ab8d224388787d15d4793fee63c05cce1847e20c623898848c82",
+          "currentSHA256": "ce544b3b6027ab8d224388787d15d4793fee63c05cce1847e20c623898848c82",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/assembly/root_test.go",
+          "recordedSHA256": "9137eb5c1673149d6c8ef53ec506adccfcad587c7f1d345a8b9bbd2088ae9447",
+          "currentSHA256": "9137eb5c1673149d6c8ef53ec506adccfcad587c7f1d345a8b9bbd2088ae9447",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/assembly/limits_test.go",
+          "recordedSHA256": "e7da242c4f51f53f2d6348d24782f63f739896bae110cef69d00d086b1417c5a",
+          "currentSHA256": "e7da242c4f51f53f2d6348d24782f63f739896bae110cef69d00d086b1417c5a",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/assembly/README.md",
+          "recordedSHA256": "d9c9934bd2562ae2f5696de8696b4162cbc57a6fbf9518943b5d3deac7d36eb7",
+          "currentSHA256": "d9c9934bd2562ae2f5696de8696b4162cbc57a6fbf9518943b5d3deac7d36eb7",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/assembly/open_unsupported.go",
+          "recordedSHA256": "91100eeb4268ce69aeb5c6116d7ecd7a3f9dc89c806c6adeeda4ee84b5a987a0",
+          "currentSHA256": "91100eeb4268ce69aeb5c6116d7ecd7a3f9dc89c806c6adeeda4ee84b5a987a0",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/assembly/verify.go",
+          "recordedSHA256": "e915287f32b009b2b47bbaf7287f9ee29d0ed82fd8e57098260512b8c9826c83",
+          "currentSHA256": "e915287f32b009b2b47bbaf7287f9ee29d0ed82fd8e57098260512b8c9826c83",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/assembly/verify_test.go",
+          "recordedSHA256": "138b42bae577380b9abbc00f18c699d5f4abd8b9ea8e548bb1330e82d8c6374d",
+          "currentSHA256": "138b42bae577380b9abbc00f18c699d5f4abd8b9ea8e548bb1330e82d8c6374d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/assembly/open_unix.go",
+          "recordedSHA256": "f39acc55f3633bddf82fed8c09f454d20321ea3fdd514e8809d5640ed6577769",
+          "currentSHA256": "f39acc55f3633bddf82fed8c09f454d20321ea3fdd514e8809d5640ed6577769",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/assembly/open_unix_test.go",
+          "recordedSHA256": "55a52d368545db47f2f5a285b61ebbe8d4ccbd1e6947a2faa86a9173846e2652",
+          "currentSHA256": "55a52d368545db47f2f5a285b61ebbe8d4ccbd1e6947a2faa86a9173846e2652",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/lifecycle/run.go",
+          "recordedSHA256": "ddf748d4038b5099d605efffac8eee213e6479e7b27177f0b3f3fc9ffedb2dac",
+          "currentSHA256": "ddf748d4038b5099d605efffac8eee213e6479e7b27177f0b3f3fc9ffedb2dac",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/boot/run.go",
+          "recordedSHA256": "44d27d088332d7f3503c3c8dce04c3dfa807113d1b3f6084592feed60acd9dd1",
+          "currentSHA256": "44d27d088332d7f3503c3c8dce04c3dfa807113d1b3f6084592feed60acd9dd1",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/boot/integration_test.go",
+          "recordedSHA256": "c1342271ba7bd47fd3768cff2f6e6f130c1f51ae44c3b2dca6de6ca8147c4c98",
+          "currentSHA256": "c1342271ba7bd47fd3768cff2f6e6f130c1f51ae44c3b2dca6de6ca8147c4c98",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/boot/process_integration_test.go",
+          "recordedSHA256": "77356c4390a9d07c07fad4903aa4a6fcc7905a5bc84e2e6307d4d72609d06f1a",
+          "currentSHA256": "77356c4390a9d07c07fad4903aa4a6fcc7905a5bc84e2e6307d4d72609d06f1a",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/boot/parent_lifetime_test.go",
+          "recordedSHA256": "14dab46add3cd74ddf4cf3692c058a5f8ddaf1ad47a8937b19cb2fdf7eb704fc",
+          "currentSHA256": "14dab46add3cd74ddf4cf3692c058a5f8ddaf1ad47a8937b19cb2fdf7eb704fc",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/status/run.go",
+          "recordedSHA256": "6be86037c5ff514759af8d767284efae5baabdd406cfa187aaa4ef42fd97ea43",
+          "currentSHA256": "6be86037c5ff514759af8d767284efae5baabdd406cfa187aaa4ef42fd97ea43",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/communication/README.md",
+          "recordedSHA256": "e6cdc9f7c3f227ab07c55e8eea4144747d851c4a1cea3cb40201d950e277b251",
+          "currentSHA256": "e6cdc9f7c3f227ab07c55e8eea4144747d851c4a1cea3cb40201d950e277b251",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/communication/config_test.go",
+          "recordedSHA256": "1d2e5d1e30f2f2880396ef427b2261a66ad9ce8f145d45fa9de774b15ea76885",
+          "currentSHA256": "1d2e5d1e30f2f2880396ef427b2261a66ad9ce8f145d45fa9de774b15ea76885",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/communication/run.go",
+          "recordedSHA256": "1340ecbbca4b21a3354b0be3147207bbd1fbe9b5039c7825fb750b149a703069",
+          "currentSHA256": "1340ecbbca4b21a3354b0be3147207bbd1fbe9b5039c7825fb750b149a703069",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/communication/config.go",
+          "recordedSHA256": "b54e90bbf5d5c37fa7e60ffdc878ddd4204bfba411665e2c35311c1fe5b9a883",
+          "currentSHA256": "b54e90bbf5d5c37fa7e60ffdc878ddd4204bfba411665e2c35311c1fe5b9a883",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/README.md",
+          "recordedSHA256": "025b4dcbd14e4d77687f455c7c02fdc279287f873dd02076fc6754bbf2907891",
+          "currentSHA256": "025b4dcbd14e4d77687f455c7c02fdc279287f873dd02076fc6754bbf2907891",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/codec_test.go",
+          "recordedSHA256": "31b719a63e7563ee941f38685aef4fc4330684affbca47f329e9d770e3dd9d38",
+          "currentSHA256": "31b719a63e7563ee941f38685aef4fc4330684affbca47f329e9d770e3dd9d38",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/codec.go",
+          "recordedSHA256": "7f3c9b3903512ddcc0dbb5501918a600fa34654d0b71d77beffd589e10c9dbd9",
+          "currentSHA256": "4921211e9fa9767b3f17826e66cd66542b690a569f49729b11d765d6c11b3d64",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/kernel/protocol/private_unix.go",
+          "recordedSHA256": "094a60606c9c37483b89415953a23b1bcf775a9787fcfd4e9e8ed23a1b91debd",
+          "currentSHA256": "19317232374f774060e51fc10530ab202f11a8d29cc5be879fb552c04be02d5b",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/kernel/protocol/transport.go",
+          "recordedSHA256": "bd6d6c90f4968a547c046a45239796642bb2a0058ba361ad4437680a3aa2f947",
+          "currentSHA256": "c4d602a3b349405334cb5b5a90367f9ebc5438bcc0edbffa7fd2c06e3efd77d1",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/kernel/protocol/private_unsupported.go",
+          "recordedSHA256": "608afc7538c80a0b157be6f3b15037da34923bfe6743ef4ad5c01449866a7a81",
+          "currentSHA256": "608afc7538c80a0b157be6f3b15037da34923bfe6743ef4ad5c01449866a7a81",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/credentials.go",
+          "recordedSHA256": "45f51f19c6a06e77efad2e61cea93d2e8f7f0a50d5fe6d175ab054b687ccf4c3",
+          "currentSHA256": "0b73aef06b02db8225f732e543087b87b5634792346e148b6acac018682885b0",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/kernel/protocol/credentials_unix_test.go",
+          "recordedSHA256": "e08e4bb148ebadd9447b9c90f74ccc76da2e050071b89e49fd0462475e8361cf",
+          "currentSHA256": "e08e4bb148ebadd9447b9c90f74ccc76da2e050071b89e49fd0462475e8361cf",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/cmd/agentmux-kernel/main.go",
+          "recordedSHA256": "27e6bb75c3d41cc2367a4590bcf0bf12fe420ae76f020ac484fa0ea399f95cad",
+          "currentSHA256": "27e6bb75c3d41cc2367a4590bcf0bf12fe420ae76f020ac484fa0ea399f95cad",
+          "sameBytes": true
+        }
+      ],
+      "scope": "Protected actors and actual signed four-process static kernel, host-death child self exit and retained lease reacquisition; not whole bootstrap or phase acceptance.",
+      "actualCases": null,
+      "actualProcessProof": null,
+      "limits": [
+        "Native Linux through WSL only; no Darwin descriptor execution qualification.",
+        "Fixture signing key separately verified; not production installer enrollment.",
+        "Only exact owned host is killed; pidfds observe all four child exits without child signals.",
+        "Dead host cannot reap its children; actual exit and lease release observed independently.",
+        "Credentials, broker configurations/logs and signing private key remain outside evidence."
+      ]
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/real-compose-stable-current/review.json",
+      "sha256": "c269e4413dd58a9e599a828ece73a3a00ab684194e57587f4e051c8514975eb6",
+      "declaredSourceComparison": [
+        {
+          "path": "platform/go.mod",
+          "recordedSHA256": "d2449cddbd7671d0e73998ae6057abf56b371f4e422b213db0e00a24a30d3fb9",
+          "currentSHA256": "d2449cddbd7671d0e73998ae6057abf56b371f4e422b213db0e00a24a30d3fb9",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/go.sum",
+          "recordedSHA256": "421240c9a0e5f903b47f996949937448ce9aeace1eca369342418e18a1ce2c90",
+          "currentSHA256": "421240c9a0e5f903b47f996949937448ce9aeace1eca369342418e18a1ce2c90",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/privatefs/access_test.go",
+          "recordedSHA256": "13b3c9d5e0913e565a52f6abff92c2f44c5ac3fcb0b3966f72cc45f376f6c52d",
+          "currentSHA256": "13b3c9d5e0913e565a52f6abff92c2f44c5ac3fcb0b3966f72cc45f376f6c52d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/privatefs/access_darwin.go",
+          "recordedSHA256": "09eb387cf9bb75bbf8afbbed0e3c72c6af44526ba68cabdd6b9c7a643372de82",
+          "currentSHA256": "09eb387cf9bb75bbf8afbbed0e3c72c6af44526ba68cabdd6b9c7a643372de82",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/privatefs/access_unsupported.go",
+          "recordedSHA256": "47bf8dfcb47e9d83bf0da4f2d667a7bf548c86d2e7fdd06c9c2d41f6e02615cb",
+          "currentSHA256": "47bf8dfcb47e9d83bf0da4f2d667a7bf548c86d2e7fdd06c9c2d41f6e02615cb",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/privatefs/access_linux_test.go",
+          "recordedSHA256": "72da545f6dbaa99a19f866f3cdf50a8d138e7a08643b9e2c302aac6854ff22da",
+          "currentSHA256": "72da545f6dbaa99a19f866f3cdf50a8d138e7a08643b9e2c302aac6854ff22da",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/privatefs/access_darwin_nocgo.go",
+          "recordedSHA256": "8adba4f7cf8a9955479162ea0632b557857d848dd1d288288773e528a14d4453",
+          "currentSHA256": "8adba4f7cf8a9955479162ea0632b557857d848dd1d288288773e528a14d4453",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/privatefs/access.go",
+          "recordedSHA256": "5373922675f09a0b229e6f4fae1c0941529cbc5f7e842abc1be48319df0a92b8",
+          "currentSHA256": "5373922675f09a0b229e6f4fae1c0941529cbc5f7e842abc1be48319df0a92b8",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/privatefs/access_linux.go",
+          "recordedSHA256": "ee3ee960f6c9a237381a9e2864c782281d5997918f88eab6bed3c37d4b95f1e8",
+          "currentSHA256": "ee3ee960f6c9a237381a9e2864c782281d5997918f88eab6bed3c37d4b95f1e8",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/privatefs/access_darwin_test.go",
+          "recordedSHA256": "9113bb935b8a4953d5450270ebf3dc2fe2537657bd2283ff0363e38086ba77be",
+          "currentSHA256": "9113bb935b8a4953d5450270ebf3dc2fe2537657bd2283ff0363e38086ba77be",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/privatefs/access_darwin_nocgo_test.go",
+          "recordedSHA256": "a4d1b9c8eed29b0afe22b91e72f7a1d799e96d2f5a09d681b578ba86d0391565",
+          "currentSHA256": "a4d1b9c8eed29b0afe22b91e72f7a1d799e96d2f5a09d681b578ba86d0391565",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/localtls/client.go",
+          "recordedSHA256": "d8c5f5f87abf98490538247af0eb3e4335ce73666bc8a39416bae90ae37c46fe",
+          "currentSHA256": "d8c5f5f87abf98490538247af0eb3e4335ce73666bc8a39416bae90ae37c46fe",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/localtls/client_test.go",
+          "recordedSHA256": "82647a337ee11d77c23a0776f918beccf91ff09d7731e763ccbbfcbe73652711",
+          "currentSHA256": "82647a337ee11d77c23a0776f918beccf91ff09d7731e763ccbbfcbe73652711",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/macho_entry_test.go",
+          "recordedSHA256": "8a2d6b91053e0446f07fdf0e78188e7cff17f2de534ac5446fb9f18f474bd95f",
+          "currentSHA256": "8a2d6b91053e0446f07fdf0e78188e7cff17f2de534ac5446fb9f18f474bd95f",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/snapshot_darwin_install_test.go",
+          "recordedSHA256": "0165adcb9769541c8c48788754e91638b3ead7a584ede9b9f697add85aa321c9",
+          "currentSHA256": "0165adcb9769541c8c48788754e91638b3ead7a584ede9b9f697add85aa321c9",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/installed_host_darwin_nocgo.go",
+          "recordedSHA256": "a611abb5d22dc5ccfe398bc58cc0336bfac4de917dda257d58ebd6dce0c779db",
+          "currentSHA256": "a611abb5d22dc5ccfe398bc58cc0336bfac4de917dda257d58ebd6dce0c779db",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/stop_role_linux_test.go",
+          "recordedSHA256": "dbab48564a0c1986e90b6cbced36e06fde2609bb87ab7008d46bfb91e41df730",
+          "currentSHA256": "dbab48564a0c1986e90b6cbced36e06fde2609bb87ab7008d46bfb91e41df730",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/README.md",
+          "recordedSHA256": "f28aa22af8218c96670e3a42e701e4c25c2f2b79e37c34b5276cdfedc837a20f",
+          "currentSHA256": "f28aa22af8218c96670e3a42e701e4c25c2f2b79e37c34b5276cdfedc837a20f",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/start_validation_linux_test.go",
+          "recordedSHA256": "3db51c38582bcbefe533a9aa6b672830692418d75d7f3c97a6c8656e6b4112a2",
+          "currentSHA256": "3db51c38582bcbefe533a9aa6b672830692418d75d7f3c97a6c8656e6b4112a2",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/installed_host_darwin.go",
+          "recordedSHA256": "dfb82e401929befde882136522c9fe4380c06d8ed8c7bc12980e2086a080aa07",
+          "currentSHA256": "dfb82e401929befde882136522c9fe4380c06d8ed8c7bc12980e2086a080aa07",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/snapshot_unsupported.go",
+          "recordedSHA256": "522a77bf706c8522363438e033e64d9478c85a7483d72d65e37b54edb3d8aaec",
+          "currentSHA256": "522a77bf706c8522363438e033e64d9478c85a7483d72d65e37b54edb3d8aaec",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/installed_host_linux.go",
+          "recordedSHA256": "72e1c8cefd8f3c06ff8c8fba4be53e444aa14de9e24ea773ef1fa67bff815627",
+          "currentSHA256": "72e1c8cefd8f3c06ff8c8fba4be53e444aa14de9e24ea773ef1fa67bff815627",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/snapshot_darwin.go",
+          "recordedSHA256": "01c92e4d4dadacdbdc4ef0671e49c74367e01e61f9bef1916a93ea9a930365e4",
+          "currentSHA256": "01c92e4d4dadacdbdc4ef0671e49c74367e01e61f9bef1916a93ea9a930365e4",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/acl_darwin.go",
+          "recordedSHA256": "bfcd89538837b9ffd94c46882f231a1930091d3b21d3e5bb5cb475659acfe609",
+          "currentSHA256": "bfcd89538837b9ffd94c46882f231a1930091d3b21d3e5bb5cb475659acfe609",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/installed_host.go",
+          "recordedSHA256": "94cb640c7422bd3725af089511958699bb7d7418455273bccc7ba3dde06df780",
+          "currentSHA256": "94cb640c7422bd3725af089511958699bb7d7418455273bccc7ba3dde06df780",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/startup_cleanup_cause.go",
+          "recordedSHA256": "ab782c24cb286edd246f390f393fcb910b9a6735284609ea2a79fa9a548d6708",
+          "currentSHA256": "ab782c24cb286edd246f390f393fcb910b9a6735284609ea2a79fa9a548d6708",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/parent_linux_test.go",
+          "recordedSHA256": "fe553e2041cac4a2af95012c51188e98af0aa2bcf68a138cd9689ae5f13802ce",
+          "currentSHA256": "fe553e2041cac4a2af95012c51188e98af0aa2bcf68a138cd9689ae5f13802ce",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/snapshot_linux.go",
+          "recordedSHA256": "2adf8ef1a70fa737f36bc015dc5bdb18e164baf2e4fd13437ac1c6d73f14addb",
+          "currentSHA256": "2adf8ef1a70fa737f36bc015dc5bdb18e164baf2e4fd13437ac1c6d73f14addb",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/bootstrap_receipt_linux_test.go",
+          "recordedSHA256": "466edfeaef9b405460985d78fee84a56cd4e978e174f5e2cf764df410b39d167",
+          "currentSHA256": "466edfeaef9b405460985d78fee84a56cd4e978e174f5e2cf764df410b39d167",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/stop_role.go",
+          "recordedSHA256": "04be379b36456a781a26fa0d3f78da84253501e0fff5bd599acede45c97a8b1d",
+          "currentSHA256": "04be379b36456a781a26fa0d3f78da84253501e0fff5bd599acede45c97a8b1d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/installed_host_test.go",
+          "recordedSHA256": "58c5f463aeb4fdd7484cf071af121e2ab030c9d08e367d526d11fc04f923fcbc",
+          "currentSHA256": "58c5f463aeb4fdd7484cf071af121e2ab030c9d08e367d526d11fc04f923fcbc",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/snapshot_darwin_policy_test.go",
+          "recordedSHA256": "ee352985d318f8afbe277cd40dc812fdaeed041346d4acd11f2ea4394b3aae0b",
+          "currentSHA256": "ee352985d318f8afbe277cd40dc812fdaeed041346d4acd11f2ea4394b3aae0b",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/installed_host_darwin_install_test.go",
+          "recordedSHA256": "cdb7e8f50d25628af7d20355a61e7f7d1c070dbc316e8a422ba9062d5ce6cac1",
+          "currentSHA256": "cdb7e8f50d25628af7d20355a61e7f7d1c070dbc316e8a422ba9062d5ce6cac1",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/supervisor.go",
+          "recordedSHA256": "45437190fd61616c18c35c79ff4fc02c97b558d607bf2043bea2e6b14d40d824",
+          "currentSHA256": "45437190fd61616c18c35c79ff4fc02c97b558d607bf2043bea2e6b14d40d824",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/supervisor_linux_test.go",
+          "recordedSHA256": "37355c6a6d87f75d62f6af9fa0963d135b48d9f349502603448ad390c629d1f7",
+          "currentSHA256": "37355c6a6d87f75d62f6af9fa0963d135b48d9f349502603448ad390c629d1f7",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/macho_entry.go",
+          "recordedSHA256": "1b7c6d66207108601889bccc416f2cb689cfa134a8563f7ddfc3d05ba06f42bb",
+          "currentSHA256": "1b7c6d66207108601889bccc416f2cb689cfa134a8563f7ddfc3d05ba06f42bb",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/bootstrap_receipt_test.go",
+          "recordedSHA256": "85fdbc4b43c34284853af5062c9a1a78aaa049467c25eb40c95df694333c9f75",
+          "currentSHA256": "85fdbc4b43c34284853af5062c9a1a78aaa049467c25eb40c95df694333c9f75",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/parent_unix.go",
+          "recordedSHA256": "7fe95fe66db69c01889f60fd2c4428579daf080d379dff25fc80064962c4a9be",
+          "currentSHA256": "7fe95fe66db69c01889f60fd2c4428579daf080d379dff25fc80064962c4a9be",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/snapshot_darwin_test.go",
+          "recordedSHA256": "29823b7772b37e6935c3d4261016dcc05cb9c3ba1a84deff8e69ff1dc6f5b93d",
+          "currentSHA256": "29823b7772b37e6935c3d4261016dcc05cb9c3ba1a84deff8e69ff1dc6f5b93d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/installed_host_linux_test.go",
+          "recordedSHA256": "66cf4af96d29e82bc5e0e4fe10431b106949a6894bf07ce52e5de9870ee7067f",
+          "currentSHA256": "66cf4af96d29e82bc5e0e4fe10431b106949a6894bf07ce52e5de9870ee7067f",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/startup_cleanup_cause_test.go",
+          "recordedSHA256": "593341080daec653c737e4aa341a80248c24a3d782e2b6c84cb0b1607afbd1cd",
+          "currentSHA256": "593341080daec653c737e4aa341a80248c24a3d782e2b6c84cb0b1607afbd1cd",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/installed_host_unsupported.go",
+          "recordedSHA256": "f13d55cdcc403ba172d637318a30b0bf92547cad261d79cebbf82622677b65b9",
+          "currentSHA256": "f13d55cdcc403ba172d637318a30b0bf92547cad261d79cebbf82622677b65b9",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/bootstrap_receipt.go",
+          "recordedSHA256": "d18adf5539e70ff66d39b19a405bcbdfe3de8147fb19e90a60e515fa5f3a5519",
+          "currentSHA256": "d18adf5539e70ff66d39b19a405bcbdfe3de8147fb19e90a60e515fa5f3a5519",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/docker_environment.go",
+          "recordedSHA256": "b575d40d285f7f6b4419905ad0e472472e7d253f798457e8daf348ff4d569c29",
+          "currentSHA256": "b575d40d285f7f6b4419905ad0e472472e7d253f798457e8daf348ff4d569c29",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/bootstrap.go",
+          "recordedSHA256": "7db76af164be1110f1352da993833fc3613c09ab42b4557094bcd4661edb9bcd",
+          "currentSHA256": "7db76af164be1110f1352da993833fc3613c09ab42b4557094bcd4661edb9bcd",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/bootstrap_config_test.go",
+          "recordedSHA256": "46f0cc5d0fc1e01056f519ce3dbcfab93699fdc904246f1da0ed8ceac9fbaab3",
+          "currentSHA256": "46f0cc5d0fc1e01056f519ce3dbcfab93699fdc904246f1da0ed8ceac9fbaab3",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/session_cleanup_test.go",
+          "recordedSHA256": "237454a2c65e95188268d83a3930dd2f71b56e85d3cb207002b1f3a041f8809b",
+          "currentSHA256": "237454a2c65e95188268d83a3930dd2f71b56e85d3cb207002b1f3a041f8809b",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/docker_config_test.go",
+          "recordedSHA256": "cf717c27d0b7272460a963cc25cbbafbfc617898f5aa48fecb4ec115aa751bc8",
+          "currentSHA256": "cf717c27d0b7272460a963cc25cbbafbfc617898f5aa48fecb4ec115aa751bc8",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/bootstrap_docker_selection_controls_test.go",
+          "recordedSHA256": "e440b8ba505fe92f39c73efe64528fe4931af38aebebd31e594f722be5042a3d",
+          "currentSHA256": "e440b8ba505fe92f39c73efe64528fe4931af38aebebd31e594f722be5042a3d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/host_receipt_binding.go",
+          "recordedSHA256": "16f5eca18bcdccc911494f51efbbfff359518fbee4a7ecb8ca7d6ca1aabb5b51",
+          "currentSHA256": "16f5eca18bcdccc911494f51efbbfff359518fbee4a7ecb8ca7d6ca1aabb5b51",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/profile_test.go",
+          "recordedSHA256": "70d2869399e419550833f5e594a0e41b74db3cad2356665b63bcb74cce0b2435",
+          "currentSHA256": "70d2869399e419550833f5e594a0e41b74db3cad2356665b63bcb74cce0b2435",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/transport_cleanup_test.go",
+          "recordedSHA256": "d3237b6860ebe5d752efb27779d383062e8db164c2074cecac82cabab1d26dcb",
+          "currentSHA256": "d3237b6860ebe5d752efb27779d383062e8db164c2074cecac82cabab1d26dcb",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/kernel_status_test.go",
+          "recordedSHA256": "2b9198ce2ac970ffbd0655baa72d97d4c5f440a81c41b02029c20725021d194c",
+          "currentSHA256": "2b9198ce2ac970ffbd0655baa72d97d4c5f440a81c41b02029c20725021d194c",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/authority_proof_test.go",
+          "recordedSHA256": "d953c0741fb0b219b211c5fed92999ad57084703629d07d59bfade39c29512bb",
+          "currentSHA256": "d953c0741fb0b219b211c5fed92999ad57084703629d07d59bfade39c29512bb",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/owner_bridge_test.go",
+          "recordedSHA256": "65b4caabc9d7155b083e52c6ad61b722a46f308ffccbda774f1635fb1f5b3ee3",
+          "currentSHA256": "65b4caabc9d7155b083e52c6ad61b722a46f308ffccbda774f1635fb1f5b3ee3",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/bootstrap_docker_integration_test.go",
+          "recordedSHA256": "17ee0a1b34105c8025abbe6f2b4713e68f7669db6b7ce1c63de6a07bdab547e9",
+          "currentSHA256": "5b4e0e51881d862f5fa07fc50ff57f8572d5cd5164d91455dfe43f950e74b4f2",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/launcher/bootstrap_compose_binding.go",
+          "recordedSHA256": "f55d252a950a7660dbb486768270e96965d57d1710d503c27e99e895cebda7ce",
+          "currentSHA256": "f55d252a950a7660dbb486768270e96965d57d1710d503c27e99e895cebda7ce",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/docker_reads_linux_test.go",
+          "recordedSHA256": "33d4ac55987bbec4f3a3fb412ae81c561dbb21b5202c43685846ada890d0ed7c",
+          "currentSHA256": "33d4ac55987bbec4f3a3fb412ae81c561dbb21b5202c43685846ada890d0ed7c",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/kernel_status_tls_test.go",
+          "recordedSHA256": "50d8e36ea4e5c35a2641578a0e78fd95459cace9863eaca09d6867e0ef9c5a1d",
+          "currentSHA256": "50d8e36ea4e5c35a2641578a0e78fd95459cace9863eaca09d6867e0ef9c5a1d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/startup_session_lifecycle_test.go",
+          "recordedSHA256": "6173569476e4cff53b458b8cbc035d87d96c661e537e3cc26283a116044108b5",
+          "currentSHA256": "6173569476e4cff53b458b8cbc035d87d96c661e537e3cc26283a116044108b5",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/docker_tls_test.go",
+          "recordedSHA256": "ccb682a4897f2c74d49fe9b018d6e0a1f046cef03caa6bedc2d9e3b9cf31c286",
+          "currentSHA256": "ccb682a4897f2c74d49fe9b018d6e0a1f046cef03caa6bedc2d9e3b9cf31c286",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/profile.go",
+          "recordedSHA256": "d158be8c5bbe3d122dd59652485ed4ddbd288b870173d037c3f0e197f37ee45c",
+          "currentSHA256": "d158be8c5bbe3d122dd59652485ed4ddbd288b870173d037c3f0e197f37ee45c",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/host_config.go",
+          "recordedSHA256": "8acbb094876456bc22ae743fb4697fb22d5a722ad7a0231ee4578695a3c5de53",
+          "currentSHA256": "8acbb094876456bc22ae743fb4697fb22d5a722ad7a0231ee4578695a3c5de53",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/release_test.go",
+          "recordedSHA256": "944a752f3deb1d14bcb726f827298da45d745f4bdf9869b708584a29c08a96fb",
+          "currentSHA256": "944a752f3deb1d14bcb726f827298da45d745f4bdf9869b708584a29c08a96fb",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/lock_unix.go",
+          "recordedSHA256": "8dce55b7daaf4d8233d0075f2593c9d5bdaf7511bfd029592bff88d69143a0a8",
+          "currentSHA256": "8dce55b7daaf4d8233d0075f2593c9d5bdaf7511bfd029592bff88d69143a0a8",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/startup_session_deadline_test.go",
+          "recordedSHA256": "bc971769e99ff9d382139b6801346e1bc6cb766225c26d78d8c51b6694f2cf86",
+          "currentSHA256": "bc971769e99ff9d382139b6801346e1bc6cb766225c26d78d8c51b6694f2cf86",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/bootstrap_docker_native_linux_test.go",
+          "recordedSHA256": "b380d0ec4d96c1d7128c6c143b5b404fd8c3424b94b871d81b278da50fa63368",
+          "currentSHA256": "b380d0ec4d96c1d7128c6c143b5b404fd8c3424b94b871d81b278da50fa63368",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/owner_bridge_admission_test.go",
+          "recordedSHA256": "a8f4324ddb106c81a7f8cad1c79342d8e8fd285c3043379ab293511aaafdd1a3",
+          "currentSHA256": "a8f4324ddb106c81a7f8cad1c79342d8e8fd285c3043379ab293511aaafdd1a3",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/host_receipt_server.go",
+          "recordedSHA256": "e0c13e86e6a728112a5f1fef5dcb805981125e794ce495251cd0d0ab1937dbf9",
+          "currentSHA256": "e0c13e86e6a728112a5f1fef5dcb805981125e794ce495251cd0d0ab1937dbf9",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/host_policy.go",
+          "recordedSHA256": "52ec5ee9ef345526fd26a5d423f2a86f99bfa1aa060cfd6315cf963242481e0a",
+          "currentSHA256": "52ec5ee9ef345526fd26a5d423f2a86f99bfa1aa060cfd6315cf963242481e0a",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/lock_acl_darwin_test.go",
+          "recordedSHA256": "6535d272215561995b522e1e58e892a4bd1440c1f9f1c87f29659e603ceb73ab",
+          "currentSHA256": "6535d272215561995b522e1e58e892a4bd1440c1f9f1c87f29659e603ceb73ab",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/startup_session.go",
+          "recordedSHA256": "bfa14fb2e0149d99ce82d93df6574105bc88e8287686e95b443d3f24627baae2",
+          "currentSHA256": "bfa14fb2e0149d99ce82d93df6574105bc88e8287686e95b443d3f24627baae2",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/owner_bridge_receipt_test.go",
+          "recordedSHA256": "4466fc29007d7c1b469caaaf542687ecc27b24036c2093eea8aa4660a0ec7ff6",
+          "currentSHA256": "4466fc29007d7c1b469caaaf542687ecc27b24036c2093eea8aa4660a0ec7ff6",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/startup_pending_test.go",
+          "recordedSHA256": "979074535f67a63a864c6afe5fc4d7e4999dd5bfa2e2c601f135f35b18a7fda8",
+          "currentSHA256": "979074535f67a63a864c6afe5fc4d7e4999dd5bfa2e2c601f135f35b18a7fda8",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/docker_tls.go",
+          "recordedSHA256": "a9881487cb8a5e43a3781a359e0c38b31537ce20cc1797d421fb9a871a014a8f",
+          "currentSHA256": "a9881487cb8a5e43a3781a359e0c38b31537ce20cc1797d421fb9a871a014a8f",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/startup_status_test.go",
+          "recordedSHA256": "e26631c82ae070143dae8f93d4324750ebfeb1ca5bba42cf1c95e61b6a11a320",
+          "currentSHA256": "e26631c82ae070143dae8f93d4324750ebfeb1ca5bba42cf1c95e61b6a11a320",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/bootstrap_operation.go",
+          "recordedSHA256": "eac3ff3891a6470931e84580c8ffc545de0cbc124d8b33fdf3f967bafa79e40d",
+          "currentSHA256": "eac3ff3891a6470931e84580c8ffc545de0cbc124d8b33fdf3f967bafa79e40d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/bootstrap_operation_test.go",
+          "recordedSHA256": "6a07128a385e15d2531995e040be7fe23cb95aef13daae8707ab9166c2806ea7",
+          "currentSHA256": "6a07128a385e15d2531995e040be7fe23cb95aef13daae8707ab9166c2806ea7",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/docker_instance_test.go",
+          "recordedSHA256": "9c415fd7f5f4484ad5c88cf23343f775fc2a6419ac4a1993b664c6cca66b1c7b",
+          "currentSHA256": "9c415fd7f5f4484ad5c88cf23343f775fc2a6419ac4a1993b664c6cca66b1c7b",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/doctor.go",
+          "recordedSHA256": "39bf88cf0d98cae330ca35f6134cca46a18e1da095766424cab482ecc2e6f8ce",
+          "currentSHA256": "39bf88cf0d98cae330ca35f6134cca46a18e1da095766424cab482ecc2e6f8ce",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/kernel_status_stage_test.go",
+          "recordedSHA256": "da1a03c305d035060821572910c04c6bd7d2c871563b9561d221cd93e7a07c1a",
+          "currentSHA256": "da1a03c305d035060821572910c04c6bd7d2c871563b9561d221cd93e7a07c1a",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/startup_write_proof.go",
+          "recordedSHA256": "225071eae8dc76ddeea0a57255a1df2e55d191c5a22b4f776b03da147491bb7e",
+          "currentSHA256": "225071eae8dc76ddeea0a57255a1df2e55d191c5a22b4f776b03da147491bb7e",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/docker_archive_test.go",
+          "recordedSHA256": "a0074ae93abe913ce19400d6f1af82f25f747df50ebb1e0730c8636117879df8",
+          "currentSHA256": "a0074ae93abe913ce19400d6f1af82f25f747df50ebb1e0730c8636117879df8",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/transport_cleanup.go",
+          "recordedSHA256": "5f8dd922dd9cf934594612866ec25146e95c70faf17ce1832f48859a498562cc",
+          "currentSHA256": "5f8dd922dd9cf934594612866ec25146e95c70faf17ce1832f48859a498562cc",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/owner_bridge_host_loader_test.go",
+          "recordedSHA256": "e821154a4ddab84933bc3557104fa6d609e315d0c1a039f7a652fc5a7997429a",
+          "currentSHA256": "e821154a4ddab84933bc3557104fa6d609e315d0c1a039f7a652fc5a7997429a",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/startup_status.go",
+          "recordedSHA256": "31e02ec220343b79c0a5d1927d047d09e8468d53d8ed1fbe826b802105a1d678",
+          "currentSHA256": "31e02ec220343b79c0a5d1927d047d09e8468d53d8ed1fbe826b802105a1d678",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/local_broker_authority.go",
+          "recordedSHA256": "665d3bfa44c0fef97dd4a49ab10b9c1a4a799f391d1694e5d3eceab75a918a1d",
+          "currentSHA256": "665d3bfa44c0fef97dd4a49ab10b9c1a4a799f391d1694e5d3eceab75a918a1d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/startup_session_test.go",
+          "recordedSHA256": "9a6a94b54dcd0929425add983f5b996159457bcac11e60a66d29d9c6686390b6",
+          "currentSHA256": "9a6a94b54dcd0929425add983f5b996159457bcac11e60a66d29d9c6686390b6",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/docker_stdio_test.go",
+          "recordedSHA256": "2b99b883e5b211a97c6c92f6c98cf4dd7453fea40babe84fee24a640aea33f59",
+          "currentSHA256": "2b99b883e5b211a97c6c92f6c98cf4dd7453fea40babe84fee24a640aea33f59",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/owner_bridge_receipt.go",
+          "recordedSHA256": "c6ec84c03ac827c4c6008705ac8ef6d401484cc3b1015eba7dda900f35b89685",
+          "currentSHA256": "c6ec84c03ac827c4c6008705ac8ef6d401484cc3b1015eba7dda900f35b89685",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/doctor_test.go",
+          "recordedSHA256": "0f18795d4a9de0a642ecd3f987ee4bc5910829dd2f11c2808de5e14475aeb043",
+          "currentSHA256": "0f18795d4a9de0a642ecd3f987ee4bc5910829dd2f11c2808de5e14475aeb043",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/docker_archives.go",
+          "recordedSHA256": "c645ce9f3bec78fa5f9d52e6663d27d30c705b99855f381ad33a3ce083377d66",
+          "currentSHA256": "c645ce9f3bec78fa5f9d52e6663d27d30c705b99855f381ad33a3ce083377d66",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/startup_write_proof_test.go",
+          "recordedSHA256": "68ad4351a82354a2ef0b4a8f51c15e1b303721782341c803fea22e412c962044",
+          "currentSHA256": "68ad4351a82354a2ef0b4a8f51c15e1b303721782341c803fea22e412c962044",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/docker_reads.go",
+          "recordedSHA256": "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813",
+          "currentSHA256": "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/local_server_trust.go",
+          "recordedSHA256": "a807181aac2f4829c7d6ba506f1a1cadafac0b6724745bf2dcd1e7989f9bd9bc",
+          "currentSHA256": "a807181aac2f4829c7d6ba506f1a1cadafac0b6724745bf2dcd1e7989f9bd9bc",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/release.go",
+          "recordedSHA256": "8ca1ea1507b1cbcb45190bdc897eee82b816d9d693a436c06f9bf1c90aa4cd8d",
+          "currentSHA256": "8ca1ea1507b1cbcb45190bdc897eee82b816d9d693a436c06f9bf1c90aa4cd8d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/owner_bridge_pending_test.go",
+          "recordedSHA256": "24ca9411503c39d37c54159b3a89b991aa30012527b05574a674381c3afdec9c",
+          "currentSHA256": "24ca9411503c39d37c54159b3a89b991aa30012527b05574a674381c3afdec9c",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/docker_archive_linux_test.go",
+          "recordedSHA256": "d27191a80eee8b7721e9dded9ede5dbc52111bb721599e1d918912992deccfc8",
+          "currentSHA256": "d27191a80eee8b7721e9dded9ede5dbc52111bb721599e1d918912992deccfc8",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/docker_reads_test.go",
+          "recordedSHA256": "9db58c895a92624f0264f7930e95bb4cacbfcaf43038a4392ef3f051937104f8",
+          "currentSHA256": "9db58c895a92624f0264f7930e95bb4cacbfcaf43038a4392ef3f051937104f8",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/docker_test.go",
+          "recordedSHA256": "c134b20a73191c5def882bc0c29277dd5b479af09791294935809eed6a35f35c",
+          "currentSHA256": "c134b20a73191c5def882bc0c29277dd5b479af09791294935809eed6a35f35c",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/host_config_test.go",
+          "recordedSHA256": "e0eb4762fe3a772a6db291e65ca8e824674c3a004c82c6f50439d90f7781cfed",
+          "currentSHA256": "e0eb4762fe3a772a6db291e65ca8e824674c3a004c82c6f50439d90f7781cfed",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/bootstrap_docker_native_darwin_test.go",
+          "recordedSHA256": "df175d949cd5f63a564efedcb87e0d1ad67f05ac42f7be83c94e089d33b1f029",
+          "currentSHA256": "df175d949cd5f63a564efedcb87e0d1ad67f05ac42f7be83c94e089d33b1f029",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/bootstrap_integration_test.go",
+          "recordedSHA256": "2c991a1bffd6412f79e56a3a6992b626bc1831b4d9bed65518da97d7fd55d317",
+          "currentSHA256": "2c991a1bffd6412f79e56a3a6992b626bc1831b4d9bed65518da97d7fd55d317",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/session_cleanup.go",
+          "recordedSHA256": "9187e95a14aeac4c33cae93c34ceba7abe0aa57be290ab08c46d327e730855cb",
+          "currentSHA256": "9187e95a14aeac4c33cae93c34ceba7abe0aa57be290ab08c46d327e730855cb",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/bootstrap_invocation_test.go",
+          "recordedSHA256": "8726e154c138d327d06835357ca3e73074f11d25e7b13207393c7850e541b2a9",
+          "currentSHA256": "8726e154c138d327d06835357ca3e73074f11d25e7b13207393c7850e541b2a9",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/host_policy_test.go",
+          "recordedSHA256": "4070bb871000803900df84c67f4b05b96ef83137ee5ba7a5e61c049406baaebd",
+          "currentSHA256": "4070bb871000803900df84c67f4b05b96ef83137ee5ba7a5e61c049406baaebd",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/bootstrap_docker_selection_test.go",
+          "recordedSHA256": "7458b7ce2db475606466cd3d278bac2f63ec85f8a7dfaa0b519fc7be9f8481f3",
+          "currentSHA256": "7458b7ce2db475606466cd3d278bac2f63ec85f8a7dfaa0b519fc7be9f8481f3",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/bootstrap_config.go",
+          "recordedSHA256": "72866eaf4e0b8af2eb16bb59fd80de55eba7d9b281144927c502ee33599866ca",
+          "currentSHA256": "72866eaf4e0b8af2eb16bb59fd80de55eba7d9b281144927c502ee33599866ca",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/owner_bridge_validation.go",
+          "recordedSHA256": "03c24f0ab8c9f59866fee2fd286dd3b61e6fe40d70a7c79b515a1d8626fa84b3",
+          "currentSHA256": "03c24f0ab8c9f59866fee2fd286dd3b61e6fe40d70a7c79b515a1d8626fa84b3",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/docker_stdio_inspection_test.go",
+          "recordedSHA256": "09e918eb774685a3a9f69ae8eafaf4f18986b375e1aeccfd9ce199c0a9701f46",
+          "currentSHA256": "09e918eb774685a3a9f69ae8eafaf4f18986b375e1aeccfd9ce199c0a9701f46",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/docker_environment_test.go",
+          "recordedSHA256": "bdfba27c7a4036a5626f0a7ada0ec80d41ebdbc33e08647d0c49ea8bbd88396e",
+          "currentSHA256": "bdfba27c7a4036a5626f0a7ada0ec80d41ebdbc33e08647d0c49ea8bbd88396e",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/local_server_trust_test.go",
+          "recordedSHA256": "53ba014e76b81cf6df7afa4806232e1539e9178b514291cd46345ff34c81d27c",
+          "currentSHA256": "53ba014e76b81cf6df7afa4806232e1539e9178b514291cd46345ff34c81d27c",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/lock_unix_test.go",
+          "recordedSHA256": "d954632aad86bfa551632123b97633a2d58f5f99c167c172096d79263ab8c015",
+          "currentSHA256": "d954632aad86bfa551632123b97633a2d58f5f99c167c172096d79263ab8c015",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/installed_cli_startup_test.go",
+          "recordedSHA256": "00209f0c9d08fd9a4ea9b2052e20a5732cc557819c769a15e67a22277244a06d",
+          "currentSHA256": "00209f0c9d08fd9a4ea9b2052e20a5732cc557819c769a15e67a22277244a06d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/docker.go",
+          "recordedSHA256": "3ec7762bcd60b868bd659158d5e8ebc0845cc8590af1ae234eab7fadbe13c2b1",
+          "currentSHA256": "3ec7762bcd60b868bd659158d5e8ebc0845cc8590af1ae234eab7fadbe13c2b1",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/docker_stdio.go",
+          "recordedSHA256": "151b05060ce4ed601f9985f745834f73c97808645da5008cca48cc501d638197",
+          "currentSHA256": "151b05060ce4ed601f9985f745834f73c97808645da5008cca48cc501d638197",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/docker_instance.go",
+          "recordedSHA256": "4d9353f586348f4ed2a8004379a3041669a1c74cdc3ff986e2bd2c0fe6952b56",
+          "currentSHA256": "4d9353f586348f4ed2a8004379a3041669a1c74cdc3ff986e2bd2c0fe6952b56",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/profile_boundary_test.go",
+          "recordedSHA256": "5dcc6c215f4b1b3bcbdd67fcebffc4d5a98e13feafd29cf54b4638f8d8bcda89",
+          "currentSHA256": "5dcc6c215f4b1b3bcbdd67fcebffc4d5a98e13feafd29cf54b4638f8d8bcda89",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/owner_bridge.go",
+          "recordedSHA256": "5447740219199671a63ef106350e9ceb112fd01ccae1b0a94d51ed028a291ae7",
+          "currentSHA256": "f691230aa5892015f75025cbf9b70a9a2056e5009cce99fe91b15a879f366c5c",
+          "sameBytes": false
+        },
+        {
+          "path": "platform/launcher/host_receipt_binding_test.go",
+          "recordedSHA256": "3a5bba6e4aa4ebf35cb465b1ebc6449f3d9cd6128a1aa4ae371dbc7d4670a44a",
+          "currentSHA256": "3a5bba6e4aa4ebf35cb465b1ebc6449f3d9cd6128a1aa4ae371dbc7d4670a44a",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/launcher/kernel_status.go",
+          "recordedSHA256": "1e67cdef72a65dd41d9ce319dd6b8f25058f70f14e9a85a6974647616da388f9",
+          "currentSHA256": "1e67cdef72a65dd41d9ce319dd6b8f25058f70f14e9a85a6974647616da388f9",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/team_credentials.go",
+          "recordedSHA256": "172226041ed2f6515be48808ef71a5baac84fa6f3e61b5a838ff1565eb456755",
+          "currentSHA256": "172226041ed2f6515be48808ef71a5baac84fa6f3e61b5a838ff1565eb456755",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/team_credentials_privatefs_darwin_test.go",
+          "recordedSHA256": "ee20b6394e36fd847af0e56c7722033a63793d0f19db3c52685e2509e40c4283",
+          "currentSHA256": "ee20b6394e36fd847af0e56c7722033a63793d0f19db3c52685e2509e40c4283",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/local_tls_probe_test.go",
+          "recordedSHA256": "97a757abfe5702527246acb3a0df90c0afbbb8ca70d8b8a42f0022c09fdbbb12",
+          "currentSHA256": "97a757abfe5702527246acb3a0df90c0afbbb8ca70d8b8a42f0022c09fdbbb12",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/secure_local_config_test.go",
+          "recordedSHA256": "04eaf9f7f1d1c1a66ef19e2e8fb07dc84868c3d8eb63463b53df7d1c3cd298b5",
+          "currentSHA256": "04eaf9f7f1d1c1a66ef19e2e8fb07dc84868c3d8eb63463b53df7d1c3cd298b5",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/team_credentials_unix.go",
+          "recordedSHA256": "d8a8fb0f17c7bb701bd610de69b0f3869e90665d53b7bd5d0f376b59b6f946b5",
+          "currentSHA256": "d8a8fb0f17c7bb701bd610de69b0f3869e90665d53b7bd5d0f376b59b6f946b5",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/profile_test.go",
+          "recordedSHA256": "3e36d029e3cd4c06b72ca046d05dec82c92efa32d21c3dd5a90c2eab09491aec",
+          "currentSHA256": "3e36d029e3cd4c06b72ca046d05dec82c92efa32d21c3dd5a90c2eab09491aec",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/owner_bridge_config_test.go",
+          "recordedSHA256": "313e20a23690e2fb22de4cf6c46240b20726a535277d23131b67ce63cd499380",
+          "currentSHA256": "313e20a23690e2fb22de4cf6c46240b20726a535277d23131b67ce63cd499380",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/secure_compose.go",
+          "recordedSHA256": "614077efd26b3828f54b25639d9531b7b7be6744fe48e69558429b77a27821ab",
+          "currentSHA256": "614077efd26b3828f54b25639d9531b7b7be6744fe48e69558429b77a27821ab",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/sync_policy_test.go",
+          "recordedSHA256": "968989e83ac321c81a3aa5df41017d3fb2cc144a0c00031c7f3b8803f5111427",
+          "currentSHA256": "968989e83ac321c81a3aa5df41017d3fb2cc144a0c00031c7f3b8803f5111427",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/README.md",
+          "recordedSHA256": "dc7789d3b5698cf9baee080e02137e10e6658706502822b88500c882ae60b45d",
+          "currentSHA256": "dc7789d3b5698cf9baee080e02137e10e6658706502822b88500c882ae60b45d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/probe_test.go",
+          "recordedSHA256": "0ccac91b33d9b7330fbc8b17446540ceb51b5157be840ee457b3f61e0ccce786",
+          "currentSHA256": "0ccac91b33d9b7330fbc8b17446540ceb51b5157be840ee457b3f61e0ccce786",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/raw_transport_cleanup.go",
+          "recordedSHA256": "a2cb64865e09e7e98f378887833814b3fbd332ff2e70507dbdf11a93b2a0f13a",
+          "currentSHA256": "a2cb64865e09e7e98f378887833814b3fbd332ff2e70507dbdf11a93b2a0f13a",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/local_tls_material_test.go",
+          "recordedSHA256": "e67d773c79a0bf96213a27f4c097fdf98509ba5f4bc4919bf0fad741ce2b3730",
+          "currentSHA256": "e67d773c79a0bf96213a27f4c097fdf98509ba5f4bc4919bf0fad741ce2b3730",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/local_tls_material.go",
+          "recordedSHA256": "a07b3f4b8913f977a89aa2787227b85ee4b62b4add4cfd968b53ebe51a8cdcfa",
+          "currentSHA256": "a07b3f4b8913f977a89aa2787227b85ee4b62b4add4cfd968b53ebe51a8cdcfa",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/local_tls_probe_transport.go",
+          "recordedSHA256": "243448843b4003f56e44d46c9cb59a4de85c83be073c7c888b48b0fcefb6e60d",
+          "currentSHA256": "243448843b4003f56e44d46c9cb59a4de85c83be073c7c888b48b0fcefb6e60d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/probe_cleanup.go",
+          "recordedSHA256": "3a5f8e9c510d63268799216fcc46a0d07d2f94a11ad60a599606c35abddf0993",
+          "currentSHA256": "3a5f8e9c510d63268799216fcc46a0d07d2f94a11ad60a599606c35abddf0993",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/observe.go",
+          "recordedSHA256": "3e0d3e5f299820b30975c466a407e01c338012008578fcbf6ff515a7ec4e313d",
+          "currentSHA256": "3e0d3e5f299820b30975c466a407e01c338012008578fcbf6ff515a7ec4e313d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/team_credentials_privatefs_darwin_nocgo_test.go",
+          "recordedSHA256": "77c59213f00eea9b6463ab73accb3fe78861ae0a671c124cb452ecd7d27f634b",
+          "currentSHA256": "77c59213f00eea9b6463ab73accb3fe78861ae0a671c124cb452ecd7d27f634b",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/profile.go",
+          "recordedSHA256": "f15a34a2111492fc83f3c5e85aad2cb869c4c6487bac9f3cc10aa2de9de767e7",
+          "currentSHA256": "f15a34a2111492fc83f3c5e85aad2cb869c4c6487bac9f3cc10aa2de9de767e7",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/team_credentials_test.go",
+          "recordedSHA256": "f9abac6ade5245eccf7967126a34e044994ae259737f8f37a4f24a2d9467b59e",
+          "currentSHA256": "f9abac6ade5245eccf7967126a34e044994ae259737f8f37a4f24a2d9467b59e",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/local_tls_adversary_test.go",
+          "recordedSHA256": "2358cce497e494dd79d6dc6527ad971b11b72dffb1788a6037050bfbbce4bc4c",
+          "currentSHA256": "2358cce497e494dd79d6dc6527ad971b11b72dffb1788a6037050bfbbce4bc4c",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/team_credentials_privatefs_linux_test.go",
+          "recordedSHA256": "c9303445fd429526f24a129c279eede5ebe42ee3f0e06138fe71b90e095c8605",
+          "currentSHA256": "c9303445fd429526f24a129c279eede5ebe42ee3f0e06138fe71b90e095c8605",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/secure_local_config.go",
+          "recordedSHA256": "1f28903775933ad41644691c1e96590a92fcccab71eb636fc8f5b4572c9294f5",
+          "currentSHA256": "1f28903775933ad41644691c1e96590a92fcccab71eb636fc8f5b4572c9294f5",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/probe.go",
+          "recordedSHA256": "3d5751789092bf9684dd9f12d77da8c6724ed3db10d4d3bd6dfeb35d3eabc78f",
+          "currentSHA256": "3d5751789092bf9684dd9f12d77da8c6724ed3db10d4d3bd6dfeb35d3eabc78f",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/team_credentials_unsupported.go",
+          "recordedSHA256": "d5d0d009c94ce19a32c81cf73342d810adb2d8e7548c508e25ca7cbbb787b45e",
+          "currentSHA256": "d5d0d009c94ce19a32c81cf73342d810adb2d8e7548c508e25ca7cbbb787b45e",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/team_jwt_test.go",
+          "recordedSHA256": "32d9fe2fc75b7aa842b386a6dcef266cbe560ecdc7a5cd316e5fbd70b65b0d55",
+          "currentSHA256": "32d9fe2fc75b7aa842b386a6dcef266cbe560ecdc7a5cd316e5fbd70b65b0d55",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/probe_cancellation_test.go",
+          "recordedSHA256": "b3328239175ab4155ab8effaac9451e86d9b8aca0a8e8d724690a835cd53140d",
+          "currentSHA256": "b3328239175ab4155ab8effaac9451e86d9b8aca0a8e8d724690a835cd53140d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/team_connection.go",
+          "recordedSHA256": "5f931e6e8f933b834f7da827033242859400c5e5e77f68b4cebf630b8c185b6b",
+          "currentSHA256": "5f931e6e8f933b834f7da827033242859400c5e5e77f68b4cebf630b8c185b6b",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/owner_bridge_config.go",
+          "recordedSHA256": "a1bd6e104b5c935e972f716306de163a095427340bbbf35557e15dace5fce20a",
+          "currentSHA256": "a1bd6e104b5c935e972f716306de163a095427340bbbf35557e15dace5fce20a",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/team_basic_test.go",
+          "recordedSHA256": "97e8fecb21d689f03ba434db5b436ec6626cfd3349d294e8b6cabbf29b63ecc0",
+          "currentSHA256": "97e8fecb21d689f03ba434db5b436ec6626cfd3349d294e8b6cabbf29b63ecc0",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/observe_test.go",
+          "recordedSHA256": "9c4ba6091f07176ca73a11a856b3790e6cce92df08ac95e9e255dc6c339f11d1",
+          "currentSHA256": "9c4ba6091f07176ca73a11a856b3790e6cce92df08ac95e9e255dc6c339f11d1",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/raw_transport_cleanup_test.go",
+          "recordedSHA256": "c887ac63f6c0e5084769310753fe3f336e3917bde57fcd02cf3e0bc85385d73d",
+          "currentSHA256": "c887ac63f6c0e5084769310753fe3f336e3917bde57fcd02cf3e0bc85385d73d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/team_connection_test.go",
+          "recordedSHA256": "00419001f3e8e45e0fb8bc4c3b416a17f8eedb8f77093c9357626672e4c223eb",
+          "currentSHA256": "00419001f3e8e45e0fb8bc4c3b416a17f8eedb8f77093c9357626672e4c223eb",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/secure_compose_test.go",
+          "recordedSHA256": "c050baca8f25694ab9f26f9e54f3d4b85b8d918f487fa5470303272f53fff3b0",
+          "currentSHA256": "c050baca8f25694ab9f26f9e54f3d4b85b8d918f487fa5470303272f53fff3b0",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/team_tls_fixture_test.go",
+          "recordedSHA256": "460e3abb390d1fe7bf20ea5f037b958f51de2811907746ca7615c8e3513eddfb",
+          "currentSHA256": "460e3abb390d1fe7bf20ea5f037b958f51de2811907746ca7615c8e3513eddfb",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/probe_cleanup_test.go",
+          "recordedSHA256": "0e078c17c2c8e080ed914d4a9aa85d4efc9e1a579418ebaa86bc36929bdaa864",
+          "currentSHA256": "0e078c17c2c8e080ed914d4a9aa85d4efc9e1a579418ebaa86bc36929bdaa864",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/compose_test.go",
+          "recordedSHA256": "4fdafc941427c9ac0cd6bd5334688c7019066c7bd0f20bdeb8440928765a26f8",
+          "currentSHA256": "4fdafc941427c9ac0cd6bd5334688c7019066c7bd0f20bdeb8440928765a26f8",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/deployment/compose.go",
+          "recordedSHA256": "2ed62e60ac9c6b1f56afef8156e7def69de8cdcb6918f89bf8e0a3412e0935c1",
+          "currentSHA256": "2ed62e60ac9c6b1f56afef8156e7def69de8cdcb6918f89bf8e0a3412e0935c1",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/testdata/dynamic/main.go",
+          "recordedSHA256": "3cac6809a685f4986b167bf231ecfeb0fca298bc4ee700b124b7d6c93d97fe84",
+          "currentSHA256": "3cac6809a685f4986b167bf231ecfeb0fca298bc4ee700b124b7d6c93d97fe84",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/runtime/testdata/role/main.go",
+          "recordedSHA256": "ce544b3b6027ab8d224388787d15d4793fee63c05cce1847e20c623898848c82",
+          "currentSHA256": "ce544b3b6027ab8d224388787d15d4793fee63c05cce1847e20c623898848c82",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/assembly/root_test.go",
+          "recordedSHA256": "9137eb5c1673149d6c8ef53ec506adccfcad587c7f1d345a8b9bbd2088ae9447",
+          "currentSHA256": "9137eb5c1673149d6c8ef53ec506adccfcad587c7f1d345a8b9bbd2088ae9447",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/assembly/limits_test.go",
+          "recordedSHA256": "e7da242c4f51f53f2d6348d24782f63f739896bae110cef69d00d086b1417c5a",
+          "currentSHA256": "e7da242c4f51f53f2d6348d24782f63f739896bae110cef69d00d086b1417c5a",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/assembly/README.md",
+          "recordedSHA256": "d9c9934bd2562ae2f5696de8696b4162cbc57a6fbf9518943b5d3deac7d36eb7",
+          "currentSHA256": "d9c9934bd2562ae2f5696de8696b4162cbc57a6fbf9518943b5d3deac7d36eb7",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/assembly/open_unsupported.go",
+          "recordedSHA256": "91100eeb4268ce69aeb5c6116d7ecd7a3f9dc89c806c6adeeda4ee84b5a987a0",
+          "currentSHA256": "91100eeb4268ce69aeb5c6116d7ecd7a3f9dc89c806c6adeeda4ee84b5a987a0",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/assembly/verify.go",
+          "recordedSHA256": "e915287f32b009b2b47bbaf7287f9ee29d0ed82fd8e57098260512b8c9826c83",
+          "currentSHA256": "e915287f32b009b2b47bbaf7287f9ee29d0ed82fd8e57098260512b8c9826c83",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/assembly/verify_test.go",
+          "recordedSHA256": "138b42bae577380b9abbc00f18c699d5f4abd8b9ea8e548bb1330e82d8c6374d",
+          "currentSHA256": "138b42bae577380b9abbc00f18c699d5f4abd8b9ea8e548bb1330e82d8c6374d",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/assembly/open_unix.go",
+          "recordedSHA256": "f39acc55f3633bddf82fed8c09f454d20321ea3fdd514e8809d5640ed6577769",
+          "currentSHA256": "f39acc55f3633bddf82fed8c09f454d20321ea3fdd514e8809d5640ed6577769",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/assembly/open_unix_test.go",
+          "recordedSHA256": "55a52d368545db47f2f5a285b61ebbe8d4ccbd1e6947a2faa86a9173846e2652",
+          "currentSHA256": "55a52d368545db47f2f5a285b61ebbe8d4ccbd1e6947a2faa86a9173846e2652",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/lifecycle/run.go",
+          "recordedSHA256": "ddf748d4038b5099d605efffac8eee213e6479e7b27177f0b3f3fc9ffedb2dac",
+          "currentSHA256": "ddf748d4038b5099d605efffac8eee213e6479e7b27177f0b3f3fc9ffedb2dac",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/boot/run.go",
+          "recordedSHA256": "44d27d088332d7f3503c3c8dce04c3dfa807113d1b3f6084592feed60acd9dd1",
+          "currentSHA256": "44d27d088332d7f3503c3c8dce04c3dfa807113d1b3f6084592feed60acd9dd1",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/boot/integration_test.go",
+          "recordedSHA256": "c1342271ba7bd47fd3768cff2f6e6f130c1f51ae44c3b2dca6de6ca8147c4c98",
+          "currentSHA256": "c1342271ba7bd47fd3768cff2f6e6f130c1f51ae44c3b2dca6de6ca8147c4c98",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/boot/process_integration_test.go",
+          "recordedSHA256": "77356c4390a9d07c07fad4903aa4a6fcc7905a5bc84e2e6307d4d72609d06f1a",
+          "currentSHA256": "77356c4390a9d07c07fad4903aa4a6fcc7905a5bc84e2e6307d4d72609d06f1a",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/boot/parent_lifetime_test.go",
+          "recordedSHA256": "14dab46add3cd74ddf4cf3692c058a5f8ddaf1ad47a8937b19cb2fdf7eb704fc",
+          "currentSHA256": "14dab46add3cd74ddf4cf3692c058a5f8ddaf1ad47a8937b19cb2fdf7eb704fc",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/status/run.go",
+          "recordedSHA256": "6be86037c5ff514759af8d767284efae5baabdd406cfa187aaa4ef42fd97ea43",
+          "currentSHA256": "6be86037c5ff514759af8d767284efae5baabdd406cfa187aaa4ef42fd97ea43",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/communication/README.md",
+          "recordedSHA256": "e6cdc9f7c3f227ab07c55e8eea4144747d851c4a1cea3cb40201d950e277b251",
+          "currentSHA256": "e6cdc9f7c3f227ab07c55e8eea4144747d851c4a1cea3cb40201d950e277b251",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/communication/config_test.go",
+          "recordedSHA256": "1d2e5d1e30f2f2880396ef427b2261a66ad9ce8f145d45fa9de774b15ea76885",
+          "currentSHA256": "1d2e5d1e30f2f2880396ef427b2261a66ad9ce8f145d45fa9de774b15ea76885",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/communication/run.go",
+          "recordedSHA256": "1340ecbbca4b21a3354b0be3147207bbd1fbe9b5039c7825fb750b149a703069",
+          "currentSHA256": "1340ecbbca4b21a3354b0be3147207bbd1fbe9b5039c7825fb750b149a703069",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/communication/config.go",
+          "recordedSHA256": "b54e90bbf5d5c37fa7e60ffdc878ddd4204bfba411665e2c35311c1fe5b9a883",
+          "currentSHA256": "b54e90bbf5d5c37fa7e60ffdc878ddd4204bfba411665e2c35311c1fe5b9a883",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/server_trust_unix.go",
+          "recordedSHA256": "0f2e6d97be04db01a1bef10f237dfe0e654d275f96c7f11b73756924b1598400",
+          "currentSHA256": "0f2e6d97be04db01a1bef10f237dfe0e654d275f96c7f11b73756924b1598400",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/transport_cleanup_test.go",
+          "recordedSHA256": "3cd88b637b2884ba36edd0be4567ea7db05360bc73799446938b3bd472c29aa7",
+          "currentSHA256": "3cd88b637b2884ba36edd0be4567ea7db05360bc73799446938b3bd472c29aa7",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/README.md",
+          "recordedSHA256": "025b4dcbd14e4d77687f455c7c02fdc279287f873dd02076fc6754bbf2907891",
+          "currentSHA256": "025b4dcbd14e4d77687f455c7c02fdc279287f873dd02076fc6754bbf2907891",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/codec_test.go",
+          "recordedSHA256": "31b719a63e7563ee941f38685aef4fc4330684affbca47f329e9d770e3dd9d38",
+          "currentSHA256": "31b719a63e7563ee941f38685aef4fc4330684affbca47f329e9d770e3dd9d38",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/codec.go",
+          "recordedSHA256": "4921211e9fa9767b3f17826e66cd66542b690a569f49729b11d765d6c11b3d64",
+          "currentSHA256": "4921211e9fa9767b3f17826e66cd66542b690a569f49729b11d765d6c11b3d64",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/aliases_test.go",
+          "recordedSHA256": "5549e632cd0fd72649dd5355bb4278c95a53e41c4f3f5f8076cca3aca0d29a06",
+          "currentSHA256": "5549e632cd0fd72649dd5355bb4278c95a53e41c4f3f5f8076cca3aca0d29a06",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/server_trust_unsupported.go",
+          "recordedSHA256": "0d558c18832ffd72d15d20832c96003e6d6145f5db0213d301e1e5ae92cc5417",
+          "currentSHA256": "0d558c18832ffd72d15d20832c96003e6d6145f5db0213d301e1e5ae92cc5417",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/private_unix.go",
+          "recordedSHA256": "19317232374f774060e51fc10530ab202f11a8d29cc5be879fb552c04be02d5b",
+          "currentSHA256": "19317232374f774060e51fc10530ab202f11a8d29cc5be879fb552c04be02d5b",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/transport.go",
+          "recordedSHA256": "c4d602a3b349405334cb5b5a90367f9ebc5438bcc0edbffa7fd2c06e3efd77d1",
+          "currentSHA256": "c4d602a3b349405334cb5b5a90367f9ebc5438bcc0edbffa7fd2c06e3efd77d1",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/server_trust_test.go",
+          "recordedSHA256": "d23d7840a7141723b6f7ada0eb4356fb76ff2857de3e9bf9ef423e8e15522adb",
+          "currentSHA256": "d23d7840a7141723b6f7ada0eb4356fb76ff2857de3e9bf9ef423e8e15522adb",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/private_unsupported.go",
+          "recordedSHA256": "608afc7538c80a0b157be6f3b15037da34923bfe6743ef4ad5c01449866a7a81",
+          "currentSHA256": "608afc7538c80a0b157be6f3b15037da34923bfe6743ef4ad5c01449866a7a81",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/server_trust.go",
+          "recordedSHA256": "6008e76ec7e946b461f7da7e1043ccde1b5016c79ed07ee74a7984f3d6a5969e",
+          "currentSHA256": "6008e76ec7e946b461f7da7e1043ccde1b5016c79ed07ee74a7984f3d6a5969e",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/credentials.go",
+          "recordedSHA256": "0b73aef06b02db8225f732e543087b87b5634792346e148b6acac018682885b0",
+          "currentSHA256": "0b73aef06b02db8225f732e543087b87b5634792346e148b6acac018682885b0",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/credentials_unix_test.go",
+          "recordedSHA256": "e08e4bb148ebadd9447b9c90f74ccc76da2e050071b89e49fd0462475e8361cf",
+          "currentSHA256": "e08e4bb148ebadd9447b9c90f74ccc76da2e050071b89e49fd0462475e8361cf",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/server_trust_linux.go",
+          "recordedSHA256": "7e114397d01374f5665a866d8a247f8403d897b80b3a36973f7417e820960c22",
+          "currentSHA256": "7e114397d01374f5665a866d8a247f8403d897b80b3a36973f7417e820960c22",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/kernel/protocol/server_trust_darwin.go",
+          "recordedSHA256": "b251188f34ac4e35724c33565942f094ecbf84ac87ab88943a6b16af4c893ea0",
+          "currentSHA256": "b251188f34ac4e35724c33565942f094ecbf84ac87ab88943a6b16af4c893ea0",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/cmd/agentmux-kernel/main.go",
+          "recordedSHA256": "27e6bb75c3d41cc2367a4590bcf0bf12fe420ae76f020ac484fa0ea399f95cad",
+          "currentSHA256": "27e6bb75c3d41cc2367a4590bcf0bf12fe420ae76f020ac484fa0ea399f95cad",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/cmd/agentmux-runtime/main.go",
+          "recordedSHA256": "a8686ad179f76b2dacdb3096a19d00f3e05af2c037fb9ed7fa83a121b6ac7c9b",
+          "currentSHA256": "a8686ad179f76b2dacdb3096a19d00f3e05af2c037fb9ed7fa83a121b6ac7c9b",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/cmd/agentmux-runtime/main_child_exit_linux_test.go",
+          "recordedSHA256": "2bef0381d8a26262b4863b06679d66eae7ab76cf5dad4a90cd19a1865f27a296",
+          "currentSHA256": "2bef0381d8a26262b4863b06679d66eae7ab76cf5dad4a90cd19a1865f27a296",
+          "sameBytes": true
+        },
+        {
+          "path": "platform/cmd/agentmux-runtime/main_test.go",
+          "recordedSHA256": "00d9a70be388dc5e240c62907ee148c57f8524a693defbbb0658afb0677faf27",
+          "currentSHA256": "00d9a70be388dc5e240c62907ee148c57f8524a693defbbb0658afb0677faf27",
+          "sameBytes": true
+        }
+      ],
+      "scope": null,
+      "actualCases": null,
+      "actualProcessProof": null,
+      "limits": [
+        "No full installed CLI real-engine demonstration.",
+        "No native Linux Docker or macOS execution.",
+        "Normal owner shutdown/recovery does not prove abrupt crash recovery.",
+        "No P02 phase acceptance.",
+        "Core bootstrap calls took11860 and14865ms. These are not CLI response timings and do not prove the ten-second installed CLI requirement."
+      ]
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/real-installed-cli-three-case-history/root-review.json",
+      "sha256": "ed8cdd2e2defbaeae1a96039fc1070b4fafd4e3fb18e517b1b6e8123b88d2d30",
+      "declaredSourceComparison": [],
+      "scope": null,
+      "actualCases": null,
+      "actualProcessProof": null,
+      "limits": [
+        "No retrospective exact cold receipt identity correlation from archived outputs alone.",
+        "No four-case/current test candidate acceptance.",
+        "No native Linux/macOS qualification or P02 phase gate.",
+        "Both SDK qualification of actual cohorts remains separate."
+      ]
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/installed-cli-current/review.json",
+      "sha256": "37e67ab82a0e5033de3dfda3664d7bac9a27f96f9f813ca86d57ed369c555b1a",
+      "declaredSourceComparison": [],
+      "scope": "P02 native Linux installed CLI pending and actual protected kernel completion with synthetic Docker inspection",
+      "actualCases": null,
+      "actualProcessProof": null,
+      "limits": [
+        "Docker inspection is a fixed test-only wrapper around synthetic admitted identity/archive responses. Native TLS listener/store/certificate path adapter is not actual inspected-container or Compose proof.",
+        "Linux only; actual native Darwin installed CLI execution remains required.",
+        "No end-to-end accepted-then-exited-host CLI fixture was added; root helper control remains separate.",
+        "No phase acceptance or real two-hub demonstration is claimed."
+      ]
+    }
+  ],
+  "historicalChecklist": {
+    "path": "docs/planning/2026-10-09/delivery/evidence/P02/acceptance-gap-audit/checklist.md",
+    "sha256": "5a6fe49fb7d0cb3262c60107f808dbbabfbbaaf6c177fc3a09db8ab03a92f621",
+    "classification": "Historical. Early NATS/receipt/startup/proof/cleanup issues now have repaired source and focused/historical actual evidence; do not present all its old gaps as current source defects. Its actual conflict/midboot/real-environment qualification obligations remain."
+  },
+  "executionEvidenceRequiredForEveryRealNegative": [
+    "Exact final source/executable/enrollment/context/engine/Compose/image/release/config/certificate scope binding; real action and original timing budgets.",
+    "Actual entered frontend Start/Wait <=10sec, failed result/closed actionable diagnostic and no false ready. Status5sec/cold60sec/role10sec/stop2sec/reap3sec remain unchanged.",
+    "Original container/network roster plus actual selected owned instance/volume and durable record before/after; no mutation of foreign/remote resources or undeclared shadow launch.",
+    "Creator-owned frontend/host/role/listener handles registered for cancellation+join before Fatal; actual leases gate cleanup. No raw PID adoption or metadata authority.",
+    "Actual status artifacts validated through both independent SDKs and scope checks; bootstrap receipt remains historical control, not current ready/status authority.",
+    "Only actual executed supported environments qualify their scope; WSL/WindowsInterop cannot discharge nativeLinux/macOS install+Compose gates."
+  ],
+  "iterationProposal": "D authors only its newly assigned context/port file. Review setup/cleanup and compile/isolated pure guards without engine effects. After A serial recovery/engine slot is free, run smallest exact real negative first; repair failures before stable combined qualification. Batch reviewed evidence packaging at handoff. No repeated whole suite during each edit.",
+  "noTestsOrEngineCalls": true,
+  "noSourceOrGlobalMetadataEdits": true,
+  "acceptanceUnchanged": true,
+  "phaseAccepted": false
+}

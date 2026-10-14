@@ -1,0 +1,38 @@
+{
+  "kind": "Offline exact CLI stderr contamination classification",
+  "rawBytes": 300,
+  "rawSHA256": "d5c47800c2a4ff60e09c5b84cac7ccd292b47186dd3ebf7ccdc4bf3d97c4aeeb",
+  "lines": [
+    {
+      "classification": "loopback write on already closed connection",
+      "bytes": 95,
+      "matchesFixedClosedLoopbackPattern": true
+    },
+    {
+      "classification": "exact fixed RequestDiagnostic",
+      "bytes": 203,
+      "schemaVersion": "1.0.0",
+      "kind": "launcher-diagnostic",
+      "code": "request_failed",
+      "action": "check_local_runtime",
+      "allFiveFieldsMatchCanonical": true
+    }
+  ],
+  "unknownLines": 0,
+  "source": {
+    "pinnedNatsVersion": "1.54.0",
+    "defaultCallbackAssignmentLine": 2010,
+    "defaultHandlerLine": 2036,
+    "directStderrWriteLine": 2057,
+    "lastErrorGetterLine": 4355,
+    "bridgeConnection": "platform/launcher/owner_bridge.go:243",
+    "probeFixedHandler": "platform/launcher/owner_bridge_probe.go:48",
+    "probeAuthorityHelper": "platform/launcher/owner_bridge_probe.go:119"
+  },
+  "limits": [
+    "Full stderr is not a single closed diagnostic document; the strict test remains failed.",
+    "No logger suppression or test relaxation was applied.",
+    "Historical stdout matched the actual qualified record and exited nonzero in 4.081109635 seconds; that is partial proof only.",
+    "No new commands, source changes or tests ran during offline classification."
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "reviewer": "Codex",
+  "recordedAt": "2026-10-13T23:02:00.352167+00:00",
+  "scope": "Independent raw-result/hash review for host loader and exact JSON repair",
+  "phaseAccepted": false,
+  "records": [
+    {
+      "record": "docs/planning/2026-10-09/delivery/evidence/P02/host-config/source-bound-results.json",
+      "recordSha256": "9a4119bb7a78af755d108ddd1f4e81c69fbfebb0092c9f075e5d00e972726af6",
+      "rawChecks": [
+        {
+          "suite": "hostRace",
+          "rawSha256": "ffe677aa8340666e74816e3b93f54a8be4b65a1a3da0bf8ec9b281b5503da569",
+          "passingEntries": 36
+        },
+        {
+          "suite": "affectedLauncherRace",
+          "rawSha256": "07ec0379cfbbe9a787cb18ec55304568c20e48305bf7061d6a9d68362edd3777",
+          "passingEntries": 365
+        },
+        {
+          "suite": "affectedProtocolRace",
+          "rawSha256": "60eedb198930597645b3997d8dc8cf1e5ec88ff84034ec86d49b369925adde95",
+          "passingEntries": 55
+        },
+        {
+          "suite": "affectedAssemblyRace",
+          "rawSha256": "e7df3fc6be178b9350e25e7f3f8fde91f3d76295761a8e3a5d138ee355041c4c",
+          "passingEntries": 65
+        }
+      ],
+      "sourceFileCount": 68,
+      "currentSourceDrift": [
+        {
+          "path": "platform/launcher/bootstrap.go",
+          "testedSha256": "341830afcccad8c85c05dac097d41bc59260a2f3f45bfa41a79d4640d55153c3",
+          "currentSha256": "c5981750afb795663c12e005186ad4fe41db7a0293e3d1ab50eb3a6640d2237a"
+        },
+        {
+          "path": "platform/launcher/profile.go",
+          "testedSha256": "1fd077dfcacebb6fb95e8d2507d586f0f6f929eb8bff2b1bc3af7ac21f677841",
+          "currentSha256": "684a8754fcfc6dc09a7129031c1852aa27a1d826efeab19e6635d09b2e1870c2"
+        }
+      ],
+      "interpretation": "Actual source-bound suite evidence. Later edits require affected verification; this is not phase acceptance."
+    },
+    {
+      "record": "docs/planning/2026-10-09/delivery/evidence/P02/exact-json-fields/review.json",
+      "recordSha256": "2db30465147eb077b09a500287bf91832ad6bab0bf95b0f22d9061ca0bf30031",
+      "rawChecks": [
+        {
+          "suite": "focused",
+          "rawSha256": "5755d0fed2a14a72cfdb0e8daaa0c82aba26866c48e80363da22b11fa7e46188",
+          "passingEntries": 34
+        },
+        {
+          "suite": "affected",
+          "rawSha256": "ad4a698469fe11d36da4d19a38acd3d2fbfac3f20cf9d62ab6a044c283e88587",
+          "passingEntries": 60
+        }
+      ],
+      "sourceFileCount": 68,
+      "currentSourceDrift": [
+        {
+          "path": "platform/launcher/bootstrap.go",
+          "testedSha256": "341830afcccad8c85c05dac097d41bc59260a2f3f45bfa41a79d4640d55153c3",
+          "currentSha256": "c5981750afb795663c12e005186ad4fe41db7a0293e3d1ab50eb3a6640d2237a"
+        },
+        {
+          "path": "platform/launcher/profile.go",
+          "testedSha256": "1fd077dfcacebb6fb95e8d2507d586f0f6f929eb8bff2b1bc3af7ac21f677841",
+          "currentSha256": "684a8754fcfc6dc09a7129031c1852aa27a1d826efeab19e6635d09b2e1870c2"
+        }
+      ],
+      "interpretation": "Actual source-bound suite evidence. Later edits require affected verification; this is not phase acceptance."
+    }
+  ],
+  "remaining": [
+    "Real cold/warm/concurrent Compose Bootstrap demonstration",
+    "Native macOS protected boot qualification",
+    "Complete L04 status response and remote/team profile qualification",
+    "Stable candidate component/pattern review and feature branch push"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "scope": "Independent architecture/security review and isolated actual TCP/NATS-client diagnostic with synthetic credentials. No other UID impersonation or actual product bridge invocation was executed; the diagnostic proves authentication ordering and spoofable INFO checks.",
+  "result": {
+    "clientConnectSucceeded": true,
+    "ownedSocketsJoined": true,
+    "realCredentialsUsed": false,
+    "selfReportedIdentityChecksMatched": true,
+    "syntheticPasswordReceivedByImpersonator": true
+  },
+  "sourceSHA256": "92645e5db124b43805d3cdba70524bb8ca599c5b47e0b260c8cded54050478d0",
+  "resultSHA256": "17751b889b85996d603cf00752cb56350c6950f644770cb95bcc27242fa0cf2f",
+  "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "reviewedSourceHashes": {
+    "platform/launcher/owner_bridge.go": "b0be35e81b3a14c2fd12d90270f3eaba893e2949ca634c8c854814aa4a12b150",
+    "platform/launcher/kernel_status.go": "ac03d22aacec72dbaffff1d21cbd28fd514ccba4f74e26b7f440c1908d512478",
+    "platform/deployment/probe.go": "08efdf807205db07d26b35e00b1272d33741840baef86e4d299f2be5150d7479",
+    "platform/deployment/observe.go": "befbca0285fa7015915f7b3ef3fb636a321fb521e5b75429f464e9b610d408eb",
+    "platform/kernel/protocol/transport.go": "bd6d6c90f4968a547c046a45239796642bb2a0058ba361ad4437680a3aa2f947",
+    "platform/kernel/protocol/credentials.go": "45f51f19c6a06e77efad2e61cea93d2e8f7f0a50d5fe6d175ab054b687ccf4c3",
+    "platform/deployment/compose.go": "2ed62e60ac9c6b1f56afef8156e7def69de8cdcb6918f89bf8e0a3412e0935c1",
+    "platform/deployment/profile.go": "f15a34a2111492fc83f3c5e85aad2cb869c4c6487bac9f3cc10aa2de9de767e7",
+    "docs/planning/2026-10-09/delivery/decisions/P02-owner-status-bridge.md": "3d74cc1d75715029b635077b633dcf3a9c99d47db519fc7c98c5655304cd3b87",
+    "docs/planning/2026-10-09/delivery/decisions/startup-contract.md": "2c86650ad04978106ff011827c55708a7f02238f112177cefd4629ee857dc127"
+  },
+  "decision": "P02 requires enrolled local TLS server authentication before credential-bearing NATS CONNECT. Exact Docker ownership/config/image/port inspection remains a separate mandatory preflight. P04 OIDC/JWT/membership work is not pulled into P02.",
+  "primarySources": [
+    "https://docs.nats.io/learn/security/encryption",
+    "https://github.com/nats-io/nats.go/blob/v1.54.0/nats.go",
+    "https://raw.githubusercontent.com/nats-io/nats-server/v2.15.0/server/opts.go"
+  ],
+  "noSharedSourceEdits": true,
+  "noDockerOrPrivilegeChanges": true
+}

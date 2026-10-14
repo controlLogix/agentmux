@@ -6,7 +6,7 @@ This registry records how, where, and why approved Dofactory and Enterprise Inte
 ```json
 {
   "schemaVersion": "1.0.0",
-  "lastReviewed": "2026-10-09",
+  "lastReviewed": "2026-10-14",
   "entries": [
     {
       "id": "FED-01",
@@ -739,15 +739,80 @@ This registry records how, where, and why approved Dofactory and Enterprise Inte
       "pattern": "Composite",
       "source": "https://www.dofactory.com/net/composite-design-pattern",
       "referenceDepth": "full-public-reference",
-      "how": "Leaf plugins and assemblies expose the same declared lifecycle/inspection component contract. Represent nesting with private-child ownership and independent-child references kept distinct, with explicit instance lifecycles and all inter-plugin calls over NATS. Proposed location: docs/planning/2026-10-09/implementation-plan.md, P03. Implementation locations will be recorded when implemented. P00 proposes fixed protected assembly membership and separately supervised processes, with explicit private-child ownership and independent child references for ordinary packages; see delivery/decisions/runtime-and-deployment.md. Process overhead remains to be measured. This is a recommendation pending P00 review.",
+      "how": "Leaf plugins and assemblies expose the same declared lifecycle/inspection component contract. Represent nesting with private-child ownership and independent-child references kept distinct, with explicit instance lifecycles and all inter-plugin calls over NATS. Proposed location: docs/planning/2026-10-09/implementation-plan.md, P03. Implementation locations will be recorded when implemented. P00 proposes fixed protected assembly membership and separately supervised processes, with explicit private-child ownership and independent child references for ordinary packages; see delivery/decisions/runtime-and-deployment.md. Process overhead remains to be measured. This is a recommendation pending P00 review. P02 now adds platform/kernel/assembly.Verify to check externally trusted release bytes, fixed four-role membership and contained binary digests before any supervisor spawn. This is the validation boundary for the planned protected composition; it does not yet construct the kernel or expose a Go plugin ABI. P02 now prepares sealed Linux executable snapshots and supervises four distinct role processes through platform/runtime.Prepare and Prepared.Start. Role implementations exchange scoped messages over NATS; a shared stateless protocol codec does not create an in-process plugin channel. Four-process boot and native macOS execution remain under verification, so the complete composition stays planned. The installed-release loader verifies an external enrollment key and detached authorization over exact release and assembly bytes. VerifyRoot and component-wise OpenMember retain one held directory identity and bounded nonblocking reads. LoadBootstrapConfig binds that verified assembly to the enrolled private profile and exact broker/role configuration. Bootstrap composes actual inspection, an OS startup lease, persistent health probing and supervised four-role startup; a reused session owns no processes. Four distinct role processes and host-death cleanup now have real WSL/NATS evidence. Complete Compose startup/reuse/recovery and native macOS boot remain open. The team private credential reader retains every ancestor descriptor through bounded reading, caps the walk at128 directories, and rechecks actual owner/mode/native ACL/mount access before returning bytes. Darwin without CGO refuses rather than replacing native checks. This helper supports separately enrolled configuration; it does not grant authority from path metadata or provide a sandbox.",
       "why": "Assemblies must install and operate together without erasing independent child identity.",
       "tradeoffs": "A flat dependency list is simpler; nesting increases lifecycle/version resolution complexity and must not imply inherited authority.",
-      "locations": [],
-      "verificationEvidence": [],
+      "locations": [
+        {
+          "path": "platform/kernel/assembly/verify.go",
+          "symbol": "Verify"
+        },
+        {
+          "path": "platform/runtime/supervisor.go",
+          "symbol": "Prepare"
+        },
+        {
+          "path": "platform/kernel/boot/run.go",
+          "symbol": "Run"
+        },
+        {
+          "path": "platform/kernel/lifecycle/run.go",
+          "symbol": "Run"
+        },
+        {
+          "path": "platform/kernel/communication/run.go",
+          "symbol": "Run"
+        },
+        {
+          "path": "platform/kernel/status/run.go",
+          "symbol": "Run"
+        },
+        {
+          "path": "platform/launcher/release.go",
+          "symbol": "LoadInstalledRelease"
+        },
+        {
+          "path": "platform/launcher/host_config.go",
+          "symbol": "LoadBootstrapConfig"
+        },
+        {
+          "path": "platform/launcher/bootstrap.go",
+          "symbol": "Bootstrap"
+        },
+        {
+          "path": "platform/kernel/assembly/verify.go",
+          "symbol": "VerifyRoot"
+        },
+        {
+          "path": "platform/kernel/assembly/open_unix.go",
+          "symbol": "openMemberFile"
+        },
+        {
+          "path": "platform/privatefs/access.go",
+          "symbol": "CheckDescriptor"
+        },
+        {
+          "path": "platform/deployment/team_credentials_unix.go",
+          "symbol": "teamReadPrivateChecked"
+        }
+      ],
+      "verificationEvidence": [
+        "platform/kernel/assembly/verify_test.go",
+        "platform/runtime/supervisor_linux_test.go",
+        "platform/kernel/boot/integration_test.go",
+        "platform/kernel/assembly/root_test.go",
+        "platform/kernel/assembly/open_unix_test.go",
+        "platform/kernel/boot/process_integration_test.go",
+        "platform/kernel/boot/parent_lifetime_test.go",
+        "platform/launcher/release_test.go",
+        "platform/launcher/host_config_test.go",
+        "docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json"
+      ],
       "decisionEvidence": [
         "docs/planning/2026-10-09/implementation-plan.md",
         "docs/planning/2026-10-09/phases.json",
-        "docs/planning/2026-10-09/delivery/decisions/README.md"
+        "docs/planning/2026-10-09/delivery/decisions/README.md",
+        "docs/planning/2026-10-09/delivery/evidence/P02/P02-T06-acceptance-2740e31.json"
       ],
       "planningRevisions": [
         {
@@ -755,6 +820,90 @@ This registry records how, where, and why approved Dofactory and Enterprise Inte
           "decision": "P00 concrete implementation recommendation; pending review",
           "previousHow": "Leaf plugins and assemblies expose the same declared lifecycle/inspection component contract. Represent nesting with private-child ownership and independent-child references kept distinct, with explicit instance lifecycles and all inter-plugin calls over NATS. Proposed location: docs/planning/2026-10-09/implementation-plan.md, P03. Implementation locations will be recorded when implemented.",
           "evidence": "docs/planning/2026-10-09/delivery/decisions/README.md"
+        },
+        {
+          "date": "2026-10-14",
+          "reviewer": "Codex",
+          "previous": {
+            "how": "Leaf plugins and assemblies expose the same declared lifecycle/inspection component contract. Represent nesting with private-child ownership and independent-child references kept distinct, with explicit instance lifecycles and all inter-plugin calls over NATS. Proposed location: docs/planning/2026-10-09/implementation-plan.md, P03. Implementation locations will be recorded when implemented. P00 proposes fixed protected assembly membership and separately supervised processes, with explicit private-child ownership and independent child references for ordinary packages; see delivery/decisions/runtime-and-deployment.md. Process overhead remains to be measured. This is a recommendation pending P00 review. P02 now adds platform/kernel/assembly.Verify to check externally trusted release bytes, fixed four-role membership and contained binary digests before any supervisor spawn. This is the validation boundary for the planned protected composition; it does not yet construct the kernel or expose a Go plugin ABI. P02 now prepares sealed Linux executable snapshots and supervises four distinct role processes through platform/runtime.Prepare and Prepared.Start. Role implementations exchange scoped messages over NATS; a shared stateless protocol codec does not create an in-process plugin channel. Four-process boot and native macOS execution remain under verification, so the complete composition stays planned. The installed-release loader verifies an external enrollment key and detached authorization over exact release and assembly bytes. VerifyRoot and component-wise OpenMember retain one held directory identity and bounded nonblocking reads. LoadBootstrapConfig binds that verified assembly to the enrolled private profile and exact broker/role configuration. Bootstrap composes actual inspection, an OS startup lease, persistent health probing and supervised four-role startup; a reused session owns no processes. Four distinct role processes and host-death cleanup now have real WSL/NATS evidence. Complete Compose startup/reuse/recovery and native macOS boot remain open.",
+            "tradeoffs": "A flat dependency list is simpler; nesting increases lifecycle/version resolution complexity and must not imply inherited authority.",
+            "locations": [
+              {
+                "path": "platform/kernel/assembly/verify.go",
+                "symbol": "Verify"
+              },
+              {
+                "path": "platform/runtime/supervisor.go",
+                "symbol": "Prepare"
+              },
+              {
+                "path": "platform/kernel/boot/run.go",
+                "symbol": "Run"
+              },
+              {
+                "path": "platform/kernel/lifecycle/run.go",
+                "symbol": "Run"
+              },
+              {
+                "path": "platform/kernel/communication/run.go",
+                "symbol": "Run"
+              },
+              {
+                "path": "platform/kernel/status/run.go",
+                "symbol": "Run"
+              },
+              {
+                "path": "platform/launcher/release.go",
+                "symbol": "LoadInstalledRelease"
+              },
+              {
+                "path": "platform/launcher/host_config.go",
+                "symbol": "LoadBootstrapConfig"
+              },
+              {
+                "path": "platform/launcher/bootstrap.go",
+                "symbol": "Bootstrap"
+              },
+              {
+                "path": "platform/kernel/assembly/verify.go",
+                "symbol": "VerifyRoot"
+              },
+              {
+                "path": "platform/kernel/assembly/open_unix.go",
+                "symbol": "openMemberFile"
+              }
+            ],
+            "verificationEvidence": [
+              "platform/kernel/assembly/verify_test.go",
+              "platform/runtime/supervisor_linux_test.go",
+              "platform/kernel/boot/integration_test.go",
+              "platform/kernel/assembly/root_test.go",
+              "platform/kernel/assembly/open_unix_test.go",
+              "platform/kernel/boot/process_integration_test.go",
+              "platform/kernel/boot/parent_lifetime_test.go",
+              "platform/launcher/release_test.go",
+              "platform/launcher/host_config_test.go"
+            ]
+          },
+          "note": "Resolved independent current source documentation finding; resource mechanisms are not extra patterns. Component evidence does not prove native or phase acceptance.",
+          "evidence": "docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json"
+        }
+      ],
+      "implementationRevisions": [
+        {
+          "date": "2026-10-13",
+          "reason": "P02 initial fixed-assembly verification boundary; full protected composition remains pending.",
+          "previousHow": "Leaf plugins and assemblies expose the same declared lifecycle/inspection component contract. Represent nesting with private-child ownership and independent-child references kept distinct, with explicit instance lifecycles and all inter-plugin calls over NATS. Proposed location: docs/planning/2026-10-09/implementation-plan.md, P03. Implementation locations will be recorded when implemented. P00 proposes fixed protected assembly membership and separately supervised processes, with explicit private-child ownership and independent child references for ordinary packages; see delivery/decisions/runtime-and-deployment.md. Process overhead remains to be measured. This is a recommendation pending P00 review."
+        },
+        {
+          "date": "2026-10-13",
+          "reason": "Record actual protected supervisor and separate NATS role implementation while retaining incomplete full composition status.",
+          "previousHow": "Leaf plugins and assemblies expose the same declared lifecycle/inspection component contract. Represent nesting with private-child ownership and independent-child references kept distinct, with explicit instance lifecycles and all inter-plugin calls over NATS. Proposed location: docs/planning/2026-10-09/implementation-plan.md, P03. Implementation locations will be recorded when implemented. P00 proposes fixed protected assembly membership and separately supervised processes, with explicit private-child ownership and independent child references for ordinary packages; see delivery/decisions/runtime-and-deployment.md. Process overhead remains to be measured. This is a recommendation pending P00 review. P02 now adds platform/kernel/assembly.Verify to check externally trusted release bytes, fixed four-role membership and contained binary digests before any supervisor spawn. This is the validation boundary for the planned protected composition; it does not yet construct the kernel or expose a Go plugin ABI."
+        },
+        {
+          "date": "2026-10-13",
+          "reason": "Record actual signed installed-release loader and composed local Bootstrap, retaining unaccepted native and full integration scope.",
+          "previousHow": "Leaf plugins and assemblies expose the same declared lifecycle/inspection component contract. Represent nesting with private-child ownership and independent-child references kept distinct, with explicit instance lifecycles and all inter-plugin calls over NATS. Proposed location: docs/planning/2026-10-09/implementation-plan.md, P03. Implementation locations will be recorded when implemented. P00 proposes fixed protected assembly membership and separately supervised processes, with explicit private-child ownership and independent child references for ordinary packages; see delivery/decisions/runtime-and-deployment.md. Process overhead remains to be measured. This is a recommendation pending P00 review. P02 now adds platform/kernel/assembly.Verify to check externally trusted release bytes, fixed four-role membership and contained binary digests before any supervisor spawn. This is the validation boundary for the planned protected composition; it does not yet construct the kernel or expose a Go plugin ABI. P02 now prepares sealed Linux executable snapshots and supervises four distinct role processes through platform/runtime.Prepare and Prepared.Start. Role implementations exchange scoped messages over NATS; a shared stateless protocol codec does not create an in-process plugin channel. Four-process boot and native macOS execution remain under verification, so the complete composition stays planned."
         }
       ]
     },
@@ -765,16 +914,165 @@ This registry records how, where, and why approved Dofactory and Enterprise Inte
       "pattern": "Facade",
       "source": "https://www.dofactory.com/net/facade-design-pattern",
       "referenceDepth": "full-public-reference",
-      "how": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented. P00 proposes Python and TypeScript SDK clients that construct scoped domain service handles rather than expose unrestricted storage administration; see delivery/decisions/runtime-and-deployment.md and storage-contract.md. This is a recommendation pending P00 review.",
+      "how": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented. P00 proposes Python and TypeScript SDK clients that construct scoped domain service handles rather than expose unrestricted storage administration; see delivery/decisions/runtime-and-deployment.md and storage-contract.md. This is a recommendation pending P00 review. P02 adds a narrow local owner-status client and service over an isolated NATS HOST account. OwnerBridgeClient.Request accepts only ensure/status and derives fixed scope-bound subjects; the server returns the unchanged L04 observation from real owning startup or qualified read-only refresh. Broker JSON cannot grant this client protected commands, storage or system privileges. Private enrollment and complete factory comparison remain separate authority checks. This local facade is under implementation and does not complete the P03 common plugin context or later domain clients. P02 now requires enrolled per-profile TLS before credentials reach the owner-status socket, with exact selected Docker ownership inspected separately. Advertised server name/version is not broker authentication. This transport repair is planned and remains unqualified. P02 RuntimeCleanupError retains the actual Bootstrap Session and service lease when process reaping is incomplete. Run transfers only that concrete ownership; the existing reaper releases it on completion, while a bounded explicit retry remains possible. No additional completion waiter, external callback or process identity adoption is introduced. The bootstrap facade consumes one private complete broker inspection in its next kernel observation, bound to the exact original context and admitted policy. The proof is used once, rechecks enrollment, expires within the original budget and is discarded before mutation. TLS authentication and a fresh scoped snapshot remain mandatory. Fixed private archive reads run concurrently only after all broker ownership gates and join before any result. The P02 installed startup facade now has a draft lifecycle receipt bound to its newly spawned verified host and actual admitted operation. Receipt-only output records request acceptance and leaves current instance state unknown; authenticated NATS remains the source of current starting and readiness. Concrete receipt framing has independent Linux component evidence; full installed timing and supported-platform acceptance remain open. The protected startup failure path now preserves both startup and cleanup causes behind fixed safe formatting while returning the same exact owned Group. This repairs diagnostic cause loss without changing process ownership or deadlines. OwnerBridgeServer.Run acquires its actual service lease before starting exactly one bounded Bootstrap operation. Authenticated NATS can report starting only after actual admission and protected preparation mark that private operation entered. Run cancels and joins the exact operation before cleanup; joined completion preserves its actual failure, including concrete cleanup owners. A receipt revalidates the bound owner/profile outside operation locks before one accepted frame. Disconnected receipt I/O is nonfatal; changed enrollment is a core admission failure. Each owner-status refresh uses one fresh exact Docker inspection and one context-bound, single-use kernel observation proof. A later request inspects again; the proof is never stored in the Session or extended. Actual persistence and kernel cleanup failures are joined behind safe presentation and returned from the service loop before publishing a reply, so Run joins the operation and preserves concrete cleanup owners through its existing Session and lease cleanup. The initial ensure lookup now uses EnsureInvocation.Probe, a fixed operation on the existing scoped owner-status facade. It consumes one authenticated native no-responder hint to proceed to ordinary host admission; it grants no current state, readiness or ownership. Status and final ensure requests preserve their existing waiting behavior. Optional request reply subjects must equal the validated nonce-derived address; application replies still derive their destination from the validated request identity. The unintegrated terminal-history proposal keeps historical diagnostic access behind the same scoped facade. Its history-only cleanup may retain an exact private staging object after publication joins, while releasing its extra service-lease duplicate so optional diagnostics do not block genuine startup retries. Core incomplete worker cleanup still retains its original lease; historical cleanup cannot publish or replace the shared history slot. The promoted private bootstrap history foundation binds one fixed bounded slot to actual owner, scope, runtime, Compose configuration, engine, server trust and held service lease. It uses generation and inode checks for publication, independently revalidates canonical roots and permissions, and retains exact unpublished staging cleanup ownership. Actual Run and CLI integration remain pending. The installed history reader facade reloads current policy and derives owner/runtime/binding internally. General reads require a free service lease; the creator exception requires the original factory receipt for that exact invocation. Its fixed seven-field document describes only past failure. Main and Run wiring remain open. Owner history is now wired in source: the installed factory derives binding without requiring a receipt descriptor; generic servers remain disabled. The actual protected operation entry begins history, its sole worker records completion, and Run joins publication before teardown. Actual operation creation time preserves preentry failure chronology. Failed startup can finalize under one shared existing core cleanup envelope; healthy runtime retires its optional lease duplicate promptly. Concrete root/staging ownership stays private; public warnings carry a literal fixed code without cleanup ancestry. Actual Run and CLI qualification remain pending. CLI wiring is now in source. Authenticated NATS replies return first; initial ensure still performs genuine admission and startup. Only unavailable status, or an accepted exact creator with unavailable final status, can read the historical facade. The separate tagged history document preserves the original nonzero request error and fixed stderr diagnostic. Earlier wiring-open statements describe prior source stages; actual running and native qualification remain pending. The common connection factory installs a fixed non-capturing NATS error handler before callbacks begin. Known permission, authentication, revocation and account-expiry errors are read from LastError after ordered flushes and waits, before unavailable mapping and accepting a reply. Probe retains its unknown-error rejection. Denied authority never becomes eligible historical fallback. If the trusted private pending refusal comes from an entered canceled core, the facade independently checks full operation binding and the canonical held service lease, then waits for actual completion under the same remaining request context with no held mutex. The same consumed nonce receives the actual completed observation; replay consumption and publication remain unchanged.",
       "why": "Plugin authors need common logging, config and approved services without coupling to implementations.",
-      "tradeoffs": "Direct shared-runtime access is simpler but violates the accepted scopes. Narrow clients add schema/version maintenance; typed handles alone do not sandbox trusted native plugins.",
-      "locations": [],
-      "verificationEvidence": [],
+      "tradeoffs": "Direct shared-runtime access is simpler but violates the accepted scopes. Narrow clients add schema/version maintenance; typed handles alone do not sandbox trusted native plugins. Synchronous Bootstrap followed by service subscription is simpler but cannot report genuine starting while startup is in progress. The private operation adds cancellation/join and enrollment revalidation costs; blocked synchronous local filesystem calls remain an explicit timing limit. Receipt-only output conveys past request acceptance and leaves current state unknown; NATS remains the current-status authority. Repeating complete inspection is simpler but consumed the bounded real owner request budget. Same-operation proof reuse adds strict context, scope and freshness checks; it never replaces TLS peer authentication. Fatal handling applies to concrete retained cleanup failures; ordinary missing readiness still reports honest unavailable status. This adds a separate initial lookup path and strict pinned-server frame checks to avoid waiting for an absent subscriber. The simpler unchanged request loop consumes its reply wait before cold admission. Authentication, malformed frames, cancellation and concrete transport cleanup remain failures. Actual installed pending qualification failed separately, so component checks do not establish faster successful startup. The proposed narrower staging cleanup owner requires exact directory/name/inode checks and verification that old cleanup preserves a newer generation. Keeping its extra service lease until unlink succeeds is simpler but conflicts with the required retry behavior. Optional history adds private filesystem ownership and timing costs. It remains a diagnostic of past failure, never a current-status authority. After publication has joined and retired, its duplicate lease can close while a concrete staging cleanup owner remains; incomplete core cleanup retains its own original lease. Linux component evidence does not prove installed or Darwin acceptance. Fresh policy reloads add local read costs and refuse drift; accepting caller-supplied history bindings is simpler but would manufacture authority. Reads stay within the caller deadline and a capped local I/O budget; native timing and installed integration require separate checks. Shared cleanup context preserves the original total envelope and exact incomplete core ownership. Quiescent retirement closes only the history duplicate, allowing genuine retries while exact temporary-file cleanup remains owned. Separate immutable warning snapshots add lifecycle rules: one writer before join, serialized cleanup afterward, and no writes on refused gates. Actual six-case component evidence is narrower than running lifecycle acceptance. A capped 200-millisecond history read consumes part of the existing response allowance while preserving one-second receipt cleanup and 300-millisecond output reserve inside the original total deadline. Treating old history as current status would be simpler but falsely claim readiness. Pure budget/emission controls do not prove eligible reader bypass or a running CLI. Fixed callback handling requires explicit sentinel checks; suppressing console text alone would hide denied access as unavailability. A configurable callback is simpler but permits arbitrary text and caller behavior at this private boundary. Actual denied publish and subscribe controls cover the repaired default client; installed CLI output requires separate qualification. This narrow wait prevents a transient cancellation/completion gap from permanently consuming a request without replying. Reopening a nonce would be simpler but risk duplicate publication after ambiguous transport failure. Context and canonical descriptor checks add bounded local work; private operation-seam tests do not establish actual installed Run or native qualification.",
+      "locations": [
+        {
+          "path": "platform/launcher/owner_bridge.go",
+          "symbol": "OwnerBridgeClient.Request"
+        },
+        {
+          "path": "platform/launcher/owner_bridge.go",
+          "symbol": "OwnerBridgeServer.Run"
+        },
+        {
+          "path": "platform/launcher/session_cleanup.go",
+          "symbol": "RuntimeCleanupError"
+        },
+        {
+          "path": "platform/launcher/bootstrap.go",
+          "symbol": "BootstrapForInvocation"
+        },
+        {
+          "path": "platform/launcher/local_broker_authority.go",
+          "symbol": "inspectLocalBrokerOperation"
+        },
+        {
+          "path": "platform/launcher/docker_archives.go",
+          "symbol": "Docker.verifyOwnedTLSArchives"
+        },
+        {
+          "path": "platform/launcher/host_receipt_binding.go",
+          "symbol": "BootstrapReceiptBinding"
+        },
+        {
+          "path": "platform/launcher/host_receipt_server.go",
+          "symbol": "BridgeServerForInvocation"
+        },
+        {
+          "path": "platform/launcher/owner_bridge_receipt.go",
+          "symbol": "emitBootstrapAccepted"
+        },
+        {
+          "path": "platform/runtime/bootstrap_receipt.go",
+          "symbol": "BootstrapReceipt"
+        },
+        {
+          "path": "platform/runtime/startup_cleanup_cause.go",
+          "symbol": "retainStartupCleanupCause"
+        },
+        {
+          "path": "platform/launcher/bootstrap_operation.go",
+          "symbol": "bootstrapOperation.enter"
+        },
+        {
+          "path": "platform/launcher/startup_status.go",
+          "symbol": "OwnerStatus.mapStartingContext"
+        },
+        {
+          "path": "platform/launcher/owner_bridge_receipt.go",
+          "symbol": "joinedBridgeBootstrapResult"
+        },
+        {
+          "path": "platform/launcher/owner_bridge.go",
+          "symbol": "OwnerBridgeServer.refresh"
+        },
+        {
+          "path": "platform/launcher/owner_bridge.go",
+          "symbol": "bridgeObservationCleanupFailure"
+        },
+        {
+          "path": "platform/launcher/owner_bridge_probe.go",
+          "symbol": "OwnerBridgeClient.probe"
+        },
+        {
+          "path": "platform/launcher/host_policy.go",
+          "symbol": "EnsureInvocation.Probe"
+        },
+        {
+          "path": "platform/cmd/agentmux-runtime/main.go",
+          "symbol": "initialLookupAllowsStart"
+        },
+        {
+          "path": "platform/launcher/bootstrap_history.go",
+          "symbol": "bootstrapHistoryStore"
+        },
+        {
+          "path": "platform/launcher/bootstrap_history_fs.go",
+          "symbol": "readCreatorBootstrapHistory"
+        },
+        {
+          "path": "platform/launcher/bootstrap_history_root.go",
+          "symbol": "historyRootGuard"
+        },
+        {
+          "path": "platform/launcher/bootstrap_history_stage.go",
+          "symbol": "historyStageCleanupError"
+        },
+        {
+          "path": "platform/launcher/host_history_policy.go",
+          "symbol": "PreviousBootstrapFailure"
+        },
+        {
+          "path": "platform/launcher/host_history_policy.go",
+          "symbol": "CreatorPreviousBootstrapFailure"
+        },
+        {
+          "path": "platform/launcher/owner_bridge_history.go",
+          "symbol": "finalizeBootstrapHistory"
+        },
+        {
+          "path": "platform/launcher/owner_bridge_history.go",
+          "symbol": "CloseBootstrapHistory"
+        },
+        {
+          "path": "platform/launcher/session_cleanup.go",
+          "symbol": "closeOwnedSessionContext"
+        },
+        {
+          "path": "platform/cmd/agentmux-runtime/main_history.go",
+          "symbol": "statusHistoryFallback"
+        },
+        {
+          "path": "platform/cmd/agentmux-runtime/main_history.go",
+          "symbol": "creatorHistoryFallback"
+        },
+        {
+          "path": "platform/launcher/owner_bridge.go",
+          "symbol": "ownerBridgeAsyncErrorHandler"
+        },
+        {
+          "path": "platform/launcher/owner_bridge.go",
+          "symbol": "ownerBridgeAuthorityLastError"
+        },
+        {
+          "path": "platform/launcher/bootstrap_operation.go",
+          "symbol": "bootstrapOperation.awaitCanceledCoreCompletion"
+        }
+      ],
+      "verificationEvidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/owner-bridge-receipt/review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/owner-refresh-current/independent-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/initial-owner-probe/affected-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/cli-initial-probe/independent-source-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/history-foundation-promotion/independent-close-cause-closure.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/host-history-policy/independent-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration/independent-writer-gate-closure.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/cli-history-wiring/independent-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/default-request-authority-repair/independent-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/owner-nonce-completion-window/repaired-component-review.json"
+      ],
       "decisionEvidence": [
         "docs/planning/2026-10-09/implementation-plan.md",
         "docs/planning/2026-10-09/phases.json",
         "docs/planning/2026-10-09/delivery/decisions/README.md",
-        "docs/planning/2026-10-09/delivery/contracts/README.md"
+        "docs/planning/2026-10-09/delivery/contracts/README.md",
+        "docs/planning/2026-10-09/delivery/decisions/P02-owner-status-bridge.md",
+        "docs/planning/2026-10-09/delivery/decisions/P02-local-broker-authentication.md",
+        "docs/planning/2026-10-09/delivery/decisions/P02-local-broker-observation-proof.md",
+        "docs/planning/2026-10-09/delivery/decisions/P02-history-cleanup-ownership.md"
       ],
       "planningRevisions": [
         {
@@ -792,6 +1090,326 @@ This registry records how, where, and why approved Dofactory and Enterprise Inte
           "decision": "P00 concrete implementation recommendation; pending review",
           "previousHow": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented.",
           "evidence": "docs/planning/2026-10-09/delivery/decisions/README.md"
+        },
+        {
+          "date": "2026-10-14",
+          "decision": "P02 local owner-status facade implementation in progress",
+          "previousHow": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented. P00 proposes Python and TypeScript SDK clients that construct scoped domain service handles rather than expose unrestricted storage administration; see delivery/decisions/runtime-and-deployment.md and storage-contract.md. This is a recommendation pending P00 review.",
+          "reason": "Independent review found that a detached launch request and a kernel-only observation could not replace the actual owner outcome or L04 refresh. Preserve the full scoped startup contract over NATS.",
+          "evidence": "docs/planning/2026-10-09/delivery/decisions/P02-owner-status-bridge.md"
+        },
+        {
+          "date": "2026-10-14",
+          "decision": "P02 cryptographic local broker authentication required",
+          "previousHow": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented. P00 proposes Python and TypeScript SDK clients that construct scoped domain service handles rather than expose unrestricted storage administration; see delivery/decisions/runtime-and-deployment.md and storage-contract.md. This is a recommendation pending P00 review. P02 adds a narrow local owner-status client and service over an isolated NATS HOST account. OwnerBridgeClient.Request accepts only ensure/status and derives fixed scope-bound subjects; the server returns the unchanged L04 observation from real owning startup or qualified read-only refresh. Broker JSON cannot grant this client protected commands, storage or system privileges. Private enrollment and complete factory comparison remain separate authority checks. This local facade is under implementation and does not complete the P03 common plugin context or later domain clients.",
+          "reason": "An actual synthetic peer received credentials while spoofing advertised broker identity. Keep the facade scoped and authenticate its underlying transport before accepting installed replies.",
+          "evidence": "docs/planning/2026-10-09/delivery/decisions/P02-local-broker-authentication.md"
+        },
+        {
+          "date": "2026-10-14",
+          "decision": "Record concrete Session and service lease cleanup ownership at the existing host facade.",
+          "previousHow": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented. P00 proposes Python and TypeScript SDK clients that construct scoped domain service handles rather than expose unrestricted storage administration; see delivery/decisions/runtime-and-deployment.md and storage-contract.md. This is a recommendation pending P00 review. P02 adds a narrow local owner-status client and service over an isolated NATS HOST account. OwnerBridgeClient.Request accepts only ensure/status and derives fixed scope-bound subjects; the server returns the unchanged L04 observation from real owning startup or qualified read-only refresh. Broker JSON cannot grant this client protected commands, storage or system privileges. Private enrollment and complete factory comparison remain separate authority checks. This local facade is under implementation and does not complete the P03 common plugin context or later domain clients. P02 now requires enrolled per-profile TLS before credentials reach the owner-status socket, with exact selected Docker ownership inspected separately. Advertised server name/version is not broker authentication. This transport repair is planned and remains unqualified.",
+          "evidence": "docs/planning/2026-10-09/delivery/evidence/P02/combined-cleanup-independent/independent-review.json"
+        },
+        {
+          "date": "2026-10-14",
+          "decision": "Record the reviewed one-operation broker proof at the bootstrap facade, without broadening readiness or timing promises.",
+          "previousHow": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented. P00 proposes Python and TypeScript SDK clients that construct scoped domain service handles rather than expose unrestricted storage administration; see delivery/decisions/runtime-and-deployment.md and storage-contract.md. This is a recommendation pending P00 review. P02 adds a narrow local owner-status client and service over an isolated NATS HOST account. OwnerBridgeClient.Request accepts only ensure/status and derives fixed scope-bound subjects; the server returns the unchanged L04 observation from real owning startup or qualified read-only refresh. Broker JSON cannot grant this client protected commands, storage or system privileges. Private enrollment and complete factory comparison remain separate authority checks. This local facade is under implementation and does not complete the P03 common plugin context or later domain clients. P02 now requires enrolled per-profile TLS before credentials reach the owner-status socket, with exact selected Docker ownership inspected separately. Advertised server name/version is not broker authentication. This transport repair is planned and remains unqualified. P02 RuntimeCleanupError retains the actual Bootstrap Session and service lease when process reaping is incomplete. Run transfers only that concrete ownership; the existing reaper releases it on completion, while a bounded explicit retry remains possible. No additional completion waiter, external callback or process identity adoption is introduced.",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/kernel-operation-proof-independent/independent-review.json",
+            "docs/planning/2026-10-09/delivery/evidence/P02/real-compose-current/review.json"
+          ]
+        },
+        {
+          "date": "2026-10-14",
+          "decision": "Record the draft pre-broker lifecycle receipt within the existing startup facade; keep application communication on NATS.",
+          "previousHow": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented. P00 proposes Python and TypeScript SDK clients that construct scoped domain service handles rather than expose unrestricted storage administration; see delivery/decisions/runtime-and-deployment.md and storage-contract.md. This is a recommendation pending P00 review. P02 adds a narrow local owner-status client and service over an isolated NATS HOST account. OwnerBridgeClient.Request accepts only ensure/status and derives fixed scope-bound subjects; the server returns the unchanged L04 observation from real owning startup or qualified read-only refresh. Broker JSON cannot grant this client protected commands, storage or system privileges. Private enrollment and complete factory comparison remain separate authority checks. This local facade is under implementation and does not complete the P03 common plugin context or later domain clients. P02 now requires enrolled per-profile TLS before credentials reach the owner-status socket, with exact selected Docker ownership inspected separately. Advertised server name/version is not broker authentication. This transport repair is planned and remains unqualified. P02 RuntimeCleanupError retains the actual Bootstrap Session and service lease when process reaping is incomplete. Run transfers only that concrete ownership; the existing reaper releases it on completion, while a bounded explicit retry remains possible. No additional completion waiter, external callback or process identity adoption is introduced. The bootstrap facade consumes one private complete broker inspection in its next kernel observation, bound to the exact original context and admitted policy. The proof is used once, rechecks enrollment, expires within the original budget and is discarded before mutation. TLS authentication and a fresh scoped snapshot remain mandatory. Fixed private archive reads run concurrently only after all broker ownership gates and join before any result.",
+          "evidence": "docs/planning/2026-10-09/delivery/decisions/P02-bootstrap-control-receipt.md",
+          "limits": "No installed CLI timing or native platform acceptance. First actual pending CLI run failed the strict ten-second gate; diagnosis and fresh owner revalidation are in progress."
+        },
+        {
+          "date": "2026-10-14",
+          "decision": "Retain original startup failure when owned cleanup also fails.",
+          "previousHow": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented. P00 proposes Python and TypeScript SDK clients that construct scoped domain service handles rather than expose unrestricted storage administration; see delivery/decisions/runtime-and-deployment.md and storage-contract.md. This is a recommendation pending P00 review. P02 adds a narrow local owner-status client and service over an isolated NATS HOST account. OwnerBridgeClient.Request accepts only ensure/status and derives fixed scope-bound subjects; the server returns the unchanged L04 observation from real owning startup or qualified read-only refresh. Broker JSON cannot grant this client protected commands, storage or system privileges. Private enrollment and complete factory comparison remain separate authority checks. This local facade is under implementation and does not complete the P03 common plugin context or later domain clients. P02 now requires enrolled per-profile TLS before credentials reach the owner-status socket, with exact selected Docker ownership inspected separately. Advertised server name/version is not broker authentication. This transport repair is planned and remains unqualified. P02 RuntimeCleanupError retains the actual Bootstrap Session and service lease when process reaping is incomplete. Run transfers only that concrete ownership; the existing reaper releases it on completion, while a bounded explicit retry remains possible. No additional completion waiter, external callback or process identity adoption is introduced. The bootstrap facade consumes one private complete broker inspection in its next kernel observation, bound to the exact original context and admitted policy. The proof is used once, rechecks enrollment, expires within the original budget and is discarded before mutation. TLS authentication and a fresh scoped snapshot remain mandatory. Fixed private archive reads run concurrently only after all broker ownership gates and join before any result. The P02 installed startup facade now has a draft lifecycle receipt bound to its newly spawned verified host and actual admitted operation. Receipt-only output records request acceptance and leaves current instance state unknown; authenticated NATS remains the source of current starting and readiness. Concrete receipt framing has independent Linux component evidence; full installed timing and supported-platform acceptance remain open.",
+          "evidence": "docs/planning/2026-10-09/delivery/evidence/P02/startup-cleanup-cause/root-review.json",
+          "limits": "Cause/privacy controls and affected actual-process checks pass; no forced simultaneous actual Start/Stop failure or native platform acceptance."
+        },
+        {
+          "date": "2026-10-14",
+          "reviewer": "Codex",
+          "previous": {
+            "how": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented. P00 proposes Python and TypeScript SDK clients that construct scoped domain service handles rather than expose unrestricted storage administration; see delivery/decisions/runtime-and-deployment.md and storage-contract.md. This is a recommendation pending P00 review. P02 adds a narrow local owner-status client and service over an isolated NATS HOST account. OwnerBridgeClient.Request accepts only ensure/status and derives fixed scope-bound subjects; the server returns the unchanged L04 observation from real owning startup or qualified read-only refresh. Broker JSON cannot grant this client protected commands, storage or system privileges. Private enrollment and complete factory comparison remain separate authority checks. This local facade is under implementation and does not complete the P03 common plugin context or later domain clients. P02 now requires enrolled per-profile TLS before credentials reach the owner-status socket, with exact selected Docker ownership inspected separately. Advertised server name/version is not broker authentication. This transport repair is planned and remains unqualified. P02 RuntimeCleanupError retains the actual Bootstrap Session and service lease when process reaping is incomplete. Run transfers only that concrete ownership; the existing reaper releases it on completion, while a bounded explicit retry remains possible. No additional completion waiter, external callback or process identity adoption is introduced. The bootstrap facade consumes one private complete broker inspection in its next kernel observation, bound to the exact original context and admitted policy. The proof is used once, rechecks enrollment, expires within the original budget and is discarded before mutation. TLS authentication and a fresh scoped snapshot remain mandatory. Fixed private archive reads run concurrently only after all broker ownership gates and join before any result. The P02 installed startup facade now has a draft lifecycle receipt bound to its newly spawned verified host and actual admitted operation. Receipt-only output records request acceptance and leaves current instance state unknown; authenticated NATS remains the source of current starting and readiness. Concrete receipt framing has independent Linux component evidence; full installed timing and supported-platform acceptance remain open. The protected startup failure path now preserves both startup and cleanup causes behind fixed safe formatting while returning the same exact owned Group. This repairs diagnostic cause loss without changing process ownership or deadlines.",
+            "tradeoffs": "Direct shared-runtime access is simpler but violates the accepted scopes. Narrow clients add schema/version maintenance; typed handles alone do not sandbox trusted native plugins.",
+            "locations": [
+              {
+                "path": "platform/launcher/owner_bridge.go",
+                "symbol": "OwnerBridgeClient.Request"
+              },
+              {
+                "path": "platform/launcher/owner_bridge.go",
+                "symbol": "OwnerBridgeServer.Run"
+              },
+              {
+                "path": "platform/launcher/session_cleanup.go",
+                "symbol": "RuntimeCleanupError"
+              },
+              {
+                "path": "platform/launcher/bootstrap.go",
+                "symbol": "BootstrapForInvocation"
+              },
+              {
+                "path": "platform/launcher/local_broker_authority.go",
+                "symbol": "inspectLocalBrokerOperation"
+              },
+              {
+                "path": "platform/launcher/docker_archives.go",
+                "symbol": "Docker.verifyOwnedTLSArchives"
+              },
+              {
+                "path": "platform/launcher/host_receipt_binding.go",
+                "symbol": "BootstrapReceiptBinding"
+              },
+              {
+                "path": "platform/launcher/host_receipt_server.go",
+                "symbol": "BridgeServerForInvocation"
+              },
+              {
+                "path": "platform/launcher/owner_bridge_receipt.go",
+                "symbol": "emitBootstrapAccepted"
+              },
+              {
+                "path": "platform/runtime/bootstrap_receipt.go",
+                "symbol": "BootstrapReceipt"
+              },
+              {
+                "path": "platform/runtime/startup_cleanup_cause.go",
+                "symbol": "retainStartupCleanupCause"
+              }
+            ],
+            "verificationEvidence": []
+          },
+          "note": "Resolved independent current source documentation finding; resource mechanisms are not extra patterns. Component evidence does not prove native or phase acceptance.",
+          "evidence": "docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json"
+        },
+        {
+          "date": "2026-10-14",
+          "reviewer": "Codex",
+          "previous": {
+            "how": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented. P00 proposes Python and TypeScript SDK clients that construct scoped domain service handles rather than expose unrestricted storage administration; see delivery/decisions/runtime-and-deployment.md and storage-contract.md. This is a recommendation pending P00 review. P02 adds a narrow local owner-status client and service over an isolated NATS HOST account. OwnerBridgeClient.Request accepts only ensure/status and derives fixed scope-bound subjects; the server returns the unchanged L04 observation from real owning startup or qualified read-only refresh. Broker JSON cannot grant this client protected commands, storage or system privileges. Private enrollment and complete factory comparison remain separate authority checks. This local facade is under implementation and does not complete the P03 common plugin context or later domain clients. P02 now requires enrolled per-profile TLS before credentials reach the owner-status socket, with exact selected Docker ownership inspected separately. Advertised server name/version is not broker authentication. This transport repair is planned and remains unqualified. P02 RuntimeCleanupError retains the actual Bootstrap Session and service lease when process reaping is incomplete. Run transfers only that concrete ownership; the existing reaper releases it on completion, while a bounded explicit retry remains possible. No additional completion waiter, external callback or process identity adoption is introduced. The bootstrap facade consumes one private complete broker inspection in its next kernel observation, bound to the exact original context and admitted policy. The proof is used once, rechecks enrollment, expires within the original budget and is discarded before mutation. TLS authentication and a fresh scoped snapshot remain mandatory. Fixed private archive reads run concurrently only after all broker ownership gates and join before any result. The P02 installed startup facade now has a draft lifecycle receipt bound to its newly spawned verified host and actual admitted operation. Receipt-only output records request acceptance and leaves current instance state unknown; authenticated NATS remains the source of current starting and readiness. Concrete receipt framing has independent Linux component evidence; full installed timing and supported-platform acceptance remain open. The protected startup failure path now preserves both startup and cleanup causes behind fixed safe formatting while returning the same exact owned Group. This repairs diagnostic cause loss without changing process ownership or deadlines. OwnerBridgeServer.Run acquires its actual service lease before starting exactly one bounded Bootstrap operation. Authenticated NATS can report starting only after actual admission and protected preparation mark that private operation entered. Run cancels and joins the exact operation before cleanup; joined completion preserves its actual failure, including concrete cleanup owners. A receipt revalidates the bound owner/profile outside operation locks before one accepted frame. Disconnected receipt I/O is nonfatal; changed enrollment is a core admission failure.",
+            "tradeoffs": "Direct shared-runtime access is simpler but violates the accepted scopes. Narrow clients add schema/version maintenance; typed handles alone do not sandbox trusted native plugins. Synchronous Bootstrap followed by service subscription is simpler but cannot report genuine starting while startup is in progress. The private operation adds cancellation/join and enrollment revalidation costs; blocked synchronous local filesystem calls remain an explicit timing limit. Receipt-only output conveys past request acceptance and leaves current state unknown; NATS remains the current-status authority.",
+            "locations": [
+              {
+                "path": "platform/launcher/owner_bridge.go",
+                "symbol": "OwnerBridgeClient.Request"
+              },
+              {
+                "path": "platform/launcher/owner_bridge.go",
+                "symbol": "OwnerBridgeServer.Run"
+              },
+              {
+                "path": "platform/launcher/session_cleanup.go",
+                "symbol": "RuntimeCleanupError"
+              },
+              {
+                "path": "platform/launcher/bootstrap.go",
+                "symbol": "BootstrapForInvocation"
+              },
+              {
+                "path": "platform/launcher/local_broker_authority.go",
+                "symbol": "inspectLocalBrokerOperation"
+              },
+              {
+                "path": "platform/launcher/docker_archives.go",
+                "symbol": "Docker.verifyOwnedTLSArchives"
+              },
+              {
+                "path": "platform/launcher/host_receipt_binding.go",
+                "symbol": "BootstrapReceiptBinding"
+              },
+              {
+                "path": "platform/launcher/host_receipt_server.go",
+                "symbol": "BridgeServerForInvocation"
+              },
+              {
+                "path": "platform/launcher/owner_bridge_receipt.go",
+                "symbol": "emitBootstrapAccepted"
+              },
+              {
+                "path": "platform/runtime/bootstrap_receipt.go",
+                "symbol": "BootstrapReceipt"
+              },
+              {
+                "path": "platform/runtime/startup_cleanup_cause.go",
+                "symbol": "retainStartupCleanupCause"
+              },
+              {
+                "path": "platform/launcher/bootstrap_operation.go",
+                "symbol": "bootstrapOperation.enter"
+              },
+              {
+                "path": "platform/launcher/startup_status.go",
+                "symbol": "OwnerStatus.mapStartingContext"
+              },
+              {
+                "path": "platform/launcher/owner_bridge_receipt.go",
+                "symbol": "joinedBridgeBootstrapResult"
+              }
+            ],
+            "verificationEvidence": [
+              "docs/planning/2026-10-09/delivery/evidence/P02/owner-bridge-receipt/review.json",
+              "docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json"
+            ]
+          },
+          "note": "Current real CLI refresh regression repaired without deadline, authority or freshness relaxation. Independent component review closed; actual installed and native gate evidence remains separate.",
+          "evidence": "docs/planning/2026-10-09/delivery/evidence/P02/owner-refresh-current/independent-review.json"
+        },
+        {
+          "date": "2026-10-14",
+          "reviewer": "Codex",
+          "previous": {
+            "how": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented. P00 proposes Python and TypeScript SDK clients that construct scoped domain service handles rather than expose unrestricted storage administration; see delivery/decisions/runtime-and-deployment.md and storage-contract.md. This is a recommendation pending P00 review. P02 adds a narrow local owner-status client and service over an isolated NATS HOST account. OwnerBridgeClient.Request accepts only ensure/status and derives fixed scope-bound subjects; the server returns the unchanged L04 observation from real owning startup or qualified read-only refresh. Broker JSON cannot grant this client protected commands, storage or system privileges. Private enrollment and complete factory comparison remain separate authority checks. This local facade is under implementation and does not complete the P03 common plugin context or later domain clients. P02 now requires enrolled per-profile TLS before credentials reach the owner-status socket, with exact selected Docker ownership inspected separately. Advertised server name/version is not broker authentication. This transport repair is planned and remains unqualified. P02 RuntimeCleanupError retains the actual Bootstrap Session and service lease when process reaping is incomplete. Run transfers only that concrete ownership; the existing reaper releases it on completion, while a bounded explicit retry remains possible. No additional completion waiter, external callback or process identity adoption is introduced. The bootstrap facade consumes one private complete broker inspection in its next kernel observation, bound to the exact original context and admitted policy. The proof is used once, rechecks enrollment, expires within the original budget and is discarded before mutation. TLS authentication and a fresh scoped snapshot remain mandatory. Fixed private archive reads run concurrently only after all broker ownership gates and join before any result. The P02 installed startup facade now has a draft lifecycle receipt bound to its newly spawned verified host and actual admitted operation. Receipt-only output records request acceptance and leaves current instance state unknown; authenticated NATS remains the source of current starting and readiness. Concrete receipt framing has independent Linux component evidence; full installed timing and supported-platform acceptance remain open. The protected startup failure path now preserves both startup and cleanup causes behind fixed safe formatting while returning the same exact owned Group. This repairs diagnostic cause loss without changing process ownership or deadlines. OwnerBridgeServer.Run acquires its actual service lease before starting exactly one bounded Bootstrap operation. Authenticated NATS can report starting only after actual admission and protected preparation mark that private operation entered. Run cancels and joins the exact operation before cleanup; joined completion preserves its actual failure, including concrete cleanup owners. A receipt revalidates the bound owner/profile outside operation locks before one accepted frame. Disconnected receipt I/O is nonfatal; changed enrollment is a core admission failure. Each owner-status refresh uses one fresh exact Docker inspection and one context-bound, single-use kernel observation proof. A later request inspects again; the proof is never stored in the Session or extended. Actual persistence and kernel cleanup failures are joined behind safe presentation and returned from the service loop before publishing a reply, so Run joins the operation and preserves concrete cleanup owners through its existing Session and lease cleanup.",
+            "tradeoffs": "Direct shared-runtime access is simpler but violates the accepted scopes. Narrow clients add schema/version maintenance; typed handles alone do not sandbox trusted native plugins. Synchronous Bootstrap followed by service subscription is simpler but cannot report genuine starting while startup is in progress. The private operation adds cancellation/join and enrollment revalidation costs; blocked synchronous local filesystem calls remain an explicit timing limit. Receipt-only output conveys past request acceptance and leaves current state unknown; NATS remains the current-status authority. Repeating complete inspection is simpler but consumed the bounded real owner request budget. Same-operation proof reuse adds strict context, scope and freshness checks; it never replaces TLS peer authentication. Fatal handling applies to concrete retained cleanup failures; ordinary missing readiness still reports honest unavailable status.",
+            "locations": [
+              {
+                "path": "platform/launcher/owner_bridge.go",
+                "symbol": "OwnerBridgeClient.Request"
+              },
+              {
+                "path": "platform/launcher/owner_bridge.go",
+                "symbol": "OwnerBridgeServer.Run"
+              },
+              {
+                "path": "platform/launcher/session_cleanup.go",
+                "symbol": "RuntimeCleanupError"
+              },
+              {
+                "path": "platform/launcher/bootstrap.go",
+                "symbol": "BootstrapForInvocation"
+              },
+              {
+                "path": "platform/launcher/local_broker_authority.go",
+                "symbol": "inspectLocalBrokerOperation"
+              },
+              {
+                "path": "platform/launcher/docker_archives.go",
+                "symbol": "Docker.verifyOwnedTLSArchives"
+              },
+              {
+                "path": "platform/launcher/host_receipt_binding.go",
+                "symbol": "BootstrapReceiptBinding"
+              },
+              {
+                "path": "platform/launcher/host_receipt_server.go",
+                "symbol": "BridgeServerForInvocation"
+              },
+              {
+                "path": "platform/launcher/owner_bridge_receipt.go",
+                "symbol": "emitBootstrapAccepted"
+              },
+              {
+                "path": "platform/runtime/bootstrap_receipt.go",
+                "symbol": "BootstrapReceipt"
+              },
+              {
+                "path": "platform/runtime/startup_cleanup_cause.go",
+                "symbol": "retainStartupCleanupCause"
+              },
+              {
+                "path": "platform/launcher/bootstrap_operation.go",
+                "symbol": "bootstrapOperation.enter"
+              },
+              {
+                "path": "platform/launcher/startup_status.go",
+                "symbol": "OwnerStatus.mapStartingContext"
+              },
+              {
+                "path": "platform/launcher/owner_bridge_receipt.go",
+                "symbol": "joinedBridgeBootstrapResult"
+              },
+              {
+                "path": "platform/launcher/owner_bridge.go",
+                "symbol": "OwnerBridgeServer.refresh"
+              },
+              {
+                "path": "platform/launcher/owner_bridge.go",
+                "symbol": "bridgeObservationCleanupFailure"
+              }
+            ],
+            "verificationEvidence": [
+              "docs/planning/2026-10-09/delivery/evidence/P02/owner-bridge-receipt/review.json",
+              "docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json",
+              "docs/planning/2026-10-09/delivery/evidence/P02/owner-refresh-current/independent-review.json"
+            ]
+          },
+          "reason": "Record initial scoped probe facade and its unchanged final observation path, preserving prior pattern use and failed installed qualification."
+        },
+        {
+          "date": "2026-10-14",
+          "reviewer": "Codex",
+          "previous": {
+            "how": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented. P00 proposes Python and TypeScript SDK clients that construct scoped domain service handles rather than expose unrestricted storage administration; see delivery/decisions/runtime-and-deployment.md and storage-contract.md. This is a recommendation pending P00 review. P02 adds a narrow local owner-status client and service over an isolated NATS HOST account. OwnerBridgeClient.Request accepts only ensure/status and derives fixed scope-bound subjects; the server returns the unchanged L04 observation from real owning startup or qualified read-only refresh. Broker JSON cannot grant this client protected commands, storage or system privileges. Private enrollment and complete factory comparison remain separate authority checks. This local facade is under implementation and does not complete the P03 common plugin context or later domain clients. P02 now requires enrolled per-profile TLS before credentials reach the owner-status socket, with exact selected Docker ownership inspected separately. Advertised server name/version is not broker authentication. This transport repair is planned and remains unqualified. P02 RuntimeCleanupError retains the actual Bootstrap Session and service lease when process reaping is incomplete. Run transfers only that concrete ownership; the existing reaper releases it on completion, while a bounded explicit retry remains possible. No additional completion waiter, external callback or process identity adoption is introduced. The bootstrap facade consumes one private complete broker inspection in its next kernel observation, bound to the exact original context and admitted policy. The proof is used once, rechecks enrollment, expires within the original budget and is discarded before mutation. TLS authentication and a fresh scoped snapshot remain mandatory. Fixed private archive reads run concurrently only after all broker ownership gates and join before any result. The P02 installed startup facade now has a draft lifecycle receipt bound to its newly spawned verified host and actual admitted operation. Receipt-only output records request acceptance and leaves current instance state unknown; authenticated NATS remains the source of current starting and readiness. Concrete receipt framing has independent Linux component evidence; full installed timing and supported-platform acceptance remain open. The protected startup failure path now preserves both startup and cleanup causes behind fixed safe formatting while returning the same exact owned Group. This repairs diagnostic cause loss without changing process ownership or deadlines. OwnerBridgeServer.Run acquires its actual service lease before starting exactly one bounded Bootstrap operation. Authenticated NATS can report starting only after actual admission and protected preparation mark that private operation entered. Run cancels and joins the exact operation before cleanup; joined completion preserves its actual failure, including concrete cleanup owners. A receipt revalidates the bound owner/profile outside operation locks before one accepted frame. Disconnected receipt I/O is nonfatal; changed enrollment is a core admission failure. Each owner-status refresh uses one fresh exact Docker inspection and one context-bound, single-use kernel observation proof. A later request inspects again; the proof is never stored in the Session or extended. Actual persistence and kernel cleanup failures are joined behind safe presentation and returned from the service loop before publishing a reply, so Run joins the operation and preserves concrete cleanup owners through its existing Session and lease cleanup. The initial ensure lookup now uses EnsureInvocation.Probe, a fixed operation on the existing scoped owner-status facade. It consumes one authenticated native no-responder hint to proceed to ordinary host admission; it grants no current state, readiness or ownership. Status and final ensure requests preserve their existing waiting behavior. Optional request reply subjects must equal the validated nonce-derived address; application replies still derive their destination from the validated request identity.",
+            "tradeoffs": "Direct shared-runtime access is simpler but violates the accepted scopes. Narrow clients add schema/version maintenance; typed handles alone do not sandbox trusted native plugins. Synchronous Bootstrap followed by service subscription is simpler but cannot report genuine starting while startup is in progress. The private operation adds cancellation/join and enrollment revalidation costs; blocked synchronous local filesystem calls remain an explicit timing limit. Receipt-only output conveys past request acceptance and leaves current state unknown; NATS remains the current-status authority. Repeating complete inspection is simpler but consumed the bounded real owner request budget. Same-operation proof reuse adds strict context, scope and freshness checks; it never replaces TLS peer authentication. Fatal handling applies to concrete retained cleanup failures; ordinary missing readiness still reports honest unavailable status. This adds a separate initial lookup path and strict pinned-server frame checks to avoid waiting for an absent subscriber. The simpler unchanged request loop consumes its reply wait before cold admission. Authentication, malformed frames, cancellation and concrete transport cleanup remain failures. Actual installed pending qualification failed separately, so component checks do not establish faster successful startup.",
+            "decisionEvidence": [
+              "docs/planning/2026-10-09/implementation-plan.md",
+              "docs/planning/2026-10-09/phases.json",
+              "docs/planning/2026-10-09/delivery/decisions/README.md",
+              "docs/planning/2026-10-09/delivery/contracts/README.md",
+              "docs/planning/2026-10-09/delivery/decisions/P02-owner-status-bridge.md",
+              "docs/planning/2026-10-09/delivery/decisions/P02-local-broker-authentication.md",
+              "docs/planning/2026-10-09/delivery/decisions/P02-local-broker-observation-proof.md"
+            ]
+          },
+          "reason": "Amend unintegrated history cleanup boundary to preserve genuine retry behavior; H01/H02/H03 findings remain open."
+        }
+      ],
+      "implementationRevisions": [
+        {
+          "date": "2026-10-14T14:55:59.395818+00:00",
+          "reason": "Promote independently reviewed private bootstrap history foundation without runtime integration",
+          "previous": {
+            "how": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented. P00 proposes Python and TypeScript SDK clients that construct scoped domain service handles rather than expose unrestricted storage administration; see delivery/decisions/runtime-and-deployment.md and storage-contract.md. This is a recommendation pending P00 review. P02 adds a narrow local owner-status client and service over an isolated NATS HOST account. OwnerBridgeClient.Request accepts only ensure/status and derives fixed scope-bound subjects; the server returns the unchanged L04 observation from real owning startup or qualified read-only refresh. Broker JSON cannot grant this client protected commands, storage or system privileges. Private enrollment and complete factory comparison remain separate authority checks. This local facade is under implementation and does not complete the P03 common plugin context or later domain clients. P02 now requires enrolled per-profile TLS before credentials reach the owner-status socket, with exact selected Docker ownership inspected separately. Advertised server name/version is not broker authentication. This transport repair is planned and remains unqualified. P02 RuntimeCleanupError retains the actual Bootstrap Session and service lease when process reaping is incomplete. Run transfers only that concrete ownership; the existing reaper releases it on completion, while a bounded explicit retry remains possible. No additional completion waiter, external callback or process identity adoption is introduced. The bootstrap facade consumes one private complete broker inspection in its next kernel observation, bound to the exact original context and admitted policy. The proof is used once, rechecks enrollment, expires within the original budget and is discarded before mutation. TLS authentication and a fresh scoped snapshot remain mandatory. Fixed private archive reads run concurrently only after all broker ownership gates and join before any result. The P02 installed startup facade now has a draft lifecycle receipt bound to its newly spawned verified host and actual admitted operation. Receipt-only output records request acceptance and leaves current instance state unknown; authenticated NATS remains the source of current starting and readiness. Concrete receipt framing has independent Linux component evidence; full installed timing and supported-platform acceptance remain open. The protected startup failure path now preserves both startup and cleanup causes behind fixed safe formatting while returning the same exact owned Group. This repairs diagnostic cause loss without changing process ownership or deadlines. OwnerBridgeServer.Run acquires its actual service lease before starting exactly one bounded Bootstrap operation. Authenticated NATS can report starting only after actual admission and protected preparation mark that private operation entered. Run cancels and joins the exact operation before cleanup; joined completion preserves its actual failure, including concrete cleanup owners. A receipt revalidates the bound owner/profile outside operation locks before one accepted frame. Disconnected receipt I/O is nonfatal; changed enrollment is a core admission failure. Each owner-status refresh uses one fresh exact Docker inspection and one context-bound, single-use kernel observation proof. A later request inspects again; the proof is never stored in the Session or extended. Actual persistence and kernel cleanup failures are joined behind safe presentation and returned from the service loop before publishing a reply, so Run joins the operation and preserves concrete cleanup owners through its existing Session and lease cleanup. The initial ensure lookup now uses EnsureInvocation.Probe, a fixed operation on the existing scoped owner-status facade. It consumes one authenticated native no-responder hint to proceed to ordinary host admission; it grants no current state, readiness or ownership. Status and final ensure requests preserve their existing waiting behavior. Optional request reply subjects must equal the validated nonce-derived address; application replies still derive their destination from the validated request identity. The unintegrated terminal-history proposal keeps historical diagnostic access behind the same scoped facade. Its history-only cleanup may retain an exact private staging object after publication joins, while releasing its extra service-lease duplicate so optional diagnostics do not block genuine startup retries. Core incomplete worker cleanup still retains its original lease; historical cleanup cannot publish or replace the shared history slot.",
+            "tradeoffs": "Direct shared-runtime access is simpler but violates the accepted scopes. Narrow clients add schema/version maintenance; typed handles alone do not sandbox trusted native plugins. Synchronous Bootstrap followed by service subscription is simpler but cannot report genuine starting while startup is in progress. The private operation adds cancellation/join and enrollment revalidation costs; blocked synchronous local filesystem calls remain an explicit timing limit. Receipt-only output conveys past request acceptance and leaves current state unknown; NATS remains the current-status authority. Repeating complete inspection is simpler but consumed the bounded real owner request budget. Same-operation proof reuse adds strict context, scope and freshness checks; it never replaces TLS peer authentication. Fatal handling applies to concrete retained cleanup failures; ordinary missing readiness still reports honest unavailable status. This adds a separate initial lookup path and strict pinned-server frame checks to avoid waiting for an absent subscriber. The simpler unchanged request loop consumes its reply wait before cold admission. Authentication, malformed frames, cancellation and concrete transport cleanup remain failures. Actual installed pending qualification failed separately, so component checks do not establish faster successful startup. The proposed narrower staging cleanup owner requires exact directory/name/inode checks and verification that old cleanup preserves a newer generation. Keeping its extra service lease until unlink succeeds is simpler but conflicts with the required retry behavior."
+          }
+        },
+        {
+          "date": "2026-10-14T15:23:24.374979+00:00",
+          "reason": "Promote reviewed installed-policy history reader facade; main and Run wiring remain open",
+          "previous": {
+            "how": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented. P00 proposes Python and TypeScript SDK clients that construct scoped domain service handles rather than expose unrestricted storage administration; see delivery/decisions/runtime-and-deployment.md and storage-contract.md. This is a recommendation pending P00 review. P02 adds a narrow local owner-status client and service over an isolated NATS HOST account. OwnerBridgeClient.Request accepts only ensure/status and derives fixed scope-bound subjects; the server returns the unchanged L04 observation from real owning startup or qualified read-only refresh. Broker JSON cannot grant this client protected commands, storage or system privileges. Private enrollment and complete factory comparison remain separate authority checks. This local facade is under implementation and does not complete the P03 common plugin context or later domain clients. P02 now requires enrolled per-profile TLS before credentials reach the owner-status socket, with exact selected Docker ownership inspected separately. Advertised server name/version is not broker authentication. This transport repair is planned and remains unqualified. P02 RuntimeCleanupError retains the actual Bootstrap Session and service lease when process reaping is incomplete. Run transfers only that concrete ownership; the existing reaper releases it on completion, while a bounded explicit retry remains possible. No additional completion waiter, external callback or process identity adoption is introduced. The bootstrap facade consumes one private complete broker inspection in its next kernel observation, bound to the exact original context and admitted policy. The proof is used once, rechecks enrollment, expires within the original budget and is discarded before mutation. TLS authentication and a fresh scoped snapshot remain mandatory. Fixed private archive reads run concurrently only after all broker ownership gates and join before any result. The P02 installed startup facade now has a draft lifecycle receipt bound to its newly spawned verified host and actual admitted operation. Receipt-only output records request acceptance and leaves current instance state unknown; authenticated NATS remains the source of current starting and readiness. Concrete receipt framing has independent Linux component evidence; full installed timing and supported-platform acceptance remain open. The protected startup failure path now preserves both startup and cleanup causes behind fixed safe formatting while returning the same exact owned Group. This repairs diagnostic cause loss without changing process ownership or deadlines. OwnerBridgeServer.Run acquires its actual service lease before starting exactly one bounded Bootstrap operation. Authenticated NATS can report starting only after actual admission and protected preparation mark that private operation entered. Run cancels and joins the exact operation before cleanup; joined completion preserves its actual failure, including concrete cleanup owners. A receipt revalidates the bound owner/profile outside operation locks before one accepted frame. Disconnected receipt I/O is nonfatal; changed enrollment is a core admission failure. Each owner-status refresh uses one fresh exact Docker inspection and one context-bound, single-use kernel observation proof. A later request inspects again; the proof is never stored in the Session or extended. Actual persistence and kernel cleanup failures are joined behind safe presentation and returned from the service loop before publishing a reply, so Run joins the operation and preserves concrete cleanup owners through its existing Session and lease cleanup. The initial ensure lookup now uses EnsureInvocation.Probe, a fixed operation on the existing scoped owner-status facade. It consumes one authenticated native no-responder hint to proceed to ordinary host admission; it grants no current state, readiness or ownership. Status and final ensure requests preserve their existing waiting behavior. Optional request reply subjects must equal the validated nonce-derived address; application replies still derive their destination from the validated request identity. The unintegrated terminal-history proposal keeps historical diagnostic access behind the same scoped facade. Its history-only cleanup may retain an exact private staging object after publication joins, while releasing its extra service-lease duplicate so optional diagnostics do not block genuine startup retries. Core incomplete worker cleanup still retains its original lease; historical cleanup cannot publish or replace the shared history slot. The promoted private bootstrap history foundation binds one fixed bounded slot to actual owner, scope, runtime, Compose configuration, engine, server trust and held service lease. It uses generation and inode checks for publication, independently revalidates canonical roots and permissions, and retains exact unpublished staging cleanup ownership. Actual Run and CLI integration remain pending.",
+            "tradeoffs": "Direct shared-runtime access is simpler but violates the accepted scopes. Narrow clients add schema/version maintenance; typed handles alone do not sandbox trusted native plugins. Synchronous Bootstrap followed by service subscription is simpler but cannot report genuine starting while startup is in progress. The private operation adds cancellation/join and enrollment revalidation costs; blocked synchronous local filesystem calls remain an explicit timing limit. Receipt-only output conveys past request acceptance and leaves current state unknown; NATS remains the current-status authority. Repeating complete inspection is simpler but consumed the bounded real owner request budget. Same-operation proof reuse adds strict context, scope and freshness checks; it never replaces TLS peer authentication. Fatal handling applies to concrete retained cleanup failures; ordinary missing readiness still reports honest unavailable status. This adds a separate initial lookup path and strict pinned-server frame checks to avoid waiting for an absent subscriber. The simpler unchanged request loop consumes its reply wait before cold admission. Authentication, malformed frames, cancellation and concrete transport cleanup remain failures. Actual installed pending qualification failed separately, so component checks do not establish faster successful startup. The proposed narrower staging cleanup owner requires exact directory/name/inode checks and verification that old cleanup preserves a newer generation. Keeping its extra service lease until unlink succeeds is simpler but conflicts with the required retry behavior. Optional history adds private filesystem ownership and timing costs. It remains a diagnostic of past failure, never a current-status authority. After publication has joined and retired, its duplicate lease can close while a concrete staging cleanup owner remains; incomplete core cleanup retains its own original lease. Linux component evidence does not prove installed or Darwin acceptance."
+          }
+        },
+        {
+          "date": "2026-10-14T15:34:22.782061+00:00",
+          "reason": "Promote independently reviewed owner history integration; running qualification remains pending",
+          "previous": {
+            "how": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented. P00 proposes Python and TypeScript SDK clients that construct scoped domain service handles rather than expose unrestricted storage administration; see delivery/decisions/runtime-and-deployment.md and storage-contract.md. This is a recommendation pending P00 review. P02 adds a narrow local owner-status client and service over an isolated NATS HOST account. OwnerBridgeClient.Request accepts only ensure/status and derives fixed scope-bound subjects; the server returns the unchanged L04 observation from real owning startup or qualified read-only refresh. Broker JSON cannot grant this client protected commands, storage or system privileges. Private enrollment and complete factory comparison remain separate authority checks. This local facade is under implementation and does not complete the P03 common plugin context or later domain clients. P02 now requires enrolled per-profile TLS before credentials reach the owner-status socket, with exact selected Docker ownership inspected separately. Advertised server name/version is not broker authentication. This transport repair is planned and remains unqualified. P02 RuntimeCleanupError retains the actual Bootstrap Session and service lease when process reaping is incomplete. Run transfers only that concrete ownership; the existing reaper releases it on completion, while a bounded explicit retry remains possible. No additional completion waiter, external callback or process identity adoption is introduced. The bootstrap facade consumes one private complete broker inspection in its next kernel observation, bound to the exact original context and admitted policy. The proof is used once, rechecks enrollment, expires within the original budget and is discarded before mutation. TLS authentication and a fresh scoped snapshot remain mandatory. Fixed private archive reads run concurrently only after all broker ownership gates and join before any result. The P02 installed startup facade now has a draft lifecycle receipt bound to its newly spawned verified host and actual admitted operation. Receipt-only output records request acceptance and leaves current instance state unknown; authenticated NATS remains the source of current starting and readiness. Concrete receipt framing has independent Linux component evidence; full installed timing and supported-platform acceptance remain open. The protected startup failure path now preserves both startup and cleanup causes behind fixed safe formatting while returning the same exact owned Group. This repairs diagnostic cause loss without changing process ownership or deadlines. OwnerBridgeServer.Run acquires its actual service lease before starting exactly one bounded Bootstrap operation. Authenticated NATS can report starting only after actual admission and protected preparation mark that private operation entered. Run cancels and joins the exact operation before cleanup; joined completion preserves its actual failure, including concrete cleanup owners. A receipt revalidates the bound owner/profile outside operation locks before one accepted frame. Disconnected receipt I/O is nonfatal; changed enrollment is a core admission failure. Each owner-status refresh uses one fresh exact Docker inspection and one context-bound, single-use kernel observation proof. A later request inspects again; the proof is never stored in the Session or extended. Actual persistence and kernel cleanup failures are joined behind safe presentation and returned from the service loop before publishing a reply, so Run joins the operation and preserves concrete cleanup owners through its existing Session and lease cleanup. The initial ensure lookup now uses EnsureInvocation.Probe, a fixed operation on the existing scoped owner-status facade. It consumes one authenticated native no-responder hint to proceed to ordinary host admission; it grants no current state, readiness or ownership. Status and final ensure requests preserve their existing waiting behavior. Optional request reply subjects must equal the validated nonce-derived address; application replies still derive their destination from the validated request identity. The unintegrated terminal-history proposal keeps historical diagnostic access behind the same scoped facade. Its history-only cleanup may retain an exact private staging object after publication joins, while releasing its extra service-lease duplicate so optional diagnostics do not block genuine startup retries. Core incomplete worker cleanup still retains its original lease; historical cleanup cannot publish or replace the shared history slot. The promoted private bootstrap history foundation binds one fixed bounded slot to actual owner, scope, runtime, Compose configuration, engine, server trust and held service lease. It uses generation and inode checks for publication, independently revalidates canonical roots and permissions, and retains exact unpublished staging cleanup ownership. Actual Run and CLI integration remain pending. The installed history reader facade reloads current policy and derives owner/runtime/binding internally. General reads require a free service lease; the creator exception requires the original factory receipt for that exact invocation. Its fixed seven-field document describes only past failure. Main and Run wiring remain open.",
+            "tradeoffs": "Direct shared-runtime access is simpler but violates the accepted scopes. Narrow clients add schema/version maintenance; typed handles alone do not sandbox trusted native plugins. Synchronous Bootstrap followed by service subscription is simpler but cannot report genuine starting while startup is in progress. The private operation adds cancellation/join and enrollment revalidation costs; blocked synchronous local filesystem calls remain an explicit timing limit. Receipt-only output conveys past request acceptance and leaves current state unknown; NATS remains the current-status authority. Repeating complete inspection is simpler but consumed the bounded real owner request budget. Same-operation proof reuse adds strict context, scope and freshness checks; it never replaces TLS peer authentication. Fatal handling applies to concrete retained cleanup failures; ordinary missing readiness still reports honest unavailable status. This adds a separate initial lookup path and strict pinned-server frame checks to avoid waiting for an absent subscriber. The simpler unchanged request loop consumes its reply wait before cold admission. Authentication, malformed frames, cancellation and concrete transport cleanup remain failures. Actual installed pending qualification failed separately, so component checks do not establish faster successful startup. The proposed narrower staging cleanup owner requires exact directory/name/inode checks and verification that old cleanup preserves a newer generation. Keeping its extra service lease until unlink succeeds is simpler but conflicts with the required retry behavior. Optional history adds private filesystem ownership and timing costs. It remains a diagnostic of past failure, never a current-status authority. After publication has joined and retired, its duplicate lease can close while a concrete staging cleanup owner remains; incomplete core cleanup retains its own original lease. Linux component evidence does not prove installed or Darwin acceptance. Fresh policy reloads add local read costs and refuse drift; accepting caller-supplied history bindings is simpler but would manufacture authority. Reads stay within the caller deadline and a capped local I/O budget; native timing and installed integration require separate checks."
+          }
+        },
+        {
+          "date": "2026-10-14T15:47:09.953237+00:00",
+          "reason": "Promote reviewed CLI history wiring, preserving actual NATS precedence and failed result",
+          "previous": {
+            "how": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented. P00 proposes Python and TypeScript SDK clients that construct scoped domain service handles rather than expose unrestricted storage administration; see delivery/decisions/runtime-and-deployment.md and storage-contract.md. This is a recommendation pending P00 review. P02 adds a narrow local owner-status client and service over an isolated NATS HOST account. OwnerBridgeClient.Request accepts only ensure/status and derives fixed scope-bound subjects; the server returns the unchanged L04 observation from real owning startup or qualified read-only refresh. Broker JSON cannot grant this client protected commands, storage or system privileges. Private enrollment and complete factory comparison remain separate authority checks. This local facade is under implementation and does not complete the P03 common plugin context or later domain clients. P02 now requires enrolled per-profile TLS before credentials reach the owner-status socket, with exact selected Docker ownership inspected separately. Advertised server name/version is not broker authentication. This transport repair is planned and remains unqualified. P02 RuntimeCleanupError retains the actual Bootstrap Session and service lease when process reaping is incomplete. Run transfers only that concrete ownership; the existing reaper releases it on completion, while a bounded explicit retry remains possible. No additional completion waiter, external callback or process identity adoption is introduced. The bootstrap facade consumes one private complete broker inspection in its next kernel observation, bound to the exact original context and admitted policy. The proof is used once, rechecks enrollment, expires within the original budget and is discarded before mutation. TLS authentication and a fresh scoped snapshot remain mandatory. Fixed private archive reads run concurrently only after all broker ownership gates and join before any result. The P02 installed startup facade now has a draft lifecycle receipt bound to its newly spawned verified host and actual admitted operation. Receipt-only output records request acceptance and leaves current instance state unknown; authenticated NATS remains the source of current starting and readiness. Concrete receipt framing has independent Linux component evidence; full installed timing and supported-platform acceptance remain open. The protected startup failure path now preserves both startup and cleanup causes behind fixed safe formatting while returning the same exact owned Group. This repairs diagnostic cause loss without changing process ownership or deadlines. OwnerBridgeServer.Run acquires its actual service lease before starting exactly one bounded Bootstrap operation. Authenticated NATS can report starting only after actual admission and protected preparation mark that private operation entered. Run cancels and joins the exact operation before cleanup; joined completion preserves its actual failure, including concrete cleanup owners. A receipt revalidates the bound owner/profile outside operation locks before one accepted frame. Disconnected receipt I/O is nonfatal; changed enrollment is a core admission failure. Each owner-status refresh uses one fresh exact Docker inspection and one context-bound, single-use kernel observation proof. A later request inspects again; the proof is never stored in the Session or extended. Actual persistence and kernel cleanup failures are joined behind safe presentation and returned from the service loop before publishing a reply, so Run joins the operation and preserves concrete cleanup owners through its existing Session and lease cleanup. The initial ensure lookup now uses EnsureInvocation.Probe, a fixed operation on the existing scoped owner-status facade. It consumes one authenticated native no-responder hint to proceed to ordinary host admission; it grants no current state, readiness or ownership. Status and final ensure requests preserve their existing waiting behavior. Optional request reply subjects must equal the validated nonce-derived address; application replies still derive their destination from the validated request identity. The unintegrated terminal-history proposal keeps historical diagnostic access behind the same scoped facade. Its history-only cleanup may retain an exact private staging object after publication joins, while releasing its extra service-lease duplicate so optional diagnostics do not block genuine startup retries. Core incomplete worker cleanup still retains its original lease; historical cleanup cannot publish or replace the shared history slot. The promoted private bootstrap history foundation binds one fixed bounded slot to actual owner, scope, runtime, Compose configuration, engine, server trust and held service lease. It uses generation and inode checks for publication, independently revalidates canonical roots and permissions, and retains exact unpublished staging cleanup ownership. Actual Run and CLI integration remain pending. The installed history reader facade reloads current policy and derives owner/runtime/binding internally. General reads require a free service lease; the creator exception requires the original factory receipt for that exact invocation. Its fixed seven-field document describes only past failure. Main and Run wiring remain open. Owner history is now wired in source: the installed factory derives binding without requiring a receipt descriptor; generic servers remain disabled. The actual protected operation entry begins history, its sole worker records completion, and Run joins publication before teardown. Actual operation creation time preserves preentry failure chronology. Failed startup can finalize under one shared existing core cleanup envelope; healthy runtime retires its optional lease duplicate promptly. Concrete root/staging ownership stays private; public warnings carry a literal fixed code without cleanup ancestry. Actual Run and CLI qualification remain pending.",
+            "tradeoffs": "Direct shared-runtime access is simpler but violates the accepted scopes. Narrow clients add schema/version maintenance; typed handles alone do not sandbox trusted native plugins. Synchronous Bootstrap followed by service subscription is simpler but cannot report genuine starting while startup is in progress. The private operation adds cancellation/join and enrollment revalidation costs; blocked synchronous local filesystem calls remain an explicit timing limit. Receipt-only output conveys past request acceptance and leaves current state unknown; NATS remains the current-status authority. Repeating complete inspection is simpler but consumed the bounded real owner request budget. Same-operation proof reuse adds strict context, scope and freshness checks; it never replaces TLS peer authentication. Fatal handling applies to concrete retained cleanup failures; ordinary missing readiness still reports honest unavailable status. This adds a separate initial lookup path and strict pinned-server frame checks to avoid waiting for an absent subscriber. The simpler unchanged request loop consumes its reply wait before cold admission. Authentication, malformed frames, cancellation and concrete transport cleanup remain failures. Actual installed pending qualification failed separately, so component checks do not establish faster successful startup. The proposed narrower staging cleanup owner requires exact directory/name/inode checks and verification that old cleanup preserves a newer generation. Keeping its extra service lease until unlink succeeds is simpler but conflicts with the required retry behavior. Optional history adds private filesystem ownership and timing costs. It remains a diagnostic of past failure, never a current-status authority. After publication has joined and retired, its duplicate lease can close while a concrete staging cleanup owner remains; incomplete core cleanup retains its own original lease. Linux component evidence does not prove installed or Darwin acceptance. Fresh policy reloads add local read costs and refuse drift; accepting caller-supplied history bindings is simpler but would manufacture authority. Reads stay within the caller deadline and a capped local I/O budget; native timing and installed integration require separate checks. Shared cleanup context preserves the original total envelope and exact incomplete core ownership. Quiescent retirement closes only the history duplicate, allowing genuine retries while exact temporary-file cleanup remains owned. Separate immutable warning snapshots add lifecycle rules: one writer before join, serialized cleanup afterward, and no writes on refused gates. Actual six-case component evidence is narrower than running lifecycle acceptance."
+          }
+        },
+        {
+          "date": "2026-10-14T16:24:03.752904+00:00",
+          "reason": "Preserve hard NATS authority failures while preventing arbitrary callback text in CLI diagnostics",
+          "previous": {
+            "how": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented. P00 proposes Python and TypeScript SDK clients that construct scoped domain service handles rather than expose unrestricted storage administration; see delivery/decisions/runtime-and-deployment.md and storage-contract.md. This is a recommendation pending P00 review. P02 adds a narrow local owner-status client and service over an isolated NATS HOST account. OwnerBridgeClient.Request accepts only ensure/status and derives fixed scope-bound subjects; the server returns the unchanged L04 observation from real owning startup or qualified read-only refresh. Broker JSON cannot grant this client protected commands, storage or system privileges. Private enrollment and complete factory comparison remain separate authority checks. This local facade is under implementation and does not complete the P03 common plugin context or later domain clients. P02 now requires enrolled per-profile TLS before credentials reach the owner-status socket, with exact selected Docker ownership inspected separately. Advertised server name/version is not broker authentication. This transport repair is planned and remains unqualified. P02 RuntimeCleanupError retains the actual Bootstrap Session and service lease when process reaping is incomplete. Run transfers only that concrete ownership; the existing reaper releases it on completion, while a bounded explicit retry remains possible. No additional completion waiter, external callback or process identity adoption is introduced. The bootstrap facade consumes one private complete broker inspection in its next kernel observation, bound to the exact original context and admitted policy. The proof is used once, rechecks enrollment, expires within the original budget and is discarded before mutation. TLS authentication and a fresh scoped snapshot remain mandatory. Fixed private archive reads run concurrently only after all broker ownership gates and join before any result. The P02 installed startup facade now has a draft lifecycle receipt bound to its newly spawned verified host and actual admitted operation. Receipt-only output records request acceptance and leaves current instance state unknown; authenticated NATS remains the source of current starting and readiness. Concrete receipt framing has independent Linux component evidence; full installed timing and supported-platform acceptance remain open. The protected startup failure path now preserves both startup and cleanup causes behind fixed safe formatting while returning the same exact owned Group. This repairs diagnostic cause loss without changing process ownership or deadlines. OwnerBridgeServer.Run acquires its actual service lease before starting exactly one bounded Bootstrap operation. Authenticated NATS can report starting only after actual admission and protected preparation mark that private operation entered. Run cancels and joins the exact operation before cleanup; joined completion preserves its actual failure, including concrete cleanup owners. A receipt revalidates the bound owner/profile outside operation locks before one accepted frame. Disconnected receipt I/O is nonfatal; changed enrollment is a core admission failure. Each owner-status refresh uses one fresh exact Docker inspection and one context-bound, single-use kernel observation proof. A later request inspects again; the proof is never stored in the Session or extended. Actual persistence and kernel cleanup failures are joined behind safe presentation and returned from the service loop before publishing a reply, so Run joins the operation and preserves concrete cleanup owners through its existing Session and lease cleanup. The initial ensure lookup now uses EnsureInvocation.Probe, a fixed operation on the existing scoped owner-status facade. It consumes one authenticated native no-responder hint to proceed to ordinary host admission; it grants no current state, readiness or ownership. Status and final ensure requests preserve their existing waiting behavior. Optional request reply subjects must equal the validated nonce-derived address; application replies still derive their destination from the validated request identity. The unintegrated terminal-history proposal keeps historical diagnostic access behind the same scoped facade. Its history-only cleanup may retain an exact private staging object after publication joins, while releasing its extra service-lease duplicate so optional diagnostics do not block genuine startup retries. Core incomplete worker cleanup still retains its original lease; historical cleanup cannot publish or replace the shared history slot. The promoted private bootstrap history foundation binds one fixed bounded slot to actual owner, scope, runtime, Compose configuration, engine, server trust and held service lease. It uses generation and inode checks for publication, independently revalidates canonical roots and permissions, and retains exact unpublished staging cleanup ownership. Actual Run and CLI integration remain pending. The installed history reader facade reloads current policy and derives owner/runtime/binding internally. General reads require a free service lease; the creator exception requires the original factory receipt for that exact invocation. Its fixed seven-field document describes only past failure. Main and Run wiring remain open. Owner history is now wired in source: the installed factory derives binding without requiring a receipt descriptor; generic servers remain disabled. The actual protected operation entry begins history, its sole worker records completion, and Run joins publication before teardown. Actual operation creation time preserves preentry failure chronology. Failed startup can finalize under one shared existing core cleanup envelope; healthy runtime retires its optional lease duplicate promptly. Concrete root/staging ownership stays private; public warnings carry a literal fixed code without cleanup ancestry. Actual Run and CLI qualification remain pending. CLI wiring is now in source. Authenticated NATS replies return first; initial ensure still performs genuine admission and startup. Only unavailable status, or an accepted exact creator with unavailable final status, can read the historical facade. The separate tagged history document preserves the original nonzero request error and fixed stderr diagnostic. Earlier wiring-open statements describe prior source stages; actual running and native qualification remain pending.",
+            "tradeoffs": "Direct shared-runtime access is simpler but violates the accepted scopes. Narrow clients add schema/version maintenance; typed handles alone do not sandbox trusted native plugins. Synchronous Bootstrap followed by service subscription is simpler but cannot report genuine starting while startup is in progress. The private operation adds cancellation/join and enrollment revalidation costs; blocked synchronous local filesystem calls remain an explicit timing limit. Receipt-only output conveys past request acceptance and leaves current state unknown; NATS remains the current-status authority. Repeating complete inspection is simpler but consumed the bounded real owner request budget. Same-operation proof reuse adds strict context, scope and freshness checks; it never replaces TLS peer authentication. Fatal handling applies to concrete retained cleanup failures; ordinary missing readiness still reports honest unavailable status. This adds a separate initial lookup path and strict pinned-server frame checks to avoid waiting for an absent subscriber. The simpler unchanged request loop consumes its reply wait before cold admission. Authentication, malformed frames, cancellation and concrete transport cleanup remain failures. Actual installed pending qualification failed separately, so component checks do not establish faster successful startup. The proposed narrower staging cleanup owner requires exact directory/name/inode checks and verification that old cleanup preserves a newer generation. Keeping its extra service lease until unlink succeeds is simpler but conflicts with the required retry behavior. Optional history adds private filesystem ownership and timing costs. It remains a diagnostic of past failure, never a current-status authority. After publication has joined and retired, its duplicate lease can close while a concrete staging cleanup owner remains; incomplete core cleanup retains its own original lease. Linux component evidence does not prove installed or Darwin acceptance. Fresh policy reloads add local read costs and refuse drift; accepting caller-supplied history bindings is simpler but would manufacture authority. Reads stay within the caller deadline and a capped local I/O budget; native timing and installed integration require separate checks. Shared cleanup context preserves the original total envelope and exact incomplete core ownership. Quiescent retirement closes only the history duplicate, allowing genuine retries while exact temporary-file cleanup remains owned. Separate immutable warning snapshots add lifecycle rules: one writer before join, serialized cleanup afterward, and no writes on refused gates. Actual six-case component evidence is narrower than running lifecycle acceptance. A capped 200-millisecond history read consumes part of the existing response allowance while preserving one-second receipt cleanup and 300-millisecond output reserve inside the original total deadline. Treating old history as current status would be simpler but falsely claim readiness. Pure budget/emission controls do not prove eligible reader bypass or a running CLI."
+          }
+        },
+        {
+          "date": "2026-10-14T16:50:15.694870+00:00",
+          "reason": "Preserve one accepted request across actual canceled-core completion",
+          "previous": {
+            "how": "Expose small scoped context clients for domain commands, approved NATS reads, configuration and artifacts. Injected handles do not expose unrestricted JetStream management or another project's data. Proposed location: docs/planning/2026-10-09/implementation-plan.md, STATE-01, P03, P04, P08. Implementation locations will be recorded when implemented. P00 proposes Python and TypeScript SDK clients that construct scoped domain service handles rather than expose unrestricted storage administration; see delivery/decisions/runtime-and-deployment.md and storage-contract.md. This is a recommendation pending P00 review. P02 adds a narrow local owner-status client and service over an isolated NATS HOST account. OwnerBridgeClient.Request accepts only ensure/status and derives fixed scope-bound subjects; the server returns the unchanged L04 observation from real owning startup or qualified read-only refresh. Broker JSON cannot grant this client protected commands, storage or system privileges. Private enrollment and complete factory comparison remain separate authority checks. This local facade is under implementation and does not complete the P03 common plugin context or later domain clients. P02 now requires enrolled per-profile TLS before credentials reach the owner-status socket, with exact selected Docker ownership inspected separately. Advertised server name/version is not broker authentication. This transport repair is planned and remains unqualified. P02 RuntimeCleanupError retains the actual Bootstrap Session and service lease when process reaping is incomplete. Run transfers only that concrete ownership; the existing reaper releases it on completion, while a bounded explicit retry remains possible. No additional completion waiter, external callback or process identity adoption is introduced. The bootstrap facade consumes one private complete broker inspection in its next kernel observation, bound to the exact original context and admitted policy. The proof is used once, rechecks enrollment, expires within the original budget and is discarded before mutation. TLS authentication and a fresh scoped snapshot remain mandatory. Fixed private archive reads run concurrently only after all broker ownership gates and join before any result. The P02 installed startup facade now has a draft lifecycle receipt bound to its newly spawned verified host and actual admitted operation. Receipt-only output records request acceptance and leaves current instance state unknown; authenticated NATS remains the source of current starting and readiness. Concrete receipt framing has independent Linux component evidence; full installed timing and supported-platform acceptance remain open. The protected startup failure path now preserves both startup and cleanup causes behind fixed safe formatting while returning the same exact owned Group. This repairs diagnostic cause loss without changing process ownership or deadlines. OwnerBridgeServer.Run acquires its actual service lease before starting exactly one bounded Bootstrap operation. Authenticated NATS can report starting only after actual admission and protected preparation mark that private operation entered. Run cancels and joins the exact operation before cleanup; joined completion preserves its actual failure, including concrete cleanup owners. A receipt revalidates the bound owner/profile outside operation locks before one accepted frame. Disconnected receipt I/O is nonfatal; changed enrollment is a core admission failure. Each owner-status refresh uses one fresh exact Docker inspection and one context-bound, single-use kernel observation proof. A later request inspects again; the proof is never stored in the Session or extended. Actual persistence and kernel cleanup failures are joined behind safe presentation and returned from the service loop before publishing a reply, so Run joins the operation and preserves concrete cleanup owners through its existing Session and lease cleanup. The initial ensure lookup now uses EnsureInvocation.Probe, a fixed operation on the existing scoped owner-status facade. It consumes one authenticated native no-responder hint to proceed to ordinary host admission; it grants no current state, readiness or ownership. Status and final ensure requests preserve their existing waiting behavior. Optional request reply subjects must equal the validated nonce-derived address; application replies still derive their destination from the validated request identity. The unintegrated terminal-history proposal keeps historical diagnostic access behind the same scoped facade. Its history-only cleanup may retain an exact private staging object after publication joins, while releasing its extra service-lease duplicate so optional diagnostics do not block genuine startup retries. Core incomplete worker cleanup still retains its original lease; historical cleanup cannot publish or replace the shared history slot. The promoted private bootstrap history foundation binds one fixed bounded slot to actual owner, scope, runtime, Compose configuration, engine, server trust and held service lease. It uses generation and inode checks for publication, independently revalidates canonical roots and permissions, and retains exact unpublished staging cleanup ownership. Actual Run and CLI integration remain pending. The installed history reader facade reloads current policy and derives owner/runtime/binding internally. General reads require a free service lease; the creator exception requires the original factory receipt for that exact invocation. Its fixed seven-field document describes only past failure. Main and Run wiring remain open. Owner history is now wired in source: the installed factory derives binding without requiring a receipt descriptor; generic servers remain disabled. The actual protected operation entry begins history, its sole worker records completion, and Run joins publication before teardown. Actual operation creation time preserves preentry failure chronology. Failed startup can finalize under one shared existing core cleanup envelope; healthy runtime retires its optional lease duplicate promptly. Concrete root/staging ownership stays private; public warnings carry a literal fixed code without cleanup ancestry. Actual Run and CLI qualification remain pending. CLI wiring is now in source. Authenticated NATS replies return first; initial ensure still performs genuine admission and startup. Only unavailable status, or an accepted exact creator with unavailable final status, can read the historical facade. The separate tagged history document preserves the original nonzero request error and fixed stderr diagnostic. Earlier wiring-open statements describe prior source stages; actual running and native qualification remain pending. The common connection factory installs a fixed non-capturing NATS error handler before callbacks begin. Known permission, authentication, revocation and account-expiry errors are read from LastError after ordered flushes and waits, before unavailable mapping and accepting a reply. Probe retains its unknown-error rejection. Denied authority never becomes eligible historical fallback.",
+            "tradeoffs": "Direct shared-runtime access is simpler but violates the accepted scopes. Narrow clients add schema/version maintenance; typed handles alone do not sandbox trusted native plugins. Synchronous Bootstrap followed by service subscription is simpler but cannot report genuine starting while startup is in progress. The private operation adds cancellation/join and enrollment revalidation costs; blocked synchronous local filesystem calls remain an explicit timing limit. Receipt-only output conveys past request acceptance and leaves current state unknown; NATS remains the current-status authority. Repeating complete inspection is simpler but consumed the bounded real owner request budget. Same-operation proof reuse adds strict context, scope and freshness checks; it never replaces TLS peer authentication. Fatal handling applies to concrete retained cleanup failures; ordinary missing readiness still reports honest unavailable status. This adds a separate initial lookup path and strict pinned-server frame checks to avoid waiting for an absent subscriber. The simpler unchanged request loop consumes its reply wait before cold admission. Authentication, malformed frames, cancellation and concrete transport cleanup remain failures. Actual installed pending qualification failed separately, so component checks do not establish faster successful startup. The proposed narrower staging cleanup owner requires exact directory/name/inode checks and verification that old cleanup preserves a newer generation. Keeping its extra service lease until unlink succeeds is simpler but conflicts with the required retry behavior. Optional history adds private filesystem ownership and timing costs. It remains a diagnostic of past failure, never a current-status authority. After publication has joined and retired, its duplicate lease can close while a concrete staging cleanup owner remains; incomplete core cleanup retains its own original lease. Linux component evidence does not prove installed or Darwin acceptance. Fresh policy reloads add local read costs and refuse drift; accepting caller-supplied history bindings is simpler but would manufacture authority. Reads stay within the caller deadline and a capped local I/O budget; native timing and installed integration require separate checks. Shared cleanup context preserves the original total envelope and exact incomplete core ownership. Quiescent retirement closes only the history duplicate, allowing genuine retries while exact temporary-file cleanup remains owned. Separate immutable warning snapshots add lifecycle rules: one writer before join, serialized cleanup afterward, and no writes on refused gates. Actual six-case component evidence is narrower than running lifecycle acceptance. A capped 200-millisecond history read consumes part of the existing response allowance while preserving one-second receipt cleanup and 300-millisecond output reserve inside the original total deadline. Treating old history as current status would be simpler but falsely claim readiness. Pure budget/emission controls do not prove eligible reader bypass or a running CLI. Fixed callback handling requires explicit sentinel checks; suppressing console text alone would hide denied access as unavailability. A configurable callback is simpler but permits arbitrary text and caller behavior at this private boundary. Actual denied publish and subscribe controls cover the repaired default client; installed CLI output requires separate qualification."
+          }
         }
       ]
     },
@@ -1828,6 +2446,154 @@ This registry records how, where, and why approved Dofactory and Enterprise Inte
         "docs/planning/2026-10-09/implementation-plan.md",
         "docs/planning/2026-10-09/phases.json"
       ]
+    },
+    {
+      "id": "P02-TLS-01",
+      "status": "observed",
+      "catalog": "dofactory",
+      "pattern": "Adapter",
+      "source": "https://www.dofactory.com/net/adapter-design-pattern",
+      "referenceDepth": "full-public-reference",
+      "how": "The localtls Dialer implements the NATS custom dialer interface. It opens only the enrolled endpoint and returns a socket after TLS 1.3 chain, DNS, validity and exact leaf-pin checks. NATS treats that returned socket as already secured. The adapter owns cancellation and socket cleanup; protocol, health and status clients share the same immutable trust object. This narrow P02 implementation does not complete the planned client, worker, vendor, storage or UI adapters in PLAN-02. The deployment raw dialer used by historical Probe/Observe and declared Team TLS connections owns only its DialContext sockets. It retains exact failures from owner/SDK/cancellation and concrete RawTransportCleanupError retry state. Probe, Observe and Team clear successful facts on any reported cleanup failure. Team transport remains separate from enrolled local TLS-first authentication; do not equate the two authority policies.",
+      "why": "A local peer must prove its enrolled identity before any NATS CONNECT credential is sent. Broker INFO and Docker identity checks alone cannot authenticate a socket.",
+      "tradeoffs": "The adapter adds TLS enrollment, fixed trust distribution, expiry/rotation and cleanup obligations. The original protocol cleanup finding and later observer/bridge retry-handle finding are retained in historical reviews and now have independently reviewed repairs. Typed errors retain only the exact owned connection for bounded retry and invalidate successful observations on cleanup failure. Installed Compose and native qualification remain open; Linux transport and focused cleanup checks do not accept the phase. A subsequent health caller cleanup finding has a reviewed concrete-owner repair. Actual helper fault and early fixture cleanup controls pass; outer Probe/Observe result invalidation was reviewed in source, without a claim of forced outer-caller close failure. Native and installed acceptance remains separate. The bare standard NATS dialer is simpler but cannot preserve the exact failed cleanup owner. Raw/socket component fault controls and caller source invalidation do not claim forced full-caller fault injection or native Darwin/Compose acceptance.",
+      "locations": [
+        {
+          "path": "platform/localtls/client.go",
+          "symbol": "Dialer"
+        },
+        {
+          "path": "platform/kernel/protocol/transport.go",
+          "symbol": "Open"
+        },
+        {
+          "path": "platform/deployment/probe.go",
+          "symbol": "ProbeOptions"
+        },
+        {
+          "path": "platform/launcher/transport_cleanup.go",
+          "symbol": "TransportCleanupError"
+        },
+        {
+          "path": "platform/deployment/probe_cleanup.go",
+          "symbol": "ProbeCleanupError"
+        },
+        {
+          "path": "platform/deployment/raw_transport_cleanup.go",
+          "symbol": "RawTransportCleanupError"
+        },
+        {
+          "path": "platform/deployment/team_connection.go",
+          "symbol": "TeamConnection.Observe"
+        }
+      ],
+      "verificationEvidence": [
+        "platform/localtls/client_test.go",
+        "platform/kernel/protocol/server_trust_test.go",
+        "platform/deployment/local_tls_probe_test.go",
+        "docs/planning/2026-10-09/delivery/evidence/P02/combined-cleanup-independent/independent-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/health-cleanup-independent/independent-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json"
+      ],
+      "decisionEvidence": [
+        "docs/planning/2026-10-09/delivery/decisions/P02-local-broker-authentication.md"
+      ],
+      "planningRevisions": [
+        {
+          "date": "2026-10-13",
+          "decision": "Record the observed P02 transport adapter without advancing later adapter qualification",
+          "reason": "Source and focused tests exist; caller cleanup repair, real Compose and native platform verification remain open."
+        },
+        {
+          "date": "2026-10-14",
+          "decision": "Close the concrete protocol, observer and owner-bridge retained cleanup findings from reviewed evidence; keep installed and native qualification open.",
+          "previousTradeoffs": "Using the ordinary NATS dialer with claimed INFO identity is simpler but permits credentials to reach an impersonating peer. This adapter adds TLS enrollment, fixed trust distribution, explicit expiry/rotation and cleanup obligations. Independent review found a protocol caller that discards cleanup errors; that repair and native qualification remain open. Passing Linux transport tests are not installed Compose or phase acceptance.",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/shared-tls-cleanup-independent/independent-review.json",
+            "docs/planning/2026-10-09/delivery/evidence/P02/combined-cleanup-independent/independent-review.json"
+          ]
+        },
+        {
+          "date": "2026-10-14",
+          "decision": "Close the health caller retained-owner finding with independent source and actual owned-socket controls; preserve caller integration limits.",
+          "previousTradeoffs": "The adapter adds TLS enrollment, fixed trust distribution, expiry/rotation and cleanup obligations. The original protocol cleanup finding and later observer/bridge retry-handle finding are retained in historical reviews and now have independently reviewed repairs. Typed errors retain only the exact owned connection for bounded retry and invalidate successful observations on cleanup failure. Installed Compose and native qualification remain open; Linux transport and focused cleanup checks do not accept the phase.",
+          "evidence": "docs/planning/2026-10-09/delivery/evidence/P02/health-cleanup-independent/independent-review.json"
+        },
+        {
+          "date": "2026-10-14",
+          "reviewer": "Codex",
+          "previous": {
+            "how": "The localtls Dialer implements the NATS custom dialer interface. It opens only the enrolled endpoint and returns a socket after TLS 1.3 chain, DNS, validity and exact leaf-pin checks. NATS treats that returned socket as already secured. The adapter owns cancellation and socket cleanup; protocol, health and status clients share the same immutable trust object. This narrow P02 implementation does not complete the planned client, worker, vendor, storage or UI adapters in PLAN-02.",
+            "tradeoffs": "The adapter adds TLS enrollment, fixed trust distribution, expiry/rotation and cleanup obligations. The original protocol cleanup finding and later observer/bridge retry-handle finding are retained in historical reviews and now have independently reviewed repairs. Typed errors retain only the exact owned connection for bounded retry and invalidate successful observations on cleanup failure. Installed Compose and native qualification remain open; Linux transport and focused cleanup checks do not accept the phase. A subsequent health caller cleanup finding has a reviewed concrete-owner repair. Actual helper fault and early fixture cleanup controls pass; outer Probe/Observe result invalidation was reviewed in source, without a claim of forced outer-caller close failure. Native and installed acceptance remains separate.",
+            "locations": [
+              {
+                "path": "platform/localtls/client.go",
+                "symbol": "Dialer"
+              },
+              {
+                "path": "platform/kernel/protocol/transport.go",
+                "symbol": "Open"
+              },
+              {
+                "path": "platform/deployment/probe.go",
+                "symbol": "ProbeOptions"
+              },
+              {
+                "path": "platform/launcher/transport_cleanup.go",
+                "symbol": "TransportCleanupError"
+              },
+              {
+                "path": "platform/deployment/probe_cleanup.go",
+                "symbol": "ProbeCleanupError"
+              }
+            ],
+            "verificationEvidence": [
+              "platform/localtls/client_test.go",
+              "platform/kernel/protocol/server_trust_test.go",
+              "platform/deployment/local_tls_probe_test.go",
+              "docs/planning/2026-10-09/delivery/evidence/P02/combined-cleanup-independent/independent-review.json",
+              "docs/planning/2026-10-09/delivery/evidence/P02/health-cleanup-independent/independent-review.json"
+            ]
+          },
+          "note": "Resolved independent current source documentation finding; resource mechanisms are not extra patterns. Component evidence does not prove native or phase acceptance.",
+          "evidence": "docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json"
+        }
+      ]
+    },
+    {
+      "id": "P02-CONN-01",
+      "status": "observed",
+      "catalog": "dofactory",
+      "pattern": "Decorator",
+      "source": "https://www.dofactory.com/net/decorator-design-pattern",
+      "referenceDepth": "full-public-reference",
+      "how": "Concrete ownedConnection and observeOwnedConnection wrap only sockets created by their owning dialer. They retain the net.Conn interface and delegate ordinary I/O while Close tracks actual closure and retains failed-close ownership for bounded retry. The raw variant additionally preserves failures observed by the SDK or cancellation hook through serial accounting; later successful physical closure does not silently erase that failure.",
+      "why": "NATS and TLS may close a socket before outer cleanup. An outer owner must report those actual failures and retain its exact socket without adopting another connection.",
+      "tradeoffs": "Using the bare net.Conn and only its final Close result is simpler but loses earlier SDK/cancellation failure and retry ownership. Wrapping adds synchronization, failure accounting and cancellation-hook join obligations. Test injection is restricted to already minted real sockets. Normal local Close syscalls must complete; this is not a generic closer, sandbox or guarantee of preempting a blocked syscall.",
+      "locations": [
+        {
+          "path": "platform/localtls/client.go",
+          "symbol": "ownedConnection.Close"
+        },
+        {
+          "path": "platform/deployment/observe.go",
+          "symbol": "observeOwnedConnection.Close"
+        },
+        {
+          "path": "platform/deployment/observe.go",
+          "symbol": "observeDialer.closeContext"
+        }
+      ],
+      "verificationEvidence": [
+        "platform/deployment/raw_transport_cleanup_test.go",
+        "docs/planning/2026-10-09/delivery/evidence/P02/shared-tls-cleanup-independent/independent-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/raw-team-cleanup-current/worker/review.json"
+      ],
+      "decisionEvidence": [
+        "docs/planning/2026-10-09/delivery/decisions/P02-local-broker-authentication.md",
+        "docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json"
+      ],
+      "qualificationLimit": "Observed source and component controls only; no phase/native/Compose qualification."
     }
   ]
 }

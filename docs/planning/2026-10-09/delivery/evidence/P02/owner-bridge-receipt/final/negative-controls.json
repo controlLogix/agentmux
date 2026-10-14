@@ -1,0 +1,49 @@
+[
+  {
+    "name": "revoked",
+    "path": "/home/ryan/.cache/agentmux-tests/p02-receipt-negative-revoked-im3eevt5",
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-timeout=30s",
+      "-json",
+      "./launcher",
+      "-run",
+      "^TestOwnerBridgeReceiptRequiresFreshEnteredOwner/owner_revoked$"
+    ],
+    "exit": 1,
+    "seconds": 5.984404631999496,
+    "originalSHA256": "c6ec84c03ac827c4c6008705ac8ef6d401484cc3b1015eba7dda900f35b89685",
+    "mutantSHA256": "e7c382749f3e3958fa088a6b85110d13ff5a4aa14c27bb0f834ceb8e38dac3bb",
+    "expectedFailureObserved": true,
+    "namedFailures": [
+      "TestOwnerBridgeReceiptRequiresFreshEnteredOwner/owner_revoked",
+      "TestOwnerBridgeReceiptRequiresFreshEnteredOwner"
+    ]
+  },
+  {
+    "name": "completion",
+    "path": "/home/ryan/.cache/agentmux-tests/p02-receipt-negative-completion-vgr22gzi",
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-timeout=30s",
+      "-json",
+      "./launcher",
+      "-run",
+      "^(TestOwnerBridgeJoinedCompletionRetainsExactCleanupCause|TestOwnerBridgeReceiptActualEntryAndDepartedFrontend/accepted)$"
+    ],
+    "exit": 1,
+    "seconds": 4.540427590000036,
+    "originalSHA256": "c6ec84c03ac827c4c6008705ac8ef6d401484cc3b1015eba7dda900f35b89685",
+    "mutantSHA256": "a14e815a9d1667bf4f695e1ebe149ee9a33a5f1abdc905493a843b44c34be8bb",
+    "expectedFailureObserved": true,
+    "namedFailures": [
+      "TestOwnerBridgeJoinedCompletionRetainsExactCleanupCause"
+    ]
+  }
+]

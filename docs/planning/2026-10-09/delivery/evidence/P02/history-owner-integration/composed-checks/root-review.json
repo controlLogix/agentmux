@@ -1,0 +1,17 @@
+{
+  "reviewer": "Codex",
+  "date": "2026-10-14T15:50:36.010799+00:00",
+  "decision": "Composed owner, reader and runtime-cleanup component checks passed on frozen source",
+  "namedRacePasses": 47,
+  "topLevelTests": 30,
+  "vetExit": 0,
+  "laterSourceChanges": {
+    "platform/cmd/agentmux-runtime/main.go": {
+      "tested": "f65aab165f50b2ac3ed9c608ac61d6d22c1f12031cc91b8f2c61ff1587a69426",
+      "current": "9ba174b070fe08d76944d2a2f6cbd5da448f0a02f6e1c70c6aabc0a15ad17620"
+    }
+  },
+  "applicability": "Selected launcher/runtime tests and launcher vet do not exercise main CLI history wiring; its subsequent change has separate pure command evidence. No full candidate or installed CLI claim.",
+  "actualRunQualified": false,
+  "phaseAccepted": false
+}

@@ -1,0 +1,59 @@
+{
+  "recordKind": "native-package-matrix-preparation-not-acceptance",
+  "sourceBaseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "workingTreeChanges": true,
+  "phaseAccepted": false,
+  "nativeCIExecuted": false,
+  "sourceHashes": {
+    "tests/platform/native_go.py": "1237258e3a12f2fde968a514e32593a3007696b062366ec8572db1c9793a5aeb",
+    ".github/workflows/platform-foundation.yml": "291c0bc23d8c313f90eb45e8ef9691e0caf45fdf0524263a1ab1e87947a9201b"
+  },
+  "reviewedMatrix": [
+    "kernel/assembly",
+    "kernel/communication",
+    "deployment",
+    "kernel/protocol",
+    "kernel/boot",
+    "launcher",
+    "runtime"
+  ],
+  "zeroTestPackagesNotClaimedAsTestPasses": [
+    "cmd/agentmux-kernel",
+    "kernel/lifecycle",
+    "kernel/status"
+  ],
+  "controls": {
+    "command": "python tests/platform/native_go.py --self-test",
+    "exitCode": 0,
+    "tests": 14,
+    "observationKind": "Synthetic runner controls, not native runtime evidence",
+    "actualGoInventoryParser": {
+      "environment": "Prepared Go 1.27.2 in explicitly selected Ubuntu-26.04 WSL2, isolated source copy",
+      "commandArguments": ["list", "-mod=readonly", "-json", "./..."],
+      "exitCode": 0,
+      "reviewedTestBearingPackagesMatch": true
+    },
+    "syntaxAndWorkflowYAMLParsed": true,
+    "scopedDiffCheckPassed": true
+  },
+  "inventoryAdmission": [
+    "Missing or new unreviewed test-bearing packages fail rather than silently disappear from the matrix.",
+    "Incomplete, repeated, malformed or foreign package inventory fails.",
+    "OS-selected TestGoFiles and XTestGoFiles are recorded; zero-test packages are not reported as tested."
+  ],
+  "platformDistinctions": {
+    "linuxBoot": "Actual sealed protected-process fixtures plus real NATS actors, not complete Compose/phase acceptance",
+    "darwinBoot": "Real NATS actor fixtures only; actual native protected-process boot remains unqualified",
+    "darwinRuntime": "Exact fail-closed refusal test only until a qualified native backend is separately implemented",
+    "research": "Separate descriptor research and fail-closed control; failures remain failures",
+    "nativeProtectedBootQualified": false
+  },
+  "independentReview": "Pending bounded runner/workflow review",
+  "limits": [
+    "No native CI execution, workflow dispatch, commit or push by this worker.",
+    "The workflow job budget was increased for seven bounded package checks; test correctness timeouts were not loosened.",
+    "Current host-loader candidate evidence remains source-bound historical execution until root freezes its added profile-boundary and integration changes.",
+    "Native macOS/Linux, WSL, real Compose/boot, recovery and full P02 criteria remain required.",
+    "Root owns stable candidate registration, commit/push, evidence review and advancement."
+  ]
+}

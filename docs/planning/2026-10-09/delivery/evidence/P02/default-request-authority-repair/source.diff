@@ -1,0 +1,140 @@
+--- original/owner_bridge.go
++++ candidate/owner_bridge.go
+@@ -240,7 +240,7 @@
+ 	// Stop or join its callback before returning a live parent-owned connection.
+ 	stopped := make(chan struct{})
+ 	stop := context.AfterFunc(ctx, func() { dialer.Close(); close(stopped) })
+-	nc, err := nats.Connect(c.Kernel.Endpoint, nats.UserInfo(credential.Role, credential.Password), nats.TLSHandshakeFirst(), nats.NoReconnect(), nats.IgnoreDiscoveredServers(), nats.NoEcho(), nats.Timeout(remaining), nats.SetCustomDialer(dialer))
++	nc, err := nats.Connect(c.Kernel.Endpoint, nats.UserInfo(credential.Role, credential.Password), nats.TLSHandshakeFirst(), nats.NoReconnect(), nats.IgnoreDiscoveredServers(), nats.NoEcho(), nats.Timeout(remaining), nats.SetCustomDialer(dialer), nats.ErrorHandler(ownerBridgeAsyncErrorHandler))
+ 	if !stop() {
+ 		<-stopped
+ 	}
+@@ -249,7 +249,7 @@
+ 	}
+ 	if err != nil {
+ 		code := "connection_unavailable"
+-		if localtls.IsAuthorityError(err) || errors.Is(err, nats.ErrAuthorization) || errors.Is(err, nats.ErrPermissionViolation) || errors.Is(err, nats.ErrAuthExpired) || errors.Is(err, nats.ErrAuthRevoked) {
++		if localtls.IsAuthorityError(err) || errors.Is(err, nats.ErrAuthorization) || errors.Is(err, nats.ErrPermissionViolation) || errors.Is(err, nats.ErrAuthExpired) || errors.Is(err, nats.ErrAuthRevoked) || errors.Is(err, nats.ErrAccountAuthExpired) {
+ 			code = "authority_rejected"
+ 		} else if errors.Is(err, localtls.ErrDeadline) {
+ 			code = "deadline"
+@@ -260,6 +260,19 @@
+ 		return nil, nil, closeBridgeConnection(nc, dialer, bridgeError("authority_rejected"))
+ 	}
+ 	return nc, dialer, nil
++}
++
++// Install fixed handling before NATS starts callbacks. The library still
++// records protocol errors in LastError; request boundaries inspect those
++// sentinels instead of publishing arbitrary error text to the terminal.
++func ownerBridgeAsyncErrorHandler(*nats.Conn, *nats.Subscription, error) {}
++
++func ownerBridgeAuthorityLastError(nc *nats.Conn) error {
++	err := nc.LastError()
++	if errors.Is(err, nats.ErrPermissionViolation) || errors.Is(err, nats.ErrAuthorization) || errors.Is(err, nats.ErrAuthExpired) || errors.Is(err, nats.ErrAuthRevoked) || errors.Is(err, nats.ErrAccountAuthExpired) {
++		return bridgeError("authority_rejected")
++	}
++	return nil
+ }
+ 
+ func closeBridgeConnection(nc *nats.Conn, dialer *localtls.Dialer, failure error) error {
+@@ -309,31 +322,51 @@
+ 	}
+ 	defer sub.Unsubscribe()
+ 	sub.SetPendingLimits(4, 4*ownerBridgeReplyLimit)
+-	if nc.FlushWithContext(ctx) != nil {
++	flushErr := nc.FlushWithContext(ctx)
++	if authority := ownerBridgeAuthorityLastError(nc); authority != nil {
++		return empty, authority
++	}
++	if flushErr != nil {
+ 		return empty, bridgeError("connection_unavailable")
+ 	}
+ 	request := ownerBridgeRequest{protocol.Version, "host-owner-status-request", operation, id, invocationID, c.config.Kernel.Scope, bridgeTime(time.Now())}
+ 	raw, _ := json.Marshal(request)
+ 	var msg *nats.Msg
+ 	for sent := 0; sent < 10; sent++ {
++		if authority := ownerBridgeAuthorityLastError(nc); authority != nil {
++			return empty, authority
++		}
+ 		if ctx.Err() != nil {
+ 			return empty, bridgeError("deadline")
+ 		}
+ 		// Core NATS may have no service subscriber during host startup. Repeat
+ 		// only the identical read-only request; the owner's nonce guard accepts
+ 		// it at most once. Every wait stays within the original total deadline.
+-		if nc.Publish(c.subjects.Request, raw) != nil || nc.FlushWithContext(ctx) != nil {
++		publishErr := nc.Publish(c.subjects.Request, raw)
++		if publishErr == nil {
++			publishErr = nc.FlushWithContext(ctx)
++		}
++		if authority := ownerBridgeAuthorityLastError(nc); authority != nil {
++			return empty, authority
++		}
++		if publishErr != nil {
+ 			return empty, bridgeError("connection_unavailable")
+ 		}
+ 		wait, stopWait := context.WithTimeout(ctx, 500*time.Millisecond)
+ 		msg, err = sub.NextMsgWithContext(wait)
+ 		stopWait()
++		if authority := ownerBridgeAuthorityLastError(nc); authority != nil {
++			return empty, authority
++		}
+ 		if err == nil {
+ 			break
+ 		}
+ 		if ctx.Err() != nil || !errors.Is(err, context.DeadlineExceeded) {
+ 			return empty, bridgeError("reply_unavailable")
+ 		}
++	}
++	if authority := ownerBridgeAuthorityLastError(nc); authority != nil {
++		return empty, authority
+ 	}
+ 	if msg == nil || err != nil {
+ 		return empty, bridgeError("reply_unavailable")
+@@ -341,6 +374,9 @@
+ 	var reply ownerBridgeReply
+ 	if len(msg.Header) != 0 || msg.Reply != "" || msg.Subject != sub.Subject || decodeBridgeReply(msg.Data, &reply) != nil || reply.RequestID != id || reply.InvocationID != invocationID || reply.Scope != c.config.Kernel.Scope || !bridgeFresh(reply.SentAt, time.Now()) || !bridgeObservationBound(reply.Observation, c.enrollment, invocationID, time.Now()) {
+ 		return empty, bridgeError("reply_invalid")
++	}
++	if authority := ownerBridgeAuthorityLastError(nc); authority != nil {
++		return empty, authority
+ 	}
+ 	if ctx.Err() != nil {
+ 		return empty, bridgeError("deadline")
+--- original/owner_bridge_probe.go
++++ candidate/owner_bridge_probe.go
+@@ -5,7 +5,6 @@
+ import (
+ 	"context"
+ 	"encoding/json"
+-	"errors"
+ 	"time"
+ 
+ 	"github.com/controlLogix/agentmux/platform/deployment"
+@@ -43,9 +42,8 @@
+ 			result, failure = empty, cleanup
+ 		}
+ 	}()
+-	// Private fixed handling suppresses the client's default console error text.
++	// Connect installed fixed private handling before callbacks could run.
+ 	// NATS still records each protocol error in LastError before ordered PONG.
+-	nc.SetErrorHandler(func(*nats.Conn, *nats.Subscription, error) {})
+ 	// ChanSubscription does not support SetPendingLimits in the pinned client.
+ 	// A one-message channel and server-side one-message unsubscribe bound the
+ 	// queue. The pinned factory's native payload ceiling bounds that one frame.
+@@ -117,11 +115,10 @@
+ }
+ 
+ func ownerBridgeProbeAuthorityError(nc *nats.Conn) error {
+-	err := nc.LastError()
+-	if errors.Is(err, nats.ErrPermissionViolation) || errors.Is(err, nats.ErrAuthorization) || errors.Is(err, nats.ErrAuthExpired) || errors.Is(err, nats.ErrAuthRevoked) || errors.Is(err, nats.ErrAccountAuthExpired) {
+-		return bridgeError("authority_rejected")
++	if authority := ownerBridgeAuthorityLastError(nc); authority != nil {
++		return authority
+ 	}
+-	if err != nil {
++	if nc.LastError() != nil {
+ 		return bridgeError("reply_invalid")
+ 	}
+ 	return nil

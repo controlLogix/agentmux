@@ -1,0 +1,593 @@
+{
+  "failed-scope": {
+    "schemaVersion": "1.0.0",
+    "observationId": "observation_e4231b33285a45065e777bba0b94857a",
+    "observedAt": "2026-10-14T00:19:28.557477Z",
+    "sourceRevision": 4,
+    "startupAttemptId": "attempt_fixture",
+    "disposition": "failed",
+    "caller": {
+      "principalId": "fixture_owner",
+      "kind": "human",
+      "authenticatedIdentityRef": {
+        "id": "fixture_owner_record",
+        "ownerHubId": "fixture_hub",
+        "revision": 1
+      },
+      "scope": {
+        "organizationId": "fixture_org",
+        "projectId": "fixture_project",
+        "workspaceId": null
+      }
+    },
+    "errors": [
+      {
+        "component": "instance",
+        "code": "kernel_observation_invalid",
+        "message": "A current protected runtime observation is unavailable.",
+        "retryable": true
+      }
+    ],
+    "instance": {
+      "instanceId": "instance_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "displayName": "Private test hub",
+      "profileId": "profile_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "installedVersion": "1.0.0",
+      "runningVersion": null,
+      "mode": "local",
+      "composeProject": "agentmux_test",
+      "contextDisplayName": "test",
+      "contextFingerprint": "sha256:49c69ba55de7ddc7fcfe4dfc74598012f21e75618f92fd899fe3dbb2eafd2834",
+      "endpoint": "nats://127.0.0.1:4222",
+      "dashboard": null,
+      "readiness": "unknown",
+      "services": []
+    },
+    "persistence": {
+      "availability": "unavailable",
+      "backend": null,
+      "profile": null,
+      "serverId": null,
+      "domainId": null,
+      "readiness": "unknown",
+      "storagePressure": {
+        "state": "unknown",
+        "percentUsed": null
+      },
+      "replicationHealth": {
+        "state": "unknown",
+        "replicas": null
+      },
+      "observedAt": null
+    },
+    "work": {
+      "state": "unavailable",
+      "active": null,
+      "projects": null,
+      "reserved": null,
+      "sourceCursor": null,
+      "observedAt": null
+    },
+    "hubs": {
+      "inventoryState": "unavailable",
+      "entries": []
+    }
+  },
+  "failed-stale": {
+    "schemaVersion": "1.0.0",
+    "observationId": "observation_44f0139d59c300860ca7fcf03f2c0777",
+    "observedAt": "2026-10-14T00:19:28.555617Z",
+    "sourceRevision": 3,
+    "startupAttemptId": null,
+    "disposition": "failed",
+    "caller": {
+      "principalId": "fixture_owner",
+      "kind": "human",
+      "authenticatedIdentityRef": {
+        "id": "fixture_owner_record",
+        "ownerHubId": "fixture_hub",
+        "revision": 1
+      },
+      "scope": {
+        "organizationId": "fixture_org",
+        "projectId": "fixture_project",
+        "workspaceId": null
+      }
+    },
+    "errors": [
+      {
+        "component": "startup",
+        "code": "observation_unavailable",
+        "message": "A current startup observation is unavailable.",
+        "retryable": true
+      }
+    ],
+    "instance": {
+      "instanceId": "instance_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "displayName": "Private test hub",
+      "profileId": "profile_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "installedVersion": "1.0.0",
+      "runningVersion": null,
+      "mode": "local",
+      "composeProject": "agentmux_test",
+      "contextDisplayName": "test",
+      "contextFingerprint": "sha256:49c69ba55de7ddc7fcfe4dfc74598012f21e75618f92fd899fe3dbb2eafd2834",
+      "endpoint": "nats://127.0.0.1:4222",
+      "dashboard": null,
+      "readiness": "unknown",
+      "services": []
+    },
+    "persistence": {
+      "availability": "unavailable",
+      "backend": null,
+      "profile": null,
+      "serverId": null,
+      "domainId": null,
+      "readiness": "unknown",
+      "storagePressure": {
+        "state": "unknown",
+        "percentUsed": null
+      },
+      "replicationHealth": {
+        "state": "unknown",
+        "replicas": null
+      },
+      "observedAt": null
+    },
+    "work": {
+      "state": "unavailable",
+      "active": null,
+      "projects": null,
+      "reserved": null,
+      "sourceCursor": null,
+      "observedAt": null
+    },
+    "hubs": {
+      "inventoryState": "unavailable",
+      "entries": []
+    }
+  },
+  "read-only-no-record": {
+    "schemaVersion": "1.0.0",
+    "observationId": "observation_8dd747c1a2b8109a60d385145bcd9e9e",
+    "observedAt": "2026-10-14T00:19:28.5597Z",
+    "sourceRevision": 5,
+    "startupAttemptId": "attempt_fixture",
+    "disposition": "reused",
+    "caller": {
+      "principalId": "fixture_owner",
+      "kind": "human",
+      "authenticatedIdentityRef": {
+        "id": "fixture_owner_record",
+        "ownerHubId": "fixture_hub",
+        "revision": 1
+      },
+      "scope": {
+        "organizationId": "fixture_org",
+        "projectId": "fixture_project",
+        "workspaceId": null
+      }
+    },
+    "errors": [
+      {
+        "component": "persistence",
+        "code": "write_readiness_unobserved",
+        "message": "Current persistence write readiness has not been observed.",
+        "retryable": true
+      }
+    ],
+    "instance": {
+      "instanceId": "instance_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "displayName": "Private test hub",
+      "profileId": "profile_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "installedVersion": "1.0.0",
+      "runningVersion": "1.0.0",
+      "mode": "local",
+      "composeProject": "agentmux_test",
+      "contextDisplayName": "test",
+      "contextFingerprint": "sha256:49c69ba55de7ddc7fcfe4dfc74598012f21e75618f92fd899fe3dbb2eafd2834",
+      "endpoint": "nats://127.0.0.1:4222",
+      "dashboard": null,
+      "readiness": "degraded",
+      "services": [
+        {
+          "serviceId": "boot",
+          "availability": "available",
+          "unavailableReason": null,
+          "readiness": "ready",
+          "observedAt": "2026-10-14T00:19:28.558168Z",
+          "sourceRevision": 1
+        },
+        {
+          "serviceId": "kernel-lifecycle",
+          "availability": "available",
+          "unavailableReason": null,
+          "readiness": "ready",
+          "observedAt": "2026-10-14T00:19:28.558168Z",
+          "sourceRevision": 1
+        },
+        {
+          "serviceId": "internal-communication",
+          "availability": "available",
+          "unavailableReason": null,
+          "readiness": "ready",
+          "observedAt": "2026-10-14T00:19:28.558168Z",
+          "sourceRevision": 1
+        },
+        {
+          "serviceId": "exported-status",
+          "availability": "available",
+          "unavailableReason": null,
+          "readiness": "ready",
+          "observedAt": "2026-10-14T00:19:28.558168Z",
+          "sourceRevision": 1
+        },
+        {
+          "serviceId": "work",
+          "availability": "unavailable",
+          "unavailableReason": "not_implemented",
+          "readiness": "unknown",
+          "observedAt": null,
+          "sourceRevision": null
+        },
+        {
+          "serviceId": "hub_federation",
+          "availability": "unavailable",
+          "unavailableReason": "not_implemented",
+          "readiness": "unknown",
+          "observedAt": null,
+          "sourceRevision": null
+        }
+      ]
+    },
+    "persistence": {
+      "availability": "unavailable",
+      "backend": null,
+      "profile": null,
+      "serverId": null,
+      "domainId": null,
+      "readiness": "unknown",
+      "storagePressure": {
+        "state": "unknown",
+        "percentUsed": null
+      },
+      "replicationHealth": {
+        "state": "unknown",
+        "replicas": null
+      },
+      "observedAt": null
+    },
+    "work": {
+      "state": "unavailable",
+      "active": null,
+      "projects": null,
+      "reserved": null,
+      "sourceCursor": null,
+      "observedAt": null
+    },
+    "hubs": {
+      "inventoryState": "unavailable",
+      "entries": []
+    }
+  },
+  "reused": {
+    "schemaVersion": "1.0.0",
+    "observationId": "observation_91f63a93fbc7fbfddd269cb8c6f296b8",
+    "observedAt": "2026-10-14T00:19:28.552989Z",
+    "sourceRevision": 2,
+    "startupAttemptId": "attempt_fixture",
+    "disposition": "reused",
+    "caller": {
+      "principalId": "fixture_owner",
+      "kind": "human",
+      "authenticatedIdentityRef": {
+        "id": "fixture_owner_record",
+        "ownerHubId": "fixture_hub",
+        "revision": 1
+      },
+      "scope": {
+        "organizationId": "fixture_org",
+        "projectId": "fixture_project",
+        "workspaceId": null
+      }
+    },
+    "errors": [
+      {
+        "component": "persistence",
+        "code": "write_readiness_unobserved",
+        "message": "Current persistence write readiness has not been observed.",
+        "retryable": true
+      }
+    ],
+    "instance": {
+      "instanceId": "instance_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "displayName": "Private test hub",
+      "profileId": "profile_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "installedVersion": "1.0.0",
+      "runningVersion": "1.0.0",
+      "mode": "local",
+      "composeProject": "agentmux_test",
+      "contextDisplayName": "test",
+      "contextFingerprint": "sha256:49c69ba55de7ddc7fcfe4dfc74598012f21e75618f92fd899fe3dbb2eafd2834",
+      "endpoint": "nats://127.0.0.1:4222",
+      "dashboard": null,
+      "readiness": "degraded",
+      "services": [
+        {
+          "serviceId": "boot",
+          "availability": "available",
+          "unavailableReason": null,
+          "readiness": "ready",
+          "observedAt": "2026-10-14T00:19:28.551418Z",
+          "sourceRevision": 1
+        },
+        {
+          "serviceId": "kernel-lifecycle",
+          "availability": "available",
+          "unavailableReason": null,
+          "readiness": "ready",
+          "observedAt": "2026-10-14T00:19:28.551418Z",
+          "sourceRevision": 1
+        },
+        {
+          "serviceId": "internal-communication",
+          "availability": "available",
+          "unavailableReason": null,
+          "readiness": "ready",
+          "observedAt": "2026-10-14T00:19:28.551418Z",
+          "sourceRevision": 1
+        },
+        {
+          "serviceId": "exported-status",
+          "availability": "available",
+          "unavailableReason": null,
+          "readiness": "ready",
+          "observedAt": "2026-10-14T00:19:28.551418Z",
+          "sourceRevision": 1
+        },
+        {
+          "serviceId": "work",
+          "availability": "unavailable",
+          "unavailableReason": "not_implemented",
+          "readiness": "unknown",
+          "observedAt": null,
+          "sourceRevision": null
+        },
+        {
+          "serviceId": "hub_federation",
+          "availability": "unavailable",
+          "unavailableReason": "not_implemented",
+          "readiness": "unknown",
+          "observedAt": null,
+          "sourceRevision": null
+        }
+      ]
+    },
+    "persistence": {
+      "availability": "available",
+      "backend": "nats_jetstream",
+      "profile": "profile_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "serverId": "fixture_server",
+      "domainId": "fixture_domain",
+      "readiness": "unknown",
+      "storagePressure": {
+        "state": "unknown",
+        "percentUsed": null
+      },
+      "replicationHealth": {
+        "state": "unknown",
+        "replicas": null
+      },
+      "observedAt": "2026-10-14T00:19:28.551418Z"
+    },
+    "work": {
+      "state": "unavailable",
+      "active": null,
+      "projects": null,
+      "reserved": null,
+      "sourceCursor": null,
+      "observedAt": null
+    },
+    "hubs": {
+      "inventoryState": "unavailable",
+      "entries": []
+    }
+  },
+  "started": {
+    "schemaVersion": "1.0.0",
+    "observationId": "observation_7a2f63349b749e781a5a35a8c78a857f",
+    "observedAt": "2026-10-14T00:19:28.550517Z",
+    "sourceRevision": 1,
+    "startupAttemptId": "attempt_fixture",
+    "disposition": "started",
+    "caller": {
+      "principalId": "fixture_owner",
+      "kind": "human",
+      "authenticatedIdentityRef": {
+        "id": "fixture_owner_record",
+        "ownerHubId": "fixture_hub",
+        "revision": 1
+      },
+      "scope": {
+        "organizationId": "fixture_org",
+        "projectId": "fixture_project",
+        "workspaceId": null
+      }
+    },
+    "errors": [
+      {
+        "component": "persistence",
+        "code": "write_readiness_unobserved",
+        "message": "Current persistence write readiness has not been observed.",
+        "retryable": true
+      }
+    ],
+    "instance": {
+      "instanceId": "instance_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "displayName": "Private test hub",
+      "profileId": "profile_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "installedVersion": "1.0.0",
+      "runningVersion": "1.0.0",
+      "mode": "local",
+      "composeProject": "agentmux_test",
+      "contextDisplayName": "test",
+      "contextFingerprint": "sha256:49c69ba55de7ddc7fcfe4dfc74598012f21e75618f92fd899fe3dbb2eafd2834",
+      "endpoint": "nats://127.0.0.1:4222",
+      "dashboard": null,
+      "readiness": "degraded",
+      "services": [
+        {
+          "serviceId": "boot",
+          "availability": "available",
+          "unavailableReason": null,
+          "readiness": "ready",
+          "observedAt": "2026-10-14T00:19:28.548748Z",
+          "sourceRevision": 1
+        },
+        {
+          "serviceId": "kernel-lifecycle",
+          "availability": "available",
+          "unavailableReason": null,
+          "readiness": "ready",
+          "observedAt": "2026-10-14T00:19:28.548748Z",
+          "sourceRevision": 1
+        },
+        {
+          "serviceId": "internal-communication",
+          "availability": "available",
+          "unavailableReason": null,
+          "readiness": "ready",
+          "observedAt": "2026-10-14T00:19:28.548748Z",
+          "sourceRevision": 1
+        },
+        {
+          "serviceId": "exported-status",
+          "availability": "available",
+          "unavailableReason": null,
+          "readiness": "ready",
+          "observedAt": "2026-10-14T00:19:28.548748Z",
+          "sourceRevision": 1
+        },
+        {
+          "serviceId": "work",
+          "availability": "unavailable",
+          "unavailableReason": "not_implemented",
+          "readiness": "unknown",
+          "observedAt": null,
+          "sourceRevision": null
+        },
+        {
+          "serviceId": "hub_federation",
+          "availability": "unavailable",
+          "unavailableReason": "not_implemented",
+          "readiness": "unknown",
+          "observedAt": null,
+          "sourceRevision": null
+        }
+      ]
+    },
+    "persistence": {
+      "availability": "available",
+      "backend": "nats_jetstream",
+      "profile": "profile_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "serverId": "fixture_server",
+      "domainId": "fixture_domain",
+      "readiness": "unknown",
+      "storagePressure": {
+        "state": "unknown",
+        "percentUsed": null
+      },
+      "replicationHealth": {
+        "state": "unknown",
+        "replicas": null
+      },
+      "observedAt": "2026-10-14T00:19:28.548748Z"
+    },
+    "work": {
+      "state": "unavailable",
+      "active": null,
+      "projects": null,
+      "reserved": null,
+      "sourceCursor": null,
+      "observedAt": null
+    },
+    "hubs": {
+      "inventoryState": "unavailable",
+      "entries": []
+    }
+  },
+  "unconfigured": {
+    "schemaVersion": "1.0.0",
+    "observationId": "observation_031b274d018ece488e773c4b672b1ed1",
+    "observedAt": "2026-10-14T00:19:28.561945Z",
+    "sourceRevision": 1,
+    "startupAttemptId": null,
+    "disposition": "unconfigured",
+    "caller": {
+      "principalId": "fixture_owner",
+      "kind": "human",
+      "authenticatedIdentityRef": {
+        "id": "fixture_owner_record",
+        "ownerHubId": "fixture_hub",
+        "revision": 1
+      },
+      "scope": {
+        "organizationId": "fixture_org",
+        "projectId": "fixture_project",
+        "workspaceId": null
+      }
+    },
+    "errors": [
+      {
+        "component": "startup",
+        "code": "profile_unconfigured",
+        "message": "The local runtime profile is not configured.",
+        "retryable": false
+      }
+    ],
+    "instance": {
+      "instanceId": null,
+      "displayName": null,
+      "profileId": null,
+      "installedVersion": null,
+      "runningVersion": null,
+      "mode": "unknown",
+      "composeProject": null,
+      "contextDisplayName": null,
+      "contextFingerprint": null,
+      "endpoint": null,
+      "dashboard": null,
+      "readiness": "unknown",
+      "services": []
+    },
+    "persistence": {
+      "availability": "unavailable",
+      "backend": null,
+      "profile": null,
+      "serverId": null,
+      "domainId": null,
+      "readiness": "unknown",
+      "storagePressure": {
+        "state": "unknown",
+        "percentUsed": null
+      },
+      "replicationHealth": {
+        "state": "unknown",
+        "replicas": null
+      },
+      "observedAt": null
+    },
+    "work": {
+      "state": "unavailable",
+      "active": null,
+      "projects": null,
+      "reserved": null,
+      "sourceCursor": null,
+      "observedAt": null
+    },
+    "hubs": {
+      "inventoryState": "unavailable",
+      "entries": []
+    }
+  }
+}

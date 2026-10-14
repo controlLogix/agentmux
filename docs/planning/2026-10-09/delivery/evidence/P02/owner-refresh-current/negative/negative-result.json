@@ -1,0 +1,19 @@
+{
+  "path": "/home/ryan/.cache/agentmux-tests/p02-refresh-cleanup-negative-hvvd2uvy",
+  "command": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "./launcher",
+    "-run",
+    "^TestOwnerBridgeObservationCleanupRetainsBothActualSocketOwners$"
+  ],
+  "exit": 1,
+  "seconds": 4.99768647000019,
+  "originalSHA256": "f691230aa5892015f75025cbf9b70a9a2056e5009cce99fe91b15a879f366c5c",
+  "mutantSHA256": "fecfc1fff04ee2d3246426ba1bd4a47f22ac60b3e1dc5322ef66a379b64c005d",
+  "expectedFailureObserved": true,
+  "scope": "Two real TLS socket owners; combined-cause helper mutant, not injected full Run/health-kernel failure."
+}

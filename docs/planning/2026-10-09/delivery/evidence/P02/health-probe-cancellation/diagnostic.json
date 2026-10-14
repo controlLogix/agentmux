@@ -1,0 +1,35 @@
+{
+  "recordKind": "health-probe-greeting-cancellation-diagnostic",
+  "phaseAccepted": false,
+  "status": "Confirmed failure; implementation repair is not yet applied",
+  "environment": "Go 1.27.2 linux/amd64 in Ubuntu-26.04 WSL; owned loopback TCP listener only",
+  "sourceHashes": {
+    "platform/deployment/probe.go": "df71842055c7f946d6579b1db499957a4c3dc7620bd4824ffd8acbb45f9995c7",
+    "externalDiagnosticTest": "4f1f3436db955a75eecc6b70dc463ae6fe2a2ce55c8d1e209e18d69163d027a4"
+  },
+  "snapshot": "candidate-nzoKCs",
+  "sourceList": "diagnostic/source-before.sha256",
+  "sourceListSha256": "7ab3a33db1de77e56de4d07d81287dd49c2ef0e3cfdc50d958ffa6f38d7be4be",
+  "afterCheck": "diagnostic/source-after.txt",
+  "command": "go test -race -count=1 -timeout=30s -run '^TestDiagnosticProbeCancellationDuringActualGreeting$' -json ./deployment",
+  "exitCode": 1,
+  "raw": "diagnostic/focused.jsonl",
+  "rawSha256": "9184a0d4235bea6f0aede43ead72753c8e4da129bb81ff80fe8026838236be71",
+  "actualObservations": {
+    "callerCancelledAfterActualTCPAcceptance": true,
+    "fixtureSentNoNATSGreeting": true,
+    "configuredProbeTimeoutMS": 5000,
+    "regressionReturnBoundMS": 500,
+    "warmCancellationReturnMS": 5004,
+    "coldCancellationReturnMS": 5003,
+    "fabricatedSuccess": false
+  },
+  "cause": "runProbe uses a NATS timeout but does not bind the greeting socket to caller cancellation. It waits for the full timeout after cancellation. The read-only observer already has an owned context-aware socket dialer.",
+  "nextAction": "Coordinator assigns the probe repair and a permanent regression; verify prompt cancellation, socket closure and owned cleanup before rerunning the affected deployment suite.",
+  "limits": [
+    "No production source, Docker state, private configuration, NATS service or provider process was changed or inspected by this diagnostic.",
+    "The external diagnostic test was added only to the retained frozen copy; the source list marks its exact bytes.",
+    "Failure evidence remains historical and must not be relabeled as a later repair pass.",
+    "This does not accept P02 or qualify another platform."
+  ]
+}

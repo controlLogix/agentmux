@@ -1,0 +1,160 @@
+{
+  "scope": "Actual isolated WSL Linux-component inherited-descriptor bridge only",
+  "host": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "actualWSL": true,
+  "collectorSourceSHA256": "c4182bb87a0a82bd677d8361fa0b4d60d3d3eb8a7ee853ef9b2e2dd6665ac7a4",
+  "sourceUnchanged": true,
+  "helperSourceSHA256": "11754ba818cd0bcfbfb589383da63be6acc3c33669b8a8a627a8689faad86df8",
+  "binarySHA256": "8254536e3d25062dc74928ce0a8ce948fe854150887b4da75ce4d205b6ac456c",
+  "goExecutableSHA256": "548d3c32f83fa81152f543eb1526be7884cfe0526eb5e9ce29d3eca14786e7e0",
+  "goVersion": "go version go1.27.2 linux/amd64",
+  "moduleSources": {
+    "go.mod": "d2449cddbd7671d0e73998ae6057abf56b371f4e422b213db0e00a24a30d3fb9",
+    "go.sum": "421240c9a0e5f903b47f996949937448ce9aeace1eca369342418e18a1ce2c90",
+    "privatefs/access_test.go": "13b3c9d5e0913e565a52f6abff92c2f44c5ac3fcb0b3966f72cc45f376f6c52d",
+    "privatefs/access_darwin.go": "09eb387cf9bb75bbf8afbbed0e3c72c6af44526ba68cabdd6b9c7a643372de82",
+    "privatefs/access_unsupported.go": "47bf8dfcb47e9d83bf0da4f2d667a7bf548c86d2e7fdd06c9c2d41f6e02615cb",
+    "privatefs/access_linux_test.go": "72da545f6dbaa99a19f866f3cdf50a8d138e7a08643b9e2c302aac6854ff22da",
+    "privatefs/access_darwin_nocgo.go": "8adba4f7cf8a9955479162ea0632b557857d848dd1d288288773e528a14d4453",
+    "privatefs/access.go": "5373922675f09a0b229e6f4fae1c0941529cbc5f7e842abc1be48319df0a92b8",
+    "privatefs/access_linux.go": "ee3ee960f6c9a237381a9e2864c782281d5997918f88eab6bed3c37d4b95f1e8",
+    "privatefs/access_darwin_test.go": "9113bb935b8a4953d5450270ebf3dc2fe2537657bd2283ff0363e38086ba77be",
+    "privatefs/access_darwin_nocgo_test.go": "a4d1b9c8eed29b0afe22b91e72f7a1d799e96d2f5a09d681b578ba86d0391565"
+  },
+  "moduleSourcesUnchanged": true,
+  "buildCommand": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "build",
+    "-mod=readonly",
+    "-trimpath",
+    "-o",
+    "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/held-private-gate",
+    "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/held-private-gate.go"
+  ],
+  "buildExit": 0,
+  "environment": {
+    "HOME": "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/home",
+    "PATH": "/usr/bin:/bin",
+    "TMPDIR": "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/home",
+    "GOTOOLCHAIN": "local",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOENV": "off",
+    "GOWORK": "off",
+    "CGO_ENABLED": "0",
+    "GOMODCACHE": "/home/ryan/go/pkg/mod",
+    "GOCACHE": "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/go-cache",
+    "GOPATH": "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/go-path"
+  },
+  "controls": [
+    {
+      "name": "positive",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/held-private-gate",
+        "ancestor=3",
+        "ancestor=4",
+        "ancestor=6",
+        "ancestor=7",
+        "ancestor=8",
+        "ancestor=9",
+        "private=10",
+        "private=11"
+      ],
+      "exit": 0,
+      "expected": "admitted",
+      "passed": true,
+      "stdoutSHA256": "dcd2e591cc14dcda79651f2ad9a49b645e6d6982c196a09eb912a8ca874bb100",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "unregistered-kind",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/held-private-gate",
+        "ancestor=3",
+        "ancestor=4",
+        "ancestor=6",
+        "ancestor=7",
+        "ancestor=8",
+        "ancestor=9",
+        "private=10",
+        "unknown=11"
+      ],
+      "exit": 2,
+      "expected": "refused",
+      "passed": true,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "closed-descriptor",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/held-private-gate",
+        "ancestor=3",
+        "ancestor=4",
+        "ancestor=6",
+        "ancestor=7",
+        "ancestor=8",
+        "ancestor=9",
+        "private=10",
+        "private=900000"
+      ],
+      "exit": 3,
+      "expected": "refused",
+      "passed": true,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "wrong-final-object-type",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/held-private-gate",
+        "ancestor=3",
+        "ancestor=4",
+        "ancestor=6",
+        "ancestor=7",
+        "ancestor=8",
+        "ancestor=9",
+        "private=10",
+        "private=10"
+      ],
+      "exit": 3,
+      "expected": "refused",
+      "passed": true,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "unsafe-directory-mode",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/p02-native-compose-fd-fixed-20261014/held-private-gate",
+        "ancestor=3",
+        "ancestor=4",
+        "ancestor=6",
+        "ancestor=7",
+        "ancestor=8",
+        "ancestor=9",
+        "private=10",
+        "private=11"
+      ],
+      "exit": 3,
+      "expected": "refused",
+      "passed": true,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "parentLeaseRetainedAfterChildExit": true,
+  "ownedDescriptorCount": 8,
+  "closedDescriptorCount": 8,
+  "status": "passed",
+  "engineContacted": false,
+  "brokerStarted": false,
+  "toolsInstalled": false,
+  "nativeTargetQualified": false,
+  "phaseAccepted": false,
+  "limits": [
+    "This executes a Linux helper in WSL, not native Linux/macOS Compose or Darwin ACL/mount qualification.",
+    "Linux shared privatefs relies on caller ownership/mode checks; mode and exact object kinds must be enforced at this bridge.",
+    "No real engine selection, NATS broker, protected role, Docker job or administrative install was used."
+  ]
+}

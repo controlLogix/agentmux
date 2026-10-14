@@ -1,0 +1,44 @@
+--- original/owner_bridge_probe.go
++++ diagnostic/owner_bridge_probe.go
+@@ -25,7 +25,9 @@
+ 	if ctx.Err() != nil {
+ 		return empty, bridgeError("deadline")
+ 	}
++	credentialStarted := time.Now()
+ 	credential, _, err := loadBridgeCredential(c.config, c.enrollment, deployment.OwnerBridgeClientUser)
++	recordRetainedProbeStage("credential", credentialStarted)
+ 	if err != nil {
+ 		return empty, err
+ 	}
+@@ -33,7 +35,9 @@
+ 	if err != nil {
+ 		return empty, bridgeError("nonce_failed")
+ 	}
++	connectStarted := time.Now()
+ 	nc, dialer, err := bridgeConnect(ctx, c.config, credential)
++	recordRetainedProbeStage("connect", connectStarted)
+ 	if err != nil {
+ 		return empty, err
+ 	}
+--- original/owner_bridge.go
++++ diagnostic/owner_bridge.go
+@@ -213,7 +213,9 @@
+ 	}
+ 	ctx, cancel := context.WithTimeout(budget, 5*time.Second)
+ 	defer cancel()
++	inspectStarted := time.Now()
+ 	authority, err := inspectLocalBrokerAuthority(ctx, c)
++	recordRetainedProbeStage("owned_authority_inspect", inspectStarted)
+ 	if err != nil {
+ 		if ctx.Err() != nil {
+ 			return nil, nil, bridgeError("deadline")
+@@ -239,7 +241,9 @@
+ 	// Stop or join its callback before returning a live parent-owned connection.
+ 	stopped := make(chan struct{})
+ 	stop := context.AfterFunc(ctx, func() { dialer.Close(); close(stopped) })
++	handshakeStarted := time.Now()
+ 	nc, err := nats.Connect(c.Kernel.Endpoint, nats.UserInfo(credential.Role, credential.Password), nats.TLSHandshakeFirst(), nats.NoReconnect(), nats.IgnoreDiscoveredServers(), nats.NoEcho(), nats.Timeout(remaining), nats.SetCustomDialer(dialer))
++	recordRetainedProbeStage("tls_info_connect", handshakeStarted)
+ 	if !stop() {
+ 		<-stopped
+ 	}

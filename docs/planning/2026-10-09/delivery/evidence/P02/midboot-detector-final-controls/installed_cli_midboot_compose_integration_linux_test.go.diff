@@ -1,0 +1,39 @@
+--- prior/installed_cli_midboot_compose_integration_linux_test.go
++++ current/installed_cli_midboot_compose_integration_linux_test.go
+@@ -243,16 +243,8 @@
+  if e!=nil || !strings.Contains(string(hostState), "State:\tT (stopped)") || !composeCLIMidBootSamePIDs(pids, installedCLIChildren(x.hostPID)) || len(pids)!=len(x.roleFDs) { t.Fatal("mid-boot phase changed before crash") }
+  seen := map[string]bool{}
+  for i,pid := range pids {
+-  poll:=[]unix.PollFd{{Fd:int32(x.roleFDs[i]),Events:unix.POLLIN}}
+-  n,pe:=unix.Poll(poll,0)
+-  image,ie:=os.ReadFile(fmt.Sprintf("/proc/%d/exe",pid))
+-  status,se:=os.ReadFile(fmt.Sprintf("/proc/%d/status",pid))
+-  env,ee:=os.ReadFile(fmt.Sprintf("/proc/%d/environ",pid))
+-  args,ae:=os.ReadFile(fmt.Sprintf("/proc/%d/cmdline",pid))
+-  role:=""
+-  for _,candidate:=range roles { for _,item:=range strings.Split(string(env),"\x00") { if item=="AGENTMUX_NATS_CREDS_FILE="+filepath.Join(f.Profile.ProfileDirectory,candidate+".json") { role=candidate } } }
+-  if pe!=nil || n!=0 || ie!=nil || se!=nil || ee!=nil || ae!=nil || role=="" || seen[role] || !strings.Contains(string(status),fmt.Sprintf("PPid:\t%d\n",x.hostPID)) || len(strings.Split(strings.TrimSuffix(string(args),"\x00"),"\x00"))!=1 { t.Fatal("mid-boot original child binding changed before crash") }
+-  if expected[role]==""||expected[role]!=releaseDigest(image){t.Fatal("mid-boot original child image changed before crash")}
++  role,predicates:=composeCLIMidBootRevalidationPredicates(f,x,pid,x.roleFDs[i],roles,expected)
++  if role=="" || seen[role] || !predicates["liveDescriptor"] || !predicates["executedImageMatches"] || !predicates["parentMatches"] || !predicates["noArguments"] { t.Fatal("mid-boot original child binding changed before crash") }
+   seen[role]=true
+  }
+  if len(seen)!=len(roles) { t.Fatal("mid-boot original role roster changed before crash") }
+@@ -287,3 +279,17 @@
+ }
+ 
+ func composeCLIMidBootSamePIDs(a,b []int)bool{if len(a)!=len(b){return false};seen:=map[int]bool{};for _,pid:=range a{if seen[pid]{return false};seen[pid]=true};for _,pid:=range b{if !seen[pid]{return false};delete(seen,pid)};return len(seen)==0}
++
++// Final role revalidation holds the original descriptor throughout every read
++// and checks that same descriptor only after the last authority observation.
++func composeCLIMidBootRevalidationPredicates(f *bootstrapDockerFixture,x *composeCLIFront,pid,fd int,roles []string,expected map[string]string)(string,map[string]bool){
++ image,ie:=os.ReadFile(fmt.Sprintf("/proc/%d/exe",pid))
++ status,se:=os.ReadFile(fmt.Sprintf("/proc/%d/status",pid))
++ env,ee:=os.ReadFile(fmt.Sprintf("/proc/%d/environ",pid))
++ args,ae:=os.ReadFile(fmt.Sprintf("/proc/%d/cmdline",pid))
++ role:=""
++ if ee==nil { for _,name:=range roles { for _,item:=range strings.Split(string(env),"\x00") { if item=="AGENTMUX_NATS_CREDS_FILE="+filepath.Join(f.Profile.ProfileDirectory,name+".json") { role=name } } } }
++ predicates:=map[string]bool{"credentialBoundRole":role!="","executedImageMatches":ie==nil&&expected[role]!=""&&releaseDigest(image)==expected[role],"parentMatches":se==nil&&strings.Contains(string(status),fmt.Sprintf("PPid:\t%d\n",x.hostPID)),"noArguments":ae==nil&&len(strings.Split(strings.TrimSuffix(string(args),"\x00"),"\x00"))==1}
++ poll:=[]unix.PollFd{{Fd:int32(fd),Events:unix.POLLIN}};n,pe:=unix.Poll(poll,0);predicates["liveDescriptor"]=pe==nil&&n==0
++ return role,predicates
++}

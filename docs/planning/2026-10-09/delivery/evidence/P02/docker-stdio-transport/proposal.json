@@ -1,0 +1,72 @@
+{
+  "recordKind": "read-only-docker-engine-transport-proposal",
+  "phaseAccepted": false,
+  "productionSourceEdited": false,
+  "resourceMutations": false,
+  "productionReadDeadlineSeconds": 4,
+  "standaloneDiagnosticDeadlineSeconds": 12,
+  "environment": "Ubuntu-26.04 WSL, installed Windows Docker CLI 29.8.0, explicitly selected desktop-linux context and named-pipe endpoint",
+  "sourceHashes": {
+    "diagnose.py": "87b1a26fc745fcffb1704c2172913fb1b5b651e38ec5ad3573a11b2672e37d73",
+    "initialDiagnosticSource": "2fe87fa986b1355c870fb5596c204d6150ef2fa501990064ce8eae523183b81d"
+  },
+  "successfulRecord": {
+    "path": "results-open-stdin.json",
+    "sha256": "56eef30d5fe011e9ce884d931932680b3eac0dcdd854292e66e1e5e39a663a1e",
+    "trials": 3,
+    "querySeconds": [0.355929, 0.271580, 0.353630],
+    "contextAndQuerySeconds": [0.753094, 0.576380, 0.633062],
+    "exactEngineID": "e0f1f93d-abf1-44f2-b62a-5bfee21d2b5c",
+    "osType": "linux",
+    "serverVersion": "29.8.0",
+    "httpStatus": 200,
+    "allOwnedProcessesExitedZeroAndReaped": true
+  },
+  "preservedFailure": {
+    "source": "initial-diagnostic.py",
+    "sourcePreservation": "Reconstructed from the recorded source patch and verified to match its pre-change SHA-256; not rerun.",
+    "path": "results.json",
+    "sha256": "a0c753b5166ecc966d75fa03b4cd576143f8977bd86f50ecb8a9d7ee546c084b",
+    "result": "First attempt with immediate stdin EOF failed with ValueError after successful context verification.",
+    "limit": "Its precise process/HTTP failure code was not retained. A half-close explanation is an inference, not a proven error observation."
+  },
+  "primarySources": [
+    "https://raw.githubusercontent.com/docker/cli/v29.8.0/cli/command/system/info.go",
+    "https://raw.githubusercontent.com/docker/cli/v29.8.0/cli/command/system/dial_stdio.go",
+    "https://raw.githubusercontent.com/moby/moby/master/daemon/server/router/system/system.go"
+  ],
+  "sourceFindings": [
+    "Pinned Docker info code calls pluginmanager.ListPlugins before server information, including when a format is requested.",
+    "Pinned dial-stdio code proxies standard streams through the selected client's raw daemon dialer. It is a hidden internal helper, not a public stable command contract.",
+    "The primary engine router declares GET /info. Actual selected-engine HTTP 200 responses separately verify this route on the installed server."
+  ],
+  "proposal": [
+    "Root may add a private, literal GET /info transport for the qualified Windows-interoperability path; keep context endpoint, engine ID and version checks unchanged.",
+    "Do not expose arbitrary HTTP requests, endpoints or caller headers. Preserve the reviewed environment and refuse conflicting endpoint selection.",
+    "Write the fixed request and keep stdin open until response completion. Connection: close lets the server end the response and the tunnel exit. Do not use an automatically exhausted input reader without qualifying its EOF behavior.",
+    "Bound HTTP headers and body, require HTTP 200 and expected typed identity fields, parse private response data only in memory, and never return full info or stderr.",
+    "Own and reap the exact child; keep the production four-second read deadline and its separate bounded pipe-cleanup reserve. Preserve actual timeout and malformed-response failures.",
+    "Keep existing native transport selection explicit; do not discover or fall back to another daemon."
+  ],
+  "remainingVerification": [
+    "Root-owned adapter implementation and focused normal, malformed/status/size, wrong context/engine/version, EOF, cancellation and child-cleanup checks.",
+    "Actual installed-CLI comparison through the production adapter under its unchanged deadline.",
+    "Affected launcher and full bootstrap/status/phase qualification on a stable candidate."
+  ],
+  "independentReview": {
+    "reviewer": "Independent Codex agent Plato",
+    "status": "No actionable findings within the standalone diagnostic scope",
+    "checks": [
+      "Current script and both result files match the recorded hashes; selected endpoint verification precedes the literal read-only request.",
+      "Stdout/body are bounded, stderr is discarded, stdin stays open, and the owned child is stopped/reaped.",
+      "Three successful records consistently report exact identity/version, HTTP 200, zero exits and the reported subsecond timings; initial failure remains failed evidence."
+    ],
+    "limits": "Reviewer ran no processes or network calls. Upstream links and hashes without retained response bytes were not independently verified. Initial source was reconstructed after this review; its matching hash is recorded separately. Production and phase qualification remain pending."
+  },
+  "limits": [
+    "Only read-only context/version and literal GET /info operations were run. No resources, services, profiles, provider auth or Docker source files were changed.",
+    "Full HTTP responses existed only in bounded memory. Evidence contains approved identity/version/timing/status and hashes, not full info, auth, config or stderr.",
+    "Three successful standalone trials are not a production adapter or phase pass. Hidden helper compatibility remains version-qualified.",
+    "The initial failed attempt remains historical; the successful record does not relabel it."
+  ]
+}

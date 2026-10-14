@@ -1,0 +1,45 @@
+{
+  "recordKind": "owned-process-interruption-and-fresh-workspace-controls",
+  "sourceBaseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "phaseAccepted": false,
+  "nativeCIExecuted": false,
+  "preservesEarlierPreparationRecords": true,
+  "sourceHashes": {
+    "tests/platform/native_go.py": "83581442409a48f076fe8b8978d3acf8d37d16319f26bcd32faee6bd6718e356",
+    ".github/workflows/platform-foundation.yml": "291c0bc23d8c313f90eb45e8ef9691e0caf45fdf0524263a1ab1e87947a9201b"
+  },
+  "controls": [
+    {
+      "command": "python -B tests/platform/native_go.py --self-test",
+      "exitCode": 0,
+      "tests": 19,
+      "kind": "Synthetic controls; no native execution, download or real process signaling"
+    },
+    {
+      "command": "python -B -m unittest discover -s tests/platform -p 'test_*.py' -v",
+      "exitCode": 0,
+      "tests": 30,
+      "seconds": 12.859,
+      "kind": "Inventory and source-surface regressions on native Windows; not platform qualification"
+    }
+  ],
+  "refinements": [
+    "Preparation and package tests share an owned-session wait helper. Interrupted waits stop and reap the owned child before propagating the interruption.",
+    "ProcessLookupError during cleanup means the owned session has already ended; child reaping still runs.",
+    "The hidden preparation entry point refuses populated workspaces before downloads or writes. Preparation rechecks this condition independently.",
+    "Only an empty regular, non-symlink research-only marker is allowed in the fresh preparation workspace.",
+    "Existing preparation.json content is preserved when hidden preparation refuses a populated workspace."
+  ],
+  "independentReview": "Pending closure on this exact refinement; preceding timeout, atomic checkpoint and preparation deadline findings were closed on inspection.",
+  "governance": {
+    "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+    "exitCode": 1,
+    "errors": ["Review is stale or missing: inspect changes and refresh sourceDigest"],
+    "owner": "Implementation coordinator reviews and registers the final shared candidate; this worker does not refresh global attestations."
+  },
+  "limits": [
+    "No native CI dispatch, candidate push, task acceptance or phase advancement.",
+    "Real Compose, supported-host, recovery, security and full phase evidence remain required.",
+    "Earlier source-bound evidence remains historical, not current acceptance."
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "schemaVersion": "1.0.0",
+  "taskId": "P02-T07",
+  "sourceCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "branch": "feat/agentmux-platform-rearchitecture",
+  "date": "2026-10-14",
+  "scope": "Test-only native Docker fixture selection, build plans, signed copies and preservation controls",
+  "decision": "Scoped source and focused checks reviewed; native qualification remains open",
+  "nativeQualification": false,
+  "phaseAcceptance": false,
+  "sourceHashes": {
+    "platform/launcher/bootstrap_docker_integration_test.go": "17ee0a1b34105c8025abbe6f2b4713e68f7669db6b7ce1c63de6a07bdab547e9",
+    "platform/launcher/bootstrap_docker_selection_test.go": "7458b7ce2db475606466cd3d278bac2f63ec85f8a7dfaa0b519fc7be9f8481f3",
+    "platform/launcher/bootstrap_docker_selection_controls_test.go": "e440b8ba505fe92f39c73efe64528fe4931af38aebebd31e594f722be5042a3d",
+    "platform/launcher/bootstrap_docker_native_linux_test.go": "b380d0ec4d96c1d7128c6c143b5b404fd8c3424b94b871d81b278da50fa63368",
+    "platform/launcher/bootstrap_docker_native_darwin_test.go": "df175d949cd5f63a564efedcb87e0d1ad67f05ac42f7be83c94e089d33b1f029",
+    "docs/planning/2026-10-09/delivery/evidence/P02/native-fixture-selection/qualify.py": "73f6df9afb942e5ab4fc67ab30edd65209530b88d7a30680f4be8c3ea440eee6"
+  },
+  "inputContract": {
+    "fileEnvironment": "AMX_BOOTSTRAP_SELECTION_FILE",
+    "pinEnvironment": "AMX_BOOTSTRAP_SELECTION_SHA256",
+    "pinFormat": "Separately enrolled lower-case 64-digit SHA-256 of exact JSON bytes",
+    "requiredFields": ["schemaVersion", "target", "goos", "goarch", "workspaceRoot", "docker", "image", "natsVersion", "compiler", "sdkRoot"],
+    "dockerFields": ["backend", "executable", "context", "endpoint", "engineId", "clientVersion", "serverVersion", "composeVersion"],
+    "nativeTargets": ["native-linux/amd64", "native-linux/arm64", "native-darwin/amd64", "native-darwin/arm64"],
+    "legacyTarget": "Unchanged qualified literal WSL Linux/amd64 WindowsInterop selection; never used on native Linux or macOS",
+    "authority": "Host and architecture must match the enrolled selection. Expected Docker identity and versions are not derived from inspection or an ambient/default context.",
+    "brokerPins": {"natsVersion": "2.15.0", "composeVersion": "5.5.1"},
+    "build": "Linux uses static CGO_ENABLED=0. Darwin uses CGO_ENABLED=1, explicit /usr/bin/clang and an enrolled absolute SDK path. Inherited build overrides are removed.",
+    "darwinInstallation": "Separate AMX_DARWIN_INSTALL_AUTHORIZED=1 is required. Exact signed files are copied into a fresh root-owned fixed-path version, signatures and digests are rechecked, installed versions are retained, and runtime execution remains unprivileged. This helper was not executed."
+  },
+  "focusedRun": {
+    "environment": "WSL Ubuntu-26.04, Linux amd64; not native Linux qualification",
+    "goExecutable": "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "goVersion": "1.27.2",
+    "goExecutableSHA256": "548d3c32f83fa81152f543eb1526be7884cfe0526eb5e9ce29d3eca14786e7e0",
+    "report": "/home/ryan/.cache/agentmux-governance/p02-native-fixture-selection-acb9av3e/selection-review.json",
+    "reportSHA256": "70fdaccbaef6750669993578912e4afe20ffae17bbf155f732e741906922e106",
+    "rawLogSHA256": "4135ab89b8006cc10572843d13f8359f7f90f072bb2f547474b50ef8a9d497dd",
+    "vetLogSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "testExitCode": 0,
+    "vetExitCode": 0,
+    "testOptions": ["-race", "-count=1", "-json", "-tags=agentmux_bootstrap_docker"],
+    "namedPasses": 70,
+    "packagePasses": 1,
+    "topLevelPasses": 10,
+    "skips": 0,
+    "failures": 0,
+    "ownedSourceUnchanged": true,
+    "frozenSourceUnchanged": true,
+    "copyBoundary": "Complete platform module and authoritative contracts/v1, with every copied source hash recorded in the external report",
+    "explicitEnvironment": {"GOTOOLCHAIN": "local", "GOPROXY": "off", "GOSUMDB": "off", "GOWORK": "off", "GORACE": "atexit_sleep_ms=0"},
+    "testCommandStartedAt": "2026-10-14T06:18:56.470733+00:00",
+    "testCommandEndedAt": "2026-10-14T06:19:00.577973+00:00",
+    "vetCommandStartedAt": "2026-10-14T06:19:00.578333+00:00",
+    "vetCommandEndedAt": "2026-10-14T06:19:01.519896+00:00",
+    "producerObservedAfterRunSHA256": "f14c6babac25e959ad501f56cd419ac9368f5aa9f0585e9facae72da3d7fad9c",
+    "producerCopyRetained": false,
+    "producerLimitation": "This historical run did not retain an exact producer copy. The producer hash was observed after execution, not independently pinned before execution. Exact command arrays, source hashes and raw logs remain in the unchanged report."
+  },
+  "admissionSupplement": {
+    "collectorSHA256": "73f6df9afb942e5ab4fc67ab30edd65209530b88d7a30680f4be8c3ea440eee6",
+    "selfTestCommand": ["python3", "docs/planning/2026-10-09/delivery/evidence/P02/native-fixture-selection/qualify.py", "--self-test"],
+    "selfTestExitCode": 0,
+    "selfTestMethods": 4,
+    "negativeVariants": 12,
+    "rawHistoricalLogReadAgain": true,
+    "readOnlyAdmissionExitCode": 0,
+    "admitted": true,
+    "problems": [],
+    "checks": "All ten selected top-level passes, every child run/pass pair, one package start/pass, no skips, failures, malformed or foreign events, and correct lifecycle order",
+    "goTestsRerunAfterCollectorOnlyChanges": false,
+    "executionWitness": "Main Codex inspected the actual raw log and ran the current admission function against it. Tool outputs record direct exits and the raw-log and current-collector hashes. These calls do not rewrite the historical report.",
+    "futureProducerProtection": "New runs retain an exact hashed producer copy and require producer source stability. This does not retroactively qualify the missing historical producer copy."
+  },
+  "findingsHistory": [
+    {
+      "id": "NATIVE-FIXTURE-01",
+      "finding": "The original Lstat then os.Open could follow a substituted symlink or block on a FIFO before held-file checks.",
+      "status": "closed-in-source-and-focused-control",
+      "repair": "No-follow, nonblocking, close-on-exec descriptor open, held regular-file and inode checks, and independently pinned bytes.",
+      "evidence": "Actual regular, symlink, FIFO, directory and same-byte new-inode substitution controls passed under the race detector."
+    },
+    {
+      "id": "NATIVE-FIXTURE-02",
+      "finding": "TLS enrollment reused the initial 60-second engine context after builds and protected preparation with separate 120-second budgets.",
+      "status": "closed-in-source",
+      "repair": "End the inspection context before building and create a fresh bounded 60-second TLS enrollment context after preparation. All runtime and cleanup deadlines remain unchanged.",
+      "evidence": "Independent source review. No long preparation or actual engine run was executed in this slice."
+    },
+    {
+      "id": "NATIVE-FIXTURE-03",
+      "finding": "The initial collector gated only command exits and source stability; incomplete or skipped test events could pass admission.",
+      "status": "closed-in-source-and-supplemental-control",
+      "repair": "Strict selected-test and lifecycle admission, negative collector controls and read-only admission of the actual unchanged 70-check raw log.",
+      "evidence": "Four collector methods passed; final independent source review found no new actionable findings. Historical missing-producer-copy limits remain explicit."
+    }
+  ],
+  "historicalRun": {
+    "report": "/home/ryan/.cache/agentmux-governance/p02-native-fixture-selection-hs3lkamw/selection-review.json",
+    "reportSHA256": "1e272c529d84030df90b8cea3cd6537be61913ba0a8abf27f6e8141eb6724427",
+    "namedPasses": 64,
+    "packagePasses": 1,
+    "status": "Before the descriptor and enrollment-budget repairs; retained unchanged, not current acceptance"
+  },
+  "independentReview": {
+    "reviewer": "Plato, independent Codex subagent",
+    "agentId": "01a137e6-481f-7441-9095-89ea4bb76f8c",
+    "sourceFindingsClosed": ["NATIVE-FIXTURE-01", "NATIVE-FIXTURE-02", "NATIVE-FIXTURE-03"],
+    "newActionableFindings": [],
+    "scope": "Source and collector review only. The reviewer did not execute tests, installation, admission or an engine. Main Codex inspected execution results separately."
+  },
+  "preserved": [
+    "All baseline container state and port projections, exact project collision checks, image pin, offline TLS and signed-role assertions",
+    "Exact acquired bootstrap and four role cleanup leases, selected engine binding, stop refusal when ownership cannot be verified",
+    "Exact owned container stop, unchanged retained volume identity, baseline guards, persistent private diagnosis tree and cleanup evidence",
+    "No prune, volume deletion, Compose down or replacement of an installed protected version"
+  ],
+  "remaining": [
+    "Root-owned integration build tag, explicit WSL-only diagnostic guards and native runner/workflow wiring",
+    "Separately enrolled Docker, compiler and SDK inputs for native Linux amd64/arm64 and macOS amd64/arm64",
+    "Actual protected macOS installation and CGO image execution on both native architectures",
+    "Actual Compose, installed frontend, concurrency, recovery, preservation and cleanup qualification on every supported target",
+    "Complete affected suites, global component inventory and deliberate design-pattern source review reconciliation"
+  ],
+  "governanceCheck": {
+    "argv": ["node", ".bytedesk/design-patterns/check.mjs", "check", "--root", "."],
+    "exitCode": 1,
+    "errors": ["Review is stale or missing: inspect changes and refresh sourceDigest"],
+    "owner": "Coordinating Codex session; no digest or global metadata was changed in this slice"
+  },
+  "limitations": [
+    "No engine, broker, privileged setup, role process, installed launcher, CI job or presentation rebuild was executed in this slice.",
+    "Signed copy controls use clearly labelled synthetic member bytes, not executable qualification.",
+    "Native build command controls are pure input/argument checks; the Darwin helper was not compiled or executed on a native host.",
+    "Full inherited environment is not recorded. Timestamps bracket subprocess.run and are not exact OS process lifecycle times.",
+    "The local cache reports and logs are retained evidence, not repository-packaged artifacts or remote CI acceptance.",
+    "No commit, push, phase advancement, merge or release was performed."
+  ]
+}

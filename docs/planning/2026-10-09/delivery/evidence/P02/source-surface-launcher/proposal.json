@@ -1,0 +1,3683 @@
+{
+  "proposalOnly": true,
+  "scope": "Read-only source-surface proposal for 20 specified stable launcher/CLI files; root alone writes index",
+  "extraction": {
+    "method": "Prepared Go parser AST FuncDecl positions; functions and receiver methods independently enumerated. Existing index-compatible declarations retain go-function kind.",
+    "helperSHA256": "677e94db6aaa0fbcc2f2547ab387d185c227bf38d4a67d14094e83115697607f",
+    "producerSHA256": "23a47996000964c70491e071263ccb5661037a62d8e7a1d806cd0a060fb24b18",
+    "actualExit": 0,
+    "fixtureOrTestsRun": false
+  },
+  "indexInputSHA256": "be45c5b05155a8ca8407299b9a10e46c057419200c98ceccdd759b53d9b3c2e9",
+  "componentInventorySHA256": "b384c11899072c59b72d35d5e9857cac8323f511b6945ca57eb75821a724150c",
+  "componentManifestSHA256": "6e3c83b6b243c0df45fcf2c6914ef306d1bc912d3830d22e79463e1897e08822",
+  "indexRows": [
+    {
+      "path": "platform/launcher/bootstrap.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "7db76af164be1110f1352da993833fc3613c09ab42b4557094bcd4661edb9bcd",
+      "declarations": [
+        {
+          "name": "bootstrapError",
+          "line": 83,
+          "kind": "go-function"
+        },
+        {
+          "name": "validateBootstrapRoles",
+          "line": 85,
+          "kind": "go-function"
+        },
+        {
+          "name": "Close",
+          "line": 145,
+          "kind": "go-function"
+        },
+        {
+          "name": "CleanupError",
+          "line": 190,
+          "kind": "go-function"
+        },
+        {
+          "name": "Bootstrap",
+          "line": 211,
+          "kind": "go-function"
+        },
+        {
+          "name": "BootstrapForInvocation",
+          "line": 222,
+          "kind": "go-function"
+        },
+        {
+          "name": "bootstrapForOperation",
+          "line": 228,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    },
+    {
+      "path": "platform/launcher/startup_status.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "31e02ec220343b79c0a5d1927d047d09e8468d53d8ed1fbe826b802105a1d678",
+      "declarations": [
+        {
+          "name": "ownerStatusError",
+          "line": 162,
+          "kind": "go-function"
+        },
+        {
+          "name": "statusText",
+          "line": 163,
+          "kind": "go-function"
+        },
+        {
+          "name": "optionalStatusID",
+          "line": 174,
+          "kind": "go-function"
+        },
+        {
+          "name": "copyOwnerScope",
+          "line": 175,
+          "kind": "go-function"
+        },
+        {
+          "name": "LoadOwnerStatus",
+          "line": 191,
+          "kind": "go-function"
+        },
+        {
+          "name": "statusTimestamp",
+          "line": 244,
+          "kind": "go-function"
+        },
+        {
+          "name": "statusString",
+          "line": 247,
+          "kind": "go-function"
+        },
+        {
+          "name": "statusRevision",
+          "line": 248,
+          "kind": "go-function"
+        },
+        {
+          "name": "unknownStatusService",
+          "line": 249,
+          "kind": "go-function"
+        },
+        {
+          "name": "mapStartingContext",
+          "line": 255,
+          "kind": "go-function"
+        },
+        {
+          "name": "mapObservation",
+          "line": 293,
+          "kind": "go-function"
+        },
+        {
+          "name": "mapObservationContext",
+          "line": 297,
+          "kind": "go-function"
+        },
+        {
+          "name": "newObservationLocked",
+          "line": 320,
+          "kind": "go-function"
+        },
+        {
+          "name": "mapObservationLocked",
+          "line": 359,
+          "kind": "go-function"
+        },
+        {
+          "name": "mustStatusJSON",
+          "line": 434,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    },
+    {
+      "path": "platform/launcher/bootstrap_compose_binding.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "f55d252a950a7660dbb486768270e96965d57d1710d503c27e99e895cebda7ce",
+      "declarations": [
+        {
+          "name": "bootstrapComposeBrokerBytes",
+          "line": 14,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    },
+    {
+      "path": "platform/launcher/docker_archives.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "c645ce9f3bec78fa5f9d52e6663d27d30c705b99855f381ad33a3ce083377d66",
+      "declarations": [
+        {
+          "name": "verifyOwnedTLSArchives",
+          "line": 11,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    },
+    {
+      "path": "platform/launcher/docker_reads.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813",
+      "declarations": [
+        {
+          "name": "Error",
+          "line": 19,
+          "kind": "go-function"
+        },
+        {
+          "name": "Unwrap",
+          "line": 20,
+          "kind": "go-function"
+        },
+        {
+          "name": "inspectionStage",
+          "line": 21,
+          "kind": "go-function"
+        },
+        {
+          "name": "inspectionFailure",
+          "line": 22,
+          "kind": "go-function"
+        },
+        {
+          "name": "dockerReadStage",
+          "line": 25,
+          "kind": "go-function"
+        },
+        {
+          "name": "parallelDockerReadAllowed",
+          "line": 41,
+          "kind": "go-function"
+        },
+        {
+          "name": "parallelReads",
+          "line": 66,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    },
+    {
+      "path": "platform/launcher/docker_stdio.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "151b05060ce4ed601f9985f745834f73c97808645da5008cca48cc501d638197",
+      "declarations": [
+        {
+          "name": "readEngineInfoStdio",
+          "line": 28,
+          "kind": "go-function"
+        },
+        {
+          "name": "decodeDockerInfoStdio",
+          "line": 91,
+          "kind": "go-function"
+        },
+        {
+          "name": "dockerInfoJSONUnique",
+          "line": 157,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    },
+    {
+      "path": "platform/launcher/docker_tls.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "a9881487cb8a5e43a3781a359e0c38b31537ce20cc1797d421fb9a871a014a8f",
+      "declarations": [
+        {
+          "name": "InspectOwnedTLSBroker",
+          "line": 8,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    },
+    {
+      "path": "platform/launcher/host_policy.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "52ec5ee9ef345526fd26a5d423f2a86f99bfa1aa060cfd6315cf963242481e0a",
+      "declarations": [
+        {
+          "name": "hostPolicyError",
+          "line": 79,
+          "kind": "go-function"
+        },
+        {
+          "name": "canonicalHostFilePath",
+          "line": 81,
+          "kind": "go-function"
+        },
+        {
+          "name": "openPrivateHostRoot",
+          "line": 91,
+          "kind": "go-function"
+        },
+        {
+          "name": "trustedHostAncestors",
+          "line": 138,
+          "kind": "go-function"
+        },
+        {
+          "name": "LoadEnrolledHostPolicy",
+          "line": 189,
+          "kind": "go-function"
+        },
+        {
+          "name": "Load",
+          "line": 267,
+          "kind": "go-function"
+        },
+        {
+          "name": "Invocation",
+          "line": 301,
+          "kind": "go-function"
+        },
+        {
+          "name": "PrepareHost",
+          "line": 308,
+          "kind": "go-function"
+        },
+        {
+          "name": "loadBridgeSettings",
+          "line": 347,
+          "kind": "go-function"
+        },
+        {
+          "name": "BridgeClient",
+          "line": 405,
+          "kind": "go-function"
+        },
+        {
+          "name": "BridgeServer",
+          "line": 415,
+          "kind": "go-function"
+        },
+        {
+          "name": "hostInvocationID",
+          "line": 432,
+          "kind": "go-function"
+        },
+        {
+          "name": "BeginEnsure",
+          "line": 441,
+          "kind": "go-function"
+        },
+        {
+          "name": "ID",
+          "line": 451,
+          "kind": "go-function"
+        },
+        {
+          "name": "Observe",
+          "line": 457,
+          "kind": "go-function"
+        },
+        {
+          "name": "Request",
+          "line": 460,
+          "kind": "go-function"
+        },
+        {
+          "name": "ObserveStatus",
+          "line": 470,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    },
+    {
+      "path": "platform/launcher/local_broker_authority.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "665d3bfa44c0fef97dd4a49ab10b9c1a4a799f391d1694e5d3eceab75a918a1d",
+      "declarations": [
+        {
+          "name": "attachLocalBrokerAuthority",
+          "line": 28,
+          "kind": "go-function"
+        },
+        {
+          "name": "copyLocalAdmissionPolicy",
+          "line": 54,
+          "kind": "go-function"
+        },
+        {
+          "name": "inspectLocalBrokerAuthority",
+          "line": 66,
+          "kind": "go-function"
+        },
+        {
+          "name": "sameLocalBrokerEnrollment",
+          "line": 105,
+          "kind": "go-function"
+        },
+        {
+          "name": "inspectLocalBrokerOperation",
+          "line": 124,
+          "kind": "go-function"
+        },
+        {
+          "name": "consume",
+          "line": 142,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    },
+    {
+      "path": "platform/launcher/local_server_trust.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "a807181aac2f4829c7d6ba506f1a1cadafac0b6724745bf2dcd1e7989f9bd9bc",
+      "declarations": [
+        {
+          "name": "cloneHostAdmissionPolicy",
+          "line": 22,
+          "kind": "go-function"
+        },
+        {
+          "name": "loadLocalServerTrust",
+          "line": 36,
+          "kind": "go-function"
+        },
+        {
+          "name": "checkPrivateProfileRoot",
+          "line": 81,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    },
+    {
+      "path": "platform/launcher/owner_bridge.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "5447740219199671a63ef106350e9ceb112fd01ccae1b0a94d51ed028a291ae7",
+      "declarations": [
+        {
+          "name": "String",
+          "line": 49,
+          "kind": "go-function"
+        },
+        {
+          "name": "GoString",
+          "line": 50,
+          "kind": "go-function"
+        },
+        {
+          "name": "String",
+          "line": 85,
+          "kind": "go-function"
+        },
+        {
+          "name": "GoString",
+          "line": 86,
+          "kind": "go-function"
+        },
+        {
+          "name": "String",
+          "line": 87,
+          "kind": "go-function"
+        },
+        {
+          "name": "GoString",
+          "line": 88,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeError",
+          "line": 92,
+          "kind": "go-function"
+        },
+        {
+          "name": "IsOwnerBridgeAuthorityError",
+          "line": 98,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeTime",
+          "line": 99,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeFresh",
+          "line": 102,
+          "kind": "go-function"
+        },
+        {
+          "name": "loadBridgeCredential",
+          "line": 107,
+          "kind": "go-function"
+        },
+        {
+          "name": "LoadOwnerBridgeClient",
+          "line": 179,
+          "kind": "go-function"
+        },
+        {
+          "name": "LoadOwnerBridgeServer",
+          "line": 186,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeConnect",
+          "line": 197,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeConnectWithin",
+          "line": 203,
+          "kind": "go-function"
+        },
+        {
+          "name": "closeBridgeConnection",
+          "line": 264,
+          "kind": "go-function"
+        },
+        {
+          "name": "Request",
+          "line": 274,
+          "kind": "go-function"
+        },
+        {
+          "name": "decodeBridgeReply",
+          "line": 350,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeObservationBound",
+          "line": 365,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeStartingUnknown",
+          "line": 377,
+          "kind": "go-function"
+        },
+        {
+          "name": "accept",
+          "line": 401,
+          "kind": "go-function"
+        },
+        {
+          "name": "validateBridgeRequest",
+          "line": 415,
+          "kind": "go-function"
+        },
+        {
+          "name": "Run",
+          "line": 432,
+          "kind": "go-function"
+        },
+        {
+          "name": "serve",
+          "line": 490,
+          "kind": "go-function"
+        },
+        {
+          "name": "serveOperation",
+          "line": 493,
+          "kind": "go-function"
+        },
+        {
+          "name": "serveLoop",
+          "line": 497,
+          "kind": "go-function"
+        },
+        {
+          "name": "observeBridgeRequest",
+          "line": 709,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeRetainedExpired",
+          "line": 733,
+          "kind": "go-function"
+        },
+        {
+          "name": "refresh",
+          "line": 756,
+          "kind": "go-function"
+        },
+        {
+          "name": "hexDigest",
+          "line": 843,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    },
+    {
+      "path": "platform/launcher/owner_bridge_validation.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "03c24f0ab8c9f59866fee2fd286dd3b61e6fe40d70a7c79b515a1d8626fa84b3",
+      "declarations": [
+        {
+          "name": "String",
+          "line": 33,
+          "kind": "go-function"
+        },
+        {
+          "name": "MatchString",
+          "line": 34,
+          "kind": "go-function"
+        },
+        {
+          "name": "compileOwnerBridgeRegexp",
+          "line": 38,
+          "kind": "go-function"
+        },
+        {
+          "name": "Load",
+          "line": 47,
+          "kind": "go-function"
+        },
+        {
+          "name": "compileOwnerBridgeSchemas",
+          "line": 55,
+          "kind": "go-function"
+        },
+        {
+          "name": "validateOwnerBridgeJSON",
+          "line": 81,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    },
+    {
+      "path": "platform/launcher/session_cleanup.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "9187e95a14aeac4c33cae93c34ceba7abe0aa57be290ab08c46d327e730855cb",
+      "declarations": [
+        {
+          "name": "Error",
+          "line": 26,
+          "kind": "go-function"
+        },
+        {
+          "name": "Format",
+          "line": 27,
+          "kind": "go-function"
+        },
+        {
+          "name": "MarshalJSON",
+          "line": 28,
+          "kind": "go-function"
+        },
+        {
+          "name": "Unwrap",
+          "line": 29,
+          "kind": "go-function"
+        },
+        {
+          "name": "Close",
+          "line": 30,
+          "kind": "go-function"
+        },
+        {
+          "name": "release",
+          "line": 66,
+          "kind": "go-function"
+        },
+        {
+          "name": "closeOwnedSession",
+          "line": 78,
+          "kind": "go-function"
+        },
+        {
+          "name": "newSessionCleanupState",
+          "line": 129,
+          "kind": "go-function"
+        },
+        {
+          "name": "recordGroup",
+          "line": 132,
+          "kind": "go-function"
+        },
+        {
+          "name": "pending",
+          "line": 137,
+          "kind": "go-function"
+        },
+        {
+          "name": "notify",
+          "line": 157,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    },
+    {
+      "path": "platform/launcher/startup_write_proof.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "225071eae8dc76ddeea0a57255a1df2e55d191c5a22b4f776b03da147491bb7e",
+      "declarations": [
+        {
+          "name": "qualifyWriteProof",
+          "line": 14,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    },
+    {
+      "path": "platform/launcher/transport_cleanup.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "5f8dd922dd9cf934594612866ec25146e95c70faf17ce1832f48859a498562cc",
+      "declarations": [
+        {
+          "name": "Error",
+          "line": 24,
+          "kind": "go-function"
+        },
+        {
+          "name": "Format",
+          "line": 30,
+          "kind": "go-function"
+        },
+        {
+          "name": "MarshalJSON",
+          "line": 31,
+          "kind": "go-function"
+        },
+        {
+          "name": "Unwrap",
+          "line": 32,
+          "kind": "go-function"
+        },
+        {
+          "name": "Close",
+          "line": 35,
+          "kind": "go-function"
+        },
+        {
+          "name": "closeOwnedTransport",
+          "line": 45,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    },
+    {
+      "path": "platform/launcher/bootstrap_operation.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "eac3ff3891a6470931e84580c8ffc545de0cbc124d8b33fdf3f967bafa79e40d",
+      "declarations": [
+        {
+          "name": "Format",
+          "line": 47,
+          "kind": "go-function"
+        },
+        {
+          "name": "MarshalJSON",
+          "line": 48,
+          "kind": "go-function"
+        },
+        {
+          "name": "operationError",
+          "line": 51,
+          "kind": "go-function"
+        },
+        {
+          "name": "newBootstrapOperation",
+          "line": 53,
+          "kind": "go-function"
+        },
+        {
+          "name": "cloneOperationDocker",
+          "line": 79,
+          "kind": "go-function"
+        },
+        {
+          "name": "enter",
+          "line": 89,
+          "kind": "go-function"
+        },
+        {
+          "name": "complete",
+          "line": 116,
+          "kind": "go-function"
+        },
+        {
+          "name": "completedTime",
+          "line": 135,
+          "kind": "go-function"
+        },
+        {
+          "name": "resultContext",
+          "line": 144,
+          "kind": "go-function"
+        },
+        {
+          "name": "pending",
+          "line": 164,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    },
+    {
+      "path": "platform/launcher/host_receipt_binding.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "16f5eca18bcdccc911494f51efbbfff359518fbee4a7ecb8ca7d6ca1aabb5b51",
+      "declarations": [
+        {
+          "name": "BootstrapReceiptBinding",
+          "line": 16,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    },
+    {
+      "path": "platform/launcher/host_receipt_server.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "e0c13e86e6a728112a5f1fef5dcb805981125e794ce495251cd0d0ab1937dbf9",
+      "declarations": [
+        {
+          "name": "BridgeServerForInvocation",
+          "line": 13,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    },
+    {
+      "path": "platform/launcher/owner_bridge_receipt.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "c6ec84c03ac827c4c6008705ac8ef6d401484cc3b1015eba7dda900f35b89685",
+      "declarations": [
+        {
+          "name": "matches",
+          "line": 28,
+          "kind": "go-function"
+        },
+        {
+          "name": "ownerBridgeReceiptBindingMatches",
+          "line": 34,
+          "kind": "go-function"
+        },
+        {
+          "name": "emit",
+          "line": 45,
+          "kind": "go-function"
+        },
+        {
+          "name": "emitBootstrapAccepted",
+          "line": 64,
+          "kind": "go-function"
+        },
+        {
+          "name": "finishBootstrapReceipt",
+          "line": 102,
+          "kind": "go-function"
+        },
+        {
+          "name": "Error",
+          "line": 130,
+          "kind": "go-function"
+        },
+        {
+          "name": "Format",
+          "line": 131,
+          "kind": "go-function"
+        },
+        {
+          "name": "MarshalJSON",
+          "line": 132,
+          "kind": "go-function"
+        },
+        {
+          "name": "Unwrap",
+          "line": 133,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeCompletionCode",
+          "line": 134,
+          "kind": "go-function"
+        },
+        {
+          "name": "joinedBridgeBootstrapResult",
+          "line": 141,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    },
+    {
+      "path": "platform/cmd/agentmux-runtime/main.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "workingFileSha256": "a8686ad179f76b2dacdb3096a19d00f3e05af2c037fb9ed7fa83a121b6ac7c9b",
+      "declarations": [
+        {
+          "name": "String",
+          "line": 24,
+          "kind": "go-function"
+        },
+        {
+          "name": "Set",
+          "line": 25,
+          "kind": "go-function"
+        },
+        {
+          "name": "emitObservation",
+          "line": 32,
+          "kind": "go-function"
+        },
+        {
+          "name": "parse",
+          "line": 42,
+          "kind": "go-function"
+        },
+        {
+          "name": "run",
+          "line": 59,
+          "kind": "go-function"
+        },
+        {
+          "name": "emitOwnedBootstrapProgress",
+          "line": 136,
+          "kind": "go-function"
+        },
+        {
+          "name": "progressObservationUnavailable",
+          "line": 150,
+          "kind": "go-function"
+        },
+        {
+          "name": "emitBootstrapProgress",
+          "line": 165,
+          "kind": "go-function"
+        },
+        {
+          "name": "main",
+          "line": 188,
+          "kind": "go-function"
+        }
+      ],
+      "httpPathLiterals": [],
+      "reviewStatus": "P02 launcher declarations and behavior boundary inspected; component evidence is source-bound separately. No product HTTP server routes. Coverage is not public API completeness, installed/native qualification or phase acceptance."
+    }
+  ],
+  "goCallablesByFile": {
+    "platform/launcher/bootstrap.go": [
+      {
+        "name": "bootstrapError",
+        "line": 83,
+        "kind": "function"
+      },
+      {
+        "name": "validateBootstrapRoles",
+        "line": 85,
+        "kind": "function"
+      },
+      {
+        "name": "Close",
+        "receiver": "*Session",
+        "line": 145,
+        "kind": "method"
+      },
+      {
+        "name": "CleanupError",
+        "receiver": "*Session",
+        "line": 190,
+        "kind": "method"
+      },
+      {
+        "name": "Bootstrap",
+        "line": 211,
+        "kind": "function"
+      },
+      {
+        "name": "BootstrapForInvocation",
+        "line": 222,
+        "kind": "function"
+      },
+      {
+        "name": "bootstrapForOperation",
+        "line": 228,
+        "kind": "function"
+      }
+    ],
+    "platform/launcher/startup_status.go": [
+      {
+        "name": "ownerStatusError",
+        "line": 162,
+        "kind": "function"
+      },
+      {
+        "name": "statusText",
+        "line": 163,
+        "kind": "function"
+      },
+      {
+        "name": "optionalStatusID",
+        "line": 174,
+        "kind": "function"
+      },
+      {
+        "name": "copyOwnerScope",
+        "line": 175,
+        "kind": "function"
+      },
+      {
+        "name": "LoadOwnerStatus",
+        "line": 191,
+        "kind": "function"
+      },
+      {
+        "name": "statusTimestamp",
+        "line": 244,
+        "kind": "function"
+      },
+      {
+        "name": "statusString",
+        "line": 247,
+        "kind": "function"
+      },
+      {
+        "name": "statusRevision",
+        "line": 248,
+        "kind": "function"
+      },
+      {
+        "name": "unknownStatusService",
+        "line": 249,
+        "kind": "function"
+      },
+      {
+        "name": "mapStartingContext",
+        "receiver": "*OwnerStatus",
+        "line": 255,
+        "kind": "method"
+      },
+      {
+        "name": "mapObservation",
+        "receiver": "*OwnerStatus",
+        "line": 293,
+        "kind": "method"
+      },
+      {
+        "name": "mapObservationContext",
+        "receiver": "*OwnerStatus",
+        "line": 297,
+        "kind": "method"
+      },
+      {
+        "name": "newObservationLocked",
+        "receiver": "*OwnerStatus",
+        "line": 320,
+        "kind": "method"
+      },
+      {
+        "name": "mapObservationLocked",
+        "receiver": "*OwnerStatus",
+        "line": 359,
+        "kind": "method"
+      },
+      {
+        "name": "mustStatusJSON",
+        "line": 434,
+        "kind": "function"
+      }
+    ],
+    "platform/launcher/bootstrap_compose_binding.go": [
+      {
+        "name": "bootstrapComposeBrokerBytes",
+        "line": 14,
+        "kind": "function"
+      }
+    ],
+    "platform/launcher/docker_archives.go": [
+      {
+        "name": "verifyOwnedTLSArchives",
+        "receiver": "*Docker",
+        "line": 11,
+        "kind": "method"
+      }
+    ],
+    "platform/launcher/docker_reads.go": [
+      {
+        "name": "Error",
+        "receiver": "*dockerInspectionFailure",
+        "line": 19,
+        "kind": "method"
+      },
+      {
+        "name": "Unwrap",
+        "receiver": "*dockerInspectionFailure",
+        "line": 20,
+        "kind": "method"
+      },
+      {
+        "name": "inspectionStage",
+        "receiver": "*dockerInspectionFailure",
+        "line": 21,
+        "kind": "method"
+      },
+      {
+        "name": "inspectionFailure",
+        "line": 22,
+        "kind": "function"
+      },
+      {
+        "name": "dockerReadStage",
+        "line": 25,
+        "kind": "function"
+      },
+      {
+        "name": "parallelDockerReadAllowed",
+        "line": 41,
+        "kind": "function"
+      },
+      {
+        "name": "parallelReads",
+        "receiver": "*Docker",
+        "line": 66,
+        "kind": "method"
+      }
+    ],
+    "platform/launcher/docker_stdio.go": [
+      {
+        "name": "readEngineInfoStdio",
+        "receiver": "*Docker",
+        "line": 28,
+        "kind": "method"
+      },
+      {
+        "name": "decodeDockerInfoStdio",
+        "line": 91,
+        "kind": "function"
+      },
+      {
+        "name": "dockerInfoJSONUnique",
+        "line": 157,
+        "kind": "function"
+      }
+    ],
+    "platform/launcher/docker_tls.go": [
+      {
+        "name": "InspectOwnedTLSBroker",
+        "receiver": "*Docker",
+        "line": 8,
+        "kind": "method"
+      }
+    ],
+    "platform/launcher/host_policy.go": [
+      {
+        "name": "hostPolicyError",
+        "line": 79,
+        "kind": "function"
+      },
+      {
+        "name": "canonicalHostFilePath",
+        "line": 81,
+        "kind": "function"
+      },
+      {
+        "name": "openPrivateHostRoot",
+        "line": 91,
+        "kind": "function"
+      },
+      {
+        "name": "trustedHostAncestors",
+        "line": 138,
+        "kind": "function"
+      },
+      {
+        "name": "LoadEnrolledHostPolicy",
+        "line": 189,
+        "kind": "function"
+      },
+      {
+        "name": "Load",
+        "receiver": "*EnrolledHostPolicy",
+        "line": 267,
+        "kind": "method"
+      },
+      {
+        "name": "Invocation",
+        "receiver": "*EnrolledHostPolicy",
+        "line": 301,
+        "kind": "method"
+      },
+      {
+        "name": "PrepareHost",
+        "receiver": "*EnrolledHostPolicy",
+        "line": 308,
+        "kind": "method"
+      },
+      {
+        "name": "loadBridgeSettings",
+        "receiver": "*EnrolledHostPolicy",
+        "line": 347,
+        "kind": "method"
+      },
+      {
+        "name": "BridgeClient",
+        "receiver": "*EnrolledHostPolicy",
+        "line": 405,
+        "kind": "method"
+      },
+      {
+        "name": "BridgeServer",
+        "receiver": "*EnrolledHostPolicy",
+        "line": 415,
+        "kind": "method"
+      },
+      {
+        "name": "hostInvocationID",
+        "line": 432,
+        "kind": "function"
+      },
+      {
+        "name": "BeginEnsure",
+        "receiver": "*EnrolledHostPolicy",
+        "line": 441,
+        "kind": "method"
+      },
+      {
+        "name": "ID",
+        "receiver": "*EnsureInvocation",
+        "line": 451,
+        "kind": "method"
+      },
+      {
+        "name": "Observe",
+        "receiver": "*EnsureInvocation",
+        "line": 457,
+        "kind": "method"
+      },
+      {
+        "name": "Request",
+        "receiver": "*EnsureInvocation",
+        "line": 460,
+        "kind": "method"
+      },
+      {
+        "name": "ObserveStatus",
+        "receiver": "*EnrolledHostPolicy",
+        "line": 470,
+        "kind": "method"
+      }
+    ],
+    "platform/launcher/local_broker_authority.go": [
+      {
+        "name": "attachLocalBrokerAuthority",
+        "line": 28,
+        "kind": "function"
+      },
+      {
+        "name": "copyLocalAdmissionPolicy",
+        "line": 54,
+        "kind": "function"
+      },
+      {
+        "name": "inspectLocalBrokerAuthority",
+        "line": 66,
+        "kind": "function"
+      },
+      {
+        "name": "sameLocalBrokerEnrollment",
+        "line": 105,
+        "kind": "function"
+      },
+      {
+        "name": "inspectLocalBrokerOperation",
+        "line": 124,
+        "kind": "function"
+      },
+      {
+        "name": "consume",
+        "receiver": "*kernelObservationProof",
+        "line": 142,
+        "kind": "method"
+      }
+    ],
+    "platform/launcher/local_server_trust.go": [
+      {
+        "name": "cloneHostAdmissionPolicy",
+        "line": 22,
+        "kind": "function"
+      },
+      {
+        "name": "loadLocalServerTrust",
+        "line": 36,
+        "kind": "function"
+      },
+      {
+        "name": "checkPrivateProfileRoot",
+        "line": 81,
+        "kind": "function"
+      }
+    ],
+    "platform/launcher/owner_bridge.go": [
+      {
+        "name": "String",
+        "receiver": "OwnerBridgeCredential",
+        "line": 49,
+        "kind": "method"
+      },
+      {
+        "name": "GoString",
+        "receiver": "OwnerBridgeCredential",
+        "line": 50,
+        "kind": "method"
+      },
+      {
+        "name": "String",
+        "receiver": "*OwnerBridgeClient",
+        "line": 85,
+        "kind": "method"
+      },
+      {
+        "name": "GoString",
+        "receiver": "*OwnerBridgeClient",
+        "line": 86,
+        "kind": "method"
+      },
+      {
+        "name": "String",
+        "receiver": "*OwnerBridgeServer",
+        "line": 87,
+        "kind": "method"
+      },
+      {
+        "name": "GoString",
+        "receiver": "*OwnerBridgeServer",
+        "line": 88,
+        "kind": "method"
+      },
+      {
+        "name": "bridgeError",
+        "line": 92,
+        "kind": "function"
+      },
+      {
+        "name": "IsOwnerBridgeAuthorityError",
+        "line": 98,
+        "kind": "function"
+      },
+      {
+        "name": "bridgeTime",
+        "line": 99,
+        "kind": "function"
+      },
+      {
+        "name": "bridgeFresh",
+        "line": 102,
+        "kind": "function"
+      },
+      {
+        "name": "loadBridgeCredential",
+        "line": 107,
+        "kind": "function"
+      },
+      {
+        "name": "LoadOwnerBridgeClient",
+        "line": 179,
+        "kind": "function"
+      },
+      {
+        "name": "LoadOwnerBridgeServer",
+        "line": 186,
+        "kind": "function"
+      },
+      {
+        "name": "bridgeConnect",
+        "line": 197,
+        "kind": "function"
+      },
+      {
+        "name": "bridgeConnectWithin",
+        "line": 203,
+        "kind": "function"
+      },
+      {
+        "name": "closeBridgeConnection",
+        "line": 264,
+        "kind": "function"
+      },
+      {
+        "name": "Request",
+        "receiver": "*OwnerBridgeClient",
+        "line": 274,
+        "kind": "method"
+      },
+      {
+        "name": "decodeBridgeReply",
+        "line": 350,
+        "kind": "function"
+      },
+      {
+        "name": "bridgeObservationBound",
+        "line": 365,
+        "kind": "function"
+      },
+      {
+        "name": "bridgeStartingUnknown",
+        "line": 377,
+        "kind": "function"
+      },
+      {
+        "name": "accept",
+        "receiver": "*bridgeReplay",
+        "line": 401,
+        "kind": "method"
+      },
+      {
+        "name": "validateBridgeRequest",
+        "line": 415,
+        "kind": "function"
+      },
+      {
+        "name": "Run",
+        "receiver": "*OwnerBridgeServer",
+        "line": 432,
+        "kind": "method"
+      },
+      {
+        "name": "serve",
+        "receiver": "*OwnerBridgeServer",
+        "line": 490,
+        "kind": "method"
+      },
+      {
+        "name": "serveOperation",
+        "receiver": "*OwnerBridgeServer",
+        "line": 493,
+        "kind": "method"
+      },
+      {
+        "name": "serveLoop",
+        "receiver": "*OwnerBridgeServer",
+        "line": 497,
+        "kind": "method"
+      },
+      {
+        "name": "observeBridgeRequest",
+        "receiver": "*OwnerBridgeServer",
+        "line": 709,
+        "kind": "method"
+      },
+      {
+        "name": "bridgeRetainedExpired",
+        "line": 733,
+        "kind": "function"
+      },
+      {
+        "name": "refresh",
+        "receiver": "*OwnerBridgeServer",
+        "line": 756,
+        "kind": "method"
+      },
+      {
+        "name": "hexDigest",
+        "line": 843,
+        "kind": "function"
+      }
+    ],
+    "platform/launcher/owner_bridge_validation.go": [
+      {
+        "name": "String",
+        "receiver": "*ownerBridgeRegexp",
+        "line": 33,
+        "kind": "method"
+      },
+      {
+        "name": "MatchString",
+        "receiver": "*ownerBridgeRegexp",
+        "line": 34,
+        "kind": "method"
+      },
+      {
+        "name": "compileOwnerBridgeRegexp",
+        "line": 38,
+        "kind": "function"
+      },
+      {
+        "name": "Load",
+        "receiver": "ownerBridgeDenyLoader",
+        "line": 47,
+        "kind": "method"
+      },
+      {
+        "name": "compileOwnerBridgeSchemas",
+        "line": 55,
+        "kind": "function"
+      },
+      {
+        "name": "validateOwnerBridgeJSON",
+        "line": 81,
+        "kind": "function"
+      }
+    ],
+    "platform/launcher/session_cleanup.go": [
+      {
+        "name": "Error",
+        "receiver": "RuntimeCleanupError",
+        "line": 26,
+        "kind": "method"
+      },
+      {
+        "name": "Format",
+        "receiver": "RuntimeCleanupError",
+        "line": 27,
+        "kind": "method"
+      },
+      {
+        "name": "MarshalJSON",
+        "receiver": "RuntimeCleanupError",
+        "line": 28,
+        "kind": "method"
+      },
+      {
+        "name": "Unwrap",
+        "receiver": "RuntimeCleanupError",
+        "line": 29,
+        "kind": "method"
+      },
+      {
+        "name": "Close",
+        "receiver": "*RuntimeCleanupError",
+        "line": 30,
+        "kind": "method"
+      },
+      {
+        "name": "release",
+        "receiver": "*sessionCleanupOwner",
+        "line": 66,
+        "kind": "method"
+      },
+      {
+        "name": "closeOwnedSession",
+        "line": 78,
+        "kind": "function"
+      },
+      {
+        "name": "newSessionCleanupState",
+        "line": 129,
+        "kind": "function"
+      },
+      {
+        "name": "recordGroup",
+        "receiver": "*sessionCleanupState",
+        "line": 132,
+        "kind": "method"
+      },
+      {
+        "name": "pending",
+        "receiver": "*sessionCleanupState",
+        "line": 137,
+        "kind": "method"
+      },
+      {
+        "name": "notify",
+        "receiver": "*sessionCleanupState",
+        "line": 157,
+        "kind": "method"
+      }
+    ],
+    "platform/launcher/startup_write_proof.go": [
+      {
+        "name": "qualifyWriteProof",
+        "line": 14,
+        "kind": "function"
+      }
+    ],
+    "platform/launcher/transport_cleanup.go": [
+      {
+        "name": "Error",
+        "receiver": "TransportCleanupError",
+        "line": 24,
+        "kind": "method"
+      },
+      {
+        "name": "Format",
+        "receiver": "TransportCleanupError",
+        "line": 30,
+        "kind": "method"
+      },
+      {
+        "name": "MarshalJSON",
+        "receiver": "TransportCleanupError",
+        "line": 31,
+        "kind": "method"
+      },
+      {
+        "name": "Unwrap",
+        "receiver": "TransportCleanupError",
+        "line": 32,
+        "kind": "method"
+      },
+      {
+        "name": "Close",
+        "receiver": "*TransportCleanupError",
+        "line": 35,
+        "kind": "method"
+      },
+      {
+        "name": "closeOwnedTransport",
+        "line": 45,
+        "kind": "function"
+      }
+    ],
+    "platform/launcher/bootstrap_operation.go": [
+      {
+        "name": "Format",
+        "receiver": "bootstrapOperation",
+        "line": 47,
+        "kind": "method"
+      },
+      {
+        "name": "MarshalJSON",
+        "receiver": "bootstrapOperation",
+        "line": 48,
+        "kind": "method"
+      },
+      {
+        "name": "operationError",
+        "line": 51,
+        "kind": "function"
+      },
+      {
+        "name": "newBootstrapOperation",
+        "line": 53,
+        "kind": "function"
+      },
+      {
+        "name": "cloneOperationDocker",
+        "line": 79,
+        "kind": "function"
+      },
+      {
+        "name": "enter",
+        "receiver": "*bootstrapOperation",
+        "line": 89,
+        "kind": "method"
+      },
+      {
+        "name": "complete",
+        "receiver": "*bootstrapOperation",
+        "line": 116,
+        "kind": "method"
+      },
+      {
+        "name": "completedTime",
+        "receiver": "*bootstrapOperation",
+        "line": 135,
+        "kind": "method"
+      },
+      {
+        "name": "resultContext",
+        "receiver": "*bootstrapOperation",
+        "line": 144,
+        "kind": "method"
+      },
+      {
+        "name": "pending",
+        "receiver": "*bootstrapOperation",
+        "line": 164,
+        "kind": "method"
+      }
+    ],
+    "platform/launcher/host_receipt_binding.go": [
+      {
+        "name": "BootstrapReceiptBinding",
+        "receiver": "*EnrolledHostPolicy",
+        "line": 16,
+        "kind": "method"
+      }
+    ],
+    "platform/launcher/host_receipt_server.go": [
+      {
+        "name": "BridgeServerForInvocation",
+        "receiver": "*EnrolledHostPolicy",
+        "line": 13,
+        "kind": "method"
+      }
+    ],
+    "platform/launcher/owner_bridge_receipt.go": [
+      {
+        "name": "matches",
+        "receiver": "*ownerBridgeReceiptState",
+        "line": 28,
+        "kind": "method"
+      },
+      {
+        "name": "ownerBridgeReceiptBindingMatches",
+        "line": 34,
+        "kind": "function"
+      },
+      {
+        "name": "emit",
+        "receiver": "*ownerBridgeReceiptState",
+        "line": 45,
+        "kind": "method"
+      },
+      {
+        "name": "emitBootstrapAccepted",
+        "receiver": "*bootstrapOperation",
+        "line": 64,
+        "kind": "method"
+      },
+      {
+        "name": "finishBootstrapReceipt",
+        "receiver": "*OwnerBridgeServer",
+        "line": 102,
+        "kind": "method"
+      },
+      {
+        "name": "Error",
+        "receiver": "bridgeCompletionCause",
+        "line": 130,
+        "kind": "method"
+      },
+      {
+        "name": "Format",
+        "receiver": "bridgeCompletionCause",
+        "line": 131,
+        "kind": "method"
+      },
+      {
+        "name": "MarshalJSON",
+        "receiver": "bridgeCompletionCause",
+        "line": 132,
+        "kind": "method"
+      },
+      {
+        "name": "Unwrap",
+        "receiver": "bridgeCompletionCause",
+        "line": 133,
+        "kind": "method"
+      },
+      {
+        "name": "bridgeCompletionCode",
+        "line": 134,
+        "kind": "function"
+      },
+      {
+        "name": "joinedBridgeBootstrapResult",
+        "line": 141,
+        "kind": "function"
+      }
+    ],
+    "platform/cmd/agentmux-runtime/main.go": [
+      {
+        "name": "String",
+        "receiver": "*workspaces",
+        "line": 24,
+        "kind": "method"
+      },
+      {
+        "name": "Set",
+        "receiver": "*workspaces",
+        "line": 25,
+        "kind": "method"
+      },
+      {
+        "name": "emitObservation",
+        "line": 32,
+        "kind": "function"
+      },
+      {
+        "name": "parse",
+        "line": 42,
+        "kind": "function"
+      },
+      {
+        "name": "run",
+        "line": 59,
+        "kind": "function"
+      },
+      {
+        "name": "emitOwnedBootstrapProgress",
+        "line": 136,
+        "kind": "function"
+      },
+      {
+        "name": "progressObservationUnavailable",
+        "line": 150,
+        "kind": "function"
+      },
+      {
+        "name": "emitBootstrapProgress",
+        "line": 165,
+        "kind": "function"
+      },
+      {
+        "name": "main",
+        "line": 188,
+        "kind": "function"
+      }
+    ]
+  },
+  "reviews": [
+    {
+      "path": "platform/launcher/bootstrap.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "refresh-stale",
+      "previousHash": "b3211aa730e87980b2cbac0fb2e6ae479c580f4bba722c6cdae12b2512edb524",
+      "how": "The admitted Bootstrap core validates selected profile, exact Compose/role/private trust material, prepares signed images, inspects/reuses or starts only owned resources, and records the actual call result.",
+      "where": [
+        {
+          "name": "bootstrapError",
+          "receiver": null,
+          "line": 83
+        },
+        {
+          "name": "validateBootstrapRoles",
+          "receiver": null,
+          "line": 85
+        },
+        {
+          "name": "Close",
+          "receiver": "*Session",
+          "line": 145
+        },
+        {
+          "name": "CleanupError",
+          "receiver": "*Session",
+          "line": 190
+        },
+        {
+          "name": "Bootstrap",
+          "receiver": null,
+          "line": 211
+        },
+        {
+          "name": "BootstrapForInvocation",
+          "receiver": null,
+          "line": 222
+        },
+        {
+          "name": "bootstrapForOperation",
+          "receiver": null,
+          "line": 228
+        }
+      ],
+      "why": "Its private operation hook follows successful preparation; owned Session cleanup and inherited role leases preserve cold/warm/concurrent behavior without PID adoption.",
+      "tradeoffs": "Keep ordinary kernel command authority and future orchestration outside this launcher; broker absence is not proof that role leases are free.",
+      "evidenceStatus": [
+        {
+          "reference": "installed-cli-current/review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "7db76af164be1110f1352da993833fc3613c09ab42b4557094bcd4661edb9bcd"
+          ]
+        },
+        {
+          "reference": "combined-cleanup-independent/independent-review.json",
+          "status": "historical-source-or-unbound-file-scope-only",
+          "attestedHashes": [
+            "16fc4006546a30d5f27768e06731cc9dc0623d51794d853b29420b58042d4033"
+          ]
+        },
+        {
+          "reference": "owner-bridge-receipt/review.json",
+          "status": "historical-source-or-unbound-file-scope-only",
+          "attestedHashes": []
+        },
+        {
+          "reference": "kernel-operation-proof-independent/independent-review.json",
+          "status": "historical-source-or-unbound-file-scope-only",
+          "attestedHashes": [
+            "cca71363e1a0d7db86836df2ba20cd3c47997c012e992e510fb71d1281a6a3a4"
+          ]
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    },
+    {
+      "path": "platform/launcher/startup_status.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "refresh-stale",
+      "previousHash": "3ddbe8fcecb149dd40d9d0b9738d40af3a7e706f47b1b799ccc28c5038f3f107",
+      "how": "The local owner loader checks the actual private enrollment/profile. The shared base mapper produces scoped L04 observations; pending output comes only from the retained admitted operation.",
+      "where": [
+        {
+          "name": "ownerStatusError",
+          "receiver": null,
+          "line": 162
+        },
+        {
+          "name": "statusText",
+          "receiver": null,
+          "line": 163
+        },
+        {
+          "name": "optionalStatusID",
+          "receiver": null,
+          "line": 174
+        },
+        {
+          "name": "copyOwnerScope",
+          "receiver": null,
+          "line": 175
+        },
+        {
+          "name": "LoadOwnerStatus",
+          "receiver": null,
+          "line": 191
+        },
+        {
+          "name": "statusTimestamp",
+          "receiver": null,
+          "line": 244
+        },
+        {
+          "name": "statusString",
+          "receiver": null,
+          "line": 247
+        },
+        {
+          "name": "statusRevision",
+          "receiver": null,
+          "line": 248
+        },
+        {
+          "name": "unknownStatusService",
+          "receiver": null,
+          "line": 249
+        },
+        {
+          "name": "mapStartingContext",
+          "receiver": "*OwnerStatus",
+          "line": 255
+        },
+        {
+          "name": "mapObservation",
+          "receiver": "*OwnerStatus",
+          "line": 293
+        },
+        {
+          "name": "mapObservationContext",
+          "receiver": "*OwnerStatus",
+          "line": 297
+        },
+        {
+          "name": "newObservationLocked",
+          "receiver": "*OwnerStatus",
+          "line": 320
+        },
+        {
+          "name": "mapObservationLocked",
+          "receiver": "*OwnerStatus",
+          "line": 359
+        },
+        {
+          "name": "mustStatusJSON",
+          "receiver": null,
+          "line": 434
+        }
+      ],
+      "why": "Running versions, persistence readiness and service counts require their actual owners and proofs. Pending output leaves kernel/persistence/work/hub facts unknown or unavailable.",
+      "tradeoffs": "A current NATS starting observation differs from a historical OS receipt; same-UID code is trusted, and synchronous filesystem timing is not preemptible.",
+      "evidenceStatus": [
+        {
+          "reference": "installed-cli-current/review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "31e02ec220343b79c0a5d1927d047d09e8468d53d8ed1fbe826b802105a1d678"
+          ]
+        },
+        {
+          "reference": "local-owner-status/review.json",
+          "status": "historical-source-or-unbound-file-scope-only",
+          "attestedHashes": [
+            "3ddbe8fcecb149dd40d9d0b9738d40af3a7e706f47b1b799ccc28c5038f3f107"
+          ]
+        },
+        {
+          "reference": "owner-status-deadline/review.json",
+          "status": "historical-source-or-unbound-file-scope-only",
+          "attestedHashes": [
+            "3ddbe8fcecb149dd40d9d0b9738d40af3a7e706f47b1b799ccc28c5038f3f107",
+            "835da5322d10e73c8da1c89ea7fcd29e415c3b33903fc8c3ea4ff17adaf4aa7a"
+          ]
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    },
+    {
+      "path": "platform/launcher/bootstrap_compose_binding.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "add-missing",
+      "previousHash": null,
+      "how": "This private admission extracts only the fixed broker configuration and optional certificate/key from the complete allowlisted Compose object.",
+      "where": [
+        {
+          "name": "bootstrapComposeBrokerBytes",
+          "receiver": null,
+          "line": 14
+        }
+      ],
+      "why": "Exact config hashes, cert/key bytes, target names and 0400 UID/GID bindings prevent an otherwise valid profile from injecting different private files.",
+      "tradeoffs": "Inline byte validation does not inspect Docker or authenticate a live server.",
+      "evidenceStatus": [
+        {
+          "reference": "inline-config-repair-independent/review.json",
+          "status": "historical-source-or-unbound-file-scope-only",
+          "attestedHashes": []
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    },
+    {
+      "path": "platform/launcher/docker_archives.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "add-missing",
+      "previousHash": null,
+      "how": "Three fixed owned-container file reads run together after broker identity admission; every command is canceled/joined before return.",
+      "where": [
+        {
+          "name": "verifyOwnedTLSArchives",
+          "receiver": "*Docker",
+          "line": 11
+        }
+      ],
+      "why": "The archive validator checks the private configuration, certificate and key hashes and bounds; errors return no successful subset or private bytes.",
+      "tradeoffs": "Controlled-process tests are distinct from real injected 0400 files in the selected Docker engine.",
+      "evidenceStatus": [
+        {
+          "reference": "fixed-tls-archives-independent/independent-review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "c645ce9f3bec78fa5f9d52e6663d27d30c705b99855f381ad33a3ce083377d66"
+          ]
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    },
+    {
+      "path": "platform/launcher/docker_reads.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "add-missing",
+      "previousHash": null,
+      "how": "Only three-or-fewer allowlisted independent version/engine/roster reads are batched under owned command contexts.",
+      "where": [
+        {
+          "name": "Error",
+          "receiver": "*dockerInspectionFailure",
+          "line": 19
+        },
+        {
+          "name": "Unwrap",
+          "receiver": "*dockerInspectionFailure",
+          "line": 20
+        },
+        {
+          "name": "inspectionStage",
+          "receiver": "*dockerInspectionFailure",
+          "line": 21
+        },
+        {
+          "name": "inspectionFailure",
+          "receiver": null,
+          "line": 22
+        },
+        {
+          "name": "dockerReadStage",
+          "receiver": null,
+          "line": 25
+        },
+        {
+          "name": "parallelDockerReadAllowed",
+          "receiver": null,
+          "line": 41
+        },
+        {
+          "name": "parallelReads",
+          "receiver": "*Docker",
+          "line": 66
+        }
+      ],
+      "why": "The first real failure cancels siblings and the caller joins all reads. Private stage labels explain which fixed read failed without exposing arguments or output.",
+      "tradeoffs": "Mutations and private archives are excluded; faster inspection does not replace identity validation.",
+      "evidenceStatus": [
+        {
+          "reference": "docker-parallel-inspection/review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813"
+          ]
+        },
+        {
+          "reference": "fixed-tls-archives-independent/independent-review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813"
+          ]
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    },
+    {
+      "path": "platform/launcher/docker_stdio.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "add-missing",
+      "previousHash": null,
+      "how": "The selected Windows 29.8.0 client runs its bounded dial-stdio helper for one fixed GET /info request; strict HTTP/body framing yields only expected engine identity.",
+      "where": [
+        {
+          "name": "readEngineInfoStdio",
+          "receiver": "*Docker",
+          "line": 28
+        },
+        {
+          "name": "decodeDockerInfoStdio",
+          "receiver": null,
+          "line": 91
+        },
+        {
+          "name": "dockerInfoJSONUnique",
+          "receiver": null,
+          "line": 157
+        }
+      ],
+      "why": "This repairs the qualified Windows interop read without daemon discovery, arbitrary requests or a new listener.",
+      "tradeoffs": "The literal /info is an outbound private Docker protocol read, not an Agentmux HTTP route. Linux/macOS and other client versions require their own qualification.",
+      "evidenceStatus": [
+        {
+          "reference": "docker-stdio-integration-review/results.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "151b05060ce4ed601f9985f745834f73c97808645da5008cca48cc501d638197"
+          ]
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    },
+    {
+      "path": "platform/launcher/docker_tls.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "add-missing",
+      "previousHash": null,
+      "how": "Owned broker inspection first retains exact engine/container/image/port/volume/config checks and then verifies the fixed certificate/key archives.",
+      "where": [
+        {
+          "name": "InspectOwnedTLSBroker",
+          "receiver": "*Docker",
+          "line": 8
+        }
+      ],
+      "why": "TLS digests come from admitted enrollment rather than observed container data. Actual socket authentication remains a separate mandatory step.",
+      "tradeoffs": "Docker inspection is not cryptographic peer authentication; archive fixtures do not qualify native/container injection.",
+      "evidenceStatus": [
+        {
+          "reference": "fixed-tls-archives-independent/independent-review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "a9881487cb8a5e43a3781a359e0c38b31537ce20cc1797d421fb9a871a014a8f"
+          ]
+        },
+        {
+          "reference": "owned-tls-inspection/review.json",
+          "status": "historical-source-or-unbound-file-scope-only",
+          "attestedHashes": []
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    },
+    {
+      "path": "platform/launcher/host_policy.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "add-missing",
+      "previousHash": null,
+      "how": "The installed policy loader admits explicit OS owner/workspaces, private descriptor ancestry/ACL policy, external release, profile and bridge credentials; it prepares only the bound host image.",
+      "where": [
+        {
+          "name": "hostPolicyError",
+          "receiver": null,
+          "line": 79
+        },
+        {
+          "name": "canonicalHostFilePath",
+          "receiver": null,
+          "line": 81
+        },
+        {
+          "name": "openPrivateHostRoot",
+          "receiver": null,
+          "line": 91
+        },
+        {
+          "name": "trustedHostAncestors",
+          "receiver": null,
+          "line": 138
+        },
+        {
+          "name": "LoadEnrolledHostPolicy",
+          "receiver": null,
+          "line": 189
+        },
+        {
+          "name": "Load",
+          "receiver": "*EnrolledHostPolicy",
+          "line": 267
+        },
+        {
+          "name": "Invocation",
+          "receiver": "*EnrolledHostPolicy",
+          "line": 301
+        },
+        {
+          "name": "PrepareHost",
+          "receiver": "*EnrolledHostPolicy",
+          "line": 308
+        },
+        {
+          "name": "loadBridgeSettings",
+          "receiver": "*EnrolledHostPolicy",
+          "line": 347
+        },
+        {
+          "name": "BridgeClient",
+          "receiver": "*EnrolledHostPolicy",
+          "line": 405
+        },
+        {
+          "name": "BridgeServer",
+          "receiver": "*EnrolledHostPolicy",
+          "line": 415
+        },
+        {
+          "name": "hostInvocationID",
+          "receiver": null,
+          "line": 432
+        },
+        {
+          "name": "BeginEnsure",
+          "receiver": "*EnrolledHostPolicy",
+          "line": 441
+        },
+        {
+          "name": "ID",
+          "receiver": "*EnsureInvocation",
+          "line": 451
+        },
+        {
+          "name": "Observe",
+          "receiver": "*EnsureInvocation",
+          "line": 457
+        },
+        {
+          "name": "Request",
+          "receiver": "*EnsureInvocation",
+          "line": 460
+        },
+        {
+          "name": "ObserveStatus",
+          "receiver": "*EnrolledHostPolicy",
+          "line": 470
+        }
+      ],
+      "why": "Ensure invocation IDs are real correlation values. Request/observe methods retain fixed enrolled server and subject choices without creating identities or discovering workspaces.",
+      "tradeoffs": "Darwin protected executable and ACL/mount paths require native execution. Loader/component tests are not installed product boot proof.",
+      "evidenceStatus": [
+        {
+          "reference": "installed-tls-admission-independent/review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "52ec5ee9ef345526fd26a5d423f2a86f99bfa1aa060cfd6315cf963242481e0a"
+          ]
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    },
+    {
+      "path": "platform/launcher/local_broker_authority.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "add-missing",
+      "previousHash": null,
+      "how": "The private binding copies admitted mutable configuration, re-reads full enrollment, then inspects the exact selected TLS broker before any credential-bearing dial.",
+      "where": [
+        {
+          "name": "attachLocalBrokerAuthority",
+          "receiver": null,
+          "line": 28
+        },
+        {
+          "name": "copyLocalAdmissionPolicy",
+          "receiver": null,
+          "line": 54
+        },
+        {
+          "name": "inspectLocalBrokerAuthority",
+          "receiver": null,
+          "line": 66
+        },
+        {
+          "name": "sameLocalBrokerEnrollment",
+          "receiver": null,
+          "line": 105
+        },
+        {
+          "name": "inspectLocalBrokerOperation",
+          "receiver": null,
+          "line": 124
+        },
+        {
+          "name": "consume",
+          "receiver": "*kernelObservationProof",
+          "line": 142
+        }
+      ],
+      "why": "An operation proof can be consumed once, only by its exact bounded comparable context and binding; mutations/expiry require another inspection.",
+      "tradeoffs": "No caller callback asserts ownership. Absent/unavailable transport alone cannot authorize replacement of an independently leased runtime.",
+      "evidenceStatus": [
+        {
+          "reference": "kernel-operation-proof-independent/independent-review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "665d3bfa44c0fef97dd4a49ab10b9c1a4a799f391d1694e5d3eceab75a918a1d"
+          ]
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    },
+    {
+      "path": "platform/launcher/local_server_trust.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "add-missing",
+      "previousHash": null,
+      "how": "A held private profile root reads the fixed full-scope trust record and enrolled certificate/key and checks all hashes/pins/material bindings.",
+      "where": [
+        {
+          "name": "cloneHostAdmissionPolicy",
+          "receiver": null,
+          "line": 22
+        },
+        {
+          "name": "loadLocalServerTrust",
+          "receiver": null,
+          "line": 36
+        },
+        {
+          "name": "checkPrivateProfileRoot",
+          "receiver": null,
+          "line": 81
+        }
+      ],
+      "why": "The returned fixed trust is not a caller-selected tls.Config. Policy copies retain external trust and prevent mutable slice/setting sharing.",
+      "tradeoffs": "Reads neither renew certificates nor contact a server; privatefs supplements existing POSIX/ancestry rules and native Darwin controls remain separate.",
+      "evidenceStatus": [
+        {
+          "reference": "installed-tls-admission-independent/review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "a807181aac2f4829c7d6ba506f1a1cadafac0b6724745bf2dcd1e7989f9bd9bc"
+          ]
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    },
+    {
+      "path": "platform/launcher/owner_bridge.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "add-missing",
+      "previousHash": null,
+      "how": "The isolated HOST account carries fixed nonce/invocation/full-scope requests and authenticated L04 replies. Actual Run acquires its service lease and owns one Bootstrap call.",
+      "where": [
+        {
+          "name": "String",
+          "receiver": "OwnerBridgeCredential",
+          "line": 49
+        },
+        {
+          "name": "GoString",
+          "receiver": "OwnerBridgeCredential",
+          "line": 50
+        },
+        {
+          "name": "String",
+          "receiver": "*OwnerBridgeClient",
+          "line": 85
+        },
+        {
+          "name": "GoString",
+          "receiver": "*OwnerBridgeClient",
+          "line": 86
+        },
+        {
+          "name": "String",
+          "receiver": "*OwnerBridgeServer",
+          "line": 87
+        },
+        {
+          "name": "GoString",
+          "receiver": "*OwnerBridgeServer",
+          "line": 88
+        },
+        {
+          "name": "bridgeError",
+          "receiver": null,
+          "line": 92
+        },
+        {
+          "name": "IsOwnerBridgeAuthorityError",
+          "receiver": null,
+          "line": 98
+        },
+        {
+          "name": "bridgeTime",
+          "receiver": null,
+          "line": 99
+        },
+        {
+          "name": "bridgeFresh",
+          "receiver": null,
+          "line": 102
+        },
+        {
+          "name": "loadBridgeCredential",
+          "receiver": null,
+          "line": 107
+        },
+        {
+          "name": "LoadOwnerBridgeClient",
+          "receiver": null,
+          "line": 179
+        },
+        {
+          "name": "LoadOwnerBridgeServer",
+          "receiver": null,
+          "line": 186
+        },
+        {
+          "name": "bridgeConnect",
+          "receiver": null,
+          "line": 197
+        },
+        {
+          "name": "bridgeConnectWithin",
+          "receiver": null,
+          "line": 203
+        },
+        {
+          "name": "closeBridgeConnection",
+          "receiver": null,
+          "line": 264
+        },
+        {
+          "name": "Request",
+          "receiver": "*OwnerBridgeClient",
+          "line": 274
+        },
+        {
+          "name": "decodeBridgeReply",
+          "receiver": null,
+          "line": 350
+        },
+        {
+          "name": "bridgeObservationBound",
+          "receiver": null,
+          "line": 365
+        },
+        {
+          "name": "bridgeStartingUnknown",
+          "receiver": null,
+          "line": 377
+        },
+        {
+          "name": "accept",
+          "receiver": "*bridgeReplay",
+          "line": 401
+        },
+        {
+          "name": "validateBridgeRequest",
+          "receiver": null,
+          "line": 415
+        },
+        {
+          "name": "Run",
+          "receiver": "*OwnerBridgeServer",
+          "line": 432
+        },
+        {
+          "name": "serve",
+          "receiver": "*OwnerBridgeServer",
+          "line": 490
+        },
+        {
+          "name": "serveOperation",
+          "receiver": "*OwnerBridgeServer",
+          "line": 493
+        },
+        {
+          "name": "serveLoop",
+          "receiver": "*OwnerBridgeServer",
+          "line": 497
+        },
+        {
+          "name": "observeBridgeRequest",
+          "receiver": "*OwnerBridgeServer",
+          "line": 709
+        },
+        {
+          "name": "bridgeRetainedExpired",
+          "receiver": null,
+          "line": 733
+        },
+        {
+          "name": "refresh",
+          "receiver": "*OwnerBridgeServer",
+          "line": 756
+        },
+        {
+          "name": "hexDigest",
+          "receiver": null,
+          "line": 843
+        }
+      ],
+      "why": "Its early service reports genuine pending state, transitions to actual completion, and cancels/joins exact startup/lifetime work before cleanup; request IDs and cold attempt IDs remain separate.",
+      "tradeoffs": "NATS absent before entry cannot provide L04. Closed lifecycle receipts and synthetic completed-session fixture helpers do not replace current NATS status or kernel authority.",
+      "evidenceStatus": [
+        {
+          "reference": "owner-bridge-receipt/review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "5447740219199671a63ef106350e9ceb112fd01ccae1b0a94d51ed028a291ae7"
+          ]
+        },
+        {
+          "reference": "host-permission-matrix-current/review.json",
+          "status": "historical-source-or-unbound-file-scope-only",
+          "attestedHashes": [
+            "69275921118866f2c4e131d3067cfbd25bf79613f8d4a1e4dbed4822cbd99ddd"
+          ]
+        },
+        {
+          "reference": "combined-cleanup-independent/independent-review.json",
+          "status": "historical-source-or-unbound-file-scope-only",
+          "attestedHashes": [
+            "69275921118866f2c4e131d3067cfbd25bf79613f8d4a1e4dbed4822cbd99ddd"
+          ]
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    },
+    {
+      "path": "platform/launcher/owner_bridge_validation.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "add-missing",
+      "previousHash": null,
+      "how": "Fixed embedded authoritative schemas use closed bounded JSON and a deny-all external loader with bounded ECMAScript matching.",
+      "where": [
+        {
+          "name": "String",
+          "receiver": "*ownerBridgeRegexp",
+          "line": 33
+        },
+        {
+          "name": "MatchString",
+          "receiver": "*ownerBridgeRegexp",
+          "line": 34
+        },
+        {
+          "name": "compileOwnerBridgeRegexp",
+          "receiver": null,
+          "line": 38
+        },
+        {
+          "name": "Load",
+          "receiver": "ownerBridgeDenyLoader",
+          "line": 47
+        },
+        {
+          "name": "compileOwnerBridgeSchemas",
+          "receiver": null,
+          "line": 55
+        },
+        {
+          "name": "validateOwnerBridgeJSON",
+          "receiver": null,
+          "line": 81
+        }
+      ],
+      "why": "Request/reply/status shape checks reject unknown/case/duplicate/malformed values without fetching schemas or accepting caller validators.",
+      "tradeoffs": "The schemas prove shape only; producer authentication, ACLs, actual scope and freshness remain in the owning transport/mapper.",
+      "evidenceStatus": [
+        {
+          "reference": "owner-bridge-receipt/review.json",
+          "status": "historical-source-or-unbound-file-scope-only",
+          "attestedHashes": []
+        },
+        {
+          "reference": "owner-bridge-tls/review.json",
+          "status": "historical-source-or-unbound-file-scope-only",
+          "attestedHashes": []
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    },
+    {
+      "path": "platform/launcher/session_cleanup.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "add-missing",
+      "previousHash": null,
+      "how": "Concrete runtime cleanup errors retain only the actual Session and service lease while resources are still pending.",
+      "where": [
+        {
+          "name": "Error",
+          "receiver": "RuntimeCleanupError",
+          "line": 26
+        },
+        {
+          "name": "Format",
+          "receiver": "RuntimeCleanupError",
+          "line": 27
+        },
+        {
+          "name": "MarshalJSON",
+          "receiver": "RuntimeCleanupError",
+          "line": 28
+        },
+        {
+          "name": "Unwrap",
+          "receiver": "RuntimeCleanupError",
+          "line": 29
+        },
+        {
+          "name": "Close",
+          "receiver": "*RuntimeCleanupError",
+          "line": 30
+        },
+        {
+          "name": "release",
+          "receiver": "*sessionCleanupOwner",
+          "line": 66
+        },
+        {
+          "name": "closeOwnedSession",
+          "receiver": null,
+          "line": 78
+        },
+        {
+          "name": "newSessionCleanupState",
+          "receiver": null,
+          "line": 129
+        },
+        {
+          "name": "recordGroup",
+          "receiver": "*sessionCleanupState",
+          "line": 132
+        },
+        {
+          "name": "pending",
+          "receiver": "*sessionCleanupState",
+          "line": 137
+        },
+        {
+          "name": "notify",
+          "receiver": "*sessionCleanupState",
+          "line": 157
+        }
+      ],
+      "why": "The existing exact Group reaper notifies private completion and releases that lease; bounded retry and safe formatting preserve ownership without another waiter or PID adoption.",
+      "tradeoffs": "Historical cleanup errors/all-reaped or closed file handles cannot create new cleanup authority.",
+      "evidenceStatus": [
+        {
+          "reference": "combined-cleanup-independent/independent-review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "9187e95a14aeac4c33cae93c34ceba7abe0aa57be290ab08c46d327e730855cb"
+          ]
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    },
+    {
+      "path": "platform/launcher/startup_write_proof.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "add-missing",
+      "previousHash": null,
+      "how": "Only a private actual completed cold-start probe matching scope, endpoint, broker/domain/stream/record sequence and age can mark write readiness.",
+      "where": [
+        {
+          "name": "qualifyWriteProof",
+          "receiver": null,
+          "line": 14
+        }
+      ],
+      "why": "Warm reads and stored records leave write readiness unknown; this helper never proves free capacity, replication or business readiness.",
+      "tradeoffs": "Unit binding tests alone are not a real current persistence write.",
+      "evidenceStatus": [
+        {
+          "reference": "root-cold-proof-and-start-validation/review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "225071eae8dc76ddeea0a57255a1df2e55d191c5a22b4f776b03da147491bb7e"
+          ]
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    },
+    {
+      "path": "platform/launcher/transport_cleanup.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "add-missing",
+      "previousHash": null,
+      "how": "A fixed safe error retains the exact localtls.Dialer when owned socket cleanup fails, and exposes its original cause through Unwrap.",
+      "where": [
+        {
+          "name": "Error",
+          "receiver": "TransportCleanupError",
+          "line": 24
+        },
+        {
+          "name": "Format",
+          "receiver": "TransportCleanupError",
+          "line": 30
+        },
+        {
+          "name": "MarshalJSON",
+          "receiver": "TransportCleanupError",
+          "line": 31
+        },
+        {
+          "name": "Unwrap",
+          "receiver": "TransportCleanupError",
+          "line": 32
+        },
+        {
+          "name": "Close",
+          "receiver": "*TransportCleanupError",
+          "line": 35
+        },
+        {
+          "name": "closeOwnedTransport",
+          "receiver": null,
+          "line": 45
+        }
+      ],
+      "why": "Bridge/status callers close raw owned TLS before NATS closure, preserve failed cleanup facts and allow exact retry/peer EOF.",
+      "tradeoffs": "No generic callback/closer, fresh lifetime, socket adoption or private cause formatting is exposed.",
+      "evidenceStatus": [
+        {
+          "reference": "owner-bridge-tls/review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "5f8dd922dd9cf934594612866ec25146e95c70faf17ce1832f48859a498562cc"
+          ]
+        },
+        {
+          "reference": "combined-cleanup-independent/independent-review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "5f8dd922dd9cf934594612866ec25146e95c70faf17ce1832f48859a498562cc"
+          ]
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    },
+    {
+      "path": "platform/launcher/bootstrap_operation.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "add-missing",
+      "previousHash": null,
+      "how": "The service owner privately creates one operation from actual acquired lease/full configuration/cold attempt; only admitted core entry enables pending.",
+      "where": [
+        {
+          "name": "Format",
+          "receiver": "bootstrapOperation",
+          "line": 47
+        },
+        {
+          "name": "MarshalJSON",
+          "receiver": "bootstrapOperation",
+          "line": 48
+        },
+        {
+          "name": "operationError",
+          "receiver": null,
+          "line": 51
+        },
+        {
+          "name": "newBootstrapOperation",
+          "receiver": null,
+          "line": 53
+        },
+        {
+          "name": "cloneOperationDocker",
+          "receiver": null,
+          "line": 79
+        },
+        {
+          "name": "enter",
+          "receiver": "*bootstrapOperation",
+          "line": 89
+        },
+        {
+          "name": "complete",
+          "receiver": "*bootstrapOperation",
+          "line": 116
+        },
+        {
+          "name": "completedTime",
+          "receiver": "*bootstrapOperation",
+          "line": 135
+        },
+        {
+          "name": "resultContext",
+          "receiver": "*bootstrapOperation",
+          "line": 144
+        },
+        {
+          "name": "pending",
+          "receiver": "*bootstrapOperation",
+          "line": 164
+        }
+      ],
+      "why": "Immutable capability references and mutex-held mutable state preserve cancellation, one-shot completion, actual Session/cause and safe concurrent formatting.",
+      "tradeoffs": "Private direct-enter tests are controls; only actual Run/core evidence proves real admission. Bounded cancellation joins supported filesystem work rather than discarding eventual ownership.",
+      "evidenceStatus": [
+        {
+          "reference": "installed-cli-current/review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "eac3ff3891a6470931e84580c8ffc545de0cbc124d8b33fdf3f967bafa79e40d"
+          ]
+        },
+        {
+          "reference": "owner-bridge-receipt/review.json",
+          "status": "historical-source-or-unbound-file-scope-only",
+          "attestedHashes": []
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    },
+    {
+      "path": "platform/launcher/host_receipt_binding.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "add-missing",
+      "previousHash": null,
+      "how": "The installed policy re-loads current declarations and hashes exact typed OwnerEnrollment v1 with full scope, cold invocation and declared runtime image digest.",
+      "where": [
+        {
+          "name": "BootstrapReceiptBinding",
+          "receiver": "*EnrolledHostPolicy",
+          "line": 16
+        }
+      ],
+      "why": "The parent held image digest is separately checked by runtime before passing its private writer descriptor to the newly spawned child.",
+      "tradeoffs": "This native Go correlation encoding is not a signature, cross-language canonical encoding or live startup proof.",
+      "evidenceStatus": [
+        {
+          "reference": "host-receipt-binding/review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "16f5eca18bcdccc911494f51efbbfff359518fbee4a7ecb8ca7d6ca1aabb5b51"
+          ]
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    },
+    {
+      "path": "platform/launcher/host_receipt_server.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "add-missing",
+      "previousHash": null,
+      "how": "The installed factory completes both private policy loads and binding checks before adopting the inherited concrete writer.",
+      "where": [
+        {
+          "name": "BridgeServerForInvocation",
+          "receiver": "*EnrolledHostPolicy",
+          "line": 13
+        }
+      ],
+      "why": "Successful adoption transfers exact ownership to Run with no later factory failure; absent receipt plumbing preserves the normal server path.",
+      "tradeoffs": "The presence of an environment variable or raw descriptor is not admission; no public caller callback or generic writer grant was added.",
+      "evidenceStatus": [
+        {
+          "reference": "owner-bridge-receipt/review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "e0c13e86e6a728112a5f1fef5dcb805981125e794ce495251cd0d0ab1937dbf9"
+          ]
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    },
+    {
+      "path": "platform/launcher/owner_bridge_receipt.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "add-missing",
+      "previousHash": null,
+      "how": "After actual entry, bounded fresh owner/profile revalidation and another pending check precede one historical control receipt outside the operation mutex.",
+      "where": [
+        {
+          "name": "matches",
+          "receiver": "*ownerBridgeReceiptState",
+          "line": 28
+        },
+        {
+          "name": "ownerBridgeReceiptBindingMatches",
+          "receiver": null,
+          "line": 34
+        },
+        {
+          "name": "emit",
+          "receiver": "*ownerBridgeReceiptState",
+          "line": 45
+        },
+        {
+          "name": "emitBootstrapAccepted",
+          "receiver": "*bootstrapOperation",
+          "line": 64
+        },
+        {
+          "name": "finishBootstrapReceipt",
+          "receiver": "*OwnerBridgeServer",
+          "line": 102
+        },
+        {
+          "name": "Error",
+          "receiver": "bridgeCompletionCause",
+          "line": 130
+        },
+        {
+          "name": "Format",
+          "receiver": "bridgeCompletionCause",
+          "line": 131
+        },
+        {
+          "name": "MarshalJSON",
+          "receiver": "bridgeCompletionCause",
+          "line": 132
+        },
+        {
+          "name": "Unwrap",
+          "receiver": "bridgeCompletionCause",
+          "line": 133
+        },
+        {
+          "name": "bridgeCompletionCode",
+          "receiver": null,
+          "line": 134
+        },
+        {
+          "name": "joinedBridgeBootstrapResult",
+          "receiver": null,
+          "line": 141
+        }
+      ],
+      "why": "Run closes the exact writer and preserves joined actual Bootstrap errors via a safe typed cause wrapper, including nil-Session cleanup retries.",
+      "tradeoffs": "A departed frontend may break the pipe without canceling admitted startup. Accepted is historical entry, never current readiness; lock refusal is not proven contention.",
+      "evidenceStatus": [
+        {
+          "reference": "owner-bridge-receipt/review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "c6ec84c03ac827c4c6008705ac8ef6d401484cc3b1015eba7dda900f35b89685"
+          ]
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    },
+    {
+      "path": "platform/cmd/agentmux-runtime/main.go",
+      "owner": "PLAT-01",
+      "componentManifest": "component-audit-hub.json",
+      "indexAction": "add-missing",
+      "previousHash": null,
+      "how": "Literal ensure/status/host commands load the explicit installed policy, ask authenticated NATS first, and start only a newly verified owned host for eligible unavailable ensure results.",
+      "where": [
+        {
+          "name": "String",
+          "receiver": "*workspaces",
+          "line": 24
+        },
+        {
+          "name": "Set",
+          "receiver": "*workspaces",
+          "line": 25
+        },
+        {
+          "name": "emitObservation",
+          "receiver": null,
+          "line": 32
+        },
+        {
+          "name": "parse",
+          "receiver": null,
+          "line": 42
+        },
+        {
+          "name": "run",
+          "receiver": null,
+          "line": 59
+        },
+        {
+          "name": "emitOwnedBootstrapProgress",
+          "receiver": null,
+          "line": 136
+        },
+        {
+          "name": "progressObservationUnavailable",
+          "receiver": null,
+          "line": 150
+        },
+        {
+          "name": "emitBootstrapProgress",
+          "receiver": null,
+          "line": 165
+        },
+        {
+          "name": "main",
+          "receiver": null,
+          "line": 188
+        }
+      ],
+      "why": "The frontend deadline begins at entry. Genuine NATS starting can succeed; receipt fallback checks original cancellation/exact child exit and reports historical accepted/unconfirmed with instance state unknown.",
+      "tradeoffs": "No child Stop on frontend exit, no report-PID adoption and no business/hub details are inferred from the receipt. Real installed timing/engine/native qualification remains separate.",
+      "evidenceStatus": [
+        {
+          "reference": "cli-receipt-draft/review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "a8686ad179f76b2dacdb3096a19d00f3e05af2c037fb9ed7fa83a121b6ac7c9b"
+          ]
+        },
+        {
+          "reference": "cli-child-exit-guard/review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "a8686ad179f76b2dacdb3096a19d00f3e05af2c037fb9ed7fa83a121b6ac7c9b"
+          ]
+        },
+        {
+          "reference": "installed-cli-current/review.json",
+          "status": "current-file-hash-match",
+          "attestedHashes": [
+            "a8686ad179f76b2dacdb3096a19d00f3e05af2c037fb9ed7fa83a121b6ac7c9b"
+          ]
+        }
+      ],
+      "additionalQualification": "Keep the required native Linux/macOS/WSL, exact installed cold/warm/concurrent/recovery/frontend-exit and ten-second/refresh gates; do not mark them complete from this mapping."
+    }
+  ],
+  "evidenceReferences": {
+    "cli-child-exit-guard/review.json": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/cli-child-exit-guard/review.json",
+      "sha256": "175b07e3c7162c9b5499009a62e1aa5e77f0f9883264fc0fa29da3e04e4913c9",
+      "scope": "P02 exact owned child receipt guard only",
+      "limits": [
+        "Real statically built child is verified/sealed, emits one actual private bound CONTROL receipt and exits or handles SIGTERM.",
+        "This component test does not enter actual admitted Bootstrap or run full installed CLI, NATS or Compose.",
+        "Affected cmd tests/vet await root source review; these focused checks are not phase acceptance.",
+        "No PID adoption, configurable production callback or shared main.go change."
+      ],
+      "attestedSourceHashes": {
+        "platform/cmd/agentmux-runtime/main.go": [
+          "a8686ad179f76b2dacdb3096a19d00f3e05af2c037fb9ed7fa83a121b6ac7c9b"
+        ],
+        "platform/launcher/bootstrap.go": [
+          "7db76af164be1110f1352da993833fc3613c09ab42b4557094bcd4661edb9bcd"
+        ],
+        "platform/launcher/bootstrap_compose_binding.go": [
+          "f55d252a950a7660dbb486768270e96965d57d1710d503c27e99e895cebda7ce"
+        ],
+        "platform/launcher/bootstrap_operation.go": [
+          "eac3ff3891a6470931e84580c8ffc545de0cbc124d8b33fdf3f967bafa79e40d"
+        ],
+        "platform/launcher/docker_archives.go": [
+          "c645ce9f3bec78fa5f9d52e6663d27d30c705b99855f381ad33a3ce083377d66"
+        ],
+        "platform/launcher/docker_reads.go": [
+          "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813"
+        ],
+        "platform/launcher/docker_stdio.go": [
+          "151b05060ce4ed601f9985f745834f73c97808645da5008cca48cc501d638197"
+        ],
+        "platform/launcher/docker_tls.go": [
+          "a9881487cb8a5e43a3781a359e0c38b31537ce20cc1797d421fb9a871a014a8f"
+        ],
+        "platform/launcher/host_policy.go": [
+          "52ec5ee9ef345526fd26a5d423f2a86f99bfa1aa060cfd6315cf963242481e0a"
+        ],
+        "platform/launcher/host_receipt_binding.go": [
+          "16f5eca18bcdccc911494f51efbbfff359518fbee4a7ecb8ca7d6ca1aabb5b51"
+        ],
+        "platform/launcher/host_receipt_server.go": [
+          "e0c13e86e6a728112a5f1fef5dcb805981125e794ce495251cd0d0ab1937dbf9"
+        ],
+        "platform/launcher/local_broker_authority.go": [
+          "665d3bfa44c0fef97dd4a49ab10b9c1a4a799f391d1694e5d3eceab75a918a1d"
+        ],
+        "platform/launcher/local_server_trust.go": [
+          "a807181aac2f4829c7d6ba506f1a1cadafac0b6724745bf2dcd1e7989f9bd9bc"
+        ],
+        "platform/launcher/owner_bridge.go": [
+          "5447740219199671a63ef106350e9ceb112fd01ccae1b0a94d51ed028a291ae7"
+        ],
+        "platform/launcher/owner_bridge_receipt.go": [
+          "c6ec84c03ac827c4c6008705ac8ef6d401484cc3b1015eba7dda900f35b89685"
+        ],
+        "platform/launcher/owner_bridge_validation.go": [
+          "03c24f0ab8c9f59866fee2fd286dd3b61e6fe40d70a7c79b515a1d8626fa84b3"
+        ],
+        "platform/launcher/session_cleanup.go": [
+          "9187e95a14aeac4c33cae93c34ceba7abe0aa57be290ab08c46d327e730855cb"
+        ],
+        "platform/launcher/startup_status.go": [
+          "31e02ec220343b79c0a5d1927d047d09e8468d53d8ed1fbe826b802105a1d678"
+        ],
+        "platform/launcher/startup_write_proof.go": [
+          "225071eae8dc76ddeea0a57255a1df2e55d191c5a22b4f776b03da147491bb7e"
+        ],
+        "platform/launcher/transport_cleanup.go": [
+          "5f8dd922dd9cf934594612866ec25146e95c70faf17ce1832f48859a498562cc"
+        ]
+      }
+    },
+    "cli-receipt-draft/review.json": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/cli-receipt-draft/review.json",
+      "sha256": "a15976d8c2ac332cf67c2913f229954144c9f5ef259e94bacc4ed144382546e1",
+      "scope": "Component review; inspect its original declared scope",
+      "limits": [
+        "Focused source-bound draft checks only; no installed CLI integration, engine execution, native Darwin runtime or P02 acceptance.",
+        "Other integration source was being developed concurrently; only listed current source hashes are attested."
+      ],
+      "attestedSourceHashes": {
+        "platform/cmd/agentmux-runtime/main.go": [
+          "a8686ad179f76b2dacdb3096a19d00f3e05af2c037fb9ed7fa83a121b6ac7c9b"
+        ]
+      }
+    },
+    "combined-cleanup-independent/independent-review.json": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/combined-cleanup-independent/independent-review.json",
+      "sha256": "d9be571f09cc24132746c48a997846534f5e2b9b491136e3ad57b73cdba6ab3c",
+      "scope": "Independent combined concrete transport/session cleanup and actual Run service-lease transfer review.",
+      "limits": [
+        "Focused meaningful combined checks only, no duplicate broad166/69/SDK runs. Broader historical evidence remains distinct.",
+        "Terminal Run fixture fails before protected startup; exact Session/Group service lease retention is covered by separate real-process helper controls, not installed daemon end-to-end cleanup failure proof.",
+        "No real Compose/Docker Engine, native macOS or authenticated10-second early-start acceptance.",
+        "No shared source/global metadata edits; slice review closure only, not phase acceptance."
+      ],
+      "attestedSourceHashes": {
+        "platform/launcher/bootstrap.go": [
+          "16fc4006546a30d5f27768e06731cc9dc0623d51794d853b29420b58042d4033"
+        ],
+        "platform/launcher/bootstrap_compose_binding.go": [
+          "f55d252a950a7660dbb486768270e96965d57d1710d503c27e99e895cebda7ce"
+        ],
+        "platform/launcher/host_policy.go": [
+          "52ec5ee9ef345526fd26a5d423f2a86f99bfa1aa060cfd6315cf963242481e0a"
+        ],
+        "platform/launcher/docker_tls.go": [
+          "db7624b7f999e3fc96fa021bde4426fdb20e1970c8ffaab28c4ea4d523bebcec"
+        ],
+        "platform/launcher/startup_write_proof.go": [
+          "225071eae8dc76ddeea0a57255a1df2e55d191c5a22b4f776b03da147491bb7e"
+        ],
+        "platform/launcher/transport_cleanup.go": [
+          "5f8dd922dd9cf934594612866ec25146e95c70faf17ce1832f48859a498562cc"
+        ],
+        "platform/launcher/startup_status.go": [
+          "835da5322d10e73c8da1c89ea7fcd29e415c3b33903fc8c3ea4ff17adaf4aa7a"
+        ],
+        "platform/launcher/local_broker_authority.go": [
+          "267f9644be7aa7c2474b37ae8ec10a752b8538d732569007f93329bb7817f5bf"
+        ],
+        "platform/launcher/docker_reads.go": [
+          "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813"
+        ],
+        "platform/launcher/local_server_trust.go": [
+          "a807181aac2f4829c7d6ba506f1a1cadafac0b6724745bf2dcd1e7989f9bd9bc"
+        ],
+        "platform/launcher/session_cleanup.go": [
+          "9187e95a14aeac4c33cae93c34ceba7abe0aa57be290ab08c46d327e730855cb"
+        ],
+        "platform/launcher/owner_bridge_validation.go": [
+          "03c24f0ab8c9f59866fee2fd286dd3b61e6fe40d70a7c79b515a1d8626fa84b3"
+        ],
+        "platform/launcher/docker_stdio.go": [
+          "151b05060ce4ed601f9985f745834f73c97808645da5008cca48cc501d638197"
+        ],
+        "platform/launcher/owner_bridge.go": [
+          "69275921118866f2c4e131d3067cfbd25bf79613f8d4a1e4dbed4822cbd99ddd"
+        ],
+        "platform/cmd/agentmux-runtime/main.go": [
+          "67a6be16e1011cc3e86057fbbb081f45af79550d143f485732d26011e5bf5fc4"
+        ]
+      }
+    },
+    "docker-parallel-inspection/review.json": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/docker-parallel-inspection/review.json",
+      "sha256": "c0051f5cd38cbab738ec818285e974367f57e259318f6b4da4b145d4a080ae72",
+      "scope": "Component review; inspect its original declared scope",
+      "limits": [
+        "Windows-owned CLI interoperability and real Compose performance are not qualified by Linux controlled-process tests. Root retains the genuine failed fixtures and diagnoses actual bounded reads separately.",
+        "Native macOS execution and whole phase acceptance remain pending.",
+        "A first negative-control preparation attempt stopped before Go execution because the expected formatting needle was wrong; its external disposable source copy is retained as an unexecuted preparation, not passing or failing test evidence.",
+        "The design-pattern checker still reports a stale sourceDigest; root owns its reviewed renewal."
+      ],
+      "attestedSourceHashes": {
+        "platform/launcher/docker_reads.go": [
+          "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813"
+        ]
+      }
+    },
+    "docker-stdio-integration-review/results.json": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/docker-stdio-integration-review/results.json",
+      "sha256": "0904319fc10233547691aea7e2b868b219c96a2da6a97456fef9673ef409744a",
+      "scope": "Independent P02 Docker inspection integration and doctor test review",
+      "limits": [],
+      "attestedSourceHashes": {
+        "platform/launcher/docker_reads.go": [
+          "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813"
+        ],
+        "platform/launcher/docker_stdio.go": [
+          "151b05060ce4ed601f9985f745834f73c97808645da5008cca48cc501d638197"
+        ]
+      }
+    },
+    "fixed-tls-archives-independent/independent-review.json": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/fixed-tls-archives-independent/independent-review.json",
+      "sha256": "36c59b194909c4673b9d04310fe96c085ee0d5c735330c579eb9ca9c5277f782",
+      "scope": "Component review; inspect its original declared scope",
+      "limits": [
+        "Independent minimal10 entries only; no duplicate106 affected suite.",
+        "Controlled actual CLI child processes and Linux pidfd exit checks, not real Docker engine/container/archive or native macOS qualification.",
+        "Root reports separate actual Compose68.73s pass; its exact evidence is outside this review until archived/reviewed by root.",
+        "No engine calls/shared source/global metadata edits. Slice source/evidence closure only, not phase acceptance."
+      ],
+      "attestedSourceHashes": {
+        "platform/launcher/bootstrap.go": [
+          "cca71363e1a0d7db86836df2ba20cd3c47997c012e992e510fb71d1281a6a3a4"
+        ],
+        "platform/launcher/bootstrap_compose_binding.go": [
+          "f55d252a950a7660dbb486768270e96965d57d1710d503c27e99e895cebda7ce"
+        ],
+        "platform/launcher/host_policy.go": [
+          "52ec5ee9ef345526fd26a5d423f2a86f99bfa1aa060cfd6315cf963242481e0a"
+        ],
+        "platform/launcher/docker_tls.go": [
+          "a9881487cb8a5e43a3781a359e0c38b31537ce20cc1797d421fb9a871a014a8f"
+        ],
+        "platform/launcher/startup_write_proof.go": [
+          "225071eae8dc76ddeea0a57255a1df2e55d191c5a22b4f776b03da147491bb7e"
+        ],
+        "platform/launcher/transport_cleanup.go": [
+          "5f8dd922dd9cf934594612866ec25146e95c70faf17ce1832f48859a498562cc"
+        ],
+        "platform/launcher/startup_status.go": [
+          "835da5322d10e73c8da1c89ea7fcd29e415c3b33903fc8c3ea4ff17adaf4aa7a"
+        ],
+        "platform/launcher/local_broker_authority.go": [
+          "665d3bfa44c0fef97dd4a49ab10b9c1a4a799f391d1694e5d3eceab75a918a1d"
+        ],
+        "platform/launcher/docker_archives.go": [
+          "c645ce9f3bec78fa5f9d52e6663d27d30c705b99855f381ad33a3ce083377d66"
+        ],
+        "platform/launcher/docker_reads.go": [
+          "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813"
+        ],
+        "platform/launcher/local_server_trust.go": [
+          "a807181aac2f4829c7d6ba506f1a1cadafac0b6724745bf2dcd1e7989f9bd9bc"
+        ],
+        "platform/launcher/session_cleanup.go": [
+          "9187e95a14aeac4c33cae93c34ceba7abe0aa57be290ab08c46d327e730855cb"
+        ],
+        "platform/launcher/owner_bridge_validation.go": [
+          "03c24f0ab8c9f59866fee2fd286dd3b61e6fe40d70a7c79b515a1d8626fa84b3"
+        ],
+        "platform/launcher/docker_stdio.go": [
+          "151b05060ce4ed601f9985f745834f73c97808645da5008cca48cc501d638197"
+        ],
+        "platform/launcher/owner_bridge.go": [
+          "69275921118866f2c4e131d3067cfbd25bf79613f8d4a1e4dbed4822cbd99ddd"
+        ],
+        "platform/cmd/agentmux-runtime/main.go": [
+          "67a6be16e1011cc3e86057fbbb081f45af79550d143f485732d26011e5bf5fc4"
+        ]
+      }
+    },
+    "host-permission-matrix-current/review.json": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/host-permission-matrix-current/review.json",
+      "sha256": "fb263eba470de76686d4bd1afcdcf5b386eb3c30698fba33eb543cd5789340b3",
+      "scope": "Component review; inspect its original declared scope",
+      "limits": [
+        "Actual NATS broker with admitted factory/account and pinned TLS; Docker inspection is controlled fixture subprocess, not an actual engine proof.",
+        "Tests only changed; actual factory permissions unchanged.",
+        "No native Mac/full installed CLI/Compose/whole-phase acceptance claimed."
+      ],
+      "attestedSourceHashes": {
+        "platform/launcher/owner_bridge.go": [
+          "69275921118866f2c4e131d3067cfbd25bf79613f8d4a1e4dbed4822cbd99ddd"
+        ],
+        "platform/launcher/bootstrap.go": [
+          "cca71363e1a0d7db86836df2ba20cd3c47997c012e992e510fb71d1281a6a3a4"
+        ]
+      }
+    },
+    "host-receipt-binding/review.json": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/host-receipt-binding/review.json",
+      "sha256": "e3a4645aeeb0e8d4ccf1b1f3294dbda6a15d741e070b22e935c4450a278c9d29",
+      "scope": "Component review; inspect its original declared scope",
+      "limits": [
+        "Only the policy correlation getter and changed-enrollment/invalid-invocation refusal are covered.",
+        "Fixture executable is declaration-only; actual held executable admission belongs to runtime receipt tests.",
+        "This does not qualify installed CLI startup, receipt emission, native macOS or the P02 gate.",
+        "The immutable module snapshot includes concurrent draft integration; only the two owned source hashes are attested here."
+      ],
+      "attestedSourceHashes": {
+        "platform/launcher/host_receipt_binding.go": [
+          "16f5eca18bcdccc911494f51efbbfff359518fbee4a7ecb8ca7d6ca1aabb5b51"
+        ]
+      }
+    },
+    "inline-config-repair-independent/review.json": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/inline-config-repair-independent/review.json",
+      "sha256": "85285f9c92466092e5912423ae96fa073499cd2543d31cf2449bf6ffebe017d2",
+      "scope": "Independent closure of previously reproduced inline admission findings plus bounded environment helper implementation; no phase acceptance",
+      "limits": [
+        "No live Docker/Compose commands,network/provider/model/user config reads or mutations in these independent fixtures",
+        "Old admission snapshot source may differ from newer integrated caller; records preserve source drift rather than relabeling old run",
+        "Full affected launcher race/vet and actual stack qualification remain root-owned evidence requirements",
+        "No native macOS or native Windows claim from Linux/WSL tests"
+      ],
+      "attestedSourceHashes": {}
+    },
+    "installed-cli-current/review.json": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/installed-cli-current/review.json",
+      "sha256": "37e67ab82a0e5033de3dfda3664d7bac9a27f96f9f813ca86d57ed369c555b1a",
+      "scope": "P02 native Linux installed CLI pending and actual protected kernel completion with synthetic Docker inspection",
+      "limits": [
+        "Docker inspection is a fixed test-only wrapper around synthetic admitted identity/archive responses. Native TLS listener/store/certificate path adapter is not actual inspected-container or Compose proof.",
+        "Linux only; actual native Darwin installed CLI execution remains required.",
+        "No end-to-end accepted-then-exited-host CLI fixture was added; root helper control remains separate.",
+        "No phase acceptance or real two-hub demonstration is claimed."
+      ],
+      "attestedSourceHashes": {
+        "platform/cmd/agentmux-runtime/main.go": [
+          "a8686ad179f76b2dacdb3096a19d00f3e05af2c037fb9ed7fa83a121b6ac7c9b"
+        ],
+        "platform/launcher/bootstrap.go": [
+          "7db76af164be1110f1352da993833fc3613c09ab42b4557094bcd4661edb9bcd"
+        ],
+        "platform/launcher/bootstrap_compose_binding.go": [
+          "f55d252a950a7660dbb486768270e96965d57d1710d503c27e99e895cebda7ce"
+        ],
+        "platform/launcher/bootstrap_operation.go": [
+          "eac3ff3891a6470931e84580c8ffc545de0cbc124d8b33fdf3f967bafa79e40d"
+        ],
+        "platform/launcher/docker_archives.go": [
+          "c645ce9f3bec78fa5f9d52e6663d27d30c705b99855f381ad33a3ce083377d66"
+        ],
+        "platform/launcher/docker_reads.go": [
+          "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813"
+        ],
+        "platform/launcher/docker_stdio.go": [
+          "151b05060ce4ed601f9985f745834f73c97808645da5008cca48cc501d638197"
+        ],
+        "platform/launcher/docker_tls.go": [
+          "a9881487cb8a5e43a3781a359e0c38b31537ce20cc1797d421fb9a871a014a8f"
+        ],
+        "platform/launcher/host_policy.go": [
+          "52ec5ee9ef345526fd26a5d423f2a86f99bfa1aa060cfd6315cf963242481e0a"
+        ],
+        "platform/launcher/host_receipt_binding.go": [
+          "16f5eca18bcdccc911494f51efbbfff359518fbee4a7ecb8ca7d6ca1aabb5b51"
+        ],
+        "platform/launcher/host_receipt_server.go": [
+          "ba4dad2fff7e89d3e765834830f5bf69ac3fcb4237b799698424b37f5ee452f7"
+        ],
+        "platform/launcher/local_broker_authority.go": [
+          "665d3bfa44c0fef97dd4a49ab10b9c1a4a799f391d1694e5d3eceab75a918a1d"
+        ],
+        "platform/launcher/local_server_trust.go": [
+          "a807181aac2f4829c7d6ba506f1a1cadafac0b6724745bf2dcd1e7989f9bd9bc"
+        ],
+        "platform/launcher/owner_bridge.go": [
+          "5447740219199671a63ef106350e9ceb112fd01ccae1b0a94d51ed028a291ae7"
+        ],
+        "platform/launcher/owner_bridge_receipt.go": [
+          "716668b1fd6e46c7291e460ac77c1a93d45015480717612bccf2d4ff433cc4d9"
+        ],
+        "platform/launcher/owner_bridge_validation.go": [
+          "03c24f0ab8c9f59866fee2fd286dd3b61e6fe40d70a7c79b515a1d8626fa84b3"
+        ],
+        "platform/launcher/session_cleanup.go": [
+          "9187e95a14aeac4c33cae93c34ceba7abe0aa57be290ab08c46d327e730855cb"
+        ],
+        "platform/launcher/startup_status.go": [
+          "31e02ec220343b79c0a5d1927d047d09e8468d53d8ed1fbe826b802105a1d678"
+        ],
+        "platform/launcher/startup_write_proof.go": [
+          "225071eae8dc76ddeea0a57255a1df2e55d191c5a22b4f776b03da147491bb7e"
+        ],
+        "platform/launcher/transport_cleanup.go": [
+          "5f8dd922dd9cf934594612866ec25146e95c70faf17ce1832f48859a498562cc"
+        ]
+      }
+    },
+    "installed-tls-admission-independent/review.json": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/installed-tls-admission-independent/review.json",
+      "sha256": "43202b3a995d04bed49e61840fc7cf8629a98cfeaf9a095076625fed96070495",
+      "scope": "Read-only independent review of D's frozen eight-file installed TLS/private-file admission slice",
+      "limits": [
+        "This review does not prove real Docker injection or NATS credential admission through the installed client.",
+        "Native Darwin descriptor ACL/mount behavior and protected execution require actual qualified CGO1 execution.",
+        "Source review, worker completion and passing raw entries are not phase acceptance."
+      ],
+      "attestedSourceHashes": {
+        "platform/launcher/host_policy.go": [
+          "52ec5ee9ef345526fd26a5d423f2a86f99bfa1aa060cfd6315cf963242481e0a"
+        ],
+        "platform/launcher/local_server_trust.go": [
+          "a807181aac2f4829c7d6ba506f1a1cadafac0b6724745bf2dcd1e7989f9bd9bc"
+        ]
+      }
+    },
+    "kernel-operation-proof-independent/independent-review.json": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/kernel-operation-proof-independent/independent-review.json",
+      "sha256": "706bf5c5ce4d99f3b74290d96fe75cc9c4faafa43e4917a6cbb775ed8629d1f9",
+      "scope": "Component review; inspect its original declared scope",
+      "limits": [
+        "No duplicate full34/89 suite; reviewed actual archived source/raw/invocation/exits plus independent9 focused entries.",
+        "Endpoint option-negative sentinel watches original endpoint only; hard authority assertion is valid but does not directly capture changed-port dials. Scope/password independent sentinels cover actual original endpoint.",
+        "Proof/bootstrap cold invalidation integration is source reviewed here; real cold/concurrent/warm Compose trace and candidate acceptance are root-owned, not supplied by this parser/API fixture review.",
+        "Controlled Docker subprocess fixture plus actual pinned TLS/NATS/actors; not actual Docker engine/container/archive proof.",
+        "No native macOS, actual Compose, early ten-second startup or phase acceptance; deployment health cleanup is reserved for separate independent reviewer.",
+        "No shared source/global metadata edits."
+      ],
+      "attestedSourceHashes": {
+        "platform/launcher/bootstrap.go": [
+          "cca71363e1a0d7db86836df2ba20cd3c47997c012e992e510fb71d1281a6a3a4"
+        ],
+        "platform/launcher/bootstrap_compose_binding.go": [
+          "f55d252a950a7660dbb486768270e96965d57d1710d503c27e99e895cebda7ce"
+        ],
+        "platform/launcher/host_policy.go": [
+          "52ec5ee9ef345526fd26a5d423f2a86f99bfa1aa060cfd6315cf963242481e0a"
+        ],
+        "platform/launcher/docker_tls.go": [
+          "db7624b7f999e3fc96fa021bde4426fdb20e1970c8ffaab28c4ea4d523bebcec"
+        ],
+        "platform/launcher/startup_write_proof.go": [
+          "225071eae8dc76ddeea0a57255a1df2e55d191c5a22b4f776b03da147491bb7e"
+        ],
+        "platform/launcher/transport_cleanup.go": [
+          "5f8dd922dd9cf934594612866ec25146e95c70faf17ce1832f48859a498562cc"
+        ],
+        "platform/launcher/startup_status.go": [
+          "835da5322d10e73c8da1c89ea7fcd29e415c3b33903fc8c3ea4ff17adaf4aa7a"
+        ],
+        "platform/launcher/local_broker_authority.go": [
+          "665d3bfa44c0fef97dd4a49ab10b9c1a4a799f391d1694e5d3eceab75a918a1d"
+        ],
+        "platform/launcher/docker_reads.go": [
+          "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813"
+        ],
+        "platform/launcher/local_server_trust.go": [
+          "a807181aac2f4829c7d6ba506f1a1cadafac0b6724745bf2dcd1e7989f9bd9bc"
+        ],
+        "platform/launcher/session_cleanup.go": [
+          "9187e95a14aeac4c33cae93c34ceba7abe0aa57be290ab08c46d327e730855cb"
+        ],
+        "platform/launcher/owner_bridge_validation.go": [
+          "03c24f0ab8c9f59866fee2fd286dd3b61e6fe40d70a7c79b515a1d8626fa84b3"
+        ],
+        "platform/launcher/docker_stdio.go": [
+          "151b05060ce4ed601f9985f745834f73c97808645da5008cca48cc501d638197"
+        ],
+        "platform/launcher/owner_bridge.go": [
+          "69275921118866f2c4e131d3067cfbd25bf79613f8d4a1e4dbed4822cbd99ddd"
+        ],
+        "platform/cmd/agentmux-runtime/main.go": [
+          "67a6be16e1011cc3e86057fbbb081f45af79550d143f485732d26011e5bf5fc4"
+        ]
+      }
+    },
+    "local-owner-status/review.json": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/local-owner-status/review.json",
+      "sha256": "e119d0755e8982b696709731b3a218a527165e0f3721aaf7095541ea5f27147b",
+      "scope": "P02 local OS owner authorization and typed L04 adapter boundary only; no phase acceptance",
+      "limits": [
+        "No status command or Session production wiring exists in this two-file slice; root must bind private inputs to actual Session state before exposing L04.",
+        "Explicit local owner enrollment persistence is read and checked, not automatically created by this loader; installer enrollment remains separately owned.",
+        "Cold write-proof integration is pending and current outputs cannot claim persistence ready.",
+        "No full shared launcher/Compose suite repeated while root live integration was active; focused adapter boundaries and independent schema checks only.",
+        "No native macOS result, terminal hook, AG-UI integration, phase gate or remote business authority is claimed."
+      ],
+      "attestedSourceHashes": {
+        "platform/launcher/bootstrap.go": [
+          "c5981750afb795663c12e005186ad4fe41db7a0293e3d1ab50eb3a6640d2237a"
+        ],
+        "platform/launcher/startup_status.go": [
+          "3ddbe8fcecb149dd40d9d0b9738d40af3a7e706f47b1b799ccc28c5038f3f107"
+        ]
+      }
+    },
+    "owned-tls-inspection/review.json": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/review.json",
+      "sha256": "3ec5551296d5184553053d7954b997a08003801460df3783ae088f0c5eb6bffa",
+      "scope": "Controlled owned-process Docker inspector tests. Certificate/key archives are synthetic; no actual TLS engine/Compose or product credential authentication is asserted.",
+      "limits": [
+        "Subsequent secure Compose, enrollment and Bootstrap integration changes are not covered by this snapshot.",
+        "Actual root-owned0400 TLS files in a Docker container still require real supported-environment qualification.",
+        "Native Darwin private ACL and exact Apple product loader checks remain incomplete."
+      ],
+      "attestedSourceHashes": {}
+    },
+    "owner-bridge-receipt/review.json": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/owner-bridge-receipt/review.json",
+      "sha256": "edf802a336f042819bad7eb02b85d8012dfaf2588a9e6f743cfc33acc86dc9ab",
+      "scope": "P02 owner bridge inherited control receipt and exact joined completion cause; not phase acceptance",
+      "limits": [
+        "Controlled read-only Docker process and native real TLS/FILE NATS fixtures do not qualify an actual engine/container/Compose deployment.",
+        "Prepared static image admission is real; these pending tests do not prove executed protected role PIDs.",
+        "Direct private entered-operation tests are component controls; actual Run tests establish the genuine core hook.",
+        "Accepted receipt is historical control entry only, never current readiness or ongoing inflight status.",
+        "No contended receipt proof; lock refusal is failed/unknown.",
+        "Cancel and join relies on supported local filesystem calls completing; blocked synchronous filesystem timing remains unsupported.",
+        "Linux/WSL scope only; native macOS and full installed phase checks remain open."
+      ],
+      "attestedSourceHashes": {
+        "platform/launcher/owner_bridge.go": [
+          "5447740219199671a63ef106350e9ceb112fd01ccae1b0a94d51ed028a291ae7"
+        ],
+        "platform/launcher/owner_bridge_receipt.go": [
+          "c6ec84c03ac827c4c6008705ac8ef6d401484cc3b1015eba7dda900f35b89685"
+        ],
+        "platform/launcher/host_receipt_server.go": [
+          "e0c13e86e6a728112a5f1fef5dcb805981125e794ce495251cd0d0ab1937dbf9"
+        ]
+      }
+    },
+    "owner-bridge-tls/review.json": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/owner-bridge-tls/review.json",
+      "sha256": "c77f89188f3f1b7dedceb80c930fffafe4c61dafceaf004989a572162eb2a1a9",
+      "scope": "Component review; inspect its original declared scope",
+      "limits": [
+        "Controlled Docker responses plus a real adapted native TLS broker are partial integration, not actual Docker Engine/Compose authority qualification.",
+        "Native Linux inside WSL only; no native macOS execution or P02 phase acceptance.",
+        "Authenticated ten-second pending/starting behavior remains unimplemented.",
+        "Run Session/service-lease cleanup retention is a separate in-progress root/A repair; this concreteDialer helper does not claim it.",
+        "Local private file operations remain supported-filesystem assumptions and are not preemptible syscall guarantees."
+      ],
+      "attestedSourceHashes": {
+        "platform/launcher/owner_bridge.go": [
+          "0ba0c706e5c511dd10113666d4a22b90a1674dc0e149deba4dd72b360b8315d8"
+        ],
+        "platform/launcher/transport_cleanup.go": [
+          "5f8dd922dd9cf934594612866ec25146e95c70faf17ce1832f48859a498562cc"
+        ]
+      }
+    },
+    "owner-status-deadline/review.json": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/owner-status-deadline/review.json",
+      "sha256": "98f255474fb49eed8cd6591ee7fb988053f114ab2c5a0e8c68ef1e55fac654d4",
+      "scope": "P02 owner-status total lock deadline and private cold-proof seam; no phase acceptance",
+      "limits": [],
+      "attestedSourceHashes": {
+        "platform/launcher/bootstrap.go": [
+          "88a5870fa078d6580fe5073dd9bdfe3cff2a8468038679939693b4a6b8161989"
+        ],
+        "platform/launcher/startup_status.go": [
+          "3ddbe8fcecb149dd40d9d0b9738d40af3a7e706f47b1b799ccc28c5038f3f107",
+          "835da5322d10e73c8da1c89ea7fcd29e415c3b33903fc8c3ea4ff17adaf4aa7a"
+        ],
+        "platform/launcher/startup_write_proof.go": [
+          "225071eae8dc76ddeea0a57255a1df2e55d191c5a22b4f776b03da147491bb7e"
+        ]
+      }
+    },
+    "root-cold-proof-and-start-validation/review.json": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-cold-proof-and-start-validation/review.json",
+      "sha256": "2befcadaadc59bfee1456013a4f07543b276dd240f9c01f4f4d901e52d073bc3",
+      "scope": "Component review; inspect its original declared scope",
+      "limits": [
+        "Synthetic proof fixtures do not prove an actual broker write.",
+        "New cold/concurrent/warm/recovery status assertions compile but require a fresh actual Compose run.",
+        "Linux pre-spawn refusal does not qualify the native macOS backend.",
+        "All P02 gate checks and branch candidate review remain required."
+      ],
+      "attestedSourceHashes": {
+        "platform/launcher/startup_write_proof.go": [
+          "225071eae8dc76ddeea0a57255a1df2e55d191c5a22b4f776b03da147491bb7e"
+        ]
+      }
+    }
+  },
+  "outboundProtocolException": [
+    {
+      "path": "platform/launcher/docker_stdio.go",
+      "literal": "/info",
+      "classification": "Fixed outbound Docker engine read over already-selected Windows dial-stdio process; not a served HTTP endpoint or product route."
+    }
+  ],
+  "actualFindings": {
+    "newUnresolvedSourceFindings": [],
+    "resolvedHistoricalFindings": [
+      "Concurrent private operation value formatting raced mutable completion; immutable capability/private mutex state repaired and independently verified.",
+      "Run could lose actual joined Bootstrap cleanup cause; concrete typed cause retention and exact retry/redaction independently closed.",
+      "Accepted receipt could ignore changed private owner/profile; bounded fresh enrollment guard and post-IO pending check independently closed.",
+      "Receipt fallback could ignore child exit/caller cancellation and label historical entry as current starting; guarded fallback now uses historical requestDisposition and unknown instanceState.",
+      "Actual receipt fixture early failure lacked Run join; immediate cancel/join cleanup independently closed."
+    ]
+  },
+  "independentKnownClosures": [
+    {
+      "path": "/home/ryan/.cache/agentmux-governance/p02-bootstrap-operation-pGDSik/review.json",
+      "sha256": "70172d9242586528b029f4b9c3e15374a328cd941e16d860729845d4ec2f365c",
+      "scope": "Operation32/affected78/deadline8 component race passes; source maps record historical bootstrap dependency."
+    },
+    {
+      "path": "/home/ryan/.cache/agentmux-governance/p02-receipt-glue-independent-lgsoYY/independent-review.json",
+      "sha256": "5566c0d2dbfc1627122ed63b9aa22c038df8f8bf64344a144c72bc970c2fcb83",
+      "scope": "Exact11 independent receipt repair controls on current five C files; no broad repeat or full phase claim."
+    }
+  ],
+  "limits": [
+    "Function declarations exclude anonymous closures, types/constants and dynamic call graphs. Enumerated methods are not automatically public APIs.",
+    "All 20 files stay under existing PLAT-01; shared protocol/localtls/runtime/deployment callers retain their own owners and checks.",
+    "No served HTTP path is found. The private outbound Docker /info literal is explicitly classified, not silently treated as a product route.",
+    "Evidence current-file hash equality does not alone prove current whole-candidate compatibility. Historical and unbound file records must remain historical.",
+    "No source/index/manifest/sourceDigest/task edits; no duplicate suites, Docker/provider calls, D raw team repair or external native collector review.",
+    "Required exact installed/native/platform, real engine/Compose and original functionality/phase gates remain open as recorded by root."
+  ],
+  "currentSourceVerifiedAfterExtraction": true,
+  "summary": {
+    "files": 20,
+    "declarations": 147,
+    "functions": 71,
+    "methods": 76,
+    "servedHTTPPaths": 0,
+    "actions": {
+      "refresh-stale": 2,
+      "add-missing": 18,
+      "already-current": 0
+    }
+  }
+}

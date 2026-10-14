@@ -1,0 +1,51 @@
+{
+  "scope": "Read-only installed Compose5.5.1 loader/parser conformance using synthetic data. No startup or production qualification.",
+  "sourceHashes": {
+    "platform/deployment/compose.go": "f045ad9172e3e5fde14e69b9e8450c78287387f79e540caca7968e4cf8af130b",
+    "platform/deployment/compose_test.go": "752d446218b30f15728140f45b80384247aa7ff3c45a73c5f191b8bc80aba131"
+  },
+  "helperBinarySha256": "a2e506cb2a6e15b24a582bc39a68a1fe94919039e69228780c80748204ae3a5e",
+  "helperSourceSha256": "6c2e5d96ef149e2cae70eab4c58d820fb68cc10a3acf10ce8bb2dbf75ef5b066",
+  "composeVersion": "5.5.1",
+  "canonicalFormatterSource": {
+    "url": "https://raw.githubusercontent.com/docker/compose/v5.5.1/cmd/compose/config.go",
+    "sha256": "081dc60d18c193309c91bb934b4c4be8f1cd72654e19a8929fade524fbb4b4ac",
+    "explanation": "CLI duplicates dollars in canonical output after its interpolated model is serialized. The comparison reverses that documented output step before checking exact original config bytes."
+  },
+  "initialDiagnostic": {
+    "incorrectAssertion": "Canonical config output bytes equal original raw config bytes directly.",
+    "failed": true,
+    "focusedObservation": "Canonical output equals escaped input; one documented formatter reversal recovers exact original bytes.",
+    "rendererChangedForThisFinding": false
+  },
+  "cases": [
+    {
+      "case": "mixed-dollar-utf8",
+      "rawConfigBytes": 64,
+      "canonicalConfigBytes": 75,
+      "exactAfterDocumentedCLIFormatterReversal": true,
+      "parserExitCode": 0,
+      "stderrBytes": 0,
+      "mutatingDockerCommands": 0
+    },
+    {
+      "case": "raw-64k-dollar",
+      "rawConfigBytes": 65536,
+      "canonicalConfigBytes": 131072,
+      "exactAfterDocumentedCLIFormatterReversal": true,
+      "parserExitCode": 0,
+      "stderrBytes": 0,
+      "mutatingDockerCommands": 0
+    },
+    {
+      "case": "raw-64k-utf8",
+      "rawConfigBytes": 65536,
+      "canonicalConfigBytes": 65536,
+      "exactAfterDocumentedCLIFormatterReversal": true,
+      "parserExitCode": 0,
+      "stderrBytes": 0,
+      "mutatingDockerCommands": 0
+    }
+  ],
+  "rawConfigOrCanonicalOutputRetained": false
+}

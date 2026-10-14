@@ -1,0 +1,62 @@
+{
+  "scope": "Owned basic TLS compatibility and setup cancellation tests after the main owner's synchronous subscription fixes",
+  "status": "focused-tests-passed",
+  "finalOwnedSource": "platform/deployment/team_basic_test.go",
+  "finalOwnedSourceSha256": "97e8fecb21d689f03ba434db5b436ec6626cfd3349d294e8b6cabbf29b63ecc0",
+  "testedCoreSource": "platform/deployment/team_connection.go",
+  "testedCoreSourceSha256": "afea33bc8a7a1dc2a519888485cd5c9a437be7c08afaaeccb056586f63b772cc",
+  "environment": "Go 1.27.2 linux/amd64 in WSL; prepared NATS 2.15.0; race detector enabled; separate frozen Linux copies",
+  "runs": [
+    {
+      "directory": "basic-worker-SQPx5R",
+      "selection": "^TestTeamBasic",
+      "exitCode": 1,
+      "sourceSha256": "97e8fecb21d689f03ba434db5b436ec6626cfd3349d294e8b6cabbf29b63ecc0",
+      "coreSourceSha256": "98e5974f32e8e2585f7d9904b6f9240832156dd2f85ec27b2f64219bd1c8aa9f",
+      "observation": "Reproduced INFO-unavailable failure: TLS/authentication/server were verified, but kernel and snapshot were unavailable. All setup cancellation subtests passed in this run; the root owner's earlier TLS deadline failure was not reproduced here."
+    },
+    {
+      "directory": "basic-worker-Dc7SQd",
+      "selection": "^TestTeamBasicSDKSnapshotQueueDuringForbiddenInfo$",
+      "exitCode": 1,
+      "observation": "Separate diagnostic-only direct SDK control reproduced the old INFO-before-snapshot order: pending=1, lastSlowConsumer=true, nextSlowConsumer=true, message=false. This identifies queue overflow, rather than LastError alone, as the snapshot failure. Its raw output, manifest and complete Linux snapshot are retained. The diagnostic-only test was removed from final source; no integration assertions were relaxed."
+    },
+    {
+      "directory": "basic-worker-CybS1A",
+      "selection": "^TestTeamBasicRealTLSPrivateResolverAndScopedSnapshot$/^info-unavailable$",
+      "exitCode": 0,
+      "packageElapsedSeconds": 0.816,
+      "observation": "Exact reproduced INFO regression passes on the repaired core."
+    },
+    {
+      "directory": "basic-worker-O4zZEX",
+      "selection": "^TestTeamBasicCallerCancellationAndEarlierDeadlineDuringSetup$",
+      "exitCode": 0,
+      "packageElapsedSeconds": 0.65,
+      "observation": "All four actual-peer setup cancellation and earlier-deadline cases pass with the original 500 ms bounds, closed error code, empty setup facts and peer closure before cleanup."
+    },
+    {
+      "directory": "basic-worker-l0rMWD",
+      "selection": "^TestTeamBasic",
+      "exitCode": 0,
+      "packageElapsedSeconds": 1.475,
+      "topLevelTestsPassed": 2,
+      "subtestsPassed": 10,
+      "skips": 0,
+      "observation": "Final complete owned selection passes. The frozen source manifest includes helpers, production code and module files; source-after.txt confirms no frozen source changed."
+    }
+  ],
+  "findings": [
+    {
+      "status": "resolved-by-main-owner; verified by focused worker tests",
+      "finding": "Waiting on unavailable optional INFO before consuming a permitted imported snapshot overflows a one-message synchronous pending queue. Consume the snapshot before optional INFO without widening account ACLs or pending limits."
+    },
+    {
+      "status": "reported-by-root; focused repaired-core tests passed",
+      "finding": "A socket deadline can fire before the context cancellation timer records its error. The main owner's connection failure classification now checks the actual deadline. This worker did not reproduce the original intermittent failure and does not claim an independent before/after reproduction."
+    }
+  ],
+  "ownership": "Only team_basic_test.go and basic-worker evidence changed. No core, credentials, JWT helpers, source registry, module, profile/bootstrap/status/tracker, Git commit or push changes were made by this worker.",
+  "historicalEvidence": "results.json and basic-worker-LMrGGW retain the earlier passing run on the older channel-based core; they are not evidence for the repaired main candidate.",
+  "limitations": "No broad deployment suite, main-candidate freeze, phase, native macOS, R3 storage, JWT or federation acceptance. Root integration and acceptance remain with the main owner."
+}

@@ -1,0 +1,7 @@
+from pathlib import Path
+import shutil,uuid,subprocess,os,json
+out=Path('/home/ryan/.cache/agentmux-governance')/('p02-installed-cli-first-'+uuid.uuid4().hex[:8]);out.mkdir();shutil.copytree('/mnt/c/Users/RyanHelms/GitHub/agentmux/platform',out/'platform');go='/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go';args=[go,'test','-race','-count=1','-json','./launcher','-run','^TestInstalledCLIGenuineStartupAndDetachedLifetime$'];env=os.environ.copy();fixed={'GOTOOLCHAIN':'local','GOPROXY':'off','GOSUMDB':'off','GOWORK':'off','GORACE':'atexit_sleep_ms=0','AGENTMUX_TEST_NATS':'/home/ryan/.cache/agentmux-governance/tools/nats-server'};fixed['AGENTMUX_INSTALLED_CLI_OUTPUTS']=str(out);env.update(fixed);print(out,flush=True);(out/'invocation.json').write_text(json.dumps({'args':args,'cwd':str(out/'platform'),'fixedEnvironment':fixed},indent=2)+'\n');
+with(out/'test.jsonl').open('wb')as stdout,(out/'test.stderr').open('wb')as stderr:r=subprocess.run(args,cwd=out/'platform',env=env,stdout=stdout,stderr=stderr)
+(out/'exit.json').write_text(json.dumps({'exitCode':r.returncode})+'\n');print('exit',r.returncode,flush=True)
+with(out/'vet.stdout').open('wb')as stdout,(out/'vet.stderr').open('wb')as stderr:v=subprocess.run([go,'vet','./launcher'],cwd=out/'platform',env=env,stdout=stdout,stderr=stderr)
+(out/'vet-exit.json').write_text(json.dumps({'args':[go,'vet','./launcher'],'exitCode':v.returncode})+'\n');print('vet',v.returncode)

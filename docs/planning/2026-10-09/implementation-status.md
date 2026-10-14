@@ -8,7 +8,7 @@ Branch: `feat/agentmux-platform-rearchitecture`. No phase or merge approval is i
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
 | P00 | 0 | 0 | 0 | 0 | 0 | 8 | done |
 | P01 | 0 | 0 | 0 | 0 | 0 | 9 | done |
-| P02 | 8 | 0 | 0 | 0 | 0 | 0 | planned |
+| P02 | 1 | 0 | 6 | 0 | 0 | 1 | planned |
 | P03 | 8 | 0 | 0 | 0 | 0 | 0 | planned |
 | P04 | 8 | 0 | 0 | 0 | 0 | 0 | planned |
 | P05 | 10 | 0 | 0 | 0 | 0 | 0 | planned |
@@ -24,6 +24,12 @@ Branch: `feat/agentmux-platform-rearchitecture`. No phase or merge approval is i
 
 ## Current work and blockers
 
+- **P02-T01 — in_progress:** Implement a minimal launcher that establishes the configured NATS substrate and loads the fixed protected boot assembly.
+- **P02-T02 — in_progress:** Implement boot, protected-plugin lifecycle, protected internal communication, and deliberate publication of kernel status.
+- **P02-T03 — in_progress:** Separate protected internal subjects/accounts from exported information and surrounding application services.
+- **P02-T04 — in_progress:** Provide readiness snapshots, bounded startup/shutdown, broker recovery, basic installer/doctor skeleton, and local bootstrap diagnostics.
+- **P02-T05 — in_progress:** Provision the approved local file-backed JetStream profile and team connection profile with explicit storage paths, limits, health and domain settings
+- **P02-T07 — in_progress:** Implement LOCAL-01 bootstrap with pinned Docker Compose configuration, persistent NATS volumes, explicit project identity, bounded health/readiness checks and one startup owner across concurrent terminals
 
 ## P00. Scope, baseline, and architecture decisions
 
@@ -62,13 +68,13 @@ A local installation boots deterministically with protected kernel plugins.
 
 | Task | Status | Owner | Scope |
 | --- | --- | --- | --- |
-| [P02-T01](delivery/task-details.md#P02-T01) | planned | Codex | Implement a minimal launcher that establishes the configured NATS substrate and loads the fixed protected boot assembly. |
-| [P02-T02](delivery/task-details.md#P02-T02) | planned | Codex | Implement boot, protected-plugin lifecycle, protected internal communication, and deliberate publication of kernel status. |
-| [P02-T03](delivery/task-details.md#P02-T03) | planned | Codex | Separate protected internal subjects/accounts from exported information and surrounding application services. |
-| [P02-T04](delivery/task-details.md#P02-T04) | planned | Codex | Provide readiness snapshots, bounded startup/shutdown, broker recovery, basic installer/doctor skeleton, and local bootstrap diagnostics. |
-| [P02-T05](delivery/task-details.md#P02-T05) | planned | Codex | Provision the approved local file-backed JetStream profile and team connection profile with explicit storage paths, limits, health and domain settings |
-| [P02-T06](delivery/task-details.md#P02-T06) | planned | Codex | Apply ADD-01 and the component preservation matrix to every changed source file and affected caller |
-| [P02-T07](delivery/task-details.md#P02-T07) | planned | Codex | Implement LOCAL-01 bootstrap with pinned Docker Compose configuration, persistent NATS volumes, explicit project identity, bounded health/readiness checks and one startup owner across concurrent terminals |
+| [P02-T01](delivery/task-details.md#P02-T01) | in_progress | Codex | Implement a minimal launcher that establishes the configured NATS substrate and loads the fixed protected boot assembly. |
+| [P02-T02](delivery/task-details.md#P02-T02) | in_progress | Codex | Implement boot, protected-plugin lifecycle, protected internal communication, and deliberate publication of kernel status. |
+| [P02-T03](delivery/task-details.md#P02-T03) | in_progress | Codex | Separate protected internal subjects/accounts from exported information and surrounding application services. |
+| [P02-T04](delivery/task-details.md#P02-T04) | in_progress | Codex | Provide readiness snapshots, bounded startup/shutdown, broker recovery, basic installer/doctor skeleton, and local bootstrap diagnostics. |
+| [P02-T05](delivery/task-details.md#P02-T05) | in_progress | Codex | Provision the approved local file-backed JetStream profile and team connection profile with explicit storage paths, limits, health and domain settings |
+| [P02-T06](delivery/task-details.md#P02-T06) | done | Codex | Apply ADD-01 and the component preservation matrix to every changed source file and affected caller |
+| [P02-T07](delivery/task-details.md#P02-T07) | in_progress | Codex | Implement LOCAL-01 bootstrap with pinned Docker Compose configuration, persistent NATS volumes, explicit project identity, bounded health/readiness checks and one startup owner across concurrent terminals |
 | [P02-GATE](delivery/task-details.md#P02-GATE) | planned | Codex | Verify and accept P02 |
 
 ## P03. Plugin framework, nested packages, and inherited context

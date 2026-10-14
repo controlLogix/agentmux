@@ -1,0 +1,232 @@
+{
+  "scope": "Independent read-only P02 installed launcher API semantics review, draft before owner bridge; no phase acceptance",
+  "recordedAt": "2026-10-14T00:33:14.024927+00:00",
+  "sourceHashesAtReviewClose": {
+    "platform/launcher/host_policy.go": "2c950c425261cfba2affb45a1f8595a89d7bd10f2aeb878d79fc69068a1d6d7b",
+    "platform/runtime/installed_host_linux.go": "096ce9cbd3c56ef759d5041476bd4c282f8ad10af47489a465dc9b307f7ca25a",
+    "platform/runtime/installed_host_unsupported.go": "9bad1f1c6a7f3465f9d36cc50cd9d6feb5dfadaa5f8d5d923b9a5867daf454a2",
+    "platform/launcher/startup_session.go": "bfa14fb2e0149d99ce82d93df6574105bc88e8287686e95b443d3f24627baae2",
+    "platform/launcher/startup_status.go": "835da5322d10e73c8da1c89ea7fcd29e415c3b33903fc8c3ea4ff17adaf4aa7a",
+    "platform/launcher/startup_write_proof.go": "225071eae8dc76ddeea0a57255a1df2e55d191c5a22b4f776b03da147491bb7e",
+    "contracts/v1/schemas/startup-status-observation.schema.json": "d4f6f50bd1adc03ffc5fd904e61ce723646624a7357e83595bf6e818f12bf0a0",
+    "contracts/v1/schemas/status-query.schema.json": "1602ff586698c26b8f2cc8ab7be90297cd86dbd0d83c41124421b684707f0a2c",
+    "contracts/v1/registry.json": "a574e1dd54fec0d1b55df50c4ff1b604e0eac1d2eb4c23b7c914f68674eb6381",
+    "docs/planning/2026-10-09/delivery/decisions/startup-contract.md": "2c86650ad04978106ff011827c55708a7f02238f112177cefd4629ee857dc127",
+    "docs/planning/2026-10-09/delivery/tasks.json": "43d7e8ade48b00a28d73bcd50680c68d8bf4429e3b02115b74959e59036364c7"
+  },
+  "reviewedHostPolicyHash": "2c950c425261cfba2affb45a1f8595a89d7bd10f2aeb878d79fc69068a1d6d7b",
+  "requirements": {
+    "P02": [
+      {
+        "id": "P02-AC01",
+        "text": "macOS, Linux, and WSL installations boot without an LLM or hosted Jev connection."
+      },
+      {
+        "id": "P02-AC02",
+        "text": "An outside plugin can subscribe only to permitted kernel information and cannot publish commands or writes into the kernel."
+      },
+      {
+        "id": "P02-AC03",
+        "text": "Bad configuration, occupied ports, unavailable broker, and failed protected plugin produce actionable bounded failures."
+      },
+      {
+        "id": "P02-AC04",
+        "text": "Surrounding plugin failure does not corrupt boot state. Ordinary runtime communication uses NATS after bootstrap."
+      },
+      {
+        "id": "P02-AC05",
+        "text": "The existing launcher, environment selection and failure diagnostics remain available while the new boot path is opt-in. Both paths pass their defined startup and shutdown comparisons without sharing ownership of a live task."
+      },
+      {
+        "id": "P02-AC06",
+        "text": "LOCAL-01 cold launch starts the selected local Compose stack and waits for broker persistence and application readiness. Warm launch reuses the same instance without recreation or lost state. macOS, Linux and WSL fixtures pass without an LLM or Jev."
+      },
+      {
+        "id": "P02-AC07",
+        "text": "Simultaneous launches and a crashed startup owner converge on one owned instance. Wrong Docker context, conflicting ports, incompatible versions and partial startup produce bounded, specific diagnostics without deleting volumes, starting a shadow stack or attaching to another user."
+      },
+      {
+        "id": "P02-AC08",
+        "text": "The same versioned status response follows successful start and reuse. It includes instance identity/version, selected profile and endpoint, readiness, persistence health and authorized hub information with freshness. Missing or unimplemented services are labeled unavailable, never healthy."
+      }
+    ],
+    "P02-T01": {
+      "scope": [
+        {
+          "id": "P02-W01",
+          "text": "Implement a minimal launcher that establishes the configured NATS substrate and loads the fixed protected boot assembly."
+        }
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "P02-T01-AC01",
+          "text": "The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Implement a minimal launcher that establishes the configured NATS substrate and loads the fixed protected boot assembly."
+        },
+        {
+          "id": "P02-T01-AC02",
+          "text": "Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope."
+        },
+        {
+          "id": "P02-T01-AC03",
+          "text": "Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed."
+        },
+        {
+          "id": "P02-T01-AC04",
+          "text": "Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented."
+        }
+      ],
+      "implementationPlan": [
+        "Inspect the existing source and callers for this exact work item: Implement a minimal launcher that establishes the configured NATS substrate and loads the fixed protected boot assembly.",
+        "Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.",
+        "Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.",
+        "Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.",
+        "Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted."
+      ],
+      "verification": [
+        "Capture broker traffic and audit permissions while running normal and unauthorized clients.",
+        "Cold-start and restart each platform. Kill NATS and one protected plugin at controlled points.",
+        "Verify late subscribers receive a consistent readiness snapshot and updates.",
+        "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.",
+        "Exercise FAIL-55\u2013FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12."
+      ]
+    },
+    "P02-T04": {
+      "scope": [
+        {
+          "id": "P02-W04",
+          "text": "Provide readiness snapshots, bounded startup/shutdown, broker recovery, basic installer/doctor skeleton, and local bootstrap diagnostics."
+        }
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "P02-T04-AC01",
+          "text": "The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Provide readiness snapshots, bounded startup/shutdown, broker recovery, basic installer/doctor skeleton, and local bootstrap diagnostics."
+        },
+        {
+          "id": "P02-T04-AC02",
+          "text": "Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope."
+        },
+        {
+          "id": "P02-T04-AC03",
+          "text": "Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed."
+        },
+        {
+          "id": "P02-T04-AC04",
+          "text": "Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented."
+        }
+      ],
+      "implementationPlan": [
+        "Inspect the existing source and callers for this exact work item: Provide readiness snapshots, bounded startup/shutdown, broker recovery, basic installer/doctor skeleton, and local bootstrap diagnostics.",
+        "Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.",
+        "Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.",
+        "Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.",
+        "Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted."
+      ],
+      "verification": [
+        "Capture broker traffic and audit permissions while running normal and unauthorized clients.",
+        "Cold-start and restart each platform. Kill NATS and one protected plugin at controlled points.",
+        "Verify late subscribers receive a consistent readiness snapshot and updates.",
+        "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.",
+        "Exercise FAIL-55\u2013FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12."
+      ]
+    },
+    "P02-T07": {
+      "scope": [
+        {
+          "id": "P02-W07",
+          "text": "Implement LOCAL-01 bootstrap with pinned Docker Compose configuration, persistent NATS volumes, explicit project identity, bounded health/readiness checks and one startup owner across concurrent terminals. Reuse an authorized compatible healthy instance without recreating it."
+        }
+      ],
+      "acceptanceCriteria": [
+        {
+          "id": "P02-T07-AC01",
+          "text": "The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Implement LOCAL-01 bootstrap with pinned Docker Compose configuration, persistent NATS volumes, explicit project identity, bounded health/readiness checks and one startup owner across concurrent terminals. Reuse an authorized compatible healthy instance without recreating it."
+        },
+        {
+          "id": "P02-T07-AC02",
+          "text": "Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope."
+        },
+        {
+          "id": "P02-T07-AC03",
+          "text": "Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed."
+        },
+        {
+          "id": "P02-T07-AC04",
+          "text": "Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented."
+        }
+      ],
+      "implementationPlan": [
+        "Load the separately enrolled release authority with LoadInstalledRelease, then bind the private profile, exact broker bytes and four role credential files through LoadBootstrapConfig before any Docker command.",
+        "Inspect the selected Docker context, engine, pinned image, project, instance/profile/release labels, published port and actual private configuration. Refuse foreign, ambiguous or incompatible resources without mutation.",
+        "Observe an existing runtime read-only. If startup may still be in progress, wait for its OS bootstrap lease and inspect again. Never use PID age or a retained health record as authority to start another runtime.",
+        "For cold startup, retain per-role lifetime leases, start the exact Compose configuration, provision and probe the fixed file-backed health stream, start four verified protected processes and wait for a scoped ready snapshot within the startup budget.",
+        "Qualify the complete path with a dedicated actual Docker fixture: one isolated project and enrolled port, real signed static role binaries, no fake broker, no Docker settings change, explicit baseline checks, exact owned-ID cleanup and retained data volume.",
+        "Prove concurrent callers converge on one owned instance, warm reuse preserves container/process identity and retained persistence, closing a reused session leaves the owner running, and owner death releases child-held leases only after process exit.",
+        "Qualify recovery and required failure cases, including bad identity/configuration, occupied port, wrong context, unavailable Docker/broker, partial startup and bounded cleanup. Preserve data and report unavailable services honestly.",
+        "Complete native Linux/macOS/WSL boot qualification and the agreed status contract before acceptance. Terminal-specific automatic hooks retain their P06 owner; this P02 bootstrap must provide their callable startup/reuse foundation."
+      ],
+      "verification": [
+        "Capture broker traffic and audit permissions while running normal and unauthorized clients.",
+        "Cold-start and restart each platform. Kill NATS and one protected plugin at controlled points.",
+        "Verify late subscribers receive a consistent readiness snapshot and updates.",
+        "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.",
+        "Exercise FAIL-55\u2013FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12."
+      ]
+    }
+  },
+  "workerDesignEvidence": {
+    "worker": "p01_delivery_receipts",
+    "status": "Draft, not frozen; cmd/agentmux-runtime not yet written at review",
+    "design": "Ensure frontend generates a real invocation, observes NATS and requests a detached sealed host if unavailable. It returns hostLaunchRequested plus its read-only reused/failed L04 observation. Only daemon Bootstrap Session supplies started. Pure status strips startup disposition and attempt into InstalledRuntimeStatus. No owner completion/status bridge exists in this draft."
+  },
+  "findings": [
+    {
+      "id": "qualified-reuse-bypassed",
+      "priority": 1,
+      "source": "platform/launcher/host_policy.go: observe",
+      "finding": "The draft marks status reused when kernelReadiness is ready even if deployment.Observe failed or no valid retained persistence record was observed. It does not inspect selected Docker context/engine, owned resource labels, image, configuration, port or volume identity before returning that reuse observation.",
+      "requirement": "L01 authenticated application plus actual owned resource inspection; L02 steps2-5; P02-T07 explicit inspection and authorized compatible healthy reuse; P02-AC06/07.",
+      "requiredCorrection": "Keep a pure diagnostic observation distinct from qualified ensure success. Reuse must preserve the actual Bootstrap ownership/context/configuration/persistence checks and fail or remain explicitly unavailable for partial or conflicting stacks."
+    },
+    {
+      "id": "detached-owner-result-unobservable",
+      "priority": 1,
+      "source": "platform/launcher/host_policy.go and runtime/installed_host_linux.go",
+      "finding": "hostLaunchRequested proves only a local spawn request. The frontend cannot retrieve the actual owning Session started/pending/failure result, completed write proof or safe bounded bootstrap error. Daemon invocation and frontend invocation are distinct; nil daemon standard streams do not provide an authenticated completion result.",
+      "requirement": "L02 step6 and same-operation starting/status refresh; L04 authenticated actual observations; P02-T01/T04 readiness and specific failures; P02-AC03/06/08.",
+      "requiredCorrection": "For this detached design, provide an explicit authenticated scoped owner-result interface over the existing NATS foundation, or retain a qualified synchronous path. Define correlation of the frontend operation and real owner operation without fabricating an original runtime attempt. Do not treat process spawn or kernel socket readiness as completed startup."
+    },
+    {
+      "id": "status-refresh-envelope-replacement",
+      "priority": 1,
+      "source": "platform/launcher/host_policy.go: InstalledRuntimeStatus/ObserveStatus",
+      "finding": "The draft pure-status envelope omits required L04 disposition/startupAttemptId and adds kind. It cannot validate as the accepted startup-status-observation. L04 explicitly requires the same status response for refresh/start/reuse and AG-UI; this envelope may be additive diagnostics but cannot silently replace that response.",
+      "requirement": "L04 required envelope and same service/semantics; P02-AC08; P02-T07 agreed status contract.",
+      "requiredCorrection": "Preserve the accepted L04 response for the advertised status path with actual invocation/observation semantics. Any separate diagnostic contract is additive, documented and cannot satisfy L04 by itself. No accepted P01 schema relaxation is authorized by this review."
+    },
+    {
+      "id": "nullable-owner-policy-rejected",
+      "priority": 2,
+      "source": "platform/launcher/host_policy.go: LoadEnrolledHostPolicy/releaseJSON",
+      "finding": "The draft uses releaseJSON for the complete host policy. That release parser rejects JSON null tokens, while actual OwnerEnrollment scope intentionally permits null projectId/workspaceId. Thus a valid enrolled owner policy using those explicit nulls fails before owner loading.",
+      "requirement": "Accepted common.scope nullable project/workspace fields and P02 real local owner enrollment; no silent shape reduction.",
+      "requiredCorrection": "Use a closed exact-field policy parser with the actual64KiB limit and the intended nullable field semantics, preserving duplicate/UTF8/escape/depth checks. Review exact nested field casing as part of that parser."
+    }
+  ],
+  "minimumBridgeRequirements": [
+    "Use one explicitly reviewed local host/status owner outside the protected kernel. Ordinary clients receive only permitted status; no new permission to publish protected kernel commands or writes.",
+    "Define exact request/reply or publication subjects, publisher/subscriber identity and ACLs, bounded message size, field schema, expected owner/profile/instance/release/caller scope and freshness/correlation checks. A reference or subject name alone is not authority.",
+    "Reuse the accepted L04 reply contract where applicable. Do not invent caller identity, organization scope, original-owner startup attempt, known-empty hub inventory or business counts.",
+    "Carry actual owner starting/started/reused/failed results and approved safe errors without exposing private paths, credentials or raw process output. A warm retained record is not current write proof.",
+    "Keep bootstrap OS file-lock and process-lifetime coordination available before NATS exists; after NATS is ready, ordinary runtime status uses that substrate. No second ordinary application bus is implied.",
+    "Qualify simultaneous frontends, partial startup, stopped/failed owner, interrupted frontend, stale/mismatched/forged owner response, selected Docker identity conflicts and pure status without mutation. Preserve deadlines and retained persistence.",
+    "Actual native Linux/macOS/WSL entry, caller-close host survival and final stable candidate evidence remain required; a draft unsupported Darwin backend or unit helper cannot satisfy that matrix."
+  ],
+  "rootResolutionAtReviewClose": "Root accepted the diagnosed gaps and selected a new authenticated NATS owner-status bridge while preserving full L04. Bridge source is not started or reviewed by this report; subsequent implementation requires separate root approval.",
+  "limitations": [
+    "No provider prompt, model, Docker operation, installed launcher execution or new test run occurred in this source review.",
+    "Draft command entrypoint was absent, so no CLI implementation or native entry behavior is claimed.",
+    "This review defines required behavior and provenance; it does not mandate an extra service if a qualified synchronous path is chosen instead.",
+    "Root alone owns task metadata, contracts registration and phase acceptance."
+  ]
+}

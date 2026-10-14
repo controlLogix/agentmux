@@ -1,0 +1,71 @@
+{
+  "source": {
+    "platform/launcher/docker_instance.go": "4d9353f586348f4ed2a8004379a3041669a1c74cdc3ff986e2bd2c0fe6952b56",
+    "platform/launcher/docker_tls.go": "a9881487cb8a5e43a3781a359e0c38b31537ce20cc1797d421fb9a871a014a8f",
+    "platform/launcher/docker_archives.go": "c645ce9f3bec78fa5f9d52e6663d27d30c705b99855f381ad33a3ce083377d66",
+    "platform/launcher/docker_archive_test.go": "a0074ae93abe913ce19400d6f1af82f25f747df50ebb1e0730c8636117879df8",
+    "platform/launcher/docker_archive_linux_test.go": "d27191a80eee8b7721e9dded9ede5dbc52111bb721599e1d918912992deccfc8"
+  },
+  "beforeSource": {
+    "platform/launcher/docker_instance.go": "8db456430a4368c91829cb61c79883fc6df4df764d6da924ca7e3e023aaea91b",
+    "platform/launcher/docker_tls.go": "db7624b7f999e3fc96fa021bde4426fdb20e1970c8ffaab28c4ea4d523bebcec"
+  },
+  "unchangedGeneralReadBatchSHA": "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813",
+  "workingOwnedSourceExact": true,
+  "snapshot": "/home/ryan/.cache/agentmux-tests/p02-owner-bridge-tls-candidate-t8u6j3g0",
+  "affectedResult": {
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-json",
+      "./launcher",
+      "-run",
+      "^(TestOwnedBroker|TestOwnedTLSBroker|TestFixedTLSArchive|TestKernelOperationProofUsesOneActualInspection|TestKernelOperationProofExpiryActuallyReinspects)"
+    ],
+    "exit": 0,
+    "seconds": 28.269441047001237,
+    "sourceStable": true,
+    "namedPass": 106,
+    "namedFail": 0,
+    "skips": 0
+  },
+  "vet": {
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "vet",
+      "./launcher"
+    ],
+    "exit": 0,
+    "seconds": 1.1161158220002108
+  },
+  "negative": {
+    "path": "/home/ryan/.cache/agentmux-tests/p02-fixed-archive-sequential-negative-g7i8v4h_",
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-timeout=10s",
+      "-json",
+      "./launcher",
+      "-run",
+      "^TestFixedTLSArchiveReadsActuallyOverlap$"
+    ],
+    "exit": 1,
+    "expectedFailureDetected": true,
+    "baselineSnapshot": "/home/ryan/.cache/agentmux-tests/p02-owner-bridge-tls-candidate-t8u6j3g0",
+    "mutantSHA": "d1fdf95208496763295ebcf8bf5df02013c4344d1bd10021c142f985a5919c03"
+  },
+  "behavior": "Complete selected Docker engine, roster, container labels/image/state, loopback port and owned volume checks precede all three fixed archives. Private TLS reads overlap, verify exact metadata/digest/limits, cancel siblings on first error and join all cmd.Run calls before any result. No successful subset or private bytes returned.",
+  "publicPreservation": "InspectOwnedBroker still checks only private.conf after the same identity checks. Its expected config digest remains mandatory before effects. parallelDockerReadAllowed remains byte-for-byte unchanged and refuses cp.",
+  "actualProof": "Deterministic real child barrier requires all three archive reads in flight. Linux pidfds captured from owned fixture handshakes confirm all children exited before helper returns on malformed certificate and deadline. All three archive shapes have positive and metadata/link/digest/size/truncation negatives. Ownership failures produce zero archive starts.",
+  "scope": "Native Linux controlled read-only Docker CLI subprocess fixture; actual pinned TLS/four-actor observer proof regression also passed. No actual Docker engine/container/Compose or native macOS claim.",
+  "limits": [
+    "Root must rerun the actual failed warm Compose selection and review timing.",
+    "Linux pidfd tests qualify Linux only; macOS native phase matrix remains separate.",
+    "Required pattern check exited1 only stale review/sourceDigest; root owns metadata refresh.",
+    "No phase acceptance, commits, tracker changes or providers."
+  ]
+}

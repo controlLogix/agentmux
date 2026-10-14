@@ -1,0 +1,544 @@
+{
+  "recordedAt": "2026-10-13T20:24:23.483788+00:00",
+  "sourceCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "status": "draft-for-root-review",
+  "preflightAccepted": false,
+  "phaseAccepted": false,
+  "implementationStarted": false,
+  "priorAudits": {
+    "preflight-deployment": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/preflight-deployment/audit.json",
+      "sha256": "2364047ec8bf1d7b49bed49f2ab259bbb5c8427547cf60dc1e5c453aa0933082",
+      "preserved": true
+    },
+    "preflight-independent": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/preflight-independent/audit.json",
+      "sha256": "0b76c54b4fde7faa4c64bbf9ea816e744ddb13084d5e6d2d12d418b55a6e3dab",
+      "preserved": true
+    },
+    "preflight-kernel": {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/preflight-kernel/audit.json",
+      "sha256": "5f5b8ecec30d3b893936ef4f60d4202ff70c4610957e2c1009bf0aae6ac88397",
+      "preserved": true
+    }
+  },
+  "sourceRefresh": "source-refresh.json",
+  "legacy25FilesMatchRecordCommitAndPriorAudit": true,
+  "planningWorkingTreeChanges": [
+    {
+      "priorAudit": "preflight-independent",
+      "path": "docs/planning/2026-10-09/delivery/tasks.json",
+      "priorSha256": "4a0dc902a36c4ad740dce4e39f8fc74960103f80451038c607517902999ce68a",
+      "recordCommitSha256": "4813e4fb3b40164b46bdd9f85e3197da8730d78c3a11ca1133b9af9a06ba92e5",
+      "workingSha256": "63669f3ed9e8ac1e8bb28baea94cb0cfe1ad98446899ab89831760dbd3d983be",
+      "workingMatchesRecordCommit": false,
+      "sameAsPrior": false
+    },
+    {
+      "priorAudit": "preflight-kernel",
+      "path": "docs/planning/2026-10-09/delivery/tasks.json",
+      "priorSha256": "cd9823442bdab9a5dc5c0e41e13692dfd473097eae50869d6e2781ad8ee80960",
+      "recordCommitSha256": "4813e4fb3b40164b46bdd9f85e3197da8730d78c3a11ca1133b9af9a06ba92e5",
+      "workingSha256": "63669f3ed9e8ac1e8bb28baea94cb0cfe1ad98446899ab89831760dbd3d983be",
+      "workingMatchesRecordCommit": false,
+      "sameAsPrior": false
+    }
+  ],
+  "predecessorClosure": {
+    "gateRecord": "docs/planning/2026-10-09/delivery/evidence/P01/P01-gate-record-d3f8d9d.json",
+    "sha256": "f908a7595e194368da49205d2a4ba8046cbb66bb55d346409f6de9bdbc732d1d",
+    "qualifiedCandidate": "d3f8d9d240c84d77865f73935f5fe8cf2a3974de",
+    "pushedRecordCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+    "L04": "P01 response schema/fixtures and52-test WSL/native independent qualification accepted; actual producer/readiness stays P02.",
+    "S03": "P01 real27-case scaled admission/reserve/framing/restart/replay accepted; production multi-task owner enforcement stays P04."
+  },
+  "acceptedArchitecture": {
+    "foundation": "Thin Go launcher/protected assembly/supervision; retain Python/TypeScript domain behavior and language-neutral JSON/NATS. No Go dynamic plugin ABI.",
+    "fixedRoles": [
+      "boot",
+      "kernel-lifecycle",
+      "internal-communication",
+      "exported-status"
+    ],
+    "communication": "Every inter-plugin exchange after bootstrap uses NATS. Pre-broker configuration, explicit Compose and exact owned OS process control are bounded infrastructure; no secondary application bus.",
+    "authority": "System/protected/application accounts separate; ordinary plugins read approved exports only. NATS domains locate storage, never authorize. No task scheduling, business ownership, general auth or Jev in protected kernel.",
+    "resources": "Distinct new profile/instance/process/socket/volume/account; legacy SQLite/homes/token/PID/tmux/outbox/reservations untouched."
+  },
+  "plannedComponents": [
+    {
+      "id": "PLAT-01",
+      "name": "Opt-in Go launcher/profile/bootstrap",
+      "ownerPhase": "P02",
+      "status": "planned-not-implemented",
+      "plannedPaths": [
+        "platform/go.mod",
+        "platform/go.sum",
+        "platform/launcher/**",
+        "platform/cmd/agentmux-platform/**"
+      ],
+      "primaryTask": "P02-T01",
+      "collaboratingTasks": [
+        "P02-T04",
+        "P02-T07"
+      ],
+      "behaviorChecks": [
+        {
+          "id": "PLAT-01-C01",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T01",
+          "assertion": "Explicit release/profile/endpoint and fixed assembly validation before spawn; deterministic no-Jev/no-LLM boot.",
+          "status": "not-run"
+        },
+        {
+          "id": "PLAT-01-C02",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T07",
+          "assertion": "Process-held advisory lock; context/daemon/resource identity, cold/warm/concurrent/crashed-owner and persistent reuse checks with real Compose.",
+          "status": "not-run"
+        },
+        {
+          "id": "PLAT-01-C03",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T04",
+          "assertion": "Bounded doctor/readiness/error/status shape; later services unavailable and zero distinct from unknown.",
+          "status": "not-run"
+        }
+      ]
+    },
+    {
+      "id": "KERN-01",
+      "name": "Fixed assembly and boot role",
+      "ownerPhase": "P02",
+      "status": "planned-not-implemented",
+      "plannedPaths": [
+        "platform/kernel/assembly/**",
+        "platform/kernel/boot/**",
+        "platform/kernel/manifests/**",
+        "platform/cmd/agentmux-kernel/**"
+      ],
+      "primaryTask": "P02-T02",
+      "collaboratingTasks": [
+        "P02-T01"
+      ],
+      "behaviorChecks": [
+        {
+          "id": "KERN-01-C01",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T01",
+          "assertion": "Four distinct approved roles, manifest/release/binary/API checks and contained entrypoints; substitutions rejected before spawn.",
+          "status": "not-run"
+        },
+        {
+          "id": "KERN-01-C02",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T02",
+          "assertion": "Boot dependency readiness via NATS; no hosted prerequisite or domain mutation; exact partial failure/recovery status.",
+          "status": "not-run"
+        }
+      ]
+    },
+    {
+      "id": "KERN-02",
+      "name": "Protected lifecycle role",
+      "ownerPhase": "P02",
+      "status": "planned-not-implemented",
+      "plannedPaths": [
+        "platform/kernel/lifecycle/**"
+      ],
+      "primaryTask": "P02-T02",
+      "collaboratingTasks": [
+        "P02-T04"
+      ],
+      "behaviorChecks": [
+        {
+          "id": "KERN-02-C01",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T02",
+          "assertion": "Protected lifecycle via NATS, bounded ordered exact-owned start/stop and failed-member recovery; no external membership mutation.",
+          "status": "not-run"
+        }
+      ]
+    },
+    {
+      "id": "KERN-03",
+      "name": "Protected internal communication role",
+      "ownerPhase": "P02",
+      "status": "planned-not-implemented",
+      "plannedPaths": [
+        "platform/kernel/communication/**"
+      ],
+      "primaryTask": "P02-T03",
+      "collaboratingTasks": [
+        "P02-T02",
+        "P02-T05"
+      ],
+      "behaviorChecks": [
+        {
+          "id": "KERN-03-C01",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T03",
+          "assertion": "Real account/credentials/exports prove approved reads and denial of internal subscriptions/publications, forged status, wildcard/request commands and system/JetStream administration.",
+          "status": "not-run"
+        }
+      ]
+    },
+    {
+      "id": "KERN-04",
+      "name": "Protected exported-status role",
+      "ownerPhase": "P02",
+      "status": "planned-not-implemented",
+      "plannedPaths": [
+        "platform/kernel/status/**"
+      ],
+      "primaryTask": "P02-T04",
+      "collaboratingTasks": [
+        "P02-T02",
+        "P02-T03"
+      ],
+      "behaviorChecks": [
+        {
+          "id": "KERN-04-C01",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T04",
+          "assertion": "Consistent late-subscriber snapshot/revisioned update, gap/reconnect/stale/slow-consumer tests using accepted L04 reply; kernel exports information only.",
+          "status": "not-run"
+        }
+      ]
+    },
+    {
+      "id": "PLAT-02",
+      "name": "Narrow infrastructure supervision",
+      "ownerPhase": "P02",
+      "status": "planned-not-implemented",
+      "plannedPaths": [
+        "platform/runtime/**"
+      ],
+      "primaryTask": "P02-T02",
+      "collaboratingTasks": [
+        "P02-T01",
+        "P02-T04"
+      ],
+      "behaviorChecks": [
+        {
+          "id": "PLAT-02-C01",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T02",
+          "assertion": "Exact owned process handles, bounded startup/teardown/broker/member recovery; protect unrelated processes/listeners/homes and use NATS for plugin traffic.",
+          "status": "not-run"
+        }
+      ]
+    },
+    {
+      "id": "PLAT-03",
+      "name": "Owned Compose/NATS profiles",
+      "ownerPhase": "P02",
+      "status": "planned-not-implemented",
+      "plannedPaths": [
+        "deploy/compose/**"
+      ],
+      "primaryTask": "P02-T05",
+      "collaboratingTasks": [
+        "P02-T03",
+        "P02-T07"
+      ],
+      "behaviorChecks": [
+        {
+          "id": "PLAT-03-C01",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T05",
+          "assertion": "Pinned tested images/Compose, R1 storage/domain/limits/account/health and declared team connection profile; idempotent provision and mismatch/interruption failure checks.",
+          "status": "not-run"
+        },
+        {
+          "id": "PLAT-03-C02",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T07",
+          "assertion": "Actual labels/authenticated instance/project/volume identity and durable probes across cold/warm/restart; reject incompatible release/context/endpoint, no deletion/migration.",
+          "status": "not-run"
+        }
+      ]
+    },
+    {
+      "id": "PLAT-04",
+      "name": "Additive Go source-surface qualification",
+      "ownerPhase": "P02",
+      "status": "planned-not-implemented",
+      "plannedPaths": [
+        "platform/tools/source-surface/**",
+        "tests/platform/go-surface/**"
+      ],
+      "primaryTask": "P02-T01",
+      "collaboratingTasks": [
+        "P02-T06"
+      ],
+      "behaviorChecks": [
+        {
+          "id": "PLAT-04-C01",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T01",
+          "assertion": "Extend source inventory to runtime .go declarations/hash/owner; omit *_test.go only from non-test surface, retain all fixture ownership; actual missing/stale/duplicate-Go negative cases fail.",
+          "status": "not-run"
+        },
+        {
+          "id": "PLAT-04-C02",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T01",
+          "assertion": "All original Python/JS/TS/.mjs source eligibility/assertions/history remain unchanged; no source-digest update without review and no historical P01 Go coverage claim.",
+          "status": "not-run"
+        }
+      ]
+    }
+  ],
+  "affectedExistingComponents": [
+    {
+      "id": "HUB-04",
+      "ownerPhaseRetained": "P06",
+      "retainedFiles": [
+        "hub/cli.py",
+        "agentmux_windows.py"
+      ],
+      "qualificationOwnersRetained": {
+        "HUB-04-C01": "P06",
+        "HUB-04-C02": "P06"
+      },
+      "P02ChangePolicy": "Retain current source, interfaces, data and qualification owners. Review only any new opt-in caller/boundary; no later check accepted."
+    },
+    {
+      "id": "HAR-01",
+      "ownerPhaseRetained": "P06",
+      "retainedFiles": [
+        "agentmux.sh"
+      ],
+      "qualificationOwnersRetained": {
+        "HAR-01-C01": "P06",
+        "HAR-01-C02": "P06"
+      },
+      "P02ChangePolicy": "Retain current source, interfaces, data and qualification owners. Review only any new opt-in caller/boundary; no later check accepted."
+    },
+    {
+      "id": "HAR-05",
+      "ownerPhaseRetained": "P12",
+      "retainedFiles": [
+        "install.sh",
+        "agentmux.cmd",
+        "link-windows-state.sh",
+        "agentmux_windows.py"
+      ],
+      "qualificationOwnersRetained": {
+        "HAR-05-C01": "P12",
+        "HAR-05-C02": "P12",
+        "HAR-05-C03": "P12"
+      },
+      "P02ChangePolicy": "Retain current source, interfaces, data and qualification owners. Review only any new opt-in caller/boundary; no later check accepted."
+    },
+    {
+      "id": "HUB-02",
+      "ownerPhaseRetained": "P05",
+      "retainedFiles": [
+        "hub/__init__.py",
+        "hub/server.py"
+      ],
+      "qualificationOwnersRetained": {
+        "HUB-02-C01": "P05",
+        "HUB-02-C02": "P05",
+        "HUB-02-C03": "P05"
+      },
+      "P02ChangePolicy": "Retain current source, interfaces, data and qualification owners. Review only any new opt-in caller/boundary; no later check accepted."
+    },
+    {
+      "id": "HUB-08",
+      "ownerPhaseRetained": "P10",
+      "retainedFiles": [
+        "hub/bridge.py"
+      ],
+      "qualificationOwnersRetained": {
+        "HUB-08-C01": "P10",
+        "HUB-08-C02": "P10"
+      },
+      "P02ChangePolicy": "Retain current source, interfaces, data and qualification owners. Review only any new opt-in caller/boundary; no later check accepted."
+    },
+    {
+      "id": "HUB-10",
+      "ownerPhaseRetained": "P10",
+      "retainedFiles": [
+        "hub/fed/runtime.py"
+      ],
+      "qualificationOwnersRetained": {
+        "HUB-10-C01": "P10",
+        "HUB-10-C02": "P10",
+        "HUB-10-C03": "P10"
+      },
+      "P02ChangePolicy": "Retain current source, interfaces, data and qualification owners. Review only any new opt-in caller/boundary; no later check accepted."
+    },
+    {
+      "id": "HUB-23",
+      "ownerPhaseRetained": "P10",
+      "retainedFiles": [
+        "deploy/nats/circle.sh",
+        "deploy/nats/up.sh",
+        "deploy/nats/values.yaml",
+        "deploy/nats/kind.yaml",
+        "deploy/nats/nodeport.yaml"
+      ],
+      "qualificationOwnersRetained": {
+        "HUB-23-C01": "P10",
+        "HUB-23-C02": "P10",
+        "HUB-23-C03": "P10"
+      },
+      "P02ChangePolicy": "Retain current source, interfaces, data and qualification owners. Review only any new opt-in caller/boundary; no later check accepted."
+    },
+    {
+      "id": "REPO-03",
+      "ownerPhaseRetained": "P01",
+      "retainedFiles": [
+        ".github/workflows/contracts.yml",
+        ".github/workflows/design-patterns.yml",
+        ".github/workflows/tests.yml"
+      ],
+      "qualificationOwnersRetained": {
+        "REPO-03-C01": "P01"
+      },
+      "P02ChangePolicy": "Retain current source, interfaces, data and qualification owners. Review only any new opt-in caller/boundary; no later check accepted."
+    },
+    {
+      "id": "HUB-15",
+      "ownerPhaseRetained": "P02",
+      "retainedFiles": [
+        "hub/fed/conn.py",
+        "hub/fed/admin.py"
+      ],
+      "qualificationOwnersRetained": {
+        "HUB-15-C01": "P02",
+        "HUB-15-C02": "P02"
+      },
+      "P02ChangePolicy": "Retain current source, interfaces, data and qualification owners. Review only any new opt-in caller/boundary; no later check accepted."
+    },
+    {
+      "id": "HUB-26",
+      "ownerPhaseRetained": "P01",
+      "retainedFiles": [
+        "hub/tests/__init__.py",
+        "hub/tests/fedharness.py",
+        "hub/tests/local.ps1",
+        "hub/tests/run_local.py",
+        "hub/tests/test_fed_live.py",
+        "hub/tests/test_fed_unit.py",
+        "hub/tests/test_governance.py",
+        "hub/tests/test_hub_offline.py",
+        "hub/tests/test_local_runner.py",
+        "hub/tests/test_nats_federation.py",
+        "hub/tests/test_windows_callbacks.py",
+        "sdk/python/README.md",
+        "sdk/python/agentmux_contracts/__init__.py",
+        "sdk/python/agentmux_contracts/__main__.py",
+        "sdk/python/agentmux_contracts/attestation.py",
+        "sdk/python/agentmux_contracts/state_models.py",
+        "sdk/python/agentmux_contracts/validation.py",
+        "sdk/python/agentmux_contracts/wire.py",
+        "sdk/python/pyproject.toml",
+        "sdk/python/requirements.lock",
+        "sdk/python/tests/test_contracts.py",
+        "sdk/python/tests/test_state_models.py",
+        "sdk/typescript/README.md",
+        "sdk/typescript/package-lock.json",
+        "sdk/typescript/package.json",
+        "sdk/typescript/src/cli.ts",
+        "sdk/typescript/src/index.ts",
+        "sdk/typescript/src/state-models.test.ts",
+        "sdk/typescript/src/state-models.ts",
+        "sdk/typescript/src/test.ts",
+        "sdk/typescript/test-examples.json",
+        "sdk/typescript/tsconfig.json",
+        "tests/contracts/README.md",
+        "tests/contracts/ci.py",
+        "tests/contracts/fake-execution.md",
+        "tests/contracts/fake_execution.py",
+        "tests/contracts/run.py",
+        "tests/contracts/test_conformance.py",
+        "tests/contracts/test_fake_execution.py",
+        "tests/contracts/test_payloads.py",
+        "tests/contracts/test_recovery.py",
+        "tests/contracts/test_semantics.py",
+        "tests/contracts/test_startup_status.py",
+        "tests/contracts/test_state_models.py",
+        "tests/contracts/vectors/payload-examples.json",
+        "tests/contracts/vectors/semantic-examples.json",
+        "tests/contracts/vectors/startup-status-examples.json",
+        "tests/contracts/vectors/valid-examples.json",
+        "tests/leaf/README.md",
+        "tests/leaf/run.py",
+        "tests/leaf/signed_run.py",
+        "tests/platform/README.md",
+        "tests/platform/fixtures/wsl-inventory.json",
+        "tests/platform/inventory.py",
+        "tests/platform/test_inventory.py",
+        "tests/storage/README.md",
+        "tests/storage/capacity.py",
+        "tests/storage/python_client.py",
+        "tests/storage/run.py",
+        "tests/storage/typescript/README.md",
+        "tests/storage/typescript/package-lock.json",
+        "tests/storage/typescript/package.json",
+        "tests/storage/typescript/src/client.ts",
+        "tests/storage/typescript/tsconfig.json"
+      ],
+      "qualificationOwnersRetained": {
+        "HUB-26-C01": "P01",
+        "HUB-26-C02": "P01",
+        "HUB-26-C03": "P01",
+        "HUB-26-C04": "P01"
+      },
+      "P02ChangePolicy": "Retain current source, interfaces, data and qualification owners. Review only any new opt-in caller/boundary; no later check accepted."
+    }
+  ],
+  "registrationRules": [
+    "Root reviews this planned path/component/check/task mapping before implementation. Actual files are registered as created in the reviewed implementation change.",
+    "Never put fictional nonexistent files into current component/inventory files lists. Planned roots here are an ownership proposal, not an implemented source inventory.",
+    "Go guard extension is new P02 work: affected caller docs/planning/2026-10-09/verify-component-coverage.py, existing source-surface-index metadata and new finite Go fixtures. Preserve all old assertions and language rules; root records deliberate source/hash changes.",
+    "No later qualificationPhase or behavior owner moves. HUB-15 keeps P02 ownership; its dedicated baseline before legacy connection/provision changes and candidate checks are executed for T05/gate."
+  ],
+  "preflightVersusImplementation": "Preflight acceptance needs root-reviewed source/owner/baseline/limit/test/rollback plan and safe isolated change boundaries. It does not require every future boot/Compose/gain test to pass first. Each planned gain check remains mandatory in its owning task and the P02 gate.",
+  "baselineLimitations": [
+    "Hub construction creates directories/database/token/roles; not a read-only kernel probe.",
+    "Legacy federation configurable membership/broad context is not fixed assembly or immutable P03 context.",
+    "Legacy provision updates existing stream retention/replicas, does not reconcile KV policies and has partial-failure close gaps. Retain unchanged; do not call it for target warm reuse.",
+    "Schema membership validation is not trusted release provenance, contained entrypoint or actual broker account permission.",
+    "Native Desktop WSL Docker integration remains broken. Windows docker.exe invoked from WSL reaches the same Linux engine/Compose per root observation; isolated receipts fixture is underway, not accepted production backend.",
+    "No new Go boot or Compose profile exists; native macOS/Linux/WSL, actual protected permissions, readiness and persistence remain P02 gate obligations."
+  ],
+  "dockerQualificationBoundary": {
+    "preparation": "Root/receipts owns actual same-engine identity and isolated Compose/NATS connectivity evidence. This authorizes no backend amendment or settings/GUI bypass.",
+    "implementationOwner": "P02-T07 must bind explicit backend/client/context/daemon, literal arguments/path translation, output/deadlines, owned project/volume identity and real WSL broker readiness.",
+    "stopCondition": "A failed identity/context/permission/port/version preflight returns bounded specific error before mutation; do not auto-repair WSL settings, start remote/shadow stack or delete volumes.",
+    "later": "Actual installed client hooks=P06, dashboard agreement=P07, real authorized hub observations=P10, R3/backup/package/capacity=P12."
+  },
+  "rollback": "Disable opt-in entrypoint; retain old launcher, data, user settings, token/credentials and pending work. Stop only exact owned new resources; preserve volumes and profile identity. No down-v/prune/force-recreate/implicit upgrade/context switch/SQLite import.",
+  "patternReferences": [
+    "PLAN-03",
+    "PLAN-05",
+    "PLAN-07",
+    "PLAN-08",
+    "PLAN-14"
+  ],
+  "patternLimits": "No pattern invented or marked applied. Root records how/where/why/tradeoffs and diagrams for actual implementation; retain all FED/PLAN history.",
+  "patternCheck": {
+    "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+    "exitCode": 1,
+    "finding": "stale sourceDigest",
+    "action": "Root independently reviews complete candidate before attestation. No digest refresh by this proposal."
+  },
+  "privacy": "Planning/source only. No provider/models/browsers/configuration secrets/live work or Docker mutations performed.",
+  "instructionAndPatternReads": {
+    "AGENTS.md": "97a1da4151e3ef28575cfa70b486434c6a3fe91da7994ab5bfa47cbec67a7197",
+    ".claude/rules/plain-language.md": "7e2b8b6b328a83559342b7a4569f5fb9252699917ec5a7b7451dfd238b184a50",
+    "docs/LOCAL_TESTING.md": "096f19986e17985a49be76be18df4fb0ed3cd6be6ee259ec7519bf3d9ed5b10c",
+    ".bytedesk/design-patterns/agent-rules.md": "e823e071e5ef983300f02cab780b13da1e893620752612a1bdf0fe20532463e6",
+    ".bytedesk/design-patterns/catalog.json": "8f8679535511ac9fd5a380c5d43835e0aabf215a31c44ff53013e205ebc6bb82",
+    ".context/design-patterns.md": "68e4fd82e0aed84fc5b40ffa8699489d9bda174e59129be9753baf416bf04567",
+    ".context/design-patterns-diagrams.md": "3327734f05aa405668fa8ff99a1e4cba6827d4b3f381799484e3b378784c57d9",
+    "docs/planning/2026-10-09/delivery/decisions/acceptance.md": "b687a0353d20cb76244ce4c72f21661ce9f1808f74043d3a2b6b979b6dfdab59",
+    "docs/planning/2026-10-09/delivery/decisions/runtime-and-deployment.md": "146ab3da80d6c97c3d8d05478f47cb5a5ae84cdfaee8502612602ff565410a98",
+    "docs/planning/2026-10-09/delivery/decisions/startup-contract.md": "2c86650ad04978106ff011827c55708a7f02238f112177cefd4629ee857dc127",
+    "docs/planning/2026-10-09/delivery/decisions/storage-contract.md": "19bb201cc3ffdc6d4e19213faee99ed584179d2fa0f34bbefb0371146e728fab"
+  }
+}

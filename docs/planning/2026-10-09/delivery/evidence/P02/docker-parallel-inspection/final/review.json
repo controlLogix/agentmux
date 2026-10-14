@@ -1,0 +1,47 @@
+{
+  "runs": [
+    {
+      "label": "focused",
+      "command": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-mod=readonly",
+        "-race",
+        "-count=1",
+        "-json",
+        "-timeout=120s",
+        "./launcher",
+        "-run",
+        "^TestDocker(Independent|ParallelRead|InspectionStages)"
+      ],
+      "exitCode": 0,
+      "elapsed": 7.976
+    },
+    {
+      "label": "affected",
+      "command": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-mod=readonly",
+        "-race",
+        "-count=1",
+        "-json",
+        "-timeout=120s",
+        "./launcher",
+        "-run",
+        "^Test(Docker|OwnedBroker|BrokerConfigArchive)"
+      ],
+      "exitCode": 0,
+      "elapsed": 12.659
+    }
+  ],
+  "sourceHashes": {
+    "platform/launcher/docker.go": "6dd3eb64c438e1d60b4bc4fe2095abfbc9e3aea17d530f1bc5726e17cb9f6d55",
+    "platform/launcher/docker_instance.go": "ba43b242cc348d093e9fa12a111a2991dbd9f4be4c194c2b954d90ebbac707af",
+    "platform/launcher/docker_reads.go": "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813",
+    "platform/launcher/docker_reads_test.go": "9db58c895a92624f0264f7930e95bb4cacbfcaf43038a4392ef3f051937104f8",
+    "platform/launcher/docker_reads_linux_test.go": "33d4ac55987bbec4f3a3fb412ae81c561dbb21b5202c43685846ada890d0ed7c"
+  },
+  "workingSourcesUnchanged": true,
+  "scope": "Disposable controlled CLI processes only; no real Docker/Compose, native macOS or phase qualification"
+}

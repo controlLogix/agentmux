@@ -1,0 +1,137 @@
+{
+  "scope": "Independent selected-host occupancy and bootstrap terminal-history design review only",
+  "proposalSHA256": "0f978201085b47272330a3ec6b693c04c775949a45b2639df0d23e092febe87f",
+  "sourceBindings": {
+    "platform/launcher/docker.go": {
+      "proposalSHA256": "e134fffdb7feab298e4ee54e45a453aaa6b7cb2c9ea3e2b8a8dc2060baa7448c",
+      "currentSHA256": "e134fffdb7feab298e4ee54e45a453aaa6b7cb2c9ea3e2b8a8dc2060baa7448c",
+      "matches": true
+    },
+    "platform/launcher/bootstrap.go": {
+      "proposalSHA256": "7db76af164be1110f1352da993833fc3613c09ab42b4557094bcd4661edb9bcd",
+      "currentSHA256": "7db76af164be1110f1352da993833fc3613c09ab42b4557094bcd4661edb9bcd",
+      "matches": true
+    },
+    "platform/launcher/owner_bridge.go": {
+      "proposalSHA256": "bd6bde4ae8b93bfb22eeb2df18fcf4d85374556ac99c8299a6db0947d486b1b6",
+      "currentSHA256": "bd6bde4ae8b93bfb22eeb2df18fcf4d85374556ac99c8299a6db0947d486b1b6",
+      "matches": true
+    },
+    "platform/launcher/owner_bridge_receipt.go": {
+      "proposalSHA256": "c6ec84c03ac827c4c6008705ac8ef6d401484cc3b1015eba7dda900f35b89685",
+      "currentSHA256": "c6ec84c03ac827c4c6008705ac8ef6d401484cc3b1015eba7dda900f35b89685",
+      "matches": true
+    },
+    "platform/launcher/host_policy.go": {
+      "proposalSHA256": "52ec5ee9ef345526fd26a5d423f2a86f99bfa1aa060cfd6315cf963242481e0a",
+      "currentSHA256": "52ec5ee9ef345526fd26a5d423f2a86f99bfa1aa060cfd6315cf963242481e0a",
+      "matches": true
+    },
+    "platform/launcher/profile.go": {
+      "proposalSHA256": "d158be8c5bbe3d122dd59652485ed4ddbd288b870173d037c3f0e197f37ee45c",
+      "currentSHA256": "d158be8c5bbe3d122dd59652485ed4ddbd288b870173d037c3f0e197f37ee45c",
+      "matches": true
+    },
+    "platform/launcher/request_diagnostic.go": {
+      "proposalSHA256": "c824be83853e38abf30543e585027f6660ec3756bc282d2e2395e463ca3b3d84",
+      "currentSHA256": "c824be83853e38abf30543e585027f6660ec3756bc282d2e2395e463ca3b3d84",
+      "matches": true
+    },
+    "platform/runtime/bootstrap_receipt.go": {
+      "proposalSHA256": "d18adf5539e70ff66d39b19a405bcbdfe3de8147fb19e90a60e515fa5f3a5519",
+      "currentSHA256": "d18adf5539e70ff66d39b19a405bcbdfe3de8147fb19e90a60e515fa5f3a5519",
+      "matches": true
+    },
+    "platform/cmd/agentmux-runtime/main.go": {
+      "proposalSHA256": "cea082cd69099c16c6af49b6927c09923a9eb39a9fca4cc7c7a6b045ea3f3e7c",
+      "currentSHA256": "cea082cd69099c16c6af49b6927c09923a9eb39a9fca4cc7c7a6b045ea3f3e7c",
+      "matches": true
+    },
+    "platform/launcher/installed_cli_compose_failures_integration_test.go": {
+      "proposalSHA256": "21ca2246a1076feeedb58c6475eadc52d6cb2f66990831161c1155a938e27ae3",
+      "currentSHA256": "21ca2246a1076feeedb58c6475eadc52d6cb2f66990831161c1155a938e27ae3",
+      "matches": true
+    },
+    "docs/planning/2026-10-09/delivery/decisions/startup-contract.md": {
+      "proposalSHA256": "2c86650ad04978106ff011827c55708a7f02238f112177cefd4629ee857dc127",
+      "currentSHA256": "2c86650ad04978106ff011827c55708a7f02238f112177cefd4629ee857dc127",
+      "matches": true
+    },
+    "docs/planning/2026-10-09/delivery/tasks.json": {
+      "proposalSHA256": "da74cf932fcbea6b62513dac2343f9ba52208c586609e40ea71806e7f3e4ec2a",
+      "currentSHA256": "e6950ed2012d218042c5f013a67eaf81beb7be9ed6578fe1a296c6b464ce2de4",
+      "matches": false
+    }
+  },
+  "requirementsReviewed": [
+    "P02-GATE-AC03 actionable bounded configuration/port/broker/protected-plugin failures",
+    "P02-GATE-AC07 specific bounded diagnostics, concurrency/crashedowner convergence, no volume deletion/shadowstack/otheruser attachment",
+    "P02-GATE-AC08 same actual NATS status/freshness, unavailable services never healthy",
+    "LOCAL-01 L01 lease/current reinspection rather than metadata/PID/timeout authority; L02 original10s frontend/60s owner; L04 actual full scoped NATS status"
+  ],
+  "findings": [
+    {
+      "id": "D01",
+      "issue": "Publication moment is unspecified. Run normally lives beyond Bootstrap completion, so writing only in its final defer delays success/failure history and cannot supersede older failure promptly.",
+      "required": "Concrete Run-owned worker/factory publishes the actual returned Bootstrap outcome once its exact bootstrap call has returned, with joined completion semantics and separately observed cleanup state; Run exit updates only genuine cleanup facts without replacing original operation outcome."
+    },
+    {
+      "id": "D02",
+      "issue": "Expected prior generation, stale policy and next-ensure precedence are not a complete protocol. Last terminal failure can be confused with a newer admitted attempt or rollback.",
+      "required": "Define exact cold attempt/generation semantics, no history-based startup control, explicit supersession/unknown-current representation and bounded TTL. Status invocation nonce is not a new cold generation."
+    },
+    {
+      "id": "D03",
+      "issue": "NATS-absent later status cannot be an authenticated NATS L04 reply. Local owner trust is a separate bootstrap-only authority boundary.",
+      "required": "Fresh independently enrolled OS-owner/profile permission gates historical diagnostic read. Label source/history explicitly; current instance/hubs/work/readiness remain unknown until actual NATS observation."
+    },
+    {
+      "id": "D04",
+      "issue": "Atomic overwrite and handling of unknown or mismatched existing artifact are unspecified. A stale file must not block compatible ensure or be overwritten without authority.",
+      "required": "Held private-root descriptor + no-follow/UID/mode/ACL/nlink checks, bounded closed record and exact prior inode/digest/generation compare under actual service lease. Unknown artifact retained/refused replacement, diagnostic unavailable, genuine ensure proceeds through ordinary current admission."
+    },
+    {
+      "id": "D05",
+      "issue": "Publishing after a timed-out operation may have no remaining original budget; join alone does not prove child/socket/resource cleanup complete.",
+      "required": "Reserve publication and existing cleanup inside the original total without widening deadlines. Record terminal failure separately from cleanup incomplete/unknown; retain exact typed Session/dialer/servicelease handles and surface publisher failures safely."
+    },
+    {
+      "id": "D06",
+      "issue": "Windows helper image/trust/enrollment/platform mapping is new infrastructure. Docker executable trust and a WSL listener are insufficient.",
+      "required": "Explicit separately qualified installed helper image/Windows owner+ACL/signature/digest/host mapping with fixed arguments/result; exact socket/process closure/oneWait. Native Linux/macOS probes only where selected engine port really maps to that host."
+    },
+    {
+      "id": "D07",
+      "issue": "An early clear probe cannot reserve a port, and moving acceptance behind an arbitrarily contended lock can break pending10s.",
+      "required": "Use early read-only diagnosis where budget permits, repeat at actual locked cold StartOwned boundary and after failure to classify only genuine observation. Preserve entered pending via NATS/exact creator pipe, and label missing/unknown control honestly."
+    }
+  ],
+  "simplestCompleteRevision": [
+    "Keep current one-frame<=4096+EOF/read-once/CLOEXEC receipt unchanged. It remains exact newly created process correlation and accepted request only, never current instance readiness.",
+    "Add one private selected-host occupancy adapter to bootstrap infrastructure. Derive endpoint only from full admitted profile/Compose/current engine mapping. Verified compatible running owned broker bypasses foreign-port rejection; absent/stopped cold flow observes only the selected actual host. Successful OS listener observation or completed TCP connect with no application bytes may produce a momentary listener diagnostic; bind failure/access/reservation/timeout/unknown helper result never means occupied.",
+    "Use remaining original contexts: early pre-accept observation if feasible, then fresh exact lease-held inspection and observation before cold mutation. A listener appearing later is a TOCTOU event, not evidence the earlier probe lied. Classify eventual failure only from fresh genuine selected-host evidence; generic Docker command failure stays unconfirmed.",
+    "Add one fixed private native bootstrap-history artifact, explicitly approved as bounded boot-diagnostic exception. Suggested closed structure: full admitted scope/owner-enrollment/runtime/release/config/engine binding; latest actually admitted cold attempt generation; optional most recent terminal operation outcome; completion time and fixed validated diagnostic; actual cleanup disposition incomplete/unknown/complete only to the extent observed. No PID/commands/credentials/snapshots/counts/business state.",
+    "Mint writer capability only from concrete Run-owned actual service lease and admitted operation, not a caller flag/path/failure. After actual Bootstrap returns, publish terminal result for that exact generation; do not wait for healthy host lifetime to end. A latest-admitted neutral marker may supersede the previous outcome for correlation but is historical acknowledgment, never proof current pending/liveness. If avoiding a marker, explicitly call the record last-completed history and never infer it is latest/current.",
+    "Serialize legitimate replacement under service lease, revalidate private enrollment and actual artifact identity, and atomically publish/fsync within reserved budget using held private directory. Compare prior generation+digest+inode, not generation alone. Malformed/mismatched/unknown artifacts remain untouched; boot admission cannot depend on their contents. Enrollment/release/config changes invalidate display and require explicit new namespace/re-enrollment semantics instead of silently overwriting foreign history.",
+    "Define retention before code: bounded recent history (suggest24h default), reject future/invalid completion time and binding drift; expired history is unavailable for display, never re-timestamped. Generation cannot prove freshness against malicious same-UID replacement/backup rollback; mark that trust limit rather than inventing cryptographic authority. Valid known old record can be safely superseded via exact compare; unknown replacement cannot.",
+    "CLI prioritizes current authenticated NATS status. With unavailable NATS, show current state unknown plus separately labeled prior bootstrap outcome only after fresh local owner/profile authorization. New ensure always does current admission/OSleases/ownership/port checks; historical failure neither starts/stops/adopts nor indefinitely blocks retry. Successful Bootstrap supersedes old failure without native history claiming ready.",
+    "Preserve exact cleanup ownership if failed startup leaves partial resources or transferred service lease. Terminal operation failure is not resource reaping proof. Record publisher failure as safe diagnostic-unavailable and preserve its cause/owned descriptor; no hidden success or alternate runtime bus. Once NATS exists, ordinary status/application/agent/federation exchanges continue solely through NATS."
+  ],
+  "requiredFocusedProof": [
+    "Actual native Linux/macOS and selected Windows-host listener vs clear/unknown/access cases; WSL-only listener not Windows proof; trusted helper image/closed result/timeout/cleanup refusal.",
+    "Known compatible running reuse and two concurrent terminals unchanged; accepted pending within10s even under held bootstrap lease.",
+    "Deterministic clear\u2192occupied-before-locked-start race, no shadow instance, genuinely observed momentary cause and preserved unrelated resources.",
+    "Actual accepted creator receipt then failed Bootstrap with broker unavailable: same waiting caller and later authorized local status read the exact historical cold outcome, never L04 or currentfailed/ready fabrication.",
+    "Success after prior failure and a newer admitted operation with no terminal outcome: old failure does not poison new ensure/current status.",
+    "Exact artifact private ACL/nlink/ancestor/directory replacement/generation/digest/enrollment/time/size/unknown-field negatives; old records retained, unknown cannot authorize overwrite/adoption/takeover.",
+    "Cleanup-incomplete and publisher I/O failure retain actual handles and original causes; original deadlines unchanged.",
+    "Full supported environment and real installed caller/Compose cohort, not helper-only mocks or compile evidence."
+  ],
+  "limits": [
+    "No source edits, tests, builds or Docker/provider operations performed.",
+    "This is a design revision proposal, not approval of new schema/record/helper/platform trust or a scope reduction. Root owns architecture decision/pattern registration before implementation.",
+    "Same-UID trusted plugin model must be explicit. Strong malicious same-UID producer authenticity/rollback resistance would require separately protected signing capability and independent monotonic trust, not stored digests.",
+    "Source snapshot matches platform paths; mutable task/document metadata drift is separately recorded rather than silently rebinding historical proposal."
+  ],
+  "phaseAccepted": false
+}

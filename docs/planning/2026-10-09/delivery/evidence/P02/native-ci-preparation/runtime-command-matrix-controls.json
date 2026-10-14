@@ -1,0 +1,77 @@
+{
+  "scope": "Expand native foundation discovery from seven to eight test-bearing packages by including the installed runtime command",
+  "sourceHashes": {
+    "tests/platform/native_go.py": "dea8ecfb22104027736c0d932f3866906c3058d9d1051d0932b2b2c04e1bca61",
+    ".github/workflows/platform-foundation.yml": "c175a47ee50491d2a09fd9afd37ad2d4b8af1f44c460b8fa02f4801df7852db6"
+  },
+  "selectionChange": {
+    "name": "runtime-command",
+    "package": "./cmd/agentmux-runtime",
+    "filter": null,
+    "nativeHosts": ["Linux", "Darwin"],
+    "limits": "The normal collector selects all ordinary command-package tests on both native hosts. Darwin runtime refusal filtering and the separate four-image/three-host install selections remain unchanged."
+  },
+  "collectorControls": {
+    "command": "python tests/platform/native_go.py --self-test",
+    "exit": 0,
+    "passed": 33,
+    "raw": "runtime-command-matrix-self-test.log",
+    "rawSha256": "0d8cc9d77212be055c6b722f0d7867df2ddc153383ed70ff882586f3a49e9d6c",
+    "limits": "Synthetic collector tests on Windows, not actual native macOS execution. Missing or non-test-bearing runtime command records are refused; both simulated host runs execute its full package exactly once."
+  },
+  "actualLinuxChecks": {
+    "candidate": "/home/ryan/.cache/agentmux-governance/runtime-command-matrix/candidate-bAiXWi",
+    "sourceFiles": 122,
+    "sourceUnchanged": true,
+    "sourceListSha256": "0a608b4dd4e17e81f8f507df77f06fed72127d4e4c7f4e24beb22a68841c6cbd",
+    "inventoryCommand": "go list -mod=readonly -json ./...",
+    "inventoryExit": 0,
+    "packageCount": 11,
+    "selectedTestBearingPackages": 8,
+    "matrixAdmissionExit": 0,
+    "matrixSha256": "0b2a642e9d87f7515adca7b2a22786d577d0633dee3f10850421d701edec3e1d",
+    "testCommand": "go test -race -count=1 -timeout=90s -json ./cmd/agentmux-runtime",
+    "testExit": 0,
+    "passedTestEntries": 2,
+    "failedOrSkippedTestEntries": 0,
+    "packageSeconds": 0.093,
+    "testRawSha256": "1637d5062cfc2ed9afdc6f5b9448e70ecebfad939286b67f04e16bced8d0ac1b",
+    "vetCommand": "go vet ./cmd/agentmux-runtime",
+    "vetExit": 0,
+    "evidenceDirectory": "runtime-command-matrix",
+    "limits": "Actual Go inventory and command-package tests only. The other seven suites were not executed by this run. No Docker resources, installed host processes or native macOS tests were started."
+  },
+  "independentReview": {
+    "reviewer": "Plato",
+    "agentId": "01a137e6-481f-7441-9095-89ea4bb76f8c",
+    "findings": [],
+    "result": "Exact collector/workflow source review closed. Runtime command coverage is required and unfiltered on both normal host selections; prior admission and timeout boundaries remain intact.",
+    "limits": "Source review only; no independent rerun or native execution by the reviewer."
+  },
+  "history": [
+    {
+      "directory": "runtime-command-matrix-initial",
+      "candidate": "candidate-th2izg",
+      "runnerExit": 1,
+      "result": "Matrix and command tests returned zero, but the source-check/evidence trap ran in the package directory instead of the snapshot root. Its failed path checks and test outputs are retained. The repaired runner selects the snapshot root before source verification. This initial run is not presented as a passing collector run."
+    },
+    {
+      "record": "../native-harness-root-review/review.json",
+      "result": "The historical seven-package source review remains history, not acceptance of the new eight-package selection. Earlier 31-control and two-host-test records remain unchanged."
+    }
+  ],
+  "requiredPatternCheck": {
+    "ok": false,
+    "error": "Review is stale or missing: inspect changes and refresh sourceDigest",
+    "owner": "Root coordinator; this slice does not alter the global review attestation."
+  },
+  "rootNativeFixtureReviewObservation": {
+    "path": "/home/ryan/.cache/agentmux-governance/p02-installed-repaired-review-rJmgXT/independent-review.json",
+    "sha256Verified": "ae2ea0b6a287d9c6aa07edc249ed3841de42b304b5fd03edf8b908f79080eb91",
+    "limits": "Root reported this source review closed and owns its archive. Verifying this file hash is not native test execution or phase acceptance."
+  },
+  "nativeMacExecuted": false,
+  "fullFoundationSuiteExecuted": false,
+  "installedBridgeSecurityAccepted": false,
+  "phaseAccepted": false
+}

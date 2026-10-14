@@ -1,0 +1,1674 @@
+{
+  "kind": "current-semantic-notes-exact-pin-map",
+  "rows": [
+    {
+      "path": "platform/launcher/docker.go",
+      "sourceSHA256": "e134fffdb7feab298e4ee54e45a453aaa6b7cb2c9ea3e2b8a8dc2060baa7448c",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/closed-request-diagnostics/independent-review.json",
+          "recordSHA256": "197ec826b3459d83d7fa3810958602c36eeeb63b9125bf68f4515548b2086bee",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Independent trusted static launcher diagnostic source and evidence review; no engine qualification"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/lock_unix.go",
+      "sourceSHA256": "8dce55b7daaf4d8233d0075f2593c9d5bdaf7511bfd029592bff88d69143a0a8",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-go-existing/proposal.json",
+          "recordSHA256": "c68efc2df3ec4468b046f956ca494e1717a8f0bee202f71a0f7fc93f53eb6573",
+          "sourceSHA256": "8dce55b7daaf4d8233d0075f2593c9d5bdaf7511bfd029592bff88d69143a0a8",
+          "semanticDetails": {
+            "how": "Retain an existing private profile directory descriptor, open the hashed lock with no-follow, nonblocking and close-on-exec flags, check held descriptor access and recheck directory/file identity after flock before writing a random attempt marker.",
+            "where": "AcquireBootstrapLock lines 56-152; held access checks at 83, 105 and 131; Close lines 156-163.",
+            "why": "Prevent permissive access or replaced path identity from authorizing the startup lease. The lock inode is never unlinked, and observed metadata cannot authorize takeover.",
+            "tradeoffsOrLimits": "Canonical ancestry remains an enrollment prerequisite. Ordinary filesystem calls are synchronous; a finite context does not preempt them. An already canceled context is checked in the lock loop, not before every filesystem effect. The original lock-only evidence binds a different source hash."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/runtime/snapshot_unsupported.go",
+      "sourceSHA256": "522a77bf706c8522363438e033e64d9478c85a7483d72d65e37b54edb3d8aaec",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-go-existing/proposal.json",
+          "recordSHA256": "c68efc2df3ec4468b046f956ca494e1717a8f0bee202f71a0f7fc93f53eb6573",
+          "sourceSHA256": "522a77bf706c8522363438e033e64d9478c85a7483d72d65e37b54edb3d8aaec",
+          "semanticDetails": {
+            "how": "Keep the unconditional ErrPlatformUnqualified implementation under !linux && (!darwin || !cgo). Darwin with cgo is now excluded from this refusal stub so its separate protected backend can be selected.",
+            "where": "Build constraint line 1 and prepareExecutable lines 10-12.",
+            "why": "Separate a native protected Darwin backend from unsupported platforms and Darwin without cgo; never fall back to unprotected path execution.",
+            "tradeoffsOrLimits": "No new function name was needed, but supported build selection changed. The build constraint does not prove Apple toolchain qualification, protected installation or native execution."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/runtime/supervisor.go",
+      "sourceSHA256": "45437190fd61616c18c35c79ff4fc02c97b558d607bf2043bea2e6b14d40d824",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-go-existing/proposal.json",
+          "recordSHA256": "c68efc2df3ec4468b046f956ca494e1717a8f0bee202f71a0f7fc93f53eb6573",
+          "sourceSHA256": "45437190fd61616c18c35c79ff4fc02c97b558d607bf2043bea2e6b14d40d824",
+          "semanticDetails": {
+            "how": "Allow only the fixed trust-file environment key in addition to existing role values. Immediately before cmd.Start, invoke an optional validateForStart method for protected path backends and close inherited start files on refusal. Preserve explicit ExtraFiles, exact child handles, one Wait owner and bounded Stop/reap behavior. The dual-failure branch now retains startup and cleanup causes through a fixed safe error wrapper without changing the exact returned Group.",
+            "where": "Environment allowlist line 170; child lifetime/spawn lines 249-310; pre-spawn validation lines 279-285; startup failure handling lines 328-335.",
+            "why": "Revalidate mutable protected installation identity as close to spawn as possible while sealed descriptor backends retain their existing execution path.",
+            "tradeoffsOrLimits": "Historical start-validation evidence binds an earlier supervisor hash. Parent-lifetime and secure-lock records provide separate source-bound context. Neither them nor this read proves native Darwin or full Compose behavior. See F01 for the dual-failure cause loss."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/deployment/observe.go",
+      "sourceSHA256": "3e0d3e5f299820b30975c466a407e01c338012008578fcbf6ff515a7ec4e313d",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "3e0d3e5f299820b30975c466a407e01c338012008578fcbf6ff515a7ec4e313d",
+          "semanticDetails": {
+            "howWhereWhy": "Raw dialer wrappers retain actual sockets/hooks and report observed cleanup failures even after later successful physical close. Fixed1s initial cleanup join and bounded retry gates/active Dial/hook joins avoid new waiter goroutines. Existing read-only Observe clears facts when raw cleanup fails; concrete localtls path remains unchanged."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/deployment/probe.go",
+      "sourceSHA256": "3d5751789092bf9684dd9f12d77da8c6724ed3db10d4d3bd6dfeb35d3eabc78f",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-go-existing/proposal.json",
+          "recordSHA256": "c68efc2df3ec4468b046f956ca494e1717a8f0bee202f71a0f7fc93f53eb6573",
+          "sourceSHA256": "3d5751789092bf9684dd9f12d77da8c6724ed3db10d4d3bd6dfeb35d3eabc78f",
+          "semanticDetails": {
+            "how": "Require fixed loopback identity and a bounded context. Installed callers supply enrolled TLS. Create only an absent exact-compatible health stream on the provisioning path; never update incompatible state. Publish and read back a fixed disposable health record. Invalidate result facts on deadline or concrete cleanup failure.",
+            "where": [
+              "compatibleHealth:67",
+              "ProvisionAndProbe:81",
+              "runProbe:88"
+            ],
+            "why": "Current scoped health writes and read-only retained observations prove different facts; neither is a business completion or acceptance record.",
+            "tradeoffsOrLimits": "NATS 2.15 observed version metadata is admitted narrowly without authorizing arbitrary metadata/features. Historical plaintext helper calls remain outside installed TLS admission."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/deployment/profile.go",
+      "sourceSHA256": "f15a34a2111492fc83f3c5e85aad2cb869c4c6487bac9f3cc10aa2de9de767e7",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-go-existing/proposal.json",
+          "recordSHA256": "c68efc2df3ec4468b046f956ca494e1717a8f0bee202f71a0f7fc93f53eb6573",
+          "sourceSHA256": "f15a34a2111492fc83f3c5e85aad2cb869c4c6487bac9f3cc10aa2de9de767e7",
+          "semanticDetails": {
+            "how": "Generate the fixed protected account configuration plus an isolated infrastructure health account, bounded R1 file storage, explicit domain/path/limits and sync_interval=always. Admit only the exact health subject and fixed domain/local API forms.",
+            "where": [
+              "BuildLocalConfig:34",
+              "HealthStream:85",
+              "HealthSubject:86"
+            ],
+            "why": "Durable local infrastructure probes require explicit storage/sync policy without giving health credentials protected, business or federation authority.",
+            "tradeoffsOrLimits": "This retained base factory contains secrets and is not a business-state/R3/reservation or power-loss durability implementation. Secure installed configuration is built by the separate TLS factory."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/kernel/protocol/credentials.go",
+      "sourceSHA256": "0b73aef06b02db8225f732e543087b87b5634792346e148b6acac018682885b0",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-go-existing/proposal.json",
+          "recordSHA256": "c68efc2df3ec4468b046f956ca494e1717a8f0bee202f71a0f7fc93f53eb6573",
+          "sourceSHA256": "0b73aef06b02db8225f732e543087b87b5634792346e148b6acac018682885b0",
+          "semanticDetails": {
+            "how": "Config adds local ClientTrust. TLS endpoints require exact matching trust; mismatched trust on the retained nats prototype path is refused. LoadEnvironment loads the fixed trust-file reference alongside bound role credentials.",
+            "where": "Config lines 40-46, prepared lines 61-87 and LoadEnvironment lines 91-126.",
+            "why": "Carry independently enrolled server identity to protected role transport without inheriting a root broker client or accepting ambient system roots.",
+            "tradeoffsOrLimits": "Unchanged function names do not mean unchanged API: the exported Config shape changed. The plaintext prototype path is retained; installed policy enforcement and complete trust decoding are separate source owners."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/kernel/protocol/private_unix.go",
+      "sourceSHA256": "19317232374f774060e51fc10530ab202f11a8d29cc5be879fb552c04be02d5b",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-go-existing/proposal.json",
+          "recordSHA256": "c68efc2df3ec4468b046f956ca494e1717a8f0bee202f71a0f7fc93f53eb6573",
+          "sourceSHA256": "19317232374f774060e51fc10530ab202f11a8d29cc5be879fb552c04be02d5b",
+          "semanticDetails": {
+            "how": "readPrivateFile delegates to the shared held-descriptor reader with the kernel_credential error prefix.",
+            "where": "readPrivateFile lines 7-9.",
+            "why": "Apply the same private file and enclosing-directory checks to role credentials and server trust, rather than maintaining a separate leaf-only owner helper.",
+            "tradeoffsOrLimits": "The delegated implementation is not copied into this file. Its prior independent security review is cited as historical context, not fresh execution or a new dependency audit."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/kernel/protocol/transport.go",
+      "sourceSHA256": "c4d602a3b349405334cb5b5a90367f9ebc5438bcc0edbffa7fd2c06e3efd77d1",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-go-existing/proposal.json",
+          "recordSHA256": "c68efc2df3ec4468b046f956ca494e1717a8f0bee202f71a0f7fc93f53eb6573",
+          "sourceSHA256": "c4d602a3b349405334cb5b5a90367f9ebc5438bcc0edbffa7fd2c06e3efd77d1",
+          "semanticDetails": {
+            "how": "Bind the TLS custom dialer before credential-bearing CONNECT and reuse it for bounded reconnect without discovery. Actor.Close attempts exact owned raw transport closure before NATS Close. Failed Open/Serve cleanup returns a typed error retaining the actor for explicit retry and joining the original operational cause with ErrCleanup.",
+            "where": "Open lines 89-165; cleanup declarations and methods lines 167-204; Serve cleanup defer lines 307-312.",
+            "why": "Authenticate the enrolled server before sending credentials and keep concrete cleanup ownership visible after constructor or service failure.",
+            "tradeoffsOrLimits": "Close now returns error, an API change that the AST name list alone cannot capture. There are two distinct Close methods in the prepared list. Existing role callers and privacy/cleanup tests were reviewed historically, not rerun here. Retained prototype plaintext calls are not installed TLS admission."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/bootstrap.go",
+      "sourceSHA256": "7db76af164be1110f1352da993833fc3613c09ab42b4557094bcd4661edb9bcd",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-launcher/proposal.json",
+          "recordSHA256": "1a06573c8c2ff4e101552dcea779b71dcef1bcbdd9e9a7babcbd51d220448ffc",
+          "sourceSHA256": "7db76af164be1110f1352da993833fc3613c09ab42b4557094bcd4661edb9bcd",
+          "semanticDetails": {
+            "how": "The admitted Bootstrap core validates selected profile, exact Compose/role/private trust material, prepares signed images, inspects/reuses or starts only owned resources, and records the actual call result.",
+            "where": [
+              {
+                "name": "bootstrapError",
+                "receiver": null,
+                "line": 83
+              },
+              {
+                "name": "validateBootstrapRoles",
+                "receiver": null,
+                "line": 85
+              },
+              {
+                "name": "Close",
+                "receiver": "*Session",
+                "line": 145
+              },
+              {
+                "name": "CleanupError",
+                "receiver": "*Session",
+                "line": 190
+              },
+              {
+                "name": "Bootstrap",
+                "receiver": null,
+                "line": 211
+              },
+              {
+                "name": "BootstrapForInvocation",
+                "receiver": null,
+                "line": 222
+              },
+              {
+                "name": "bootstrapForOperation",
+                "receiver": null,
+                "line": 228
+              }
+            ],
+            "why": "Its private operation hook follows successful preparation; owned Session cleanup and inherited role leases preserve cold/warm/concurrent behavior without PID adoption.",
+            "tradeoffs": "Keep ordinary kernel command authority and future orchestration outside this launcher; broker absence is not proof that role leases are free."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/bootstrap_config.go",
+      "sourceSHA256": "72866eaf4e0b8af2eb16bb59fd80de55eba7d9b281144927c502ee33599866ca",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-go-existing/proposal.json",
+          "recordSHA256": "c68efc2df3ec4468b046f956ca494e1717a8f0bee202f71a0f7fc93f53eb6573",
+          "sourceSHA256": "72866eaf4e0b8af2eb16bb59fd80de55eba7d9b281144927c502ee33599866ca",
+          "semanticDetails": {
+            "how": "Extract the fixed health, observer and optional HOST credentials, then rebuild the corresponding secure or historical factory configuration and compare complete decoded objects with json.Number values.",
+            "where": [
+              "bootstrapBrokerCredentials:17"
+            ],
+            "why": "Broker labels and selected usernames cannot establish the actual account permission boundary or exact storage configuration.",
+            "tradeoffsOrLimits": "Historical plaintext helper paths remain explicit, while the installed loader requires TLS. This private function returns secret-bearing credentials only to trusted bootstrap code."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/docker_instance.go",
+      "sourceSHA256": "4d9353f586348f4ed2a8004379a3041669a1c74cdc3ff986e2bd2c0fe6952b56",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-go-existing/proposal.json",
+          "recordSHA256": "c68efc2df3ec4468b046f956ca494e1717a8f0bee202f71a0f7fc93f53eb6573",
+          "sourceSHA256": "4d9353f586348f4ed2a8004379a3041669a1c74cdc3ff986e2bd2c0fe6952b56",
+          "semanticDetails": {
+            "how": "Verify exact selected-engine broker roster, image identity, labels, process state, loopback port and named data volume before reading a private archive. Require exactly one bounded regular root-owned 0400 file with the expected digest and no extra entry or nonzero trailing bytes.",
+            "where": [
+              "InspectOwnedBroker:51",
+              "inspectOwnedBrokerIdentity:68",
+              "verifyPrivateFileArchive:170"
+            ],
+            "why": "Names, running state and labels alone do not bind the actual private broker configuration or justify readiness.",
+            "tradeoffsOrLimits": "Only bounded safe state projections are returned. Docker/config inspection remains distinct from cryptographic peer authentication; this older public helper checks one broker-config archive, while TLS-specific inspection has its separate adapter."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/host_config.go",
+      "sourceSHA256": "8acbb094876456bc22ae743fb4697fb22d5a722ad7a0231ee4578695a3c5de53",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-go-existing/proposal.json",
+          "recordSHA256": "c68efc2df3ec4468b046f956ca494e1717a8f0bee202f71a0f7fc93f53eb6573",
+          "sourceSHA256": "8acbb094876456bc22ae743fb4697fb22d5a722ad7a0231ee4578695a3c5de53",
+          "semanticDetails": {
+            "how": "Load separately enrolled policy, a signed installed release and held private files. Enforce stable inode/mode/size/mtime/ctime and descriptor access policy; bind per-profile server trust, role credentials, runtime storage, broker factory and regenerated Compose digest before returning private bootstrap configuration.",
+            "where": [
+              "hostPrivateReadWithOpen:57",
+              "hostReadMetadataEqual:85",
+              "LoadBootstrapConfig:159"
+            ],
+            "why": "A valid file or release signature alone cannot authorize a substituted profile, credentials, TLS server or storage configuration.",
+            "tradeoffsOrLimits": "Filesystem reads are synchronous and fail closed on changed metadata. Returned configuration contains secrets and is not a user-facing serialization or readiness observation."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/kernel_status.go",
+      "sourceSHA256": "1e67cdef72a65dd41d9ce319dd6b8f25058f70f14e9a85a6974647616da388f9",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-go-existing/proposal.json",
+          "recordSHA256": "c68efc2df3ec4468b046f956ca494e1717a8f0bee202f71a0f7fc93f53eb6573",
+          "sourceSHA256": "1e67cdef72a65dd41d9ce319dd6b8f25058f70f14e9a85a6974647616da388f9",
+          "semanticDetails": {
+            "how": "Use a typed authority sentinel, safe stage diagnostics and an optional private operation proof. Bound authority requires exact options and enrolled TLS policy; refresh inspects the broker when needed. TLS is authenticated before CONNECT. Owned transport cleanup precedes NATS Close and invalidates a successful snapshot on failure.",
+            "where": "Authority/stage declarations lines 31-67; observeKernelWithProof lines 159-325, authority 180-213, cleanup 218-226 and secure dialer 227-249.",
+            "why": "Avoid redundant inspection within one authorized observation without substituting cached claims for TLS or readiness. Preserve authority and concrete cleanup errors while exposing only fixed diagnostics.",
+            "tradeoffsOrLimits": "The nil-trust standalone prototype branch remains plaintext; installed admission is a separate prerequisite. The proof implementation and installed loader are outside these eight files. Snapshot freshness is decoded rather than retimestamped. Final-stage historical review matches this file hash but its raw execution was not re-audited here."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/profile.go",
+      "sourceSHA256": "d158be8c5bbe3d122dd59652485ed4ddbd288b870173d037c3f0e197f37ee45c",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-go-existing/proposal.json",
+          "recordSHA256": "c68efc2df3ec4468b046f956ca494e1717a8f0bee202f71a0f7fc93f53eb6573",
+          "sourceSHA256": "d158be8c5bbe3d122dd59652485ed4ddbd288b870173d037c3f0e197f37ee45c",
+          "semanticDetails": {
+            "how": "Use separately trusted profile policy, native private-directory/ancestor admission and no-follow held member reads. Validate exact bounded declarations, TLS trust references and immutable selection data; detect file metadata changes. Return copied private declarations or a restricted public summary. Enrollment exclusively publishes a complete file without replacing an existing profile.",
+            "where": [
+              "openProfileDirectory:121",
+              "validateProfile:166",
+              "loadProfile:300",
+              "EnrollProfile:353"
+            ],
+            "why": "Workspace-owned or substituted files cannot become host enrollment authority, and concurrent enrollment cannot overwrite user configuration.",
+            "tradeoffsOrLimits": "Generic remote TLS declarations do not connect or provision anything. Installed local TLS requirements are enforced by the host loader; generic historical profile APIs are not standalone authorization or native installation proof."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/startup_session.go",
+      "sourceSHA256": "bfa14fb2e0149d99ce82d93df6574105bc88e8287686e95b443d3f24627baae2",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-go-existing/proposal.json",
+          "recordSHA256": "c68efc2df3ec4468b046f956ca494e1717a8f0bee202f71a0f7fc93f53eb6573",
+          "sourceSHA256": "bfa14fb2e0149d99ce82d93df6574105bc88e8287686e95b443d3f24627baae2",
+          "semanticDetails": {
+            "how": "The compatibility method delegates to a context-aware method. One five-second maximum covers both lock waits and mapping; TryLock retries do not leave a helper waiter. Copy member/probe values without refreshing observation time. Known owned exit or cleanup failure overrides cached readiness.",
+            "where": "Lock helper lines 24-44; compatibility entry lines 49-51; context method lines 58-125.",
+            "why": "Bound status observation and reject late success while preserving current invocation/owner correlation and honest stale or unavailable information.",
+            "tradeoffsOrLimits": "Ordinary filesystem work in the external mapper is not preemptible. Child status mutexes assume short in-process critical sections. This method maps retained observations; it neither authenticates a caller nor refreshes NATS state. The deadline review matches this file hash, not every current dependency."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/startup_status.go",
+      "sourceSHA256": "31e02ec220343b79c0a5d1927d047d09e8468d53d8ed1fbe826b802105a1d678",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-launcher/proposal.json",
+          "recordSHA256": "1a06573c8c2ff4e101552dcea779b71dcef1bcbdd9e9a7babcbd51d220448ffc",
+          "sourceSHA256": "31e02ec220343b79c0a5d1927d047d09e8468d53d8ed1fbe826b802105a1d678",
+          "semanticDetails": {
+            "how": "The local owner loader checks the actual private enrollment/profile. The shared base mapper produces scoped L04 observations; pending output comes only from the retained admitted operation.",
+            "where": [
+              {
+                "name": "ownerStatusError",
+                "receiver": null,
+                "line": 162
+              },
+              {
+                "name": "statusText",
+                "receiver": null,
+                "line": 163
+              },
+              {
+                "name": "optionalStatusID",
+                "receiver": null,
+                "line": 174
+              },
+              {
+                "name": "copyOwnerScope",
+                "receiver": null,
+                "line": 175
+              },
+              {
+                "name": "LoadOwnerStatus",
+                "receiver": null,
+                "line": 191
+              },
+              {
+                "name": "statusTimestamp",
+                "receiver": null,
+                "line": 244
+              },
+              {
+                "name": "statusString",
+                "receiver": null,
+                "line": 247
+              },
+              {
+                "name": "statusRevision",
+                "receiver": null,
+                "line": 248
+              },
+              {
+                "name": "unknownStatusService",
+                "receiver": null,
+                "line": 249
+              },
+              {
+                "name": "mapStartingContext",
+                "receiver": "*OwnerStatus",
+                "line": 255
+              },
+              {
+                "name": "mapObservation",
+                "receiver": "*OwnerStatus",
+                "line": 293
+              },
+              {
+                "name": "mapObservationContext",
+                "receiver": "*OwnerStatus",
+                "line": 297
+              },
+              {
+                "name": "newObservationLocked",
+                "receiver": "*OwnerStatus",
+                "line": 320
+              },
+              {
+                "name": "mapObservationLocked",
+                "receiver": "*OwnerStatus",
+                "line": 359
+              },
+              {
+                "name": "mustStatusJSON",
+                "receiver": null,
+                "line": 434
+              }
+            ],
+            "why": "Running versions, persistence readiness and service counts require their actual owners and proofs. Pending output leaves kernel/persistence/work/hub facts unknown or unavailable.",
+            "tradeoffs": "A current NATS starting observation differs from a historical OS receipt; same-UID code is trusted, and synchronous filesystem timing is not preemptible."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/runtime/startup_cleanup_cause.go",
+      "sourceSHA256": "ab782c24cb286edd246f390f393fcb910b9a6735284609ea2a79fa9a548d6708",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/startup-cleanup-cause/independent-review.json",
+          "recordSHA256": "b1ea00cbc064b0f3df4e121768ee391952aba1be9fd1c2b71b35fc30ebce9cdf",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Independent read-only startup cleanup cause repair review; not phase acceptance"
+        }
+      ]
+    },
+    {
+      "path": "platform/runtime/acl_darwin.go",
+      "sourceSHA256": "bfcd89538837b9ffd94c46882f231a1930091d3b21d3e5bb5cb475659acfe609",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-runtime/proposal.json",
+          "recordSHA256": "68c1b8af91d569fe021e1bc329b8a383c40c36e1733bcd0ffda548f1a38a514b",
+          "sourceSHA256": "bfcd89538837b9ffd94c46882f231a1930091d3b21d3e5bb5cb475659acfe609",
+          "semanticDetails": {
+            "how": "Read and validate actual extended ACL entries and local root-owned APFS mount metadata from admitted descriptors. Reject mutation ALLOW entries and unknown retrieval results.",
+            "where": "platform/runtime/acl_darwin.go",
+            "why": "Protect path immutability on macOS where Linux seals are unavailable.",
+            "tradeoffs": "Requires actual Darwin CGO/Apple SDK; fixed conservative mount/ACL policy can reject other valid platforms."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/runtime/installed_host.go",
+      "sourceSHA256": "94cb640c7422bd3725af089511958699bb7d7418455273bccc7ba3dde06df780",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-runtime/proposal.json",
+          "recordSHA256": "68c1b8af91d569fe021e1bc329b8a383c40c36e1733bcd0ffda548f1a38a514b",
+          "sourceSHA256": "94cb640c7422bd3725af089511958699bb7d7418455273bccc7ba3dde06df780",
+          "semanticDetails": {
+            "how": "Consume a held verified image once, construct literal host/policy/workspace/attempt arguments and fixed environment, detach only the newly started exact child, retain sole Wait and owned Stop. Receipt descriptor added only by the private start path.",
+            "where": "platform/runtime/installed_host.go",
+            "why": "Let frontend exit without killing an admitted host; preserve exact process ownership and observe readiness separately.",
+            "tradeoffs": "Detached spawn is not readiness or startup acceptance. Stop targets exact child TERM only and returns bounded wait; no PID/process-group adoption."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/runtime/installed_host_darwin.go",
+      "sourceSHA256": "dfb82e401929befde882136522c9fe4380c06d8ed8c7bc12980e2086a080aa07",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-runtime/proposal.json",
+          "recordSHA256": "68c1b8af91d569fe021e1bc329b8a383c40c36e1733bcd0ffda548f1a38a514b",
+          "sourceSHA256": "dfb82e401929befde882136522c9fe4380c06d8ed8c7bc12980e2086a080aa07",
+          "semanticDetails": {
+            "how": "Refuse mutable user-file staging; admit only existing protected release path through openDarwinProtected, retaining descriptors for immediate spawn revalidation.",
+            "where": "platform/runtime/installed_host_darwin.go",
+            "why": "Use macOS protected installation as executable immutability boundary.",
+            "tradeoffs": "Root/admin/updater and Apple OS remain trusted; production signed installer/update/native full-stack proof is separate."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/runtime/installed_host_darwin_nocgo.go",
+      "sourceSHA256": "a611abb5d22dc5ccfe398bc58cc0336bfac4de917dda257d58ebd6dce0c779db",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-runtime/proposal.json",
+          "recordSHA256": "68c1b8af91d569fe021e1bc329b8a383c40c36e1733bcd0ffda548f1a38a514b",
+          "sourceSHA256": "a611abb5d22dc5ccfe398bc58cc0336bfac4de917dda257d58ebd6dce0c779db",
+          "semanticDetails": {
+            "how": "Both image preparation APIs return ErrPlatformUnqualified when Darwin lacks CGO.",
+            "where": "platform/runtime/installed_host_darwin_nocgo.go",
+            "why": "Never substitute unverified ACL/mount checks for native APIs.",
+            "tradeoffs": "Refusal is deliberate unsupported behavior, not native execution or platform acceptance."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/runtime/installed_host_linux.go",
+      "sourceSHA256": "72e1c8cefd8f3c06ff8c8fba4be53e444aa14de9e24ea773ef1fa67bff815627",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-runtime/proposal.json",
+          "recordSHA256": "68c1b8af91d569fe021e1bc329b8a383c40c36e1733bcd0ffda548f1a38a514b",
+          "sourceSHA256": "72e1c8cefd8f3c06ff8c8fba4be53e444aa14de9e24ea773ef1fa67bff815627",
+          "semanticDetails": {
+            "how": "Check held private current-UID regular executable, copy to executable memfd and delegate sealAndVerify against separately expected digest; refuse pathname alternative.",
+            "where": "platform/runtime/installed_host_linux.go",
+            "why": "Bind actual executed immutable snapshot rather than a mutable verified source path.",
+            "tradeoffs": "Needs qualified executable memfd/kernel seals and static ELF. Same-UID host plugins and privileged debugger are not sandboxed."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/runtime/installed_host_unsupported.go",
+      "sourceSHA256": "f13d55cdcc403ba172d637318a30b0bf92547cad261d79cebbf82622677b65b9",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-runtime/proposal.json",
+          "recordSHA256": "68c1b8af91d569fe021e1bc329b8a383c40c36e1733bcd0ffda548f1a38a514b",
+          "sourceSHA256": "f13d55cdcc403ba172d637318a30b0bf92547cad261d79cebbf82622677b65b9",
+          "semanticDetails": {
+            "how": "Non-Linux/non-Darwin API stubs refuse preparation, start, wait and stop with ErrPlatformUnqualified.",
+            "where": "platform/runtime/installed_host_unsupported.go",
+            "why": "Prevent implicit unsupported Windows/native fallback.",
+            "tradeoffs": "No process execution occurs here; Close and Done stubs do not qualify a runtime."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/runtime/macho_entry.go",
+      "sourceSHA256": "1b7c6d66207108601889bccc416f2cb689cfa134a8563f7ddfc3d05ba06f42bb",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-runtime/proposal.json",
+          "recordSHA256": "68c1b8af91d569fe021e1bc329b8a383c40c36e1733bcd0ffda548f1a38a514b",
+          "sourceSHA256": "1b7c6d66207108601889bccc416f2cb689cfa134a8563f7ddfc3d05ba06f42bb",
+          "semanticDetails": {
+            "how": "Validate bounded thin native 64-bit little-endian Mach-O text segment and one supported AMD64 thread or LC_MAIN entrypoint inside executable bytes.",
+            "where": "platform/runtime/macho_entry.go",
+            "why": "Deny malformed entrypoints before protected loader can start them.",
+            "tradeoffs": "Structural parser proof is distinct from dependency, signature, descriptor immutability and actual native execution checks."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/runtime/snapshot_darwin.go",
+      "sourceSHA256": "01c92e4d4dadacdbdc4ef0671e49c74367e01e61f9bef1916a93ea9a930365e4",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-runtime/proposal.json",
+          "recordSHA256": "68c1b8af91d569fe021e1bc329b8a383c40c36e1733bcd0ffda548f1a38a514b",
+          "sourceSHA256": "01c92e4d4dadacdbdc4ef0671e49c74367e01e61f9bef1916a93ea9a930365e4",
+          "semanticDetails": {
+            "how": "Walk fixed release path with no-follow directory descriptors, enforce root ownership/modes/ACL/APFS, hash held member and validate Mach-O architecture/entrypoint/exact Apple dependency whitelist. Reopen and compare all retained inode identities immediately before path-based execution.",
+            "where": "platform/runtime/snapshot_darwin.go",
+            "why": "Provide a conservative macOS backend without pretending an unlinked file supplies Linux-style seals.",
+            "tradeoffs": "Trusted privileged updater must not replace active versions; OS libraries are trusted rather than digested user dependencies. Full native installation/boot/EOF/leases/Compose evidence remains separately required."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/runtime/bootstrap_receipt.go",
+      "sourceSHA256": "6c3ba5a49629b3a179b30560e7b552f08ab5236e898f53d72ef8ef7cee6f8c8a",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/receipt-prestart-cleanup/root-closure.json",
+          "recordSHA256": "1563909c25f3480140364e9471101d87690eb40c33b40650b0bd399dca986e9c",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Receipt pre-start pipe cleanup source repair and affected receipt component checks only."
+        },
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/receipt-prestart-cleanup/worker-review.json",
+          "recordSHA256": "becbc3887598465b28ce482cee8d4478bb5980c6f58bb4d08fab6c5287c668f9",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Cache-only proposed pre-start receipt cleanup repair; no shared promotion, process launch, installed boot, native matrix or phase acceptance"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/bootstrap_compose_binding.go",
+      "sourceSHA256": "f55d252a950a7660dbb486768270e96965d57d1710d503c27e99e895cebda7ce",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-launcher/proposal.json",
+          "recordSHA256": "1a06573c8c2ff4e101552dcea779b71dcef1bcbdd9e9a7babcbd51d220448ffc",
+          "sourceSHA256": "f55d252a950a7660dbb486768270e96965d57d1710d503c27e99e895cebda7ce",
+          "semanticDetails": {
+            "how": "This private admission extracts only the fixed broker configuration and optional certificate/key from the complete allowlisted Compose object.",
+            "where": [
+              {
+                "name": "bootstrapComposeBrokerBytes",
+                "receiver": null,
+                "line": 14
+              }
+            ],
+            "why": "Exact config hashes, cert/key bytes, target names and 0400 UID/GID bindings prevent an otherwise valid profile from injecting different private files.",
+            "tradeoffs": "Inline byte validation does not inspect Docker or authenticate a live server."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/docker_archives.go",
+      "sourceSHA256": "c645ce9f3bec78fa5f9d52e6663d27d30c705b99855f381ad33a3ce083377d66",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-launcher/proposal.json",
+          "recordSHA256": "1a06573c8c2ff4e101552dcea779b71dcef1bcbdd9e9a7babcbd51d220448ffc",
+          "sourceSHA256": "c645ce9f3bec78fa5f9d52e6663d27d30c705b99855f381ad33a3ce083377d66",
+          "semanticDetails": {
+            "how": "Three fixed owned-container file reads run together after broker identity admission; every command is canceled/joined before return.",
+            "where": [
+              {
+                "name": "verifyOwnedTLSArchives",
+                "receiver": "*Docker",
+                "line": 11
+              }
+            ],
+            "why": "The archive validator checks the private configuration, certificate and key hashes and bounds; errors return no successful subset or private bytes.",
+            "tradeoffs": "Controlled-process tests are distinct from real injected 0400 files in the selected Docker engine."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/docker_reads.go",
+      "sourceSHA256": "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-launcher/proposal.json",
+          "recordSHA256": "1a06573c8c2ff4e101552dcea779b71dcef1bcbdd9e9a7babcbd51d220448ffc",
+          "sourceSHA256": "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813",
+          "semanticDetails": {
+            "how": "Only three-or-fewer allowlisted independent version/engine/roster reads are batched under owned command contexts.",
+            "where": [
+              {
+                "name": "Error",
+                "receiver": "*dockerInspectionFailure",
+                "line": 19
+              },
+              {
+                "name": "Unwrap",
+                "receiver": "*dockerInspectionFailure",
+                "line": 20
+              },
+              {
+                "name": "inspectionStage",
+                "receiver": "*dockerInspectionFailure",
+                "line": 21
+              },
+              {
+                "name": "inspectionFailure",
+                "receiver": null,
+                "line": 22
+              },
+              {
+                "name": "dockerReadStage",
+                "receiver": null,
+                "line": 25
+              },
+              {
+                "name": "parallelDockerReadAllowed",
+                "receiver": null,
+                "line": 41
+              },
+              {
+                "name": "parallelReads",
+                "receiver": "*Docker",
+                "line": 66
+              }
+            ],
+            "why": "The first real failure cancels siblings and the caller joins all reads. Private stage labels explain which fixed read failed without exposing arguments or output.",
+            "tradeoffs": "Mutations and private archives are excluded; faster inspection does not replace identity validation."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/docker_stdio.go",
+      "sourceSHA256": "151b05060ce4ed601f9985f745834f73c97808645da5008cca48cc501d638197",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-launcher/proposal.json",
+          "recordSHA256": "1a06573c8c2ff4e101552dcea779b71dcef1bcbdd9e9a7babcbd51d220448ffc",
+          "sourceSHA256": "151b05060ce4ed601f9985f745834f73c97808645da5008cca48cc501d638197",
+          "semanticDetails": {
+            "how": "The selected Windows 29.8.0 client runs its bounded dial-stdio helper for one fixed GET /info request; strict HTTP/body framing yields only expected engine identity.",
+            "where": [
+              {
+                "name": "readEngineInfoStdio",
+                "receiver": "*Docker",
+                "line": 28
+              },
+              {
+                "name": "decodeDockerInfoStdio",
+                "receiver": null,
+                "line": 91
+              },
+              {
+                "name": "dockerInfoJSONUnique",
+                "receiver": null,
+                "line": 157
+              }
+            ],
+            "why": "This repairs the qualified Windows interop read without daemon discovery, arbitrary requests or a new listener.",
+            "tradeoffs": "The literal /info is an outbound private Docker protocol read, not an Agentmux HTTP route. Linux/macOS and other client versions require their own qualification."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/docker_tls.go",
+      "sourceSHA256": "a9881487cb8a5e43a3781a359e0c38b31537ce20cc1797d421fb9a871a014a8f",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-launcher/proposal.json",
+          "recordSHA256": "1a06573c8c2ff4e101552dcea779b71dcef1bcbdd9e9a7babcbd51d220448ffc",
+          "sourceSHA256": "a9881487cb8a5e43a3781a359e0c38b31537ce20cc1797d421fb9a871a014a8f",
+          "semanticDetails": {
+            "how": "Owned broker inspection first retains exact engine/container/image/port/volume/config checks and then verifies the fixed certificate/key archives.",
+            "where": [
+              {
+                "name": "InspectOwnedTLSBroker",
+                "receiver": "*Docker",
+                "line": 8
+              }
+            ],
+            "why": "TLS digests come from admitted enrollment rather than observed container data. Actual socket authentication remains a separate mandatory step.",
+            "tradeoffs": "Docker inspection is not cryptographic peer authentication; archive fixtures do not qualify native/container injection."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/host_policy.go",
+      "sourceSHA256": "25ebb1c850399530433e7c8a2c79d2f63f222b85557881509568130c3c16d2a3",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/initial-owner-probe/worker-review.json",
+          "recordSHA256": "8e867a6e816911804ee9c8e036eed5d3cefa55f1f412d55f0d9d6aa4ad6b87f4",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Initial exact-frame authenticated NATS probe component candidate"
+        },
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/host-history-policy/component-review.json",
+          "recordSHA256": "37606da605d675132da31a7386b56ecc22d8604305c6691d59d2cc372f1ec390",
+          "currentPinPresent": false,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Cache-only installed policy terminal history facade"
+        },
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-launcher/proposal.json",
+          "recordSHA256": "1a06573c8c2ff4e101552dcea779b71dcef1bcbdd9e9a7babcbd51d220448ffc",
+          "currentPinPresent": false,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Read-only source-surface proposal for 20 specified stable launcher/CLI files; root alone writes index"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/local_broker_authority.go",
+      "sourceSHA256": "c0fae1257495deeddc8009dd005950022aaeb287948bd7a105aff948713bd59b",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/kernel-operation-proof-independent/independent-review.json",
+          "recordSHA256": "706bf5c5ce4d99f3b74290d96fe75cc9c4faafa43e4917a6cbb775ed8629d1f9",
+          "currentPinPresent": false,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": null
+        },
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/closed-request-diagnostics/independent-review.json",
+          "recordSHA256": "197ec826b3459d83d7fa3810958602c36eeeb63b9125bf68f4515548b2086bee",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Independent trusted static launcher diagnostic source and evidence review; no engine qualification"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/local_server_trust.go",
+      "sourceSHA256": "a807181aac2f4829c7d6ba506f1a1cadafac0b6724745bf2dcd1e7989f9bd9bc",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-launcher/proposal.json",
+          "recordSHA256": "1a06573c8c2ff4e101552dcea779b71dcef1bcbdd9e9a7babcbd51d220448ffc",
+          "sourceSHA256": "a807181aac2f4829c7d6ba506f1a1cadafac0b6724745bf2dcd1e7989f9bd9bc",
+          "semanticDetails": {
+            "how": "A held private profile root reads the fixed full-scope trust record and enrolled certificate/key and checks all hashes/pins/material bindings.",
+            "where": [
+              {
+                "name": "cloneHostAdmissionPolicy",
+                "receiver": null,
+                "line": 22
+              },
+              {
+                "name": "loadLocalServerTrust",
+                "receiver": null,
+                "line": 36
+              },
+              {
+                "name": "checkPrivateProfileRoot",
+                "receiver": null,
+                "line": 81
+              }
+            ],
+            "why": "The returned fixed trust is not a caller-selected tls.Config. Policy copies retain external trust and prevent mutable slice/setting sharing.",
+            "tradeoffs": "Reads neither renew certificates nor contact a server; privatefs supplements existing POSIX/ancestry rules and native Darwin controls remain separate."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/owner_bridge.go",
+      "sourceSHA256": "9cfd0a38d4b40c060759200dbef226cc5bf9dd60d7759f67e756f2d9949e19f2",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/owner-nonce-completion-window/repaired-component-review.json",
+          "recordSHA256": "2c92466170f92bd200254ea7951c03c4f79945a43597d2abbcd61cb35c03eecd",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Cache-only nonce boundary repair qualified under native Linux real TLS NATS handler + private operation transitions. No shared promotion, original intermittent Run cause proof, real Docker/installed boot/native phase acceptance."
+        },
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/owner-nonce-completion-window/draft-source-review.json",
+          "recordSHA256": "e1a7a9bff6b54c3ac1b668c236dbb78074b349f7220c601fc38ecfd559b63b98",
+          "currentPinPresent": false,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Read-only uncompiled cache draft source review; no edits/builds/tests/Docker/global metadata."
+        },
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/default-request-authority-repair/independent-review.json",
+          "recordSHA256": "fe98a05f276b652d6dfe9b237c762bb08a56105058180acf89ec70eb15ac8c59",
+          "currentPinPresent": false,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Read-only fixed NATS handler and default owner-request authority source/component evidence review; no compiler/test/Docker/shared writes."
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/owner_bridge_validation.go",
+      "sourceSHA256": "03c24f0ab8c9f59866fee2fd286dd3b61e6fe40d70a7c79b515a1d8626fa84b3",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-launcher/proposal.json",
+          "recordSHA256": "1a06573c8c2ff4e101552dcea779b71dcef1bcbdd9e9a7babcbd51d220448ffc",
+          "sourceSHA256": "03c24f0ab8c9f59866fee2fd286dd3b61e6fe40d70a7c79b515a1d8626fa84b3",
+          "semanticDetails": {
+            "how": "Fixed embedded authoritative schemas use closed bounded JSON and a deny-all external loader with bounded ECMAScript matching.",
+            "where": [
+              {
+                "name": "String",
+                "receiver": "*ownerBridgeRegexp",
+                "line": 33
+              },
+              {
+                "name": "MatchString",
+                "receiver": "*ownerBridgeRegexp",
+                "line": 34
+              },
+              {
+                "name": "compileOwnerBridgeRegexp",
+                "receiver": null,
+                "line": 38
+              },
+              {
+                "name": "Load",
+                "receiver": "ownerBridgeDenyLoader",
+                "line": 47
+              },
+              {
+                "name": "compileOwnerBridgeSchemas",
+                "receiver": null,
+                "line": 55
+              },
+              {
+                "name": "validateOwnerBridgeJSON",
+                "receiver": null,
+                "line": 81
+              }
+            ],
+            "why": "Request/reply/status shape checks reject unknown/case/duplicate/malformed values without fetching schemas or accepting caller validators.",
+            "tradeoffs": "The schemas prove shape only; producer authentication, ACLs, actual scope and freshness remain in the owning transport/mapper."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/session_cleanup.go",
+      "sourceSHA256": "66e9107d765355fa6e3771bc97ed1e372e9d6c57c736fea8ab0be1fd7eefd096",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration/repaired-component-review.json",
+          "recordSHA256": "685c15b781df8119f933ff34d2d26d700f68743730e8754bc520036f2f784f12",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Cache-only owner history writer-gate/public warning boundary repair; no promotion, Docker, installed lifecycle, native qualification or phase acceptance."
+        },
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration/historical-component-review.json",
+          "recordSHA256": "5542307bcad110eeaf490ce815382c687a96925a2461fdd9479d31b0b6a1106f",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Cache-only owner-history integration candidate, not shared promotion or real Run/CLI/Docker/native acceptance."
+        },
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/combined-cleanup-independent/independent-review.json",
+          "recordSHA256": "d9be571f09cc24132746c48a997846534f5e2b9b491136e3ad57b73cdba6ab3c",
+          "currentPinPresent": false,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Independent combined concrete transport/session cleanup and actual Run service-lease transfer review."
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/startup_write_proof.go",
+      "sourceSHA256": "225071eae8dc76ddeea0a57255a1df2e55d191c5a22b4f776b03da147491bb7e",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-launcher/proposal.json",
+          "recordSHA256": "1a06573c8c2ff4e101552dcea779b71dcef1bcbdd9e9a7babcbd51d220448ffc",
+          "sourceSHA256": "225071eae8dc76ddeea0a57255a1df2e55d191c5a22b4f776b03da147491bb7e",
+          "semanticDetails": {
+            "how": "Only a private actual completed cold-start probe matching scope, endpoint, broker/domain/stream/record sequence and age can mark write readiness.",
+            "where": [
+              {
+                "name": "qualifyWriteProof",
+                "receiver": null,
+                "line": 14
+              }
+            ],
+            "why": "Warm reads and stored records leave write readiness unknown; this helper never proves free capacity, replication or business readiness.",
+            "tradeoffs": "Unit binding tests alone are not a real current persistence write."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/transport_cleanup.go",
+      "sourceSHA256": "5f8dd922dd9cf934594612866ec25146e95c70faf17ce1832f48859a498562cc",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-launcher/proposal.json",
+          "recordSHA256": "1a06573c8c2ff4e101552dcea779b71dcef1bcbdd9e9a7babcbd51d220448ffc",
+          "sourceSHA256": "5f8dd922dd9cf934594612866ec25146e95c70faf17ce1832f48859a498562cc",
+          "semanticDetails": {
+            "how": "A fixed safe error retains the exact localtls.Dialer when owned socket cleanup fails, and exposes its original cause through Unwrap.",
+            "where": [
+              {
+                "name": "Error",
+                "receiver": "TransportCleanupError",
+                "line": 24
+              },
+              {
+                "name": "Format",
+                "receiver": "TransportCleanupError",
+                "line": 30
+              },
+              {
+                "name": "MarshalJSON",
+                "receiver": "TransportCleanupError",
+                "line": 31
+              },
+              {
+                "name": "Unwrap",
+                "receiver": "TransportCleanupError",
+                "line": 32
+              },
+              {
+                "name": "Close",
+                "receiver": "*TransportCleanupError",
+                "line": 35
+              },
+              {
+                "name": "closeOwnedTransport",
+                "receiver": null,
+                "line": 45
+              }
+            ],
+            "why": "Bridge/status callers close raw owned TLS before NATS closure, preserve failed cleanup facts and allow exact retry/peer EOF.",
+            "tradeoffs": "No generic callback/closer, fresh lifetime, socket adoption or private cause formatting is exposed."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/bootstrap_operation.go",
+      "sourceSHA256": "3d4a7531863e2f1ee03820a13767c9eace5bbd3812fcef7eccf48124277c7562",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/owner-nonce-completion-window/repaired-component-review.json",
+          "recordSHA256": "2c92466170f92bd200254ea7951c03c4f79945a43597d2abbcd61cb35c03eecd",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Cache-only nonce boundary repair qualified under native Linux real TLS NATS handler + private operation transitions. No shared promotion, original intermittent Run cause proof, real Docker/installed boot/native phase acceptance."
+        },
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/owner-nonce-completion-window/draft-source-review.json",
+          "recordSHA256": "e1a7a9bff6b54c3ac1b668c236dbb78074b349f7220c601fc38ecfd559b63b98",
+          "currentPinPresent": false,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Read-only uncompiled cache draft source review; no edits/builds/tests/Docker/global metadata."
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/host_receipt_binding.go",
+      "sourceSHA256": "16f5eca18bcdccc911494f51efbbfff359518fbee4a7ecb8ca7d6ca1aabb5b51",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-launcher/proposal.json",
+          "recordSHA256": "1a06573c8c2ff4e101552dcea779b71dcef1bcbdd9e9a7babcbd51d220448ffc",
+          "sourceSHA256": "16f5eca18bcdccc911494f51efbbfff359518fbee4a7ecb8ca7d6ca1aabb5b51",
+          "semanticDetails": {
+            "how": "The installed policy re-loads current declarations and hashes exact typed OwnerEnrollment v1 with full scope, cold invocation and declared runtime image digest.",
+            "where": [
+              {
+                "name": "BootstrapReceiptBinding",
+                "receiver": "*EnrolledHostPolicy",
+                "line": 16
+              }
+            ],
+            "why": "The parent held image digest is separately checked by runtime before passing its private writer descriptor to the newly spawned child.",
+            "tradeoffs": "This native Go correlation encoding is not a signature, cross-language canonical encoding or live startup proof."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/host_receipt_server.go",
+      "sourceSHA256": "c4e2d3d1ff9ce746229e0300480c2fe0819728c2246e57bf52630c64143cd81a",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration/repaired-component-review.json",
+          "recordSHA256": "685c15b781df8119f933ff34d2d26d700f68743730e8754bc520036f2f784f12",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Cache-only owner history writer-gate/public warning boundary repair; no promotion, Docker, installed lifecycle, native qualification or phase acceptance."
+        },
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration/historical-component-review.json",
+          "recordSHA256": "5542307bcad110eeaf490ce815382c687a96925a2461fdd9479d31b0b6a1106f",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Cache-only owner-history integration candidate, not shared promotion or real Run/CLI/Docker/native acceptance."
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/owner_bridge_receipt.go",
+      "sourceSHA256": "10e4f251736aace0c91793ab18df8f883edd4e2b958a84c0923f48aa6d1704aa",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration/repaired-component-review.json",
+          "recordSHA256": "685c15b781df8119f933ff34d2d26d700f68743730e8754bc520036f2f784f12",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Cache-only owner history writer-gate/public warning boundary repair; no promotion, Docker, installed lifecycle, native qualification or phase acceptance."
+        },
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration/historical-component-review.json",
+          "recordSHA256": "5542307bcad110eeaf490ce815382c687a96925a2461fdd9479d31b0b6a1106f",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Cache-only owner-history integration candidate, not shared promotion or real Run/CLI/Docker/native acceptance."
+        }
+      ]
+    },
+    {
+      "path": "platform/cmd/agentmux-runtime/main.go",
+      "sourceSHA256": "9ba174b070fe08d76944d2a2f6cbd5da448f0a02f6e1c70c6aabc0a15ad17620",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/cli-history-wiring/independent-review.json",
+          "recordSHA256": "16806e68e41dea28b983ee3ce9597a9d661f3a9b8b8ed63519615d1dc3ab5cb8",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Read-only cache-only CLI history source/pure evidence review. No builds/tests/engine/shared promotion or metadata writes."
+        },
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/cli-history-threecase/root-review.json",
+          "recordSHA256": "9cc664290f88ccb877ba6f0e97ac063840ece067db9bab08ee66b476b9b2a496",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": null
+        }
+      ]
+    },
+    {
+      "path": "platform/deployment/local_tls_material.go",
+      "sourceSHA256": "a07b3f4b8913f977a89aa2787227b85ee4b62b4add4cfd968b53ebe51a8cdcfa",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "a07b3f4b8913f977a89aa2787227b85ee4b62b4add4cfd968b53ebe51a8cdcfa",
+          "semanticDetails": {
+            "howWhereWhy": "Enrolls one P256 profile CA/90-day DNS server leaf, discards the CA signing key, admits exact live chain/key/name/shape, copies explicit getters, and redacts default/nonstring formatting and JSON. Explicit enrollment only; no warm renewal or network-derived trust."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/deployment/local_tls_probe_transport.go",
+      "sourceSHA256": "243448843b4003f56e44d46c9cb59a4de85c83be073c7c888b48b0fcefb6e60d",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "243448843b4003f56e44d46c9cb59a4de85c83be073c7c888b48b0fcefb6e60d",
+          "semanticDetails": {
+            "howWhereWhy": "For admitted local trust, returns actual concrete pinned TLS1.3-first dialer before NATS INFO/CONNECT and rejects endpoint mismatch/discovery. Nil trust is explicit historical raw transport only; installed callers must reject it before credentials."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/deployment/owner_bridge_config.go",
+      "sourceSHA256": "a1bd6e104b5c935e972f716306de163a095427340bbbf35557e15dace5fce20a",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "a1bd6e104b5c935e972f716306de163a095427340bbbf35557e15dace5fce20a",
+          "semanticDetails": {
+            "howWhereWhy": "Adds separate HOST account to existing factory output, with distinct host/client passwords and fixed scope-derived owner request/reply permissions only. Scope correlation grants no kernel, business, account or storage permission."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/deployment/probe_cleanup.go",
+      "sourceSHA256": "3a5f8e9c510d63268799216fcc46a0d07d2f94a11ad60a599606c35abddf0993",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "3a5f8e9c510d63268799216fcc46a0d07d2f94a11ad60a599606c35abddf0993",
+          "semanticDetails": {
+            "howWhereWhy": "Existing concrete localtls cleanup retains its exact dialer and logical cause; narrow new raw branch retains the actual raw owner through the same failure result. Probe/Observe callers clear facts on failed cleanup; primary cause stays in fixed-safe typed errors."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/deployment/secure_compose.go",
+      "sourceSHA256": "614077efd26b3828f54b25639d9531b7b7be6744fe48e69558429b77a27821ab",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "614077efd26b3828f54b25639d9531b7b7be6744fe48e69558429b77a27821ab",
+          "semanticDetails": {
+            "howWhereWhy": "Adds exact enrolled server certificate/key as fixed root0400 inline configs alongside existing private broker config. No CA signing key; profile/material/TLS config are validated. Output remains private and requires exact caller Docker/config binding."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/deployment/secure_local_config.go",
+      "sourceSHA256": "1f28903775933ad41644691c1e96590a92fcccab71eb636fc8f5b4572c9294f5",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "1f28903775933ad41644691c1e96590a92fcccab71eb636fc8f5b4572c9294f5",
+          "semanticDetails": {
+            "howWhereWhy": "Builds only from existing trusted factories then adds one exact TLS1.3 handshake-first block. Duplicate JSON keys, case-aliased TLS, trailing data and excess depth/size are rejected; output still contains private passwords and widens no account grants."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/deployment/team_connection.go",
+      "sourceSHA256": "5f931e6e8f933b834f7da827033242859400c5e5e77f68b4cebf630b8c185b6b",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "5f931e6e8f933b834f7da827033242859400c5e5e77f68b4cebf630b8c185b6b",
+          "semanticDetails": {
+            "howWhereWhy": "Explicit remote/team TLS1.2-compatible roots/DNS and actual broker authentication/server identity, scoped one-frame kernel observation and optional account INFO. No writes, broker start, storage provisioning or federation claim. New owned raw cleanup runs before SDK close/key wipe, clears all result facts on failure and retains retry ownership."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/deployment/team_credentials.go",
+      "sourceSHA256": "172226041ed2f6515be48808ef71a5baac84fa6f3e61b5a838ff1565eb456755",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "172226041ed2f6515be48808ef71a5baac84fa6f3e61b5a838ff1565eb456755",
+          "semanticDetails": {
+            "howWhereWhy": "Private host policy binds dedicated credential reference and full organization/project/kernel scope outside workspaces. Closed bounded document read transfers fresh Basic or JWT material; returned JWT signing key must be wiped after owned connection cleanup. No provider-auth discovery."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/deployment/team_credentials_unix.go",
+      "sourceSHA256": "d8a8fb0f17c7bb701bd610de69b0f3869e90665d53b7bd5d0f376b59b6f946b5",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "d8a8fb0f17c7bb701bd610de69b0f3869e90665d53b7bd5d0f376b59b6f946b5",
+          "semanticDetails": {
+            "howWhereWhy": "Repaired reader keeps every actual no-follow directory fd until return, pre-I/O caps the held directory walk128, checks UID/mode/PublicAncestor initially/finally and final private root/file PrivateObject. Link count, size, content/time/inode, canonical containment checks remain. No path reopening, fd duplication or authority-by-name."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/deployment/team_credentials_unsupported.go",
+      "sourceSHA256": "d5d0d009c94ce19a32c81cf73342d810adb2d8e7548c508e25ca7cbbb787b45e",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "d5d0d009c94ce19a32c81cf73342d810adb2d8e7548c508e25ca7cbbb787b45e",
+          "semanticDetails": {
+            "howWhereWhy": "Non-Linux/non-Darwin team secret reads refuse with fixed platform-unqualified result; no permissive fallback."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/kernel/protocol/server_trust.go",
+      "sourceSHA256": "6008e76ec7e946b461f7da7e1043ccde1b5016c79ed07ee74a7984f3d6a5969e",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "6008e76ec7e946b461f7da7e1043ccde1b5016c79ed07ee74a7984f3d6a5969e",
+          "semanticDetails": {
+            "howWhereWhy": "Closed bounded trust artifact binds exact full role scope and endpoint; immutable ClientTrust checks explicit CA/DNS/leaf pin. This validates trusted declarations, not a network peer authority claim."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/kernel/protocol/server_trust_darwin.go",
+      "sourceSHA256": "b251188f34ac4e35724c33565942f094ecbf84ac87ab88943a6b16af4c893ea0",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "b251188f34ac4e35724c33565942f094ecbf84ac87ab88943a6b16af4c893ea0",
+          "semanticDetails": {
+            "howWhereWhy": "Darwin Ctimespec accessor preserves native file-change identity; ACL/mount/cgo admission remains shared privatefs responsibility."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/kernel/protocol/server_trust_linux.go",
+      "sourceSHA256": "7e114397d01374f5665a866d8a247f8403d897b80b3a36973f7417e820960c22",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "7e114397d01374f5665a866d8a247f8403d897b80b3a36973f7417e820960c22",
+          "semanticDetails": {
+            "howWhereWhy": "Linux ctime accessor participates in same-file read identity; it is not a permission or qualification decision."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/kernel/protocol/server_trust_unix.go",
+      "sourceSHA256": "0f2e6d97be04db01a1bef10f237dfe0e654d275f96c7f11b73756924b1598400",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "0f2e6d97be04db01a1bef10f237dfe0e654d275f96c7f11b73756924b1598400",
+          "semanticDetails": {
+            "howWhereWhy": "Opens/retains every actual no-follow ancestor and private file descriptor, applies shared privatefs policy, and verifies owner/mode/nlink/size/time/change/inode before returning bounded bytes. No credentials or trust accepted from another OS owner."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/kernel/protocol/server_trust_unsupported.go",
+      "sourceSHA256": "0d558c18832ffd72d15d20832c96003e6d6145f5db0213d301e1e5ae92cc5417",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "0d558c18832ffd72d15d20832c96003e6d6145f5db0213d301e1e5ae92cc5417",
+          "semanticDetails": {
+            "howWhereWhy": "Other platforms refuse private server trust reading with a fixed unqualified error."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/localtls/client.go",
+      "sourceSHA256": "d8c5f5f87abf98490538247af0eb3e4335ce73666bc8a39416bae90ae37c46fe",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "d8c5f5f87abf98490538247af0eb3e4335ce73666bc8a39416bae90ae37c46fe",
+          "semanticDetails": {
+            "howWhereWhy": "Immutable explicit local loopback CA/DNS/exact leaf trust; fixed TLS1.3 handshake before NATS credentials. Dialer owns only sockets it opens, rejects other networks/endpoints/discovered servers, keeps failed closes for exact retry and joins owned calls/cancellation hooks. No system roots or secret keys."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/privatefs/access.go",
+      "sourceSHA256": "5373922675f09a0b229e6f4fae1c0941529cbc5f7e842abc1be48319df0a92b8",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "5373922675f09a0b229e6f4fae1c0941529cbc5f7e842abc1be48319df0a92b8",
+          "semanticDetails": {
+            "howWhereWhy": "Descriptor-only policy supplements, rather than replaces, caller UID/mode/path/nlink/content checks. RawConn.Control holds the actual descriptor during native admission; no path/principal discovery or authority grant."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/privatefs/access_darwin.go",
+      "sourceSHA256": "09eb387cf9bb75bbf8afbbed0e3c72c6af44526ba68cabdd6b9c7a643372de82",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "09eb387cf9bb75bbf8afbbed0e3c72c6af44526ba68cabdd6b9c7a643372de82",
+          "semanticDetails": {
+            "howWhereWhy": "Actual native FD requires local ownership-enforced mount and valid extended ACL. PrivateObject refuses every ALLOW; PublicAncestor refuses mutation ALLOW; DENY entries remain allowed. Cgo/Apple behavior still needs actual native execution."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/privatefs/access_darwin_nocgo.go",
+      "sourceSHA256": "8adba4f7cf8a9955479162ea0632b557857d848dd1d288288773e528a14d4453",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "8adba4f7cf8a9955479162ea0632b557857d848dd1d288288773e528a14d4453",
+          "semanticDetails": {
+            "howWhereWhy": "Darwin without cgo refuses descriptor qualification; compilation is not usable private-store qualification."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/privatefs/access_linux.go",
+      "sourceSHA256": "ee3ee960f6c9a237381a9e2864c782281d5997918f88eab6bed3c37d4b95f1e8",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "ee3ee960f6c9a237381a9e2864c782281d5997918f88eab6bed3c37d4b95f1e8",
+          "semanticDetails": {
+            "howWhereWhy": "Linux relies on caller0600/0700 POSIX ACL masking plus actual valid descriptor checks; it does not weaken existing owner/mode policies."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/privatefs/access_unsupported.go",
+      "sourceSHA256": "47bf8dfcb47e9d83bf0da4f2d667a7bf548c86d2e7fdd06c9c2d41f6e02615cb",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "47bf8dfcb47e9d83bf0da4f2d667a7bf548c86d2e7fdd06c9c2d41f6e02615cb",
+          "semanticDetails": {
+            "howWhereWhy": "Other platforms refuse descriptor qualification with a fixed error."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/deployment/raw_transport_cleanup.go",
+      "sourceSHA256": "a2cb64865e09e7e98f378887833814b3fbd332ff2e70507dbdf11a93b2a0f13a",
+      "semanticReferences": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/proposal.json",
+          "recordSHA256": "b4dfd3d0ed3bf26eb8b1247a601e0d3cc088feffa849dbd77d17ffb730702f51",
+          "sourceSHA256": "a2cb64865e09e7e98f378887833814b3fbd332ff2e70507dbdf11a93b2a0f13a",
+          "semanticDetails": {
+            "howWhereWhy": "Fixed typed raw cleanup error retains only actual dialer pointer/cause, redacts pointer/value Format/JSON, and supports bounded Close(ctx) retry without socket adoption or lifetime extension."
+          },
+          "role": "Actual current-source semantic notes, not runtime acceptance or snapshot-only evidence"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/docker_refusal.go",
+      "sourceSHA256": "61d3713fa2eeecfde29e5588f4f6d95d4e91bc7962ed112ad2fb0ad1af13cc98",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/closed-request-diagnostics/independent-review.json",
+          "recordSHA256": "197ec826b3459d83d7fa3810958602c36eeeb63b9125bf68f4515548b2086bee",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Independent trusted static launcher diagnostic source and evidence review; no engine qualification"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/request_diagnostic.go",
+      "sourceSHA256": "c824be83853e38abf30543e585027f6660ec3756bc282d2e2395e463ca3b3d84",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/closed-request-diagnostics/independent-review.json",
+          "recordSHA256": "197ec826b3459d83d7fa3810958602c36eeeb63b9125bf68f4515548b2086bee",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Independent trusted static launcher diagnostic source and evidence review; no engine qualification"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/owner_bridge_probe.go",
+      "sourceSHA256": "1879bfda9cf0e1ba4d7efc25ea0c2ed8a539c2475a119342d1339fa868dea894",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/default-request-authority-repair/independent-review.json",
+          "recordSHA256": "fe98a05f276b652d6dfe9b237c762bb08a56105058180acf89ec70eb15ac8c59",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Read-only fixed NATS handler and default owner-request authority source/component evidence review; no compiler/test/Docker/shared writes."
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/bootstrap_history.go",
+      "sourceSHA256": "2f7ad3e45fe10a3030355bfd1a76fc58dd65258018265026d230fef1821df96c",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration/repaired-component-review.json",
+          "recordSHA256": "685c15b781df8119f933ff34d2d26d700f68743730e8754bc520036f2f784f12",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Cache-only owner history writer-gate/public warning boundary repair; no promotion, Docker, installed lifecycle, native qualification or phase acceptance."
+        },
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration/historical-component-review.json",
+          "recordSHA256": "5542307bcad110eeaf490ce815382c687a96925a2461fdd9479d31b0b6a1106f",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Cache-only owner-history integration candidate, not shared promotion or real Run/CLI/Docker/native acceptance."
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/bootstrap_history_fs.go",
+      "sourceSHA256": "6d16bfa9b1cf590295dc93ba67f0fda4a36890dcddfc7ff1d67790a351e74fd6",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/history-foundation-promotion/independent-promotion-review.json",
+          "recordSHA256": "28ebf82d4e6f2e29739f6a87290731ce462ebd915747a19234618e86fa5e02e8",
+          "currentPinPresent": false,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Read-only independent promoted-history registration/current component evidence review; no builds/tests/engine/shared metadata writes."
+        },
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/history-foundation-promotion/current-checks/review.json",
+          "recordSHA256": "760673eaad14f8e1211047c6f7880a2c3a438b8af149da463049ce054394a923",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Promoted current-dependency Linux component history qualification only; no Run/CLI integration, Docker, native Darwin or phase acceptance."
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/bootstrap_history_root.go",
+      "sourceSHA256": "f36a54d6e2a6cfdd063080ef13b3c6e7f21cf8e102c22db676c618f4013c1bca",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/history-foundation-promotion/independent-promotion-review.json",
+          "recordSHA256": "28ebf82d4e6f2e29739f6a87290731ce462ebd915747a19234618e86fa5e02e8",
+          "currentPinPresent": false,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Read-only independent promoted-history registration/current component evidence review; no builds/tests/engine/shared metadata writes."
+        },
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/history-foundation-promotion/current-checks/review.json",
+          "recordSHA256": "760673eaad14f8e1211047c6f7880a2c3a438b8af149da463049ce054394a923",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Promoted current-dependency Linux component history qualification only; no Run/CLI integration, Docker, native Darwin or phase acceptance."
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/bootstrap_history_stage.go",
+      "sourceSHA256": "4803820067e312ff24956d8aa83eef696d1d31d42071e3e5bee339d45490b8d0",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration/repaired-component-review.json",
+          "recordSHA256": "685c15b781df8119f933ff34d2d26d700f68743730e8754bc520036f2f784f12",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Cache-only owner history writer-gate/public warning boundary repair; no promotion, Docker, installed lifecycle, native qualification or phase acceptance."
+        },
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration/historical-component-review.json",
+          "recordSHA256": "5542307bcad110eeaf490ce815382c687a96925a2461fdd9479d31b0b6a1106f",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Cache-only owner-history integration candidate, not shared promotion or real Run/CLI/Docker/native acceptance."
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/host_history_policy.go",
+      "sourceSHA256": "e76acbe79b31d9c207d5b040cc591bb413a0323ef87d798380fb281d4bf86e59",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/host-history-policy/independent-review.json",
+          "recordSHA256": "c6677674230deac1e5c2158f518450cd4bb9053f0e3ecb4c7bc6236329813cfc",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Read-only cache-only installed policy history facade source/evidence review; no tests/build/engine/shared promotion or metadata writes."
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/owner_bridge_history.go",
+      "sourceSHA256": "dbd091ab8c600ebb13cdf24aab0d042a181ac2b629a7f697a6da83d386fb20fd",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration/independent-writer-gate-closure.json",
+          "recordSHA256": "fa98dde6561dcd906beda3ab60fdc3326133d047307e28ea671cb8cc9367197d",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Read-only closure HIST-RUN-WRITER-GATE, cache-only owner candidate. No duplicate tests/build/engine/shared promotion or metadata."
+        },
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration/repaired-component-review.json",
+          "recordSHA256": "685c15b781df8119f933ff34d2d26d700f68743730e8754bc520036f2f784f12",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Cache-only owner history writer-gate/public warning boundary repair; no promotion, Docker, installed lifecycle, native qualification or phase acceptance."
+        }
+      ]
+    },
+    {
+      "path": "platform/cmd/agentmux-runtime/main_history.go",
+      "sourceSHA256": "9a27cfcd3c4fdb4c8489ea0bae105c2332786eb31d1ffbc89a7c3aeafb027c2e",
+      "semanticReferences": [],
+      "recentSemanticReviewChain": [
+        {
+          "record": "docs/planning/2026-10-09/delivery/evidence/P02/cli-history-wiring/independent-review.json",
+          "recordSHA256": "16806e68e41dea28b983ee3ce9597a9d661f3a9b8b8ed63519615d1dc3ab5cb8",
+          "currentPinPresent": true,
+          "role": "Scoped semantic base/delta review; own direct pins distinct from incidental snapshot coverage",
+          "scope": "Read-only cache-only CLI history source/pure evidence review. No builds/tests/engine/shared promotion or metadata writes."
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Root-reviewed surface semantic proposals used only where current direct file pin and how/where/why notes match.",
+    "Newer source changes need their actual separately reviewed deltas; old field notes are not repinned."
+  ]
+}

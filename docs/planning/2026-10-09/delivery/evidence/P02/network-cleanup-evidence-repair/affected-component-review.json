@@ -1,0 +1,33 @@
+{
+  "kind": "Network cleanup evidence summary sink repair",
+  "sourceSHA256": "5347669150b3bf622cde6634389e564ef67b9eabbe5849393f6ffd711f57b00e",
+  "snapshotSourceSHA256": "5347669150b3bf622cde6634389e564ef67b9eabbe5849393f6ffd711f57b00e",
+  "directExit": 0,
+  "namedPassingEntries": 64,
+  "namedFailures": 0,
+  "namedSkips": 0,
+  "selection": "^TestBootstrapNetwork",
+  "engineAuthorization": 0,
+  "engineMutations": 0,
+  "priorRecord": "p02-network-evidence-fixed-Ssvc6Z/review.json",
+  "priorRecordSHA256": "d88a012b3ec7f12e0b59a8c6d344c74f574e0ae0c338146c07fad246b37f2e20",
+  "changes": [
+    "Summary now uses exclusive 0600 creation and closes the exact owned file.",
+    "Existing summary files and summary symlinks are refused without changing their bytes.",
+    "Actual raw response remains saved even when summary creation is refused."
+  ],
+  "limits": [
+    "No engine fixture, startup or removal ran.",
+    "Current diagnostic evidence repair does not explain or accept the historical pending failure.",
+    "Original source and four-pass evidence remain historical, with the summary sink finding preserved."
+  ],
+  "artifacts": {
+    "events.jsonl": "b1f2a094cef61d000ebf6844cdc484e590edd057de758f32606514c320af48af",
+    "exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "invocation.json": "88de792762e24cbdf326cf2c5b4009746f1fbe2a3be4def3192bb60fa662c416",
+    "overlay.json": "978a3dc00475622b8daa10dcdbee98438dffd02d3f860e95dedd11a172156034",
+    "producer.sh": "bd502a018a0ccfcf6ab9f32373f9cc109412096c16ddcb1043292b91a6dd04f5",
+    "source.go": "5347669150b3bf622cde6634389e564ef67b9eabbe5849393f6ffd711f57b00e",
+    "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "executionWitness": "These saved scripts were the actual paths passed to wsl -- bash in the corresponding tool invocations. The transcript records those invocation paths and returned cache directory names. This supplement preserves their current saved bytes; review command strings alone are not presented as execution proof.",
+  "affected": {
+    "argv": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-json",
+      "./deployment",
+      "-count=1"
+    ],
+    "directExitFile": {
+      "value": 0,
+      "path": "/home/ryan/.cache/agentmux-governance/p02-health-cleanup-affected-DN0Tmq/test-exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "firstObservedGoEvent": "2026-10-14T01:09:55.198389317-04:00",
+    "cwd": "/home/ryan/.cache/agentmux-governance/p02-health-cleanup-affected-DN0Tmq/platform",
+    "rawSHA256": "356ca6dcae88ecada6e5d7122e2743c248a86877bedf726b22ea21c75ca0da55",
+    "lastObservedGoEvent": "2026-10-14T01:10:03.460770266-04:00"
+  },
+  "notRecorded": [
+    "Exact outer producer process start/end timestamps were not captured. Go JSON event bounds are test-event observations, not producer process timestamps.",
+    "Vet process start/end timestamps were not captured. Its direct exit file and captured stdout/stderr are preserved.",
+    "Full inherited environment was not captured; only explicit script exports are claimed."
+  ],
+  "rerun": "None performed for this provenance supplement.",
+  "originalReviewPreserved": {
+    "path": "/home/ryan/.cache/agentmux-governance/p02-health-cleanup-affected-DN0Tmq/review.json",
+    "sha256": "617a074edc8ba827dae13db8cd4facd847025d4e3c5dcdc21c5d829fbe2ac501"
+  },
+  "focused": {
+    "argv": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-json",
+      "./deployment",
+      "-run",
+      "^TestProbeCleanupFailureRetainsConcreteOwner$",
+      "-count=1"
+    ],
+    "directExitFile": {
+      "value": 0,
+      "path": "/home/ryan/.cache/agentmux-governance/p02-health-cleanup-first-nqzJDp/exit-code",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "run": "p02-health-cleanup-first-nqzJDp",
+    "cwd": "/home/ryan/.cache/agentmux-governance/p02-health-cleanup-first-nqzJDp/platform",
+    "firstObservedGoEvent": "2026-10-14T01:09:10.58108441-04:00",
+    "rawSHA256": "8ee77a116630c868724311e70a8e6c0ef1a61ea8d71d68f47e31db445841f49b",
+    "lastObservedGoEvent": "2026-10-14T01:09:10.738706651-04:00"
+  },
+  "producers": [
+    {
+      "originalWindowsPath": "C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux-health-first.sh",
+      "executedWSLPath": "/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-health-first.sh",
+      "savedCachePath": "/home/ryan/.cache/agentmux-governance/p02-health-cleanup-affected-DN0Tmq/execution-producers/agentmux-health-first.sh",
+      "sha256": "f87711dec5ed6f6cbdb9771bde22a72703f782b293d54ac4fc850fd0e81d12e4",
+      "outerArgv": [
+        "wsl",
+        "-d",
+        "Ubuntu-26.04",
+        "--",
+        "bash",
+        "/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-health-first.sh"
+      ]
+    },
+    {
+      "originalWindowsPath": "C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux-health-affected.sh",
+      "executedWSLPath": "/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-health-affected.sh",
+      "savedCachePath": "/home/ryan/.cache/agentmux-governance/p02-health-cleanup-affected-DN0Tmq/execution-producers/agentmux-health-affected.sh",
+      "sha256": "2bd035a847a33d7f5a1d5ff229893d63a3eecb53ec6830de541fe3516a5681f9",
+      "outerArgv": [
+        "wsl",
+        "-d",
+        "Ubuntu-26.04",
+        "--",
+        "bash",
+        "/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-health-affected.sh"
+      ]
+    },
+    {
+      "originalWindowsPath": "C:\\Users\\RYANHE~1\\AppData\\Local\\Temp\\agentmux-health-negative.sh",
+      "executedWSLPath": "/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-health-negative.sh",
+      "savedCachePath": "/home/ryan/.cache/agentmux-governance/p02-health-cleanup-affected-DN0Tmq/execution-producers/agentmux-health-negative.sh",
+      "sha256": "83387aa5bb7f34cbf78235941006bb174d2a83a23fed9065b6fe740701a095fe",
+      "outerArgv": [
+        "wsl",
+        "-d",
+        "Ubuntu-26.04",
+        "--",
+        "bash",
+        "/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-health-negative.sh"
+      ]
+    }
+  ],
+  "vet": {
+    "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "directExitFile": {
+      "value": 0,
+      "path": "/home/ryan/.cache/agentmux-governance/p02-health-cleanup-affected-DN0Tmq/vet-exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "argv": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "vet",
+      "./deployment"
+    ]
+  },
+  "explicitEnvironment": {
+    "GOSUMDB": "off",
+    "GOPROXY": "off",
+    "affectedOnlyAGENTMUX_TEST_NATS": "/home/ryan/.cache/agentmux-governance/tools/nats-server",
+    "GORACE": "atexit_sleep_ms=0",
+    "GOWORK": "off"
+  }
+}

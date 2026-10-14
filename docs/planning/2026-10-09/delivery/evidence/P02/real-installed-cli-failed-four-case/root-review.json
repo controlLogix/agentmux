@@ -1,0 +1,28 @@
+{
+  "phase": "P02",
+  "reviewer": "Codex",
+  "reviewedAt": "2026-10-14T09:44:27.013832+00:00",
+  "runs": [
+    {
+      "run": "p02-real-installed-cli-abrupt-szNYOQ",
+      "reviewSHA256": "3848aa4d9fe0f7e47ac85c32bd5dd8676471437d524891159d98df23f946167e",
+      "namedFailures": 4,
+      "verifiedArtifacts": 86
+    },
+    {
+      "run": "p02-real-installed-cli-pending-diagnostic-xQiEyi",
+      "reviewSHA256": "02af82be7fa573733d105480f64f731eccd29d99b5299c82716a671765ee6767",
+      "namedFailures": 1,
+      "verifiedArtifacts": 10
+    }
+  ],
+  "acceptance": false,
+  "limits": [
+    "All four final scenarios failed; no phase acceptance or successful final cohort is claimed.",
+    "The focused pending diagnostic failed before frontend startup.",
+    "The abrupt scenario failed before the planned host interruption; it does not prove failed abrupt recovery.",
+    "Earlier focused passes remain historical and distinct.",
+    "Network address pool exhaustion was subsequently confirmed separately; it is not assumed to explain every failure.",
+    "Historical currentMatches fields are preserved as recorded, not asserted for today."
+  ]
+}

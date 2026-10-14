@@ -1,0 +1,25 @@
+{
+  "status": "One remaining test-only ordering finding; not ready for next actual run",
+  "sourceSHA256": "24f3e238ecdc374990be6030f4707e8b4171a1068c9bb5ddf4a2683ebebaa467",
+  "workerReviewSHA256": "3af357cccccfa12739c98c076767709692fec510a64d606dd645e1cab73c5463",
+  "verified": [
+    "Current file matches frozen source pin; all10 before/focused artifact hashes match.",
+    "Before actual disposable exit7 control fails because stderr private capture missing; after3 focused race cases pass with authorization0.",
+    "Sole Wait/copier join precedes buffer reads; unjoined deadline records unavailable without reading buffers.",
+    "Each stream bounded64KiB, exclusive0600 private file, exact Close; successful capture idempotent and Observation reuses.",
+    "Fixed numeric exit/outcome/timing/count/handle flags omit arbitrary stderr/stdout/error text. No public unvalidated JSON introduced.",
+    "Exact creator/frontend cleanup remains registered and uses single Wait. Historical204 stderr bytes remain lost and no reconstruction claim appears."
+  ],
+  "finding": {
+    "id": "CAPTURE-02",
+    "where": "composeCLIWait lines193-194; bootstrapDockerFixture.WriteEvidence lines589-600",
+    "problem": "The normal joined branch marks joined, then calls fallible public WriteEvidence before private capture. WriteEvidence calls Fatal on write failure. Cleanup skips its capture branch because joined is already true, so private stdout/stderr can still be lost before capture.",
+    "required": "Call exact joined private capture before any fallible public diagnostic write. Then write the safe numeric joined diagnostic before exit/timing assertions. Keep unavailable-unjoined guards and existing cleanup."
+  },
+  "limits": [
+    "Read-only source/raw review; no tests/build/engine or shared writes.",
+    "Three pure controls are component evidence only, not actual installed failure/starting acceptance.",
+    "Partial failed capture does not claim success; successful idempotence tested.",
+    "Original68da/Yxc failed run remains historical and unresolved; this repair cannot recover missing204 bytes."
+  ]
+}

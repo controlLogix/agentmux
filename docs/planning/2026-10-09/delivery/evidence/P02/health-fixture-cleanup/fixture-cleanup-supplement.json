@@ -1,0 +1,73 @@
+{
+  "sources": {
+    "deployment/local_tls_probe_transport.go": "243448843b4003f56e44d46c9cb59a4de85c83be073c7c888b48b0fcefb6e60d",
+    "deployment/probe.go": "3d5751789092bf9684dd9f12d77da8c6724ed3db10d4d3bd6dfeb35d3eabc78f",
+    "deployment/observe.go": "164739271ada7fb0d94d8e1dc933bd8e34a0d202077d1e68f76ad4e452558b79",
+    "deployment/probe_cleanup.go": "69b6b1e14070a203d03747fd86bea2a7b7986d15c9359d8b572f0b33d0e374a0",
+    "deployment/probe_cleanup_test.go": "0e078c17c2c8e080ed914d4a9aa85d4efc9e1a579418ebaa86bc36929bdaa864"
+  },
+  "sourceDirectory": "/home/ryan/.cache/agentmux-governance/p02-health-fixture-cleanup-UBH7me/platform",
+  "changedOnly": "deployment/probe_cleanup_test.go",
+  "history": {
+    "oldReviewSHA256": "617a074edc8ba827dae13db8cd4facd847025d4e3c5dcdc21c5d829fbe2ac501",
+    "oldTestSHA256": "e8881e8cb10bcc4c342deeb49393ae09005d3f9437b055c70a0bf35b3237982a"
+  },
+  "focused": {
+    "skips": 0,
+    "rawSHA256": "fb73349d730585d6427a447068315a93ecf8d116483a9e33166ce05c01180c92",
+    "failureCount": 0,
+    "namedPasses": 12
+  },
+  "limits": [
+    "191 affected deployment suite was not repeated: four production files are unchanged.",
+    "Native/installed Compose/whole-phase qualification remains separate.",
+    "No product source, global metadata, engine or provider changes."
+  ],
+  "productionUnchangedFromDN0Tmq": true,
+  "producer": {
+    "start": "2026-10-14T05:22:52.013901500Z",
+    "actualExit": 0,
+    "end": "2026-10-14T05:22:53.838374035Z",
+    "outerArgv": [
+      "wsl",
+      "-d",
+      "Ubuntu-26.04",
+      "--",
+      "bash",
+      "/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-health-fixture-cleanup.sh"
+    ],
+    "explicitEnvironment": {
+      "GORACE": "atexit_sleep_ms=0",
+      "GOSUMDB": "off",
+      "GOWORK": "off",
+      "GOPROXY": "off"
+    },
+    "sha256": "ec9d7d0e54a2d3c3d03f64a7534ba7999c83f68a12798128d6aca94861b12efa",
+    "path": "/home/ryan/.cache/agentmux-governance/p02-health-fixture-cleanup-UBH7me/producer.sh",
+    "argv": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-json",
+      "./deployment",
+      "-run",
+      "^TestProbeCleanup(FailureRetainsConcreteOwner|EarlyFailuresJoinOwnedResources)$",
+      "-count=1"
+    ]
+  },
+  "reviewFinding": "External review accepted early test-fixture setup cleanup gap at e8881e8c: cleanup was registered after Dial; earlier trust/transport/Dial failure could leave listener/peer unjoined.",
+  "repair": [
+    "Listener and exact accepted-peer cleanup is registered immediately, before the peer goroutine or any fallible trust/transport/Dial setup.",
+    "Peer ownership and stopping admission synchronize under a mutex; late accepted peers close immediately. Descriptor Close and join occur outside that mutex.",
+    "Concrete TLS owner cleanup is registered immediately on creation, before options or Dial; bounded exact retry handles the fail-once fixture control.",
+    "Existing peer-open-until-explicit-retry assertions remain unchanged.",
+    "Four child-process controls intentionally fail actual trust admission, endpoint/transport binding, canceled Dial, and setup after actual peer acceptance; expected child exit1 requires owned cleanup receipt proving listener closure, exact peer closure and joined goroutine."
+  ],
+  "vet": {
+    "start": "2026-10-14T05:22:53.842538971Z",
+    "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "actualExit": 0,
+    "end": "2026-10-14T05:22:54.349405375Z"
+  }
+}

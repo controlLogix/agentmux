@@ -1,0 +1,67 @@
+{
+  "reviewer": "Codex",
+  "date": "2026-10-14T17:49:13.087385+00:00",
+  "decision": "One actual current-WSL authenticated pending integration passes",
+  "sourceManifestSHA256": "392f458dabdfc6c11abb858378569b4a1dc04c607f545de818276e28c6de1ac1",
+  "verifiedSourceCount": 259,
+  "verifiedArtifactCount": 50,
+  "namedRacePasses": 1,
+  "directExit": 0,
+  "frontend": {
+    "elapsedNanoseconds": 6569043364,
+    "boundNanoseconds": 10000000000,
+    "exitSuccess": true,
+    "stdoutBytes": 2331,
+    "stderrBytes": 0,
+    "startingDisposition": "starting",
+    "exactCreatorHostPinned": true,
+    "bothStreamsCapturedAfterSoleWaitJoin": true
+  },
+  "completion": {
+    "disposition": "reused",
+    "instanceReadiness": "degraded",
+    "persistenceReadiness": "unknown",
+    "refreshOutcomes": {
+      "owner_bridge_reply_unavailable:": 5,
+      "owner_bridge_deadline:": 1,
+      "none:starting": 3,
+      "none:reused": 1
+    },
+    "roleReadiness": {
+      "boot": "ready",
+      "kernel-lifecycle": "ready",
+      "internal-communication": "ready",
+      "exported-status": "ready",
+      "work": "unknown",
+      "hub_federation": "unknown"
+    }
+  },
+  "preservation": {
+    "originalStatePortContainerBaselineCount": 9,
+    "originalFullNetworkBaselineCount": 8,
+    "containerBaselineAssertionsPassed": true,
+    "networkBaselineUnchanged": true,
+    "exactOwnedBrokerStopped": true,
+    "volumeRetained": true,
+    "newOwnedNetworkRemoved": true,
+    "exactRemovalOutputSavedPrivately": true,
+    "networkCleanupElapsedNanoseconds": 10052685186,
+    "networkCleanupStage": "complete",
+    "networkReadStage": "not_applicable",
+    "afterNetworkCount": 8
+  },
+  "limitations": [
+    "Only this authenticated pending case ran; no cold/warm/concurrent/abrupt cohort, tagged vet or phase gate is claimed.",
+    "Actual environment is WSL/WindowsInterop, not native Linux or macOS.",
+    "Existing fixture compares complete bounded container state/port projections and full network observations; no full raw container-map equality is claimed.",
+    "Dependency restoration full-map timestamp-drift refusal remains historical and unchanged.",
+    "fixture.json liveRunStarted is a preparation-time flag; actual installed child/role ownership is tested by creator-held handles, not that field.",
+    "Completion reports degraded overall readiness and unknown persistence readiness honestly; all four protected roles have current ready evidence."
+  ],
+  "phaseAccepted": false,
+  "independentReview": {
+    "path": "independent-review.json",
+    "sha256": "6e436fcca88436a763959c2e3a18ade016db6d4bee00dec72c0e87d0ba646639",
+    "scope": "Independent source and artifact review of one actual current WSL pending test; no full-phase or native-platform acceptance."
+  }
+}

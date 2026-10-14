@@ -1,0 +1,25 @@
+{
+  "cwd": "/home/ryan/.cache/agentmux-governance/p02-cli-child-guard-305b4b1e/platform",
+  "commands": {
+    "affected": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-json",
+      "./cmd/agentmux-runtime"
+    ],
+    "vet": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "vet",
+      "./cmd/agentmux-runtime"
+    ]
+  },
+  "fixedEnvironment": {
+    "GOTOOLCHAIN": "local",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GORACE": "atexit_sleep_ms=0"
+  }
+}

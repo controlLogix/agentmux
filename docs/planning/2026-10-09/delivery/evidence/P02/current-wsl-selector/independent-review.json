@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0.0",
+  "kind": "independent-source-review",
+  "recordedUtc": "2026-10-14T17:25:24.658514+00:00",
+  "candidateDirectory": "/home/ryan/.cache/agentmux-governance/p02-current-wsl-selection-draft-674dc329",
+  "candidateRecordSHA256": "6b8f1a08cba464e8528f21c6f2ad7c3ea3128ec0f694d15e3c1d7a2dfa58fc40",
+  "sourceHashes": {
+    "baseline/bootstrap_docker_selection_test.go": "7458b7ce2db475606466cd3d278bac2f63ec85f8a7dfaa0b519fc7be9f8481f3",
+    "src/platform/launcher/bootstrap_docker_selection_test.go": "6b5e550b2cc89f0b9fc873a4891623ed01c1277ee8947dbcb147650c312b34ae",
+    "src/platform/launcher/bootstrap_docker_current_qualification_controls_test.go": "f4b578067fcecf022600f818709ac95185e787e7c5727f6b602485f178bfc831",
+    "candidate.diff": "66bbfa3fd90a466f789cfc01745979becaf58098175a0298c895fed6fb630e49",
+    "selection.json": "724f2d7863838b26114a45ab335a93cce9b9a44b47df9bb3ecb5bff3d53c11fb"
+  },
+  "remainingConcreteFindings": [],
+  "checks": [
+    "Current target admits only exact separately reviewed WSL amd64 tuple; matching caller hash cannot widen it.",
+    "Full tuple matches independently captured current daemon/version/endpoint/image facts.",
+    "Mechanical inverse of only the new target, its literal constructor and Windows port label restores exact legacy bytes.",
+    "Absent-file default, strict bounded file/hash admission, actual-platform checks and native-WSL refusal remain unchanged.",
+    "New refusal controls assert fixed error code and rehash altered tuples; hostile compiler environment and legacy positive retained.",
+    "Native collectors still refuse Microsoft/WSL and were not edited."
+  ],
+  "limits": [
+    "Source review only; no test/build/environment calls or engine mutation performed.",
+    "This does not qualify current installed CLI or supported native Linux/macOS execution.",
+    "Historical full raw container preservation failure remains unchanged; image restoration facts are separate.",
+    "The earlier generic nil-error control draft was superseded before final f4b578 freeze; final four refusal branches check the exact code."
+  ],
+  "readEvidenceHashes": {
+    "daemon": "b2e760a0ef04adb71f381efc59789fc4683bb7b346c6d6be033d89d8c0e401eb",
+    "image": "cb3c61d3333d3d6cca34246e640ddb33c8613b22b5058b2f5bd1359211b6ed77",
+    "nativeComposeCollector": "c4182bb87a0a82bd677d8361fa0b4d60d3d3eb8a7ee853ef9b2e2dd6665ac7a4",
+    "nativeGoCollector": "5089b6dcdbbf55f38837644c69ff1877006518407e1ea23c4d098071cbd99fcd"
+  }
+}

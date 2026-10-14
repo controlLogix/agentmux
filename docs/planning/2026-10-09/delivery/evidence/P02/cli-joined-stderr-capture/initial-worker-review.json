@@ -1,0 +1,100 @@
+{
+  "phase": "P02",
+  "kind": "Test-only joined stderr and normal failure diagnostic capture repair",
+  "source": {
+    "path": "platform/launcher/installed_cli_compose_integration_linux_test.go",
+    "sha256": "24f3e238ecdc374990be6030f4707e8b4171a1068c9bb5ddf4a2683ebebaa467",
+    "currentMatches": true
+  },
+  "failureFirst": {
+    "directory": "p02-stderr-capture-before-p_zlta13",
+    "exit": 1,
+    "tests": [
+      {
+        "name": "TestComposeCLIOutputCaptureRequiresJoinedWait",
+        "action": "fail",
+        "elapsedSeconds": 0
+      }
+    ],
+    "sourceSHA256": "c928dee3ccd6b8835b919d33c9cb87b455e058f64856d7194b1e811dfbfc361f",
+    "artifacts": [
+      {
+        "path": "producer.sh",
+        "sha256": "43da2e7f35fc9e90c30e5a07a0f4e79a9bb9b65b56811d9c5cb57e1a997a6bc4"
+      },
+      {
+        "path": "invocation.json",
+        "sha256": "0119e717602d733fc271acc598ee8b95e031c9c9d24d2f452b9c9f5a901f8938"
+      },
+      {
+        "path": "events.jsonl",
+        "sha256": "06d3ec21a4ca0c75f6d5924493f018f8e8c140d689448129d6d200e8c5e73a00"
+      },
+      {
+        "path": "stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "exit.txt",
+        "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+      }
+    ]
+  },
+  "failureFirstPreparationSHA256": "5375c64ca19bb48d82abbdaccca9ed72dd748ae50203b6e4341a5ae51c9480dc",
+  "focused": {
+    "directory": "p02-stderr-capture-fixed-TNlrLb",
+    "exit": 0,
+    "tests": [
+      {
+        "name": "TestComposeCLIPrivateOutputCapture",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "name": "TestComposeCLIOutputCaptureRequiresJoinedWait",
+        "action": "pass",
+        "elapsedSeconds": 0
+      },
+      {
+        "name": "TestComposeCLIJoinedDiagnosticIsClosed",
+        "action": "pass",
+        "elapsedSeconds": 0
+      }
+    ],
+    "sourceSHA256": "24f3e238ecdc374990be6030f4707e8b4171a1068c9bb5ddf4a2683ebebaa467",
+    "artifacts": [
+      {
+        "path": "producer.sh",
+        "sha256": "31775bd16f72a173d6cca54b3ea7c51cac66306682e8ec879dcb05dc5e127d68"
+      },
+      {
+        "path": "invocation.json",
+        "sha256": "5905fbe01780a91d4270dae801c24eab4a4a2a7bebf51d325581892f53b7f28d"
+      },
+      {
+        "path": "events.jsonl",
+        "sha256": "c055647816fafa535c2d8869637a22cb6a69ec4e659492f5b0e9ed79c9c161b6"
+      },
+      {
+        "path": "stderr.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "exit.txt",
+        "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+      }
+    ]
+  },
+  "behavior": [
+    "Sole Wait/copier join captures both streams privately0600<=64KiB each before normal exit/timing assertions.",
+    "Normal joined path saves fixed numeric exit and outcome/size/owned-handle facts before fatal; no arbitrary error text or raw JSON published.",
+    "Observation reuses capture; deadline-unjoined path reads no concurrent buffer and captures only after owned cleanup joins.",
+    "Actual disposable shell exit7 writes distinct nonJSON stdout and stderr, proves exact private bytes/once-only capture, closed numeric failure outcome and no public file."
+  ],
+  "limits": [
+    "Original Yxc908204 stderr bytes remain unrecoverable; no reconstruction.",
+    "Original68da source and failed installed run remain separately frozen.",
+    "No engine fixture, actor, main/production edit or acceptance relaxation.",
+    "Independent review required before another actual installed run."
+  ]
+}

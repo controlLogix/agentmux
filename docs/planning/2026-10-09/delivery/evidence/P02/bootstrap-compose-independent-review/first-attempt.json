@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "1.0.0",
+  "phase": "P02",
+  "recordedAt": "2026-10-13T23:17:29.222636+00:00",
+  "scope": "Independent read-only review of one actual composed Bootstrap attempt; failure remains failure",
+  "accepted": false,
+  "actualRunExitCode": 1,
+  "actualRunElapsedSeconds": 124.81880300799821,
+  "rawResultHashMatchesSummary": true,
+  "preflightSourceCount": 71,
+  "nativeSourceCopyMismatches": [],
+  "currentRepoMismatchesAtReview": [],
+  "preflightOutputHashesMatch": true,
+  "beforeCleanupFacts": {
+    "startedSessions": 1,
+    "reusedConcurrentSessions": 1,
+    "initialLiveDistinctPIDs": 4,
+    "bothGenerationsActuallyReaped": true,
+    "newKernelIncarnation": true,
+    "sameBrokerAndOriginalPersistence": true,
+    "leasesReleased": 4,
+    "baselineGuardCount": 5,
+    "baselineGuardAllUnchanged": true,
+    "composeUpCallCountObserved": false
+  },
+  "actualFailure": {
+    "diagnostic": "fixture owned volume unverifiable; stop refused",
+    "cleanupGapReason": "owned_volume_unverifiable_stop_refused",
+    "manualRecoveryRequired": true,
+    "noSuccessfulBrokerStopClaim": true
+  },
+  "syntheticTemplateDiagnosis": {
+    "sourceBinding": "367543665e5776759f5a7a99666e92530ce6bfba33a7c9d8fe12410a8034ee24",
+    "formatHash": "c0cf92a5d0260cc3763764e77aaeb4fd5c57667d9ad459486a6f2d0e8c6bac2b",
+    "substitution": "Replace Go template actions with safe JSON string literals, leaving all JSON braces unchanged. No Docker command or private values.",
+    "originalRenderRejected": {
+      "message": "Expecting ',' delimiter",
+      "column": 191
+    },
+    "addingOneOuterBraceProducesValidJSON": true,
+    "claim": "Evidence-backed missing outer brace in frozen volume inspector template; actual producer diagnosis/recovery still separate."
+  },
+  "fileHashes": {
+    "preflight.json": "358d2d2d740faf37ebef8ee1471be450aa3ca351daa4d1688b9284ddbaffbf71",
+    "compile-output.txt": "18316ba5ddf6d12964b4ff0d3c142456b23a481078b15f534be256118922a3a7",
+    "vet-output.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "live-result.jsonl": "15def470e96b44404a08045690062bb971530b188a2bf7e7fa8e6df2bdc5758e",
+    "live-summary.json": "280352c878aff47cad9d6e63938c11c4c8ef7e584f32c3da2cc802975efcf027"
+  },
+  "safeFixtureFileHashes": {
+    "recovery.json": "a93beb86a679ac2446b0199a38a5463cdb1631ac3bc57e28d4844d9bafabb042",
+    "baseline-guard-3fcf6ee9.json": "418fa3c862ed8033623465382e0d946b785b2709b1fba7a43fb75b04883c4562",
+    "concurrent-warm.json": "360544d36f6057e086ab1e3d26a5a6ebea26ac57ee050f8df42fdb64c01ecfda",
+    "baseline-guard-5ed34303.json": "70de8d267f1bf1778b9a7971231c50e4958221bca99500aebf2c103d33e161d8",
+    "cleanup-unverified.json": "146e8e9e578b40ec547f8e2b7e7e8f237ef6b542557458a390615c0c39bd2b26",
+    "baseline-guard-f4736e70.json": "b518adbd26f5f292073d8e1cce8d937a6aa1878e535588a32caae21aeeac5832",
+    "fixture.json": "a298a4215345f97ee063f19b046fff9a24be55975f03c624ff2b53a79f6c5b5c",
+    "baseline-guard-244093ec.json": "2d6df20ab2053eca0f2aced9e1204c10b23c5d9393d7cc93b7eaa8f526d6ddf2",
+    "baseline-guard-95089368.json": "fb4fbc87387dbb2ba9dfa6c8c6d32c75dcb1de37a492b0f5abf6b45c197847b5"
+  },
+  "limits": [
+    "Not a passing composed fixture; actual broker cleanup remains unverified and refused.",
+    "Not native macOS or full P02 acceptance.",
+    "Owner lifetime cancellation, not abrupt host death; prior real parent-death evidence remains separate.",
+    "No Docker queries, mutation, retry or source edits by this reviewer.",
+    "No generated config, credentials, private role files or key material read/copied."
+  ]
+}

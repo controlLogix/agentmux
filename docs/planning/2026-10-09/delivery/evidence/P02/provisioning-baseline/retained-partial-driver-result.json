@@ -1,0 +1,210 @@
+{
+  "sourceCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "sourceSha256": {
+    "hub/__init__.py": "2fa2e5fedd0cf0b155aca3ec64c7f0ae8241f7806272c9f1828e280730e1fcfe",
+    "hub/fed/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "hub/fed/admin.py": "ce6b0b048a4fcaa5e0b4432ed920ba587bad21d54cb2a84187a09e5022a2b74a",
+    "hub/fed/conn.py": "7c4d226c777256c2228ec76254aca526039d7c7c5dc4fb7c61933816397f9bab"
+  },
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+  "natsPy": "2.16.0",
+  "brokerVersion": "nats-server: v2.15.0",
+  "brokerSha256": "387ce54e7a0a249d877a579ed641d715bab047d7e061bfa42b4d07f6a0401341",
+  "cases": [
+    {
+      "id": "missing-dependency",
+      "command": "/usr/bin/python3 -S isolated frozen module",
+      "exitCode": 7,
+      "diagnostic": "MissingDependency: federation needs nats-py: run `agentmux hub fed setup` (creates .venv with hub/requirements.txt)",
+      "stderrEmpty": true,
+      "seconds": 0.0596
+    },
+    {
+      "id": "provision-twice",
+      "firstActions": [
+        "stream AM_MSG (created)",
+        "stream AM_WORK (created)",
+        "stream AM_SHARE (created)",
+        "kv am_board (created)",
+        "kv am_presence (created)"
+      ],
+      "secondActions": [
+        "stream AM_MSG (updated)",
+        "stream AM_WORK (updated)",
+        "stream AM_SHARE (updated)",
+        "kv am_board (exists)",
+        "kv am_presence (exists)"
+      ],
+      "firstPolicies": {
+        "streams": {
+          "AM_MSG": {
+            "subjects": [
+              "am.msg.>"
+            ],
+            "retention": "limits",
+            "storage": "file",
+            "discard": "old",
+            "maxAgeSeconds": 1209600.0,
+            "replicas": 1,
+            "duplicateWindowSeconds": 120.0,
+            "maxBytes": -1,
+            "maxMessages": -1
+          },
+          "AM_WORK": {
+            "subjects": [
+              "am.work.>"
+            ],
+            "retention": "workqueue",
+            "storage": "file",
+            "discard": "old",
+            "maxAgeSeconds": 2592000.0,
+            "replicas": 1,
+            "duplicateWindowSeconds": 120.0,
+            "maxBytes": -1,
+            "maxMessages": -1
+          },
+          "AM_SHARE": {
+            "subjects": [
+              "am.know.>",
+              "am.code.>"
+            ],
+            "retention": "limits",
+            "storage": "file",
+            "discard": "old",
+            "maxAgeSeconds": 31536000.0,
+            "replicas": 1,
+            "duplicateWindowSeconds": 120.0,
+            "maxBytes": -1,
+            "maxMessages": -1
+          }
+        },
+        "kv": {
+          "am_board": {
+            "subjects": [
+              "$KV.am_board.>"
+            ],
+            "history": 16,
+            "ttlSeconds": 0.0,
+            "storage": "file",
+            "replicas": 1,
+            "discard": "new"
+          },
+          "am_presence": {
+            "subjects": [
+              "$KV.am_presence.>"
+            ],
+            "history": 1,
+            "ttlSeconds": 90.0,
+            "storage": "file",
+            "replicas": 1,
+            "discard": "new"
+          }
+        }
+      },
+      "secondPolicies": {
+        "streams": {
+          "AM_MSG": {
+            "subjects": [
+              "am.msg.>"
+            ],
+            "retention": "limits",
+            "storage": "file",
+            "discard": "old",
+            "maxAgeSeconds": 1209600.0,
+            "replicas": 1,
+            "duplicateWindowSeconds": 120.0,
+            "maxBytes": -1,
+            "maxMessages": -1
+          },
+          "AM_WORK": {
+            "subjects": [
+              "am.work.>"
+            ],
+            "retention": "workqueue",
+            "storage": "file",
+            "discard": "old",
+            "maxAgeSeconds": 2592000.0,
+            "replicas": 1,
+            "duplicateWindowSeconds": 120.0,
+            "maxBytes": -1,
+            "maxMessages": -1
+          },
+          "AM_SHARE": {
+            "subjects": [
+              "am.know.>",
+              "am.code.>"
+            ],
+            "retention": "limits",
+            "storage": "file",
+            "discard": "old",
+            "maxAgeSeconds": 31536000.0,
+            "replicas": 1,
+            "duplicateWindowSeconds": 120.0,
+            "maxBytes": -1,
+            "maxMessages": -1
+          }
+        },
+        "kv": {
+          "am_board": {
+            "subjects": [
+              "$KV.am_board.>"
+            ],
+            "history": 16,
+            "ttlSeconds": 0.0,
+            "storage": "file",
+            "replicas": 1,
+            "discard": "new"
+          },
+          "am_presence": {
+            "subjects": [
+              "$KV.am_presence.>"
+            ],
+            "history": 1,
+            "ttlSeconds": 90.0,
+            "storage": "file",
+            "replicas": 1,
+            "discard": "new"
+          }
+        }
+      },
+      "policiesIdentical": true,
+      "retainedSafeProbe": true,
+      "messageCountUnchanged": true,
+      "adminHandlesClosed": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "wrong-endpoint",
+      "exceptionType": "TimeoutError",
+      "seconds": 12.0016,
+      "fixtureDeadlineSeconds": 12,
+      "configuredConnectTimeoutSeconds": 5
+    },
+    {
+      "id": "wrong-ca",
+      "exceptionType": "SSLCertVerificationError",
+      "seconds": 0.0167,
+      "fixtureDeadlineSeconds": 12,
+      "configuredConnectTimeoutSeconds": 5,
+      "caKind": "valid synthetic unrelated self-signed certificate"
+    }
+  ],
+  "limits": [
+    "Native Linux filesystem fixture on WSL2, not a separate native Linux host or macOS.",
+    "Synthetic token-authenticated loopback broker; no JWT operator/TLS enrollment production qualification.",
+    "Only listed failures executed; missing credentials, revoked account and full failure matrix remain not-run.",
+    "No Docker/user configuration/live account or private credential reads; generated test TLS keys stay private and are removed.",
+    "Original provision source copied unchanged. External connection wrapper adds synthetic broker token and records handles; original connect path remains unchanged."
+  ],
+  "cleanup": {
+    "allOwnedBrokerProcessesExited": true,
+    "allCapturedConnectionsClosed": true,
+    "runtimeDirectoryRemoved": true
+  },
+  "status": "failed",
+  "driverExceptionType": "TypeError",
+  "driverFailure": "'async for' requires an object with __aiter__ method, got coroutine"
+}

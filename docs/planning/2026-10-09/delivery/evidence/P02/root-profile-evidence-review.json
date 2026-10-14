@@ -1,0 +1,49 @@
+{
+  "reviewer": "Codex",
+  "recordedAt": "2026-10-13T23:14:09.011436+00:00",
+  "scope": "Independent source/hash and recorded result review for profile boundaries; not full phase acceptance",
+  "recordSha256": "7ca0435cfd266f1ac4684ded22bb8476e8063bb6ec19b470732e32c0212c3043",
+  "checks": [
+    {
+      "record": "focused",
+      "actualExitCode": 0,
+      "passingEntries": 27,
+      "artifactHashesVerified": 3
+    },
+    {
+      "record": "unsafe-opener",
+      "actualExitCode": 1,
+      "passingEntries": 0,
+      "artifactHashesVerified": 3
+    },
+    {
+      "record": "initial-affected",
+      "actualExitCode": 1,
+      "passingEntries": 382,
+      "artifactHashesVerified": 3
+    },
+    {
+      "record": "doctor-failures",
+      "actualExitCode": 0,
+      "passingEntries": 16,
+      "artifactHashesVerified": 3
+    },
+    {
+      "record": "final-launcher",
+      "actualExitCode": 0,
+      "passingEntries": 392,
+      "artifactHashesVerified": 3
+    }
+  ],
+  "sourceDrift": [],
+  "unqualifiedAdditionalSource": [
+    "launcher/bootstrap_docker_integration_test.go",
+    "launcher/bootstrap_integration_test.go"
+  ],
+  "review": [
+    "Actual private loader uses component-wise contained nonblocking opens. Controlled after-inspection swaps target a real FIFO or the same original regular inode through a symlink.",
+    "Otherwise-valid profiles above the wire payload size retain their separate64KiB private limit. Exact typed names reject otherwise-valid aliases.",
+    "Original unsafe-opener and Doctor timeout failures remain recorded. Only the race child exit delay changed for the controlled Doctor repair; startup budgets/assertions were retained.",
+    "The final affected launcher evidence contains392 passing test/subtest entries; newly added actual Docker integration files are not covered by that snapshot."
+  ]
+}

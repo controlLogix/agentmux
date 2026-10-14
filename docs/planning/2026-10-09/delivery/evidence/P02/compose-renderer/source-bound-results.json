@@ -1,0 +1,52 @@
+{
+  "recordedAtUtc": "2026-10-13T21:53:10.168807+00:00",
+  "scope": "Renderer focused checks and read-only Compose loader/parser conformance. No Docker mutations or full phase acceptance.",
+  "sourceHashes": {
+    "platform/deployment/compose.go": "f045ad9172e3e5fde14e69b9e8450c78287387f79e540caca7968e4cf8af130b",
+    "platform/deployment/compose_test.go": "752d446218b30f15728140f45b80384247aa7ff3c45a73c5f191b8bc80aba131"
+  },
+  "toolchain": {
+    "executable": "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "sha256": "548d3c32f83fa81152f543eb1526be7884cfe0526eb5e9ce29d3eca14786e7e0",
+    "GOTOOLCHAIN": "local"
+  },
+  "race": {
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "./deployment",
+      "-run",
+      "TestCompose",
+      "-count=1",
+      "-json"
+    ],
+    "testAndSubtestPassRecords": 15,
+    "failRecords": 0,
+    "packageElapsedSeconds": 1.204
+  },
+  "vet": {
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "vet",
+      "./deployment"
+    ],
+    "exitCode": 1,
+    "finding": "deployment/observe.go:10:2: could not import sync (cannot resolve import empty string)",
+    "classification": "Failed package vet in another owned file. No renderer source change made for this finding.",
+    "observerSourceHashAtExecutionUnavailable": true,
+    "rerunPendingObserverFreeze": true
+  },
+  "patternCheck": {
+    "exitCode": 1,
+    "finding": "Review is stale or missing: inspect changes and refresh sourceDigest",
+    "rootOwnsAttestation": true
+  },
+  "limits": [
+    "Typed rendering is not profile ownership, host port qualification or runtime readiness.",
+    "Config and rendered document bytes contain secrets; no raw private bytes were stored in these reports.",
+    "Inline content is a private writable-layer file, not a bind or read-only mount.",
+    "Read-only root filesystem is rejected.",
+    "Full affected deployment verification remains integration-owner work after stable observer freeze."
+  ]
+}

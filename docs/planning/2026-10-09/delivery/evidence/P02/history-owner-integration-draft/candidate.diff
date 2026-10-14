@@ -1,0 +1,208 @@
+--- a/owner_bridge.go
++++ b/owner_bridge.go
+@@ -80,6 +80,7 @@
+ 	credential OwnerBridgeCredential
+ 	subjects   deployment.OwnerBridgeSubjectSet
+ 	receipt    *ownerBridgeReceiptState
++	history    *ownerBridgeHistoryState
+ }
+ 
+ func (*OwnerBridgeClient) String() string   { return "[private owner bridge client]" }
+@@ -470,10 +471,13 @@
+ 		cancelRuntime()
+ 		return err
+ 	}
++	cleanupEnvelope := newOwnerBridgeCleanupEnvelope(s.config.Deadlines.StopGrace + s.config.Deadlines.ReapTimeout)
++	defer cleanupEnvelope.close()
+ 	returned := make(chan struct{})
+ 	go func() {
+ 		defer close(returned)
+ 		bootstrapForOperation(bootstrapCtx, runtimeLifetime, s.config, coldInvocationID, operation)
++		s.recordBootstrapHistoryTerminal(bootstrapCtx, operation, cleanupEnvelope)
+ 	}()
+ 	defer func() {
+ 		cancelBootstrap()
+@@ -483,7 +487,7 @@
+ 		session, completedFailure := joinedBridgeBootstrapResult(operation, failure)
+ 		failure = completedFailure
+ 		if session != nil {
+-			failure, leaseTransferred = closeOwnedSession(session, lease, failure, s.config.Deadlines.StopGrace+s.config.Deadlines.ReapTimeout)
++			failure, leaseTransferred = closeOwnedSessionContext(cleanupEnvelope.context(), session, lease, failure, s.config.Deadlines.StopGrace+s.config.Deadlines.ReapTimeout)
+ 		}
+ 	}()
+ 	return s.serveOperation(bootstrapCtx, runtimeLifetime, operation)
+--- a/host_receipt_server.go
++++ b/host_receipt_server.go
+@@ -18,9 +18,6 @@
+ 	if err != nil {
+ 		return nil, 0, err
+ 	}
+-	if !protected.BootstrapReceiptRequested() {
+-		return server, timeout, nil
+-	}
+ 	binding, err := host.BootstrapReceiptBinding(invocationID)
+ 	if err != nil {
+ 		return nil, 0, err
+@@ -30,6 +27,10 @@
+ 	if !ownerBridgeReceiptBindingMatches(binding, server, invocationID) {
+ 		return nil, 0, hostPolicyError("receipt_binding_invalid")
+ 	}
++	server.history = &ownerBridgeHistoryState{binding: binding}
++	if !protected.BootstrapReceiptRequested() {
++		return server, timeout, nil
++	}
+ 	writer, err := protected.OpenBootstrapReceiptWriter(binding)
+ 	if err != nil {
+ 		return nil, 0, hostPolicyError("receipt_descriptor_invalid")
+--- a/owner_bridge_receipt.go
++++ b/owner_bridge_receipt.go
+@@ -65,6 +65,7 @@
+ 	if operation == nil || operation.server == nil {
+ 		return operationError("owner_invalid")
+ 	}
++	operation.server.beginBootstrapHistory(ctx, operation)
+ 	state := operation.server.receipt
+ 	if state == nil {
+ 		return nil
+--- a/session_cleanup.go
++++ b/session_cleanup.go
+@@ -76,13 +76,21 @@
+ // still owns an unfinished group or open bootstrap lease. Historical failures
+ // remain errors but cannot manufacture cleanup authority.
+ func closeOwnedSession(session *Session, lease *BootstrapLock, cause error, budget time.Duration) (error, bool) {
++	return closeOwnedSessionContext(context.Background(), session, lease, cause, budget)
++}
++
++// The caller supplies its existing shared cleanup envelope.
++func closeOwnedSessionContext(parent context.Context, session *Session, lease *BootstrapLock, cause error, budget time.Duration) (error, bool) {
+ 	if session == nil {
+ 		return cause, false
+ 	}
+ 	if budget <= 0 || budget > 20*time.Second {
+ 		return errors.Join(cause, errRuntimeCleanup), false
+ 	}
+-	ctx, cancel := context.WithTimeout(context.Background(), budget)
++	if parent == nil {
++		return errors.Join(cause, errRuntimeCleanup), false
++	}
++	ctx, cancel := context.WithTimeout(parent, budget)
+ 	cleanupErr := session.Close(ctx)
+ 	cancel()
+ 	state := session.cleanupState
+--- /dev/null
++++ b/owner_bridge_history.go
+@@ -0,0 +1,114 @@
++//go:build linux || darwin
++
++package launcher
++
++import (
++ "context"
++ "errors"
++ "sync"
++ "time"
++ protected "github.com/controlLogix/agentmux/platform/runtime"
++)
++
++// This state retains only the history store minted by this installed server.
++// Its warning never replaces the actual Bootstrap or NATS result.
++type ownerBridgeHistoryState struct {
++ mu sync.Mutex
++ binding protected.BootstrapReceiptBinding
++ store *bootstrapHistoryStore
++ warning error
++ attempted bool
++ admitted bool
++}
++
++// One cleanup envelope is shared by final history IO and actual Session cleanup.
++// It is created only on the first cleanup phase, never reset by later phases.
++type ownerBridgeCleanupEnvelope struct {
++ once sync.Once
++ budget time.Duration
++ ctx context.Context
++ cancel context.CancelFunc
++}
++func newOwnerBridgeCleanupEnvelope(budget time.Duration) *ownerBridgeCleanupEnvelope {
++ return &ownerBridgeCleanupEnvelope{budget:budget}
++}
++func (e *ownerBridgeCleanupEnvelope) context() context.Context {
++ e.once.Do(func(){e.ctx,e.cancel=context.WithTimeout(context.Background(),e.budget)})
++ return e.ctx
++}
++func (e *ownerBridgeCleanupEnvelope) close() { if e.cancel!=nil {e.cancel()} }
++
++func (server *OwnerBridgeServer) beginBootstrapHistory(ctx context.Context, op *bootstrapOperation) {
++ state:=server.history
++ if state==nil {return}
++ bounded,cancel,err:=historyIOContext(ctx)
++ if err!=nil {server.retainHistoryWarning(err);return}
++ defer cancel()
++ if err=lockHistory(bounded,&state.mu);err!=nil {return}
++ defer state.mu.Unlock()
++ if state.attempted {return}
++ state.attempted=true
++ if op==nil||op.server!=server||!ownerBridgeReceiptBindingMatches(state.binding,server,op.attemptID) {
++  state.warning=errors.Join(state.warning,historyError("binding_invalid",nil));return
++ }
++ state.store,err=openBootstrapHistory(bounded,op,state.binding)
++ state.admitted=err==nil
++ state.warning=errors.Join(state.warning,err)
++ if state.admitted {state.warning=errors.Join(state.warning,state.store.Begin(bounded))}
++}
++
++func (server *OwnerBridgeServer) retainHistoryWarning(cause error) {
++ if server==nil||server.history==nil||cause==nil {return}
++ server.history.mu.Lock()
++ server.history.warning=errors.Join(server.history.warning,cause)
++ server.history.mu.Unlock()
++}
++
++// The sole Bootstrap worker calls this after actual completion. The worker's
++// returned channel closes only after publication and retirement have finished.
++func (server *OwnerBridgeServer) recordBootstrapHistoryTerminal(startup context.Context, op *bootstrapOperation, cleanup *ownerBridgeCleanupEnvelope) {
++ if server.history==nil {return}
++ parent:=startup
++ if parent.Err()!=nil {parent=cleanup.context()}
++ bounded,cancel:=context.WithTimeout(parent,bootstrapHistoryIOBudget)
++ defer cancel()
++ state:=server.history
++ if err:=lockHistory(bounded,&state.mu);err!=nil {server.retainHistoryWarning(err);return}
++ defer state.mu.Unlock()
++ if state.store==nil {
++  // Failure before operation entry may still record its actual terminal result.
++  var openErr error
++  state.store,openErr=openBootstrapHistory(bounded,op,state.binding)
++  state.admitted=openErr==nil
++  state.warning=errors.Join(state.warning,openErr)
++ }
++ if state.store==nil {return}
++ if state.admitted {state.warning=errors.Join(state.warning,state.store.RecordTerminal(bounded))}
++ state.warning=errors.Join(state.warning,state.store.Close(bounded))
++}
++
++// CloseBootstrapHistory retries only this server's exact unpublished staging
++// cleanup. It cannot start Bootstrap, mutate the history slot or acquire a lease.
++func (server *OwnerBridgeServer) CloseBootstrapHistory(ctx context.Context) error {
++ if server==nil||server.history==nil {return nil}
++ bounded,cancel,err:=historyIOContext(ctx)
++ if err!=nil {return err}
++ defer cancel()
++ state:=server.history
++ if err=lockHistory(bounded,&state.mu);err!=nil {return err}
++ defer state.mu.Unlock()
++ if state.store==nil {return nil}
++ err=state.store.Close(bounded)
++ state.warning=errors.Join(state.warning,err)
++ return err
++}
++
++
++// BootstrapHistoryWarning reports only the fixed-safe warning and its concrete
++// retained cleanup ancestry. Successful NATS results do not consult this field.
++func (server *OwnerBridgeServer) BootstrapHistoryWarning(ctx context.Context) error {
++ if server==nil||server.history==nil {return nil}
++ if err:=lockHistory(ctx,&server.history.mu);err!=nil {return err}
++ defer server.history.mu.Unlock()
++ return server.history.warning
++}

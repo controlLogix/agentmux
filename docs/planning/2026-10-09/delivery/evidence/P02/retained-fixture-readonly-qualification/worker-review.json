@@ -1,0 +1,125 @@
+{
+  "phase": "P02",
+  "kind": "Exact retained Yxc fixture read-only recovery qualification",
+  "testExit": 0,
+  "qualification": {
+    "actualLeasesHeld": 6,
+    "actualLeasesReleased": 6,
+    "completeContainerBaselineUnchanged": true,
+    "completeNetworkBaselineUnchanged": true,
+    "containerBaselineCount": 40,
+    "containerCreated": "2026-10-14T13:01:27.804571389Z",
+    "containerId": "0f9097fa55ff273b69b8c8e5f85154400b830ef163b9b846808888edd46e746b",
+    "containerState": "running",
+    "directory": "p02-bootstrap-private-2194878452",
+    "engineId": "e0f1f93d-abf1-44f2-b62a-5bfee21d2b5c",
+    "exclusiveEndpointCount": 1,
+    "failureCode": "none",
+    "fullPrivateTLSIdentityQualified": true,
+    "leaseCloseCodes": [],
+    "mutationExecuted": false,
+    "networkBaselineCount": 32,
+    "networkCreated": "2026-10-14T13:01:27.724076269Z",
+    "networkFullDigest": "sha256:159383285586dfc66aa22a62378df1d5123d348d9d29211617e8e9b8668855db",
+    "networkId": "d3fb496020e151168142b14664ca1b7d1a6199870f0ba288351385a585a343d9",
+    "networkImmutableDigest": "sha256:56ac5a15b38577f81855c93ab31bbf0ae446a52f3c56b8796640490c33989e81",
+    "noFreshCreatorPinMinted": true,
+    "originalCIDAndNetworkAbsent": true,
+    "originalCreationIntervalBound": true,
+    "originalHostHandleEstablished": false,
+    "originalKnownOwnedIDsEmpty": true,
+    "qualified": true,
+    "selectionPin": "qualified-wsl-literal",
+    "stage": "all_readonly_qualification_complete"
+  },
+  "artifacts": [
+    {
+      "path": "producer.sh",
+      "sha256": "047fb50c0987491fa0d3656de286b0f456fd65403ffd4ffe9fa40b793b388f0d"
+    },
+    {
+      "path": "invocation.json",
+      "sha256": "1bd5e7e57392d408283ad507958e628b367d53efa901074bf7619101a209e5d9"
+    },
+    {
+      "path": "events.jsonl",
+      "sha256": "e0ca019dd2d083594011d4b41c92cce979405e2c92ff9865f00beec22330b4d4"
+    },
+    {
+      "path": "stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "exit.txt",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "qualification.json",
+      "sha256": "7367f6f555a804d1c537b81510a0ce1b7a7295cc34112a3f1b5213283c46a0de"
+    }
+  ],
+  "privateArtifactsHashes": [
+    {
+      "privateCacheFilename": "private-container-after.json",
+      "sha256": "6b932b08da6e3f8bf78296fbfd649bc3deec474a4c2c924845bbd5f4b05b4702"
+    },
+    {
+      "privateCacheFilename": "private-container-before.json",
+      "sha256": "6b932b08da6e3f8bf78296fbfd649bc3deec474a4c2c924845bbd5f4b05b4702"
+    },
+    {
+      "privateCacheFilename": "private-full-container.json",
+      "sha256": "a8be9849698852235034fee6f265aa51182b62700f30548627edf20a45016f3f"
+    },
+    {
+      "privateCacheFilename": "private-full-network.json",
+      "sha256": "cb71f8a689ac874dc45e0ef3207170fc91ca04e1544753377cd203fa29db6544"
+    },
+    {
+      "privateCacheFilename": "private-network-after.json",
+      "sha256": "07139ab22c0640dce298423121e0f854a5cefe8e63f0fcdc36ea5b1b2821cf67"
+    },
+    {
+      "privateCacheFilename": "private-network-before.json",
+      "sha256": "07139ab22c0640dce298423121e0f854a5cefe8e63f0fcdc36ea5b1b2821cf67"
+    },
+    {
+      "privateCacheFilename": "private-volume.json",
+      "sha256": "ae767814b016915bad0ca696ad66a545c7fdc9c0d2ea8fa64ffb417ae1ae2737"
+    }
+  ],
+  "helperSource": {
+    "path": "src/platform/launcher/yxc_recovery_qualification_test.go",
+    "sha256": "ee3df16bd20d4f8dc93eb58878b682c810006e3a85475e15168438806dc33c76"
+  },
+  "sources": [
+    {
+      "path": "platform/launcher/bootstrap_docker_integration_test.go",
+      "sha256": "5b4e0e51881d862f5fa07fc50ff57f8572d5cd5164d91455dfe43f950e74b4f2"
+    },
+    {
+      "path": "platform/launcher/bootstrap_network_cleanup_integration_test.go",
+      "sha256": "c506ca3212ed150b0e0827f71a9ccae12d53fbd41d1137e6d5836090a0de80a0"
+    },
+    {
+      "path": "platform/launcher/host_policy.go",
+      "sha256": "25ebb1c850399530433e7c8a2c79d2f63f222b85557881509568130c3c16d2a3"
+    },
+    {
+      "path": "platform/launcher/owner_bridge.go",
+      "sha256": "6c3cbf40f22cf00f16f1285f839506218bc0b4ccbed0a6465575580cac1fd76a"
+    },
+    {
+      "path": "platform/launcher/owner_bridge_probe.go",
+      "sha256": "43c07411aac19e5047381ce3f83786a5cf4f96478e47bef6e6f3d20ad9886130"
+    }
+  ],
+  "limits": [
+    "Read-only proof only; no mutation or startup/lifecycle acceptance.",
+    "Original knownOwnedIDs empty and no established host handle remain explicit. Six actual role/service/bootstrap leases prove scoped resource exclusion during these reads; no PID/liveness adoption.",
+    "Actual CID/NID absent from original artifact-hash-bound baselines and Created within the original named test interval. No fresh creator endpoint pin or fabricated original endpoint address.",
+    "Full TLS/config/image/selected-engine/current exclusive endpoint and complete original-policy before/after ledgers qualified.",
+    "Private full projections remain native-cache only; only safe identity facts and hashes may be archived.",
+    "All six lease closes succeeded; fresh six exclusions/re-admission required before any action."
+  ]
+}

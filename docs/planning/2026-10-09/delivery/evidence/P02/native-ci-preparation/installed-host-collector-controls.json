@@ -1,0 +1,64 @@
+{
+  "scope": "Add the separately selected native Darwin installed-host lifetime/replacement fixtures to the existing collector",
+  "sourceHashes": {
+    "tests/platform/native_go.py": "da2d2732013844939adac315df106ad61b6fa973dbe95cdacab366b935ac3e76",
+    ".github/workflows/platform-foundation.yml": "cdf1deb7b97062009c2d8306bbb593bfaebb2643530fb716c286637581e9b462"
+  },
+  "declarationsInspected": {
+    "path": "platform/runtime/installed_host_darwin_install_test.go",
+    "sha256": "58211ccdbe7caeaadbdedb8966b156b8dd02a9fae56ef6f8e49d209a532f9854",
+    "tests": ["TestDarwinInstalledHostSurvivesFrontendExit", "TestDarwinInstalledHostReplacementRefusal"],
+    "limits": "The native fixture belongs to another worker. Its failure-path process cleanup finding remains root-owned. The collector records actual source hashes again at execution."
+  },
+  "checks": [
+    {
+      "command": "python tests/platform/native_go.py --self-test",
+      "exit": 0,
+      "passed": 30,
+      "raw": "installed-host-collector-self-test.log",
+      "rawSha256": "e83fb9143ecd855623f64cd5b4b6a991bc111901cc7aad279e4f406cd4a619c3",
+      "limits": "Synthetic collector controls on Windows, not native macOS execution. Expected refusal diagnostics appear in passing negative controls."
+    },
+    {
+      "command": "python -m unittest tests.platform.test_source_surface",
+      "exit": 0,
+      "passed": 7,
+      "limits": "Source-surface verifier regression tests, not a registration attestation for the full dirty candidate."
+    },
+    {
+      "check": "PyYAML safe_load of workflow, three jobs and twenty-minute darwin-install limit",
+      "exit": 0,
+      "limits": "Local syntax and shape check only; not an actual GitHub Actions run."
+    },
+    {
+      "command": "git diff --check -- tests/platform/native_go.py .github/workflows/platform-foundation.yml",
+      "exit": 0
+    }
+  ],
+  "independentReview": {
+    "reviewer": "Plato",
+    "agentId": "01a137e6-481f-7441-9095-89ea4bb76f8c",
+    "findings": [],
+    "result": "Exact collector/workflow source review closed; original four tests retained, all six declarations required, separate own-set admission and overall failure controls preserved.",
+    "limits": "Source review only; no tests or native execution by the reviewer."
+  },
+  "preservedLimits": [
+    "The two groups execute separately and retain separate scope labels.",
+    "Missing, skipped, failed, malformed, timed-out, unexecuted or changed-source runs cannot qualify the complete collection.",
+    "Both evidence flags remain false unless the complete collection passes.",
+    "Native macOS, explicit authorization, non-root execution, actual Apple compiler/SDK and source bindings remain required.",
+    "Shared twelve-minute collection budget, 180-second Go timeout and twenty-minute workflow job are unchanged.",
+    "Old source-bound evidence remains intact and does not prove the expanded collector or new native fixture."
+  ],
+  "handoffObservation": "The initially reported /home/ryan/.cache/agentmux-governance/p02-installed-launcher-59nqpu/owned-results.json was not accessible in Ubuntu-26.04. Root was notified; no native or worker result was inferred from that missing path.",
+  "correctedHandoff": {
+    "path": "/home/ryan/.cache/agentmux-governance/p02-installed-darwin-source-59nqpu/owned-results.json",
+    "readExit": 0,
+    "fixtureSha256": "58211ccdbe7caeaadbdedb8966b156b8dd02a9fae56ef6f8e49d209a532f9854",
+    "limits": "Corrected archive was read successfully. It records Linux tests and Darwin cross-build checks, not native execution. Root has assigned failure-path cleanup and actual native HostProcess.Stop/Wait coverage; the fixture will change and needs renewed source review before native acceptance."
+  },
+  "nativeExecuted": false,
+  "installedHostLifecycleAccepted": false,
+  "fullNativeBootAccepted": false,
+  "phaseAccepted": false
+}

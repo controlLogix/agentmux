@@ -1,0 +1,43 @@
+--- original/bootstrap_receipt.go
++++ cache-only/bootstrap_receipt.go
+@@ -7,6 +7,7 @@
+ 	"encoding/binary"
+ 	"encoding/json"
+ 	"errors"
++	"fmt"
+ 	"io"
+ 	"os"
+ 	"os/exec"
+@@ -108,9 +109,7 @@
+ 	pipe := &bootstrapReceiptPipe{reader: r, writer: w, binding: binding}
+ 	child, err := h.startHost(ctx, invocation, pipe)
+ 	if err != nil {
+-		r.Close()
+-		w.Close()
+-		return nil, err
++		return nil, closeReceiptBeforeStart(r, w, err)
+ 	}
+ 	p := &ReceiptHostProcess{HostProcess: child, reader: &bootstrapReceiptReader{file: r, binding: binding, originalHost: child, originalCmd: child.cmd, originalDone: child.done}}
+ 	if w.Close() != nil {
+@@ -333,3 +332,21 @@
+ 	}
+ 	return nil
+ }
++
++// These are the two concrete pipe files created by this factory. Close
++// consumes each handle even on error; retain causes, never retry raw FDs.
++func closeReceiptBeforeStart(reader, writer *os.File, startup error) error {
++	readErr := reader.Close()
++	writeErr := writer.Close()
++	if readErr == nil && writeErr == nil {
++		return startup
++	}
++	return &receiptPrestartCleanupCause{cause: errors.Join(startup, readErr, writeErr)}
++}
++
++type receiptPrestartCleanupCause struct{ cause error }
++
++func (receiptPrestartCleanupCause) Error() string                  { return "bootstrap_receipt_cleanup_failed" }
++func (e receiptPrestartCleanupCause) Format(s fmt.State, _ rune)   { fmt.Fprint(s, e.Error()) }
++func (e receiptPrestartCleanupCause) MarshalJSON() ([]byte, error) { return json.Marshal(e.Error()) }
++func (e receiptPrestartCleanupCause) Unwrap() error                { return e.cause }

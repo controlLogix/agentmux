@@ -1,0 +1,35 @@
+{
+  "recordedAt": "2026-10-14T13:17:01.225006+00:00",
+  "reviewer": "Codex with independent read-only review from authorized thread01a123e5-27ba-7592-9f16-627cfeeefe74",
+  "scope": "Receipt pre-start pipe cleanup source repair and affected receipt component checks only.",
+  "sourceHashes": {
+    "bootstrap_receipt_prestart_cleanup_test.go": "ea22363e846f962474f29492d464b18d6308b019057b20434246a85c7d791e11",
+    "bootstrap_receipt.go": "6c3ba5a49629b3a179b30560e7b552f08ab5236e898f53d72ef8ef7cee6f8c8a"
+  },
+  "independentDecision": "No actionable source finding; both concrete Close attempts preserve original startup and distinct close causes with fixed safe formatting. Original start error unchanged if both closes succeed.",
+  "independentEvidenceInspected": "All9 repaired artifacts,4 failure-first artifacts,229 unchanged copied source entries, before3 real preclosed pipe failures and after7 focused race entries/vet0 verified.",
+  "affected": {
+    "command": "go test -race -json ./runtime -run ^Test(BootstrapReceipt|ReceiptHost|HostReceipt|OwnedBootstrap) -count=1; go vet ./runtime",
+    "environment": "Prepared Go1.27.2 in WSL Ubuntu-26.04",
+    "testExit": 0,
+    "vetExit": 0,
+    "namedPasses": 43,
+    "failures": 0,
+    "skips": 0,
+    "packageSeconds": 80.124,
+    "artifacts": {
+      "events.jsonl": "5195af09dd18012d37762ee00972b344f43d49766637f669e5e42320d511ac80",
+      "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "vet.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "vet.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "vet-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    }
+  },
+  "limits": [
+    "No actual installed boot failure, native Darwin or Docker lifecycle acceptance.",
+    "Test invocation initially failed shell redirection before tests launched; saved producer script supplied corrected run.",
+    "Package time includes real child tests; individual close duration is not inferred.",
+    "Full P02 phase remains open."
+  ]
+}

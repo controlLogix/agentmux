@@ -1,0 +1,55 @@
+{
+  "scope": "Additive secure local factories and three-object private Compose renderer; unit source/shape evidence only",
+  "sourceHashes": {
+    "platform/deployment/secure_local_config.go": "1f28903775933ad41644691c1e96590a92fcccab71eb636fc8f5b4572c9294f5",
+    "platform/deployment/secure_local_config_test.go": "04eaf9f7f1d1c1a66ef19e2e8fb07dc84868c3d8eb63463b53df7d1c3cd298b5",
+    "platform/deployment/secure_compose.go": "614077efd26b3828f54b25639d9531b7b7be6744fe48e69558429b77a27821ab",
+    "platform/deployment/secure_compose_test.go": "c050baca8f25694ab9f26f9e54f3d4b85b8d918f487fa5470303272f53fff3b0"
+  },
+  "execution": {
+    "candidate": "/home/ryan/.cache/agentmux-governance/local-tls-enrollment/candidate-mdfzJY/platform",
+    "sourceFiles": 141,
+    "sourceUnchanged": true,
+    "sourceListSha256": "58dbda8e5a12816f47a42d4444547779d7719db40edfb9c973569268e20041e3",
+    "command": "go test -race -count=1 -timeout=60s -run '^Test(LocalTLSMaterial|Secure)' -json ./deployment",
+    "exit": 0,
+    "passedTestEntries": 26,
+    "failedOrSkippedTestEntries": 0,
+    "packageSeconds": 0.181,
+    "rawJsonlSha256": "2eef5cb8b53c63879692dbd68bb50ad19bc7106dd0d18dd2f8825992ab89bad4",
+    "directory": "factory-initial",
+    "vetCommand": "go vet ./deployment",
+    "vetExit": 0,
+    "stderrEmpty": true
+  },
+  "independentReview": {
+    "reviewer": "Plato",
+    "agentId": "01a137e6-481f-7441-9095-89ea4bb76f8c",
+    "findings": [],
+    "result": "Exact four-file source review closed. Complete factory/base Compose preservation, strict TLS settings, profile binding and unambiguous JSON checks are present.",
+    "limits": "Source review only; no tests, real NATS or Docker execution by the reviewer."
+  },
+  "constraints": [
+    "Legacy plain factories and renderer remain separate and unchanged.",
+    "Secure owner factory and renderer require material from the exact profile.",
+    "TLS configuration has exactly cert_file, key_file, Boolean handshake_first:true and min_version:1.3.",
+    "Duplicate/deep JSON, case aliases, weaker TLS, plaintext-first, automatic or duration fallback and extra TLS options are refused.",
+    "Private Compose has broker_config, server_cert and server_key inline objects with fixed root-owned 0400 references.",
+    "The CA signing key is never serialized or included; the renderer returns private bytes containing server key and passwords and must not be logged.",
+    "The launcher must bind and inspect the complete exact private bytes; inline injection does not remove Docker administrator access or export retention."
+  ],
+  "syntaxSources": [
+    "https://raw.githubusercontent.com/nats-io/nats-server/v2.15.0/server/opts.go",
+    "https://docs.nats.io/learn/security/encryption"
+  ],
+  "remaining": [
+    "Confirm generated settings with the actual pinned disposable NATS2.15 parser and broker.",
+    "Verify health/read-only client TLS-first authentication and adversarial refusal before credentials.",
+    "Run the affected deployment suite on a stable complete slice.",
+    "Root owns installed profile/launcher binding, real Docker injection and supported-environment/phase acceptance."
+  ],
+  "actualNATSTLSSyntaxAccepted": false,
+  "actualDockerInjectionAccepted": false,
+  "installedCredentialTransportSecured": false,
+  "phaseAccepted": false
+}

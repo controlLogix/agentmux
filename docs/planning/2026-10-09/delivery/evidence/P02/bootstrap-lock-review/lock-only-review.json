@@ -1,0 +1,51 @@
+{
+  "command": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-race",
+    "-json",
+    "-count=1",
+    "-timeout=45s",
+    "-run",
+    "^(TestLock|TestKilledChild|TestCancelled)",
+    "./launcher"
+  ],
+  "exitCode": 0,
+  "seconds": 32.96509749899997,
+  "goVersion": "go version go1.27.2 linux/amd64",
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "sourceHashes": {
+    "go.mod": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+    "go.sum": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+    "launcher/lock_unix.go": "b8232a239d47e43d8fac3759d137abfe3b2502adaae6e62d25691323872f9859",
+    "launcher/lock_unix_test.go": "2c22f87e9b9fa6fdfdbf22976f11179d18ca475bdb189df27f2595dec6ba2896"
+  },
+  "liveSourceUnchanged": true,
+  "passedTests": [
+    "TestLockWaitsForDescriptorAndRetainsIdentity",
+    "TestLockRejectsPublicDirectoryAndSymlink",
+    "TestLockRequiresFiniteDeadline",
+    "TestLockRefusesFileAliasesWithoutChangingTarget/symlink",
+    "TestLockRefusesFileAliasesWithoutChangingTarget/hardlink",
+    "TestLockRefusesFileAliasesWithoutChangingTarget",
+    "TestLockWaitReportsOwnerAndPreservesMetadata",
+    "TestLockDoesNotTrustMalformedOwnerMetadata/{\"at",
+    "TestLockDoesNotTrustMalformedOwnerMetadata/not_",
+    "TestLockDoesNotTrustMalformedOwnerMetadata/{\"at#01",
+    "TestLockDoesNotTrustMalformedOwnerMetadata",
+    "TestLockChildOwner",
+    "TestKilledChildReleasesLockWithoutRemovingIdentity",
+    "TestLockNormalizesObservedAttemptWithoutGrantingOwnership",
+    "TestCancelledUnownedLockDoesNotAcquireOrWriteAttempt",
+    "TestLockMissingOrNonDirectoryProfileReturnsError",
+    "TestLockWaitHasHardMaximum"
+  ],
+  "failures": [],
+  "previousPackageFailureRetained": "review.json / result.jsonl",
+  "limits": [
+    "Lock scope only; concurrent Docker wrapper test failures remain in prior full-package result",
+    "WSL Linux only; no macOS / actual Docker / phase acceptance",
+    "30-second contention deadline cannot interrupt blocking filesystem calls",
+    "Caller enrollment must canonicalize parent paths and exclude hostile same-user lock inode removal"
+  ]
+}

@@ -1,0 +1,368 @@
+{
+  "schemaVersion": "1.0.0",
+  "kind": "single-current-engine-installed-cli-review",
+  "recordedUtc": "2026-10-14T17:39:21.146443+00:00",
+  "directExit": 0,
+  "namedPasses": 1,
+  "failures": 0,
+  "skips": 0,
+  "testElapsedSeconds": 104.73,
+  "invocation": {
+    "argv": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-json",
+      "-tags=agentmux_bootstrap_docker",
+      "./launcher",
+      "-run",
+      "^TestInstalledCLIRealComposeAuthenticatedPending$"
+    ],
+    "environment": {
+      "GOPROXY": "off",
+      "GOSUMDB": "off",
+      "GOWORK": "off",
+      "GORACE": "atexit_sleep_ms=0",
+      "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "1",
+      "AGENTMUX_TEST_NATS": "/home/ryan/.cache/agentmux-governance/tools/nats-server",
+      "AMX_BOOTSTRAP_SELECTION_FILE": "/home/ryan/.cache/agentmux-governance/p02-current-wsl-selection-draft-674dc329/selection.json",
+      "AMX_BOOTSTRAP_SELECTION_SHA256": "724f2d7863838b26114a45ab335a93cce9b9a44b47df9bb3ecb5bff3d53c11fb"
+    },
+    "startedUtc": "2026-10-14T17:34:55.268334+00:00",
+    "producerSHA256": "1aabb2a4e095f30861d2e866247816128eb275180c90b9be5b4f01bb1e20902b",
+    "requiredPins": {
+      "platform/launcher/owner_bridge.go": "9cfd0a38d4b40c060759200dbef226cc5bf9dd60d7759f67e756f2d9949e19f2",
+      "platform/launcher/bootstrap_operation.go": "3d4a7531863e2f1ee03820a13767c9eace5bbd3812fcef7eccf48124277c7562",
+      "platform/cmd/agentmux-runtime/main.go": "9ba174b070fe08d76944d2a2f6cbd5da448f0a02f6e1c70c6aabc0a15ad17620",
+      "platform/launcher/bootstrap_network_cleanup_integration_test.go": "5347669150b3bf622cde6634389e564ef67b9eabbe5849393f6ffd711f57b00e",
+      "platform/launcher/installed_cli_compose_integration_linux_test.go": "6d0021d99531507ea5232ff81f1d18477ce1def1a8c228b3069d1d785895073c",
+      "platform/launcher/bootstrap_docker_selection_test.go": "6b5e550b2cc89f0b9fc873a4891623ed01c1277ee8947dbcb147650c312b34ae",
+      "platform/launcher/bootstrap_docker_current_qualification_controls_test.go": "f4b578067fcecf022600f818709ac95185e787e7c5727f6b602485f178bfc831"
+    },
+    "snapshotSeconds": 8.612711309004226,
+    "snapshotFileCount": 259,
+    "batchSourceVerification": true
+  },
+  "sourceVerification": {
+    "batchBeforeCopyAfterMatched": true,
+    "snapshotFiles": 259,
+    "snapshotAndCurrentSharedBytesMatch": true,
+    "manifestSHA256": "392f458dabdfc6c11abb858378569b4a1dc04c607f545de818276e28c6de1ac1"
+  },
+  "fixtureDirectory": "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-77534881",
+  "fixtureEngineID": "772de646-ba89-42ac-8675-45b2025fbdee",
+  "selectionTarget": "wsl-windows-current-qualification",
+  "selectionPin": "724f2d7863838b26114a45ab335a93cce9b9a44b47df9bb3ecb5bff3d53c11fb",
+  "actualEnvironment": {
+    "GOOS": "linux",
+    "GOARCH": "amd64",
+    "WSL": true,
+    "DockerBackend": "windows-interop"
+  },
+  "frontend": {
+    "elapsedNanoseconds": 6569043364,
+    "boundNanoseconds": 10000000000,
+    "exitSuccess": true,
+    "stdoutBytes": 2331,
+    "stderrBytes": 0,
+    "startingDisposition": "starting",
+    "exactCreatorHostPinned": true,
+    "bothStreamsCapturedAfterSoleWaitJoin": true
+  },
+  "completion": {
+    "disposition": "reused",
+    "instanceReadiness": "degraded",
+    "persistenceReadiness": "unknown",
+    "refreshOutcomes": {
+      "owner_bridge_reply_unavailable:": 5,
+      "owner_bridge_deadline:": 1,
+      "none:starting": 3,
+      "none:reused": 1
+    },
+    "roleReadiness": {
+      "boot": "ready",
+      "kernel-lifecycle": "ready",
+      "internal-communication": "ready",
+      "exported-status": "ready",
+      "work": "unknown",
+      "hub_federation": "unknown"
+    }
+  },
+  "preservation": {
+    "originalStatePortContainerBaselineCount": 9,
+    "originalFullNetworkBaselineCount": 8,
+    "containerBaselineAssertionsPassed": true,
+    "networkBaselineUnchanged": true,
+    "exactOwnedBrokerStopped": true,
+    "volumeRetained": true,
+    "newOwnedNetworkRemoved": true,
+    "exactRemovalOutputSavedPrivately": true,
+    "networkCleanupElapsedNanoseconds": 10052685186,
+    "networkCleanupStage": "complete",
+    "networkReadStage": "not_applicable",
+    "afterNetworkCount": 8
+  },
+  "limits": [
+    "Only this authenticated pending case ran; no cold/warm/concurrent/abrupt cohort, tagged vet or phase gate is claimed.",
+    "Actual environment is WSL/WindowsInterop, not native Linux or macOS.",
+    "Existing fixture compares complete bounded container state/port projections and full network observations; no full raw container-map equality is claimed.",
+    "Dependency restoration full-map timestamp-drift refusal remains historical and unchanged.",
+    "fixture.json liveRunStarted is a preparation-time flag; actual installed child/role ownership is tested by creator-held handles, not that field.",
+    "Completion reports degraded overall readiness and unknown persistence readiness honestly; all four protected roles have current ready evidence."
+  ],
+  "runArtifacts": {
+    "selection.json": {
+      "sha256": "724f2d7863838b26114a45ab335a93cce9b9a44b47df9bb3ecb5bff3d53c11fb",
+      "bytes": 660,
+      "private": false
+    },
+    "exit.txt": {
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2,
+      "private": false
+    },
+    "containers-stdout.private": {
+      "sha256": "4930da1ab46305c2c5b265f091565cbad3bdca8acf14328f943f2c4455ada327",
+      "bytes": 585,
+      "private": true
+    },
+    "engine-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "private": true
+    },
+    "completion.json": {
+      "sha256": "d5a715e985eb285d8a3403278d098141dbdfd94529bd026481ba11af0d1d1a17",
+      "bytes": 72,
+      "private": false
+    },
+    "image-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "private": true
+    },
+    "shared-after.json": {
+      "sha256": "392f458dabdfc6c11abb858378569b4a1dc04c607f545de818276e28c6de1ac1",
+      "bytes": 30032,
+      "private": false
+    },
+    "stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "private": false
+    },
+    "events.jsonl": {
+      "sha256": "b7a55573ea24e1ba0619dfe817696e0fe006db5954255c1d550a65caba9ced50",
+      "bytes": 1591,
+      "private": false
+    },
+    "engine-stdout.private": {
+      "sha256": "6d55604f0ba68ca5feeb8edeaf2294bf533f17e299bed0970b6d3b964edc9e65",
+      "bytes": 39,
+      "private": true
+    },
+    "containers-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "private": true
+    },
+    "networks-stdout.private": {
+      "sha256": "848e7d6f4f0031667be562a339e9fcb13c838fe6de3eb7ac62264e9932777c9f",
+      "bytes": 520,
+      "private": true
+    },
+    "producer.sh": {
+      "sha256": "1aabb2a4e095f30861d2e866247816128eb275180c90b9be5b4f01bb1e20902b",
+      "bytes": 6306,
+      "private": false
+    },
+    "image-stdout.private": {
+      "sha256": "86c5d014a0c0b378786c9934d5b8ccaaa57eccb6e2685ee6d47086f0d0bb46d3",
+      "bytes": 81,
+      "private": true
+    },
+    "endpoint-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "private": true
+    },
+    "invocation.json": {
+      "sha256": "fc2a5cce5f4529d113b92de8fb0f8b56cd148dff07ffb79e60f20de310063611",
+      "bytes": 1926,
+      "private": false
+    },
+    "source-manifest.json": {
+      "sha256": "392f458dabdfc6c11abb858378569b4a1dc04c607f545de818276e28c6de1ac1",
+      "bytes": 30032,
+      "private": false
+    },
+    "endpoint-stdout.private": {
+      "sha256": "0d1284cdbf15f9de9be8524a923374e8dffede3d62a65a022b0c8f58bfaa26b7",
+      "bytes": 44,
+      "private": true
+    },
+    "networks-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "private": true
+    },
+    "shared-before.json": {
+      "sha256": "392f458dabdfc6c11abb858378569b4a1dc04c607f545de818276e28c6de1ac1",
+      "bytes": 30032,
+      "private": false
+    },
+    "preflight.json": {
+      "sha256": "66c405e1968bea6a88ba00ca12ff5ca773dea8bea6dd87c4e194ea3fe7420ac8",
+      "bytes": 2327,
+      "private": false
+    }
+  },
+  "fixtureArtifacts": {
+    "baseline-guard-c8163b8c.json": {
+      "sha256": "0ebe839767e2c832da979110ab3021ee9bf4310ef310265bd9d45fad2ffac81c",
+      "bytes": 97,
+      "private": false
+    },
+    "baseline-guard-b1942062.json": {
+      "sha256": "6fd8debd078359903475a1944437608f0d17bab74908eaa8a22c4e82ab574321",
+      "bytes": 97,
+      "private": false
+    },
+    "refresh-attempt-54796c34.json": {
+      "sha256": "60c5da6b57ec1b497d32c4c5f351b5fbb1904a8276b646da612e1407dcb11d61",
+      "bytes": 101,
+      "private": false
+    },
+    "refresh-attempt-dfe43df5.json": {
+      "sha256": "60c5da6b57ec1b497d32c4c5f351b5fbb1904a8276b646da612e1407dcb11d61",
+      "bytes": 101,
+      "private": false
+    },
+    "pending-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "private": true
+    },
+    "refresh-attempt-781d19d6.json": {
+      "sha256": "7c989e65267f1baded3bb1e9a5dfd42042f9b01ba6427dfc2d0ab54ae3ec576b",
+      "bytes": 83,
+      "private": false
+    },
+    "refresh-attempt-02f7ea38.json": {
+      "sha256": "60c5da6b57ec1b497d32c4c5f351b5fbb1904a8276b646da612e1407dcb11d61",
+      "bytes": 101,
+      "private": false
+    },
+    "network-removal-output.json": {
+      "sha256": "3b9109a9cdace885e19a2dd545dace96b5ef3c024f6f9bb54bb9efc9a32e80ec",
+      "bytes": 118,
+      "private": false
+    },
+    "network-provenance.json": {
+      "sha256": "4c6baa7450df700cd8ab5ed44b8cc2c3b00a546f0ae62582200aab5aab685f43",
+      "bytes": 883,
+      "private": false
+    },
+    "refresh-attempt-5cbf8455.json": {
+      "sha256": "7c989e65267f1baded3bb1e9a5dfd42042f9b01ba6427dfc2d0ab54ae3ec576b",
+      "bytes": 83,
+      "private": false
+    },
+    "network-removal-stdout.private": {
+      "sha256": "21c70eade9e89daabcaa70df5719490ad00860c32528c34ce6e76a858c02bf39",
+      "bytes": 65,
+      "private": true
+    },
+    "refresh-attempt-6d3ba3c1.json": {
+      "sha256": "60c5da6b57ec1b497d32c4c5f351b5fbb1904a8276b646da612e1407dcb11d61",
+      "bytes": 101,
+      "private": false
+    },
+    "pending-timing.json": {
+      "sha256": "8ce9de628e46fef4cb752c853daaea688e662b1ea1a2ed1f8e8a09fa6468a8a9",
+      "bytes": 144,
+      "private": false
+    },
+    "refresh-attempt-190ae59a.json": {
+      "sha256": "60c5da6b57ec1b497d32c4c5f351b5fbb1904a8276b646da612e1407dcb11d61",
+      "bytes": 101,
+      "private": false
+    },
+    "baseline-guard-bba261a5.json": {
+      "sha256": "ad24c5d4426a7549fa626e42424548f3c0c15531847e6f0ce2c6425685a75339",
+      "bytes": 97,
+      "private": false
+    },
+    "refresh-attempt-615f901e.json": {
+      "sha256": "7c989e65267f1baded3bb1e9a5dfd42042f9b01ba6427dfc2d0ab54ae3ec576b",
+      "bytes": 83,
+      "private": false
+    },
+    "refresh-attempt-e8bf8394.json": {
+      "sha256": "d9296a0a899e57eef234fa45636bfc3adc92afc7ce32f6706442b2973e909acd",
+      "bytes": 81,
+      "private": false
+    },
+    "network-baseline.json": {
+      "sha256": "58623ac49a76c0a704d31fbe75ccb5d0719736c2931cffeaaab4c6568cc20467",
+      "bytes": 1163,
+      "private": false
+    },
+    "refresh-attempt-179eddac.json": {
+      "sha256": "85c52f9f817de5e29b527ec0f7f4d7e3dce59b66b3050ea451823132f7d3576d",
+      "bytes": 92,
+      "private": false
+    },
+    "cleanup.json": {
+      "sha256": "88e974b1e829b6aaaa037ee7b88e9e66a7fe5cb7783f9f4fc898073052278693",
+      "bytes": 742,
+      "private": false
+    },
+    "network-cleanup.json": {
+      "sha256": "a5a3655db5ea135ec6eec31ef40dc3d2cfa0363ef04e6b000c1a9e0142cf5217",
+      "bytes": 1290,
+      "private": false
+    },
+    "pending.json": {
+      "sha256": "1a0124ac6443ea78f7da7274559fd365badea5ba2bfac90c6c6c226034fe7442",
+      "bytes": 3148,
+      "private": false
+    },
+    "pending-stdout.private": {
+      "sha256": "ff8ebd69422c8ea3856d70091276a9901571a535c46064600241f390eeea4ff5",
+      "bytes": 2331,
+      "private": true
+    },
+    "network-cleanup-stage.json": {
+      "sha256": "d233a058e60248e61e723fcc2eac65fff7e8bfccf45cea1fe379d94d2d08028f",
+      "bytes": 175,
+      "private": false
+    },
+    "pending-completion.json": {
+      "sha256": "7ec51e4b0d97fd7cec46582abedd9a76faf83fc0a5315db0f2ea0e7345716c16",
+      "bytes": 3497,
+      "private": false
+    },
+    "fixture.json": {
+      "sha256": "6dd2dd260bd694e594d17f31d85fd9332fab38424b74454bab152784333e3981",
+      "bytes": 1143,
+      "private": false
+    },
+    "baseline.json": {
+      "sha256": "634cf5234171a5fdfb96e33ffd04c196f27cdb553ba73e26091eecdd569ac8ae",
+      "bytes": 3010,
+      "private": false
+    },
+    "pending-joined-diagnostic.json": {
+      "sha256": "68efc3b1793bde7477dc907d6e9c5edc1e1553d745237ed7db6e87b220895069",
+      "bytes": 190,
+      "private": false
+    },
+    "pending-output-capture.json": {
+      "sha256": "e0499fbc87aaef3a95b36e714dfdb704065dfc26a3b988ac9f3d83a903a93664",
+      "bytes": 276,
+      "private": false
+    }
+  }
+}

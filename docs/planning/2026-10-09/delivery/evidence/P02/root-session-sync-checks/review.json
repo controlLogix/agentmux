@@ -1,0 +1,33 @@
+{
+  "reviewer": "Codex",
+  "recordedAt": "2026-10-14T00:01:45.728702+00:00",
+  "phaseAccepted": false,
+  "scope": "Actual private Session provenance mapping and otherwise-valid flush-policy refusal before Docker",
+  "command": "go test -race -count=1 -timeout=45s -run ^(TestSessionOwnerObservation|TestBootstrapConfigCannotRelaxApprovedSyncPolicy) -json ./launcher",
+  "environment": "Prepared Go1.27.2 Ubuntu-26.04 WSL; offline dependencies; GORACE=atexit_sleep_ms=0",
+  "exitCode": 0,
+  "passingTestAndSubtestEntries": 5,
+  "sourceHashes": {
+    "platform/launcher/bootstrap.go": "88a5870fa078d6580fe5073dd9bdfe3cff2a8468038679939693b4a6b8161989",
+    "platform/launcher/bootstrap_config_test.go": "46f0cc5d0fc1e01056f519ce3dbcfab93699fdc904246f1da0ed8ceac9fbaab3",
+    "platform/launcher/startup_session.go": "123fa4e36366135cf4de954c5f735bee20b655b5bad449bc1595e8e858dea839",
+    "platform/launcher/startup_session_test.go": "9a6a94b54dcd0929425add983f5b996159457bcac11e60a66d29d9c6686390b6",
+    "platform/deployment/profile.go": "f15a34a2111492fc83f3c5e85aad2cb869c4c6487bac9f3cc10aa2de9de767e7"
+  },
+  "currentSourceDrift": [],
+  "archiveHashes": {
+    "focused.jsonl": "e21938877348ad868ad090d4ca73a6da3b1862ca4b6e92c775410c48e80eef38",
+    "focused.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "exit-code.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "source-before.sha256": "e784b2aedefe58beb68cf9e8c9e02d7f47cc7357df116a610617987cd53d7421",
+    "source-after.txt": "a679b24449ab85263dd3b1a0126a513de2bb4d9cb0c4704ab2102ce3d5b2cb35"
+  },
+  "review": [
+    "Missing or periodic sync_interval fails fixed factory admission even when enrollment and every byte digest match the altered configuration. The Docker fixture command log remains absent.",
+    "Session mapping retains actual invocation/receipt time, refuses stale receipts, does not promote an unqualified private probe value, and reports known cleanup failure."
+  ],
+  "limits": [
+    "Pure source-bound boundary tests only; actual signed subprocess lifecycle and SDK evidence is recorded separately.",
+    "No actual new Compose run, native macOS, complete remote/team path or phase acceptance."
+  ]
+}

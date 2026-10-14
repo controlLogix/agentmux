@@ -1,0 +1,199 @@
+{
+  "scope": "Cache-only owner-history integration candidate, not shared promotion or real Run/CLI/Docker/native acceptance.",
+  "candidateSourceSHA256": {
+    "owner_bridge.go": "2fc483eb32f24c326ebe7abd4a07a4a24c0b68672781ba3e4afd9816c5d6a8c7",
+    "host_receipt_server.go": "c4e2d3d1ff9ce746229e0300480c2fe0819728c2246e57bf52630c64143cd81a",
+    "owner_bridge_receipt.go": "10e4f251736aace0c91793ab18df8f883edd4e2b958a84c0923f48aa6d1704aa",
+    "session_cleanup.go": "66e9107d765355fa6e3771bc97ed1e372e9d6c57c736fea8ab0be1fd7eefd096",
+    "bootstrap_history_stage.go": "4803820067e312ff24956d8aa83eef696d1d31d42071e3e5bee339d45490b8d0",
+    "bootstrap_operation.go": "f833259d00a13584e32577b8579e6b701c80e829323d932eeb64a71b8af57aa5",
+    "bootstrap_history.go": "2f7ad3e45fe10a3030355bfd1a76fc58dd65258018265026d230fef1821df96c",
+    "owner_bridge_history.go": "5b254a86a43c87f43cca87e130ec5a2d32fc3a2d804106da2fc560b55f88a052",
+    "bootstrap_history_owner_integration_test.go": "7ace0894192691072cb50bf7d1f44a983befd8318eee690e4d5110f52ed42b28"
+  },
+  "currentSharedSourcebaseSHA256": {
+    "owner_bridge.go": "6c3cbf40f22cf00f16f1285f839506218bc0b4ccbed0a6465575580cac1fd76a",
+    "host_receipt_server.go": "e0c13e86e6a728112a5f1fef5dcb805981125e794ce495251cd0d0ab1937dbf9",
+    "owner_bridge_receipt.go": "c6ec84c03ac827c4c6008705ac8ef6d401484cc3b1015eba7dda900f35b89685",
+    "session_cleanup.go": "9187e95a14aeac4c33cae93c34ceba7abe0aa57be290ab08c46d327e730855cb",
+    "bootstrap_history_stage.go": "edd5275ebdb8d84a27a915bd3095baa150f20ac878a4e6c058d9114a25e8d53d",
+    "bootstrap_operation.go": "eac3ff3891a6470931e84580c8ffc545de0cbc124d8b33fdf3f967bafa79e40d",
+    "bootstrap_history.go": "5127eadff2410b30fb9e00f2c87c27ffce33d1e9c95752de6c3d310c9db0714b"
+  },
+  "results": [
+    {
+      "name": "before",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-race",
+        "./launcher",
+        "-run",
+        "^TestBootstrapHistoryPreEntryActualFailureChronology$",
+        "-count=1",
+        "-json"
+      ],
+      "exit": 1,
+      "elapsed": 7.104166750999866
+    },
+    {
+      "name": "after",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-race",
+        "./launcher",
+        "-run",
+        "^TestBootstrapHistory(PreEntryActualFailureChronology|FailureFinalizationUsesJoinedEnvelope|RetireActiveThenExpiredContext)$",
+        "-count=1",
+        "-json"
+      ],
+      "exit": 0,
+      "elapsed": 4.982597761001671
+    },
+    {
+      "label": "warning-before",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-race",
+        "./launcher",
+        "-run",
+        "^TestBootstrapHistoryActiveWarningHasNoCleanupCapability$",
+        "-count=1",
+        "-json"
+      ],
+      "exit": 1,
+      "elapsed": 3.458789653996064
+    },
+    {
+      "label": "warning-after",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-race",
+        "./launcher",
+        "-run",
+        "^TestBootstrapHistoryActiveWarningHasNoCleanupCapability$",
+        "-count=1",
+        "-json"
+      ],
+      "exit": 0,
+      "elapsed": 4.06946906200028
+    },
+    {
+      "label": "final-focused",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-race",
+        "./launcher",
+        "-run",
+        "^TestBootstrapHistory(PreEntryActualFailureChronology|FailureFinalizationUsesJoinedEnvelope|RetireActiveThenExpiredContext|ActiveWarningHasNoCleanupCapability)$",
+        "-count=1",
+        "-json"
+      ],
+      "exit": 0,
+      "elapsed": 1.7551318210025784
+    },
+    {
+      "label": "final-vet",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "vet",
+        "./launcher"
+      ],
+      "exit": 0,
+      "elapsed": 7.495654949998425
+    }
+  ],
+  "testEvents": {
+    "before": {
+      "passed": [],
+      "failed": [
+        "TestBootstrapHistoryPreEntryActualFailureChronology",
+        "package"
+      ],
+      "skipped": []
+    },
+    "after": {
+      "passed": [
+        "TestBootstrapHistoryPreEntryActualFailureChronology",
+        "TestBootstrapHistoryFailureFinalizationUsesJoinedEnvelope",
+        "TestBootstrapHistoryRetireActiveThenExpiredContext"
+      ],
+      "failed": [],
+      "skipped": []
+    },
+    "warning-before": {
+      "passed": [],
+      "failed": [
+        "TestBootstrapHistoryActiveWarningHasNoCleanupCapability",
+        "package"
+      ],
+      "skipped": []
+    },
+    "warning-after": {
+      "passed": [
+        "TestBootstrapHistoryActiveWarningHasNoCleanupCapability"
+      ],
+      "failed": [],
+      "skipped": []
+    },
+    "final-focused": {
+      "passed": [
+        "TestBootstrapHistoryPreEntryActualFailureChronology",
+        "TestBootstrapHistoryFailureFinalizationUsesJoinedEnvelope",
+        "TestBootstrapHistoryRetireActiveThenExpiredContext",
+        "TestBootstrapHistoryActiveWarningHasNoCleanupCapability"
+      ],
+      "failed": [],
+      "skipped": []
+    }
+  },
+  "budget": "Normal publication uses original startup remaining. Actual Bootstrap failure with unavailable publication retains pending finalization until worker join. Joined finalizer receives<=500ms of one existing configured core cleanup envelope; then retires exact history duplicate even IOexpired. Core receives same envelope remaining; actual incomplete core resources retain Session/reaper/service lease owner. Healthy optional history failure never starts cleanup envelope.",
+  "ownership": "Single publication producer before returned closes, serialized cleanup writers afterward, immutable atomic warning snapshots. Public warning has fixed code and no Unwrap/cleanup capability. Public cleanup requires returned closed+retired+no pending finalizer. Exact store/root/stage retained privately; no caller path/PID/closer adoption.",
+  "chronology": "newBootstrapOperation captures immutable actual time.Now UTC at creation; history beganAt uses it. Actual pre-entry completed failure control fails original and passes repaired.",
+  "limits": [
+    "Four focused real-file/actual-lock/component operation controls pass; they do not execute full production Run or installed CLI.",
+    "Core shared-context helper unchanged concrete retention branch is source-reviewed; forced actual simultaneous core cleanup failure integration remains to be added if required.",
+    "Native Darwin ACL not executed here.",
+    "Blocking local filesystem syscalls are not preemptible; retired publication TryLock can refuse an unexpected active call and retain concrete owner."
+  ],
+  "artifactSHA256": {
+    "after.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "owner_bridge_history.go": "cb3bed78f7af0a3f73fe6a814162037dcb011eac198459e70159c969e15a828d",
+    "bootstrap_history.go": "2f7ad3e45fe10a3030355bfd1a76fc58dd65258018265026d230fef1821df96c",
+    "warning-before.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "before.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "before.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "warning-after.log": "95f73f864786980bf5b8de436a7de4ad73fa6466b12c2da4be05b89e78a9f00c",
+    "verification-plan.json": "99e0778e6e8d668655712f7e28616b6165311924d3a4ee83eb850221637b435b",
+    "final-focused.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "warning-after.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "final-vet.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "final-vet.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "focused-results.json": "08bbbcefdb8da7ab2cef1af775783af544c75a724fa56e19857710e8f32d4208",
+    "warning-results.json": "acc9c908e8153fe8f0f816b4d40f92fc506bf7a15babc3ef1aed9b9143ed9b49",
+    "warning-before.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "before-warning-owner_bridge_history.go": "375a116e75507a64595d32ca112e06f5705875ca5afb8dbfb9aed8210f922000",
+    "host_receipt_server.go": "c4e2d3d1ff9ce746229e0300480c2fe0819728c2246e57bf52630c64143cd81a",
+    "warning-after.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "final-focused.log": "ed0fec618f0f49c242429813ebd62b24c05c52613760c9f54f26ac61c91c8453",
+    "sourcebase.json": "9394c78fefc0e737e8573bd3e131c7884ca9613d1854d889c2dbac7c015f1d3f",
+    "bootstrap_operation.go": "f833259d00a13584e32577b8579e6b701c80e829323d932eeb64a71b8af57aa5",
+    "before.log": "ef1ccbdc78190dbff48de78140b79883586361e332769f4915f9b5e7e1136821",
+    "owner_bridge_receipt.go": "10e4f251736aace0c91793ab18df8f883edd4e2b958a84c0923f48aa6d1704aa",
+    "candidate.diff": "12c18ad89de1daba478cfd2953adc4fd52c1c7455da50b2836ba908967c48726",
+    "final-vet.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "before-warning-source-manifest.json": "ae415abe491cfa65eef7bc22bbdd2c4ffddf2619652825de59606def2e925785",
+    "after.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "final-candidate.diff": "042ca75df23d9f0cfafda108495456b59d27fd7c807c1263d01ae4737e2b487b",
+    "session_cleanup.go": "66e9107d765355fa6e3771bc97ed1e372e9d6c57c736fea8ab0be1fd7eefd096",
+    "warning-before.log": "6dd6b534c96ee4f722cdea3a9367f0861379ca1e3d0ba85cbc00c90b3256a23e",
+    "bootstrap_history_stage.go": "be1e166dcdcc5bc8374f4fddf776bb9efc4743d7d114f31186015bba4404389d",
+    "owner_bridge.go": "869f15bb08f1080aa615711295eabe5108d1622836f00a2629daf863d18d3a06",
+    "after.log": "2c07023b96377118e9d372f0c53ad898de76c3d8381b557d5b59dadc810f3cfe",
+    "final-focused.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  }
+}

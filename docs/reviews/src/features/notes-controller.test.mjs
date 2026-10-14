@@ -211,3 +211,64 @@ test('combined controllers warn through debounce and pending writes, then save n
     assert.equal(h.warnsBeforeLeaving(), false);
   } finally { h.close(); }
 });
+
+test('marking notes reviewed saves the version without changing text, even when browser storage is blocked', async () => {
+  const identity = { configured: true, name: 'Ryan Helms', email: 'ryan@example.test', id: 'ryan', filename: 'ryan.md' };
+  const older = { ...record('sha256:' + 'b'.repeat(64)), reviewerId: identity.id, reviewerEmail: identity.email };
+  for (const blocked of [false, true]) {
+    const h = setup({ blocked, live: { identity, record: older } });
+    try {
+      await h.ready();
+      assert.equal(h.elements.get('notes-version').title, older.documentVersion);
+      await h.action('version');
+      assert.equal(h.warnsBeforeLeaving(), true);
+      assert.equal(h.calls.length, 0);
+      await h.advance(450);
+      assert.equal(h.calls.length, 1);
+      const saved = h.calls[0].body;
+      assert.equal(h.calls[0].path, '/api/notes');
+      assert.equal(saved.record.documentVersion, documentData.version);
+      assert.deepEqual(saved.record.notes, older.notes);
+      assert.equal(saved.record.reviewerId, identity.id);
+      assert.equal(saved.record.reviewerEmail, identity.email);
+      assert.equal(saved.revision, 'original');
+      assert.equal(h.warnsBeforeLeaving(), false);
+      assert.match(h.elements.get('notes-saved').textContent, /ryan\.md/);
+    } finally { h.close(); }
+  }
+});
+
+test('marking reviewed during a pending save queues the current version using the acknowledged revision', async () => {
+  const identity = { configured: true, name: 'Ryan Helms', email: 'ryan@example.test', id: 'ryan', filename: 'ryan.md' };
+  const older = record('sha256:' + 'b'.repeat(64));
+  const h = setup({ live: { identity, hold: true, record: older } });
+  try {
+    await h.ready();
+    h.fields[0].value += '\nNew feedback'; await h.fields[0].fire('input');
+    await h.advance(750);
+    assert.equal(h.calls.length, 1);
+    assert.equal(h.calls[0].body.record.documentVersion, older.documentVersion);
+    await h.action('version'); await h.advance(450);
+    assert.equal(h.calls.length, 1);
+    assert.equal(h.warnsBeforeLeaving(), true);
+    h.releaseWrite(); await h.ready();
+    assert.equal(h.calls.length, 2);
+    assert.equal(h.calls[1].body.revision, 'saved-1');
+    assert.equal(h.calls[1].body.record.documentVersion, documentData.version);
+    assert.equal(h.calls[1].body.record.notes.first, older.notes.first + '\nNew feedback');
+    assert.equal(h.warnsBeforeLeaving(), false);
+  } finally { h.close(); }
+});
+
+test('cancelling the reviewed marker preserves the source version and does not save or share', async () => {
+  const identity = { configured: true, name: 'Ryan Helms', email: 'ryan@example.test', id: 'ryan', filename: 'ryan.md' };
+  const older = record('sha256:' + 'b'.repeat(64));
+  const h = setup({ confirm: false, live: { identity, record: older } });
+  try {
+    await h.ready(); await h.action('version'); await h.advance(1000);
+    assert.equal(h.calls.length, 0);
+    assert.equal(h.elements.get('notes-version').title, older.documentVersion);
+    assert.equal(h.warnsBeforeLeaving(), false);
+    assert.equal(h.fields[0].value, older.notes.first);
+  } finally { h.close(); }
+});

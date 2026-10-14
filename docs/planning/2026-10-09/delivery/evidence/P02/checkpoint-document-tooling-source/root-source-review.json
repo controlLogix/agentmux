@@ -1,0 +1,46 @@
+{
+  "reviewer": "Codex",
+  "date": "2026-10-14T19:30:10.727432+00:00",
+  "scope": "Current document review tooling source for a feature-branch checkpoint.",
+  "sourceHashes": {
+    "docs/reviews/open.mjs": "b1bbdcb659032de64e608425fe58fce2c4f75d0c7e9c447b1b4b6c87cc9a169a",
+    "docs/reviews/src/features/review-server.mjs": "2ed39e72f1202c7b5fac018dfc34aab8a9852ec982a45798a69b3927583c7522",
+    "docs/reviews/src/features/review-server.test.mjs": "fd93f2cd2b3d6cc8eff84cbd8ca8a4423b505583f64e6ee066e341645ad8b537",
+    "docs/reviews/src/features/local-review.mjs": "b01d1889e8bd3156c590e57cd259ea59486b3877bdfc67e1d9088749578d4286",
+    "docs/reviews/src/features/notes-controller.mjs": "fd6324494a48e5d907d5aeb9d2b9702c780f9e4a6416125cea463bb2016b7f89",
+    "docs/reviews/src/features/notes-controller.test.mjs": "68aff15e6f14f140e7959078c350325afffb221d5ed7c42e7d59834044d66e35",
+    ".agents/skills/review-inbox/SKILL.md": "1ff824f3d82286f5dac639abf8cd40a4ee21c9cb8c1960460ed049264fe9b8db",
+    "docs/planning/2026-10-09/review-site/src/pages/build.mjs": "78340b4332f49b5cd3b7dbae728cd3979e1cfa6d3da623cdd0d84a3b3b881ebb"
+  },
+  "retainedEvidence": [
+    "docs/reviews/server-lifecycle-verification.json",
+    "docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/root-review.json"
+  ],
+  "review": [
+    "Read current management source and changed launcher/local HTTP/controller/builder/skill code. Current lifecycle record exactly pins launcher, manager, manager tests, HTTP helper, skill and builder. Its existing Windows-only lifetime, token, port, drain and reuse limits remain unchanged.",
+    "Reviewed current notes-controller delta: local bridge owns pending-save warnings even when storage is denied; version marking reports repository saving. Regression covers unchanged text, blocked storage, pending revision ordering and cancelled marker. The older P01 controller pins do not match this delta; focused current controller execution still required.",
+    "Builder adds managed server source to document-version inputs; it does not change product architecture or runtime.",
+    "No new pattern or product-runtime relationship. Review-server ownership is document tooling; page/features/component boundaries remain intact."
+  ],
+  "requiredCheck": "node --test docs/reviews/src/features/notes-controller.test.mjs",
+  "requiredCheckStatus": "passed",
+  "limits": [
+    "No new runtime or browser proof.",
+    "No global source digest refreshed.",
+    "Source checkpoint and P02 acceptance remain open."
+  ],
+  "focusedExecution": {
+    "date": "2026-10-14T19:32:10.784616+00:00",
+    "command": "node --test docs/reviews/src/features/notes-controller.test.mjs",
+    "environment": "Native Windows Node; isolated in-memory browser/controller fixtures",
+    "exitCode": 0,
+    "tests": 10,
+    "passed": 10,
+    "failed": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "durationMs": 359.8684,
+    "toolWallSeconds": 1.1200111,
+    "limitations": "Source-level controller behavior; no actual browser rendering, local server lifecycle rerun or P02 acceptance."
+  }
+}

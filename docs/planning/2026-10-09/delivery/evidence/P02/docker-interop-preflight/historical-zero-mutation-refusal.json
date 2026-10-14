@@ -1,0 +1,212 @@
+{
+  "recordedAt": "2026-10-13T20:16:18.983371+00:00",
+  "fixtureId": "37d514052a304a2b",
+  "project": "amx-p02-interop-37d514052a304a2b",
+  "volume": "amx-p02-interop-37d514052a304a2b-data",
+  "sourceCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "qualification": "Disposable Windows-owned Docker CLI interop from native WSL Python; not approved production backend or phase acceptance.",
+  "dockerExecutable": "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+  "context": "desktop-linux",
+  "networkMode": "nat",
+  "nativePythonPlatform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+  "natsPyVersion": "2.16.0",
+  "image": "docker.io/library/nats@sha256:fdae708d900cb150ce13f203359719bdd9cefd3dbbbc32a4c6224b23ea3e0b2c",
+  "observedTagIndexDigest": "sha256:cd3fcd4ecdda44e3a66728a5334af0a959bc3979b32810e033d1c547241cd0f4",
+  "expectedEngineId": "e0f1f93d-abf1-44f2-b62a-5bfee21d2b5c",
+  "commands": [
+    {
+      "argv": [
+        "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+        "--context",
+        "desktop-linux",
+        "ps",
+        "--no-trunc",
+        "--format",
+        "{{json .ID}}\t{{json .Names}}\t{{json .State}}\t{{json .Ports}}"
+      ],
+      "stdin": null
+    },
+    {
+      "argv": [
+        "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+        "--context",
+        "desktop-linux",
+        "ps",
+        "--no-trunc",
+        "--format",
+        "{{json .ID}}\t{{json .Names}}\t{{json .State}}\t{{json .Ports}}"
+      ],
+      "stdin": null
+    }
+  ],
+  "phaseAccepted": false,
+  "mountedNativeLinuxDockerIntegration": "unavailable",
+  "tokensStored": false,
+  "composeSecretConfigStored": false,
+  "fixtureSourceSha256": "4012f0d2d1e72b050b0dbbd2acfe4bcc809df0170f5bb492c53ab43ef152674a",
+  "status": "fixture_error",
+  "originalContainersBefore": [
+    {
+      "id": "19ba9bafd0bec6d55712376a9bb23eaaeda5ab5f8ffdda9b236b49ac5e7e112f",
+      "name": "architecture-oauth2-proxy",
+      "state": "running",
+      "ports": ""
+    },
+    {
+      "id": "f897dc6256ae92abab01209626c68eb1eccf0afe32d5d5b7ea83dfa3a64a1c65",
+      "name": "architecture-mcp",
+      "state": "running",
+      "ports": "3000/tcp"
+    },
+    {
+      "id": "33a41abf4f05dffbec7739b2af02881cbe9e1959431a8d68fead75d126e555e4",
+      "name": "architecture-branding",
+      "state": "running",
+      "ports": "8080-8081/tcp"
+    },
+    {
+      "id": "72529c6278aa9e02446cd5d645ccca78fe59f06c1bcc391b20f28e0f1aa556b8",
+      "name": "architecture-structurizr",
+      "state": "running",
+      "ports": "8080/tcp"
+    },
+    {
+      "id": "0e5c9775738f1e524f1f10833bd3e14fd7a3e812df3f000265a36d8739d8f853",
+      "name": "procore-mcp",
+      "state": "running",
+      "ports": "0.0.0.0:8791->8791/tcp, [::]:8791->8791/tcp"
+    },
+    {
+      "id": "3a616ddd9203c143162f77089d8750c7f19d9a612589908ba89ff2f17d39dff5",
+      "name": "forma-mcp",
+      "state": "running",
+      "ports": "3000/tcp"
+    },
+    {
+      "id": "a222086bb9ef99f2626124a53b04dff9103692f6cdda13e80ff768060eb60c8e",
+      "name": "m365-mcp",
+      "state": "running",
+      "ports": "3000/tcp"
+    },
+    {
+      "id": "8c113bdda041e4aad4b4db837951e4a739c35d5b558b18d71e5d5fc200eac855",
+      "name": "adag-proxy",
+      "state": "running",
+      "ports": "0.0.0.0:80->80/tcp, [::]:80->80/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp"
+    }
+  ],
+  "failure": {
+    "type": "AssertionError",
+    "stageCode": null
+  },
+  "allRunningContainersAfter": [
+    {
+      "id": "19ba9bafd0bec6d55712376a9bb23eaaeda5ab5f8ffdda9b236b49ac5e7e112f",
+      "name": "architecture-oauth2-proxy",
+      "state": "running",
+      "ports": ""
+    },
+    {
+      "id": "f897dc6256ae92abab01209626c68eb1eccf0afe32d5d5b7ea83dfa3a64a1c65",
+      "name": "architecture-mcp",
+      "state": "running",
+      "ports": "3000/tcp"
+    },
+    {
+      "id": "33a41abf4f05dffbec7739b2af02881cbe9e1959431a8d68fead75d126e555e4",
+      "name": "architecture-branding",
+      "state": "running",
+      "ports": "8080-8081/tcp"
+    },
+    {
+      "id": "72529c6278aa9e02446cd5d645ccca78fe59f06c1bcc391b20f28e0f1aa556b8",
+      "name": "architecture-structurizr",
+      "state": "running",
+      "ports": "8080/tcp"
+    },
+    {
+      "id": "0e5c9775738f1e524f1f10833bd3e14fd7a3e812df3f000265a36d8739d8f853",
+      "name": "procore-mcp",
+      "state": "running",
+      "ports": "0.0.0.0:8791->8791/tcp, [::]:8791->8791/tcp"
+    },
+    {
+      "id": "3a616ddd9203c143162f77089d8750c7f19d9a612589908ba89ff2f17d39dff5",
+      "name": "forma-mcp",
+      "state": "running",
+      "ports": "3000/tcp"
+    },
+    {
+      "id": "a222086bb9ef99f2626124a53b04dff9103692f6cdda13e80ff768060eb60c8e",
+      "name": "m365-mcp",
+      "state": "running",
+      "ports": "3000/tcp"
+    },
+    {
+      "id": "8c113bdda041e4aad4b4db837951e4a739c35d5b558b18d71e5d5fc200eac855",
+      "name": "adag-proxy",
+      "state": "running",
+      "ports": "0.0.0.0:80->80/tcp, [::]:80->80/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp"
+    }
+  ],
+  "originalContainersAfter": [
+    {
+      "id": "19ba9bafd0bec6d55712376a9bb23eaaeda5ab5f8ffdda9b236b49ac5e7e112f",
+      "name": "architecture-oauth2-proxy",
+      "state": "running",
+      "ports": ""
+    },
+    {
+      "id": "f897dc6256ae92abab01209626c68eb1eccf0afe32d5d5b7ea83dfa3a64a1c65",
+      "name": "architecture-mcp",
+      "state": "running",
+      "ports": "3000/tcp"
+    },
+    {
+      "id": "33a41abf4f05dffbec7739b2af02881cbe9e1959431a8d68fead75d126e555e4",
+      "name": "architecture-branding",
+      "state": "running",
+      "ports": "8080-8081/tcp"
+    },
+    {
+      "id": "72529c6278aa9e02446cd5d645ccca78fe59f06c1bcc391b20f28e0f1aa556b8",
+      "name": "architecture-structurizr",
+      "state": "running",
+      "ports": "8080/tcp"
+    },
+    {
+      "id": "0e5c9775738f1e524f1f10833bd3e14fd7a3e812df3f000265a36d8739d8f853",
+      "name": "procore-mcp",
+      "state": "running",
+      "ports": "0.0.0.0:8791->8791/tcp, [::]:8791->8791/tcp"
+    },
+    {
+      "id": "3a616ddd9203c143162f77089d8750c7f19d9a612589908ba89ff2f17d39dff5",
+      "name": "forma-mcp",
+      "state": "running",
+      "ports": "3000/tcp"
+    },
+    {
+      "id": "a222086bb9ef99f2626124a53b04dff9103692f6cdda13e80ff768060eb60c8e",
+      "name": "m365-mcp",
+      "state": "running",
+      "ports": "3000/tcp"
+    },
+    {
+      "id": "8c113bdda041e4aad4b4db837951e4a739c35d5b558b18d71e5d5fc200eac855",
+      "name": "adag-proxy",
+      "state": "running",
+      "ports": "0.0.0.0:80->80/tcp, [::]:80->80/tcp, 0.0.0.0:443->443/tcp, [::]:443->443/tcp"
+    }
+  ],
+  "originalContainerStateAndPortsUnchanged": true,
+  "additionalRunningContainersAfter": [],
+  "limits": [
+    "Windows-owned CLI and shared Desktop engine only; mounted Linux Docker integration remains unavailable.",
+    "NAT/native WSL loopback locality is observed, not assumed. No proxy/firewall/network/settings/service changes or alternative endpoint retry.",
+    "Only one disposable project/container; named volume and stopped container retained. No unrelated container mutation.",
+    "JetStream probe/reuse is unrun if native connection fails; no mock or backend acceptance substitutes.",
+    "No engine restart, native client/engine install, host bind mount or destructive volume removal.",
+    "A file-backed probe and warm reuse do not establish process-crash, power-loss or production durability."
+  ]
+}

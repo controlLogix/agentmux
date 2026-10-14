@@ -1,0 +1,39 @@
+{
+  "kind": "Independent read-only negative and changed-directory fixture review",
+  "positiveFindings": [
+    "Windows helper is exact exec-created process with stdin lifetime, sole Wait, non-consuming exited channel and cleanup registered before Start. Reader cleanup is bounded.",
+    "Native blocker holds actual net.Listener; WSL native loopback branch fails closed.",
+    "Ledger iterates all original and added IDs and does not grant label-only exclusions.",
+    "Control receipt validation delegates exact creator attempt/image/enrollment correlation; current starting shape is checked separately.",
+    "Different cwd preserves exact original host/role pidfds, child count, broker, volume and original stored record."
+  ],
+  "executions": 0,
+  "limits": [
+    "Source review only; no builds, tests or engine calls.",
+    "Windows interop EOF/Wait and actual host endpoint occupancy need real execution proof; forced cleanup cannot be counted as successful qualification.",
+    "Public actionable diagnostic gap remains a product requirement, not waived by fixture source review.",
+    "No native macOS or overall phase acceptance."
+  ],
+  "proposalSha256": "0ab530facf8e48922002baa1758188047392a9678b5746ec83d50747ae4b3a85",
+  "findings": [
+    {
+      "id": "NEG-R01",
+      "issue": "Substring matcher can count unrelated code unsupported as a port diagnostic, and descriptive selected text as corrective action.",
+      "line": 136,
+      "repair": "Require admitted exact diagnostic codes and a clear corrective-action contract; add otherwise-valid false-positive controls."
+    },
+    {
+      "id": "NEG-R02",
+      "issue": "Unknown added resources are retained only after the original preservation assertion. Combined original drift and unknown added resource takes Fatal before RetainForRecovery; inventory-read failure also exits before marking uncertainty retained.",
+      "line": 118,
+      "repair": "Mark uncertain or unqualified fixture retained before any fatal path, preserving strict baseline failure."
+    },
+    {
+      "id": "NEG-R03",
+      "issue": "Added network qualification accepts zero endpoints even when the qualified broker is running, without a fresh reciprocal container attachment check.",
+      "line": 108,
+      "repair": "Require the exact original endpoint plus reciprocal attachment when running. Permit empty endpoint only for separately admitted stopped transition; otherwise retain/refuse."
+    }
+  ],
+  "sourceSha256": "db3a34366a842de8d45d39b4552210ee5ecb4ad10e96e6480c7fe9b4778b86b8"
+}

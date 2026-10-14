@@ -1,0 +1,26 @@
+{
+  "reviewer": "Codex",
+  "date": "2026-10-14T08:29:42.438228+00:00",
+  "finding": "A new workflow_dispatch-only workflow cannot provide an executable feature-only path when absent from the default branch.",
+  "sources": [
+    {
+      "url": "https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow",
+      "supports": "Manual dispatch requires workflow on default branch."
+    },
+    {
+      "url": "https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax",
+      "supports": "workflow_dispatch only receives events when workflow file is on default branch."
+    }
+  ],
+  "decision": "Use exact feature-branch push with explicit trusted per-target enrollment/enable settings; default disabled. Keep manual trigger only with its documented limitation.",
+  "constraints": [
+    "No main/default branch changes or workflow transfer.",
+    "No untrusted pull-request execution on privileged/native runners.",
+    "No automatic cancellation of engine-owning checks.",
+    "Do not derive expected enrollment from arbitrary observed engine.",
+    "No repo settings mutation, dispatch, installation or native execution performed by this review."
+  ],
+  "currentImplementationOwner": "External authorized task, native_compose.py and platform-compose.yml only",
+  "phaseAccepted": false,
+  "nativeJobsExecuted": false
+}

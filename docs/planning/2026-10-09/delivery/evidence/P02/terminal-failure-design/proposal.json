@@ -1,0 +1,115 @@
+{
+  "status": "design proposal only; not approved or implemented",
+  "sourceSHA256": {
+    "platform/launcher/docker.go": "e134fffdb7feab298e4ee54e45a453aaa6b7cb2c9ea3e2b8a8dc2060baa7448c",
+    "platform/launcher/bootstrap.go": "7db76af164be1110f1352da993833fc3613c09ab42b4557094bcd4661edb9bcd",
+    "platform/launcher/owner_bridge.go": "bd6bde4ae8b93bfb22eeb2df18fcf4d85374556ac99c8299a6db0947d486b1b6",
+    "platform/launcher/owner_bridge_receipt.go": "c6ec84c03ac827c4c6008705ac8ef6d401484cc3b1015eba7dda900f35b89685",
+    "platform/launcher/host_policy.go": "52ec5ee9ef345526fd26a5d423f2a86f99bfa1aa060cfd6315cf963242481e0a",
+    "platform/launcher/profile.go": "d158be8c5bbe3d122dd59652485ed4ddbd288b870173d037c3f0e197f37ee45c",
+    "platform/launcher/request_diagnostic.go": "c824be83853e38abf30543e585027f6660ec3756bc282d2e2395e463ca3b3d84",
+    "platform/runtime/bootstrap_receipt.go": "d18adf5539e70ff66d39b19a405bcbdfe3de8147fb19e90a60e515fa5f3a5519",
+    "platform/cmd/agentmux-runtime/main.go": "cea082cd69099c16c6af49b6927c09923a9eb39a9fca4cc7c7a6b045ea3f3e7c",
+    "platform/launcher/installed_cli_compose_failures_integration_test.go": "21ca2246a1076feeedb58c6475eadc52d6cb2f66990831161c1155a938e27ae3",
+    "docs/planning/2026-10-09/delivery/decisions/startup-contract.md": "2c86650ad04978106ff011827c55708a7f02238f112177cefd4629ee857dc127",
+    "docs/planning/2026-10-09/delivery/tasks.json": "da74cf932fcbea6b62513dac2343f9ba52208c586609e40ea71806e7f3e4ec2a"
+  },
+  "requirements": [
+    "P02-GATE-AC03: bounded actionable configuration/port/broker/protected-plugin failures.",
+    "P02-GATE-AC07 and FAIL-58: genuine selected engine-host occupancy, ultimate specific failure even after accepted receipt, no shadow stack, no deletion/foreign attachment.",
+    "L01: actual OS lease/reinspection; PID, timeout or stale metadata never authorizes takeover.",
+    "L02: interactive10s, owner60s; no ready on timeout or orphaned startup.",
+    "L04: full authenticated actual status over NATS; historical CONTROL is separate and never readiness.",
+    "NATS remains all runtime application communication; any new bootstrap-only persistence is an explicit architectural decision."
+  ],
+  "gaps": [
+    {
+      "source": "platform/launcher/docker.go:105",
+      "fact": "All nonzero Docker command exits reduce to command_failed; stdout/stderr do not establish port cause."
+    },
+    {
+      "source": "platform/launcher/bootstrap.go:323",
+      "fact": "Accepted CONTROL is emitted after protected preparation but before selected broker inspection and later StartOwned."
+    },
+    {
+      "source": "platform/runtime/bootstrap_receipt.go:126",
+      "fact": "Exactly one <=4096 frame plus writer EOF is required; reader consumes/closes it."
+    },
+    {
+      "source": "platform/launcher/owner_bridge_receipt.go:45",
+      "fact": "Exactly one attempted receipt; accepted cannot later become a failure frame."
+    },
+    {
+      "source": "platform/cmd/agentmux-runtime/main.go:90",
+      "fact": "After creator departure, a subsequent caller has no exact creator pipe capability; broker absence prevents authenticated HOST reply."
+    }
+  ],
+  "occupancyAdmission": {
+    "apiProposal": "private selectedHostPortObservation(ctx, admitted selection) error; no arbitrary address/port/helper callback",
+    "authority": "Derive only127.0.0.1 TCP port from fully admitted profile/Compose; full selected-engine private authority first; actual transient bootstrap lease excludes competing mutation; skip known owned-running broker. Repeat at locked StartOwned boundary.",
+    "observation": "Prefer a real selected-host TCP listener query or completed TCP connection without application bytes. A successful connect establishes a listener at that moment. Do not call a successful temporary bind a guarantee of later availability.",
+    "native": "Use actual native host socket APIs only on qualified native Linux/macOS. NativeUnix under WSL is not Windows host proof; refuse unsupported mapping.",
+    "windows": "Use a fixed separately trusted Windows-host helper/OS API, with loopback and validated integer port, bounded closed result, no profiles/user scripts/raw stderr. Existing Docker executable pin does not automatically enroll PowerShell. New helper trust/ownership qualification is required.",
+    "errors": "Only actual observed listener -> trusted selected_port_occupied. Unknown/timeout/reserved-port/access failures -> probe_unavailable or unconfirmed, never fabricated occupation/permission/pull category.",
+    "budgets": "Use remaining original frontend/owner context, no extra budget; exact owned sockets/helper process closed and joined, cleanup causes retained.",
+    "race": "A clear probe is not a reservation; a listener appearing after the probe needs fresh observation for its eventual failure classification. No kill/commandeer of that listener."
+  },
+  "options": [
+    {
+      "name": "preflight only",
+      "decision": "incomplete",
+      "reason": "TOCTOU remains and failures after accepted cannot reach departed caller."
+    },
+    {
+      "name": "second CONTROL frame",
+      "decision": "not sufficient alone; larger transport change",
+      "reason": "Breaks current EOF/single-frame/read-once invariant, and cannot reach later caller after creator pipe closes. Would need explicit protocol/version/ownership review."
+    },
+    {
+      "name": "existing authenticated NATS failure reply",
+      "decision": "reuse whenever broker reachable",
+      "reason": "Existing terminal-failure window preserves genuine failure and exact owner cleanup; it cannot serve through an absent selected broker or another listener."
+    },
+    {
+      "name": "bounded private terminal bootstrap receipt under existing enrollment boundary",
+      "decision": "smallest complete proposal, requires explicit new exception approval",
+      "reason": "Keep current one-shot pipe unchanged. Persist only actual joined bootstrap terminal outcome, separately from enrollment and health records. This can serve a still-present or later authorized caller when NATS absent, as diagnostic-only historical control."
+    }
+  ],
+  "proposedTerminalReceipt": {
+    "boundary": "A dedicated fixed <=4096 control artifact in the already private enrolled profile, opened via existing canonical no-follow/owner/ACL checks. Never overwrite profile.json/status-owner.json or business/health state.",
+    "producer": "Only concrete Run-owned operation after actual completion/join with actual cold invocation, actual held service lease, current independently enrolled owner/profile/runtime/release/config/engine bindings. No caller-supplied failure or arbitrary writer/filename.",
+    "content": "Closed version/kind/full binding/invocation/completion-time/outcome/static diagnostic category only. No passwords, private paths, counts, snapshots, PIDs, commands, subscription or readiness.",
+    "read": "Fresh owner/profile revalidation from independent policy, exact binding/revision, closed JSON, bounded size, regular single-link file, real owner/private ACL. Reject stale enrollment/release, symlink/hardlink, malformed/unknown fields, future time and unrecognized replacement/generation. Define age/retention policy explicitly before code.",
+    "replacement": "Publish atomically only while actual service lease held, with exact expected prior generation; new actual terminal success must supersede old failure without asserting readiness. Do not overwrite unrelated/unknown state.",
+    "semantics": "Prefer NATS actual status. Missing/malformed/untrusted control artifact never becomes known failed/ready. Historical failure cannot authorize startup/stop/adoption or block a new compatible ensure indefinitely. New ensures still perform genuine current preflight; current pending requires NATS or exact owned pipe, never this record.",
+    "cleanup": "Record actual incomplete cleanup as unknown/incomplete, never claim resources reaped from bootstrap join alone. Existing concrete Session/dialer errors and service-lease transfer remain retained; persistence failure itself is closed and owned, not hidden.",
+    "trustLimit": "Same-UID local owner trust is explicit; this file cannot prove isolation from a malicious same-UID plugin. If stronger producer authenticity is required, separately enrolled signing capability is required rather than invented trust from recorded digest.",
+    "approval": "This is new bootstrap-only control persistence, not an already accepted use of enrollment metadata. Root must approve schema/trust/staleness/atomicity/pattern and NATS exception before implementation."
+  },
+  "regressionCoverage": [
+    "Actual native listener positive and clear port control; Windows actual selected-host listener positive; WSL-only listener must not be misclassified as Windows evidence.",
+    "Unknown/reserved/access/timeout/helper failure cannot produce occupied; fixed result parser rejects arbitrary stdout/stderr, host/address/port mismatch and forged helper result.",
+    "Existing owned-running broker warm reuse bypasses foreign-port check; two concurrent callers converge1; exact lease release and helper/socket cancellation/join.",
+    "Deterministic clear->listener-before-StartOwned race: unchanged bound, no shadow stack, terminal diagnostic from genuine observation; generic command_failed remains unclassified.",
+    "Actual accepted receipt followed by genuine failed Bootstrap when NATS absent: caller before departure and later authenticated status receive bounded static historical failure, no L04 ready/counts.",
+    "Private terminal artifact binding/replacement/stale/owner/ACL/symlink/hardlink/malformed/unknown-field/future-time negatives; later success supersedes old failure; new compatible retry remains possible.",
+    "Typed cleanup failure during terminal publication/Run cleanup retains exact Session/socket/lease recovery owner; no scalar cause loss.",
+    "Actual installed occupied selected-engine case with original10/60/5 budgets and retained full container/network/volume baseline; supported native Linux/macOS/WSL qualification required."
+  ],
+  "limits": [
+    "No source edits, product tests, Go builds, Docker calls, resource changes or phase acceptance in this design review.",
+    "Current accepted one-frame receipt invariants remain unchanged.",
+    "This proposal does not close missing Docker/Compose/permission/pull or other FAIL-57/59 cases."
+  ],
+  "primarySources": [
+    {
+      "url": "https://learn.microsoft.com/en-us/windows/win32/winsock/so-exclusiveaddruse",
+      "claim": "Windows exclusive bind conflicts can return10048 or10013; access error alone is not unique occupied-port evidence."
+    },
+    {
+      "url": "https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/error-10013-wsaeacces-is-returned",
+      "claim": "Excluded/reserved-port scenarios can also produce10013."
+    }
+  ]
+}

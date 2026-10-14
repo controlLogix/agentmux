@@ -1,0 +1,58 @@
+{
+  "scope": "P02 private Windows-interop Docker info transport; source and focused fixture evidence only",
+  "implementation": {
+    "platform/launcher/docker_stdio.go": "151b05060ce4ed601f9985f745834f73c97808645da5008cca48cc501d638197",
+    "platform/launcher/docker_stdio_test.go": "2b99b883e5b211a97c6c92f6c98cf4dd7453fea40babe84fee24a640aea33f59"
+  },
+  "frozenCandidate": "/home/ryan/.cache/agentmux-governance/docker-stdio/candidate-X1nQmd/platform",
+  "focusedEvidence": {
+    "directory": "focused-final",
+    "sourceFiles": 114,
+    "sourceListSha256": "34d93e2c9a5f82c3a8cfa6f88f18444082c7fa4d1315cbf743b1118a1323b527",
+    "sourceUnchanged": true,
+    "command": "go test -race -count=1 -timeout=60s -run '^TestDockerStdio' -json ./launcher",
+    "exit": 0,
+    "passedTestEntries": 16,
+    "failedOrSkippedTestEntries": 0,
+    "packageSeconds": 5.119,
+    "rawJsonlSha256": "c13ab622331184a82637f3ad0ee4f317187dd8764e354f057a09033d7fee944c",
+    "vetCommand": "go vet ./launcher",
+    "vetExit": 0,
+    "vetOutputEmpty": true,
+    "limits": "Fixtures execute a disposable CLI process on Linux. They do not prove the installed Windows Docker helper or Compose integration. GORACE disables only the post-exit sleep."
+  },
+  "independentReview": {
+    "reviewer": "Plato",
+    "agentId": "01a137e6-481f-7441-9095-89ea4bb76f8c",
+    "result": "No new actionable findings on the exact two source hashes above.",
+    "closedFindings": [
+      "Reject mixed CR/LF headers before HTTP parsing can normalize hidden duplicate or folded headers.",
+      "Check the transport context after response and identity validation; the pure decoder has no context reference."
+    ],
+    "limits": "Source review only. The reviewer did not edit files, rerun tests, execute Docker or grant phase acceptance."
+  },
+  "history": [
+    {
+      "directory": "implementation",
+      "candidate": "candidate-FrH1Mm",
+      "result": "Initial focused tests passed; wider launcher race suite failed.",
+      "affectedExit": 1,
+      "remainingOwnership": "Root coordinator owns doctor ordering, installed host-policy fixtures and owner-bridge broker startup failures. This failed evidence is retained and is not acceptance."
+    },
+    {
+      "directory": "framing-repair",
+      "candidate": "candidate-U7KJzK",
+      "focusedExit": 1,
+      "result": "Intermediate source failed compilation because a context check was accidentally placed in the pure decoder. No tests ran. The final source moves it into the transport method."
+    }
+  ],
+  "pending": [
+    "Root coordinator must integrate the helper after existing context and actual client/server/Compose pin checks.",
+    "Run the actual installed Windows helper against the approved Docker context and engine, with read-only requests.",
+    "Rerun failed launcher selections after root-owned repairs, then run the affected launcher suite on a stable candidate.",
+    "Complete registration, required phase checks, independent acceptance, commit, push and remote verification before advancing."
+  ],
+  "phaseAccepted": false,
+  "actualWindowsHelperAccepted": false,
+  "composeAccepted": false
+}

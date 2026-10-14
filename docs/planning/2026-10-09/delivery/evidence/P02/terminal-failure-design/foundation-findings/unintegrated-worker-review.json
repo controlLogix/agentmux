@@ -1,0 +1,140 @@
+{
+  "schemaVersion": "1.0.0",
+  "scope": "Unintegrated cache-only bootstrap terminal-history component. Not phase acceptance.",
+  "ownedSourceSHA256": {
+    "bootstrap_history_fs.go": "8c4fe57a0f62565109b9ec9be5b886f4816e742cd3e7b5304a4c4b67a619f835",
+    "bootstrap_history.go": "232b770cb8a72efe65c1449e5546cfc03040cccecc1c51d5c765f39a15d060e6",
+    "bootstrap_history_test.go": "de3aea186c0bdadfd279958fa5c8511b3701bd9217894f1254868e8d5160e77c",
+    "bootstrap_history.schema.json": "c65618379b8aa45f1074fdc22e4b39c989b2d1e1d0e35b37abca136beb9a0ea6",
+    "bootstrap_history_linux_test.go": "ebdcf5549a02c1765a2ced9509185a5b7f79d0ffa578fbbaaab45572f15551bf"
+  },
+  "sourceManifestSHA256": "1bcd61fbcc2de976b6b55bde013ab85c6d85dc45d046f2e7cb258de3c127eafe",
+  "results": {
+    "raceExit": 0,
+    "vetExit": 0,
+    "namedPassEntries": 28,
+    "topLevelTests": 14,
+    "fail": 0,
+    "skip": 0,
+    "elapsedSeconds": 5.189,
+    "tests": [
+      "TestBootstrapHistoryActualCreatorTerminalWhileLeaseHeldAndAfterExit",
+      "TestBootstrapHistoryOwnDuplicateRetainsActualFlock",
+      "TestBootstrapHistoryMarkerFailureAndFreeLeaseDisplay",
+      "TestBootstrapHistoryCASPreservesForeignGeneration",
+      "TestBootstrapHistoryMalformedSourceRetainedAndNoResultInvented",
+      "TestBootstrapHistoryNewerAttemptAndSuccessSuppressOldFailure",
+      "TestBootstrapHistoryStrictSchemaAndAge/missing-null",
+      "TestBootstrapHistoryStrictSchemaAndAge/alias",
+      "TestBootstrapHistoryStrictSchemaAndAge/duplicate",
+      "TestBootstrapHistoryStrictSchemaAndAge/unknown",
+      "TestBootstrapHistoryStrictSchemaAndAge/future",
+      "TestBootstrapHistoryStrictSchemaAndAge/calendar",
+      "TestBootstrapHistoryStrictSchemaAndAge/conditional",
+      "TestBootstrapHistoryStrictSchemaAndAge/cleanup",
+      "TestBootstrapHistoryStrictSchemaAndAge/generation",
+      "TestBootstrapHistoryStrictSchemaAndAge/oversize",
+      "TestBootstrapHistoryStrictSchemaAndAge",
+      "TestBootstrapHistoryUnsafeFilesAndEnrollmentChange/symlink",
+      "TestBootstrapHistoryUnsafeFilesAndEnrollmentChange/hardlink",
+      "TestBootstrapHistoryUnsafeFilesAndEnrollmentChange/mode",
+      "TestBootstrapHistoryUnsafeFilesAndEnrollmentChange/new-owner",
+      "TestBootstrapHistoryUnsafeFilesAndEnrollmentChange",
+      "TestBootstrapHistoryPublicationFailureRetainsActualCause",
+      "TestBootstrapHistoryErrorPrivacyAndDeadline",
+      "TestBootstrapHistoryRepeatedCompletionChecksCurrentGeneration",
+      "TestBootstrapHistoryNewAdmissionReplacesNonterminalOnlyUnderActualLease",
+      "TestBootstrapHistoryCreatorExceptionRefusesUnmintedProof",
+      "TestBootstrapHistoryCloseRequiresOriginalBoundedContext"
+    ]
+  },
+  "regressions": {
+    "actualFlockPositive": "Original close retains duplicate-held contention, duplicate close permits actual reacquisition.",
+    "actualFlockNegative": "Final disposable reopen-same-inode mutant exit1, exact closing-original-released assertion.",
+    "generation": "Before exit1; exact same replacement-generation control passed after repair and in final selection.",
+    "boundedClose": "Before exit1 unbounded close admitted; after passes without ownership loss.",
+    "historicalCreator": "Actual sealed factory child accepted/EOF proof, held-lease display and after exact child reap; wrong/unminted binding refused. This does not replace actual product operation admission.",
+    "privacy": "Fixed pointer/value formatting and JSON. Original causes retained; no copied mutex in store formatting."
+  },
+  "sourceCopy": {
+    "initialBeforeCopiedAfterExact": true,
+    "snapshotUnchangedBeforeAfterRun": true,
+    "currentWorkingtreeChangedSources": 2,
+    "reuseLimit": "Later unrelated source changes are enumerated, not silently folded into this tested snapshot."
+  },
+  "historicalArtifactsSHA256": {
+    "p02-bootstrap-history-boundary-j_cx_6sp": {
+      "manifest.json": "03fd54008e8548f4158d977e4afdfae88d659cfc04e58375bf4f3ee9e621eb33",
+      "first-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "first-invocation.txt": "217ac8beee683fab3d1df24bc24fd0d77ace78f2c630efcd0c1f830b228c7fc6",
+      "first-events.jsonl": "e3d9521e9c95fa55619cf42d430c09df3bfb21c465bc41d811a90e13b9c6152d",
+      "first-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "p02-bootstrap-history-cas-before-v9wemi79": {
+      "manifest.json": "d7a72c62e12e2624882d68ea4533cf3a79f753e8852e2e59a3f911e0bf8e5a65",
+      "cas-events.jsonl": "a05098b71338abefbb30eb4fc8a13ec8811df182d21456e0be63e4d95ef8792c",
+      "cas-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cas-exit.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    "p02-bootstrap-history-repaired-f650btii": {
+      "manifest.json": "b43c810525be84c149cb4a4dd252263cffeae037228555e7e8ef1fba3284bb89",
+      "cas-events.jsonl": "7516a47f1d63b88e045791db8c909e9592fef2c1837a9e63dbe7f84d74e8c162",
+      "cas-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "cas-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    "p02-bootstrap-history-qualified-qrdvhyw8": {
+      "exit.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "events.jsonl": "e88182fbd93cd8a2441cd6de1451f2695e0ee938caea4fcf005980b62b55050e",
+      "manifest.json": "d455e4dbbf1e93ef71012a9bc53f2a6e4dc3524ba79dc90e114241cc58bf5c71"
+    },
+    "p02-bootstrap-history-close-before-wpqun6da": {
+      "exit.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "events.jsonl": "058e4465b836b87fd7db4ccfdd86317ae21457a3a06b3c8d9128fb6a49fdb590",
+      "manifest.json": "ea3a7d633576c55250e20f435c3769cbdc9c8933683097c15dff947bfda5b59d"
+    },
+    "p02-bootstrap-history-foundation-c1__tgrr": {
+      "creator-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "focused-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "creator-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "focused-events.jsonl": "4f6c7a3a9a48400076b2c00ee8695ba1e645ba5de9dcfea345bd036a75aec368",
+      "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "events.jsonl": "0d9146d6430e795bbff7d49ef9d2d5471dd3aca0dceeefce03dbcecdfd3ed401",
+      "creator-events.jsonl": "4374edaf011272c848f6603f3c1182f238680cd1985b2e5bc3e558dbd56ab227",
+      "manifest.json": "fb7cc076b5bb8d3b720af6b3b8187acc9e1c56aa3e2fd64e280c69213fb52536",
+      "vet-stderr.log": "a66ee220c419a192f27afd5ff97ba56269e5656721d63f465431fafa98b7483a",
+      "vet.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "focused-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "vet-exit.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    "p02-bootstrap-history-lock-negative-72dejj0_": {
+      "exit.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "events.jsonl": "444b9dcd15bbafa1e9be10c7ec03327b559014a0b14ae790879a8cb35d4f6b05",
+      "mutation.json": "ca022f5a40d7b9cecb9fc123a09271fff8312041a9ad451a7f749d6856a3eaf2"
+    }
+  },
+  "artifactsSHA256": {
+    "manifest.json": "1bcd61fbcc2de976b6b55bde013ab85c6d85dc45d046f2e7cb258de3c127eafe",
+    "invocation.json": "d89e5263069d04d1991e62ddf0efb2c614b2085eaa7cf812a3be1beb33085bb6",
+    "foundation-contract.md": "d3035c98c7bb1690538ff034618541ff4ce60658259c05ddfd2bb99140fe65e0",
+    "current-source-drift.json": "2231ad7fd57da7f0b4ded77f4c37c242f854b39a61755a0b43971da0148632d3",
+    "events.jsonl": "96a5c80245b818a8de78727d79a32c7f71b5511a19a0c10834310887f0c7e6da",
+    "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "vet.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vet-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vet-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+  },
+  "limits": [
+    "No shared source promotion or Run/CLI wiring",
+    "No Docker or provider/model execution",
+    "No authoritative schema registration or SDK acceptance claim",
+    "No native Darwin/Windows qualification",
+    "No genuine selected-host occupied-port proof",
+    "No product deadline reserve qualification",
+    "Incomplete cleanup stays unknown/incomplete; exact resource ownership must remain with integration caller"
+  ]
+}

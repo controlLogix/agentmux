@@ -1,0 +1,373 @@
+{
+  "schemaVersion": "1.0.0",
+  "kind": "read-only-current-engine-qualification",
+  "startedUtc": "2026-10-14T17:04:59.185748+00:00",
+  "expectedCurrentEngineID": "772de646-ba89-42ac-8675-45b2025fbdee",
+  "historicalEngineID": "e0f1f93d-abf1-44f2-b62a-5bfee21d2b5c",
+  "mutations": 0,
+  "adoption": false,
+  "cli": {
+    "windowsPath": "C:\\Users\\RyanHelms\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe",
+    "sha256": "575b19fdc3cc3054714e6cbe92bcf86b708cc5dc46ad5e75bfd7591220de86fe",
+    "bytes": 44785072,
+    "regularFile": true,
+    "mtimeNanoseconds": 1789635374916208600
+  },
+  "configuredCurrentContext": "desktop-linux",
+  "privateContextEndpoint": "npipe:////./pipe/dockerDesktopLinuxEngine",
+  "selectorFiles": [
+    {
+      "path": "selector-0.private",
+      "bytes": 353,
+      "sha256": "f173396ef80b3c0bf4f8a5f6f944d3e426cee041ae3a2a8a07602ff6846a9f1a",
+      "relativePath": "config.json",
+      "symlink": false
+    },
+    {
+      "path": "selector-1.private",
+      "bytes": 322,
+      "sha256": "5762f2d5dd58eebb57cec0ed2136099bc67beb558d6cc320413fc0e9dc77ea54",
+      "relativePath": "contexts/meta/fe9c6bd7a66301f49ca9b6a70b217107cd1284598bfc254700c989b916da791e/meta.json",
+      "symlink": false
+    }
+  ],
+  "endpoint": "npipe:////./pipe/dockerDesktopLinuxEngine",
+  "versions": {
+    "client": "29.8.0",
+    "server": "29.8.0",
+    "serverOS": "linux",
+    "serverArchitecture": "amd64"
+  },
+  "composeVersion": "5.5.1",
+  "pinnedImage": {
+    "available": false,
+    "requested": "docker.io/library/nats@sha256:fdae708d900cb150ce13f203359719bdd9cefd3dbbbc32a4c6224b23ea3e0b2c"
+  },
+  "qualified": true,
+  "engineBefore": {
+    "ID": "772de646-ba89-42ac-8675-45b2025fbdee",
+    "OSType": "linux",
+    "Architecture": "x86_64",
+    "ServerVersion": "29.8.0"
+  },
+  "engineAfter": {
+    "ID": "772de646-ba89-42ac-8675-45b2025fbdee",
+    "OSType": "linux",
+    "Architecture": "x86_64",
+    "ServerVersion": "29.8.0"
+  },
+  "identitiesEqual": true,
+  "rosters": {
+    "containers": {
+      "count": 4,
+      "ids": [
+        "c2c30205ef6d2dec5a1b3c07d10eb73dc8a59c01081499a86e0949bb322d2e6a",
+        "d39cd0dfb585fa2a80ae72cbf534bf36cade6ea6bf36349e513f066c4ee3eea7",
+        "5122bc54d7a3630aa240c3085c6326d0ad81b0038110472513d32d5b4d1037da",
+        "03247ab56fe2bd9e1cf6fefdb3251693e7b7de91aa91436b2f9de6d32ec6ddb2"
+      ],
+      "sha256": "03f375dacd609115dbf1853f170a410085c40aa91a614fe1d67540ecb7257b2f"
+    },
+    "networks": {
+      "count": 7,
+      "ids": [
+        "52c7fc7781a3ef7afc6dadd7f7c788c264525fe537e912c5aea1399d1194f6de",
+        "743ff7d01dfbed65852b28da018df7e9cdcb3c8a09fe66a34fe2a7056f93793d",
+        "bf9b7aa153c1dbbe6dd12ba56c326d6f15c7689cbf24feb8cca9593ea62724db",
+        "e60da9f56bffc87b3c59c0143165e511beadfb424abbcd8227b33f35922136e5",
+        "7c292dca3dff97d5ae174a76ec86f30a5d49b4047d2be85a43083908852ab84a",
+        "8efe85294092d312f8711c1f581d43874918292a7c301bd35a11e0208fdc885e",
+        "26c412874292e769ff9bae7f610e9f6ef1931cfc7ceaa0bc04b582e05d040ed7"
+      ],
+      "sha256": "6d88d77c10e7948f7f88c1e77ab8045531214aa05b27efe0370d351204d89ac2"
+    }
+  },
+  "limits": [
+    "No old profile is rebound and no current resource is adopted.",
+    "Historical 31-network/41-container counts belonged to old engine e0f1 and are not current ownership authority.",
+    "Roster IDs are observed identities only; no ownership claim is granted.",
+    "CLI hash is a current observation at the existing Windows-owned path, not a new signed executable enrollment."
+  ],
+  "sourceBeforeEqualsAfter": true,
+  "sourceFileCount": 258,
+  "steps": [
+    {
+      "stage": "endpoint",
+      "argv": [
+        "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+        "--context",
+        "desktop-linux",
+        "context",
+        "inspect",
+        "desktop-linux",
+        "--format",
+        "{{json .Endpoints.docker.Host}}"
+      ],
+      "elapsedSeconds": 0.3382057499984512,
+      "directExit": 0,
+      "stdout": {
+        "path": "endpoint-stdout.private",
+        "bytes": 44,
+        "sha256": "0d1284cdbf15f9de9be8524a923374e8dffede3d62a65a022b0c8f58bfaa26b7"
+      },
+      "stderr": {
+        "path": "endpoint-stderr.private",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "stage": "version",
+      "argv": [
+        "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+        "--context",
+        "desktop-linux",
+        "version",
+        "--format",
+        "{{json .}}"
+      ],
+      "elapsedSeconds": 0.4253914920045645,
+      "directExit": 0,
+      "stdout": {
+        "path": "version-stdout.private",
+        "bytes": 1145,
+        "sha256": "c0c129b0001b27f58b62b1ef3d23a90f2958dacd65e99b920ed7640c5a0eb0fb"
+      },
+      "stderr": {
+        "path": "version-stderr.private",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "stage": "compose",
+      "argv": [
+        "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+        "--context",
+        "desktop-linux",
+        "compose",
+        "version",
+        "--short"
+      ],
+      "elapsedSeconds": 0.5058680829970399,
+      "directExit": 0,
+      "stdout": {
+        "path": "compose-stdout.private",
+        "bytes": 6,
+        "sha256": "db74d0caf81f43029fa28ce9888695d0b54d0a99003e6042823c9bc914897865"
+      },
+      "stderr": {
+        "path": "compose-stderr.private",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "stage": "engine-before",
+      "argv": [
+        "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+        "--context",
+        "desktop-linux",
+        "info",
+        "--format",
+        "{\"ID\":{{json .ID}},\"OSType\":{{json .OSType}},\"Architecture\":{{json .Architecture}},\"ServerVersion\":{{json .ServerVersion}}}"
+      ],
+      "elapsedSeconds": 0.9967870979962754,
+      "directExit": 0,
+      "stdout": {
+        "path": "engine-before-stdout.private",
+        "bytes": 112,
+        "sha256": "51a72e5d02ec2cddf45120fb528d873b7a27eb4fb5238195019e79b655e41db2"
+      },
+      "stderr": {
+        "path": "engine-before-stderr.private",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "stage": "containers",
+      "argv": [
+        "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+        "--context",
+        "desktop-linux",
+        "ps",
+        "--all",
+        "--quiet",
+        "--no-trunc"
+      ],
+      "elapsedSeconds": 0.3089138439972885,
+      "directExit": 0,
+      "stdout": {
+        "path": "containers-stdout.private",
+        "bytes": 260,
+        "sha256": "03f375dacd609115dbf1853f170a410085c40aa91a614fe1d67540ecb7257b2f"
+      },
+      "stderr": {
+        "path": "containers-stderr.private",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "stage": "networks",
+      "argv": [
+        "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+        "--context",
+        "desktop-linux",
+        "network",
+        "ls",
+        "--quiet",
+        "--no-trunc"
+      ],
+      "elapsedSeconds": 0.30747074900136795,
+      "directExit": 0,
+      "stdout": {
+        "path": "networks-stdout.private",
+        "bytes": 455,
+        "sha256": "6d88d77c10e7948f7f88c1e77ab8045531214aa05b27efe0370d351204d89ac2"
+      },
+      "stderr": {
+        "path": "networks-stderr.private",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "stage": "image",
+      "argv": [
+        "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+        "--context",
+        "desktop-linux",
+        "image",
+        "inspect",
+        "docker.io/library/nats@sha256:fdae708d900cb150ce13f203359719bdd9cefd3dbbbc32a4c6224b23ea3e0b2c",
+        "--format",
+        "{\"Id\":{{json .Id}},\"RepoDigests\":{{json .RepoDigests}}}"
+      ],
+      "elapsedSeconds": 0.2848017870055628,
+      "directExit": 1,
+      "stdout": {
+        "path": "image-stdout.private",
+        "bytes": 1,
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+      },
+      "stderr": {
+        "path": "image-stderr.private",
+        "bytes": 120,
+        "sha256": "9213cff9ebd18ebcd3b9db525e0409ea9d20ede116d814a24721487f728d2621"
+      }
+    },
+    {
+      "stage": "engine-after",
+      "argv": [
+        "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+        "--context",
+        "desktop-linux",
+        "info",
+        "--format",
+        "{\"ID\":{{json .ID}},\"OSType\":{{json .OSType}},\"Architecture\":{{json .Architecture}},\"ServerVersion\":{{json .ServerVersion}}}"
+      ],
+      "elapsedSeconds": 0.6878053469990846,
+      "directExit": 0,
+      "stdout": {
+        "path": "engine-after-stdout.private",
+        "bytes": 112,
+        "sha256": "51a72e5d02ec2cddf45120fb528d873b7a27eb4fb5238195019e79b655e41db2"
+      },
+      "stderr": {
+        "path": "engine-after-stderr.private",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "endedUtc": "2026-10-14T17:05:19.892332+00:00",
+  "producerSHA256": "61c5d9a98227706bd95e1a54165cb0fc1bb3786ce59e67ae98f8bc02042d761f",
+  "artifacts": {
+    "version-stdout.private": {
+      "sha256": "c0c129b0001b27f58b62b1ef3d23a90f2958dacd65e99b920ed7640c5a0eb0fb",
+      "bytes": 1145
+    },
+    "engine-before-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "engine-after-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "containers-stdout.private": {
+      "sha256": "03f375dacd609115dbf1853f170a410085c40aa91a614fe1d67540ecb7257b2f",
+      "bytes": 260
+    },
+    "compose-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "selector-0.private": {
+      "sha256": "f173396ef80b3c0bf4f8a5f6f944d3e426cee041ae3a2a8a07602ff6846a9f1a",
+      "bytes": 353
+    },
+    "image-stderr.private": {
+      "sha256": "9213cff9ebd18ebcd3b9db525e0409ea9d20ede116d814a24721487f728d2621",
+      "bytes": 120
+    },
+    "source-after.json": {
+      "sha256": "d29fa6965dd419ead3fd9e58deb7396f2efa37b6c403031db51bc6a8449c111f",
+      "bytes": 29885
+    },
+    "containers-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "networks-stdout.private": {
+      "sha256": "6d88d77c10e7948f7f88c1e77ab8045531214aa05b27efe0370d351204d89ac2",
+      "bytes": 455
+    },
+    "producer.sh": {
+      "sha256": "61c5d9a98227706bd95e1a54165cb0fc1bb3786ce59e67ae98f8bc02042d761f",
+      "bytes": 6344
+    },
+    "image-stdout.private": {
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "bytes": 1
+    },
+    "selector-1.private": {
+      "sha256": "5762f2d5dd58eebb57cec0ed2136099bc67beb558d6cc320413fc0e9dc77ea54",
+      "bytes": 322
+    },
+    "version-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "engine-before-stdout.private": {
+      "sha256": "51a72e5d02ec2cddf45120fb528d873b7a27eb4fb5238195019e79b655e41db2",
+      "bytes": 112
+    },
+    "endpoint-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "engine-after-stdout.private": {
+      "sha256": "51a72e5d02ec2cddf45120fb528d873b7a27eb4fb5238195019e79b655e41db2",
+      "bytes": 112
+    },
+    "endpoint-stdout.private": {
+      "sha256": "0d1284cdbf15f9de9be8524a923374e8dffede3d62a65a022b0c8f58bfaa26b7",
+      "bytes": 44
+    },
+    "compose-stdout.private": {
+      "sha256": "db74d0caf81f43029fa28ce9888695d0b54d0a99003e6042823c9bc914897865",
+      "bytes": 6
+    },
+    "networks-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "source-before.json": {
+      "sha256": "d29fa6965dd419ead3fd9e58deb7396f2efa37b6c403031db51bc6a8449c111f",
+      "bytes": 29885
+    }
+  }
+}

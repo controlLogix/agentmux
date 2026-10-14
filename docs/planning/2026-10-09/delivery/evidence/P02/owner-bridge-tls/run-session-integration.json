@@ -1,0 +1,45 @@
+{
+  "createdAt": "2026-10-14T04:28:42.720664+00:00",
+  "status": "bounded Run cleanup wiring verification; independent combined review pending",
+  "sourceSnapshot": "/home/ryan/.cache/agentmux-tests/p02-owner-bridge-tls-candidate-35c8aig7",
+  "ownerBridgeSHA256": "69275921118866f2c4e131d3067cfbd25bf79613f8d4a1e4dbed4822cbd99ddd",
+  "currentOwnerBridgeExact": true,
+  "delta": "Run transfers only its exact Session and host-service lease to closeOwnedSession when that helper returns true. It uses enrolled StopGrace plus ReapTimeout and preserves primary concrete dialer cleanup/authority errors. The normal lease defer closes only when no transfer occurred.",
+  "race": {
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-json",
+      "./launcher",
+      "-run",
+      "^(TestOwnerBridgeTerminalFailureReleasesServiceLease|TestRuntimeCleanup|TestSessionCloseHonorsHeldLockDeadline|TestTransportCleanup)"
+    ],
+    "exit": 0,
+    "seconds": 11.141693718998795,
+    "sourceStable": true,
+    "namedPass": 10,
+    "namedFail": 0,
+    "skips": 0
+  },
+  "vet": {
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "vet",
+      "./launcher"
+    ],
+    "exit": 0,
+    "seconds": 1.6658575740002561
+  },
+  "baseline": "review.json and current-6uw4vk_o preserve166 affected race entries,46 SDK checks and directvet0 before this Run-only wiring. No schema/transport mapper changes.",
+  "limits": [
+    "Direct RuntimeCleanup helpers exercise actual owned group/lease cases; the terminal actual Run fixture fails before protected startup and does not prove an owning daemon group cleanup failure end to end.",
+    "A owns helper implementation and strengthened real flock assertions; its later source/test freeze remains separate.",
+    "No actual Docker Engine/Compose, native macOS or phase acceptance; ten-second starting remains open."
+  ],
+  "privacy": {
+    "reviewedGoOutputLines": 24,
+    "privateBrokerDataCopied": false
+  }
+}

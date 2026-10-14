@@ -1,0 +1,90 @@
+{
+  "reviewedAt": "2026-10-14T01:01:11.624485+00:00",
+  "reviewer": "Codex",
+  "phase": "P02",
+  "phaseAccepted": false,
+  "scope": "Root factory/admission focused checks and both-SDK local bridge shape checks; no actual bridge, installed launcher or phase acceptance.",
+  "checks": [
+    {
+      "name": "factory",
+      "testPassEntries": 12,
+      "packagePassed": true
+    },
+    {
+      "name": "admission",
+      "testPassEntries": 4,
+      "packagePassed": true
+    }
+  ],
+  "sdkShapeChecks": {
+    "testsRun": 1,
+    "casesPerSDK": 35,
+    "independentSDKs": 2,
+    "sourceUnchanged": true,
+    "compiledTypeScriptSourceUnchanged": true,
+    "limitations": "Synthetic request/reply examples only. They prove neither broker permissions nor producer authority."
+  },
+  "sourceHashes": {
+    "platform/deployment/owner_bridge_config.go": "a1bd6e104b5c935e972f716306de163a095427340bbbf35557e15dace5fce20a",
+    "platform/deployment/owner_bridge_config_test.go": "313e20a23690e2fb22de4cf6c46240b20726a535277d23131b67ce63cd499380",
+    "platform/launcher/bootstrap.go": "5bc633729acaac7b960bd845bd3c738065bc0c6e0cbb6f315fd32a67d5d81920",
+    "platform/launcher/bootstrap_config.go": "ecbd97ef08e23fa51c9a0868e609f5bde8baf588654f091b3ffa34d11ee75304",
+    "platform/launcher/host_config.go": "3fb214576b5a86e9a9fae354c2599e7c40ea6fd6a9ce37078a4b8c7ccd14e029",
+    "platform/launcher/bootstrap_invocation_test.go": "8726e154c138d327d06835357ca3e73074f11d25e7b13207393c7850e541b2a9",
+    "contracts/v1/schemas/host-owner-status-request.schema.json": "4ec02e90dd0d2c0c2d772c46ad4657e0389b0ecd42822d0c98c64863f720a380",
+    "contracts/v1/schemas/host-owner-status-reply.schema.json": "b615bf04490cf7e2c4f4047fd318327e5f10ab628140e17dc60092e8901d553d",
+    "tests/contracts/test_owner_bridge.py": "628930ed27d8c72de8372765ebaab06d95f488996cf4168a4420dac5196496d8"
+  },
+  "sourceBindingLimit": "Each frozen Go snapshot and SDK report retains its own exact input mapping; current helper hashes here must not be interpreted as broad candidate qualification.",
+  "dockerDiagnostic": "Original and parallel identity diagnostics fail the production read budget. The engine-info stage is identified; a read-only12s measurement completed in6.368s with matching pinned engine/linux backend. No production deadline was relaxed.",
+  "files": [
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/p02-owner-factory-mMX1cJ-factory.jsonl",
+      "sha256": "b4e76f408e6c7cd343a9c4e68124a659a663723a89efccf9f1f831783a58b4aa"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/p02-owner-factory-mMX1cJ-admission.jsonl",
+      "sha256": "28de579a9a4c12d3d4c7d78b182bda4ee80e770e9a812bafa2f576c1e1604ccc"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/p02-owner-factory-mMX1cJ-parallel-identity.jsonl",
+      "sha256": "4d15addc8930c08c75e30a26917a476d47962e122c5256d4164409650b2e8ed2"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/p02-owner-factory-mMX1cJ-parallel-identity-exit.txt",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/p02-owner-bridge-contracts-3DZZrn-setup-failure.json",
+      "sha256": "442a49eededa9c019cc800d7e7b09393546a40f9df09c716e088e6b9d3b43203"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/p02-owner-bridge-contracts-3DZZrn-failed-test-alias-results.json",
+      "sha256": "f384d643a14c7034c57f631557f7836a07006a35307d6be75faf9f6c732ab8ed"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/p02-owner-bridge-contracts-3DZZrn-failed-test-alias.log",
+      "sha256": "9607153c9bd1da65e72687c9196fb0b206b70ee7d29d49eef667af8fc677f8e2"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/p02-owner-bridge-contracts-3DZZrn-results.json",
+      "sha256": "7ebbd87031614f1d2baa6748b6e7dad8c14cb252dd9ea654bec48bc83ef8ada8"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/p02-owner-bridge-contracts-3DZZrn-closure.log",
+      "sha256": "fb144273d85d06d577e273d8b1332048170c860b65bd68e90532ea224fc755aa"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/p02-docker-identity-diagnostic-kVpv1g-identity.jsonl",
+      "sha256": "c1aad38f422f8986fefefbe5383dd3ea7f43c3bf9f65870635c22da5f360e292"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/p02-docker-identity-diagnostic-kVpv1g-exit-code.txt",
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865"
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/p02-engine-info-comparison-result.json",
+      "sha256": "be73aa2b5427611a1cdcf2cc41386704fb6adb66ffcb329adf2ae905f29bbc7f"
+    }
+  ]
+}

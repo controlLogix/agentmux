@@ -1,0 +1,3855 @@
+{
+  "schemaVersion": "1.0.0",
+  "phase": "P02",
+  "recordedAt": "2026-10-13T23:27:12.603706+00:00",
+  "status": "standalone-registration-proposal-not-global-metadata",
+  "phaseAccepted": false,
+  "referenceCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "metadataSourceHashes": {
+    "component-inventory.json": "df9b170a91ebafea157fcbd60b05a47d8f59b4b8bef11ee6d3ef1daa455eec93",
+    "component-audit-hub.json": "c0535749f5131d55bf6fe8fa2299b0e114290c5850b5ef7851cfe4b7e7334f8d",
+    "component-audit-repository.json": "8bcd108d31722b73da950e5e40b9dbf8a73d608507a7ab2957d3e5c908dd357a",
+    "source-surface-index.json": "d855b8e974f14723e77073c2c9ae11236e1869f28b1ab89aa1ccaceef33295ee",
+    "delivery/tasks.json": "b818738cf353e02e0a3fba7a072ae2f6be7d4b4e2a4781b6cac5d8322a8c5272",
+    "delivery/evidence/P02/preflight-closure/proposal.json": "198e4b94b50c2373dc9b118f787490f49aed9dccf6e6c5649b4f3f11e1ef226e"
+  },
+  "counts": {
+    "actualScopedFiles": 85,
+    "missingInventoryFiles": 66,
+    "eligibleScopedSurfaces": 37,
+    "missingSurfaces": 30,
+    "staleSurfaces": 4
+  },
+  "files": [
+    {
+      "path": ".github/workflows/platform-foundation.yml",
+      "workingFileSha256": "291c0bc23d8c313f90eb45e8ef9691e0caf45fdf0524263a1ab1e87947a9201b",
+      "primaryComponentId": "REPO-03",
+      "primaryBehaviorCheckId": "REPO-03-C02",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/cmd/agentmux-kernel/main.go",
+      "workingFileSha256": "27e6bb75c3d41cc2367a4590bcf0bf12fe420ae76f020ac484fa0ea399f95cad",
+      "primaryComponentId": "KERN-01",
+      "primaryBehaviorCheckId": "KERN-01-C02",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/cmd/agentmux-kernel/main.go",
+        "componentIds": [
+          "KERN-01"
+        ],
+        "workingFileSha256": "27e6bb75c3d41cc2367a4590bcf0bf12fe420ae76f020ac484fa0ea399f95cad",
+        "declarations": [
+          {
+            "name": "main",
+            "line": 18,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/deployment/README.md",
+      "workingFileSha256": "dc7789d3b5698cf9baee080e02137e10e6658706502822b88500c882ae60b45d",
+      "primaryComponentId": "PLAT-03",
+      "primaryBehaviorCheckId": "PLAT-03-C01",
+      "ownerTask": "P02-T05",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/deployment/compose.go",
+      "workingFileSha256": "2ed62e60ac9c6b1f56afef8156e7def69de8cdcb6918f89bf8e0a3412e0935c1",
+      "primaryComponentId": "PLAT-03",
+      "primaryBehaviorCheckId": "PLAT-03-C01",
+      "ownerTask": "P02-T05",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/deployment/compose.go",
+        "componentIds": [
+          "PLAT-03"
+        ],
+        "workingFileSha256": "2ed62e60ac9c6b1f56afef8156e7def69de8cdcb6918f89bf8e0a3412e0935c1",
+        "declarations": [
+          {
+            "name": "RenderCompose",
+            "line": 66,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "ComposeSpec",
+          "line": 19,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/deployment/compose_test.go",
+      "workingFileSha256": "4fdafc941427c9ac0cd6bd5334688c7019066c7bd0f20bdeb8440928765a26f8",
+      "primaryComponentId": "PLAT-03",
+      "primaryBehaviorCheckId": "PLAT-03-C01",
+      "ownerTask": "P02-T05",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/deployment/observe.go",
+      "workingFileSha256": "befbca0285fa7015915f7b3ef3fb636a321fb521e5b75429f464e9b610d408eb",
+      "primaryComponentId": "PLAT-03",
+      "primaryBehaviorCheckId": "PLAT-03-C01",
+      "ownerTask": "P02-T05",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/deployment/observe.go",
+        "componentIds": [
+          "PLAT-03"
+        ],
+        "workingFileSha256": "befbca0285fa7015915f7b3ef3fb636a321fb521e5b75429f464e9b610d408eb",
+        "declarations": [
+          {
+            "name": "observeError",
+            "line": 49,
+            "kind": "go-function"
+          },
+          {
+            "name": "Dial",
+            "line": 68,
+            "kind": "go-function"
+          },
+          {
+            "name": "close",
+            "line": 102,
+            "kind": "go-function"
+          },
+          {
+            "name": "observeFailure",
+            "line": 117,
+            "kind": "go-function"
+          },
+          {
+            "name": "Observe",
+            "line": 131,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "ObserveOptions",
+          "line": 18,
+          "kind": "go-type"
+        },
+        {
+          "name": "PersistenceEvidence",
+          "line": 23,
+          "kind": "go-type"
+        },
+        {
+          "name": "Observation",
+          "line": 34,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/deployment/observe_test.go",
+      "workingFileSha256": "9c4ba6091f07176ca73a11a856b3790e6cce92df08ac95e9e255dc6c339f11d1",
+      "primaryComponentId": "PLAT-03",
+      "primaryBehaviorCheckId": "PLAT-03-C01",
+      "ownerTask": "P02-T05",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/deployment/probe.go",
+      "workingFileSha256": "df71842055c7f946d6579b1db499957a4c3dc7620bd4824ffd8acbb45f9995c7",
+      "primaryComponentId": "PLAT-03",
+      "primaryBehaviorCheckId": "PLAT-03-C01",
+      "ownerTask": "P02-T05",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/deployment/probe.go",
+        "componentIds": [
+          "PLAT-03"
+        ],
+        "workingFileSha256": "df71842055c7f946d6579b1db499957a4c3dc7620bd4824ffd8acbb45f9995c7",
+        "declarations": [
+          {
+            "name": "HealthConfig",
+            "line": 34,
+            "kind": "go-function"
+          },
+          {
+            "name": "probeError",
+            "line": 38,
+            "kind": "go-function"
+          },
+          {
+            "name": "validateProbe",
+            "line": 42,
+            "kind": "go-function"
+          },
+          {
+            "name": "compatibleHealth",
+            "line": 60,
+            "kind": "go-function"
+          },
+          {
+            "name": "ProvisionAndProbe",
+            "line": 74,
+            "kind": "go-function"
+          },
+          {
+            "name": "Probe",
+            "line": 79,
+            "kind": "go-function"
+          },
+          {
+            "name": "runProbe",
+            "line": 81,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "ProbeOptions",
+          "line": 20,
+          "kind": "go-type"
+        },
+        {
+          "name": "ProbeResult",
+          "line": 27,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/deployment/probe_test.go",
+      "workingFileSha256": "0ccac91b33d9b7330fbc8b17446540ceb51b5157be840ee457b3f61e0ccce786",
+      "primaryComponentId": "PLAT-03",
+      "primaryBehaviorCheckId": "PLAT-03-C01",
+      "ownerTask": "P02-T05",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/deployment/profile.go",
+      "workingFileSha256": "219b2c8742514699c0c12822576e580142e2f43b51d8405e3207a8ebb0a5f6fd",
+      "primaryComponentId": "PLAT-03",
+      "primaryBehaviorCheckId": "PLAT-03-C01",
+      "ownerTask": "P02-T05",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/deployment/profile.go",
+        "componentIds": [
+          "PLAT-03"
+        ],
+        "workingFileSha256": "219b2c8742514699c0c12822576e580142e2f43b51d8405e3207a8ebb0a5f6fd",
+        "declarations": [
+          {
+            "name": "BuildLocalConfig",
+            "line": 34,
+            "kind": "go-function"
+          },
+          {
+            "name": "HealthStream",
+            "line": 85,
+            "kind": "go-function"
+          },
+          {
+            "name": "HealthSubject",
+            "line": 86,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "StorageProfile",
+          "line": 18,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/deployment/profile_test.go",
+      "workingFileSha256": "145e667f8f0dc39daadc11b9906067cb495bf1336a6ba7b1f11c915388610c74",
+      "primaryComponentId": "PLAT-03",
+      "primaryBehaviorCheckId": "PLAT-03-C01",
+      "ownerTask": "P02-T05",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/deployment/sync_policy_test.go",
+      "workingFileSha256": "968989e83ac321c81a3aa5df41017d3fb2cc144a0c00031c7f3b8803f5111427",
+      "primaryComponentId": "PLAT-03",
+      "primaryBehaviorCheckId": "PLAT-03-C01",
+      "ownerTask": "P02-T05",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "under-active-review-no-acceptance",
+      "addedDuringAudit": true
+    },
+    {
+      "path": "platform/go.mod",
+      "workingFileSha256": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [
+        "PLAT-01"
+      ],
+      "inventoryAction": "retain-existing-owner",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/go.sum",
+      "workingFileSha256": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [
+        "PLAT-01"
+      ],
+      "inventoryAction": "retain-existing-owner",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/assembly/README.md",
+      "workingFileSha256": "d9c9934bd2562ae2f5696de8696b4162cbc57a6fbf9518943b5d3deac7d36eb7",
+      "primaryComponentId": "KERN-01",
+      "primaryBehaviorCheckId": "KERN-01-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [
+        "KERN-01"
+      ],
+      "inventoryAction": "retain-existing-owner",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/assembly/limits_test.go",
+      "workingFileSha256": "e7da242c4f51f53f2d6348d24782f63f739896bae110cef69d00d086b1417c5a",
+      "primaryComponentId": "KERN-01",
+      "primaryBehaviorCheckId": "KERN-01-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/assembly/open_unix.go",
+      "workingFileSha256": "f39acc55f3633bddf82fed8c09f454d20321ea3fdd514e8809d5640ed6577769",
+      "primaryComponentId": "KERN-01",
+      "primaryBehaviorCheckId": "KERN-01-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/kernel/assembly/open_unix.go",
+        "componentIds": [
+          "KERN-01"
+        ],
+        "workingFileSha256": "f39acc55f3633bddf82fed8c09f454d20321ea3fdd514e8809d5640ed6577769",
+        "declarations": [
+          {
+            "name": "openMemberFile",
+            "line": 13,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/assembly/open_unix_test.go",
+      "workingFileSha256": "55a52d368545db47f2f5a285b61ebbe8d4ccbd1e6947a2faa86a9173846e2652",
+      "primaryComponentId": "KERN-01",
+      "primaryBehaviorCheckId": "KERN-01-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/assembly/open_unsupported.go",
+      "workingFileSha256": "91100eeb4268ce69aeb5c6116d7ecd7a3f9dc89c806c6adeeda4ee84b5a987a0",
+      "primaryComponentId": "KERN-01",
+      "primaryBehaviorCheckId": "KERN-01-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/kernel/assembly/open_unsupported.go",
+        "componentIds": [
+          "KERN-01"
+        ],
+        "workingFileSha256": "91100eeb4268ce69aeb5c6116d7ecd7a3f9dc89c806c6adeeda4ee84b5a987a0",
+        "declarations": [
+          {
+            "name": "openMemberFile",
+            "line": 10,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/assembly/root_test.go",
+      "workingFileSha256": "9137eb5c1673149d6c8ef53ec506adccfcad587c7f1d345a8b9bbd2088ae9447",
+      "primaryComponentId": "KERN-01",
+      "primaryBehaviorCheckId": "KERN-01-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/assembly/verify.go",
+      "workingFileSha256": "e915287f32b009b2b47bbaf7287f9ee29d0ed82fd8e57098260512b8c9826c83",
+      "primaryComponentId": "KERN-01",
+      "primaryBehaviorCheckId": "KERN-01-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [
+        "KERN-01"
+      ],
+      "inventoryAction": "retain-existing-owner",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-history-and-reviewed-replacement",
+      "previousSurfaceSha256": "d28ef2e43d2e8536373321c7021ace5d902903dac8b8ed5ed9a8bbb4f2b6c6f9",
+      "proposedSurfaceRecord": {
+        "path": "platform/kernel/assembly/verify.go",
+        "componentIds": [
+          "KERN-01"
+        ],
+        "workingFileSha256": "e915287f32b009b2b47bbaf7287f9ee29d0ed82fd8e57098260512b8c9826c83",
+        "declarations": [
+          {
+            "name": "PackageRoot",
+            "line": 77,
+            "kind": "go-function"
+          },
+          {
+            "name": "Release",
+            "line": 78,
+            "kind": "go-function"
+          },
+          {
+            "name": "Members",
+            "line": 79,
+            "kind": "go-function"
+          },
+          {
+            "name": "Verify",
+            "line": 89,
+            "kind": "go-function"
+          },
+          {
+            "name": "VerifyWithLimits",
+            "line": 96,
+            "kind": "go-function"
+          },
+          {
+            "name": "VerifyRoot",
+            "line": 102,
+            "kind": "go-function"
+          },
+          {
+            "name": "verifyRoot",
+            "line": 109,
+            "kind": "go-function"
+          },
+          {
+            "name": "validAuthority",
+            "line": 259,
+            "kind": "go-function"
+          },
+          {
+            "name": "sum",
+            "line": 263,
+            "kind": "go-function"
+          },
+          {
+            "name": "exactKeys",
+            "line": 268,
+            "kind": "go-function"
+          },
+          {
+            "name": "integer",
+            "line": 280,
+            "kind": "go-function"
+          },
+          {
+            "name": "checkFile",
+            "line": 299,
+            "kind": "go-function"
+          },
+          {
+            "name": "OpenMember",
+            "line": 331,
+            "kind": "go-function"
+          },
+          {
+            "name": "uniqueKeys",
+            "line": 334,
+            "kind": "go-function"
+          },
+          {
+            "name": "validEscapes",
+            "line": 388,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "Authority",
+          "line": 29,
+          "kind": "go-type"
+        },
+        {
+          "name": "Trust",
+          "line": 38,
+          "kind": "go-type"
+        },
+        {
+          "name": "Member",
+          "line": 62,
+          "kind": "go-type"
+        },
+        {
+          "name": "Verified",
+          "line": 71,
+          "kind": "go-type"
+        },
+        {
+          "name": "Limits",
+          "line": 87,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/assembly/verify_test.go",
+      "workingFileSha256": "138b42bae577380b9abbc00f18c699d5f4abd8b9ea8e548bb1330e82d8c6374d",
+      "primaryComponentId": "KERN-01",
+      "primaryBehaviorCheckId": "KERN-01-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [
+        "KERN-01"
+      ],
+      "inventoryAction": "retain-existing-owner",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/boot/integration_test.go",
+      "workingFileSha256": "c1342271ba7bd47fd3768cff2f6e6f130c1f51ae44c3b2dca6de6ca8147c4c98",
+      "primaryComponentId": "KERN-01",
+      "primaryBehaviorCheckId": "KERN-01-C02",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/boot/parent_lifetime_test.go",
+      "workingFileSha256": "14dab46add3cd74ddf4cf3692c058a5f8ddaf1ad47a8937b19cb2fdf7eb704fc",
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C01",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/boot/process_integration_test.go",
+      "workingFileSha256": "77356c4390a9d07c07fad4903aa4a6fcc7905a5bc84e2e6307d4d72609d06f1a",
+      "primaryComponentId": "KERN-01",
+      "primaryBehaviorCheckId": "KERN-01-C02",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/boot/run.go",
+      "workingFileSha256": "44d27d088332d7f3503c3c8dce04c3dfa807113d1b3f6084592feed60acd9dd1",
+      "primaryComponentId": "KERN-01",
+      "primaryBehaviorCheckId": "KERN-01-C02",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/kernel/boot/run.go",
+        "componentIds": [
+          "KERN-01"
+        ],
+        "workingFileSha256": "44d27d088332d7f3503c3c8dce04c3dfa807113d1b3f6084592feed60acd9dd1",
+        "declarations": [
+          {
+            "name": "Run",
+            "line": 9,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/communication/README.md",
+      "workingFileSha256": "e6cdc9f7c3f227ab07c55e8eea4144747d851c4a1cea3cb40201d950e277b251",
+      "primaryComponentId": "KERN-03",
+      "primaryBehaviorCheckId": "KERN-03-C01",
+      "ownerTask": "P02-T03",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [
+        "KERN-03"
+      ],
+      "inventoryAction": "retain-existing-owner",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/communication/config.go",
+      "workingFileSha256": "b54e90bbf5d5c37fa7e60ffdc878ddd4204bfba411665e2c35311c1fe5b9a883",
+      "primaryComponentId": "KERN-03",
+      "primaryBehaviorCheckId": "KERN-03-C01",
+      "ownerTask": "P02-T03",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [
+        "KERN-03"
+      ],
+      "inventoryAction": "retain-existing-owner",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "retain-matching-source-surface",
+      "previousSurfaceSha256": "b54e90bbf5d5c37fa7e60ffdc878ddd4204bfba411665e2c35311c1fe5b9a883",
+      "proposedSurfaceRecord": {
+        "path": "platform/kernel/communication/config.go",
+        "componentIds": [
+          "KERN-03"
+        ],
+        "workingFileSha256": "b54e90bbf5d5c37fa7e60ffdc878ddd4204bfba411665e2c35311c1fe5b9a883",
+        "declarations": [
+          {
+            "name": "Subjects",
+            "line": 44,
+            "kind": "go-function"
+          },
+          {
+            "name": "BuildConfig",
+            "line": 94,
+            "kind": "go-function"
+          },
+          {
+            "name": "BuildConfigWithListener",
+            "line": 100,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "Credentials",
+          "line": 24,
+          "kind": "go-type"
+        },
+        {
+          "name": "ListenerMode",
+          "line": 27,
+          "kind": "go-type"
+        },
+        {
+          "name": "Listener",
+          "line": 32,
+          "kind": "go-type"
+        },
+        {
+          "name": "SubjectSet",
+          "line": 37,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/communication/config_test.go",
+      "workingFileSha256": "1d2e5d1e30f2f2880396ef427b2261a66ad9ce8f145d45fa9de774b15ea76885",
+      "primaryComponentId": "KERN-03",
+      "primaryBehaviorCheckId": "KERN-03-C01",
+      "ownerTask": "P02-T03",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [
+        "KERN-03"
+      ],
+      "inventoryAction": "retain-existing-owner",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/communication/run.go",
+      "workingFileSha256": "1340ecbbca4b21a3354b0be3147207bbd1fbe9b5039c7825fb750b149a703069",
+      "primaryComponentId": "KERN-03",
+      "primaryBehaviorCheckId": "KERN-03-C01",
+      "ownerTask": "P02-T03",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/kernel/communication/run.go",
+        "componentIds": [
+          "KERN-03"
+        ],
+        "workingFileSha256": "1340ecbbca4b21a3354b0be3147207bbd1fbe9b5039c7825fb750b149a703069",
+        "declarations": [
+          {
+            "name": "Run",
+            "line": 9,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/lifecycle/run.go",
+      "workingFileSha256": "ddf748d4038b5099d605efffac8eee213e6479e7b27177f0b3f3fc9ffedb2dac",
+      "primaryComponentId": "KERN-02",
+      "primaryBehaviorCheckId": "KERN-02-C01",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/kernel/lifecycle/run.go",
+        "componentIds": [
+          "KERN-02"
+        ],
+        "workingFileSha256": "ddf748d4038b5099d605efffac8eee213e6479e7b27177f0b3f3fc9ffedb2dac",
+        "declarations": [
+          {
+            "name": "Run",
+            "line": 9,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/protocol/README.md",
+      "workingFileSha256": "025b4dcbd14e4d77687f455c7c02fdc279287f873dd02076fc6754bbf2907891",
+      "primaryComponentId": "KERN-03",
+      "primaryBehaviorCheckId": "KERN-03-C02",
+      "ownerTask": "P02-T03",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/protocol/aliases_test.go",
+      "workingFileSha256": "5549e632cd0fd72649dd5355bb4278c95a53e41c4f3f5f8076cca3aca0d29a06",
+      "primaryComponentId": "KERN-03",
+      "primaryBehaviorCheckId": "KERN-03-C02",
+      "ownerTask": "P02-T03",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/protocol/codec.go",
+      "workingFileSha256": "4921211e9fa9767b3f17826e66cd66542b690a569f49729b11d765d6c11b3d64",
+      "primaryComponentId": "KERN-03",
+      "primaryBehaviorCheckId": "KERN-03-C02",
+      "ownerTask": "P02-T03",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/kernel/protocol/codec.go",
+        "componentIds": [
+          "KERN-03"
+        ],
+        "workingFileSha256": "4921211e9fa9767b3f17826e66cd66542b690a569f49729b11d765d6c11b3d64",
+        "declarations": [
+          {
+            "name": "Roles",
+            "line": 27,
+            "kind": "go-function"
+          },
+          {
+            "name": "validRole",
+            "line": 28,
+            "kind": "go-function"
+          },
+          {
+            "name": "valid",
+            "line": 46,
+            "kind": "go-function"
+          },
+          {
+            "name": "StrictJSON",
+            "line": 93,
+            "kind": "go-function"
+          },
+          {
+            "name": "DecodeClosedJSON",
+            "line": 100,
+            "kind": "go-function"
+          },
+          {
+            "name": "fresh",
+            "line": 221,
+            "kind": "go-function"
+          },
+          {
+            "name": "state",
+            "line": 225,
+            "kind": "go-function"
+          },
+          {
+            "name": "errorsValid",
+            "line": 228,
+            "kind": "go-function"
+          },
+          {
+            "name": "membersValid",
+            "line": 244,
+            "kind": "go-function"
+          },
+          {
+            "name": "DecodeEvent",
+            "line": 273,
+            "kind": "go-function"
+          },
+          {
+            "name": "DecodeCommand",
+            "line": 286,
+            "kind": "go-function"
+          },
+          {
+            "name": "DecodeSnapshot",
+            "line": 296,
+            "kind": "go-function"
+          },
+          {
+            "name": "Accept",
+            "line": 332,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "Scope",
+          "line": 37,
+          "kind": "go-type"
+        },
+        {
+          "name": "Member",
+          "line": 50,
+          "kind": "go-type"
+        },
+        {
+          "name": "Event",
+          "line": 58,
+          "kind": "go-type"
+        },
+        {
+          "name": "Command",
+          "line": 71,
+          "kind": "go-type"
+        },
+        {
+          "name": "Snapshot",
+          "line": 79,
+          "kind": "go-type"
+        },
+        {
+          "name": "SnapshotCursor",
+          "line": 326,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/protocol/codec_test.go",
+      "workingFileSha256": "31b719a63e7563ee941f38685aef4fc4330684affbca47f329e9d770e3dd9d38",
+      "primaryComponentId": "KERN-03",
+      "primaryBehaviorCheckId": "KERN-03-C02",
+      "ownerTask": "P02-T03",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/protocol/credentials.go",
+      "workingFileSha256": "45f51f19c6a06e77efad2e61cea93d2e8f7f0a50d5fe6d175ab054b687ccf4c3",
+      "primaryComponentId": "KERN-03",
+      "primaryBehaviorCheckId": "KERN-03-C02",
+      "ownerTask": "P02-T03",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/kernel/protocol/credentials.go",
+        "componentIds": [
+          "KERN-03"
+        ],
+        "workingFileSha256": "45f51f19c6a06e77efad2e61cea93d2e8f7f0a50d5fe6d175ab054b687ccf4c3",
+        "declarations": [
+          {
+            "name": "Now",
+            "line": 27,
+            "kind": "go-function"
+          },
+          {
+            "name": "Code",
+            "line": 31,
+            "kind": "go-function"
+          },
+          {
+            "name": "valid",
+            "line": 45,
+            "kind": "go-function"
+          },
+          {
+            "name": "prepared",
+            "line": 58,
+            "kind": "go-function"
+          },
+          {
+            "name": "LoadEnvironment",
+            "line": 81,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "Credentials",
+          "line": 14,
+          "kind": "go-type"
+        },
+        {
+          "name": "Clock",
+          "line": 23,
+          "kind": "go-type"
+        },
+        {
+          "name": "Logger",
+          "line": 24,
+          "kind": "go-type"
+        },
+        {
+          "name": "Services",
+          "line": 34,
+          "kind": "go-type"
+        },
+        {
+          "name": "Config",
+          "line": 38,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/protocol/credentials_unix_test.go",
+      "workingFileSha256": "e08e4bb148ebadd9447b9c90f74ccc76da2e050071b89e49fd0462475e8361cf",
+      "primaryComponentId": "KERN-03",
+      "primaryBehaviorCheckId": "KERN-03-C02",
+      "ownerTask": "P02-T03",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/protocol/private_unix.go",
+      "workingFileSha256": "094a60606c9c37483b89415953a23b1bcf775a9787fcfd4e9e8ed23a1b91debd",
+      "primaryComponentId": "KERN-03",
+      "primaryBehaviorCheckId": "KERN-03-C02",
+      "ownerTask": "P02-T03",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/kernel/protocol/private_unix.go",
+        "componentIds": [
+          "KERN-03"
+        ],
+        "workingFileSha256": "094a60606c9c37483b89415953a23b1bcf775a9787fcfd4e9e8ed23a1b91debd",
+        "declarations": [
+          {
+            "name": "privateOwner",
+            "line": 13,
+            "kind": "go-function"
+          },
+          {
+            "name": "readPrivateFile",
+            "line": 17,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/protocol/private_unsupported.go",
+      "workingFileSha256": "608afc7538c80a0b157be6f3b15037da34923bfe6743ef4ad5c01449866a7a81",
+      "primaryComponentId": "KERN-03",
+      "primaryBehaviorCheckId": "KERN-03-C02",
+      "ownerTask": "P02-T03",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/kernel/protocol/private_unsupported.go",
+        "componentIds": [
+          "KERN-03"
+        ],
+        "workingFileSha256": "608afc7538c80a0b157be6f3b15037da34923bfe6743ef4ad5c01449866a7a81",
+        "declarations": [
+          {
+            "name": "readPrivateFile",
+            "line": 7,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/protocol/transport.go",
+      "workingFileSha256": "bd6d6c90f4968a547c046a45239796642bb2a0058ba361ad4437680a3aa2f947",
+      "primaryComponentId": "KERN-03",
+      "primaryBehaviorCheckId": "KERN-03-C02",
+      "ownerTask": "P02-T03",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/kernel/protocol/transport.go",
+        "componentIds": [
+          "KERN-03"
+        ],
+        "workingFileSha256": "bd6d6c90f4968a547c046a45239796642bb2a0058ba361ad4437680a3aa2f947",
+        "declarations": [
+          {
+            "name": "valid",
+            "line": 23,
+            "kind": "go-function"
+          },
+          {
+            "name": "copy",
+            "line": 35,
+            "kind": "go-function"
+          },
+          {
+            "name": "AllReadyExcept",
+            "line": 58,
+            "kind": "go-function"
+          },
+          {
+            "name": "Open",
+            "line": 86,
+            "kind": "go-function"
+          },
+          {
+            "name": "Close",
+            "line": 151,
+            "kind": "go-function"
+          },
+          {
+            "name": "Scope",
+            "line": 152,
+            "kind": "go-function"
+          },
+          {
+            "name": "StaleAfter",
+            "line": 153,
+            "kind": "go-function"
+          },
+          {
+            "name": "view",
+            "line": 154,
+            "kind": "go-function"
+          },
+          {
+            "name": "accept",
+            "line": 169,
+            "kind": "go-function"
+          },
+          {
+            "name": "emit",
+            "line": 208,
+            "kind": "go-function"
+          },
+          {
+            "name": "mustJSON",
+            "line": 251,
+            "kind": "go-function"
+          },
+          {
+            "name": "Serve",
+            "line": 254,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "SubjectSet",
+          "line": 16,
+          "kind": "go-type"
+        },
+        {
+          "name": "View",
+          "line": 53,
+          "kind": "go-type"
+        },
+        {
+          "name": "Decision",
+          "line": 67,
+          "kind": "go-type"
+        },
+        {
+          "name": "Actor",
+          "line": 73,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/kernel/status/run.go",
+      "workingFileSha256": "6be86037c5ff514759af8d767284efae5baabdd406cfa187aaa4ef42fd97ea43",
+      "primaryComponentId": "KERN-04",
+      "primaryBehaviorCheckId": "KERN-04-C01",
+      "ownerTask": "P02-T04",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/kernel/status/run.go",
+        "componentIds": [
+          "KERN-04"
+        ],
+        "workingFileSha256": "6be86037c5ff514759af8d767284efae5baabdd406cfa187aaa4ef42fd97ea43",
+        "declarations": [
+          {
+            "name": "Run",
+            "line": 10,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/bootstrap.go",
+      "workingFileSha256": "b3211aa730e87980b2cbac0fb2e6ae479c580f4bba722c6cdae12b2512edb524",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C02",
+      "ownerTask": "P02-T07",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/launcher/bootstrap.go",
+        "componentIds": [
+          "PLAT-01"
+        ],
+        "workingFileSha256": "b3211aa730e87980b2cbac0fb2e6ae479c580f4bba722c6cdae12b2512edb524",
+        "declarations": [
+          {
+            "name": "bootstrapError",
+            "line": 80,
+            "kind": "go-function"
+          },
+          {
+            "name": "validateBootstrapRoles",
+            "line": 82,
+            "kind": "go-function"
+          },
+          {
+            "name": "Close",
+            "line": 132,
+            "kind": "go-function"
+          },
+          {
+            "name": "CleanupError",
+            "line": 164,
+            "kind": "go-function"
+          },
+          {
+            "name": "Bootstrap",
+            "line": 185,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "BootstrapConfig",
+          "line": 31,
+          "kind": "go-type"
+        },
+        {
+          "name": "BootstrapStatus",
+          "line": 49,
+          "kind": "go-type"
+        },
+        {
+          "name": "Session",
+          "line": 59,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/bootstrap_config.go",
+      "workingFileSha256": "7b4c43013122d2b64e5c19cc3522ea5a3ca154619a756494eb2add053e0405a7",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/launcher/bootstrap_config.go",
+        "componentIds": [
+          "PLAT-01"
+        ],
+        "workingFileSha256": "7b4c43013122d2b64e5c19cc3522ea5a3ca154619a756494eb2add053e0405a7",
+        "declarations": [
+          {
+            "name": "bootstrapBrokerCredentials",
+            "line": 17,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/bootstrap_config_test.go",
+      "workingFileSha256": "39a9113bc75ae5b0bdd6ab93c647bdaeac228a67ae3ccba46ca7e4f753eba53f",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/bootstrap_docker_integration_test.go",
+      "workingFileSha256": "02d8a4fea21af4ad952580e21015ac5721bb3052674d612bff296f203643c40b",
+      "primaryComponentId": "PLAT-03",
+      "primaryBehaviorCheckId": "PLAT-03-C02",
+      "ownerTask": "P02-T07",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/bootstrap_integration_test.go",
+      "workingFileSha256": "19144575d146ab92f99645a79b5472a0a7523c602502c942bfab8d0daef3b0ae",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C02",
+      "ownerTask": "P02-T07",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/docker.go",
+      "workingFileSha256": "f36a06727a5f20773c06cefae3ff2c082195ebccf27ec82f98635ad4cf8b0e4f",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C02",
+      "ownerTask": "P02-T07",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [
+        "PLAT-01"
+      ],
+      "inventoryAction": "retain-existing-owner",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-history-and-reviewed-replacement",
+      "previousSurfaceSha256": "284bbd9cb4ced94c73cc2f29a173ad7c62eec2014076059db7b96597f511c7e0",
+      "proposedSurfaceRecord": {
+        "path": "platform/launcher/docker.go",
+        "componentIds": [
+          "PLAT-01"
+        ],
+        "workingFileSha256": "f36a06727a5f20773c06cefae3ff2c082195ebccf27ec82f98635ad4cf8b0e4f",
+        "declarations": [
+          {
+            "name": "refusal",
+            "line": 56,
+            "kind": "go-function"
+          },
+          {
+            "name": "NewDocker",
+            "line": 57,
+            "kind": "go-function"
+          },
+          {
+            "name": "environment",
+            "line": 81,
+            "kind": "go-function"
+          },
+          {
+            "name": "Write",
+            "line": 95,
+            "kind": "go-function"
+          },
+          {
+            "name": "run",
+            "line": 106,
+            "kind": "go-function"
+          },
+          {
+            "name": "read",
+            "line": 136,
+            "kind": "go-function"
+          },
+          {
+            "name": "Inspect",
+            "line": 146,
+            "kind": "go-function"
+          },
+          {
+            "name": "valid",
+            "line": 172,
+            "kind": "go-function"
+          },
+          {
+            "name": "matches",
+            "line": 178,
+            "kind": "go-function"
+          },
+          {
+            "name": "inputLabels",
+            "line": 181,
+            "kind": "go-function"
+          },
+          {
+            "name": "labels",
+            "line": 189,
+            "kind": "go-function"
+          },
+          {
+            "name": "resources",
+            "line": 204,
+            "kind": "go-function"
+          },
+          {
+            "name": "WarmReuse",
+            "line": 230,
+            "kind": "go-function"
+          },
+          {
+            "name": "safeInlineConfig",
+            "line": 278,
+            "kind": "go-function"
+          },
+          {
+            "name": "uniqueComposeJSON",
+            "line": 295,
+            "kind": "go-function"
+          },
+          {
+            "name": "validateCompose",
+            "line": 346,
+            "kind": "go-function"
+          },
+          {
+            "name": "StartOwned",
+            "line": 422,
+            "kind": "go-function"
+          },
+          {
+            "name": "StopOwned",
+            "line": 472,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "DockerBackend",
+          "line": 19,
+          "kind": "go-type"
+        },
+        {
+          "name": "DockerVersions",
+          "line": 26,
+          "kind": "go-type"
+        },
+        {
+          "name": "DockerConfig",
+          "line": 27,
+          "kind": "go-type"
+        },
+        {
+          "name": "DockerInspection",
+          "line": 33,
+          "kind": "go-type"
+        },
+        {
+          "name": "Docker",
+          "line": 38,
+          "kind": "go-type"
+        },
+        {
+          "name": "OwnershipPreflight",
+          "line": 42,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/docker_config_test.go",
+      "workingFileSha256": "cf717c27d0b7272460a963cc25cbbafbfc617898f5aa48fecb4ec115aa751bc8",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C02",
+      "ownerTask": "P02-T07",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/docker_environment.go",
+      "workingFileSha256": "b575d40d285f7f6b4419905ad0e472472e7d253f798457e8daf348ff4d569c29",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C02",
+      "ownerTask": "P02-T07",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/launcher/docker_environment.go",
+        "componentIds": [
+          "PLAT-01"
+        ],
+        "workingFileSha256": "b575d40d285f7f6b4419905ad0e472472e7d253f798457e8daf348ff4d569c29",
+        "declarations": [
+          {
+            "name": "dockerEnvironment",
+            "line": 11,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/docker_environment_test.go",
+      "workingFileSha256": "bdfba27c7a4036a5626f0a7ada0ec80d41ebdbc33e08647d0c49ea8bbd88396e",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C02",
+      "ownerTask": "P02-T07",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/docker_instance.go",
+      "workingFileSha256": "f02ee9131b0e52679e7965baa962822adbebe0381a3e1fcd6aad5b398702d5e8",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C02",
+      "ownerTask": "P02-T07",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/launcher/docker_instance.go",
+        "componentIds": [
+          "PLAT-01"
+        ],
+        "workingFileSha256": "f02ee9131b0e52679e7965baa962822adbebe0381a3e1fcd6aad5b398702d5e8",
+        "declarations": [
+          {
+            "name": "InspectOwnedBroker",
+            "line": 51,
+            "kind": "go-function"
+          },
+          {
+            "name": "verifyBrokerConfigArchive",
+            "line": 151,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "OwnedBroker",
+          "line": 14,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/docker_instance_test.go",
+      "workingFileSha256": "208509e4946d53b9c6ca8be74ec916ff243f618e28f1db8a00d73d6128bac699",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C02",
+      "ownerTask": "P02-T07",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/docker_test.go",
+      "workingFileSha256": "c134b20a73191c5def882bc0c29277dd5b479af09791294935809eed6a35f35c",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C02",
+      "ownerTask": "P02-T07",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [
+        "PLAT-01"
+      ],
+      "inventoryAction": "retain-existing-owner",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/doctor.go",
+      "workingFileSha256": "39bf88cf0d98cae330ca35f6134cca46a18e1da095766424cab482ecc2e6f8ce",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C03",
+      "ownerTask": "P02-T04",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/launcher/doctor.go",
+        "componentIds": [
+          "PLAT-01"
+        ],
+        "workingFileSha256": "39bf88cf0d98cae330ca35f6134cca46a18e1da095766424cab482ecc2e6f8ce",
+        "declarations": [
+          {
+            "name": "doctorContextCode",
+            "line": 88,
+            "kind": "go-function"
+          },
+          {
+            "name": "doctorInspectionResult",
+            "line": 95,
+            "kind": "go-function"
+          },
+          {
+            "name": "doctorProbeResult",
+            "line": 117,
+            "kind": "go-function"
+          },
+          {
+            "name": "RunDoctor",
+            "line": 133,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "DoctorStatus",
+          "line": 11,
+          "kind": "go-type"
+        },
+        {
+          "name": "DoctorCode",
+          "line": 12,
+          "kind": "go-type"
+        },
+        {
+          "name": "DoctorProbeResult",
+          "line": 40,
+          "kind": "go-type"
+        },
+        {
+          "name": "DoctorProbe",
+          "line": 48,
+          "kind": "go-type"
+        },
+        {
+          "name": "DoctorProbes",
+          "line": 50,
+          "kind": "go-type"
+        },
+        {
+          "name": "DoctorConfig",
+          "line": 54,
+          "kind": "go-type"
+        },
+        {
+          "name": "DoctorCheck",
+          "line": 64,
+          "kind": "go-type"
+        },
+        {
+          "name": "DoctorObservation",
+          "line": 71,
+          "kind": "go-type"
+        },
+        {
+          "name": "DoctorReport",
+          "line": 77,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/doctor_test.go",
+      "workingFileSha256": "04468e954cda5014c02722162fdebc10fd8c8927d1481d2140020a49d9339584",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C03",
+      "ownerTask": "P02-T04",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/host_config.go",
+      "workingFileSha256": "e00fdda82a8478f95b426de66b36e504592783ab9c31a3fb9298dacd5c1209ce",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/launcher/host_config.go",
+        "componentIds": [
+          "PLAT-01"
+        ],
+        "workingFileSha256": "e00fdda82a8478f95b426de66b36e504592783ab9c31a3fb9298dacd5c1209ce",
+        "declarations": [
+          {
+            "name": "hostConfigError",
+            "line": 48,
+            "kind": "go-function"
+          },
+          {
+            "name": "hostPrivateRead",
+            "line": 50,
+            "kind": "go-function"
+          },
+          {
+            "name": "hostRuntimeDecode",
+            "line": 75,
+            "kind": "go-function"
+          },
+          {
+            "name": "hostBrokerSecrets",
+            "line": 95,
+            "kind": "go-function"
+          },
+          {
+            "name": "LoadBootstrapConfig",
+            "line": 128,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "HostPolicy",
+          "line": 30,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/host_config_test.go",
+      "workingFileSha256": "d101bd453d184bd95cd13a892ce05b00e41e2375c09badfb37d71dde44156a25",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/kernel_status.go",
+      "workingFileSha256": "ac03d22aacec72dbaffff1d21cbd28fd514ccba4f74e26b7f440c1908d512478",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C03",
+      "ownerTask": "P02-T04",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/launcher/kernel_status.go",
+        "componentIds": [
+          "PLAT-01"
+        ],
+        "workingFileSha256": "ac03d22aacec72dbaffff1d21cbd28fd514ccba4f74e26b7f440c1908d512478",
+        "declarations": [
+          {
+            "name": "kernelStatusError",
+            "line": 25,
+            "kind": "go-function"
+          },
+          {
+            "name": "Dial",
+            "line": 42,
+            "kind": "go-function"
+          },
+          {
+            "name": "close",
+            "line": 72,
+            "kind": "go-function"
+          },
+          {
+            "name": "kernelStatusEndpoint",
+            "line": 92,
+            "kind": "go-function"
+          },
+          {
+            "name": "ObserveKernel",
+            "line": 113,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "KernelStatusOptions",
+          "line": 19,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/kernel_status_test.go",
+      "workingFileSha256": "2b9198ce2ac970ffbd0655baa72d97d4c5f440a81c41b02029c20725021d194c",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C03",
+      "ownerTask": "P02-T04",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/lock_unix.go",
+      "workingFileSha256": "b8232a239d47e43d8fac3759d137abfe3b2502adaae6e62d25691323872f9859",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C02",
+      "ownerTask": "P02-T07",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [
+        "PLAT-01"
+      ],
+      "inventoryAction": "retain-existing-owner",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "retain-matching-source-surface",
+      "previousSurfaceSha256": "b8232a239d47e43d8fac3759d137abfe3b2502adaae6e62d25691323872f9859",
+      "proposedSurfaceRecord": {
+        "path": "platform/launcher/lock_unix.go",
+        "componentIds": [
+          "PLAT-01"
+        ],
+        "workingFileSha256": "b8232a239d47e43d8fac3759d137abfe3b2502adaae6e62d25691323872f9859",
+        "declarations": [
+          {
+            "name": "Error",
+            "line": 32,
+            "kind": "go-function"
+          },
+          {
+            "name": "Unwrap",
+            "line": 33,
+            "kind": "go-function"
+          },
+          {
+            "name": "waitingError",
+            "line": 35,
+            "kind": "go-function"
+          },
+          {
+            "name": "AcquireBootstrapLock",
+            "line": 53,
+            "kind": "go-function"
+          },
+          {
+            "name": "Close",
+            "line": 137,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "BootstrapLock",
+          "line": 20,
+          "kind": "go-type"
+        },
+        {
+          "name": "StartingElsewhereError",
+          "line": 27,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/lock_unix_test.go",
+      "workingFileSha256": "2c22f87e9b9fa6fdfdbf22976f11179d18ca475bdb189df27f2595dec6ba2896",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C02",
+      "ownerTask": "P02-T07",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [
+        "PLAT-01"
+      ],
+      "inventoryAction": "retain-existing-owner",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/profile.go",
+      "workingFileSha256": "684a8754fcfc6dc09a7129031c1852aa27a1d826efeab19e6635d09b2e1870c2",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/launcher/profile.go",
+        "componentIds": [
+          "PLAT-01"
+        ],
+        "workingFileSha256": "684a8754fcfc6dc09a7129031c1852aa27a1d826efeab19e6635d09b2e1870c2",
+        "declarations": [
+          {
+            "name": "Summary",
+            "line": 69,
+            "kind": "go-function"
+          },
+          {
+            "name": "Declaration",
+            "line": 75,
+            "kind": "go-function"
+          },
+          {
+            "name": "LocalDocker",
+            "line": 84,
+            "kind": "go-function"
+          },
+          {
+            "name": "profileError",
+            "line": 96,
+            "kind": "go-function"
+          },
+          {
+            "name": "privateProfileInfo",
+            "line": 98,
+            "kind": "go-function"
+          },
+          {
+            "name": "canonicalProfilePath",
+            "line": 103,
+            "kind": "go-function"
+          },
+          {
+            "name": "openProfileDirectory",
+            "line": 118,
+            "kind": "go-function"
+          },
+          {
+            "name": "validateProfile",
+            "line": 148,
+            "kind": "go-function"
+          },
+          {
+            "name": "checkProfileJSON",
+            "line": 215,
+            "kind": "go-function"
+          },
+          {
+            "name": "LoadProfile",
+            "line": 273,
+            "kind": "go-function"
+          },
+          {
+            "name": "loadProfile",
+            "line": 277,
+            "kind": "go-function"
+          },
+          {
+            "name": "EnrollProfile",
+            "line": 329,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "ProfilePolicy",
+          "line": 29,
+          "kind": "go-type"
+        },
+        {
+          "name": "ProfileDocker",
+          "line": 36,
+          "kind": "go-type"
+        },
+        {
+          "name": "Profile",
+          "line": 48,
+          "kind": "go-type"
+        },
+        {
+          "name": "LoadedProfile",
+          "line": 66,
+          "kind": "go-type"
+        },
+        {
+          "name": "ProfileSummary",
+          "line": 67,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/profile_boundary_test.go",
+      "workingFileSha256": "5dcc6c215f4b1b3bcbdd67fcebffc4d5a98e13feafd29cf54b4638f8d8bcda89",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/profile_test.go",
+      "workingFileSha256": "a89a5f71c3b411912359556736480dfbe2d4f5d8caf21c2ee71e634f54001b80",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/release.go",
+      "workingFileSha256": "8ca1ea1507b1cbcb45190bdc897eee82b816d9d693a436c06f9bf1c90aa4cd8d",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/launcher/release.go",
+        "componentIds": [
+          "PLAT-01"
+        ],
+        "workingFileSha256": "8ca1ea1507b1cbcb45190bdc897eee82b816d9d693a436c06f9bf1c90aa4cd8d",
+        "declarations": [
+          {
+            "name": "Trust",
+            "line": 76,
+            "kind": "go-function"
+          },
+          {
+            "name": "Assembly",
+            "line": 77,
+            "kind": "go-function"
+          },
+          {
+            "name": "PackageDirectory",
+            "line": 78,
+            "kind": "go-function"
+          },
+          {
+            "name": "BrokerPins",
+            "line": 79,
+            "kind": "go-function"
+          },
+          {
+            "name": "VerifiedAssembly",
+            "line": 80,
+            "kind": "go-function"
+          },
+          {
+            "name": "releaseError",
+            "line": 87,
+            "kind": "go-function"
+          },
+          {
+            "name": "releaseDigest",
+            "line": 89,
+            "kind": "go-function"
+          },
+          {
+            "name": "releaseAuthorityValid",
+            "line": 94,
+            "kind": "go-function"
+          },
+          {
+            "name": "releaseEscapesValid",
+            "line": 99,
+            "kind": "go-function"
+          },
+          {
+            "name": "releaseJSON",
+            "line": 138,
+            "kind": "go-function"
+          },
+          {
+            "name": "releaseFields",
+            "line": 192,
+            "kind": "go-function"
+          },
+          {
+            "name": "decodeRelease",
+            "line": 205,
+            "kind": "go-function"
+          },
+          {
+            "name": "releaseOpen",
+            "line": 235,
+            "kind": "go-function"
+          },
+          {
+            "name": "releaseRead",
+            "line": 242,
+            "kind": "go-function"
+          },
+          {
+            "name": "releaseReadOpened",
+            "line": 248,
+            "kind": "go-function"
+          },
+          {
+            "name": "preflightReleaseMembers",
+            "line": 275,
+            "kind": "go-function"
+          },
+          {
+            "name": "LoadInstalledRelease",
+            "line": 320,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "ReleasePolicy",
+          "line": 33,
+          "kind": "go-type"
+        },
+        {
+          "name": "BrokerPins",
+          "line": 42,
+          "kind": "go-type"
+        },
+        {
+          "name": "InstalledRelease",
+          "line": 68,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/release_test.go",
+      "workingFileSha256": "944a752f3deb1d14bcb726f827298da45d745f4bdf9869b708584a29c08a96fb",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/launcher/startup_session.go",
+      "workingFileSha256": "a689c6575d47b10a410f89b7d34434f115c4e45849469dc31a51223fe9543a23",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C03",
+      "ownerTask": "P02-T04",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/launcher/startup_session.go",
+        "componentIds": [
+          "PLAT-01"
+        ],
+        "workingFileSha256": "a689c6575d47b10a410f89b7d34434f115c4e45849469dc31a51223fe9543a23",
+        "declarations": [
+          {
+            "name": "OwnerObservation",
+            "line": 8,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "under-active-review-no-acceptance"
+    },
+    {
+      "path": "platform/launcher/startup_session_lifecycle_test.go",
+      "workingFileSha256": "c9ec8ba26eaa20d46b7c9f324b319da5ff995d6cc058fa0c40edce8e7425239e",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C03",
+      "ownerTask": "P02-T04",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "under-active-review-no-acceptance",
+      "addedDuringAudit": true
+    },
+    {
+      "path": "platform/launcher/startup_session_test.go",
+      "workingFileSha256": "120cd030a6aea9239188056f2501ddf679f4571b106beb3553b12de1625ad8de",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C03",
+      "ownerTask": "P02-T04",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "under-active-review-no-acceptance"
+    },
+    {
+      "path": "platform/launcher/startup_status.go",
+      "workingFileSha256": "3ddbe8fcecb149dd40d9d0b9738d40af3a7e706f47b1b799ccc28c5038f3f107",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C03",
+      "ownerTask": "P02-T04",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/launcher/startup_status.go",
+        "componentIds": [
+          "PLAT-01"
+        ],
+        "workingFileSha256": "3ddbe8fcecb149dd40d9d0b9738d40af3a7e706f47b1b799ccc28c5038f3f107",
+        "declarations": [
+          {
+            "name": "ownerStatusError",
+            "line": 159,
+            "kind": "go-function"
+          },
+          {
+            "name": "statusText",
+            "line": 160,
+            "kind": "go-function"
+          },
+          {
+            "name": "optionalStatusID",
+            "line": 171,
+            "kind": "go-function"
+          },
+          {
+            "name": "copyOwnerScope",
+            "line": 172,
+            "kind": "go-function"
+          },
+          {
+            "name": "LoadOwnerStatus",
+            "line": 188,
+            "kind": "go-function"
+          },
+          {
+            "name": "statusTimestamp",
+            "line": 241,
+            "kind": "go-function"
+          },
+          {
+            "name": "statusString",
+            "line": 244,
+            "kind": "go-function"
+          },
+          {
+            "name": "statusRevision",
+            "line": 245,
+            "kind": "go-function"
+          },
+          {
+            "name": "unknownStatusService",
+            "line": 246,
+            "kind": "go-function"
+          },
+          {
+            "name": "mapObservation",
+            "line": 250,
+            "kind": "go-function"
+          },
+          {
+            "name": "mustStatusJSON",
+            "line": 347,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "OwnerIdentityReference",
+          "line": 22,
+          "kind": "go-type"
+        },
+        {
+          "name": "OwnerScope",
+          "line": 28,
+          "kind": "go-type"
+        },
+        {
+          "name": "OwnerEnrollment",
+          "line": 36,
+          "kind": "go-type"
+        },
+        {
+          "name": "OwnerPolicy",
+          "line": 51,
+          "kind": "go-type"
+        },
+        {
+          "name": "OwnerStatus",
+          "line": 59,
+          "kind": "go-type"
+        },
+        {
+          "name": "StartupStatusCaller",
+          "line": 66,
+          "kind": "go-type"
+        },
+        {
+          "name": "StartupStatusError",
+          "line": 72,
+          "kind": "go-type"
+        },
+        {
+          "name": "StartupStatusService",
+          "line": 78,
+          "kind": "go-type"
+        },
+        {
+          "name": "StartupStatusInstance",
+          "line": 86,
+          "kind": "go-type"
+        },
+        {
+          "name": "StartupStoragePressure",
+          "line": 101,
+          "kind": "go-type"
+        },
+        {
+          "name": "StartupReplicationHealth",
+          "line": 105,
+          "kind": "go-type"
+        },
+        {
+          "name": "StartupStatusPersistence",
+          "line": 109,
+          "kind": "go-type"
+        },
+        {
+          "name": "StartupStatusWork",
+          "line": 120,
+          "kind": "go-type"
+        },
+        {
+          "name": "StartupStatusHubs",
+          "line": 131,
+          "kind": "go-type"
+        },
+        {
+          "name": "StartupStatusObservation",
+          "line": 135,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "under-active-review-no-acceptance"
+    },
+    {
+      "path": "platform/launcher/startup_status_test.go",
+      "workingFileSha256": "e26631c82ae070143dae8f93d4324750ebfeb1ca5bba42cf1c95e61b6a11a320",
+      "primaryComponentId": "PLAT-01",
+      "primaryBehaviorCheckId": "PLAT-01-C03",
+      "ownerTask": "P02-T04",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "under-active-review-no-acceptance"
+    },
+    {
+      "path": "platform/runtime/README.md",
+      "workingFileSha256": "51bd1399f410da9bc0899eba02028e76d987b14dbd22df1495c2a7fbb5b11b17",
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C01",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [
+        "PLAT-02"
+      ],
+      "inventoryAction": "retain-existing-owner",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/runtime/parent_linux_test.go",
+      "workingFileSha256": "fe553e2041cac4a2af95012c51188e98af0aa2bcf68a138cd9689ae5f13802ce",
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C01",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/runtime/parent_unix.go",
+      "workingFileSha256": "7fe95fe66db69c01889f60fd2c4428579daf080d379dff25fc80064962c4a9be",
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C01",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/runtime/parent_unix.go",
+        "componentIds": [
+          "PLAT-02"
+        ],
+        "workingFileSha256": "7fe95fe66db69c01889f60fd2c4428579daf080d379dff25fc80064962c4a9be",
+        "declarations": [
+          {
+            "name": "validateLifetimeLease",
+            "line": 16,
+            "kind": "go-function"
+          },
+          {
+            "name": "prepareChildLifetime",
+            "line": 31,
+            "kind": "go-function"
+          },
+          {
+            "name": "closeChildStartFiles",
+            "line": 60,
+            "kind": "go-function"
+          },
+          {
+            "name": "ParentLifetime",
+            "line": 76,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/runtime/snapshot_darwin_test.go",
+      "workingFileSha256": "29823b7772b37e6935c3d4261016dcc05cb9c3ba1a84deff8e69ff1dc6f5b93d",
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C01",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [
+        "PLAT-02"
+      ],
+      "inventoryAction": "retain-existing-owner",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/runtime/snapshot_linux.go",
+      "workingFileSha256": "2adf8ef1a70fa737f36bc015dc5bdb18e164baf2e4fd13437ac1c6d73f14addb",
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C01",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [
+        "PLAT-02"
+      ],
+      "inventoryAction": "retain-existing-owner",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-history-and-reviewed-replacement",
+      "previousSurfaceSha256": "6c2563f1416dad0f7a8bdc0d5623f914be5f107eaa2a6aff2c6cb56758d9cee3",
+      "proposedSurfaceRecord": {
+        "path": "platform/runtime/snapshot_linux.go",
+        "componentIds": [
+          "PLAT-02"
+        ],
+        "workingFileSha256": "2adf8ef1a70fa737f36bc015dc5bdb18e164baf2e4fd13437ac1c6d73f14addb",
+        "declarations": [
+          {
+            "name": "command",
+            "line": 25,
+            "kind": "go-function"
+          },
+          {
+            "name": "close",
+            "line": 30,
+            "kind": "go-function"
+          },
+          {
+            "name": "prepareExecutable",
+            "line": 32,
+            "kind": "go-function"
+          },
+          {
+            "name": "sealAndVerify",
+            "line": 91,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/runtime/snapshot_unsupported.go",
+      "workingFileSha256": "8455c45f2628914a95a897b5539888d597035a01d345487a061b1bf79fccb182",
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C01",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [
+        "PLAT-02"
+      ],
+      "inventoryAction": "retain-existing-owner",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "retain-matching-source-surface",
+      "previousSurfaceSha256": "8455c45f2628914a95a897b5539888d597035a01d345487a061b1bf79fccb182",
+      "proposedSurfaceRecord": {
+        "path": "platform/runtime/snapshot_unsupported.go",
+        "componentIds": [
+          "PLAT-02"
+        ],
+        "workingFileSha256": "8455c45f2628914a95a897b5539888d597035a01d345487a061b1bf79fccb182",
+        "declarations": [
+          {
+            "name": "prepareExecutable",
+            "line": 10,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/runtime/stop_role.go",
+      "workingFileSha256": "04be379b36456a781a26fa0d3f78da84253501e0fff5bd599acede45c97a8b1d",
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C01",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "platform/runtime/stop_role.go",
+        "componentIds": [
+          "PLAT-02"
+        ],
+        "workingFileSha256": "04be379b36456a781a26fa0d3f78da84253501e0fff5bd599acede45c97a8b1d",
+        "declarations": [
+          {
+            "name": "StopRole",
+            "line": 14,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/runtime/stop_role_linux_test.go",
+      "workingFileSha256": "dbab48564a0c1986e90b6cbced36e06fde2609bb87ab7008d46bfb91e41df730",
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C01",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/runtime/supervisor.go",
+      "workingFileSha256": "8768d4fa02dddb0bc63c2c429810bed3c2454b88ca6f722fd0fbab3b139df944",
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C01",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [
+        "PLAT-02"
+      ],
+      "inventoryAction": "retain-existing-owner",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-history-and-reviewed-replacement",
+      "previousSurfaceSha256": "74a14f276bf80e744ed0156df7091917f0f580018af71b361019c738da0e10ee",
+      "proposedSurfaceRecord": {
+        "path": "platform/runtime/supervisor.go",
+        "componentIds": [
+          "PLAT-02"
+        ],
+        "workingFileSha256": "8768d4fa02dddb0bc63c2c429810bed3c2454b88ca6f722fd0fbab3b139df944",
+        "declarations": [
+          {
+            "name": "Prepare",
+            "line": 53,
+            "kind": "go-function"
+          },
+          {
+            "name": "Close",
+            "line": 100,
+            "kind": "go-function"
+          },
+          {
+            "name": "Write",
+            "line": 125,
+            "kind": "go-function"
+          },
+          {
+            "name": "copy",
+            "line": 137,
+            "kind": "go-function"
+          },
+          {
+            "name": "options",
+            "line": 172,
+            "kind": "go-function"
+          },
+          {
+            "name": "Start",
+            "line": 215,
+            "kind": "go-function"
+          },
+          {
+            "name": "Status",
+            "line": 346,
+            "kind": "go-function"
+          },
+          {
+            "name": "Output",
+            "line": 364,
+            "kind": "go-function"
+          },
+          {
+            "name": "Done",
+            "line": 372,
+            "kind": "go-function"
+          },
+          {
+            "name": "CleanupError",
+            "line": 377,
+            "kind": "go-function"
+          },
+          {
+            "name": "resourceCleanupError",
+            "line": 396,
+            "kind": "go-function"
+          },
+          {
+            "name": "Stop",
+            "line": 409,
+            "kind": "go-function"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [
+        {
+          "name": "Limits",
+          "line": 24,
+          "kind": "go-type"
+        },
+        {
+          "name": "Deadlines",
+          "line": 25,
+          "kind": "go-type"
+        },
+        {
+          "name": "RoleOptions",
+          "line": 29,
+          "kind": "go-type"
+        },
+        {
+          "name": "Prepared",
+          "line": 44,
+          "kind": "go-type"
+        },
+        {
+          "name": "Group",
+          "line": 154,
+          "kind": "go-type"
+        },
+        {
+          "name": "ProcessStatus",
+          "line": 163,
+          "kind": "go-type"
+        }
+      ],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/runtime/supervisor_linux_test.go",
+      "workingFileSha256": "37355c6a6d87f75d62f6af9fa0963d135b48d9f349502603448ad390c629d1f7",
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C01",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [
+        "PLAT-02"
+      ],
+      "inventoryAction": "retain-existing-owner",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/runtime/testdata/dynamic/main.go",
+      "workingFileSha256": "3cac6809a685f4986b167bf231ecfeb0fca298bc4ee700b124b7d6c93d97fe84",
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C01",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "platform/runtime/testdata/role/main.go",
+      "workingFileSha256": "ce544b3b6027ab8d224388787d15d4793fee63c05cce1847e20c623898848c82",
+      "primaryComponentId": "PLAT-02",
+      "primaryBehaviorCheckId": "PLAT-02-C01",
+      "ownerTask": "P02-T02",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "tests/platform/native_go.py",
+      "workingFileSha256": "96505948f00059961c7cffe9f45512c33d70b36322df1cf177ffe683e7af570d",
+      "primaryComponentId": "REPO-03",
+      "primaryBehaviorCheckId": "REPO-03-C02",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [],
+      "inventoryAction": "append-actual-file",
+      "sourceSurfaceEligible": true,
+      "surfaceAction": "append-actual-surface",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": {
+        "path": "tests/platform/native_go.py",
+        "componentIds": [
+          "REPO-03"
+        ],
+        "workingFileSha256": "96505948f00059961c7cffe9f45512c33d70b36322df1cf177ffe683e7af570d",
+        "declarations": [
+          {
+            "name": "digest",
+            "line": 39,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "atomic_report",
+            "line": 43,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "remaining_timeout",
+            "line": 59,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "stop_owned",
+            "line": 66,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "wait_owned",
+            "line": 79,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "admit_preparation_workspace",
+            "line": 89,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "prepare_tools",
+            "line": 98,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "source_hashes",
+            "line": 115,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "download",
+            "line": 125,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "broker_downloader",
+            "line": 130,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "toolchain",
+            "line": 137,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "validate_module",
+            "line": 156,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "validate_package_matrix",
+            "line": 163,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "admit_events",
+            "line": 195,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "AdmissionTests",
+            "line": 225,
+            "kind": "ClassDef"
+          },
+          {
+            "name": "test_interrupted_checkpoint_publication_preserves_prior_report",
+            "line": 226,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "test_actual_pass",
+            "line": 236,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "test_empty_skip_failure_and_malformed_are_not_passes",
+            "line": 243,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "test_nonzero_exit_and_package_only_are_not_passes",
+            "line": 250,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "test_a_pass_cannot_hide_skip_failure_or_missing_package_end",
+            "line": 255,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "test_missing_mismatched_and_incomplete_package_events_fail",
+            "line": 269,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "test_module_pins_are_structured_and_replacements_refused",
+            "line": 278,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "test_downloader_import_does_not_write_checkout_bytecode",
+            "line": 287,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "observed",
+            "line": 289,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "test_package_matrix_cannot_hide_missing_new_or_incomplete_tests",
+            "line": 296,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "RunnerTests",
+            "line": 312,
+            "kind": "ClassDef"
+          },
+          {
+            "name": "test_interrupted_owned_wait_stops_and_reaps_before_propagation",
+            "line": 315,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "test_interruption_after_reaping_never_signals_saved_identity",
+            "line": 326,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "interrupted_wait",
+            "line": 329,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "test_hidden_preparation_refuses_populated_workspace_before_writes",
+            "line": 342,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "test_preparation_accepts_only_empty_regular_marker",
+            "line": 354,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "exercise",
+            "line": 365,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "prepared",
+            "line": 384,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "query",
+            "line": 388,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "spawn",
+            "line": 402,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "timed_wait",
+            "line": 425,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "test_synthetic_normal_runner_records_every_scope_and_isolates_environment",
+            "line": 457,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "test_unsupported_host_refuses_before_tools_or_tests",
+            "line": 471,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "test_setup_failure_retains_failed_report_without_private_error_text",
+            "line": 477,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "test_synthetic_test_failure_and_changed_execution_source_cannot_pass",
+            "line": 484,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "test_research_has_separate_results_and_actual_fail_closed_control",
+            "line": 490,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "test_darwin_normal_matrix_never_claims_native_protected_boot",
+            "line": 503,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "test_timeout_is_checkpointed_and_exhausted_scopes_are_unexecuted",
+            "line": 511,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "main",
+            "line": 528,
+            "kind": "FunctionDef"
+          },
+          {
+            "name": "checkpoint",
+            "line": 578,
+            "kind": "FunctionDef"
+          }
+        ],
+        "httpPathLiterals": [],
+        "reviewStatus": "P02 inspected source snapshot; source ownership and tests do not grant platform, task or phase acceptance."
+      },
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    },
+    {
+      "path": "tests/platform/test_source_surface.py",
+      "workingFileSha256": "c4993a835c95e8dee383b4701140e0854c1b9e3fff6ece20cba24a9795a7a562",
+      "primaryComponentId": "PLAT-04",
+      "primaryBehaviorCheckId": "PLAT-04-C01",
+      "ownerTask": "P02-T01",
+      "qualificationPhase": "P02",
+      "existingInventoryOwners": [
+        "PLAT-04"
+      ],
+      "inventoryAction": "retain-existing-owner",
+      "sourceSurfaceEligible": false,
+      "surfaceAction": "not-required-test-or-data-still-inventory-owned",
+      "previousSurfaceSha256": null,
+      "proposedSurfaceRecord": null,
+      "publicTypeDeclarationsForReview": [],
+      "qualificationStatus": "not-attested-by-this-proposal"
+    }
+  ],
+  "appendPreviouslyReservedComponents": [
+    {
+      "id": "KERN-02",
+      "name": "Protected lifecycle role",
+      "ownerPhase": "P02",
+      "status": "implementation-under-review-not-qualified",
+      "plannedPaths": [
+        "platform/kernel/lifecycle/**"
+      ],
+      "primaryTask": "P02-T02",
+      "collaboratingTasks": [
+        "P02-T04"
+      ],
+      "behaviorChecks": [
+        {
+          "id": "KERN-02-C01",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T02",
+          "assertion": "Protected lifecycle via NATS, bounded ordered exact-owned start/stop and failed-member recovery; no external membership mutation.",
+          "status": "not-run",
+          "description": "Protected lifecycle via NATS, bounded ordered exact-owned start/stop and failed-member recovery; no external membership mutation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "requiredEnvironment": "Actual native Linux/macOS and WSL scoped NATS/process/Compose fixtures as required; no mock or cross-build substitute.",
+          "existingTests": [
+            "platform/kernel/boot/integration_test.go",
+            "platform/kernel/boot/process_integration_test.go",
+            "platform/runtime/stop_role_linux_test.go"
+          ]
+        }
+      ],
+      "actualFiles": [
+        "platform/kernel/lifecycle/run.go"
+      ],
+      "registrationStatus": "append-proposed-component-with-actual-files-only",
+      "historicalPlannedPathsRetained": [
+        "platform/kernel/lifecycle/**"
+      ],
+      "role": "runtime",
+      "baselineGroups": [],
+      "disposition": "extend",
+      "replacementReason": null,
+      "files": [
+        "platform/kernel/lifecycle/run.go"
+      ],
+      "migrationChecks": [
+        "Retain legacy source, caller interfaces, credentials and data; no legacy business store conversion in this slice.",
+        "Keep the new namespace and profile ownership explicit; never let a fixture or partial implementation qualify a later owner."
+      ],
+      "currentBehavior": [
+        "The real lifecycle actor publishes its own readiness and four observed peers through NATS.",
+        "Its current command handler supports announce only; process controls and complete recovery qualification remain separate."
+      ],
+      "reusePlan": "Retain the fixed role and shared stateless protocol; integrate only approved protected lifecycle controls without external membership writes.",
+      "enhancements": [
+        "Complete the originally planned bounded lifecycle and failed-member recovery contract, with actual owned processes and denial tests."
+      ],
+      "limitations": [
+        "Current observation slice is not full KERN-02-C01 acceptance."
+      ]
+    },
+    {
+      "id": "KERN-04",
+      "name": "Protected exported-status role",
+      "ownerPhase": "P02",
+      "status": "implementation-under-review-not-qualified",
+      "plannedPaths": [
+        "platform/kernel/status/**"
+      ],
+      "primaryTask": "P02-T04",
+      "collaboratingTasks": [
+        "P02-T02",
+        "P02-T03"
+      ],
+      "behaviorChecks": [
+        {
+          "id": "KERN-04-C01",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T04",
+          "assertion": "Consistent late-subscriber snapshot/revisioned update, gap/reconnect/stale/slow-consumer tests using accepted L04 reply; kernel exports information only.",
+          "status": "not-run",
+          "description": "Consistent late-subscriber snapshot/revisioned update, gap/reconnect/stale/slow-consumer tests using accepted L04 reply; kernel exports information only.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "requiredEnvironment": "Actual native Linux/macOS and WSL scoped NATS/process/Compose fixtures as required; no mock or cross-build substitute.",
+          "existingTests": [
+            "platform/kernel/boot/integration_test.go",
+            "platform/kernel/boot/process_integration_test.go",
+            "platform/kernel/protocol/codec_test.go",
+            "platform/launcher/kernel_status_test.go",
+            "platform/launcher/startup_status_test.go",
+            "platform/launcher/startup_session_test.go"
+          ]
+        }
+      ],
+      "actualFiles": [
+        "platform/kernel/status/run.go"
+      ],
+      "registrationStatus": "append-proposed-component-with-actual-files-only",
+      "historicalPlannedPathsRetained": [
+        "platform/kernel/status/**"
+      ],
+      "role": "runtime",
+      "baselineGroups": [],
+      "disposition": "extend",
+      "replacementReason": null,
+      "files": [
+        "platform/kernel/status/run.go"
+      ],
+      "migrationChecks": [
+        "Retain legacy source, caller interfaces, credentials and data; no legacy business store conversion in this slice.",
+        "Keep the new namespace and profile ownership explicit; never let a fixture or partial implementation qualify a later owner."
+      ],
+      "currentBehavior": [
+        "The real protected status actor publishes full kernel-info snapshots and updates with scope, incarnation, revision and expiry.",
+        "The frame reports four peer observations and does not invent business work or connected hubs."
+      ],
+      "reusePlan": "Keep protected kernel information separate from the surrounding owner-scoped L04 mapper and enforce the original permissions/freshness requirements.",
+      "enhancements": [
+        "Complete late-subscriber, gap, reconnect, stale and slow-consumer qualification and the accepted outer status reply integration."
+      ],
+      "limitations": [
+        "Kernel-info is not itself L04 or application readiness."
+      ]
+    },
+    {
+      "id": "PLAT-03",
+      "name": "Owned Compose/NATS profiles",
+      "ownerPhase": "P02",
+      "status": "implementation-under-review-not-qualified",
+      "plannedPaths": [
+        "deploy/compose/**"
+      ],
+      "primaryTask": "P02-T05",
+      "collaboratingTasks": [
+        "P02-T03",
+        "P02-T07"
+      ],
+      "behaviorChecks": [
+        {
+          "id": "PLAT-03-C01",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T05",
+          "assertion": "Pinned tested images/Compose, R1 storage/domain/limits/account/health and declared team connection profile; idempotent provision and mismatch/interruption failure checks.",
+          "status": "not-run",
+          "description": "Pinned tested images/Compose, R1 storage/domain/limits/account/health and declared team connection profile; idempotent provision and mismatch/interruption failure checks.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "requiredEnvironment": "Actual native Linux/macOS and WSL scoped NATS/process/Compose fixtures as required; no mock or cross-build substitute.",
+          "existingTests": [
+            "platform/deployment/compose_test.go",
+            "platform/deployment/observe_test.go",
+            "platform/deployment/probe_test.go",
+            "platform/deployment/profile_test.go",
+            "platform/deployment/sync_policy_test.go"
+          ]
+        },
+        {
+          "id": "PLAT-03-C02",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T07",
+          "assertion": "Actual labels/authenticated instance/project/volume identity and durable probes across cold/warm/restart; reject incompatible release/context/endpoint, no deletion/migration.",
+          "status": "not-run",
+          "description": "Actual labels/authenticated instance/project/volume identity and durable probes across cold/warm/restart; reject incompatible release/context/endpoint, no deletion/migration.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "requiredEnvironment": "Actual native Linux/macOS and WSL scoped NATS/process/Compose fixtures as required; no mock or cross-build substitute.",
+          "existingTests": [
+            "platform/launcher/bootstrap_docker_integration_test.go"
+          ]
+        }
+      ],
+      "actualFiles": [
+        "platform/deployment/README.md",
+        "platform/deployment/compose.go",
+        "platform/deployment/compose_test.go",
+        "platform/deployment/observe.go",
+        "platform/deployment/observe_test.go",
+        "platform/deployment/probe.go",
+        "platform/deployment/probe_test.go",
+        "platform/deployment/profile.go",
+        "platform/deployment/profile_test.go",
+        "platform/launcher/bootstrap_docker_integration_test.go"
+      ],
+      "registrationStatus": "append-proposed-component-with-actual-files-only",
+      "historicalPlannedPathsRetained": [
+        "deploy/compose/**"
+      ],
+      "role": "runtime",
+      "baselineGroups": [],
+      "disposition": "extend",
+      "replacementReason": null,
+      "files": [
+        "platform/deployment/README.md",
+        "platform/deployment/compose.go",
+        "platform/deployment/compose_test.go",
+        "platform/deployment/observe.go",
+        "platform/deployment/observe_test.go",
+        "platform/deployment/probe.go",
+        "platform/deployment/probe_test.go",
+        "platform/deployment/profile.go",
+        "platform/deployment/profile_test.go",
+        "platform/launcher/bootstrap_docker_integration_test.go"
+      ],
+      "migrationChecks": [
+        "Retain legacy source, caller interfaces, credentials and data; no legacy business store conversion in this slice.",
+        "Keep the new namespace and profile ownership explicit; never let a fixture or partial implementation qualify a later owner."
+      ],
+      "currentBehavior": [
+        "The actual deployment package builds bounded local file-backed NATS/health configuration and private pinned Compose data.",
+        "Real probes and read-only observations distinguish stored infrastructure evidence from protected process and business readiness."
+      ],
+      "reusePlan": "Keep the existing Kubernetes/federation deployment scripts unchanged; add only explicit selected local profile provisioning and owned storage checks.",
+      "enhancements": [
+        "Finish declared team profile, full native Compose matrix, mismatch/restart behavior and current always-sync source qualification."
+      ],
+      "limitations": [
+        "Current local health storage is not business-state/R3/completion reserve proof; source remains under current sync-policy review."
+      ]
+    }
+  ],
+  "appendBehaviorChecks": [
+    {
+      "componentId": "KERN-03",
+      "id": "KERN-03-C02",
+      "qualificationPhase": "P02",
+      "ownerTask": "P02-T03",
+      "description": "Validate closed bounded protected-role wire objects and exact field casing; reject duplicate/unknown/UTF8/context/release/role/revision/freshness errors. Preserve broker-bound role identity, private canonical per-role credentials, owned bounded NATS transport and fail-closed faults. No ordinary plugin ABI or general auth service is qualified.",
+      "existingTests": [
+        "platform/kernel/communication/config_test.go",
+        "platform/kernel/protocol/aliases_test.go",
+        "platform/kernel/protocol/codec_test.go",
+        "platform/kernel/protocol/credentials_unix_test.go"
+      ],
+      "baselineStatus": "not-run",
+      "targetStatus": "not-run",
+      "requiredEnvironment": "Current candidate-bound native Linux/macOS/WSL environment and real broker/artifact evidence as applicable; source/unit checks do not imply product boot."
+    },
+    {
+      "componentId": "REPO-03",
+      "id": "REPO-03-C02",
+      "qualificationPhase": "P02",
+      "ownerTask": "P02-T01",
+      "description": "Run candidate-bound native Go foundation checks and independently review version/archive pins, real broker commands, closed terminal Go event admission, all source maps and artifact hashes. Keep Darwin research/fail-closed control separate; no skipped/mocked result or foundation-only pass qualifies native product boot, Compose or a phase gate. Preserve existing CI jobs and P01 REPO-03-C01.",
+      "existingTests": [
+        "tests/platform/native_go.py",
+        ".github/workflows/platform-foundation.yml"
+      ],
+      "baselineStatus": "not-run",
+      "targetStatus": "not-run",
+      "requiredEnvironment": "Current candidate-bound native Linux/macOS/WSL environment and real broker/artifact evidence as applicable; source/unit checks do not imply product boot."
+    }
+  ],
+  "preserveExistingChecksAndTaskOwners": [
+    {
+      "id": "HUB-15-C01",
+      "currentOwnerTasks": [
+        "P02-T06"
+      ],
+      "proposal": "retain original owner and definition; source-specific evidence review still required"
+    },
+    {
+      "id": "HUB-15-C02",
+      "currentOwnerTasks": [
+        "P02-T06"
+      ],
+      "proposal": "retain original owner and definition; source-specific evidence review still required"
+    },
+    {
+      "id": "KERN-01-C01",
+      "currentOwnerTasks": [
+        "P02-T01"
+      ],
+      "proposal": "retain original owner and definition; source-specific evidence review still required"
+    },
+    {
+      "id": "KERN-01-C02",
+      "currentOwnerTasks": [
+        "P02-T02"
+      ],
+      "proposal": "retain original owner and definition; source-specific evidence review still required"
+    },
+    {
+      "id": "KERN-03-C01",
+      "currentOwnerTasks": [
+        "P02-T03"
+      ],
+      "proposal": "retain original owner and definition; source-specific evidence review still required"
+    },
+    {
+      "id": "PLAT-01-C01",
+      "currentOwnerTasks": [
+        "P02-T01"
+      ],
+      "proposal": "retain original owner and definition; source-specific evidence review still required"
+    },
+    {
+      "id": "PLAT-01-C02",
+      "currentOwnerTasks": [
+        "P02-T07"
+      ],
+      "proposal": "retain original owner and definition; source-specific evidence review still required"
+    },
+    {
+      "id": "PLAT-01-C03",
+      "currentOwnerTasks": [
+        "P02-T04"
+      ],
+      "proposal": "retain original owner and definition; source-specific evidence review still required"
+    },
+    {
+      "id": "PLAT-02-C01",
+      "currentOwnerTasks": [
+        "P02-T02"
+      ],
+      "proposal": "retain original owner and definition; source-specific evidence review still required"
+    },
+    {
+      "id": "PLAT-04-C01",
+      "currentOwnerTasks": [
+        "P02-T01"
+      ],
+      "proposal": "retain original owner and definition; source-specific evidence review still required"
+    },
+    {
+      "id": "PLAT-04-C02",
+      "currentOwnerTasks": [
+        "P02-T01"
+      ],
+      "proposal": "retain original owner and definition; source-specific evidence review still required"
+    }
+  ],
+  "legacyExactSourceProofs": [
+    {
+      "path": "agentmux.sh",
+      "reference": "2740e31d79c6b63fca54137b191c151afca91be5",
+      "headBytesSha256": "310d538866f29478ef01bfd77c782dd62ead2a09eb1a244fe890bf96b1b36867",
+      "workingBytesSha256": "310d538866f29478ef01bfd77c782dd62ead2a09eb1a244fe890bf96b1b36867",
+      "byteEquivalent": true
+    },
+    {
+      "path": "hub/cli.py",
+      "reference": "2740e31d79c6b63fca54137b191c151afca91be5",
+      "headBytesSha256": "276e8311b0cbd683e3c123ff327cfd4664fa8ef55882ef94ad89e50a6ecc0efb",
+      "workingBytesSha256": "276e8311b0cbd683e3c123ff327cfd4664fa8ef55882ef94ad89e50a6ecc0efb",
+      "byteEquivalent": true
+    },
+    {
+      "path": "agentmux_windows.py",
+      "reference": "2740e31d79c6b63fca54137b191c151afca91be5",
+      "headBytesSha256": "d8d579d0a63306d71337024798db188eea309f19e2debd8694cda161ca2eb17b",
+      "workingBytesSha256": "d8d579d0a63306d71337024798db188eea309f19e2debd8694cda161ca2eb17b",
+      "byteEquivalent": true
+    },
+    {
+      "path": "install.sh",
+      "reference": "2740e31d79c6b63fca54137b191c151afca91be5",
+      "headBytesSha256": "035fb7eb674e909d174469c3b8d65b5eba4085acac99599ea9a1a8f8e689216c",
+      "workingBytesSha256": "035fb7eb674e909d174469c3b8d65b5eba4085acac99599ea9a1a8f8e689216c",
+      "byteEquivalent": true
+    },
+    {
+      "path": "agentmux.cmd",
+      "reference": "2740e31d79c6b63fca54137b191c151afca91be5",
+      "headBytesSha256": "c870282fc53288bd1576a8f1331474fa98ed99ec76940b4105465fb060bae777",
+      "workingBytesSha256": "c870282fc53288bd1576a8f1331474fa98ed99ec76940b4105465fb060bae777",
+      "byteEquivalent": true
+    },
+    {
+      "path": "link-windows-state.sh",
+      "reference": "2740e31d79c6b63fca54137b191c151afca91be5",
+      "headBytesSha256": "f2e86a5d96477276a72ef89d8e8cffc46db825b9efe85ec3ee63b09e86de31f7",
+      "workingBytesSha256": "f2e86a5d96477276a72ef89d8e8cffc46db825b9efe85ec3ee63b09e86de31f7",
+      "byteEquivalent": true
+    },
+    {
+      "path": "hub/fed/conn.py",
+      "reference": "2740e31d79c6b63fca54137b191c151afca91be5",
+      "headBytesSha256": "7c4d226c777256c2228ec76254aca526039d7c7c5dc4fb7c61933816397f9bab",
+      "workingBytesSha256": "7c4d226c777256c2228ec76254aca526039d7c7c5dc4fb7c61933816397f9bab",
+      "byteEquivalent": true
+    },
+    {
+      "path": "hub/fed/admin.py",
+      "reference": "2740e31d79c6b63fca54137b191c151afca91be5",
+      "headBytesSha256": "ce6b0b048a4fcaa5e0b4432ed920ba587bad21d54cb2a84187a09e5022a2b74a",
+      "workingBytesSha256": "ce6b0b048a4fcaa5e0b4432ed920ba587bad21d54cb2a84187a09e5022a2b74a",
+      "byteEquivalent": true
+    },
+    {
+      "path": "hub/fed/runtime.py",
+      "reference": "2740e31d79c6b63fca54137b191c151afca91be5",
+      "headBytesSha256": "b4f0a9a57bc5ba1a6895955c91625e6188b40206d35f628d7756e3ddefb89661",
+      "workingBytesSha256": "b4f0a9a57bc5ba1a6895955c91625e6188b40206d35f628d7756e3ddefb89661",
+      "byteEquivalent": true
+    },
+    {
+      "path": "hub/bridge.py",
+      "reference": "2740e31d79c6b63fca54137b191c151afca91be5",
+      "headBytesSha256": "c129386a37e88f8f4f94ebb0247ce39d09638f7e734f8741050de4ecaec5eb2c",
+      "workingBytesSha256": "c129386a37e88f8f4f94ebb0247ce39d09638f7e734f8741050de4ecaec5eb2c",
+      "byteEquivalent": true
+    },
+    {
+      "path": "hub/server.py",
+      "reference": "2740e31d79c6b63fca54137b191c151afca91be5",
+      "headBytesSha256": "8f4de71e0885b395d058b7dd88cfd740fdffd8a986f6a58ae8cc5b115dca2153",
+      "workingBytesSha256": "8f4de71e0885b395d058b7dd88cfd740fdffd8a986f6a58ae8cc5b115dca2153",
+      "byteEquivalent": true
+    },
+    {
+      "path": "hub/tests/test_fed_live.py",
+      "reference": "2740e31d79c6b63fca54137b191c151afca91be5",
+      "headBytesSha256": "af39ed93f205952f90a9975a7ed7381a7560ee8e0e4278dee220a57b08ad3b0c",
+      "workingBytesSha256": "af39ed93f205952f90a9975a7ed7381a7560ee8e0e4278dee220a57b08ad3b0c",
+      "byteEquivalent": true
+    },
+    {
+      "path": "hub/tests/test_hub_offline.py",
+      "reference": "2740e31d79c6b63fca54137b191c151afca91be5",
+      "headBytesSha256": "8d32fdb7e227963d4f6ec866ea26bedb1c6d80dc15d557421652935ccd21ed27",
+      "workingBytesSha256": "8d32fdb7e227963d4f6ec866ea26bedb1c6d80dc15d557421652935ccd21ed27",
+      "byteEquivalent": true
+    },
+    {
+      "path": "hub/requirements.lock",
+      "reference": "2740e31d79c6b63fca54137b191c151afca91be5",
+      "headBytesSha256": "3ed79db16ab9b01c1c4f1b2b99443b8952579abd8a85fd38e60aff8c1baa2420",
+      "workingBytesSha256": "3ed79db16ab9b01c1c4f1b2b99443b8952579abd8a85fd38e60aff8c1baa2420",
+      "byteEquivalent": true
+    },
+    {
+      "path": ".github/workflows/contracts.yml",
+      "reference": "2740e31d79c6b63fca54137b191c151afca91be5",
+      "headBytesSha256": "ec49a0ef6074420c998ef123c13f5dfb38ee37ed7d80540db0249fbd371f7b33",
+      "workingBytesSha256": "ec49a0ef6074420c998ef123c13f5dfb38ee37ed7d80540db0249fbd371f7b33",
+      "byteEquivalent": true
+    },
+    {
+      "path": ".github/workflows/tests.yml",
+      "reference": "2740e31d79c6b63fca54137b191c151afca91be5",
+      "headBytesSha256": "4643ad24a591f079aa9bd8d7bf309091e059d328554dd5251b5107447ca9103f",
+      "workingBytesSha256": "4643ad24a591f079aa9bd8d7bf309091e059d328554dd5251b5107447ca9103f",
+      "byteEquivalent": true
+    },
+    {
+      "path": ".github/workflows/design-patterns.yml",
+      "reference": "2740e31d79c6b63fca54137b191c151afca91be5",
+      "headBytesSha256": "6fd2dcf09f18f209ef9d5b3518d11c60f2464be79d776a93e0ac631624caa865",
+      "workingBytesSha256": "6fd2dcf09f18f209ef9d5b3518d11c60f2464be79d776a93e0ac631624caa865",
+      "byteEquivalent": true
+    }
+  ],
+  "outOfScopeUnmappedConcurrentFiles": [
+    "docs/reviews/server-lifecycle-verification.json",
+    "docs/reviews/src/features/review-server.mjs",
+    "docs/reviews/src/features/review-server.test.mjs"
+  ],
+  "ownershipPolicy": "Every actual file has one primary component/check/task in this proposal. Shared test evidence may support dependent checks, but each check is assigned exactly once. Preserve old definitions/history and not-run proposal statuses.",
+  "liveSourceBoundary": [
+    "startup_status.go and startup_status_test.go are being developed/reviewed; hashes are snapshots, not acceptance.",
+    "bootstrap_docker_integration_test.go changed only after preserved failed live attempt; corrected helper needs actual full tagged qualification.",
+    "Deployment now adds explicit sync_interval always with new sync_policy tests; earlier source map is retained and needs owning-worker evidence review, not blind hash refresh."
+  ],
+  "privacy": "Repository source and public evidence metadata only; no Docker calls, private profiles, credentials or provider prompts.",
+  "sourceDriftBeforeWrite": [],
+  "sourceDriftAtCompletion": [
+    "platform/deployment/profile.go",
+    "platform/deployment/profile_test.go",
+    "platform/launcher/bootstrap.go",
+    "platform/launcher/bootstrap_config_test.go",
+    "platform/launcher/startup_session.go",
+    "platform/launcher/startup_session_test.go"
+  ],
+  "additionalScopedFilesAfterSnapshot": [
+    {
+      "path": "platform/deployment/sync_policy_test.go",
+      "action": "inspected and appended as active-review test ownership"
+    },
+    {
+      "path": "platform/launcher/startup_session_lifecycle_test.go",
+      "action": "inspected and appended as active-review test ownership"
+    }
+  ],
+  "metadataDriftAtCompletion": []
+}

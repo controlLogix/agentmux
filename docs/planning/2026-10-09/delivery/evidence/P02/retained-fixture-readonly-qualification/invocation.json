@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "-tags=agentmux_bootstrap_docker",
+    "./launcher",
+    "-run",
+    "^TestYxcRetainedFixtureReadOnlyQualification$"
+  ],
+  "environment": {
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "1",
+    "AMX_YXC_QUALIFICATION_OUTPUT": "/home/ryan/.cache/agentmux-governance/p02-yxc-readonly-IqcXT9"
+  },
+  "engineMutations": 0,
+  "startedUtc": "2026-10-14T13:29:35.118809+00:00"
+}

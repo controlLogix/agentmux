@@ -1,0 +1,24 @@
+{
+  "sourceGuardSha256": "b54e90bbf5d5c37fa7e60ffdc878ddd4204bfba411665e2c35311c1fe5b9a883",
+  "mutatedGuardSha256": "89c6732a7745614999d9ee97310d94f71ca2d9ea1339581ddd812ce8f9c65460",
+  "mutation": "Only ordinary status publication deny replaced with exact snapshot/update allow",
+  "command": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-json",
+    "-count=1",
+    "-timeout=15s",
+    "-run",
+    "^TestRealBrokerForgeryCannotReachStatusSubscriber$",
+    "./kernel/communication"
+  ],
+  "expectedTestProcessExitNonzero": 1,
+  "expectedFailureObserved": true,
+  "oracleFailure": "broker accepted forbidden operation",
+  "seconds": 9.007690959999309,
+  "sourceTestSha256": "1d2e5d1e30f2f2880396ef427b2261a66ad9ce8f145d45fa9de774b15ea76885",
+  "limitations": [
+    "External source-copy mutation only; no checked-out source changes",
+    "Negative process failure is expected, not a passing runtime configuration"
+  ]
+}

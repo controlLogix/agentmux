@@ -1,0 +1,90 @@
+{
+  "scope": "Independent read-only CLI deadline policy and actual owned receipt controls review",
+  "workerReviewSHA256": "c6c3fb6e15b6e594f4658cc787f4257470b70b2fe43ea8cbc18170d1580cc1a6",
+  "reviewedOwnedSourceSHA256": {
+    "platform/cmd/agentmux-runtime/main.go": "ff6147c74685e72f9d1dddc5d4c222601c7fe5c0b7557d156858df5d5d935a5a",
+    "platform/cmd/agentmux-runtime/main_frontend_budget_test.go": "9c7bea3cb442026a8260b5b3aadea276485bf2eb41c41ad5b24f68ce8f81286f"
+  },
+  "all199SnapshotSourceHashesVerified": true,
+  "verifiedArtifactsSHA256": {
+    "affected-events.jsonl": "c0c4dcfd2845015648ca22c3c56799fcd5b03ca72eca17eafb494bc4b57070cc",
+    "affected-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "affected-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "historical-original-main.go": "a8686ad179f76b2dacdb3096a19d00f3e05af2c037fb9ed7fa83a121b6ac7c9b",
+    "invocations.json": "8d07ecaffa725b7fc6c1291a1d89d54f53ae7eb364ca14440e29d0633d2ec9d7",
+    "producer-record.sh": "c83f950d9f40fea98ea3f3c04decf27f4dd5cbf24e357805032abdace9dceb8f",
+    "repaired-events.jsonl": "c97606d89863a21411a51d778f029cb6e0ed55c1f6ee90002a86aac68e823cfb",
+    "repaired-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "repaired-receipt-events.jsonl": "215e727ee62dd941ca2c33e86856f0a32ddc207a4b740bcc2e52a0c1ff9097c3",
+    "repaired-receipt-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "repaired-receipt-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "repaired-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "scope.json": "08f222007f1f13668bd1522b63898f25c22d0bc7c9ee4abff147d8a54b48e86c",
+    "source.json": "a058c272eef45a9927678de1ae99b75baf8585cd12a2305f2dd6fdc5b50625d2",
+    "vet-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "vet-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vet.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "reviewedDiffSHA256": "49d7a58426fc47a88f31f48afb64ab313772558bc81e4b7d762b0b60b0488bfa",
+  "parsedRawResults": [
+    {
+      "prefix": "before",
+      "directExit": 1,
+      "namedPass": 0,
+      "namedFail": 4,
+      "skip": 0,
+      "eventsSHA256": "3e90a51ecdff1ca99db77b2a9d90a216988b584224727310a7f5783b380cefbb"
+    },
+    {
+      "prefix": "before-receipt",
+      "directExit": 1,
+      "namedPass": 0,
+      "namedFail": 1,
+      "skip": 0,
+      "eventsSHA256": "ffba72699dd3082341b2bbf357fe94fcebfab44f98a787528eba04084e8f89b7"
+    },
+    {
+      "prefix": "repaired",
+      "directExit": 0,
+      "namedPass": 4,
+      "namedFail": 0,
+      "skip": 0,
+      "eventsSHA256": "c97606d89863a21411a51d778f029cb6e0ed55c1f6ee90002a86aac68e823cfb"
+    },
+    {
+      "prefix": "repaired-receipt",
+      "directExit": 0,
+      "namedPass": 1,
+      "namedFail": 0,
+      "skip": 0,
+      "eventsSHA256": "215e727ee62dd941ca2c33e86856f0a32ddc207a4b740bcc2e52a0c1ff9097c3"
+    },
+    {
+      "prefix": "affected",
+      "directExit": 0,
+      "namedPass": 13,
+      "namedFail": 0,
+      "skip": 0,
+      "eventsSHA256": "c0c4dcfd2845015648ca22c3c56799fcd5b03ca72eca17eafb494bc4b57070cc"
+    }
+  ],
+  "vetDirectExit": 0,
+  "findings": [],
+  "controlsReviewed": [
+    "Ensure total deadline anchored at actual entered timestamp plus10s; status resets only the duration to5s using same entry, and parent WithDeadline enforces earlier caller. Host uses original caller lifetime and separately enrolled60s startup.",
+    "Work deadline is total minus original1s receipt cleanup and500ms response/process allowance; no extra time or ignored cleanup is introduced. Missing bounded total yields canceled work. Cleanup uses original total as parent and one-second maximum, never fresh Background.",
+    "Response fallback checks original total/caller plus actual creator-owned child Done; successful receipt remains CONTROL accepted/instance unknown, not L04/current readiness. Hard authority/enrollment/typed or joined cleanup errors remain excluded by exact unavailable-only matcher.",
+    "Actual original receipt read remains synchronous and owns its exact descriptor/hooks; receipt Close closes file and joins its reader; no second child Wait, new helper waiter, adopted PID or host stop. image.Close and receipt cleanup errors remain joined into actual run failure.",
+    "Focused sealed-child test genuinely reads bound transport receipt, lets work expire while total alive, emits unknown progress, closes receipt within total and verifies detached child survives. It does not prove actual admitted Bootstrap/NATS/Compose.",
+    "Before policy helpers intentionally extract historical timing policy and fail four reserve/cleanup/status/cancel assertions plus actual owned child near-expiry response; they are not execution of original installed CLI or causal evidence for prior engine timing failure."
+  ],
+  "evidenceLimits": [
+    "No new tests/builds/engine/provider calls. Independent source/raw evidence review only; no duplicate affected suite.",
+    "Invocation/producer command record explicitly says recorded after execution; direct preserved raw JSON and exit files prove results, but this is not a contemporaneously captured shell invocation transcript.",
+    "500ms response allowance is policy, not scheduler guarantee. External entry-to-exit10s/5s still needs A actual source-exact cohort.",
+    "Synchronous private loading, image Close and stdout writes rely on supported local filesystem/consuming-output assumptions; no syscall preemption claimed.",
+    "Generic public diagnostic work, native platform qualification and phase gate remain open."
+  ],
+  "phaseAccepted": false,
+  "sourceDigestAuthorized": false
+}

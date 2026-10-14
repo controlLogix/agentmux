@@ -1,0 +1,192 @@
+{
+  "scope": "P02 owner bridge inherited control receipt and exact joined completion cause; not phase acceptance",
+  "source": {
+    "platform/launcher/owner_bridge.go": "5447740219199671a63ef106350e9ceb112fd01ccae1b0a94d51ed028a291ae7",
+    "platform/launcher/owner_bridge_pending_test.go": "24ca9411503c39d37c54159b3a89b991aa30012527b05574a674381c3afdec9c",
+    "platform/launcher/owner_bridge_receipt.go": "c6ec84c03ac827c4c6008705ac8ef6d401484cc3b1015eba7dda900f35b89685",
+    "platform/launcher/owner_bridge_receipt_test.go": "4466fc29007d7c1b469caaaf542687ecc27b24036c2093eea8aa4660a0ec7ff6",
+    "platform/launcher/host_receipt_server.go": "e0c13e86e6a728112a5f1fef5dcb805981125e794ce495251cd0d0ab1937dbf9"
+  },
+  "frozenAffectedPath": "/home/ryan/.cache/agentmux-tests/p02-owner-bridge-tls-candidate-96l3j2r4",
+  "finalFixturePath": "/home/ryan/.cache/agentmux-tests/p02-owner-bridge-tls-candidate-utm1v8x6",
+  "affected": {
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-json",
+      "./launcher",
+      "-run",
+      "^(TestOwnerBridge|TestTransportCleanup|TestInstalledReceipt)"
+    ],
+    "exit": 0,
+    "seconds": 54.903452165999624,
+    "sourceStable": true,
+    "namedPass": 239,
+    "namedFail": 0,
+    "skips": 0
+  },
+  "finalFixture": {
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-json",
+      "./launcher",
+      "-run",
+      "^TestOwnerBridgeReceiptActualEntryAndDepartedFrontend$"
+    ],
+    "exit": 0,
+    "seconds": 10.43983389099958,
+    "sourceStable": true,
+    "namedPass": 3,
+    "namedFail": 0,
+    "skips": 0
+  },
+  "vet": {
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "vet",
+      "./launcher"
+    ],
+    "exit": 0,
+    "seconds": 1.7047650109998358
+  },
+  "SDK": {
+    "ok": true,
+    "checks": 52,
+    "casesPerSDK": {
+      "admissionMutations": 18,
+      "generatedStatusOutputs": 8
+    },
+    "source": "affected/sdk-result.json"
+  },
+  "sourceHistory": "All four production/test receipt files except pending fixture are identical between the affected and final snapshots. The final pending test adds only unconditional canceled Run join on early assertion failure and tracks consumed completion. Its exact two-case selection passed after this fixture-only change. The earlier broad result remains tied to its original bytes.",
+  "resolvedFindings": [
+    "Actual owner/profile revalidation before accepted emission; binding/admission failures return to the core, EPIPE remains nonfatal.",
+    "Joined Bootstrap error retained even with nil Session and earlier transport cancellation, without dropping typed cleanup ownership.",
+    "Pre-adoption duplicated receipt descriptor closes only while owned; adoption explicitly transfers ownership.",
+    "New receipt fixture cancels and joins actual Run on every assertion path."
+  ],
+  "negativeControls": [
+    {
+      "name": "revoked",
+      "path": "/home/ryan/.cache/agentmux-tests/p02-receipt-negative-revoked-im3eevt5",
+      "command": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-race",
+        "-count=1",
+        "-timeout=30s",
+        "-json",
+        "./launcher",
+        "-run",
+        "^TestOwnerBridgeReceiptRequiresFreshEnteredOwner/owner_revoked$"
+      ],
+      "exit": 1,
+      "seconds": 5.984404631999496,
+      "originalSHA256": "c6ec84c03ac827c4c6008705ac8ef6d401484cc3b1015eba7dda900f35b89685",
+      "mutantSHA256": "e7c382749f3e3958fa088a6b85110d13ff5a4aa14c27bb0f834ceb8e38dac3bb",
+      "expectedFailureObserved": true,
+      "namedFailures": [
+        "TestOwnerBridgeReceiptRequiresFreshEnteredOwner/owner_revoked",
+        "TestOwnerBridgeReceiptRequiresFreshEnteredOwner"
+      ]
+    },
+    {
+      "name": "completion",
+      "path": "/home/ryan/.cache/agentmux-tests/p02-receipt-negative-completion-vgr22gzi",
+      "command": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-race",
+        "-count=1",
+        "-timeout=30s",
+        "-json",
+        "./launcher",
+        "-run",
+        "^(TestOwnerBridgeJoinedCompletionRetainsExactCleanupCause|TestOwnerBridgeReceiptActualEntryAndDepartedFrontend/accepted)$"
+      ],
+      "exit": 1,
+      "seconds": 4.540427590000036,
+      "originalSHA256": "c6ec84c03ac827c4c6008705ac8ef6d401484cc3b1015eba7dda900f35b89685",
+      "mutantSHA256": "a14e815a9d1667bf4f695e1ebe149ee9a33a5f1abdc905493a843b44c34be8bb",
+      "expectedFailureObserved": true,
+      "namedFailures": [
+        "TestOwnerBridgeJoinedCompletionRetainsExactCleanupCause"
+      ]
+    }
+  ],
+  "genuineCancellationNegative": {
+    "command": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-timeout=30s",
+      "-json",
+      "./launcher",
+      "-run",
+      "^TestOwnerBridgeReceiptActualEntryAndDepartedFrontend/accepted$"
+    ],
+    "exit": 1,
+    "seconds": 4.069266968999727,
+    "expectedFailureObserved": true
+  },
+  "privacy": {
+    "reviewed": true,
+    "rawExceptions": [
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "loopback closed-socket diagnostic",
+      "expected fixed negative assertion",
+      "expected fixed negative assertion",
+      "loopback closed-socket diagnostic",
+      "expected fixed negative assertion"
+    ],
+    "excluded": "No private configuration, role records, credentials, keys, fixture stores or broker logs retained."
+  },
+  "limits": [
+    "Controlled read-only Docker process and native real TLS/FILE NATS fixtures do not qualify an actual engine/container/Compose deployment.",
+    "Prepared static image admission is real; these pending tests do not prove executed protected role PIDs.",
+    "Direct private entered-operation tests are component controls; actual Run tests establish the genuine core hook.",
+    "Accepted receipt is historical control entry only, never current readiness or ongoing inflight status.",
+    "No contended receipt proof; lock refusal is failed/unknown.",
+    "Cancel and join relies on supported local filesystem calls completing; blocked synchronous filesystem timing remains unsupported.",
+    "Linux/WSL scope only; native macOS and full installed phase checks remain open."
+  ],
+  "patternCheck": {
+    "exit": 1,
+    "error": "Review is stale or missing: inspect changes and refresh sourceDigest",
+    "owner": "Root metadata refresh"
+  },
+  "historicalEvidence": [
+    "../owner-bridge-pending/review.json"
+  ]
+}

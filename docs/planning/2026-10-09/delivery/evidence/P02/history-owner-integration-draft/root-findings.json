@@ -1,0 +1,38 @@
+{
+  "reviewer": "Codex",
+  "date": "2026-10-14T15:09:12.531922+00:00",
+  "status": "cache-only draft requires repair before tests or promotion",
+  "findings": [
+    {
+      "id": "HISTORY-RUN-01",
+      "issue": "Cleanup method can retire store during active Run publication.",
+      "required": "Refuse cleanup before actual publication worker joins and retires."
+    },
+    {
+      "id": "HISTORY-RUN-02",
+      "issue": "State lock spans filesystem IO and failure warning path blocks on the same mutex.",
+      "required": "Bound state handoff; retain store before IO and use short snapshots or single-producer safe publication."
+    },
+    {
+      "id": "HISTORY-RUN-03",
+      "issue": "Exhausted IO budget can prevent duplicate lease retirement and block genuine retry.",
+      "required": "Retire only quiescent publication and consume exact duplicate lease without further history publication; retain root/stage cleanup owner."
+    },
+    {
+      "id": "HISTORY-RUN-04",
+      "issue": "Starting shared cleanup envelope during optional history work could expire it before long-lived core teardown.",
+      "required": "Start shared envelope only at actual Run teardown after worker join; terminal publication remains synchronous within startup remaining budget."
+    }
+  ],
+  "compiled": false,
+  "tested": false,
+  "promoted": false,
+  "laterFindings": [
+    {
+      "id": "HISTORY-RUN-05",
+      "date": "2026-10-14T15:14:09.774473+00:00",
+      "issue": "Public warning errors can expose active store cleanup through wrapped Close capability.",
+      "required": "Keep exact warning and cleanup ancestry private; public warning has only fixed non-capability-bearing data. Concrete cleanup access is allowed only after actual publication retirement."
+    }
+  ]
+}

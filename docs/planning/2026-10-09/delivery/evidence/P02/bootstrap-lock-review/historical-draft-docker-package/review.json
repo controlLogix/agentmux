@@ -1,0 +1,89 @@
+{
+  "exitCode": 1,
+  "seconds": 67.52050142900043,
+  "sourceHashes": {
+    "go.mod": "09badaa8ac3eb47bb5088e4b3c999d3728bc1136a23ecb1ad91e813a999457c5",
+    "go.sum": "09efba9fc8d00f95bb05093eca20d8660bb81ad3955813eff31ea7083f499542",
+    "launcher/lock_unix.go": "b8232a239d47e43d8fac3759d137abfe3b2502adaae6e62d25691323872f9859",
+    "launcher/lock_unix_test.go": "2c22f87e9b9fa6fdfdbf22976f11179d18ca475bdb189df27f2595dec6ba2896"
+  },
+  "liveSourceUnchanged": true,
+  "passedTests": [
+    "TestDockerProcess",
+    "TestDockerOwnedBoundaries/foreign",
+    "TestDockerOwnedBoundaries/engine",
+    "TestDockerOwnedBoundaries/error",
+    "TestDockerOwnedBoundaries/changed_environment",
+    "TestDockerOwnedBoundaries/missing_lock",
+    "TestDockerOwnedBoundaries/changed_bytes",
+    "TestDockerOwnedBoundaries/stop_fresh_ownership",
+    "TestDockerOwnedBoundaries/timeout_redacted",
+    "TestDockerConfigAdmission/bind",
+    "TestDockerConfigAdmission/external",
+    "TestDockerConfigAdmission/unlabeled",
+    "TestDockerConfigAdmission/explicit_name",
+    "TestDockerConfigAdmission/unsupported",
+    "TestDockerConfigAdmission",
+    "TestDockerSelection",
+    "TestLockWaitsForDescriptorAndRetainsIdentity",
+    "TestLockRejectsPublicDirectoryAndSymlink",
+    "TestLockRequiresFiniteDeadline",
+    "TestLockRefusesFileAliasesWithoutChangingTarget/symlink",
+    "TestLockRefusesFileAliasesWithoutChangingTarget/hardlink",
+    "TestLockRefusesFileAliasesWithoutChangingTarget",
+    "TestLockWaitReportsOwnerAndPreservesMetadata",
+    "TestLockDoesNotTrustMalformedOwnerMetadata/{\"at",
+    "TestLockDoesNotTrustMalformedOwnerMetadata/not_",
+    "TestLockDoesNotTrustMalformedOwnerMetadata/{\"at#01",
+    "TestLockDoesNotTrustMalformedOwnerMetadata",
+    "TestLockChildOwner",
+    "TestKilledChildReleasesLockWithoutRemovingIdentity",
+    "TestLockNormalizesObservedAttemptWithoutGrantingOwnership",
+    "TestCancelledUnownedLockDoesNotAcquireOrWriteAttempt",
+    "TestLockMissingOrNonDirectoryProfileReturnsError",
+    "TestLockWaitHasHardMaximum"
+  ],
+  "failures": [
+    {
+      "Time": "2026-10-13T16:41:40.158472966-04:00",
+      "Action": "fail",
+      "Package": "github.com/controlLogix/agentmux/platform/launcher",
+      "Test": "TestDockerOwnedBoundaries/cold_literal_stdin",
+      "Elapsed": 0.06
+    },
+    {
+      "Time": "2026-10-13T16:41:40.183753377-04:00",
+      "Action": "fail",
+      "Package": "github.com/controlLogix/agentmux/platform/launcher",
+      "Test": "TestDockerOwnedBoundaries/warm_is_read_only",
+      "Elapsed": 0.03
+    },
+    {
+      "Time": "2026-10-13T16:41:40.543768129-04:00",
+      "Action": "fail",
+      "Package": "github.com/controlLogix/agentmux/platform/launcher",
+      "Test": "TestDockerOwnedBoundaries/stop_requires_full_identity",
+      "Elapsed": 0.15
+    },
+    {
+      "Time": "2026-10-13T16:41:40.631913949-04:00",
+      "Action": "fail",
+      "Package": "github.com/controlLogix/agentmux/platform/launcher",
+      "Test": "TestDockerOwnedBoundaries",
+      "Elapsed": 0.53
+    },
+    {
+      "Time": "2026-10-13T16:42:11.24254635-04:00",
+      "Action": "fail",
+      "Package": "github.com/controlLogix/agentmux/platform/launcher",
+      "Elapsed": 31.25
+    }
+  ],
+  "command": "go test -race -json -count=1 -timeout=45s ./launcher",
+  "limits": [
+    "WSL native Linux source-copy test only; no macOS run",
+    "Parent components must be enrolled and canonicalized before this function",
+    "Same-user hostile unlink and external advisory-lock bypass are outside this fixture",
+    "No Docker, bootstrap stack or phase acceptance"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "recordKind": "synthetic-runner-regression-refinement",
+  "sourceCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "workingTreeChanges": true,
+  "supersedesCurrentRunnerPreparationOnly": "preparation.json",
+  "preservesHistoricalPreparation": true,
+  "phaseAccepted": false,
+  "nativeFoundationExecuted": false,
+  "sourceHashes": {
+    "tests/platform/native_go.py": "4e2b5ad207d0f9ca9ea25092fe2c4def1d151e27769a0b622c337be63d36c47a",
+    ".github/workflows/platform-foundation.yml": "0533c5492f58d8a6d1a393ea99cff284d20b69a6c9b98b9733617a9dadb90acb"
+  },
+  "environment": "Native Windows; synthetic runner controls only",
+  "command": "python tests/platform/native_go.py --self-test",
+  "exitCode": 0,
+  "tests": 12,
+  "addedChecks": [
+    "Normal synthetic runner emits every expected scope and isolates its child environment.",
+    "Unsupported host refuses before any download or child test.",
+    "Setup failure retains a failed report without private error text.",
+    "Test failure and changed execution-copy bytes cannot pass.",
+    "Darwin research has separate results and derives fail-closed status from its control result."
+  ],
+  "limits": [
+    "All tool and subprocess observations in these added tests are mocked; they are not native Go execution.",
+    "The historical independent review applies to the earlier source hash in preparation.json; the coordinator reviews this refinement before candidate integration.",
+    "Native foundation, Compose, boot, supported-host and complete phase evidence remain required."
+  ]
+}

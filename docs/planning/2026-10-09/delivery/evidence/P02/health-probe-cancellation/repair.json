@@ -1,0 +1,65 @@
+{
+  "recordKind": "health-probe-owned-socket-cancellation-repair",
+  "sourceBaseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "phaseAccepted": false,
+  "environment": "Go 1.27.2 linux/amd64 in Ubuntu-26.04 WSL; owned loopback TCP/TLS-handshake fixtures and prepared NATS 2.15.0 for the affected suite",
+  "originalFailure": "diagnostic.json",
+  "sourceHashes": {
+    "platform/deployment/probe.go": "08efdf807205db07d26b35e00b1272d33741840baef86e4d299f2be5150d7479",
+    "platform/deployment/probe_cancellation_test.go": "b3328239175ab4155ab8effaac9451e86d9b8aca0a8e8d724690a835cd53140d"
+  },
+  "sourceBinding": {
+    "snapshot": "candidate-JJR04B",
+    "goAndModuleFiles": 78,
+    "sourceList": "repair/source-before.sha256",
+    "sourceListSha256": "7879ab7e83b437162aa229bbb383b9cfeea0c93c673fe4a9e8f807f93c7a4687",
+    "afterCheck": "repair/source-after.txt"
+  },
+  "focused": {
+    "command": "go test -race -count=1 -timeout=30s -run '^TestProbeCancellationInterruptsActualGreetingAndTLS$' -json ./deployment",
+    "exitCode": 0,
+    "passedTestAndSubtestEntries": 5,
+    "failures": 0,
+    "skips": 0,
+    "packageSeconds": 0.063,
+    "raw": "repair/focused.jsonl",
+    "rawSha256": "5e32e80a4576ddf10e4cc2b31349b56f0a327fc716344aebe6b8a200391c7a6c"
+  },
+  "affected": {
+    "command": "go test -race -count=1 -timeout=180s -json ./deployment",
+    "exitCode": 0,
+    "passedTestAndSubtestEntries": 86,
+    "failures": 0,
+    "skips": 0,
+    "packageSeconds": 2.541,
+    "raw": "repair/affected.jsonl",
+    "rawSha256": "66e57a5eed24c9f46c168efcdfb1debaa0a285dca7d8e3fcc29b3fca6157af11"
+  },
+  "vet": {"command": "go vet ./deployment", "exitCode": 0, "raw": "repair/vet.stderr"},
+  "actualObservations": [
+    "Cold and warm probes cancel within 500ms after an actual accepted connection stalls without a NATS greeting.",
+    "Cold and warm probes cancel within 500ms after the fixture receives an actual TLS handshake record and withholds the response.",
+    "Each cancelled probe returns an empty result and health_deadline.",
+    "The peer observes connection closure before fixture cleanup can force it.",
+    "Permanent fixtures register socket ownership before acceptance and join their accept/probe goroutines on cleanup."
+  ],
+  "repair": "runProbe uses the existing reviewed context-aware observeDialer for its exact validated endpoint and stops or joins its socket cancellation hooks. Fixed stream, storage, account and timeout rules remain unchanged.",
+  "independentReview": {
+    "reviewer": "Independent Codex agent Mencius",
+    "status": "Source and evidence closed with no actionable findings",
+    "checks": [
+      "Focused 5/5 and affected 86/86 run/pass pairs match, with no failures or skips; test/vet exits are zero and stderr is empty.",
+      "All 78 source after-checks are OK; probe, regression and shared dialer hashes match current source.",
+      "Production cancellation and permanent fixture cleanup gaps are closed, while stream compatibility, limits and provisioning remain intact.",
+      "Original failed diagnostic hashes and earlier sync-policy evidence remain unchanged."
+    ],
+    "limits": "Reviewer ran no tests or process operations. This closes only the bounded WSL repair."
+  },
+  "governance": {"exitCode": 1, "errors": ["Review is stale or missing: inspect changes and refresh sourceDigest"]},
+  "limits": [
+    "The original completed diagnostic failures are preserved. Its late-accept cleanup gap is documented by independent review and was not promoted unchanged into the permanent regression.",
+    "No Docker, privileged setup, profile/bootstrap/status edit or provider authentication was performed by this slice.",
+    "WSL evidence does not qualify native macOS/Linux or accept P02.",
+    "Team connection implementation remains queued until this repair closes."
+  ]
+}

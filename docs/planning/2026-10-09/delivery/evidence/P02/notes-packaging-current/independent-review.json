@@ -1,0 +1,38 @@
+{
+  "scope": "Independent offline verification of the existing review packaging checkpoint",
+  "reviewer": "Codex with Plato independent review",
+  "packagingReviewSHA256": "812b91572afa00f1f2571d64d76efa045d574617eff5e98d108a76f3d8fed722",
+  "htmlSHA256": "ee6900c46de84f94a78ca5b28c538fa509d40c335fda62ce87f9bd223a8cf7c5",
+  "documentVersion": "sha256:bdbf51e6fc2b299aa5010804c41e70a6f9eba4a2793837b5c9c901afaed6adf5",
+  "independentChecks": {
+    "allThreeCurrentOutputHashesMatch": true,
+    "documentInputsChecked": 22,
+    "documentVersionRecomputedAndEmbeddedVersionMatches": true,
+    "completeCurrentControllerAndLocalCodeEmbedded": true,
+    "bridgeUnloadGuardAndPendingSaveTextEmbedded": true,
+    "reviewerNotesAndSourceHashesMatchBeforeSnapshot": true,
+    "archivedPriorOutputHashesMatch": true
+  },
+  "additionalChecks": [
+    {
+      "command": "node docs/reviews/check.mjs agentmux-visual-review",
+      "status": "passed",
+      "result": "Both reviewer files are valid. Earlier or unknown document versions remain retained."
+    },
+    {
+      "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+      "exit": 1,
+      "status": "failed",
+      "result": "Review is stale or missing: inspect changes and refresh sourceDigest",
+      "action": "Left the failure visible. Root owns source review and global metadata; no digest was refreshed."
+    }
+  ],
+  "findings": [],
+  "limits": [
+    "This is offline artifact verification, not live notes-file saving or browser end-to-end evidence.",
+    "Independent review did not check live server state or browser storage; the packaging producer checked managed server inactivity before and after.",
+    "No duplicate full tests, server startup, provider, engine or native job was run.",
+    "The design-pattern check remains incomplete. No phase acceptance follows from packaging."
+  ],
+  "phaseAccepted": false
+}

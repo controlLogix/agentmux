@@ -1,0 +1,189 @@
+{
+  "schemaVersion": "1.0.0",
+  "scope": "Independent read-only owner refresh proof and cleanup propagation review, not phase acceptance",
+  "workerReviewSHA256": "93d5533272b6d36997acf9ae84839f11ac61de10df3f59a2e21bd0e33ef5d5cc",
+  "reviewedSourceSHA256": {
+    "platform/launcher/owner_bridge.go": "f691230aa5892015f75025cbf9b70a9a2056e5009cce99fe91b15a879f366c5c",
+    "platform/launcher/owner_bridge_refresh_test.go": "3e64b2c81d96b6f4a2a8efd7a0dfed777997244cd9b14fc2710490b5e1b426aa",
+    "platform/launcher/owner_bridge_receipt.go": "c6ec84c03ac827c4c6008705ac8ef6d401484cc3b1015eba7dda900f35b89685",
+    "platform/launcher/local_broker_authority.go": "665d3bfa44c0fef97dd4a49ab10b9c1a4a799f391d1694e5d3eceab75a918a1d",
+    "platform/launcher/kernel_status.go": "1e67cdef72a65dd41d9ce319dd6b8f25058f70f14e9a85a6974647616da388f9",
+    "platform/launcher/session_cleanup.go": "9187e95a14aeac4c33cae93c34ceba7abe0aa57be290ab08c46d327e730855cb",
+    "platform/launcher/bootstrap.go": "7db76af164be1110f1352da993833fc3613c09ab42b4557094bcd4661edb9bcd"
+  },
+  "sourceMatchesCurrentAndFrozenCandidate": true,
+  "previousBridgeSHA256": "5447740219199671a63ef106350e9ceb112fd01ccae1b0a94d51ed028a291ae7",
+  "reviewedDiffSHA256": "5e55461f35a0433e1a8b0103e690037e14f5058b029b86198224fb44c3466a9b",
+  "verifiedArchiveArtifactsSHA256": {
+    "review.json": "93d5533272b6d36997acf9ae84839f11ac61de10df3f59a2e21bd0e33ef5d5cc",
+    "root-review.json": "9375b0ea90120c1517e0571fbce3c9ef7e2a6712e641c9b6a59917b08fea8d68",
+    "source-and-artifact-proposal.json": "9bb4a298b96ec34ef2b2a4d0619eebc7c9cbdeecae7dca709f9b4b563b6217b2",
+    "candidate/freeze.json": "6977f04246302b5c36772d4d84536ebf19bc00bd6f8e4fe0958aa3b97dc94421",
+    "candidate/refresh-affected-result.json": "2188b41529810ca5b828c6380b3c3e929223c8fd15cc9c3d79d249b2672c5f4b",
+    "candidate/refresh-affected.jsonl": "db927b099c5a6a0656f52318326aa6b20d9d3b2d41fbb6391da1c731450c936c",
+    "candidate/refresh-affected.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "candidate/refresh-focused-result.json": "50e55bb7ed78fc9b7c8c05e21f490ebc22d5a179fcb9f9b50eac719a14decf9d",
+    "candidate/refresh-focused.jsonl": "b334883dd7a401f24fac3226df5ceb338014ba5de0f433de0f589c4968ea2b8b",
+    "candidate/refresh-focused.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "candidate/sdk-result.json": "f4335a3559e5dc9dab9553301af7ef4f3865f29028b1481bed5550341c9b1c9e",
+    "candidate/vet-direct-result.json": "078dcea8a21ac648aa5af8b54ff4ca51fcae42c3a4a143f9e22f733ebb4197fd",
+    "candidate/vet-direct.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "candidate/vet-direct.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "initial/refresh-first-result.json": "cc5d1df713d7893be6d4ce892f69d60184560cdaf42ce16e3d26d055ab9e4019",
+    "initial/refresh-first.jsonl": "84518a927086ab5b590d30d6294727c36e2e97f0b5489b5ded7f1d4de31ae4b0",
+    "initial/refresh-first.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "negative/negative-result.json": "332fb862b16c8dbfbee82883e94d25c9840a17dff36c2b488cb30d70d183e70f",
+    "negative/negative.jsonl": "1b91292a389b6aa9336984a4018cc02febe70f8e18999ca378c4e19a97f62bb7",
+    "negative/negative.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "producers/agentmux-bridge-tls-freeze.py": "febbc5e2711ad6b6c834b05faea0376354e62f1048fb056e34b45157e071cfc1",
+    "producers/agentmux-owner-refresh-final.py": "834d929708c9c10642631c6cb7ddcc0633423735c3a86ad9e283366109298e84",
+    "producers/agentmux-owner-refresh-first.py": "69b6d1662ba4d6469dc23ef7d1fb38611aa12e6dc3f80d55470b7535c97d9a3e",
+    "producers/agentmux-owner-refresh-negative.py": "c2c4aa7359b1d0b866620db897316af2970c22f25a836cabba9481c3b84950b8",
+    "producers/agentmux-owner-refresh-record.py": "d5aa13f0374e361275e7f5d7e5297c426c7e04b40b77409e07c81604a51b5a71",
+    "producers/agentmux-owner-refresh-sdk.py": "9751d705dd2c33563521c411bc5bb3c04b92863b265ce2d329eb4a12bcd23192",
+    "producers/agentmux-owner-refresh-vet.py": "6e275ca4b124bc0a111801c9921fe14301b3d785b514ff3d04c4a58a09672076"
+  },
+  "actualRawNamedCounts": {
+    "focused": {
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    "affected": {
+      "pass": 255,
+      "fail": 0,
+      "skip": 0
+    },
+    "originalDuplicate": {
+      "pass": 0,
+      "fail": 1,
+      "skip": 0
+    },
+    "ownerNegative": {
+      "pass": 0,
+      "fail": 1,
+      "skip": 0
+    }
+  },
+  "workerDirectResults": {
+    "focused": {
+      "command": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-race",
+        "-count=1",
+        "-json",
+        "./launcher",
+        "-run",
+        "^(TestOwnerBridgeRefreshUsesOneActualBrokerInspection|TestOwnerBridgeObservationCleanupRetainsBothActualSocketOwners)$"
+      ],
+      "exit": 0,
+      "seconds": 7.870194388000527,
+      "sourceStable": true,
+      "namedPass": 2,
+      "namedFail": 0,
+      "skips": 0
+    },
+    "affected": {
+      "command": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-race",
+        "-count=1",
+        "-json",
+        "./launcher",
+        "-run",
+        "^(TestOwnerBridge|TestKernelOperationProof|TestTransportCleanup)"
+      ],
+      "exit": 0,
+      "seconds": 66.65926693100118,
+      "sourceStable": true,
+      "namedPass": 255,
+      "namedFail": 0,
+      "skips": 0
+    },
+    "vet": {
+      "command": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "vet",
+        "./launcher"
+      ],
+      "exit": 0,
+      "seconds": 1.3005828890018165
+    },
+    "SDK": {
+      "checks": 52,
+      "ok": true,
+      "record": "/home/ryan/.cache/agentmux-tests/p02-owner-bridge-tls-candidate-aeeryxie/sdk-result.json"
+    },
+    "typedOwnerNegative": {
+      "path": "/home/ryan/.cache/agentmux-tests/p02-refresh-cleanup-negative-hvvd2uvy",
+      "result": {
+        "path": "/home/ryan/.cache/agentmux-tests/p02-refresh-cleanup-negative-hvvd2uvy",
+        "command": [
+          "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+          "test",
+          "-race",
+          "-count=1",
+          "-json",
+          "./launcher",
+          "-run",
+          "^TestOwnerBridgeObservationCleanupRetainsBothActualSocketOwners$"
+        ],
+        "exit": 1,
+        "seconds": 4.99768647000019,
+        "originalSHA256": "f691230aa5892015f75025cbf9b70a9a2056e5009cce99fe91b15a879f366c5c",
+        "mutantSHA256": "fecfc1fff04ee2d3246426ba1bd4a47f22ac60b3e1dc5322ef66a379b64c005d",
+        "expectedFailureObserved": true,
+        "scope": "Two real TLS socket owners; combined-cause helper mutant, not injected full Run/health-kernel failure."
+      }
+    },
+    "initialDuplicateInspectionFailure": {
+      "path": "/home/ryan/.cache/agentmux-tests/p02-owner-bridge-tls-candidate-a09f46tm",
+      "result": {
+        "command": [
+          "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+          "test",
+          "-race",
+          "-count=1",
+          "-json",
+          "./launcher",
+          "-run",
+          "^TestOwnerBridgeRefreshUsesOneActualBrokerInspection$"
+        ],
+        "exit": 1,
+        "seconds": 10.2897319290023,
+        "sourceStable": true,
+        "namedPass": 0,
+        "namedFail": 1,
+        "skips": 0
+      },
+      "assertion": "owner refresh repeated complete broker inspection"
+    }
+  },
+  "findings": [],
+  "closedFindings": [
+    "Duplicate full broker inspection: refresh now mints inspectLocalBrokerOperation and passes its lexical proof to observeKernelWithProof using the identical original bounded request ctx.",
+    "Previously discarded pErr/kErr cleanup owners: helper joins actual causes and recognizes ProbeCleanupError, RawTransportCleanupError or TransportCleanupError; refresh returns retained wrapper, serveLoop cancels request and returns before publication."
+  ],
+  "sourceControlsReviewed": [
+    "Proof remains local to refresh and is never stored in Session/config/server; separate refresh invocation mints another actual inspection. Proof consume enforces exact comparable context identity, original Done/deadline, binding, single atomic use and fresh full private enrollment. Expiry re-inspects in remaining budget.",
+    "Actual owned broker running state and bound immutable TLS policy remain required; TLS roots/DNS/time/exact leaf pin precede INFO/CONNECT and scoped snapshot validation. Absent/stopped does not dial or become readiness.",
+    "No scope/timeout/freshness changes and no health/write-proof retimestamp. Existing owning started Session may preserve only its original cold attempt and original copied health proof.",
+    "Joined actual observation causes survive fixed bridgeCompletionCause Error/Format/JSON through Unwrap; pointer/value methods use fixed allowlisted code. Ordinary timeout/unavailability lacks typed owner, is not escalated to fatal cleanup, and maps to honest failed status.",
+    "serveLoop deferred closeOwnedTransport retains primary cleanup cause if its own HOST socket close also fails. Run cancels startup/runtime, joins actual operation.done and returned goroutine, preserves primary plus completed causes with joinedBridgeBootstrapResult, calls closeOwnedSession, and transfers service lease only on retained unfinished exact session ownership. Outer service lease defer releases only if not transferred. Final receipt close joins failure instead of replacing it."
+  ],
+  "testCoverageReviewed": [
+    "Genuine native TLS/FILE broker and four in-process actors; exactly three fixed archives on each fresh refresh, not cache reuse.",
+    "Two actual authenticated TLS sockets fail first close, combined typed causes retain both exact owners, fixed pointer/value formatting and JSON, retries yield actual peer EOF. Ordinary DeadlineExceeded negative remains nonfatal.",
+    "Original duplicate archive-count failure and helper-discard negative fail the intended assertions; direct focused/affected/vet/SDK evidence preserved."
+  ],
+  "limits": [
+    "No new tests, engine/provider actions or shared source/metadata edits in this independent review; existing raw source-bound evidence inspected.",
+    "Controlled inspector and native broker actors are not real container/engine or native macOS proof. Actual installed timing rerun belongs to A.",
+    "Two-socket control exercises the combined helper, not simultaneous forced cleanup failures through full public health/kernel/serveLoop/Run. That propagation path is source-reviewed and existing Run/Session controls remain separate.",
+    "No phase acceptance or source review metadata authorization."
+  ],
+  "phaseAccepted": false,
+  "sourceDigestAuthorized": false
+}

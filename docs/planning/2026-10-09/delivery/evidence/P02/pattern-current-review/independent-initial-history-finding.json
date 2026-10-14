@@ -1,0 +1,205 @@
+{
+  "scope": "Read-only independent actual applied registry/diagram review; not digest/phase acceptance",
+  "inputHashes": {
+    ".context/design-patterns.md": "ec482961792047a8cda3c6bfe356376a954483d07985dcf330eea9b43ba79fec",
+    ".context/design-patterns-diagrams.md": "8fa272d4f6a0b93f09b4201800b05f702e1c40f6a5315bd10a1bb5ed9d5e687e",
+    ".bytedesk/design-patterns/catalog.json": "8f8679535511ac9fd5a380c5d43835e0aabf215a31c44ff53013e205ebc6bb82",
+    ".bytedesk/design-patterns/remediation.json": "ac35fbbca2180da036addd21149e973b43b8b12f8fafb64ef8e82c01a3c2e1ac",
+    "docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json": "26f9d26c650768cbfdd828cbd6d10445dd2c6d858f7bb8c9b66b6cc5979d062a"
+  },
+  "semanticAssessment": "Pinned observed Decorator, actual raw-only failure serial distinction, exact team reader128 scope, current service-lease/admission/owner revalidation/join order and no native acceptance claims are accurately reflected.",
+  "findings": [
+    {
+      "kind": "history snapshot inaccurate",
+      "description": "Newest previous.locations/verificationEvidence arrays include current newly appended items, including new root-review evidence. This cannot be an exact pre-edit snapshot. Previous prose is preserved.",
+      "requiredFix": "Restore actual old arrays from pre-edit registry with deep copies; preserve every earlier revision.",
+      "affectedEntries": [
+        {
+          "entry": "PLAN-03",
+          "previousIncludesNewRootReviewEvidence": true,
+          "previousLocations": [
+            {
+              "path": "platform/kernel/assembly/verify.go",
+              "symbol": "Verify"
+            },
+            {
+              "path": "platform/runtime/supervisor.go",
+              "symbol": "Prepare"
+            },
+            {
+              "path": "platform/kernel/boot/run.go",
+              "symbol": "Run"
+            },
+            {
+              "path": "platform/kernel/lifecycle/run.go",
+              "symbol": "Run"
+            },
+            {
+              "path": "platform/kernel/communication/run.go",
+              "symbol": "Run"
+            },
+            {
+              "path": "platform/kernel/status/run.go",
+              "symbol": "Run"
+            },
+            {
+              "path": "platform/launcher/release.go",
+              "symbol": "LoadInstalledRelease"
+            },
+            {
+              "path": "platform/launcher/host_config.go",
+              "symbol": "LoadBootstrapConfig"
+            },
+            {
+              "path": "platform/launcher/bootstrap.go",
+              "symbol": "Bootstrap"
+            },
+            {
+              "path": "platform/kernel/assembly/verify.go",
+              "symbol": "VerifyRoot"
+            },
+            {
+              "path": "platform/kernel/assembly/open_unix.go",
+              "symbol": "openMemberFile"
+            },
+            {
+              "path": "platform/privatefs/access.go",
+              "symbol": "CheckDescriptor"
+            },
+            {
+              "path": "platform/deployment/team_credentials_unix.go",
+              "symbol": "teamReadPrivateChecked"
+            }
+          ],
+          "previousVerificationEvidence": [
+            "platform/kernel/assembly/verify_test.go",
+            "platform/runtime/supervisor_linux_test.go",
+            "platform/kernel/boot/integration_test.go",
+            "platform/kernel/assembly/root_test.go",
+            "platform/kernel/assembly/open_unix_test.go",
+            "platform/kernel/boot/process_integration_test.go",
+            "platform/kernel/boot/parent_lifetime_test.go",
+            "platform/launcher/release_test.go",
+            "platform/launcher/host_config_test.go",
+            "docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json"
+          ]
+        },
+        {
+          "entry": "PLAN-04",
+          "previousIncludesNewRootReviewEvidence": true,
+          "previousLocations": [
+            {
+              "path": "platform/launcher/owner_bridge.go",
+              "symbol": "OwnerBridgeClient.Request"
+            },
+            {
+              "path": "platform/launcher/owner_bridge.go",
+              "symbol": "OwnerBridgeServer.Run"
+            },
+            {
+              "path": "platform/launcher/session_cleanup.go",
+              "symbol": "RuntimeCleanupError"
+            },
+            {
+              "path": "platform/launcher/bootstrap.go",
+              "symbol": "BootstrapForInvocation"
+            },
+            {
+              "path": "platform/launcher/local_broker_authority.go",
+              "symbol": "inspectLocalBrokerOperation"
+            },
+            {
+              "path": "platform/launcher/docker_archives.go",
+              "symbol": "Docker.verifyOwnedTLSArchives"
+            },
+            {
+              "path": "platform/launcher/host_receipt_binding.go",
+              "symbol": "BootstrapReceiptBinding"
+            },
+            {
+              "path": "platform/launcher/host_receipt_server.go",
+              "symbol": "BridgeServerForInvocation"
+            },
+            {
+              "path": "platform/launcher/owner_bridge_receipt.go",
+              "symbol": "emitBootstrapAccepted"
+            },
+            {
+              "path": "platform/runtime/bootstrap_receipt.go",
+              "symbol": "BootstrapReceipt"
+            },
+            {
+              "path": "platform/runtime/startup_cleanup_cause.go",
+              "symbol": "retainStartupCleanupCause"
+            },
+            {
+              "path": "platform/launcher/bootstrap_operation.go",
+              "symbol": "bootstrapOperation.enter"
+            },
+            {
+              "path": "platform/launcher/startup_status.go",
+              "symbol": "OwnerStatus.mapStartingContext"
+            },
+            {
+              "path": "platform/launcher/owner_bridge_receipt.go",
+              "symbol": "joinedBridgeBootstrapResult"
+            }
+          ],
+          "previousVerificationEvidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/owner-bridge-receipt/review.json",
+            "docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json"
+          ]
+        },
+        {
+          "entry": "P02-TLS-01",
+          "previousIncludesNewRootReviewEvidence": true,
+          "previousLocations": [
+            {
+              "path": "platform/localtls/client.go",
+              "symbol": "Dialer"
+            },
+            {
+              "path": "platform/kernel/protocol/transport.go",
+              "symbol": "Open"
+            },
+            {
+              "path": "platform/deployment/probe.go",
+              "symbol": "ProbeOptions"
+            },
+            {
+              "path": "platform/launcher/transport_cleanup.go",
+              "symbol": "TransportCleanupError"
+            },
+            {
+              "path": "platform/deployment/probe_cleanup.go",
+              "symbol": "ProbeCleanupError"
+            },
+            {
+              "path": "platform/deployment/raw_transport_cleanup.go",
+              "symbol": "RawTransportCleanupError"
+            },
+            {
+              "path": "platform/deployment/team_connection.go",
+              "symbol": "TeamConnection.Observe"
+            }
+          ],
+          "previousVerificationEvidence": [
+            "platform/localtls/client_test.go",
+            "platform/kernel/protocol/server_trust_test.go",
+            "platform/deployment/local_tls_probe_test.go",
+            "docs/planning/2026-10-09/delivery/evidence/P02/combined-cleanup-independent/independent-review.json",
+            "docs/planning/2026-10-09/delivery/evidence/P02/health-cleanup-independent/independent-review.json",
+            "docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json"
+          ]
+        }
+      ]
+    }
+  ],
+  "status": "remaining specific history finding; not closed",
+  "limits": [
+    "No shared writes, source/digest refresh or tests.",
+    "Full old registry bytes were not archived by this reviewer; root should provide or use its actual pre-edit snapshot for exact all-history comparison.",
+    "Root live checker is not duplicated."
+  ],
+  "sourceDigestAuthorized": false
+}

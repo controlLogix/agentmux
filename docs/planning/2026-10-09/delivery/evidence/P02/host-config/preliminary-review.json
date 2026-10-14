@@ -1,0 +1,39 @@
+{
+  "recordKind": "private-host-loader-preliminary-not-acceptance",
+  "owningTask": "P02-T01",
+  "sourceBaseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "workingTreeChanges": true,
+  "phaseAccepted": false,
+  "taskAccepted": false,
+  "sourceHashes": {
+    "platform/launcher/host_config.go": "e00fdda82a8478f95b426de66b36e504592783ab9c31a3fb9298dacd5c1209ce",
+    "platform/launcher/host_config_test.go": "d101bd453d184bd95cd13a892ce05b00e41e2375c09badfb37d71dde44156a25"
+  },
+  "environment": "Explicit Ubuntu-26.04 WSL2; prepared Go 1.27.2; isolated persistent Linux home-cache source copy; offline readonly modules",
+  "focusedRace": {
+    "commandArguments": ["test", "-race", "-mod=readonly", "-count=1", "-timeout=60s", "-run", "TestHostConfig", "-json", "./launcher"],
+    "exitCode": 0,
+    "passedTestAndSubtestRecords": 36,
+    "failureRecords": 0,
+    "skipRecords": 0,
+    "raw": "preliminary/host-race.jsonl",
+    "rawSha256": "188254fa9e1c4a50e74ec675c078d821878919b0293ba27263d674966a50fe3d"
+  },
+  "independentReview": {
+    "reviewer": "Codex subagent Mencius",
+    "roleCaseAliasFindingResolved": true,
+    "exactLargeIntegerBindingRegressionInspected": true,
+    "prerequisiteProfileOpenRaceStillOpen": true,
+    "noOtherNewFindingsInOwnedChanges": true
+  },
+  "openRequirements": [
+    "Root/profile owner must repair LoadProfile's Lstat/root.Open profile.json substitution race with the held-root nonblocking no-follow opener and bounded regression.",
+    "Root/protocol owner must review case-alias handling in later role/environment revalidation, not only this loader.",
+    "Final frozen-source affected launcher race/vet and source registration remain required after prerequisite changes.",
+    "Initial loader supports local IPv4 plain NATS only; remote, IPv6 and local TLS qualification remain explicitly unproved.",
+    "No Docker, NATS connection, install, enrollment, filesystem write or user configuration update occurs in LoadBootstrapConfig.",
+    "No private keys or real user credentials were accessed; test files and signatures are disposable fixtures.",
+    "The secret-bearing BootstrapConfig must stay internal to trusted bootstrap code and must not be printed or serialized.",
+    "Whole task, native environment, actual boot and phase acceptance remain open; a narrow pass cannot substitute."
+  ]
+}

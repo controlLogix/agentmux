@@ -11,7 +11,7 @@ const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const fail = (status, message) => Object.assign(new Error(message), { status });
 const jsonEscape = data => JSON.stringify(data).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026');
 
-export function createLocalReview({ repoRoot, config, document, html, gitEnv = process.env }) {
+export function createLocalReview({ repoRoot, config, document, html, gitEnv = process.env, management = null, acquireLock = acquireNotesLock }) {
   if (config.id !== document.id || !Array.isArray(config.reviewers) || config.reviewers.some(person =>
     typeof person.id !== 'string' || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(person.id) || typeof person.name !== 'string')) throw new Error('Invalid review configuration.');
   const canonical = path => realpathSync.native(path);
@@ -65,11 +65,11 @@ export function createLocalReview({ repoRoot, config, document, html, gitEnv = p
     const remote = config.shareRemote || 'origin';
     if (!/^[a-zA-Z0-9][a-zA-Z0-9/._-]*$/.test(branch) || !/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(remote)) throw fail(400, 'Invalid sharing configuration.');
     const state = current(person);
-    const releaseFile = await acquireNotesLock(state.path);
+    const releaseFile = await acquireLock(state.path);
     let releaseRepo;
     let committed = false;
     try {
-      releaseRepo = await acquireNotesLock(resolve(root, git(['rev-parse', '--git-common-dir'])));
+      releaseRepo = await acquireLock(resolve(root, git(['rev-parse', '--git-common-dir'])));
       const path = relative(root, state.path).replaceAll('\\', '/');
       const check = () => {
         const latest = identity();
@@ -131,7 +131,10 @@ export function createLocalReview({ repoRoot, config, document, html, gitEnv = p
   }
   const token = randomBytes(32).toString('hex');
   let origin;
+  let activeHandlers = 0;
+  const drainWaiters = [];
   const server = createServer(async (request, response) => {
+    activeHandlers++;
     response.setHeader('Cache-Control', 'no-store');
     response.setHeader('X-Content-Type-Options', 'nosniff');
     response.setHeader('X-Frame-Options', 'DENY');
@@ -139,6 +142,16 @@ export function createLocalReview({ repoRoot, config, document, html, gitEnv = p
     try {
       if (request.headers.host !== origin.slice(7) || (request.headers.origin && request.headers.origin !== origin) ||
           request.headers['sec-fetch-site'] === 'cross-site') throw fail(403, 'Use the local review URL printed by the launcher.');
+      if (management && ['/_review/health', '/_review/stop'].includes(request.url)) {
+        if (request.headers['x-review-manager-token'] !== management.token) throw fail(403, 'Review server management requires its local owner token.');
+        if (request.url === '/_review/health' && request.method === 'GET') { send(200, management.info()); return; }
+        if (request.url === '/_review/stop' && request.method === 'POST') {
+          send(200, management.info());
+          setImmediate(() => { management.stop().catch(() => { console.error('Review shutdown did not finish. Check the launcher before reopening.'); }); });
+          return;
+        }
+        throw fail(405, 'Unsupported review server management method.');
+      }
       if (request.method === 'GET' && request.url === '/') {
         const marker = /(<script type="application\/json" id="review-data">)([\s\S]*?)(<\/script>)/;
         const data = JSON.parse(html.match(marker)?.[2] || 'null');
@@ -176,7 +189,7 @@ export function createLocalReview({ repoRoot, config, document, html, gitEnv = p
       const record = { ...body.record, reviewer: person.name, reviewerEmail: person.email, reviewerId: person.id };
       let text; try { text = exportMarkdown(record, document); } catch (error) { throw fail(400, error.message); }
       const state = current(person);
-      const release = await acquireNotesLock(state.path);
+      const release = await acquireLock(state.path);
       const temp = state.path + '.' + randomBytes(8).toString('hex') + '.tmp';
       try {
         const latestIdentity = identity();
@@ -188,9 +201,11 @@ export function createLocalReview({ repoRoot, config, document, html, gitEnv = p
       } finally { try { if (existsSync(temp)) unlinkSync(temp); } finally { await release(); } }
       send(200, { revision: hash(text), filename: person.filename });
     } catch (error) { send(error.status || 500, { error: error.status ? error.message : 'The local helper could not complete the operation. Check its terminal output.' }); }
+    finally { activeHandlers--; if (!activeHandlers) drainWaiters.splice(0).forEach(done => done()); }
   });
   return {
     server, token,
+    async drain() { if (activeHandlers) await new Promise(done => drainWaiters.push(done)); },
     async listen(port = 4317) {
       await new Promise((done, reject) => { server.once('error', reject); server.listen(port, '127.0.0.1', done); });
       origin = 'http://127.0.0.1:' + server.address().port;

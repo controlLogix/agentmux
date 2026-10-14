@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "recordKind": "independent-slice-review",
+  "reviewedAt": "2026-10-14T05:29:27Z",
+  "reviewer": "Codex",
+  "independentSourceReviewer": "Plato",
+  "scope": "Concrete health TLS cleanup ownership, both production caller exit paths, and owned test-fixture cleanup.",
+  "sliceReviewStatus": "closed within recorded limits",
+  "phaseAccepted": false,
+  "installedProductQualified": false,
+  "sourceDirectory": "/home/ryan/.cache/agentmux-governance/p02-health-fixture-cleanup-UBH7me/platform",
+  "currentSourceHashes": {
+    "platform/deployment/local_tls_probe_transport.go": "243448843b4003f56e44d46c9cb59a4de85c83be073c7c888b48b0fcefb6e60d",
+    "platform/deployment/probe.go": "3d5751789092bf9684dd9f12d77da8c6724ed3db10d4d3bd6dfeb35d3eabc78f",
+    "platform/deployment/observe.go": "164739271ada7fb0d94d8e1dc933bd8e34a0d202077d1e68f76ad4e452558b79",
+    "platform/deployment/probe_cleanup.go": "69b6b1e14070a203d03747fd86bea2a7b7986d15c9359d8b572f0b33d0e374a0",
+    "platform/deployment/probe_cleanup_test.go": "0e078c17c2c8e080ed914d4a9aa85d4efc9e1a579418ebaa86bc36929bdaa864"
+  },
+  "sharedDependencyReviewed": {
+    "file": "platform/localtls/client.go",
+    "sha256": "d8c5f5f87abf98490538247af0eb3e4335ce73666bc8a39416bae90ae37c46fe",
+    "meaning": "The unchanged lower API retains failed-close sockets but returns its fixed ErrCleanup sentinel. The health wrapper preserves the operational cause it receives; it cannot expose a private socket cause that this lower API does not return."
+  },
+  "sourceInspection": [
+    "localProbeTransport returns the actual concrete authenticated dialer, not an opaque cleanup callback or a caller-selected socket.",
+    "ProbeCleanupError retains that same dialer and the original operational cause. Close retries the exact owner; Unwrap retains cleanup classification and the primary cause.",
+    "Value and pointer Format/Error/JSON output uses fixed safe codes, not retained pointers, private paths or original error text.",
+    "runProbe and Observe attach their cleanup defer on every path after transport creation. They clear result facts on cleanup failure even when an operational error already exists.",
+    "The raw TLS owner is closed before nc.Close. Observation cleanup clears broker identity, record, digest and sequence facts; probe cleanup clears the write result.",
+    "The historical plaintext helper remains separate. This review does not authorize installed plaintext admission."
+  ],
+  "findingHistory": [
+    {
+      "id": "health-cleanup-owner-hidden-and-suppressed",
+      "status": "resolved within source and helper-control scope",
+      "originalRecord": "/home/ryan/.cache/agentmux-governance/p02-host-isolation-current-zZqBus/health-cleanup-review.json",
+      "originalSHA256": "d42521b2954f551c5e52813cc96a69945c0f7d1ec737dadab61625f3c044840d",
+      "originalFinding": "The concrete TLS cleanup owner was hidden behind a closure; cleanup failures were suppressed when a primary error existed and otherwise became scalar errors without a caller-visible retry owner. NATS close preceded raw owner cleanup.",
+      "resolution": "Concrete transport return, typed same-owner retry, retained operational cause, result invalidation and explicit raw-before-NATS close order. The original record remains unchanged."
+    },
+    {
+      "id": "health-cleanup-fixture-late-registration",
+      "status": "resolved",
+      "originalTestSHA256": "e8881e8cb10bcc4c342deeb49393ae09005d3f9437b055c70a0bf35b3237982a",
+      "originalFinding": "The listener and peer goroutine started before trust/transport/Dial setup, but cleanup was registered only after successful Dial. Earlier setup failure could leave owned resources unjoined.",
+      "resolution": "Immediate listener/exact-peer cleanup before the goroutine and fallible setup; mutex-protected stopping and late-admission handling; concrete dialer cleanup registered before dialing; four actual early-failure subprocess controls. The original seven TLS ownership controls keep their peer-open-until-explicit-retry assertions."
+    }
+  ],
+  "historicalProductionCandidate": {
+    "directory": "/home/ryan/.cache/agentmux-governance/p02-health-cleanup-affected-DN0Tmq",
+    "reviewSHA256": "617a074edc8ba827dae13db8cd4facd847025d4e3c5dcdc21c5d829fbe2ac501",
+    "provenanceSupplementSHA256": "2960f5df29f364311abddaf22faedea3292ab3d1ff5e469c3a8de36e14cd4c46",
+    "fourProductionFilesStillExact": true,
+    "testFileHistorical": true,
+    "affected": {
+      "argv": ["/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go", "test", "-race", "-json", "./deployment", "-count=1"],
+      "namedPassEntries": 191,
+      "packagePassEntries": 1,
+      "eventCount": 769,
+      "failOrSkipEntries": 0,
+      "savedDirectExit": 0,
+      "rawSHA256": "356ca6dcae88ecada6e5d7122e2743c248a86877bedf726b22ea21c75ca0da55",
+      "producerSHA256": "2bd035a847a33d7f5a1d5ff229893d63a3eecb53ec6830de541fe3516a5681f9"
+    },
+    "focused": {
+      "directory": "/home/ryan/.cache/agentmux-governance/p02-health-cleanup-first-nqzJDp",
+      "pattern": "^TestProbeCleanupFailureRetainsConcreteOwner$",
+      "namedPassEntries": 7,
+      "failOrSkipEntries": 0,
+      "savedDirectExit": 0,
+      "rawSHA256": "8ee77a116630c868724311e70a8e6c0ef1a61ea8d71d68f47e31db445841f49b",
+      "producerSHA256": "f87711dec5ed6f6cbdb9771bde22a72703f782b293d54ac4fc850fd0e81d12e4"
+    },
+    "negative": {
+      "directory": "/home/ryan/.cache/agentmux-governance/p02-health-cleanup-negative-PNhMxI",
+      "namedFailEntries": 1,
+      "savedDirectExit": 1,
+      "rawSHA256": "14cc605fb70d9ca7568d5cd9ca2c7d812eb073ca40d82ff1ff47c8b3fe38d30b",
+      "producerSHA256": "83387aa5bb7f34cbf78235941006bb174d2a83a23fed9065b6fe740701a095fe",
+      "limit": "A scalar cleanup-owner negative control, not a forced failure through both complete production callers."
+    },
+    "vet": {
+      "argv": ["/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go", "vet", "./deployment"],
+      "savedDirectExit": 0,
+      "stdoutAndStderrEmpty": true
+    },
+    "limits": "These runs qualify their original source snapshot. The four production files are unchanged, but the repaired final test file is not qualified by the historical 191-entry run. Original process start/end times and the full inherited environment were not recorded. Go event times are not substituted for those missing process observations."
+  },
+  "finalFixtureSupplement": {
+    "directory": "/home/ryan/.cache/agentmux-governance/p02-health-fixture-cleanup-UBH7me",
+    "supplementSHA256": "a2120b3efcb9387f3c59c76e0651434a1c7c396b850d0aa123bf9cc41d3b206c",
+    "producerSHA256": "ec9d7d0e54a2d3c3d03f64a7534ba7999c83f68a12798128d6aca94861b12efa",
+    "argv": ["/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go", "test", "-race", "-json", "./deployment", "-run", "^TestProbeCleanup(FailureRetainsConcreteOwner|EarlyFailuresJoinOwnedResources)$", "-count=1"],
+    "namedPassEntries": 12,
+    "packagePassEntries": 1,
+    "failOrSkipEntries": 0,
+    "savedDirectExit": 0,
+    "rawSHA256": "fb73349d730585d6427a447068315a93ecf8d116483a9e33166ce05c01180c92",
+    "testCommandStartMarker": "2026-10-14T05:22:52.013901500Z",
+    "testCommandEndMarker": "2026-10-14T05:22:53.838374035Z",
+    "vet": {
+      "savedDirectExit": 0,
+      "stdoutAndStderrEmpty": true,
+      "commandStartMarker": "2026-10-14T05:22:53.842538971Z",
+      "commandEndMarker": "2026-10-14T05:22:54.349405375Z"
+    },
+    "timingMeaning": "The producer records markers around the commands and direct exit capture. These are command-step bounds, not exact OS process creation or exit timestamps."
+  },
+  "executionInspection": {
+    "producerScriptsReadCompletelyAndHashed": true,
+    "rawEventsParsedIndependently": true,
+    "savedDirectExitFilesReadIndependently": true,
+    "fixedEnvironmentVerifiedFromScripts": {"GOPROXY": "off", "GOSUMDB": "off", "GOWORK": "off", "GORACE": "atexit_sleep_ms=0"},
+    "affectedOnlyNATSServerSelection": "/home/ryan/.cache/agentmux-governance/tools/nats-server",
+    "fullInheritedEnvironmentRecorded": false,
+    "originalOuterInvocationWitness": "The preserved execution supplement identifies the actual WSL script paths used in the original tool invocations. This reviewer inspected those script bytes and direct results, but did not independently retrieve the original CLI transcript.",
+    "newTestOrEngineCallsByReviewers": false
+  },
+  "independentReview": "Plato independently read the five current sources and final fixture supplement, confirmed the hashes, and closed the fixture finding without new actionable source findings. Codex additionally read and hashed producers, parsed raw event counts and inspected direct exits. No reviewer reran the broad suite.",
+  "limits": [
+    "Actual authenticated TLS helper/socket controls and production caller source review are separate evidence. No forced close failure was injected through complete Probe or Observe calls.",
+    "Peer EOF after exact retry is proved by the owned socket controls; it is not evidence of installed Docker/Compose authority or native macOS qualification.",
+    "Four child-process controls prove test-fixture early-failure cleanup only. They do not create a new production failure-injection API.",
+    "The historical broad suite was not repeated for a test-only repair. Required full phase checks still belong to the coordinating session's final candidate.",
+    "No shared source, task tracker, global attestation, broker or Docker resource was changed by this independent review."
+  ]
+}

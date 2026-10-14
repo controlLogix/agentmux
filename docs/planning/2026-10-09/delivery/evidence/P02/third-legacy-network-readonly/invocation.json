@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "-tags=agentmux_bootstrap_docker",
+    "./launcher",
+    "-run",
+    "^TestThirdHistoricalFixtureReadOnlyQualification$"
+  ],
+  "environment": {
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "1",
+    "AMX_LEGACY_QUALIFICATION_OUTPUT": "/home/ryan/.cache/agentmux-governance/p02-third-legacy-fixed-XSZO1J"
+  },
+  "startedUtc": "2026-10-14T11:30:09.565767+00:00",
+  "engineMutations": 0
+}

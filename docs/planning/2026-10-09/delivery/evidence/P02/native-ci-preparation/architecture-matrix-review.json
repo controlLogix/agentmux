@@ -1,0 +1,42 @@
+{
+  "reviewer": "Codex",
+  "workflowSHA256": "13c168e1bd3141f3d351beb6126b32ba5a7594113500e8f57efbb032e821b200",
+  "collectorSHA256": "5573f0c12e65ee6aafd2887ae54dd0e404670e94f123157070ab61b4904cf2b2",
+  "matrix": [
+    {
+      "os": "ubuntu-24.04",
+      "arch": "amd64"
+    },
+    {
+      "os": "ubuntu-24.04-arm",
+      "arch": "arm64"
+    },
+    {
+      "os": "macos-15-intel",
+      "arch": "amd64"
+    },
+    {
+      "os": "macos-15",
+      "arch": "arm64"
+    }
+  ],
+  "checks": {
+    "yamlParsed": true,
+    "fourExplicitNativeTargets": true,
+    "bothDarwinResearchAndInstallTargets": true,
+    "artifactNamesDistinctByRunner": true,
+    "contentsReadOnly": true
+  },
+  "collectorSelfTest": {
+    "command": "python tests/platform/native_go.py --self-test",
+    "exitCode": 0,
+    "testsPassed": 39,
+    "evidence": "Direct tool command output; raw output was not separately archived. Synthetic controls only."
+  },
+  "hostedJobsExecuted": false,
+  "phaseAccepted": false,
+  "limits": [
+    "Full native Compose, installed CLI and WSL are not qualified by this workflow edit.",
+    "Passing collector controls cannot replace actual candidate job evidence."
+  ]
+}

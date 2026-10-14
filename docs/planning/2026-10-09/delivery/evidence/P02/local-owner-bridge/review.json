@@ -1,0 +1,155 @@
+{
+  "schemaVersion": "1.0.0",
+  "scope": "P02 local owner-status bridge; source and bounded native Linux partial integration only",
+  "createdAt": "2026-10-14T02:01:47.948913+00:00",
+  "snapshot": "/home/ryan/.cache/agentmux-tests/p02-owner-bridge-candidate-86lqnqpn",
+  "testedSource": {
+    "platform/launcher/owner_bridge.go": "b0be35e81b3a14c2fd12d90270f3eaba893e2949ca634c8c854814aa4a12b150",
+    "platform/launcher/owner_bridge_test.go": "7b77974420f997295a8f538775e3b3a95b3a3a813819ffa5688f408a74c9f109",
+    "platform/launcher/owner_bridge_validation.go": "03c24f0ab8c9f59866fee2fd286dd3b61e6fe40d70a7c79b515a1d8626fa84b3",
+    "platform/go.mod": "d2449cddbd7671d0e73998ae6057abf56b371f4e422b213db0e00a24a30d3fb9",
+    "platform/go.sum": "421240c9a0e5f903b47f996949937448ce9aeace1eca369342418e18a1ce2c90"
+  },
+  "currentSource": {
+    "platform/launcher/owner_bridge.go": "b0be35e81b3a14c2fd12d90270f3eaba893e2949ca634c8c854814aa4a12b150",
+    "platform/launcher/owner_bridge_test.go": "7b77974420f997295a8f538775e3b3a95b3a3a813819ffa5688f408a74c9f109",
+    "platform/launcher/owner_bridge_validation.go": "03c24f0ab8c9f59866fee2fd286dd3b61e6fe40d70a7c79b515a1d8626fa84b3",
+    "platform/go.mod": "d2449cddbd7671d0e73998ae6057abf56b371f4e422b213db0e00a24a30d3fb9",
+    "platform/go.sum": "421240c9a0e5f903b47f996949937448ce9aeace1eca369342418e18a1ce2c90"
+  },
+  "ownedSourceStable": true,
+  "fullTestedSourceMap": "source.json",
+  "commandsAndResults": {
+    "affected": {
+      "command": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-race",
+        "-count=1",
+        "-json",
+        "./launcher",
+        "./deployment",
+        "-run",
+        "^(TestOwnerBridge|TestInstalledHostPolicyBridge)"
+      ],
+      "exit": 0,
+      "wallSeconds": 10.236920996999288,
+      "passes": 119,
+      "fails": 0,
+      "skips": 0
+    },
+    "topLevelTests": 18,
+    "vet": {
+      "command": "go vet ./launcher ./deployment",
+      "exit": 0
+    },
+    "SDK": {
+      "actualClients": [
+        "prepared Python CLI",
+        "prepared compiled TypeScript CLI"
+      ],
+      "checks": 46,
+      "passed": 46,
+      "corpus": "outputs/admission-corpus.json",
+      "generatedObservations": 5
+    }
+  },
+  "semantics": [
+    "Client and server load independently contained private records bound to full actual enrolled owner, fixed role, expected scope and exact selected broker factory. No caller-selected user, subject, path or observation.",
+    "One max-five-second request preserves earlier caller deadline; exact nonce and invocation correlation, fixed scoped request and derived reply subjects, bounded replay cache, real stale/reflection/header/replay refusals.",
+    "Connected NATS server name/version must equal selected Health policy. Schema compiler uses only four fixed embedded resources with denied external loader and explicit Draft2020.",
+    "Pinned mature evaluator plus its documented ECMAScript regexp adapter validates complete raw unchanged L04 before typed decoding; fixed resource copies match authoritative schemas. No schema rewriting. Regex timeout50ms, errors fail closed.",
+    "Host-service OS lease precedes actual BootstrapForInvocation. Reused Session never adopts or stops another owner. Failed bootstrap offers one authenticated failure in a maximum-five-second window, then stops only its own Session and releases its lease. Publish/flush does not prove caller receipt.",
+    "Delayed/repeated original invocation refreshes actual scoped kernel and existing FILE record plus selected owned Docker inspection. Cached receipt and expired write proof are not retimestamped. Only an actual owning started Session may retain started for its original invocation."
+  ],
+  "actualEvidence": [
+    "Real NATS2.15 credential authentication and narrow HOST principal denials; genuine actor status and health FILE write/read; no provider or model.",
+    "Controlled Docker inspection uses a real disposable test subprocess, not a Docker engine. Cached frames/proof age used in transport negatives are explicitly synthetic.",
+    "Actual BootstrapForInvocation startup-bounds failure occurs before Docker in terminal failure test; reachable real broker delivers failed L04 and a second acquisition of the same retained OS lease succeeds.",
+    "Two actual SDKs validate five emitted L04 observations and18 positive/negative reply mutations (46 checks)."
+  ],
+  "preservedFindings": [
+    {
+      "finding": "Six initial negative cases reproduced missing full L04 shape and connected name/version admission",
+      "history": "history/admission-negative-before",
+      "outcome": "Closed on final positive and affected selection."
+    },
+    {
+      "finding": "NATS fixture JSON HTML escaping produced unsupported Unicode escapes",
+      "history": "history/initial-broker-setup-failure",
+      "outcome": "Fixture now matches factory SetEscapeHTML(false); setup failures do not prove admission behavior."
+    },
+    {
+      "finding": "Negative-only schema-repair pass rejected all values because default Go regex could not compile accepted Unicode escape",
+      "history": "history/negative-only-repair-not-qualification",
+      "outcome": "Explicitly invalid as full admission qualification. Public positive-control failure is preserved and exact library-supported ECMAScript adapter closes it."
+    },
+    {
+      "finding": "Frozen original invocation and failed-bootstrap lifetime lacked fresh/terminal behavior",
+      "history": "history/lifecycle-before",
+      "outcome": "Final lifecycle closure and affected selection pass."
+    }
+  ],
+  "limits": [
+    "No real Docker engine or Compose acceptance; root owns that separate demonstration. Native macOS and complete supported environment qualification remain required.",
+    "Run subscribes only after Bootstrap completes. Authenticated starting/progress within the ten-second interactive contract is NOT qualified or complete in this slice.",
+    "Client currently relies on selected endpoint plus server-reported name/version and trusted HOST account isolation; it does not perform its own pre-connect owned Docker inspection or cryptographic broker authentication on plain nats://. This independent trust finding is sent to root for resolution before full bridge acceptance.",
+    "Synchronous private local filesystem calls cannot be preempted. Deadline guarantees assume prompt supported local storage and scheduling; late outputs are discarded.",
+    "No phase acceptance, commit, push or tracker edits. Pattern sourceDigest refresh remains root-owned."
+  ],
+  "artifactHashes": {
+    "source.json": "9648f538c6cb00a062060a0c7df85196390c8cca432316ccc3c0201cbf4acd97",
+    "positive.jsonl": "2bcda5477671c3cd21b30973545043d8b8cccf7746f5b044803b4d9f609e8600",
+    "positive.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "positive-result.json": "8a029ad938fbcff6b9563aabaf5bb50ff5f284277ee2b9f957ae03587772a40b",
+    "lifecycle-closure.jsonl": "f45609a5eebcff5e9433dc5065c7be87da9b0f3e5461f68872f37693960224b1",
+    "lifecycle-closure.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lifecycle-closure-result.json": "659a727bfc305eca5aa62ccbe7dbdbe33e945ab704554a6bb10b80db0c3006ff",
+    "affected.jsonl": "d97536091c857d056667d1e77d3aaf591cee47a02c594beb45ea9fb3a7068f4c",
+    "affected.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "affected-result.json": "b531cdc821890d546e8b575f8dd9aa9e5d1fb18241ed89f92cf7ce8c1295e884",
+    "vet.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sdk-results.json": "65b82ffe7877a28af04e0276dd96bffed4215bf9c1bce6bb3dedb5be0ce6095b",
+    "outputs/ensure.json": "57f9cca884df247b71e7a5fc679095f0523699bc14a3e1a0958398ab4c90ab5b",
+    "outputs/delayed-1.json": "2dc993b0ebd948835c7afc4a08aa3eed3bd153660bdc0d4646189fc7c7f79517",
+    "outputs/status.json": "456422b6787b7da7b65355d1cf782d1b9c448a2110162502b335715fe31e5b30",
+    "outputs/delayed-0.json": "6d45a7637c9a09288b82533f04484ece8eda07084d533eb6de2032f72d92ca3e",
+    "outputs/terminal-failed.json": "29b1ea81997d813297cd1064fc46c3c878aec52e5bdb526e5419b27438690158",
+    "outputs/admission-corpus.json": "42f7e698fcdd2dc7c4ef3fbb2b79bc353f0a2d74bae5f3bdc56d89ae9f05a840",
+    "history/initial-private-enrollment/source.json": "9d1e4549b7c9c1269e6164b5c0508af8210c1b6b65f3ca54fd00d67eb54ef0cf",
+    "history/initial-private-enrollment/test.jsonl": "e5117ba30a4adca02258355c537c87780ada43e1eb85efd71047c9a8e351c098",
+    "history/initial-private-enrollment/result.json": "ebfc124214f74f44223f6ee65f6a34f811b8f66cf788d8c1c1e42438be2a039f",
+    "history/initial-private-enrollment/test.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "history/initial-broker-setup-failure/source.json": "b1f8b28b3f80f37141bc67c42ca4c24d2fe52ef869dd7a46be9998d661cb8b6b",
+    "history/initial-broker-setup-failure/test.jsonl": "0824f697a674eeee859774df825c73011b60d794dbe85b319a056c0da66bfebb",
+    "history/initial-broker-setup-failure/result.json": "6ba6b74a6370f2bd1871ad813c050c152eb6fee76e2ff5875c1304d4ab05a495",
+    "history/initial-broker-setup-failure/test.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "history/admission-negative-before/source.json": "ac278c56f08d684a7f9c82492656e4efd2b3bc5be314021f3d2577d5cb8d62aa",
+    "history/admission-negative-before/test.jsonl": "55f9ea7b4c1ae955952bfce02595c4555894f947df0de00c841cc8d9e5d19b86",
+    "history/admission-negative-before/result.json": "548eab36eb10c236ce1f6d1d7e4db938d94b6cfe5b37a4ea2b3079986920b5f6",
+    "history/admission-negative-before/test.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "history/negative-only-repair-not-qualification/source.json": "b76d82c4f13612eaea15fd19207a4c8e8e1f3e5e4186268bd050edb13866e17a",
+    "history/negative-only-repair-not-qualification/test.jsonl": "44aceb6974c0c466a6b8f2e2aa64521a48a1043b233c9833d8be69b5f1609c09",
+    "history/negative-only-repair-not-qualification/result.json": "34363963451dab5e66e24c6b857c46963bb339974d40b79cf5a79266ecbb6734",
+    "history/negative-only-repair-not-qualification/test.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "history/lifecycle-before/source.json": "25ef23e71242ee580cb5bf3e5f5671ef6d5a22ce37d4572bde330d55a4fbb2dc",
+    "history/lifecycle-before/test.jsonl": "5093371cb9f8006a3365aabe3794570cfc4d3b202a90ae14e094b6e725949ce8",
+    "history/lifecycle-before/result.json": "3b47b25ef9f7b91ed85cf21e1cc798766ea0a7c704f5b30a85905d75eac25d8a",
+    "history/lifecycle-before/test.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "history/failed-lifecycle-closure/source.json": "c29b2bbaf48cde7ceced24be55270b218389cd03cf13071d62559c873bc46eef",
+    "history/failed-lifecycle-closure/closure.jsonl": "e1a7e9871e529b9ed160cfbd5213988184c9677eb1a7c31e659aa8fb4466b5e8",
+    "history/failed-lifecycle-closure/closure.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "history/failed-lifecycle-closure/closure-result.json": "3e148c3ac67cf7b66bd02299db1acf8d4181261545551344861336ed75d03170",
+    "history/positive-diagnosis/test.jsonl": "23b7194045ecea1826292e1254b15f94d661562462f327ad83a21c37700490e6",
+    "history/positive-diagnosis/test.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "dependencies/schema/fetch.log": "d07a0a5066915bbff9e9696dd16a58633bd1bba316478ae0c1eb23a1315fcb32",
+    "dependencies/schema/verify.log": "b4537ed75f533f993f371954de47e42a793b8e5b0587577de7e27fb3e50696bd",
+    "dependencies/schema/go.mod": "db67c81782df0e4f71872889735dcea989d56d96b5f772ccc0c61cc7cbc7c49d",
+    "dependencies/schema/go.sum": "9ab2a0c3321e4d33d92a65e5e59799f891efb1bba6dc94aa455e58d4511c8b0f",
+    "dependencies/regexp/fetch.log": "4d6b71ed4ad501cd2f3a7b8e3a548c7e0f67ab0cb027b847c1f9919b0cd6d77b",
+    "dependencies/regexp/verify.log": "b4537ed75f533f993f371954de47e42a793b8e5b0587577de7e27fb3e50696bd",
+    "dependencies/regexp/go.mod": "2c8b33ac75f9d720bcb55d702026c9d1e5f10948a26c5c1101352a25bc54e4da",
+    "dependencies/regexp/go.sum": "421240c9a0e5f903b47f996949937448ce9aeace1eca369342418e18a1ce2c90",
+    "bindings.json": "29e7ddc3e45b9f771fcf31ed6d24cfb519f300f0b19214265668a75567d05adc"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:host-owner-status-reply",
+  "title": "Local host owner status reply",
+  "description": "A nonce-correlated reply with the unchanged L04 observation. The client must independently check expected scope, invocation, request, freshness and authorized producer. Shape alone grants no authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "kind": {
+      "const": "host-owner-status-reply"
+    },
+    "requestId": {
+      "type": "string",
+      "pattern": "^request_[a-f0-9]{32}$"
+    },
+    "invocationId": {
+      "type": "string",
+      "pattern": "^attempt_[a-f0-9]{32}$"
+    },
+    "scope": {
+      "$ref": "urn:agentmux:contract:1:host-owner-status-request#/$defs/kernelScope"
+    },
+    "sentAt": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+    },
+    "observation": {
+      "$ref": "urn:agentmux:contract:1:startup-status-observation"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "kind",
+    "requestId",
+    "invocationId",
+    "scope",
+    "sentAt",
+    "observation"
+  ]
+}

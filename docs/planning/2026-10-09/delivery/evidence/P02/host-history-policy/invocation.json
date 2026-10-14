@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "./launcher",
+    "-run",
+    "^TestHostHistoryPolicy"
+  ],
+  "vetArgv": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "vet",
+    "./launcher"
+  ],
+  "environment": {
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "0"
+  },
+  "startedUtc": "2026-10-14T15:17:52.995516+00:00",
+  "expected": {
+    "platform/launcher/host_history_policy.go": "e76acbe79b31d9c207d5b040cc591bb413a0323ef87d798380fb281d4bf86e59",
+    "platform/launcher/host_history_policy_test.go": "8e2d2656987e454b2a79195ff45a7ffa50a8c6866f07fcf4d959e397c4f45bd6",
+    "platform/launcher/host_history_policy_linux_test.go": "f4a1a8e7f8c92e5bd0ccf4147d5cd118b9528d5b2e2e415d526f119ddee5258e"
+  },
+  "producerSHA256": "168fb93979df57cbf5ca3629ba3165607363fa47524e3d7b3a84e2a205040c6f",
+  "sourceManifestSHA256": "e552b0639928ff246c070472be0525f88ecf03af1cdda38ea5b96c806a74e241",
+  "engineMutations": 0
+}

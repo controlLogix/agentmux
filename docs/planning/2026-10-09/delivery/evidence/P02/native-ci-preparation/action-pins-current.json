@@ -1,0 +1,34 @@
+{
+  "reviewer": "Codex",
+  "date": "2026-10-14T18:21:54.859889+00:00",
+  "scope": "Pin existing foundation CI actions to exact officially queried commits",
+  "commands": [
+    {
+      "command": "git ls-remote https://github.com/actions/checkout.git refs/tags/v5 refs/tags/v5^{}",
+      "exit": 0,
+      "stdout": "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09\trefs/tags/v5\n"
+    },
+    {
+      "command": "git ls-remote https://github.com/actions/setup-python.git refs/tags/v6 refs/tags/v6^{}",
+      "exit": 0,
+      "stdout": "ece7cb06caefa5fff74198d8649806c4678c61a1\trefs/tags/v6\n"
+    },
+    {
+      "command": "git ls-remote https://github.com/actions/upload-artifact.git refs/tags/v4 refs/tags/v4^{}",
+      "exit": 0,
+      "stdout": "ea165f8d65b6e75b540449e92b4886f43607fa02\trefs/tags/v4\n"
+    }
+  ],
+  "previousWorkflowSHA256": "13c168e1bd3141f3d351beb6126b32ba5a7594113500e8f57efbb032e821b200",
+  "currentWorkflowSHA256": "85d84f5a96883d84b896a2357487647a5e0e75bcce71eb182e2729d0c7024390",
+  "replacementCounts": {
+    "actions/checkout@v5": 3,
+    "actions/setup-python@v6": 3,
+    "actions/upload-artifact@v4": 3
+  },
+  "limits": [
+    "Workflow not pushed or executed; no native runner, installed host or phase acceptance.",
+    "Existing matrix, branch restrictions, permissions, commands and artifact rules are preserved.",
+    "Previous workflow-bound controls remain historical; only action references changed."
+  ]
+}

@@ -1,0 +1,69 @@
+--- failed-ab3d.go
++++ candidate-58f6.go
+@@ -52,13 +52,18 @@
+    }
+   }
+  })
+- out := composeCLIObservation(t, f, original, r, composeCLIWait(t, f, original, s, r, "midboot-entry"), "midboot-entry", false)
+- if out == nil || out.Disposition != "starting" || out.StartupAttemptID == nil || *out.StartupAttemptID != original.hostAttempt {
+-  t.Fatal("mid-boot lacks authentic entered attempt")
+- }
++ startupDeadline := original.started.Add(f.Config.StartupTimeout)
++ entryRaw := composeCLIWait(t, f, original, s, r, "midboot-entry")
++ f.WriteEvidence(t,"midboot-entry-creator-expected.json",map[string]any{"source":"Actual creating frontend child arguments and admitted runtime image","coldInvocationId":original.hostAttempt,"runtimeDigest":r.RuntimeExecutable.Digest,"scope":f.Config.Kernel.Scope,"enrollmentDigest":releaseDigest(mustStatusJSON(f.BridgeEnrollment.Owner)),"creatorHandlePinned":original.hostFD>=0})
++ out := composeCLIObservation(t, f, original, r, entryRaw, "midboot-entry", true)
++ // A validated creator receipt remains historical. Only the actual owner
++ // response can authorize releasing the gate into the partial-start phase.
++ out = composeCLIMidBootAwaitStarting(t, f, original, out, startupDeadline)
++ f.WriteEvidence(t, "midboot-authenticated-entry.json", out)
++ entryPoll:=[]unix.PollFd{{Fd:int32(original.hostFD),Events:unix.POLLIN}};entryExited,entryPollError:=unix.Poll(entryPoll,0)
++ if time.Now().After(startupDeadline)||entryPollError!=nil||entryExited!=0 {t.Fatal("midboot_original_creator_or_deadline_changed_before_gate_release")}
+  if gate.Close() != nil { t.Fatal("mid-boot arbitration gate release failed") }
+  gate = nil
+- startupDeadline := original.started.Add(f.Config.StartupTimeout)
+  var candidate *composeCLIMidBootCandidate
+  lastDiagnostic:=[]byte(nil)
+  for candidate==nil {
+@@ -293,3 +298,42 @@
+  poll:=[]unix.PollFd{{Fd:int32(fd),Events:unix.POLLIN}};n,pe:=unix.Poll(poll,0);predicates["liveDescriptor"]=pe==nil&&n==0
+  return role,predicates
+ }
++
++func composeCLIMidBootStartingCode(out *StartupStatusObservation,attempt string)string{
++ if out==nil {return "midboot_authenticated_starting_missing"}
++ if out.Disposition!="starting" {return "midboot_starting_phase_missed"}
++ if out.StartupAttemptID==nil||*out.StartupAttemptID!=attempt {return "midboot_starting_attempt_mismatch"}
++ if !bridgeStartingUnknown(*out) {return "midboot_starting_readiness_overclaimed"}
++ return ""
++}
++
++// The caller retains the original creator and real arbitration gate. These
++// status reads cannot create another owner, and each uses the original startup
++// deadline. A receipt never satisfies this current authenticated status gate.
++func composeCLIMidBootAwaitStarting(t *testing.T,f *bootstrapDockerFixture,x *composeCLIFront,initial *StartupStatusObservation,deadline time.Time)*StartupStatusObservation{
++ t.Helper()
++ phase,cancel:=context.WithDeadline(context.Background(),deadline);defer cancel()
++ if initial!=nil {if code:=composeCLIMidBootStartingResultCode(phase,initial,x.hostAttempt,nil);code!=""{t.Fatal(code)};return initial}
++ client,e:=LoadOwnerBridgeClient(f.Config,*f.BridgeEnrollment);if e!=nil{t.Fatal("midboot_starting_client_refused")}
++ for phase.Err()==nil {
++  request,stop:=context.WithTimeout(phase,5*time.Second)
++  observed,e:=client.Request(request,"status","attempt_"+bootstrapFixtureRandom(t,16));stop()
++  code:="none"
++  if e!=nil { switch e.Error(){case "owner_bridge_connection_unavailable","owner_bridge_reply_unavailable","owner_bridge_deadline":code=e.Error();default:code="closed_authority_or_cleanup_failure"} }
++  f.WriteEvidence(t,"midboot-entry-status-"+bootstrapFixtureRandom(t,4)+".json",map[string]any{"errorCode":code,"startupDeadlineExpired":phase.Err()!=nil,"disposition":observed.Disposition})
++  outcome:=composeCLIMidBootStartingResultCode(phase,&observed,x.hostAttempt,e)
++  if outcome=="" {return &observed}
++  if outcome!="midboot_starting_retry" {t.Fatal(outcome)}
++  timer:=time.NewTimer(25*time.Millisecond);select{case <-phase.Done():timer.Stop();case <-timer.C:}
++ }
++ t.Fatal("midboot_starting_deadline")
++ return nil
++}
++
++// Only known availability errors permit another status read. An actual current
++// starting result must match the original attempt without claiming readiness.
++func composeCLIMidBootStartingResultCode(ctx context.Context,out *StartupStatusObservation,attempt string,failure error)string{
++ if ctx==nil||ctx.Err()!=nil{return "midboot_starting_deadline"}
++ if failure!=nil {switch failure.Error(){case "owner_bridge_connection_unavailable","owner_bridge_reply_unavailable","owner_bridge_deadline":return "midboot_starting_retry";default:return "midboot_starting_authority_or_cleanup_refused"}}
++ return composeCLIMidBootStartingCode(out,attempt)
++}

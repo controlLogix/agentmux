@@ -1,0 +1,380 @@
+{
+  "schemaVersion": "1.0.0",
+  "kind": "single-midboot-integration-failure-review",
+  "recordedUtc": "2026-10-14T18:37:39.244937+00:00",
+  "directExit": 1,
+  "namedFailures": 1,
+  "namedPasses": 0,
+  "skips": 0,
+  "testElapsedSeconds": 48.61,
+  "invocation": {
+    "argv": [
+      "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+      "test",
+      "-race",
+      "-count=1",
+      "-json",
+      "-tags=agentmux_bootstrap_docker",
+      "./launcher",
+      "-run",
+      "^TestInstalledCLIRealComposeMidBootCreatorCrash$"
+    ],
+    "environment": {
+      "GOPROXY": "off",
+      "GOSUMDB": "off",
+      "GOWORK": "off",
+      "GORACE": "atexit_sleep_ms=0",
+      "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "1",
+      "AGENTMUX_TEST_NATS": "/home/ryan/.cache/agentmux-governance/tools/nats-server",
+      "AMX_BOOTSTRAP_SELECTION_FILE": "/home/ryan/.cache/agentmux-governance/p02-current-wsl-selection-draft-674dc329/selection.json",
+      "AMX_BOOTSTRAP_SELECTION_SHA256": "724f2d7863838b26114a45ab335a93cce9b9a44b47df9bb3ecb5bff3d53c11fb"
+    },
+    "startedUtc": "2026-10-14T18:33:29.609308+00:00",
+    "producerSHA256": "3c572e4b23c71a9f36692760936bdaa0050a555b52b715406b6ad7dafa8da3c5",
+    "requiredPins": {
+      "platform/launcher/owner_bridge.go": "9cfd0a38d4b40c060759200dbef226cc5bf9dd60d7759f67e756f2d9949e19f2",
+      "platform/launcher/bootstrap_operation.go": "3d4a7531863e2f1ee03820a13767c9eace5bbd3812fcef7eccf48124277c7562",
+      "platform/cmd/agentmux-runtime/main.go": "9ba174b070fe08d76944d2a2f6cbd5da448f0a02f6e1c70c6aabc0a15ad17620",
+      "platform/launcher/bootstrap_network_cleanup_integration_test.go": "5347669150b3bf622cde6634389e564ef67b9eabbe5849393f6ffd711f57b00e",
+      "platform/launcher/installed_cli_compose_integration_linux_test.go": "6d0021d99531507ea5232ff81f1d18477ce1def1a8c228b3069d1d785895073c",
+      "platform/launcher/bootstrap_docker_selection_test.go": "6b5e550b2cc89f0b9fc873a4891623ed01c1277ee8947dbcb147650c312b34ae",
+      "platform/launcher/bootstrap_docker_current_qualification_controls_test.go": "f4b578067fcecf022600f818709ac95185e787e7c5727f6b602485f178bfc831"
+    },
+    "snapshotSeconds": 16.161884508001094,
+    "snapshotFileCount": 261,
+    "companionSHA256": "c555fb92e6d6cf08c00d3b640628be71811e8c80fc61da2a926e30c768776e0f",
+    "batchSourceVerification": true
+  },
+  "sourceVerification": {
+    "batchBeforeCopyAfterMatched": true,
+    "snapshotFiles": 261,
+    "snapshotBytesMatch": true,
+    "currentSharedDrift": [],
+    "companionSHA256": "c555fb92e6d6cf08c00d3b640628be71811e8c80fc61da2a926e30c768776e0f"
+  },
+  "preflight": {
+    "admitted": true,
+    "steps": [
+      {
+        "stage": "endpoint",
+        "elapsedSeconds": 0.3448083520052023,
+        "directExit": 0,
+        "stdoutBytes": 44,
+        "stderrBytes": 0,
+        "argv": [
+          "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+          "--context",
+          "desktop-linux",
+          "context",
+          "inspect",
+          "desktop-linux",
+          "--format",
+          "{{json .Endpoints.docker.Host}}"
+        ]
+      },
+      {
+        "stage": "engine",
+        "elapsedSeconds": 1.2509130400067079,
+        "directExit": 0,
+        "stdoutBytes": 39,
+        "stderrBytes": 0,
+        "argv": [
+          "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+          "--context",
+          "desktop-linux",
+          "info",
+          "--format",
+          "{{json .ID}}"
+        ]
+      },
+      {
+        "stage": "image",
+        "elapsedSeconds": 0.35260654000012437,
+        "directExit": 0,
+        "stdoutBytes": 81,
+        "stderrBytes": 0,
+        "argv": [
+          "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+          "--context",
+          "desktop-linux",
+          "image",
+          "inspect",
+          "docker.io/library/nats@sha256:fdae708d900cb150ce13f203359719bdd9cefd3dbbbc32a4c6224b23ea3e0b2c",
+          "--format",
+          "{{json .RepoDigests}}"
+        ]
+      },
+      {
+        "stage": "networks",
+        "elapsedSeconds": 1.2523135240044212,
+        "directExit": 0,
+        "stdoutBytes": 520,
+        "stderrBytes": 0,
+        "argv": [
+          "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+          "--context",
+          "desktop-linux",
+          "network",
+          "ls",
+          "--quiet",
+          "--no-trunc"
+        ],
+        "count": 8
+      },
+      {
+        "stage": "containers",
+        "elapsedSeconds": 0.3667340969986981,
+        "directExit": 0,
+        "stdoutBytes": 650,
+        "stderrBytes": 0,
+        "argv": [
+          "/mnt/c/Users/RyanHelms/AppData/Local/Programs/DockerDesktop/resources/bin/docker.exe",
+          "--context",
+          "desktop-linux",
+          "ps",
+          "--all",
+          "--quiet",
+          "--no-trunc"
+        ],
+        "count": 10
+      }
+    ],
+    "limits": "Preliminary read-only checks; actual test repeats full driver admission and complete ownership baselines."
+  },
+  "signature": {
+    "signatureValid": true,
+    "dockerPublisher": true,
+    "cliSHA256Before": "575b19fdc3cc3054714e6cbe92bcf86b708cc5dc46ad5e75bfd7591220de86fe",
+    "cliSHA256After": "575b19fdc3cc3054714e6cbe92bcf86b708cc5dc46ad5e75bfd7591220de86fe",
+    "directExit": 0,
+    "elapsedSeconds": 3.537633478998032,
+    "stderrXMLStreams": [
+      "progress"
+    ],
+    "reader": "Explicit system PowerShell Security module via fixed EncodedCommand",
+    "inheritedModulePathEntryCount": 6
+  },
+  "fixtureDirectory": "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2617684125",
+  "frontend": {
+    "elapsedNanoseconds": 6930020294,
+    "boundNanoseconds": 10000000000,
+    "exitSuccess": true,
+    "stdoutBytes": 2332,
+    "stderrBytes": 0,
+    "disposition": "starting",
+    "exactCreatorHostPinned": true,
+    "bothStreamsCapturedAfterSoleWaitJoin": true
+  },
+  "failure": {
+    "stage": "partial_role_identity_admission",
+    "code": "midboot_actual_creator_child_identity_refused",
+    "individualFailedPredicateRecorded": false,
+    "crashInjected": false,
+    "waitingTerminalReached": false,
+    "recoveryReached": false,
+    "phaseInferenceBasis": "Exact saved error occurs in the partial-role helper, before the crash statement in the immutable source. No before-crash or crash/recovery artifact exists."
+  },
+  "cleanup": {
+    "verificationSucceeded": false,
+    "reason": "exact_stopped_state_unverifiable",
+    "knownOwnedContainerIDs": [
+      "5a98a9244e0ec107948440f8cf0bd9b2524027878e70c7aa5473bc1550f4008e"
+    ],
+    "currentBrokerState": "unknown",
+    "manualRecoveryRequired": true,
+    "additionalActionTaken": false
+  },
+  "sourceHypotheses": [
+    "The first-child loop detects any direct child. A Windows interop helper or not-yet-execed protected child could fail identity admission; original evidence does not identify which predicate failed."
+  ],
+  "limits": [
+    "No successful mid-boot crash, descendant EOF, lease-release or recovery qualification.",
+    "The original failed scheduling/identity and cleanup evidence is preserved; no automatic test or mutation retry.",
+    "Overall test environment is WSL/WindowsInterop; no native Linux/macOS or phase acceptance.",
+    "The current stopped/running state is not inferred from cleanup failure."
+  ],
+  "runArtifacts": {
+    "selection.json": {
+      "sha256": "724f2d7863838b26114a45ab335a93cce9b9a44b47df9bb3ecb5bff3d53c11fb",
+      "bytes": 660,
+      "private": false
+    },
+    "exit.txt": {
+      "sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+      "bytes": 2,
+      "private": false
+    },
+    "containers-stdout.private": {
+      "sha256": "35e4a6730a0f206b6a017093cfd512f01b197e754414de044f7cc5aeff0712ca",
+      "bytes": 650,
+      "private": true
+    },
+    "engine-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "private": true
+    },
+    "completion.json": {
+      "sha256": "33615352c3ab29b14ee5e883ccd10bbe457f6a8661f404e74b0be19356f099e4",
+      "bytes": 72,
+      "private": false
+    },
+    "image-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "private": true
+    },
+    "windows-signature-summary.json": {
+      "sha256": "5c8c53dd2c43cfb81ff646a9b0a92cba3a24455a65cc658b54d5d0a0e2b71ef5",
+      "bytes": 456,
+      "private": false
+    },
+    "shared-after.json": {
+      "sha256": "c966294189e6f06ebb584deeaf8b5edba6beb9a1568f9c4c2334fa3ab4a1e6bb",
+      "bytes": 30162,
+      "private": false
+    },
+    "stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "private": false
+    },
+    "events.jsonl": {
+      "sha256": "91b77d46fc73d6df91e5107141b0f7de21b27f8ea30240bbdfdf13105bd95aa9",
+      "bytes": 2236,
+      "private": false
+    },
+    "engine-stdout.private": {
+      "sha256": "6d55604f0ba68ca5feeb8edeaf2294bf533f17e299bed0970b6d3b964edc9e65",
+      "bytes": 39,
+      "private": true
+    },
+    "containers-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "private": true
+    },
+    "networks-stdout.private": {
+      "sha256": "848e7d6f4f0031667be562a339e9fcb13c838fe6de3eb7ac62264e9932777c9f",
+      "bytes": 520,
+      "private": true
+    },
+    "producer.sh": {
+      "sha256": "3c572e4b23c71a9f36692760936bdaa0050a555b52b715406b6ad7dafa8da3c5",
+      "bytes": 10299,
+      "private": false
+    },
+    "image-stdout.private": {
+      "sha256": "86c5d014a0c0b378786c9934d5b8ccaaa57eccb6e2685ee6d47086f0d0bb46d3",
+      "bytes": 81,
+      "private": true
+    },
+    "signature-stderr.private": {
+      "sha256": "2ce70d6c8c9ad6726c794690c8b14a2b83673648cac88edf4ff1acc50ec46348",
+      "bytes": 616,
+      "private": true
+    },
+    "signature-stdout.private": {
+      "sha256": "a3d0a2dedf4fc89a451661af66a948dec65b1c1d2261a129b73060385bab8647",
+      "bytes": 846,
+      "private": true
+    },
+    "endpoint-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "private": true
+    },
+    "invocation.json": {
+      "sha256": "7b54842194973be19ba7fd7d67df7e3242fcefe1e90ea56e1f716006b145fcfc",
+      "bytes": 2015,
+      "private": false
+    },
+    "source-manifest.json": {
+      "sha256": "a79f653109acc24bcabced4b4d1487a6644bec2d301bf0253f8e45d237c7332c",
+      "bytes": 30309,
+      "private": false
+    },
+    "endpoint-stdout.private": {
+      "sha256": "0d1284cdbf15f9de9be8524a923374e8dffede3d62a65a022b0c8f58bfaa26b7",
+      "bytes": 44,
+      "private": true
+    },
+    "networks-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "private": true
+    },
+    "shared-before.json": {
+      "sha256": "c966294189e6f06ebb584deeaf8b5edba6beb9a1568f9c4c2334fa3ab4a1e6bb",
+      "bytes": 30162,
+      "private": false
+    },
+    "preflight.json": {
+      "sha256": "5bc9a016e94f983598891fc2c1e1a90a048473dee3dc35701b470bc54b3fc54e",
+      "bytes": 2330,
+      "private": false
+    }
+  },
+  "fixtureArtifacts": {
+    "midboot-entry-timing.json": {
+      "sha256": "9251cfdac640298364fe42c5690716d59fb0ac38991633f48b774f955137f00d",
+      "bytes": 144,
+      "private": false
+    },
+    "midboot-entry.json": {
+      "sha256": "3baab3622c4caf99f8b14052116de4e27141fdea450370ba66fa2468d8adffc8",
+      "bytes": 3149,
+      "private": false
+    },
+    "midboot-entry-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "private": true
+    },
+    "network-provenance.json": {
+      "sha256": "a64a542b9ad52b8ec8b92c6b2b882789599ab0b35bccd8f0344605b422acbb08",
+      "bytes": 883,
+      "private": false
+    },
+    "midboot-entry-stdout.private": {
+      "sha256": "6135b108e51530b278c0f8e595d39dc00f5538ebcaa303a960de9d748d23f0dd",
+      "bytes": 2332,
+      "private": true
+    },
+    "midboot-entry-joined-diagnostic.json": {
+      "sha256": "4d9f34bf773f96e70305a0813b452532ea8d73f27681dde8b84cd2cd315f3390",
+      "bytes": 190,
+      "private": false
+    },
+    "baseline-guard-391082f5.json": {
+      "sha256": "5d72b8c7cd8e34f390fbf7f206ce5853fd86a8a2003e346f33f3096a33659f0c",
+      "bytes": 98,
+      "private": false
+    },
+    "network-baseline.json": {
+      "sha256": "58623ac49a76c0a704d31fbe75ccb5d0719736c2931cffeaaab4c6568cc20467",
+      "bytes": 1163,
+      "private": false
+    },
+    "cleanup-unverified.json": {
+      "sha256": "efd78b6d7a3a07da7d0817752f2314813c0d709fb3882880709f3dc862094f8a",
+      "bytes": 230,
+      "private": false
+    },
+    "fixture.json": {
+      "sha256": "f46b1c247364c374a7db53cbfede60d7d5990bbbde6848fac276cebe340d9cec",
+      "bytes": 1144,
+      "private": false
+    },
+    "baseline.json": {
+      "sha256": "985f930455cea9acbcf0b1212444fb8f405329cd2afb06b59e15d3cb1394511e",
+      "bytes": 3350,
+      "private": false
+    },
+    "midboot-entry-output-capture.json": {
+      "sha256": "0b0806463c37e092e1a5bbaea7b497c6214669bf2f900e267e915b154925aaf9",
+      "bytes": 276,
+      "private": false
+    }
+  }
+}

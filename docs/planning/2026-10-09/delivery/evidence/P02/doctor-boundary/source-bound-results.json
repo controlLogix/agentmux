@@ -1,0 +1,86 @@
+{
+  "recordKind": "read-only-doctor-boundary-verification",
+  "owningTask": "P02-T04",
+  "sourceBaseCommit": "2740e31d79c6b63fca54137b191c151afca91be5",
+  "workingTreeChanges": true,
+  "phaseAccepted": false,
+  "taskAccepted": false,
+  "sourceHashes": {
+    "platform/launcher/doctor.go": "39bf88cf0d98cae330ca35f6134cca46a18e1da095766424cab482ecc2e6f8ce",
+    "platform/launcher/doctor_test.go": "04468e954cda5014c02722162fdebc10fd8c8927d1481d2140020a49d9339584"
+  },
+  "environment": {
+    "host": "Ubuntu 26.04 LTS in WSL2",
+    "distribution": "Ubuntu-26.04",
+    "distributionVerifiedExplicitly": true,
+    "goVersion": "go1.27.2 linux/amd64",
+    "goExecutableSha256": "548d3c32f83fa81152f543eb1526be7884cfe0526eb5e9ce29d3eca14786e7e0",
+    "runId": "frozen-fNMdQb",
+    "workspacePlacement": "Persistent native Linux home cache",
+    "dependencyResolution": "GOTOOLCHAIN=local, GOPROXY=off, GOSUMDB=off, -mod=readonly",
+    "raceOption": "GORACE=atexit_sleep_ms=0 removes only controlled test executable post-exit delay; race instrumentation and assertions remain enabled"
+  },
+  "focusedTiming": {
+    "commandArguments": ["test", "-race", "-mod=readonly", "-count=1", "-timeout=60s", "-run", "TestDoctorLaterRead", "-json", "./launcher"],
+    "exitCode": 0,
+    "raw": "final-verified/timing-repair.jsonl",
+    "rawSha256": "5b73bf06252ffd0d66ab9e9e9455f3c04c17122e0d22ef3cb48ffcf40078bf31"
+  },
+  "affectedLauncherRace": {
+    "commandArguments": ["test", "-race", "-mod=readonly", "-count=1", "-timeout=90s", "-json", "./launcher"],
+    "exitCode": 0,
+    "testAndSubtestPassRecords": 114,
+    "doctorPassRecords": 30,
+    "failureRecords": 0,
+    "skipRecords": 0,
+    "packageElapsedSeconds": 41.986,
+    "raw": "final-verified/launcher-race.jsonl",
+    "rawSha256": "457b098032d8b2f1e05cf625b0a503b4d8de1c1ee9daadce9a044066f64b1935",
+    "fourthReadDoctorElapsedSeconds": 1.002553553,
+    "inheritedPipeDoctorElapsedSeconds": 2.000703454,
+    "timingBudgetSeconds": 2,
+    "timingAssertionUpperBoundSeconds": 2.2,
+    "fixtureTeardownMeasuredSeparately": true
+  },
+  "vet": {
+    "commandArguments": ["vet", "./launcher"],
+    "exitCode": 0,
+    "stdout": "final-verified/vet.stdout",
+    "stderr": "final-verified/vet.stderr",
+    "stdoutBytes": 0,
+    "stderrBytes": 0
+  },
+  "sourceBinding": {
+    "allCopiedGoAndModuleFiles": "final-verified/source-before.sha256",
+    "sourceListSha256": "b140a7979089768d72b19195b634497c04597092b180e44742e943a570a7c4bb",
+    "fileCount": 38,
+    "afterExecutionSha256CheckExitCode": 0,
+    "copiedSourceUnchanged": true,
+    "artifactsCopiedBeforeOwnedExecutionReturned": true
+  },
+  "independentReview": {
+    "reviewer": "Codex subagent Mencius",
+    "scope": "Read-only source and controlled-fixture review, not actual Docker or phase acceptance",
+    "productionFindings": 0,
+    "timingCoverageGapResolved": true,
+    "fixtureFatalPathCleanupGapResolved": true,
+    "remainingFindings": 0
+  },
+  "historicalEvidenceGap": {
+    "temporaryWorkspaceRunReportedPass": true,
+    "rawArtifactsLostBeforeCopy": true,
+    "usedForAcceptance": false,
+    "replacement": "Fresh final scope rerun on unchanged owned source in persistent Linux home cache"
+  },
+  "limits": [
+    "Controlled subprocess and injected probe tests only; no actual Docker or authenticated broker/role readiness was exercised.",
+    "Private profile validation and release authority remain trusted caller responsibilities; the bool is not external authorization.",
+    "Trusted probes must honor cancellation; arbitrary blocking callbacks and filesystem calls cannot be forcibly interrupted by this API.",
+    "Docker identity/OS/version mismatch stays combined because the frozen driver supplies no finer reason.",
+    "Generic command failure does not prove a stopped daemon or permission denial.",
+    "Doctor diagnostics never establish application readiness, L04 status authority, supported-platform boot or phase acceptance.",
+    "Native macOS and full Compose, recovery, integration and supported-environment checks remain mandatory.",
+    "Pattern review remains stale during concurrent P02 work; coordinator owns final source registration, review and attestation.",
+    "No tracker changes, commits, pushes, CI dispatch, merges or releases by this worker."
+  ]
+}

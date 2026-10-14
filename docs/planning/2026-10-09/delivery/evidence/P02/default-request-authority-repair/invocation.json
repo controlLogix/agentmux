@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "./launcher",
+    "-run",
+    "^TestOwnerBridgeDefaultRequestPermissionFailureStaysHard$"
+  ],
+  "environment": {
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "0",
+    "AGENTMUX_TEST_NATS": "/home/ryan/.cache/agentmux-governance/tools/nats-server",
+    "AGENTMUX_OWNER_BRIDGE_FIXTURE_ROOT": "/home/ryan/.cache/agentmux-governance/p02-default-request-repaired-hZBAKF/private-output"
+  },
+  "expected": {
+    "platform/launcher/owner_bridge.go": "c73c5c40d770535a49f03a2a14e43e7598daf6a4528973fb0591fba326c5df95",
+    "platform/launcher/owner_bridge_probe.go": "1879bfda9cf0e1ba4d7efc25ea0c2ed8a539c2475a119342d1339fa868dea894",
+    "platform/launcher/owner_bridge_request_permission_test.go": "49afcf0b7d421dd1791758020205fbc72ccb96aead26ddbb5f228e2947bd2d96"
+  },
+  "startedUtc": "2026-10-14T16:11:03.327521+00:00",
+  "producerSHA256": "324ac2b23ddac4bcdd06b786ccef0f7c816ba9248e9bb1cd3e394db77912434c",
+  "engineMutations": 0
+}

@@ -1,0 +1,20 @@
+{
+  "reviewer": "Codex",
+  "environment": "Native Linux amd64 WSL, isolated snapshot and prepared offline Go modules",
+  "exitCode": 0,
+  "namedRacePasses": 4,
+  "sources": {
+    "platform/cmd/agentmux-runtime/main.go": "a8686ad179f76b2dacdb3096a19d00f3e05af2c037fb9ed7fa83a121b6ac7c9b",
+    "platform/cmd/agentmux-runtime/main_test.go": "00d9a70be388dc5e240c62907ee148c57f8524a693defbbb0658afb0677faf27"
+  },
+  "evidence": [
+    "events.jsonl",
+    "stderr.log",
+    "exit.txt",
+    "producer.sh"
+  ],
+  "limitations": [
+    "Focused source-bound draft checks only; no installed CLI integration, engine execution, native Darwin runtime or P02 acceptance.",
+    "Other integration source was being developed concurrently; only listed current source hashes are attested."
+  ]
+}
