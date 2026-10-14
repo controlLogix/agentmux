@@ -1,0 +1,13 @@
+    def test_synthetic_darwin_metadata_never_uses_process_fake(self):
+        # Exercise Darwin's real stdlib metadata branch while the collector's
+        # owned-process boundary is mocked. This is a fixture, not native proof.
+        uname = platform.uname_result('Darwin', 'synthetic', '25.0', 'synthetic', 'arm64')
+        with mock.patch.object(platform, 'uname', return_value=uname), \
+                mock.patch.dict(platform._platform_cache, {}, clear=True), \
+                mock.patch.object(platform, '_syscmd_file', wraps=platform._syscmd_file) as metadata_query:
+            code, record, _, _, _ = self.exercise(host='Darwin')
+        self.assertEqual(code, 0)
+        self.assertEqual(record['host'], 'synthetic-native-runner-control')
+        self.assertFalse(record['nativeProtectedBootQualified'])
+        metadata_query.assert_not_called()
+

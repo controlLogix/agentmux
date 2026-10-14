@@ -1,0 +1,121 @@
+{
+  "schemaVersion": "1.0.0",
+  "scope": "Current P02 checkpoint preserves retained P01 CI; tracker test-fixture repair only",
+  "candidate": "93b027830d39b496a2eff756d5836caf5563663a",
+  "github": {
+    "repository": "controlLogix/agentmux",
+    "runId": 38631664598,
+    "linuxJobId": 116084557497,
+    "jobConclusion": "failure",
+    "workflow": "P01 contracts and broker qualification",
+    "authentication": "Existing ryanhelms keyring token passed only in gh child-process environment; no token or global account change recorded",
+    "macJob": "No restart, cancellation, log request or artifact review was performed for the Mac job. Run metadata later reported completion."
+  },
+  "actualCIFinding": {
+    "failedCheck": "tracker-tests",
+    "failedTest": "TrackingTests.test_predecessor_cannot_be_bypassed",
+    "message": "AssertionError not raised",
+    "trackerStates": {
+      "P00-GATE": "done",
+      "P01-GATE": "done",
+      "P02-T01": "in_progress"
+    },
+    "cause": "The test selects already-valid active P02-T01 on a live board whose earlier phase gates are done. Setting it in_progress does not create the invalid predecessor condition the test intended.",
+    "linuxChecks": 23,
+    "otherSuccessfulChecks": 22,
+    "sourceOrEnvironment": "Stale data-fixture setup, not SDK build failure or demonstrated runtime/contract regression."
+  },
+  "repair": {
+    "path": "docs/planning/2026-10-09/delivery/test_track.py",
+    "sourceSHA256": "946f6acb8feecd5e451c61392b9003233b528f0871e03cf1a7036e7d5bbec88d",
+    "diffSHA256": "0b246bd83f9843aa934e0cec09ec8a41bea40ce7405204de93063c05aca2ef7f",
+    "addedLines": 2,
+    "meaning": "Set copied test task statuses planned before selecting only P02-T01 active. Keep real dependencies and unchanged validation/assertion rules.",
+    "productionValidatorChanged": false,
+    "dependencySourceFilesUnchanged": 10
+  },
+  "localResults": [
+    {
+      "name": "tracker-before",
+      "argv": [
+        "/usr/bin/python3",
+        "-m",
+        "unittest",
+        "-v",
+        "test_track.TrackingTests.test_predecessor_cannot_be_bypassed"
+      ],
+      "cwd": "/home/ryan/.cache/agentmux-governance/p02-retained-p01-ci-linux-r1pmr6ev/src/docs/planning/2026-10-09/delivery",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "seconds": 0.21867489400028717
+    },
+    {
+      "name": "tracker-focused",
+      "argv": [
+        "/usr/bin/python3",
+        "-m",
+        "unittest",
+        "-v",
+        "test_track.TrackingTests.test_predecessor_cannot_be_bypassed"
+      ],
+      "cwd": "/home/ryan/.cache/agentmux-governance/p02-retained-p01-ci-linux-r1pmr6ev/src/docs/planning/2026-10-09/delivery",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 0.16487522100214846
+    },
+    {
+      "name": "tracker-affected",
+      "argv": [
+        "/usr/bin/python3",
+        "-m",
+        "unittest",
+        "-v",
+        "test_track"
+      ],
+      "cwd": "/home/ryan/.cache/agentmux-governance/p02-retained-p01-ci-linux-r1pmr6ev/src/docs/planning/2026-10-09/delivery",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 0.3154858600028092
+    }
+  ],
+  "sourceBefore": {
+    "candidate": "93b027830d39b496a2eff756d5836caf5563663a",
+    "files": {
+      "docs/planning/2026-10-09/delivery/track.py": "5b21233d255cc5f4c9adfe5588a82322ca2e07b19e830819811918fedb09f7c5",
+      "docs/planning/2026-10-09/delivery/test_track.py": "bf77d45ef795cd1c09beeac3cc52a72b79f17b0a0d5d1bb96d03fbdc41d45d3c",
+      "docs/planning/2026-10-09/delivery/tasks.json": "625362901b89c9f5cfb98e6a39b1963740982139adc2e866eb44883a76736a37",
+      "docs/planning/2026-10-09/component-audit-dashboard.json": "a406607c28ee44054de9dc5f3b40b4b7e7d6e4e7989d29666fe09adb4904741f",
+      "docs/planning/2026-10-09/component-audit-harness.json": "c7e1dd0f2bedf0f6d65ea7445d4c6e2fa3c28a2f6c06bc9a967db8dc048c8fdc",
+      "docs/planning/2026-10-09/component-audit-hub.json": "deb1664575a4acab238b1e4b77d6c5f7f8c63587367fee5f747508bddeb0b92b",
+      "docs/planning/2026-10-09/component-audit-repository.json": "0ead6d65f71ef2e6115a194bd3a8501f46ecb2db0fa70a44a3b0cad25acd128c",
+      "docs/planning/2026-10-09/component-inventory.json": "fec567e6f4077c75a9c068cc8282f733b2763efe3e3c811134f1c15e4cd1f4fe",
+      "docs/planning/2026-10-09/jev-coverage.json": "c7df684ce9162c36fb0d77ed8cf76c656824b7339b6c8464dce7ef2ce5988f95",
+      "docs/planning/2026-10-09/phases.json": "882de6f13f309b878ebd8898ba73ab05fe94dc68ec517b311054f2a99f3102f7",
+      "docs/planning/2026-10-09/verification-matrix.json": "516813fd034d6c73b4b0d6f9eaaf4b1b54798828e137336324605d0b956085bc"
+    }
+  },
+  "sourceAfter": {
+    "candidate": "93b027830d39b496a2eff756d5836caf5563663a",
+    "files": {
+      "docs/planning/2026-10-09/delivery/track.py": "5b21233d255cc5f4c9adfe5588a82322ca2e07b19e830819811918fedb09f7c5",
+      "docs/planning/2026-10-09/delivery/test_track.py": "946f6acb8feecd5e451c61392b9003233b528f0871e03cf1a7036e7d5bbec88d",
+      "docs/planning/2026-10-09/delivery/tasks.json": "625362901b89c9f5cfb98e6a39b1963740982139adc2e866eb44883a76736a37",
+      "docs/planning/2026-10-09/component-audit-dashboard.json": "a406607c28ee44054de9dc5f3b40b4b7e7d6e4e7989d29666fe09adb4904741f",
+      "docs/planning/2026-10-09/component-audit-harness.json": "c7e1dd0f2bedf0f6d65ea7445d4c6e2fa3c28a2f6c06bc9a967db8dc048c8fdc",
+      "docs/planning/2026-10-09/component-audit-hub.json": "deb1664575a4acab238b1e4b77d6c5f7f8c63587367fee5f747508bddeb0b92b",
+      "docs/planning/2026-10-09/component-audit-repository.json": "0ead6d65f71ef2e6115a194bd3a8501f46ecb2db0fa70a44a3b0cad25acd128c",
+      "docs/planning/2026-10-09/component-inventory.json": "fec567e6f4077c75a9c068cc8282f733b2763efe3e3c811134f1c15e4cd1f4fe",
+      "docs/planning/2026-10-09/jev-coverage.json": "c7df684ce9162c36fb0d77ed8cf76c656824b7339b6c8464dce7ef2ce5988f95",
+      "docs/planning/2026-10-09/phases.json": "882de6f13f309b878ebd8898ba73ab05fe94dc68ec517b311054f2a99f3102f7",
+      "docs/planning/2026-10-09/verification-matrix.json": "516813fd034d6c73b4b0d6f9eaaf4b1b54798828e137336324605d0b956085bc"
+    }
+  },
+  "limits": [
+    "Local reproduction uses the exact 93b Git-object tracker and planning dependencies on WSL CPython 3.14.4; actual Ubuntu CI used 3.14.8.",
+    "The original failure was reproduced first; the repaired exact test and all 22 module tests pass. No SDK, hub, or build suite was repeated locally.",
+    "Current GitHub CI remains historical failed evidence until root promotes the repair and obtains exact-candidate required checks.",
+    "No P01 gate was reopened or acceptance changed. The actual Linux artifact shows other checks passed, but Codex root owns preservation and gate decisions.",
+    "Initial direct gh job-log endpoint fetch failed; subsequent gh run view --log-failed succeeded. The first failed response body was not retained, so no transport cause is claimed.",
+    "No shared source, global metadata, credentials, external workflow state or native Windows gate files were changed."
+  ]
+}

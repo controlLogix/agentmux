@@ -1,0 +1,35 @@
+test_synthetic_darwin_metadata_never_uses_process_fake (collector.RunnerTests.test_synthetic_darwin_metadata_never_uses_process_fake) ... ERROR
+
+======================================================================
+ERROR: test_synthetic_darwin_metadata_never_uses_process_fake (collector.RunnerTests.test_synthetic_darwin_metadata_never_uses_process_fake)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<string>", line 8, in test_synthetic_darwin_metadata_never_uses_process_fake
+  File "/home/ryan/.cache/agentmux-governance/p02-ci-admission-diagnosis-93b0278/native_go-before.py", line 880, in exercise
+    code = main(argv)
+  File "/home/ryan/.cache/agentmux-governance/p02-ci-admission-diagnosis-93b0278/native_go-before.py", line 1277, in main
+    'host': platform.platform(), 'sourceHashes': source_hashes(), 'status': 'failed',
+            ~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/platform.py", line 1399, in platform
+    bits, linkage = architecture(sys.executable)
+                    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/platform.py", line 806, in architecture
+    fileout = _syscmd_file(executable, '')
+  File "/usr/lib/python3.14/unittest/mock.py", line 1176, in __call__
+    return self._mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/unittest/mock.py", line 1180, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/unittest/mock.py", line 1259, in _execute_mock_call
+    return self._mock_wraps(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/platform.py", line 764, in _syscmd_file
+    return output.decode('latin-1')
+           ^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'decode'. Did you mean: 'encode'?
+
+----------------------------------------------------------------------
+Ran 1 test in 0.012s
+
+FAILED (errors=1)

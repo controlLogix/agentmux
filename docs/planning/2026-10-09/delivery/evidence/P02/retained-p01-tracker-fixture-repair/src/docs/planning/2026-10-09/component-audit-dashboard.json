@@ -1,0 +1,2266 @@
+{
+  "scope": "All 166 git-tracked paths under dashboard/ and nettraffic/, plus taskmgmt/pn_dcp.py and taskmgmt/bootp_probe.py, inspected for component ownership, current behavior and additive migration on 2026-10-09. Shared app.js/server.py implementations are owned once; supporting components refer to their behavior without duplicate file ownership.",
+  "reviewMethod": "static source review; no runtime tests run",
+  "reviewLimits": [
+    "Inventory includes source, configurations, tests, scripts, assets, vendored dependencies and binary fixtures. Public interfaces, routes, validation, state handling, test assertions and dependency metadata were inspected; this is not a line-by-line correctness proof or a security audit of third-party libraries.",
+    "All baseline and target behavior checks are not-run. Existing test files are candidate evidence to preserve and extend, not assertions that those tests fully cover the stated target check.",
+    "No browser, dashboard, provider, broker, network scan, device action, test runner, diagnostic or mutation helper was executed.",
+    "Every existing action remains in migration scope. Changing which client exposes a write requires a named decision and equivalent supported workflow, with strengthened authorization rather than silent removal.",
+    "The existing dashboard stays available during incremental extraction. Transport, identity, component and storage changes require behavior evidence before disabling their legacy path."
+  ],
+  "staticFindings": [
+    {
+      "id": "DASH-F01",
+      "paths": [
+        "dashboard/test_e2e.mjs",
+        "dashboard/index.html"
+      ],
+      "finding": "The browser suite asserts nine views and omits Federation, while the current navigation has ten.",
+      "requiredAction": "Correct the stale baseline test contract against current implemented navigation before a dashboard migration; record actual test results afterward.",
+      "status": "source-observed-not-executed",
+      "ownerPhase": "P01"
+    },
+    {
+      "id": "DASH-F02",
+      "paths": [
+        "dashboard/ecat_diag.py",
+        "dashboard/test_ecat_diag.py"
+      ],
+      "finding": "EtherCAT diagnostics also implement a confirmed slave request_state action; a read-only summary would omit current functionality.",
+      "requiredAction": "Retain the explicit state action and its actor/confirmation/journal/current-topology checks in the vendor plugin inventory.",
+      "status": "source-observed-not-executed",
+      "ownerPhase": "P11"
+    },
+    {
+      "id": "DASH-F03",
+      "paths": [
+        "dashboard/mqtt.py",
+        "dashboard/mqtt_monitor.py",
+        "dashboard/vendor/README.md"
+      ],
+      "finding": "Historical monitor/vendor commentary cites the former 64 KiB handwritten-client packet cap; current mqtt.py allows 4 MiB packet reads. The monitor uses Paho 2.1.0 configured for MQTT 3.1.1.",
+      "requiredAction": "Use actual constants and configured protocol in compatibility tests and product claims; preserve separate HTTP, outgoing-payload and displayed-value limits.",
+      "status": "source-observed-not-executed",
+      "ownerPhase": "P11"
+    },
+    {
+      "id": "DASH-F04",
+      "paths": [
+        "dashboard/ccc-dashboard.service",
+        "dashboard/restart.sh"
+      ],
+      "finding": "Dashboard startup files retain machine-specific path assumptions and explicitly mutating maintenance options.",
+      "requiredAction": "Qualify portable installation and preserve distinct restart/reset operations in disposable deployment fixtures.",
+      "status": "source-observed-not-executed",
+      "ownerPhase": "P12"
+    },
+    {
+      "id": "DASH-F05",
+      "paths": [
+        "dashboard/vendor/paho/LICENSE.txt",
+        "dashboard/vendor/README.md"
+      ],
+      "finding": "The retained Paho notice references epl-v20 and edl-v10 license files absent from the tracked vendor tree.",
+      "requiredAction": "Review complete source provenance and redistribution notices before shipping; do not claim license compliance from this static inventory.",
+      "status": "source-observed-not-executed",
+      "ownerPhase": "P12"
+    }
+  ],
+  "components": [
+    {
+      "id": "DASH-01",
+      "name": "Existing dashboard shell, ten views, terminal grid and preferences",
+      "files": [
+        "dashboard/index.html",
+        "dashboard/app.js",
+        "dashboard/style.css",
+        "dashboard/themes.json",
+        "dashboard/fitmatrix.js",
+        "dashboard/test_frontend.sh",
+        "dashboard/test_frontend_tabs.sh",
+        "dashboard/test_frontend_collapse.sh",
+        "dashboard/test_frontend_post.sh",
+        "dashboard/test_themes.sh",
+        "dashboard/test_theme_import.sh",
+        "dashboard/test_snapshot.py",
+        "dashboard/test_stream_slots.sh"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-17",
+        "BASE-10",
+        "BASE-36"
+      ],
+      "ownerPhase": "P07",
+      "disposition": "extract",
+      "currentBehavior": [
+        "Navigation contains Terminals, Status, Board, Runs, Hub, Federation, Organization, IIOT, GitHub and Settings; registered views, panels and cards control visible-view polling.",
+        "Terminals reuse xterm instances across roster polls, receive one shared SSE connection with snapshots/chunks/gone events, reconnect after errors, and retain a single-agent stream fallback. Stale or malformed roster observations do not fabricate termination.",
+        "The ribbon composes launch commands for an operator; it does not send terminal keystrokes. Pane resizing is an explicit opt-in write. Grid/free placement, focus, follow, row height, text size, minimum font and UI scale affect presentation.",
+        "Browser localStorage retains layout, placements, tabs, collapsible cards, feed filters and imported themes. Themes can be validated, imported and exported.",
+        "Status combines feed, message queue, journal and chatter; current filtered rows export to CSV/JSON. Board and Organization have nested tabs. Settings exposes themes, resources, provider methods and Atlassian setup."
+      ],
+      "reusePlan": "Keep the running dashboard available. Extract existing rendering, fit, preferences and interaction behavior into the required component tiers one view at a time; connect each migrated feature to authorized AG-UI projections. Retain xterm through a component wrapper. Do not create a competing replacement dashboard.",
+      "enhancements": [
+        "Project/user-scoped views and explicit stale/rebuild state from NATS-backed records.",
+        "AG-UI/CopilotKit integration, accessible reusable components and independently loaded domain contributions.",
+        "Versioned preference import with deliberate migration from local browser settings."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-01-C01",
+          "description": "All ten views and their subtabs remain reachable; refresh, switching, collapse and hidden-view behavior preserve state and avoid unintended probes.",
+          "existingTests": [
+            "dashboard/test_frontend_tabs.sh",
+            "dashboard/test_frontend_collapse.sh",
+            "dashboard/test_frontend.sh",
+            "dashboard/test_e2e.mjs"
+          ],
+          "requiredEnvironment": "Isolated dashboard home and port; Node DOM fixtures, then Playwright browser on supported macOS/Linux/WSL hosts. No live user state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-01-C02",
+          "description": "Terminal snapshots, chunks, reconnect, generation changes, malformed rosters and multiple viewers preserve correct output without restarting agents; resizing occurs only when opted in.",
+          "existingTests": [
+            "dashboard/test_snapshot.py",
+            "dashboard/test_stream_slots.sh",
+            "dashboard/test_frontend.sh"
+          ],
+          "requiredEnvironment": "Isolated dashboard home and port; Node DOM fixtures, then Playwright browser on supported macOS/Linux/WSL hosts. No live user state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-01-C03",
+          "description": "Theme import/export, unsafe-color rejection, layout/focus/follow/free positions and filtered CSV/JSON export have old/new fixture parity.",
+          "existingTests": [
+            "dashboard/test_themes.sh",
+            "dashboard/test_theme_import.sh",
+            "dashboard/test_frontend_tabs.sh"
+          ],
+          "requiredEnvironment": "Isolated dashboard home and port; Node DOM fixtures, then Playwright browser on supported macOS/Linux/WSL hosts. No live user state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Record every view, subtab, terminal command and preference key before moving it; move one view behind configuration and compare old/new fixtures.",
+        "Keep resize and any existing dashboard mutation in the action inventory; policy changes need an explicit decision, not omission during an observer-focused redesign.",
+        "Preserve unknown/stale/ended distinctions, source IDs, theme tokens and opt-in geometry behavior."
+      ],
+      "limitations": [
+        "Current frontend is vanilla JavaScript and xterm, with no AG-UI/CopilotKit implementation.",
+        "Some comments still describe the entire page as read-only even though current board, review and integration actions mutate state.",
+        "Shape/DOM fixture checks do not prove real browser accessibility or complete end-to-end parity."
+      ]
+    },
+    {
+      "id": "DASH-02",
+      "name": "HTTP routing, request guards and terminal stream server",
+      "files": [
+        "dashboard/server.py",
+        "dashboard/test_host_guard.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-17",
+        "BASE-18",
+        "BASE-23"
+      ],
+      "ownerPhase": "P04",
+      "disposition": "extract",
+      "currentBehavior": [
+        "Loopback HTTP server routes board CRUD/gates, runs/review/diff, hub and federation, auth settings, Jira actions, Modbus, both MQTT paths, scans, PROFINET import, GitHub actions, resources, feeds, agents and terminal streams.",
+        "Host/Origin, method, content type, body length, name/path, timeout and concurrency checks protect local routes; stream generations and bounded slots handle reconnects.",
+        "Legacy epics/tasks/journal/messages/devices/status/delete routes coexist with richer board operations. Board writes include create/update/status/move/delete, acceptance/labels/dependencies/evidence/commits/touched paths/comments/links/triage/state/config, plus agent/team/CODESYS/chatter actions.",
+        "Static asset handling and explicit script-load errors let operators diagnose a stale server serving an incomplete UI."
+      ],
+      "reusePlan": "Retain guarded routes as compatibility adapters while moving each operation to its declared owner over NATS. Reuse validators and response fixtures; keep one authoritative writer. Replace the single local-operator identity assumption with authenticated user/project context.",
+      "enhancements": [
+        "Authenticated per-project access across snapshots, streams, artifacts and writes.",
+        "Scoped command contracts, explicit operation IDs and controlled HTTP compatibility deprecation."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-02-C01",
+          "description": "Inventory every GET/POST route and board operation; compare accepted inputs, refusals, response shape and side effects against the owning NATS command before route cutover.",
+          "existingTests": [
+            "dashboard/test_host_guard.py",
+            "dashboard/test_board.py",
+            "dashboard/test_fed_panel.py",
+            "dashboard/test_hub_panel.py",
+            "dashboard/test_field_panels.py"
+          ],
+          "requiredEnvironment": "Python and/or Node offline fixtures in temporary directories; no provider, broker or hardware calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-02-C02",
+          "description": "Direct requests, guessed IDs, hostile Host/Origin, malformed bodies and unauthorized streaming cannot cross users/projects; preserve legacy bounded error behavior.",
+          "existingTests": [
+            "dashboard/test_host_guard.py",
+            "dashboard/test_frontend_post.sh"
+          ],
+          "requiredEnvironment": "Isolated dashboard home and port; Node DOM fixtures, then Playwright browser on supported macOS/Linux/WSL hosts. No live user state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve legacy route clients until a documented compatibility change is accepted.",
+        "Move domain writes out of server.py by endpoint group; do not wrap unsafe existing operator attribution as authenticated authority.",
+        "Preserve stream path, generation, timeout, log-file validation and body-size contracts or approve their replacements."
+      ],
+      "limitations": [
+        "Host/Origin checks are not authenticated user sessions or tenant authorization.",
+        "server.py combines many domains; passing one route suite cannot establish coverage of all operations.",
+        "Existing route actions are retained requirements; their launch-time placement in dashboard versus another client still needs explicit policy approval."
+      ]
+    },
+    {
+      "id": "DASH-03",
+      "name": "Conversation feed and guarded sends",
+      "files": [
+        "dashboard/chatter.js",
+        "dashboard/chatter_feed.py",
+        "dashboard/test_chatter.py",
+        "dashboard/test_notify.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-09",
+        "BASE-10",
+        "BASE-17"
+      ],
+      "ownerPhase": "P05",
+      "disposition": "extract",
+      "currentBehavior": [
+        "Chatter merges bounded courier, delivery and receipt history with stable message identities, thread/card/agent filters and explicit unconfirmed states.",
+        "The panel can send through the existing CLI guard, with recipient/text/reference and visible send outcomes; cursor adoption alone is not delivery.",
+        "Notifications and feed rationing retain critical notices even when one source floods the feed."
+      ],
+      "reusePlan": "Reuse feed merging, receipt distinctions, filtering and guarded-send fixtures in a conversation owner; expose the same activity through the dashboard's authorized interface.",
+      "enhancements": [
+        "Durable NATS conversation identity and project visibility.",
+        "Consistent transport receipt, execution and accepted-result distinctions."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-03-C01",
+          "description": "Merge retries, dropped/dead messages, partial records and adopted cursors without inventing delivery; preserve thread filters and export rows.",
+          "existingTests": [
+            "dashboard/test_chatter.py",
+            "dashboard/test_notify.py"
+          ],
+          "requiredEnvironment": "Python and/or Node offline fixtures in temporary directories; no provider, broker or hardware calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-03-C02",
+          "description": "Unauthorized or modal-blocked sends are refused; uncertain sends remain visible and replaying history does not send again.",
+          "existingTests": [
+            "dashboard/test_chatter.py"
+          ],
+          "requiredEnvironment": "Python and/or Node offline fixtures in temporary directories; no provider, broker or hardware calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Migrate queue cursors, pending/dead letters and journal references once with sender and scope.",
+        "Preserve send controls or explicitly move them to a supported client with reviewed workflow equivalence."
+      ],
+      "limitations": [
+        "Current local sender attribution is not multi-user authentication; courier history may lack exact message IDs."
+      ]
+    },
+    {
+      "id": "DASH-04",
+      "name": "Task board, Kanban, records and policy",
+      "files": [
+        "dashboard/ccboard.py",
+        "dashboard/ccstore.py",
+        "dashboard/kanban.js",
+        "dashboard/kanban.css",
+        "dashboard/test_board.py",
+        "dashboard/test_frontend_board.sh",
+        "dashboard/test_frontend_drawer.sh",
+        "dashboard/test_frontend_kanban.sh"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-04",
+        "BASE-05",
+        "BASE-15",
+        "BASE-16",
+        "BASE-17"
+      ],
+      "ownerPhase": "P05",
+      "disposition": "extract",
+      "currentBehavior": [
+        "cc.db stores stable never-reused EP/TM/ADR/SP/CAP identifiers, state/history, dependencies, labels, evidence, acceptance items, comments, commits and touched paths.",
+        "Board/epic layout and Kanban status columns support create, edit, move, delete, details and status changes; stale writes and refusal reasons are surfaced.",
+        "Domain gates enforce readiness, evidence, actor/dependency/WIP checks and recorded overrides; soft deletion preserves identifier history.",
+        "Legacy store also retains device records and bounded queue ingestion; request adapters expose journal/messages/status and old epics/tasks paths."
+      ],
+      "reusePlan": "Extract the existing domain rules and validation into task/planning owners, retaining their fixtures and UI behaviors. Migrate cc.db records into authoritative NATS records under STATE-01; retain SQL only as an optional rebuildable query view.",
+      "enhancements": [
+        "Multi-user optimistic concurrency and explicit project scope.",
+        "Replayable history and shared task state without direct database access.",
+        "Atomic Design board components using existing interaction semantics."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-04-C01",
+          "description": "Import all five entity types, relationships, deleted IDs, criteria, history, device records and queue references twice without loss or duplicate effects.",
+          "existingTests": [
+            "dashboard/test_board.py"
+          ],
+          "requiredEnvironment": "Python and/or Node offline fixtures in temporary directories; no provider, broker or hardware calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-04-C02",
+          "description": "Current create/edit/status/move/delete/detail/drag interactions and refusal messages match authorized target behavior, including in-progress edits across refresh.",
+          "existingTests": [
+            "dashboard/test_frontend_board.sh",
+            "dashboard/test_frontend_drawer.sh",
+            "dashboard/test_frontend_kanban.sh"
+          ],
+          "requiredEnvironment": "Isolated dashboard home and port; Node DOM fixtures, then Playwright browser on supported macOS/Linux/WSL hosts. No live user state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-04-C03",
+          "description": "Missing evidence/dependencies, excessive WIP, unauthorized overrides and stale mutations cannot bypass owner rules.",
+          "existingTests": [
+            "dashboard/test_board.py"
+          ],
+          "requiredEnvironment": "Python and/or Node offline fixtures in temporary directories; no provider, broker or hardware calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Fence legacy writes before target ownership; reconcile open work and stable IDs.",
+        "Preserve task/run/hub/shared-board identities separately.",
+        "Retain lower-level legacy routes until dependent CLI paths migrate."
+      ],
+      "limitations": [
+        "Current store is local SQLite; migration is planned, not implemented.",
+        "Schema import alone would not prove gate, override, drag/drop or edit-state parity."
+      ]
+    },
+    {
+      "id": "DASH-05",
+      "name": "Agent definition registry and editor",
+      "files": [
+        "dashboard/boardagents.py",
+        "dashboard/agents.js",
+        "dashboard/agents.css",
+        "dashboard/test_boardagents.py",
+        "dashboard/test_agentdefs.py",
+        "dashboard/test_agentcli.py",
+        "dashboard/test_frontend_agents.sh"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-02",
+        "BASE-17"
+      ],
+      "ownerPhase": "P03",
+      "disposition": "extract",
+      "currentBehavior": [
+        "Lists repository/user Agentmux and compatible Claude definitions with parse problems, duplicate detection, scopes and unsupported fields.",
+        "Inline editing and deletion use checksums, validated paths, atomic file replacement and audit attribution; stale changes are rejected.",
+        "CLI and dashboard consume matching definition behavior."
+      ],
+      "reusePlan": "Reuse parser, checksums, diagnostics and edit fixtures; wrap definition management as a scoped plugin service and migrate only the UI composition.",
+      "enhancements": [
+        "Versioned definition provenance and explicit host capability compatibility.",
+        "User/project identity for edits with preserved conflict behavior."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-05-C01",
+          "description": "Read and import every supported scope; duplicate, invalid, unknown-key and collision cases remain explicit.",
+          "existingTests": [
+            "dashboard/test_agentdefs.py",
+            "dashboard/test_boardagents.py"
+          ],
+          "requiredEnvironment": "Python and/or Node offline fixtures in temporary directories; no provider, broker or hardware calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-05-C02",
+          "description": "Concurrent editing has one winner; canceled/invalid/stale edits preserve original files, permissions and audit identity; CLI and UI remain consistent.",
+          "existingTests": [
+            "dashboard/test_agentcli.py",
+            "dashboard/test_frontend_agents.sh",
+            "dashboard/test_boardagents.py"
+          ],
+          "requiredEnvironment": "Isolated dashboard home and port; Node DOM fixtures, then Playwright browser on supported macOS/Linux/WSL hosts. No live user state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve source path, checksum, scope precedence, model/auth/posture/tools/capabilities/role/limits.",
+        "Do not reinterpret advisory host fields as enforced permissions."
+      ],
+      "limitations": [
+        "Current dashboard actor is a fixed local label; host formats do not have identical authority."
+      ]
+    },
+    {
+      "id": "DASH-06",
+      "name": "Team roster proposal, approval and hiring",
+      "files": [
+        "dashboard/boardteams.py",
+        "dashboard/teams.js",
+        "dashboard/teams.css",
+        "dashboard/test_boardteams.py",
+        "dashboard/test_teamcli.py",
+        "dashboard/test_frontend_teams.sh"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-03",
+        "BASE-06",
+        "BASE-17"
+      ],
+      "ownerPhase": "P05",
+      "disposition": "extract",
+      "currentBehavior": [
+        "Builds candidate rosters with capability gaps, stages member decisions and commits approved proposals; displays live/retired membership and configuration.",
+        "Recruit, approve, retire and hire operations use board history, approval state, bounded hire slots and definition lookup; live members cannot be casually retired.",
+        "CLI requests preserve refusal details and do not silently retry hires."
+      ],
+      "reusePlan": "Reuse roster approval, capacity checks, transition rules and staged UI decisions in orchestration plugins. Wrap execution requests in the new worker contract instead of duplicating the roster engine.",
+      "enhancements": [
+        "Explicit user/project grants, operation IDs and recoverable launch outcomes.",
+        "Better lead selection and capabilities without unrestricted-posture assumptions."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-06-C01",
+          "description": "Proposal/recruit/approve/reject/retire remain atomic and idempotent; existing hired members and unsaved decisions survive refresh.",
+          "existingTests": [
+            "dashboard/test_boardteams.py",
+            "dashboard/test_frontend_teams.sh"
+          ],
+          "requiredEnvironment": "Isolated dashboard home and port; Node DOM fixtures, then Playwright browser on supported macOS/Linux/WSL hosts. No live user state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-06-C02",
+          "description": "Hire requires approved current membership, capacity and supported execution posture; a lost reply cannot launch a second worker.",
+          "existingTests": [
+            "dashboard/test_boardteams.py",
+            "dashboard/test_teamcli.py",
+            "dashboard/test_sandbox_coordination.py"
+          ],
+          "requiredEnvironment": "Python and/or Node offline fixtures in temporary directories; no provider, broker or hardware calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Migrate roster IDs, approval actor/version, live-worker binding and retired history.",
+        "Keep hire/retire actions in the scope decision and preserve an equivalent supported path."
+      ],
+      "limitations": [
+        "Known lead-selection and unrestricted-posture constraints need correction; importing the UI does not solve them."
+      ]
+    },
+    {
+      "id": "DASH-07",
+      "name": "Run progress, review, diffs and completion gate",
+      "files": [
+        "dashboard/runs.js",
+        "dashboard/runsview.py",
+        "dashboard/test_runsview.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-07",
+        "BASE-15",
+        "BASE-17"
+      ],
+      "ownerPhase": "P05",
+      "disposition": "extract",
+      "currentBehavior": [
+        "Lists runs and job attempts with blocking explanations, responsible worker/reviewer, escalation, stale liveness and bounded diffs.",
+        "Supports approve/request changes with notes; binds approvals to evidence digests and shows approval drift as stale.",
+        "Collapsed run summaries poll separately from opened job/diff details; drafts and expanded-card preferences survive refresh."
+      ],
+      "reusePlan": "Reuse run folding, blocking explanations, review states and scoped diff behavior; move authoritative acceptance to the run owner and progressively refit the view.",
+      "enhancements": [
+        "Durable attempt/review evidence and multi-user authorization.",
+        "Explicit submitted, accepted, cancellation-confirmed and unknown states."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-07-C01",
+          "description": "Old and migrated fixtures give the same blocking worker/reviewer, escalation, retry ceiling and missing-agent state.",
+          "existingTests": [
+            "dashboard/test_runsview.py",
+            "dashboard/test_runcards.py"
+          ],
+          "requiredEnvironment": "Python and/or Node offline fixtures in temporary directories; no provider, broker or hardware calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-07-C02",
+          "description": "Approve/request changes, notes, bounded submitted-file diffs and stale approval invalidation work after reconnect; viewing cannot complete a run.",
+          "existingTests": [
+            "dashboard/test_runsview.py"
+          ],
+          "requiredEnvironment": "Isolated dashboard home and port; Node DOM fixtures, then Playwright browser on supported macOS/Linux/WSL hosts. No live user state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve run/job/attempt IDs, sidecar links, base commits, submitted paths, review actors and digest binding.",
+        "A completed run must not implicitly close a board card or authorize merge."
+      ],
+      "limitations": [
+        "Historical run gaps include incomplete submission binding; no current browser test result is claimed."
+      ]
+    },
+    {
+      "id": "DASH-08",
+      "name": "Hub observation panel",
+      "files": [
+        "dashboard/hub.js",
+        "dashboard/hub_panel.py",
+        "dashboard/test_hub_panel.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-11",
+        "BASE-17"
+      ],
+      "ownerPhase": "P07",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Shows agents, work states/claimers, work detail, status counts and an incremental bell/delivery event feed.",
+        "Uses bounded read-only Unix-socket verbs; neither browser nor adapter opens hub.db. Missing/stale sockets become explicit unavailable responses."
+      ],
+      "reusePlan": "Retain the panel's read-only behavior and event/detail semantics; adapt its backend contract to authorized NATS and then AG-UI incrementally.",
+      "enhancements": [
+        "Multiple authorized hubs and project-scoped subscriptions.",
+        "Snapshots/cursors for reconnect and visible missing history."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-08-C01",
+          "description": "Agents/work filters/detail/counts/events match the existing socket fixtures through the new transport.",
+          "existingTests": [
+            "dashboard/test_hub_panel.py"
+          ],
+          "requiredEnvironment": "Python and/or Node offline fixtures in temporary directories; no provider, broker or hardware calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-08-C02",
+          "description": "Hub unavailable, timeout, malformed or missing history yields explicit state; no observation can claim/post/cancel work.",
+          "existingTests": [
+            "dashboard/test_hub_panel.py"
+          ],
+          "requiredEnvironment": "Isolated dashboard home and port; Node DOM fixtures, then Playwright browser on supported macOS/Linux/WSL hosts. No live user state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve work identities, event sequence cursors and source hub.",
+        "Keep unavailable distinct from an empty healthy hub."
+      ],
+      "limitations": [
+        "Current adapter assumes local Unix sockets and a local operator; remote access requires new authorization."
+      ]
+    },
+    {
+      "id": "DASH-09",
+      "name": "Federation panel and operator actions",
+      "files": [
+        "dashboard/fed.js",
+        "dashboard/fed_panel.py",
+        "dashboard/test_fed_panel.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-13",
+        "BASE-14",
+        "BASE-17"
+      ],
+      "ownerPhase": "P10",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Shows peers/trust, quarantined items, shared-board/findings/code contribution cards, audit and kill-switch status.",
+        "Allowlisted actions approve/deny quarantine, kill/revoke/resume federation and move shared cards; arguments are validated and sent through the local hub."
+      ],
+      "reusePlan": "Reuse current panel grouping, allowlist and error behavior; route actions to explicitly authorized federation owners and reuse the view within registered UI contributions.",
+      "enhancements": [
+        "Cross-organization scope, bilateral grants and reservation-aware operation results.",
+        "Origin/executor separation and visible unknown acknowledgment state."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-09-C01",
+          "description": "Read panels and all five action verbs preserve allowed input and refusal behavior under authenticated actors.",
+          "existingTests": [
+            "dashboard/test_fed_panel.py"
+          ],
+          "requiredEnvironment": "Python and/or Node offline fixtures in temporary directories; no provider, broker or hardware calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-09-C02",
+          "description": "Ten-view navigation includes Federation; unavailable federation and optional plugin errors do not break core views; revoked users cannot act via direct HTTP.",
+          "existingTests": [
+            "dashboard/test_fed_panel.py",
+            "dashboard/test_e2e.mjs"
+          ],
+          "requiredEnvironment": "Isolated dashboard home and port; Node DOM fixtures, then Playwright browser on supported macOS/Linux/WSL hosts. No live user state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve quarantine IDs, shared-card IDs/statuses, audit records, kill/revoke meaning and source ownership.",
+        "Changing dashboard command scope must explicitly account for all current operator actions."
+      ],
+      "limitations": [
+        "Existing local hub treats the dashboard as operator; this is not a multi-user trust model.",
+        "test_e2e.mjs still asserts nine navigation views and omits Federation; source inspection finds a stale test contract, not a recorded test failure."
+      ]
+    },
+    {
+      "id": "DASH-10",
+      "name": "Provider authentication settings and diagnostics",
+      "files": [
+        "dashboard/auth.json",
+        "dashboard/show_auth.py",
+        "dashboard/test_auth.py",
+        "dashboard/verify_model_switch.sh",
+        "dashboard/check_key_exposure.sh"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-19",
+        "BASE-20",
+        "BASE-17"
+      ],
+      "ownerPhase": "P06",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Manifest separates provider-shared configuration from per-method settings and lists eight Codex/Claude/Grok authentication methods.",
+        "Settings shows configured/missing state, setup commands, active-method selection and nonsecret model/endpoint changes; credentials remain outside browser entry.",
+        "Auth-tree and key-exposure diagnostics report safe status; model-switch verification checks launch configuration against actual CLI output."
+      ],
+      "reusePlan": "Retain manifest semantics, terminal setup and secret-redaction rules; wrap configuration in scoped provider/client services and reuse the Settings interactions.",
+      "enhancements": [
+        "Versioned provider capability declarations and project/user selection.",
+        "Safe diagnostics with explicit unsupported methods and unavailable prerequisites."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-10-C01",
+          "description": "Each method retains shared-versus-method settings, validation and missing-credential behavior without showing secrets.",
+          "existingTests": [
+            "dashboard/test_auth.py"
+          ],
+          "requiredEnvironment": "Python and/or Node offline fixtures in temporary directories; no provider, broker or hardware calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-10-C02",
+          "description": "An approved actual-client test shows that selecting a model/method affects a newly launched worker; a stored preference alone cannot pass.",
+          "existingTests": [
+            "dashboard/verify_model_switch.sh"
+          ],
+          "requiredEnvironment": "Supported host and installed provider CLI; separate approval and account/billing scope for live provider use.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Migrate credential references separately from values; preserve active selections, file modes and config versions.",
+        "Keep diagnostics off shared raw logs and mark unavailable configurations honestly."
+      ],
+      "limitations": [
+        "README/gateway setup references exceed the shipped manifest in places; maintain repair/retire decisions.",
+        "The exposure script reads local credential locations; inventory only here, not executed."
+      ]
+    },
+    {
+      "id": "DASH-11",
+      "name": "GitHub observations, login and constrained writes",
+      "files": [
+        "dashboard/github.js",
+        "dashboard/github_panel.py",
+        "dashboard/github_auth.py",
+        "dashboard/test_github_panel.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-21",
+        "BASE-17"
+      ],
+      "ownerPhase": "P06",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Shows configured repositories, branch/dirty/ahead-behind state, PR/check and workflow observations through local Git and gh.",
+        "Supports device-flow login status/cancel/logout and constrained repository/issue creation; gh owns credentials.",
+        "Validates fixed arguments and records actor/confirmation; Windows gh discovery and native precedence have dedicated fixtures."
+      ],
+      "reusePlan": "Reuse Git/gh parsing, constrained operations and UI controls behind workspace/provider contracts; preserve login and creation workflows unless explicitly changed.",
+      "enhancements": [
+        "Scoped external actions and durable operation/outcome records.",
+        "Clear freshness provenance and project-specific repository visibility."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-11-C01",
+          "description": "Configured repositories, partial failures, detached heads and missing auth preserve accurate display and redacted errors.",
+          "existingTests": [
+            "dashboard/test_github_panel.py"
+          ],
+          "requiredEnvironment": "Python and/or Node offline fixtures in temporary directories; no provider, broker or hardware calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-11-C02",
+          "description": "Login/cancel/logout and repository/issue creation retain target, confirmation and fixed-argv validation; lost replies require reconciliation before retry.",
+          "existingTests": [
+            "dashboard/test_github_panel.py"
+          ],
+          "requiredEnvironment": "Offline subprocess fixtures, then separately approved actual GitHub account/host qualification.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve configured paths, Git remote identity, gh credential ownership and API-limit state.",
+        "Local tracking refs remain labeled as potentially stale; do not silently fetch or merge."
+      ],
+      "limitations": [
+        "Current display is not proof of fresh remote state; writes are local-operator actions, not tenant-scoped."
+      ]
+    },
+    {
+      "id": "DASH-12",
+      "name": "Resource manifest and fixed diagnostic probes",
+      "files": [
+        "dashboard/resources.json"
+      ],
+      "role": "configuration",
+      "baselineGroups": [
+        "BASE-23",
+        "BASE-36"
+      ],
+      "ownerPhase": "P06",
+      "disposition": "extend",
+      "currentBehavior": [
+        "Settings resources load a committed manifest of named dependencies, status probes and operator setup hints; server resolves fixed check definitions.",
+        "Requests cannot provide arbitrary probe argv. Missing tool/auth state is exposed separately from configured selections."
+      ],
+      "reusePlan": "Keep manifest-driven fixed probes and setup hints; expand them into versioned plugin health contributions with scoped execution.",
+      "enhancements": [
+        "Plugin-specific prerequisites and supported-version diagnostics.",
+        "Portable macOS/Linux/WSL setup guidance without machine-specific paths."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-12-C01",
+          "description": "Every declared check resolves to a reviewed command, produces bounded nonsecret status and reports missing tools without arbitrary request-supplied execution.",
+          "existingTests": [
+            "dashboard/smoke.sh",
+            "dashboard/test_no_inherited_stdin.py"
+          ],
+          "requiredEnvironment": "Python and/or Node offline fixtures in temporary directories; no provider, broker or hardware calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-12-C02",
+          "description": "The Settings view preserves resources, refresh and setup guidance when optional plugins are absent.",
+          "existingTests": [
+            "dashboard/test_e2e.mjs"
+          ],
+          "requiredEnvironment": "Isolated dashboard home and port; Node DOM fixtures, then Playwright browser on supported macOS/Linux/WSL hosts. No live user state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Inventory current manifest IDs and their command/environment dependencies.",
+        "Preserve configured/unavailable/unknown distinctions and bounded cache/refresh behavior."
+      ],
+      "limitations": [
+        "Manifest and UI checks are not evidence that each external dependency works on all platforms."
+      ]
+    },
+    {
+      "id": "DASH-13",
+      "name": "Atlassian ticket view and action regression contract",
+      "files": [
+        "dashboard/test_tickets.py"
+      ],
+      "role": "test-support",
+      "baselineGroups": [
+        "BASE-22",
+        "BASE-17"
+      ],
+      "ownerPhase": "P06",
+      "disposition": "retain-evidence",
+      "currentBehavior": [
+        "Current server/app routes show Jira tickets and transitions, post comments and change ticket state; setup/configuration remains operator-owned.",
+        "The assigned test file covers the dashboard integration contract; shared route/rendering code is assigned to DASH-01 and DASH-02, while taskmgmt implementation is in the runtime audit."
+      ],
+      "reusePlan": "Carry ticket display/action fixtures into the extracted Atlassian plugin and keep existing UI actions explicit in the migration matrix.",
+      "enhancements": [
+        "Scoped account/project/issue grants and uncertain-write reconciliation.",
+        "Freshness and partial-service failure shown without losing local work."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-13-C01",
+          "description": "Ticket read/filter/transition/comment routes preserve current validation, errors and browser behavior through the new owner.",
+          "existingTests": [
+            "dashboard/test_tickets.py"
+          ],
+          "requiredEnvironment": "Offline Jira/Confluence fixtures and isolated dashboard; separate real-service qualification.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-13-C02",
+          "description": "Retries following a lost comment/transition response cannot silently duplicate or apply an unintended transition.",
+          "existingTests": [
+            "dashboard/test_tickets.py"
+          ],
+          "requiredEnvironment": "Python and/or Node offline fixtures in temporary directories; no provider, broker or hardware calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve issue keys, local task links, setup hints and external account references.",
+        "Do not treat local rollback or worker cleanup as reversing external transitions."
+      ],
+      "limitations": [
+        "This component has test ownership, not exclusive implementation ownership; shared app/server code is mapped elsewhere.",
+        "Existing tests need additional operation-identity cases in the target."
+      ]
+    },
+    {
+      "id": "DASH-14",
+      "name": "IIOT view and Modbus TCP tag table",
+      "files": [
+        "dashboard/iiot.js",
+        "dashboard/modbus_poll.py",
+        "dashboard/test_modbus_poll.py",
+        "dashboard/test_field_panels.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-24",
+        "BASE-27",
+        "BASE-17"
+      ],
+      "ownerPhase": "P11",
+      "disposition": "extract",
+      "currentBehavior": [
+        "IIOT contains Modbus, PROFINET DCP, MQTT, Ethernet scanner and CODESYS cards with explicit setup/privilege hints; their UI contributions must remain independently usable.",
+        "Modbus TCP implements reads 1–4 and writes 5/6/15/16 with confirmation, actor, durable intent and target binding.",
+        "A persisted table supports up to 64 tags on one configured endpoint, zero-based addresses, scaling, numeric types and high/low word order; a background poller reports stale values and connection errors.",
+        "The shared IIOT script also edits expected PROFINET stations and imports observed snapshots; the protocol comparison module is mapped in DASH-20."
+      ],
+      "reusePlan": "Extract protocol/poller code as the Modbus child plugin and reuse validation, tag-table shape and UI workflows. Migrate the existing IIOT shell to registered domain slots rather than replacing its functions.",
+      "enhancements": [
+        "Scoped tool identities, NATS observations and per-target permission checks.",
+        "Stable evidence/artifact references and project-specific saved configurations."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-14-C01",
+          "description": "TCP reads, writes, scaling, types, word order, malformed frames, persistence and stale values match current fixtures.",
+          "existingTests": [
+            "dashboard/test_modbus_poll.py"
+          ],
+          "requiredEnvironment": "Python offline fixtures in temporary directories; no hardware, network service or provider calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-14-C02",
+          "description": "Wrong/currently changed targets, missing confirmation, failed intent journaling and transport loss prevent unsafe writes or produce unknown outcomes without automatic retry.",
+          "existingTests": [
+            "dashboard/test_modbus_poll.py"
+          ],
+          "requiredEnvironment": "Offline wire/intent fixtures first; separately approved target device, interface, privileges and installed vendor tools for live qualification.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-14-C03",
+          "description": "All five IIOT cards and existing configuration/import actions remain visible; absent optional plugins give useful status and never start scans on mere page load.",
+          "existingTests": [
+            "dashboard/test_field_panels.py",
+            "dashboard/test_e2e.mjs"
+          ],
+          "requiredEnvironment": "Isolated dashboard plus Node DOM fixtures and Playwright browser on supported hosts.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Migrate saved tag endpoint/table, actor/intents and journal references with units and zero-based addresses intact.",
+        "Preserve one-endpoint and tag limits until a separately accepted capacity enhancement.",
+        "Map Modbus write UI and endpoint separately from read subscription permission."
+      ],
+      "limitations": [
+        "Sequential reads are not atomic process snapshots.",
+        "Source and mock fixtures are not physical-device qualification; some field UI remains in the shared app."
+      ]
+    },
+    {
+      "id": "DASH-15",
+      "name": "Modbus serial RTU transport",
+      "files": [
+        "dashboard/modbus_rtu.py",
+        "dashboard/test_modbus_rtu.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-24"
+      ],
+      "ownerPhase": "P11",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "RTU reuses the tag-table protocol over pyserial, CRC framing, configured baud/parity/stop bits, silent intervals and request deadlines.",
+        "Canonical-port locking serializes local clients; actor/confirm/journal/target controls precede writes."
+      ],
+      "reusePlan": "Wrap the existing transport inside the Modbus package; retain wire, timing, port-alias and target-binding tests.",
+      "enhancements": [
+        "Declared serial/USB/WSL capabilities and scoped device access.",
+        "Consistent unknown-outcome and evidence contracts across TCP/RTU."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-15-C01",
+          "description": "CRC, fragmentation, inter-frame timing, stale-input flushing, serial settings and port aliases preserve current behavior.",
+          "existingTests": [
+            "dashboard/test_modbus_rtu.py"
+          ],
+          "requiredEnvironment": "Python offline fixtures in temporary directories; no hardware, network service or provider calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-15-C02",
+          "description": "Failed journal/open, missing confirmation, target change and lost write replies cannot become silent success or automatic retry.",
+          "existingTests": [
+            "dashboard/test_modbus_rtu.py"
+          ],
+          "requiredEnvironment": "Offline wire/intent fixtures first; separately approved target device, interface, privileges and installed vendor tools for live qualification.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve serial settings, target identity, table configuration and timing units.",
+        "Explicitly qualify USB forwarding and serial adapter support per host."
+      ],
+      "limitations": [
+        "Needs pyserial and suitable RS-485 hardware; local locking does not stop another physical bus master."
+      ]
+    },
+    {
+      "id": "DASH-16",
+      "name": "Bounded legacy MQTT request endpoints",
+      "files": [
+        "dashboard/mqtt.py",
+        "dashboard/test_mqtt.py",
+        "dashboard/stub_broker.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-25"
+      ],
+      "ownerPhase": "P11",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Legacy /api/mqtt/publish and /api/mqtt/subscribe use a bounded standard-library MQTT 3.1.1 connection with topic/payload validation and timed collection.",
+        "Current constants allow 4 MiB packet reads, 4096-byte outgoing payloads and bounded subscription messages; historical comments describing a 64 KiB packet cap are stale.",
+        "The stub broker exercises simple CONNECT/PUBLISH/SUBSCRIBE/PING behavior for isolated tests."
+      ],
+      "reusePlan": "Keep compatibility endpoints and validation while wrapping operations in the MQTT plugin. Share proven transport code with the monitor only after equivalence tests and a documented endpoint decision.",
+      "enhancements": [
+        "Authenticated target/topic grants and operation identity.",
+        "Clear distinction between publishing a message and confirming a device effect."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-16-C01",
+          "description": "Legacy payload/topic limits, packet framing, bounded subscribe and error responses remain unchanged or explicitly versioned.",
+          "existingTests": [
+            "dashboard/test_mqtt.py"
+          ],
+          "requiredEnvironment": "Python offline fixtures in temporary directories; no hardware, network service or provider calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-16-C02",
+          "description": "A local broker fixture covers publish/subscribe/reconnect without contacting a plant broker; rejected or unknown effects remain visible.",
+          "existingTests": [
+            "dashboard/test_mqtt.py"
+          ],
+          "requiredEnvironment": "Isolated loopback stub broker; no external equipment.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Inventory every legacy endpoint consumer before replacement.",
+        "Preserve effective HTTP and protocol limits and mark stale documentation separately."
+      ],
+      "limitations": [
+        "The handwritten client is limited and does not provide the monitor's TLS/auth/QoS behavior.",
+        "Broker delivery cannot prove equipment execution."
+      ]
+    },
+    {
+      "id": "DASH-17",
+      "name": "MQTT topic monitor and publication UI",
+      "files": [
+        "dashboard/mqtt.js",
+        "dashboard/mqtt_monitor.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-25",
+        "BASE-17"
+      ],
+      "ownerPhase": "P11",
+      "disposition": "extract",
+      "currentBehavior": [
+        "One persistent Paho MQTT 3.1.1 session maintains a topic tree with last value, age, count, QoS/retain and a bounded arrival log.",
+        "UI supports broker/filter configuration, connect/stop/clear, topic inspection, filters and publication with QoS 0/1/2 and retain.",
+        "Credentials/TLS configuration come from a private operator file keyed by broker; the browser receives status rather than secret values.",
+        "Limits are 2000 topics, 1000 messages, 2048 displayed bytes per value and 16 topic filters; truncation, overflow and disconnected age remain visible."
+      ],
+      "reusePlan": "Reuse monitor state machine, bounded buffers, secret lookup and topic UI within a MQTT child package. Expose project-scoped NATS observations rather than making every viewer create its own session.",
+      "enhancements": [
+        "Shared scoped monitoring without duplicate sessions from additional viewers.",
+        "Owner-enforced broker/topic/action grants, clearer effective publication limits."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-17-C01",
+          "description": "Topic tree, inspect, arrival order, retain/QoS, limits, truncation and reconnect/stale labels match existing tests and targeted new monitor fixtures.",
+          "existingTests": [
+            "dashboard/test_mqtt.py",
+            "dashboard/test_field_panels.py",
+            "dashboard/test_e2e.mjs"
+          ],
+          "requiredEnvironment": "Isolated dashboard plus Node DOM fixtures and Playwright browser on supported hosts.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-17-C02",
+          "description": "Stop/clear/publish retain intended distinctions; browser inputs never inject credential values, and publication authorization is bound to current broker/topic.",
+          "existingTests": [
+            "dashboard/test_mqtt.py",
+            "dashboard/test_field_panels.py"
+          ],
+          "requiredEnvironment": "Offline Paho fixtures and isolated TLS/QoS broker; later declared broker-version qualification.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve broker/session configuration, user preferences and credential references without copying secrets into shared records.",
+        "Retain one-session bounds unless a separately reviewed multi-session capability is enabled.",
+        "Reconcile HTTP body limits with monitor publication limits explicitly."
+      ],
+      "limitations": [
+        "Library capability is broader than configured protocol; current monitor explicitly selects MQTTv311.",
+        "UI confirmation alone is not an actor/target-bound authorization system."
+      ]
+    },
+    {
+      "id": "DASH-18",
+      "name": "Private IPv4 scan and network observation UI",
+      "files": [
+        "dashboard/netscan.js",
+        "dashboard/netscan.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-26",
+        "BASE-17"
+      ],
+      "ownerPhase": "P11",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Scans an explicitly entered private IPv4 range using bounded TCP connects and selected industrial ports; exposes start/stop, progress, results and CSV export.",
+        "Enriches observations with local neighbor/MAC/OUI data, using Linux/macOS tables and a Windows ARP fallback under WSL.",
+        "Caps include 1024 hosts, 16 ports, 64 workers and 300 seconds; UI preferences retain range/port choices."
+      ],
+      "reusePlan": "Reuse scanner validation, cancellation, bounds, OS-specific neighbor parsing and result display. Wrap it in a network-tool package with explicit scope and observation provenance.",
+      "enhancements": [
+        "Project-bound scan grants and durable evidence references.",
+        "Clear source/time/uncertainty for inferred service labels and neighbor data."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-18-C01",
+          "description": "Invalid ranges/ports and oversized requests are rejected; cancellation, progress, CSV and platform neighbor parsing remain consistent.",
+          "existingTests": [
+            "dashboard/test_field_panels.py"
+          ],
+          "requiredEnvironment": "Python offline fixtures in temporary directories; no hardware, network service or provider calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-18-C02",
+          "description": "Viewing results or reconnecting a dashboard cannot begin another scan; unavailable neighbor data does not invent identity.",
+          "existingTests": [
+            "dashboard/test_field_panels.py",
+            "dashboard/test_e2e.mjs"
+          ],
+          "requiredEnvironment": "Isolated dashboard plus Node DOM fixtures and Playwright browser on supported hosts.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve configured ports, saved preferences, labels, address bounds, cancellation and audit events.",
+        "Keep raw neighbor/vendor observations distinct from discovered verified device identity."
+      ],
+      "limitations": [
+        "A listening port is a hint, not equipment type proof.",
+        "WSL network topology can prevent useful layer-2 identity; actual interface qualification is separate."
+      ]
+    },
+    {
+      "id": "DASH-19",
+      "name": "PROFINET expected stations and imported comparison",
+      "files": [
+        "dashboard/profinet.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-27",
+        "BASE-17"
+      ],
+      "ownerPhase": "P11",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Validates and persists expected station names, addresses and device data, then compares them against an imported observed snapshot.",
+        "Reports missing/unexpected/mismatched/duplicate observations and supports JSON-lines input from the privileged DCP helper; this module sends no raw DCP frames."
+      ],
+      "reusePlan": "Reuse the schema/parser/reconciliation engine and shared IIOT controls as the read/import part of the PROFINET package.",
+      "enhancements": [
+        "Immutable source/time/version references for observations.",
+        "Scoped expected-state edits and comparison views across teams."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-19-C01",
+          "description": "Expected/observed fixtures retain station-name/IP validation and all missing/extra/conflict results after migration.",
+          "existingTests": [
+            "dashboard/test_field_panels.py",
+            "dashboard/test_pn_dcp.py"
+          ],
+          "requiredEnvironment": "Python offline fixtures in temporary directories; no hardware, network service or provider calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-19-C02",
+          "description": "Importing malformed, stale or partial evidence is explicit and cannot start device traffic.",
+          "existingTests": [
+            "dashboard/test_field_panels.py",
+            "dashboard/test_pn_dcp.py"
+          ],
+          "requiredEnvironment": "Isolated dashboard plus Node DOM fixtures and Playwright browser on supported hosts.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve expected schema, last imported snapshot, record identity and comparison meaning.",
+        "Map schema-save and snapshot-import actions as actual writes to project state."
+      ],
+      "limitations": [
+        "Observed snapshots may be stale; a match is not a live assurance or control authorization."
+      ]
+    },
+    {
+      "id": "DASH-20",
+      "name": "Privileged PROFINET DCP tool",
+      "files": [
+        "taskmgmt/pn_dcp.py",
+        "dashboard/test_pn_dcp.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-28"
+      ],
+      "ownerPhase": "P11",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Linux raw-socket helper emits JSON lines for Identify; permanent Set operates on one explicit unicast MAC and one name or complete IP setting.",
+        "Set reads current values, requires exact MAC confirmation via terminal, durably records intent before sending and records denied/unknown outcomes without blind retry.",
+        "Validates interface, source/response framing, privilege, target and supported blocks."
+      ],
+      "reusePlan": "Keep the wire/parser and intent code; expose a separately privileged tool capability with target-bound approval rather than elevating the dashboard.",
+      "enhancements": [
+        "Remote tool-host declarations for physical interface access.",
+        "Owner-side permission enforcement independent of optional client hooks."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-20-C01",
+          "description": "Identify/Get/Set frame vectors, VLAN parsing, malformed data, target validation and expected-state rechecks retain current behavior.",
+          "existingTests": [
+            "dashboard/test_pn_dcp.py"
+          ],
+          "requiredEnvironment": "Python offline fixtures in temporary directories; no hardware, network service or provider calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-20-C02",
+          "description": "Missing privilege, wrong MAC, changed current value, failed fsync, bad acknowledgment and interruption refuse or record unknown state without retry.",
+          "existingTests": [
+            "dashboard/test_pn_dcp.py"
+          ],
+          "requiredEnvironment": "Offline wire/intent fixtures first; separately approved target device, interface, privileges and installed vendor tools for live qualification.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve exact command options, JSON-line output, journal contents and one-target limits.",
+        "Keep read discovery and permanent writes as separately granted operations."
+      ],
+      "limitations": [
+        "Needs Linux AF_PACKET and an actual interface on the target segment; WSL NAT does not provide that automatically."
+      ]
+    },
+    {
+      "id": "DASH-21",
+      "name": "Passive BOOTP/DHCP observation tool",
+      "files": [
+        "taskmgmt/bootp_probe.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-29"
+      ],
+      "ownerPhase": "P11",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Listens on privileged UDP ports 67/68 for BOOTP/DHCP requests, parses options and prints observations within a time bound.",
+        "The dashboard describes its explicit privileged invocation; it never answers requests or assigns addresses."
+      ],
+      "reusePlan": "Retain the passive listener and parser in a separately scoped diagnostics plugin; make observations available through evidence references.",
+      "enhancements": [
+        "Explicit interface/privilege diagnostics and structured observation provenance."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-21-C01",
+          "description": "Offline packets cover valid/truncated BOOTP/DHCP options, malformed lengths, interface selection and timeout behavior.",
+          "existingTests": [],
+          "requiredEnvironment": "Python offline fixtures in temporary directories; no hardware, network service or provider calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-21-C02",
+          "description": "A controlled capture proves the plugin only listens and never emits offers, leases or replies.",
+          "existingTests": [],
+          "requiredEnvironment": "Approved isolated network namespace/capture fixture, then declared host qualification.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve CLI options, JSON/text outputs and passive-only behavior.",
+        "Do not convert this existing observation capability into an address-assignment service."
+      ],
+      "limitations": [
+        "No dedicated tracked BOOTP test file was identified in this assigned tree; new parser/passivity fixtures are required.",
+        "UDP binding privilege and interface access vary by host."
+      ]
+    },
+    {
+      "id": "DASH-22",
+      "name": "EtherNet/IP explicit messaging library",
+      "files": [
+        "dashboard/enip.py",
+        "dashboard/test_enip.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-30"
+      ],
+      "ownerPhase": "P11",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Standard-library synchronous EtherNet/IP explicit TCP session handles identity/CIP requests and basic symbolic atomic Logix reads/writes.",
+        "Writes require confirmation, named actor and durable audit intent before transmission; failed/unknown results are recorded.",
+        "No cyclic I/O, connected messaging, UDP or chassis/backplane routing is implemented."
+      ],
+      "reusePlan": "Retain framing, session, paths, validation and tests as the common EtherNet/IP transport used by vendor plugins.",
+      "enhancements": [
+        "Scoped tool invocation and shared operation/evidence contracts.",
+        "Versioned device-family support declarations."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-22-C01",
+          "description": "Identity/session, atomic data types, paths, framing, malformed/oversized replies and close behavior match current vectors.",
+          "existingTests": [
+            "dashboard/test_enip.py"
+          ],
+          "requiredEnvironment": "Python offline fixtures in temporary directories; no hardware, network service or provider calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-22-C02",
+          "description": "Unauthorized or unjournaled writes never reach transport; timeout remains unknown with no unsafe retry.",
+          "existingTests": [
+            "dashboard/test_enip.py"
+          ],
+          "requiredEnvironment": "Offline wire/intent fixtures first; separately approved target device, interface, privileges and installed vendor tools for live qualification.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve protocol and numeric type semantics, actor/target audit records and public Python entry points.",
+        "This library has no current dashboard route; adding a panel is an enhancement, not claimed parity."
+      ],
+      "limitations": [
+        "Source and fake sockets do not establish controller-family compatibility."
+      ]
+    },
+    {
+      "id": "DASH-23",
+      "name": "Rockwell Logix fragmented tag access",
+      "files": [
+        "dashboard/logix.py",
+        "dashboard/test_logix.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-30"
+      ],
+      "ownerPhase": "P11",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Extends EtherNet/IP data access with symbolic and version-gated instance paths, fragmented reads/writes, structures with explicit size and read-modify-write masks.",
+        "Tracks partial/rejected/unknown outcomes, exact byte offsets/type constraints and durable target-bound write intent."
+      ],
+      "reusePlan": "Reuse protocol logic and manual-vector fixtures in a Rockwell child package; wrap language-neutral tools around the existing implementation.",
+      "enhancements": [
+        "Declared controller/version capabilities and scoped tag access.",
+        "Consistent evidence for partially completed writes."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-23-C01",
+          "description": "Existing atomic/fragmented/structure/mask vectors, offset behavior and version constraints remain equivalent.",
+          "existingTests": [
+            "dashboard/test_logix.py"
+          ],
+          "requiredEnvironment": "Python offline fixtures in temporary directories; no hardware, network service or provider calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-23-C02",
+          "description": "Journal failure, missing actor/confirmation, partial transfers and lost replies never become automatic replay or full success.",
+          "existingTests": [
+            "dashboard/test_logix.py"
+          ],
+          "requiredEnvironment": "Offline wire/intent fixtures first; separately approved target device, interface, privileges and installed vendor tools for live qualification.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve type descriptors, BOOL bit positions, structure-size requirements and path-version rules.",
+        "Retain library use separately from any future UI/API contribution."
+      ],
+      "limitations": [
+        "This is not the licensed Windows Logix Designer SDK and does not provide full UDT discovery or chassis routing."
+      ]
+    },
+    {
+      "id": "DASH-24",
+      "name": "ADS state, symbol and memory access",
+      "files": [
+        "dashboard/ads.py",
+        "dashboard/test_ads.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-31"
+      ],
+      "ownerPhase": "P11",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "AMS/TCP client reads device/state/index/symbol data through preconfigured source/target NetIds and existing return routes.",
+        "Confirmed writes, read-write and write-control operations require actor/intent journaling; symbol handles are acquired/released per call.",
+        "The diagnostic CLI exposes reads; explicit Python methods expose confirmed control."
+      ],
+      "reusePlan": "Reuse parser, route guidance, handle lifecycle, journal and tests in an ADS child package with owner-enforced target/action grants.",
+      "enhancements": [
+        "Explicit route/host support diagnostics and scoped value/control tools.",
+        "Evidence identifying source/target and uncertain cleanup."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-24-C01",
+          "description": "Read/write/read-write/control and symbol lifetime fixtures retain framing/size checks, route errors and cleanup behavior.",
+          "existingTests": [
+            "dashboard/test_ads.py"
+          ],
+          "requiredEnvironment": "Python offline fixtures in temporary directories; no hardware, network service or provider calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-24-C02",
+          "description": "Confirmation/journal failure prevents network writes; transport loss and failed handle release remain explicit.",
+          "existingTests": [
+            "dashboard/test_ads.py"
+          ],
+          "requiredEnvironment": "Offline wire/intent fixtures first; separately approved target device, interface, privileges and installed vendor tools for live qualification.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve NetIds, port, index groups/offsets, types, journal and unknown-outcome semantics.",
+        "Do not silently install AMS routes or add CLI write commands."
+      ],
+      "limitations": [
+        "The client never configures routes; remote cleanup cannot be guaranteed after disconnection."
+      ]
+    },
+    {
+      "id": "DASH-25",
+      "name": "TwinCAT EtherCAT diagnostics and confirmed state requests",
+      "files": [
+        "dashboard/ecat_diag.py",
+        "dashboard/test_ecat_diag.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-32"
+      ],
+      "ownerPhase": "P11",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Reads a configured TwinCAT EtherCAT master's state, configured slaves, available link/port counters and diagnostic values through ADS.",
+        "Unknown mappings remain unavailable; snapshots are sequential and topology changes are detected.",
+        "Also contains request_state for a known configured slave: validates desired state/address, uses ADS actor/confirmation and durable intent, and records write outcomes."
+      ],
+      "reusePlan": "Retain both read diagnostics and the existing explicit state-request capability in the TwinCAT child package. Preserve scope separation; do not lose the write method because the baseline title says diagnostics.",
+      "enhancements": [
+        "Owner-controlled grants for state changes and source-timed observations.",
+        "Clear versioned availability for diagnostic fields."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-25-C01",
+          "description": "Full/empty/changed topology, short/excess responses and unavailable slave data preserve exact known/unknown behavior.",
+          "existingTests": [
+            "dashboard/test_ecat_diag.py"
+          ],
+          "requiredEnvironment": "Python offline fixtures in temporary directories; no hardware, network service or provider calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-25-C02",
+          "description": "INIT/PREOP/BOOT/SAFEOP/OP requests require the configured slave, actor, confirmation and successful journal before transmission; unknown results never retry automatically.",
+          "existingTests": [
+            "dashboard/test_ecat_diag.py"
+          ],
+          "requiredEnvironment": "Offline wire/intent fixtures first; separately approved target device, interface, privileges and installed vendor tools for live qualification.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve device NetId distinction, configured slave addresses and state enumeration.",
+        "Inventory both Python and CLI entry points before packaging."
+      ],
+      "limitations": [
+        "Requires an existing reachable TwinCAT master; this does not implement EtherCAT real-time control or an EtherCAT master."
+      ]
+    },
+    {
+      "id": "DASH-26",
+      "name": "CODESYS target management and runtime actions",
+      "files": [
+        "dashboard/codesys.js",
+        "dashboard/codesys_panel.py",
+        "dashboard/test_codesys_panel.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-33",
+        "BASE-17"
+      ],
+      "ownerPhase": "P11",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Shows operator-configured Linux SL x86-64 targets, measured runtime/platform/version/gateway state and actionable unavailable status.",
+        "Supports prepare/confirm for start/stop/reset, boot-app, install and update through SSH/external MCP, with expiring single-use tokens and repeated target binding checks.",
+        "Backups and committed operation audit precede applicable writes; concurrent actions are locked and there is no background SSH polling or automatic write retry."
+      ],
+      "reusePlan": "Reuse inventory validation, preparation tokens, target rechecks, backup and transport routines behind a CODESYS child contract; preserve existing controls as a registered domain view.",
+      "enhancements": [
+        "Portable tool discovery and declared MCP/runtime/version support.",
+        "Scoped remote tool execution with evidence and recoverable unknown outcomes."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-26-C01",
+          "description": "Empty/wrong/unreachable targets, missing gateway, changed platform/app identity and redacted MCP errors preserve current read and disabled-control behavior.",
+          "existingTests": [
+            "dashboard/test_codesys_panel.py"
+          ],
+          "requiredEnvironment": "Python offline fixtures in temporary directories; no hardware, network service or provider calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-26-C02",
+          "description": "Each existing action requires fresh target-bound confirmation, backup/audit success and one-use token; canceled/expired/replayed requests cannot mutate.",
+          "existingTests": [
+            "dashboard/test_codesys_panel.py"
+          ],
+          "requiredEnvironment": "Offline wire/intent fixtures first; separately approved target device, interface, privileges and installed vendor tools for live qualification.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-26-C03",
+          "description": "Existing target cards, confirmation/cancel/error workflows and no-background-probe behavior survive UI extraction.",
+          "existingTests": [
+            "dashboard/test_codesys_panel.py",
+            "dashboard/test_e2e.mjs"
+          ],
+          "requiredEnvironment": "Isolated dashboard plus Node DOM fixtures and Playwright browser on supported hosts.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Migrate inventory, package/version expectations and backup/evidence references while keeping secrets separate.",
+        "Preserve machine/project/gateway/runtime binding and operation IDs.",
+        "Replace hardcoded Node discovery with qualified host capabilities."
+      ],
+      "limitations": [
+        "Current adapter is scoped to configured Linux SL targets and external tooling; it does not prove Windows IDE or every manufacturer/runtime compatibility."
+      ]
+    },
+    {
+      "id": "DASH-27",
+      "name": "Classic PCAP analyzer, PNG rendering and reproducible fixture",
+      "files": [
+        "nettraffic/README.md",
+        "nettraffic/__init__.py",
+        "nettraffic/analyze.py",
+        "nettraffic/fixtures/sample.pcap",
+        "nettraffic/make_fixture.py",
+        "nettraffic/pcap.py",
+        "nettraffic/png.py",
+        "nettraffic/test_nettraffic.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-34"
+      ],
+      "ownerPhase": "P11",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Streams Ethernet/VLAN classic pcap in either byte order and micro/nanosecond timestamps; rejects invalid lengths and unsupported linktypes.",
+        "Summarizes protocol packet/original-frame-byte counts, top five source talkers and bounded timeline; renders a labeled 1000x900 PNG with exact values.",
+        "Caps individual payload allocation at 16 MiB, unique talkers at 10000 and timeline at 60 bins; supports empty/unordered captures.",
+        "Committed deterministic 18-packet fixture and generator support byte-order, count and PNG structure checks."
+      ],
+      "reusePlan": "Retain analyzer, PNG code and fixture as a portable offline evidence tool plugin; expose inputs/outputs through scoped artifact references without rewriting the parser.",
+      "enhancements": [
+        "Project artifact permission and immutable source/output digests.",
+        "Optional dashboard artifact preview using the existing rendering output."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-27-C01",
+          "description": "Both byte orders/timestamp formats, exact protocol bytes/talkers, malformed lengths, empty/long timelines and PNG chunks reproduce baseline fixtures.",
+          "existingTests": [
+            "nettraffic/test_nettraffic.py"
+          ],
+          "requiredEnvironment": "Python offline fixtures in temporary directories; no hardware, network service or provider calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-27-C02",
+          "description": "Plugin and direct/module CLI return the same summaries and bounded failures; a changed or unauthorized capture cannot be silently reused.",
+          "existingTests": [
+            "nettraffic/test_nettraffic.py"
+          ],
+          "requiredEnvironment": "Python offline fixtures in temporary directories; no hardware, network service or provider calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Keep CLI/module entry points, units, output dimensions, deterministic fixture and historical test provenance.",
+        "Treat input as a stable file and preserve source capture identity; do not add live capture implicitly."
+      ],
+      "limitations": [
+        "No pcapng, stream reassembly or IPv6 extension traversal; source README results are historical and were not rerun."
+      ]
+    },
+    {
+      "id": "DASH-28",
+      "name": "Dashboard restart and OS startup integration",
+      "files": [
+        "dashboard/restart.sh",
+        "dashboard/ccc-dashboard.service",
+        "dashboard/ccc-dashboard.plist"
+      ],
+      "role": "configuration",
+      "baselineGroups": [
+        "BASE-36",
+        "BASE-17"
+      ],
+      "ownerPhase": "P12",
+      "disposition": "extend",
+      "currentBehavior": [
+        "restart.sh starts the local dashboard and validates the serving process/home; systemd and launchd entries arrange startup.",
+        "macOS templates use install-time placeholders; the committed systemd example contains a machine-specific /mnt/c/Dev/agentmux path.",
+        "The restart script also has an explicit fresh-database option that must not be mistaken for an ordinary update."
+      ],
+      "reusePlan": "Reuse startup and readiness checks while replacing hardcoded path assumptions with install-time configuration; package the existing dashboard entry point alongside the evolving platform.",
+      "enhancements": [
+        "Portable native macOS/Linux and Windows-via-WSL lifecycle.",
+        "Versioned install/update/rollback and actionable diagnostics."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-28-C01",
+          "description": "Install/start/stop/restart on each supported host preserves the intended home/port and reports only verified readiness.",
+          "existingTests": [
+            "dashboard/test_residue.sh"
+          ],
+          "requiredEnvironment": "Disposable macOS launchd, Linux systemd and WSL installations; no live operator service.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-28-C02",
+          "description": "Update/rollback never selects another home or deletes state; fresh-database behavior requires its explicit action and preserves recovery evidence.",
+          "existingTests": [
+            "dashboard/test_residue.sh"
+          ],
+          "requiredEnvironment": "Disposable deployment with fixture data and backup/restore.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve operator launch behavior, configuration/environment and log locations or provide versioned migration.",
+        "Remove machine-specific paths and resolve one runtime home/socket consistently.",
+        "Keep database reset separate from normal restart."
+      ],
+      "limitations": [
+        "Committed service examples are not proof of clean install on the new support matrix."
+      ]
+    },
+    {
+      "id": "DASH-29",
+      "name": "Isolated dashboard test runner and residue checks",
+      "files": [
+        "dashboard/run_tests.sh",
+        "dashboard/suite_server.py",
+        "dashboard/testlib.sh",
+        "dashboard/test_testlib.sh",
+        "dashboard/check_test_failability.sh",
+        "dashboard/check_test_residue.sh",
+        "dashboard/residue_state.py",
+        "dashboard/test_residue.sh",
+        "dashboard/syntax_check.sh",
+        "dashboard/smoke.sh"
+      ],
+      "role": "test-support",
+      "baselineGroups": [
+        "BASE-37",
+        "BASE-36"
+      ],
+      "ownerPhase": "P01",
+      "disposition": "retain",
+      "currentBehavior": [
+        "Runner creates a temporary Agentmux home and its own free port, isolates suite processes, and checks that the operator dashboard PID/home was not changed.",
+        "Shared test helpers, deliberate failability checks and residue snapshots guard against false-green assertions and persistent-state damage.",
+        "Smoke and syntax suites cover endpoint/asset basics and scripts; some suites create fixture records or throwaway workers and are not passive reads.",
+        "Persistent residue manifests hash bytes/modes without printing contents; continuously changing pane/courier logs have an explicit coverage boundary."
+      ],
+      "reusePlan": "Keep the existing runner and behavioral assertions as baseline evidence. Add target contract suites to the same promotion process without weakening assertions to match new code.",
+      "enhancements": [
+        "Machine-readable pass/fail/skip, exact environment/version and evidence links.",
+        "Targeted old/new parity checks and explicit destructive-fixture isolation."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-29-C01",
+          "description": "Deliberate broken assertions and known-old code cause failure; a missing prerequisite is skipped/blocked explicitly rather than counted as pass.",
+          "existingTests": [
+            "dashboard/test_testlib.sh",
+            "dashboard/check_test_failability.sh",
+            "dashboard/test_residue.sh"
+          ],
+          "requiredEnvironment": "Static checks and Python/Node/shell fixtures in a disposable checkout; no live operator state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-29-C02",
+          "description": "Full fixture runs preserve the live dashboard/home and scoped persistent state; cancellation stops child writers before cleanup.",
+          "existingTests": [
+            "dashboard/test_residue.sh",
+            "dashboard/check_test_residue.sh"
+          ],
+          "requiredEnvironment": "Disposable supported host with shell/process tools; operator state is observed only by permitted safe metadata.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve named regression intent, fixtures, isolation rules and historical outcomes with version attribution.",
+        "Do not use broad test runs against user services while establishing baseline.",
+        "Record newly uncovered coverage gaps separately from existing six architecture findings."
+      ],
+      "limitations": [
+        "No suite was executed for this audit.",
+        "Runner comments about leasing the usual port are older than the current separate-port implementation; actual code governs."
+      ]
+    },
+    {
+      "id": "DASH-30",
+      "name": "Real browser dashboard workflow suite",
+      "files": [
+        "dashboard/test_e2e.mjs",
+        "dashboard/test_e2e.sh"
+      ],
+      "role": "test-support",
+      "baselineGroups": [
+        "BASE-17",
+        "BASE-37"
+      ],
+      "ownerPhase": "P07",
+      "disposition": "extend",
+      "currentBehavior": [
+        "Playwright suite launches an isolated dashboard and Firefox, fails on console/page errors and checks navigation, IIOT card rendering, interaction, theme/layout and related workflows.",
+        "Shell launcher provides a separate ephemeral home/port and manages browser-test prerequisites."
+      ],
+      "reusePlan": "Retain existing browser scenarios and extend them with explicit per-view/action/preference parity and authorized AG-UI reconnect cases. Review stale expected fixtures before establishing baseline.",
+      "enhancements": [
+        "All ten current views covered, including Federation.",
+        "Multiple users/viewers, permission revocation, keyboard/accessibility and old/new visual comparisons."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-30-C01",
+          "description": "Correct the source-level nine-versus-ten-view mismatch using the actual current navigation contract, then record an honest baseline browser result before changing dashboard implementation.",
+          "existingTests": [
+            "dashboard/test_e2e.mjs",
+            "dashboard/test_e2e.sh"
+          ],
+          "requiredEnvironment": "Pinned Playwright/Firefox with temporary home/port on a supported host.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-30-C02",
+          "description": "Each existing screen/action has an old/new scenario or a named approved workflow change; no view disappears because a new layout omits its test.",
+          "existingTests": [
+            "dashboard/test_e2e.mjs",
+            "dashboard/test_e2e.sh"
+          ],
+          "requiredEnvironment": "Baseline and target isolated dashboards using equivalent fixture records.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve meaningful assertions and compare behavior rather than merely updating selectors.",
+        "Record browser version, viewport, fixture and implementation commit for each run.",
+        "Keep browser suite prerequisites separate from offline shape/DOM tests."
+      ],
+      "limitations": [
+        "Static mismatch: the current suite expects nine views while index.html includes Federation as the tenth.",
+        "No browser suite execution or visual qualification was performed in this audit."
+      ]
+    },
+    {
+      "id": "DASH-31",
+      "name": "Harness, coordination, lifecycle and plugin regressions located under dashboard",
+      "files": [
+        "dashboard/test_argguard.sh",
+        "dashboard/test_coordination.sh",
+        "dashboard/test_courier.py",
+        "dashboard/test_dispatch.py",
+        "dashboard/test_evidence_archive.sh",
+        "dashboard/test_idle.sh",
+        "dashboard/test_inbox_guard.sh",
+        "dashboard/test_launch.sh",
+        "dashboard/test_lifecycle.sh",
+        "dashboard/test_modal_guard.sh",
+        "dashboard/test_no_inherited_stdin.py",
+        "dashboard/test_orchestration_plugin.py",
+        "dashboard/test_plugin_skills.py",
+        "dashboard/test_run.sh",
+        "dashboard/test_runcards.py",
+        "dashboard/test_runlock.py",
+        "dashboard/test_sandbox_coordination.py",
+        "dashboard/test_warrant.py"
+      ],
+      "role": "test-support",
+      "baselineGroups": [
+        "BASE-01",
+        "BASE-03",
+        "BASE-06",
+        "BASE-07",
+        "BASE-08",
+        "BASE-09",
+        "BASE-37"
+      ],
+      "ownerPhase": "P01",
+      "disposition": "retain-evidence",
+      "currentBehavior": [
+        "Tests cover unknown argument refusal, work claims/dependencies/journals, courier delivery, dispatch/unwind, evidence retention and credential repair.",
+        "Other checks cover idle/reap/kill lifecycle, inbox traversal, fake-provider launch, modal send guard and subprocess stdin isolation.",
+        "Run tests retain reviewer-only verdicts, completion gates, objection/escalation, warrants, card linkage and locking; cooperative coordination failures distinguish unknown liveness from an empty roster.",
+        "Plugin tests cover host registration, roster-gated hires, direct/raw mutation guards, MCP discovery and relocatable skill launchers."
+      ],
+      "reusePlan": "Retain all these tests as behavioral evidence for the runtime components audited elsewhere. Port their invariants into the owning P03–P06 contracts as those components move, without dropping files because they live in the dashboard folder.",
+      "enhancements": [
+        "Explicit target implementations and per-host test matrices.",
+        "Crash/duplicate/unknown-outcome cases connected to phase gates."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-31-C01",
+          "description": "Every assigned regression is mapped to an owning runtime capability and either rerun against target adapters or superseded by an equivalent accepted test.",
+          "existingTests": [
+            "dashboard/test_launch.sh",
+            "dashboard/test_dispatch.py",
+            "dashboard/test_orchestration_plugin.py",
+            "dashboard/test_plugin_skills.py",
+            "dashboard/test_run.sh"
+          ],
+          "requiredEnvironment": "Static checks and Python/Node/shell fixtures in a disposable checkout; no live operator state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-31-C02",
+          "description": "Claim/liveness/lock, guard, stdin and evidence-retention assertions still fail under deliberately broken behavior; scope and identity cannot be satisfied by changing a test expectation.",
+          "existingTests": [
+            "dashboard/test_coordination.sh",
+            "dashboard/test_courier.py",
+            "dashboard/test_runlock.py",
+            "dashboard/test_sandbox_coordination.py",
+            "dashboard/test_warrant.py",
+            "dashboard/test_evidence_archive.sh",
+            "dashboard/test_inbox_guard.sh",
+            "dashboard/test_modal_guard.sh",
+            "dashboard/test_no_inherited_stdin.py",
+            "dashboard/test_argguard.sh",
+            "dashboard/test_idle.sh",
+            "dashboard/test_lifecycle.sh",
+            "dashboard/test_runcards.py"
+          ],
+          "requiredEnvironment": "Per-test temporary homes and fake/live prerequisites declared separately; actual CLI/tmux qualification only on supported hosts.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Carry all fixtures and assertions into P01 baseline inventory, with each script's side effects and dependencies declared.",
+        "Source location does not change functional ownership; link these tests to runtime audit components.",
+        "Preserve prior historical results separately from new baseline results."
+      ],
+      "limitations": [
+        "These files test much more than the dashboard; static inventory does not certify their assertions or every host integration.",
+        "Some scripts need tmux or live subprocesses; none were run here."
+      ]
+    },
+    {
+      "id": "DASH-32",
+      "name": "Bedrock gateway differential and HTTP contract evidence",
+      "files": [
+        "dashboard/test_gateway.py",
+        "dashboard/verify_gateway_e2e.py"
+      ],
+      "role": "test-support",
+      "baselineGroups": [
+        "BASE-20",
+        "BASE-37"
+      ],
+      "ownerPhase": "P06",
+      "disposition": "retain-evidence",
+      "currentBehavior": [
+        "Gateway tests compare reconstructed source against preserved bytecode with fake upstream responses and streaming/tool/error cases.",
+        "The separate verification helper starts two gateway servers and a fake Bedrock service to exercise actual HTTP routing, aliases, body handling and failures."
+      ],
+      "reusePlan": "Retain differential and HTTP fixtures while making a named repair/retire decision for the existing gateway and missing setup paths; do not assume a new provider wrapper already covers its behavior.",
+      "enhancements": [
+        "Explicit compatibility coverage and safe authenticated exposure where retained.",
+        "Honest source/bytecode/runtime-version evidence and failure accounting."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-32-C01",
+          "description": "Supported gateway request, streaming, tool and error cases have equivalent target behavior or an approved compatibility change.",
+          "existingTests": [
+            "dashboard/test_gateway.py"
+          ],
+          "requiredEnvironment": "Static checks and Python/Node/shell fixtures in a disposable checkout; no live operator state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-32-C02",
+          "description": "HTTP alias/body/error cases pass against isolated local servers; unsupported bytecode/Python combinations remain explicit skips.",
+          "existingTests": [
+            "dashboard/verify_gateway_e2e.py"
+          ],
+          "requiredEnvironment": "Compatible Python for preserved bytecode plus isolated loopback ports/fake upstream; no AWS calls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve recovered-source provenance, supported endpoint semantics and missing-entrypoint decisions.",
+        "Do not treat mocks as real Bedrock account compatibility."
+      ],
+      "limitations": [
+        "Bytecode comparison depends on compatible Python; helper intentionally is not part of every runner invocation."
+      ]
+    },
+    {
+      "id": "DASH-33",
+      "name": "Operator diagnostics, demos and fixture maintenance",
+      "files": [
+        "dashboard/demo_protocol.sh",
+        "dashboard/probe_slots.py",
+        "dashboard/purge_test_rows.py",
+        "dashboard/seed_queue.py",
+        "dashboard/seed_ruler.sh",
+        "dashboard/setgeom.sh",
+        "dashboard/stream_status.sh"
+      ],
+      "role": "test-support",
+      "baselineGroups": [
+        "BASE-17",
+        "BASE-37"
+      ],
+      "ownerPhase": "P06",
+      "disposition": "retain",
+      "currentBehavior": [
+        "Stream status/slot probes inspect terminal SSE capacity; ruler and geometry tools deliberately alter test panes to measure legibility.",
+        "Protocol demonstration walks existing coordination/run guards; seed_queue writes historical orchestration messages for display.",
+        "purge_test_rows identifies known fixture rows and asks before deleting; it is a maintenance tool with real mutation risk, not a read-only audit."
+      ],
+      "reusePlan": "Keep useful diagnostics as explicit operator tools with scoped targets and documented side effects. Bind test-only helpers to disposable environments; retain historical sample meaning.",
+      "enhancements": [
+        "Portable CLI diagnostic commands and clear dry-run/target reporting.",
+        "Versioned fixture seeding and safe cleanup boundaries."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-33-C01",
+          "description": "Diagnostics report unavailable streams/capacity accurately and cannot silently target the wrong dashboard home or port.",
+          "existingTests": [
+            "dashboard/test_stream_slots.sh",
+            "dashboard/test_residue.sh"
+          ],
+          "requiredEnvironment": "Disposable dashboard and named throwaway terminal sessions.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-33-C02",
+          "description": "Seed/geometry/purge helpers require explicit fixture targets; previews and fixture matching preserve unrelated records and user panes.",
+          "existingTests": [
+            "dashboard/test_residue.sh"
+          ],
+          "requiredEnvironment": "Disposable home and database containing both known fixture and unrelated sentinel rows.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Inventory hardcoded loopback ports and home assumptions before packaging.",
+        "Preserve exported messages, ruler/geometry intent and confirmation behavior.",
+        "Demos remain demonstrations, not passing automated test evidence."
+      ],
+      "limitations": [
+        "Helpers can mutate panes or stored records; none were run.",
+        "Legacy fixed ports and fixture-name cleanup rules need explicit isolation review."
+      ]
+    },
+    {
+      "id": "DASH-34",
+      "name": "Vendored terminal, MQTT and OUI dependencies",
+      "files": [
+        "dashboard/vendor/README.md",
+        "dashboard/vendor/addon-fit.js",
+        "dashboard/vendor/oui.tsv.gz",
+        "dashboard/vendor/paho/LICENSE.txt",
+        "dashboard/vendor/paho/__init__.py",
+        "dashboard/vendor/paho/mqtt/__init__.py",
+        "dashboard/vendor/paho/mqtt/client.py",
+        "dashboard/vendor/paho/mqtt/enums.py",
+        "dashboard/vendor/paho/mqtt/matcher.py",
+        "dashboard/vendor/paho/mqtt/packettypes.py",
+        "dashboard/vendor/paho/mqtt/properties.py",
+        "dashboard/vendor/paho/mqtt/publish.py",
+        "dashboard/vendor/paho/mqtt/py.typed",
+        "dashboard/vendor/paho/mqtt/reasoncodes.py",
+        "dashboard/vendor/paho/mqtt/subscribe.py",
+        "dashboard/vendor/paho/mqtt/subscribeoptions.py",
+        "dashboard/vendor/xterm.css",
+        "dashboard/vendor/xterm.js"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-17",
+        "BASE-25",
+        "BASE-26",
+        "BASE-36"
+      ],
+      "ownerPhase": "P12",
+      "disposition": "retain",
+      "currentBehavior": [
+        "Committed xterm JavaScript/CSS and fit addon render terminal output without a runtime package download.",
+        "Paho MQTT 2.1.0 supplies the monitor implementation, with client/enums/matcher/packet types/properties/reason codes/publish/subscribe helpers and typing marker.",
+        "Compressed OUI table enables offline vendor lookup; vendor README records package purpose and Paho wheel hash/license metadata."
+      ],
+      "reusePlan": "Keep pinned dependencies available for offline startup and reuse their current integration. Any version/package-source replacement requires license/provenance review and dependent terminal/MQTT/scan parity checks.",
+      "enhancements": [
+        "SBOM, verifiable package hashes and reproducible offline distribution.",
+        "Documented patch/update policy and complete redistribution notices."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-34-C01",
+          "description": "An offline installation includes every needed vendor module, terminal asset and OUI table, and basic terminal/monitor/lookup fixtures work without downloads.",
+          "existingTests": [
+            "dashboard/test_e2e.mjs",
+            "dashboard/test_mqtt.py",
+            "dashboard/test_field_panels.py"
+          ],
+          "requiredEnvironment": "Network-disabled disposable install plus isolated broker fixtures.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-34-C02",
+          "description": "Each vendored upgrade is checked against recorded source/version/hash/license and reruns dependent behavior; removed metadata or notices cannot silently disappear.",
+          "existingTests": [],
+          "requiredEnvironment": "Static distribution manifest and license/provenance review; no legal certification claim.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve vendor paths/import resolution until consumers migrate.",
+        "Review license-text completeness: paho/LICENSE.txt references epl-v20/edl-v10 files that are not present in this assigned tracked vendor tree.",
+        "Keep OUI registry provenance and override semantics; vendor lookup is not authoritative device identification."
+      ],
+      "limitations": [
+        "This is dependency inventory and integration review, not a full security audit of minified or third-party source.",
+        "README comments about an older MQTT cap do not override current mqtt.py constants."
+      ]
+    },
+    {
+      "id": "DASH-35",
+      "name": "Existing branding and session-state assets",
+      "files": [
+        "dashboard/assets/logo-ccc-16.svg",
+        "dashboard/assets/logo-ccc-24.svg",
+        "dashboard/assets/logo-ccc-wordmark.svg",
+        "dashboard/assets/logo-ccc.svg",
+        "dashboard/assets/logo.svg",
+        "dashboard/assets/state-attached.svg",
+        "dashboard/assets/state-detached.svg",
+        "dashboard/assets/state-stale.svg"
+      ],
+      "role": "configuration",
+      "baselineGroups": [
+        "BASE-17"
+      ],
+      "ownerPhase": "P07",
+      "disposition": "retain",
+      "currentBehavior": [
+        "SVGs provide the current CCC brand/favicon/wordmark variants and attached/detached/stale session indicators.",
+        "CurrentColor and inline-versus-file handling allow theme-aware rendering."
+      ],
+      "reusePlan": "Reuse existing assets while decomposing visual components; product naming changes require explicit design approval rather than incidental replacement during architecture work.",
+      "enhancements": [
+        "Accessible names and tested light/dark/contrast behavior in the new component wrappers."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-35-C01",
+          "description": "Brand and state symbols render at expected sizes in all supported themes without losing state labels or relying only on color.",
+          "existingTests": [
+            "dashboard/test_themes.sh",
+            "dashboard/test_e2e.mjs"
+          ],
+          "requiredEnvironment": "Browser visual/accessibility fixture.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-35-C02",
+          "description": "Offline distribution includes all referenced assets; stale/missing asset errors remain visible.",
+          "existingTests": [
+            "dashboard/smoke.sh"
+          ],
+          "requiredEnvironment": "Disposable offline dashboard install.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve file references, SVG titles, state meaning and theme inheritance until revised deliberately."
+      ],
+      "limitations": [
+        "Byte/source inspection here did not include rendered visual qualification."
+      ]
+    },
+    {
+      "id": "DASH-36",
+      "name": "Historical dashboard build specifications",
+      "files": [
+        "dashboard/SPEC.md",
+        "dashboard/SPEC_CC.md"
+      ],
+      "role": "historical-evidence",
+      "baselineGroups": [
+        "BASE-17",
+        "BASE-37"
+      ],
+      "ownerPhase": "P00",
+      "disposition": "retain-evidence",
+      "currentBehavior": [
+        "Original build spec documents the initial terminal dashboard, local-only/security assumptions, endpoint expectations and team responsibilities.",
+        "Control Center spec records expansion to multiple views, persistence, themes, integrations and older verification notes."
+      ],
+      "reusePlan": "Keep these documents as historical design/evidence. Reconcile them against current routes and code in the new component inventory; add superseding decisions without deleting history.",
+      "enhancements": [
+        "Traceable reasons for changed transport, identity, UI structure and persistence.",
+        "Clear distinction between original intent, implemented behavior and future contracts."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "DASH-36-C01",
+          "description": "Conflicting historical constraints are flagged against current code; no capability is dropped solely because an older spec omitted it.",
+          "existingTests": [],
+          "requiredEnvironment": "Static checks and Python/Node/shell fixtures in a disposable checkout; no live operator state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "DASH-36-C02",
+          "description": "Historical test counts remain dated evidence, while the current baseline and target status remain not-run until actually executed.",
+          "existingTests": [],
+          "requiredEnvironment": "Static checks and Python/Node/shell fixtures in a disposable checkout; no live operator state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve document provenance and links while adding current applicability notes.",
+        "Record which original constraints still hold and which approved decisions supersede them."
+      ],
+      "limitations": [
+        "SPEC.md says dashboard read-only and SPEC_CC.md describes earlier MQTT/Modbus choices; these are not complete descriptions of current behavior."
+      ]
+    }
+  ]
+}

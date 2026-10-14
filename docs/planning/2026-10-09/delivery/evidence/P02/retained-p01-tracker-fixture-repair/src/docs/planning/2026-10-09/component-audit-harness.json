@@ -1,0 +1,1695 @@
+{
+  "scope": "Harness, task management, provider setup, compatibility helpers, bundled agent definitions, orchestration examples, and historical communication/evaluation evidence. Assigned tracked paths: taskmgmt/ except pn_dcp.py and bootp_probe.py; compat/; .agentmux/; orchtest/; analysis/; evals/; agentmux.sh; agentmux.cmd; install.sh; link-windows-state.sh; verify-grok.sh; add-allow-rule.py; clear-modals.sh; enter-key.sh.",
+  "reviewMethod": "static source review; no runtime tests run",
+  "reviewDate": "2026-10-09",
+  "fileInventory": {
+    "assignedTrackedFiles": 112,
+    "coveredTrackedFiles": 112,
+    "unassignedPaths": []
+  },
+  "interpretation": "These are proposed reuse and verification obligations, not implemented changes or passed parity checks. A shared file can serve several components. Existing tests are regression starting points and do not necessarily cover every proposed check; identified gaps require new focused fixtures. No source behavior removal is authorized. Source safeguards are retained while unsafe assumptions require explicit repairs and reviewed behavior changes.",
+  "reviewLimits": [
+    "Text sources were inspected for their entrypoints, data contracts, safeguards and reuse implications; this is not a formal proof or a claim that every branch is correct.",
+    "Historical record metadata and selected details were inspected, not independently re-proven from all original private logs.",
+    "The recovered bytecode was inspected through its documented role and digest rather than execution/decompilation.",
+    "All baseline and target behavior checks remain not-run. No live provider, service, user configuration, credential or equipment action was performed."
+  ],
+  "components": [
+    {
+      "id": "HAR-01",
+      "name": "Provider launch, session entry and top-level command compatibility",
+      "files": [
+        "agentmux.sh"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-01",
+        "BASE-19",
+        "BASE-36"
+      ],
+      "ownerPhase": "P06",
+      "disposition": "extract",
+      "currentBehavior": [
+        "spawn starts named tmux sessions for Codex, Claude, Grok, shell and passthrough commands. It records CLI, working directory, model/authentication method, posture, role, persona and pane metadata.",
+        "Validates names and arguments, holds a spawn lock, translates Windows paths, chooses a usable Node path, and prepares Claude configuration before launch.",
+        "Codex launch uses --no-daemon to avoid inherited identity from a shared daemon; web search is opt-in. Claude bounded modes require reported CLI support and constrain builtin tools and MCP configuration. Grok bounded postures are refused.",
+        "exec runs a one-shot Codex command with explicit cwd/model, rejects unknown flags and closes inherited stdin. attach prints an attach command. hub forwards to hub/cli.py; version/--version includes VERSION and Git state; help and aliases remain discoverable."
+      ],
+      "reusePlan": "Keep the existing launch and validation logic behind execution/client plugin contracts, with the current command entrypoints as compatibility callers. Extract by provider only after matching observable behavior with fixtures.",
+      "enhancements": [
+        "Versioned provider capability declarations and structured launch results distinguish rejected, running and outcome-unknown launches.",
+        "Scope each session to an authenticated user/project and retain logical session identity across transport reconnect.",
+        "Replace implicit unrestricted defaults with an explicit supported execution profile and owner-checked authorization; preserve deliberate authorized execution."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-01-C01",
+          "description": "Exercise spawn validation, quoting, same-name races, missing CLI, persona handling, cwd/model/auth selection, posture rejection and a lost launch reply without a second worker.",
+          "existingTests": [
+            "dashboard/test_launch.sh",
+            "dashboard/test_argguard.sh",
+            "dashboard/test_sandbox_coordination.py",
+            "dashboard/test_agentcli.py"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-01-C02",
+          "description": "Preserve exec stdin isolation, exit status, attach instructions, hub forwarding, help aliases and version/dirty attribution.",
+          "existingTests": [
+            "dashboard/test_no_inherited_stdin.py",
+            "dashboard/test_argguard.sh"
+          ],
+          "requiredEnvironment": "Isolated shell/tmux fixtures and native Windows-to-WSL argument tests; actual supported provider versions for launch qualification.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Map every existing flag, environment override and exit status before changing CLI parsing.",
+        "Carry existing named-session metadata into an explicit legacy session generation; do not infer a new process from a reused name.",
+        "Keep the old harness callable until the mapped provider operations pass and operator setup guides describe any changed defaults."
+      ],
+      "limitations": [
+        "No provider or tmux session was launched in this review.",
+        "Legacy posture and environment checks reduce mistakes but do not establish multi-user or hostile-code isolation.",
+        "CLI feature flags and startup behavior need version-specific qualification."
+      ]
+    },
+    {
+      "id": "HAR-02",
+      "name": "Terminal input, observation and modal helpers",
+      "files": [
+        "agentmux.sh",
+        "clear-modals.sh"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-01",
+        "BASE-09"
+      ],
+      "ownerPhase": "P06",
+      "disposition": "extract",
+      "currentBehavior": [
+        "send rejects visible modals unless explicitly forced; it handles multiline bracketed paste and large single-line input with bounded extra Enter attempts.",
+        "key validates named keys and single printable characters and adds no implicit Enter. read/tail strip terminal noise and reject unknown flags; ask combines send/wait/read with a bounded default output and --all escape hatch.",
+        "wait uses observed busy markers and quiet-screen fallback, with explicit timeout and dead-agent exits. These observations do not establish task acceptance.",
+        "unblock only answers the recognized Codex update prompt and leaves trust, consent, account and unknown prompts to a person.",
+        "clear-modals.sh is a separate multi-pass helper with --all and --dry-run. Unlike unblock, it accepts recognized bypass/directory-trust and generic yes/no prompts. Its readiness check is a terminal-text heuristic."
+      ],
+      "reusePlan": "Extract terminal capture and input handling as provider-specific operations while keeping existing command names. Retain the separate modal helper entrypoint; require an explicit reviewed policy for each automatic answer before enabling it in a new client.",
+      "enhancements": [
+        "Attach session generation, actor, approval scope and delivery identifiers to input operations.",
+        "Use supported client events when available and mark terminal-derived observations as uncertain.",
+        "Separate consent decisions from mechanical update-dismissal policy, with target/version rechecks immediately before input."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-02-C01",
+          "description": "Preserve literal input, multiline handling, large-paste behavior, key validation, bounded read/ask output and unknown-flag errors.",
+          "existingTests": [
+            "dashboard/test_modal_guard.sh",
+            "dashboard/test_argguard.sh",
+            "dashboard/test_launch.sh"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-02-C02",
+          "description": "Verify unblock refuses trust/account/consent prompts and compare clear-modals behavior using captured prompt fixtures; changed default selection or target generation must not cause an unintended answer.",
+          "existingTests": [
+            "dashboard/test_modal_guard.sh"
+          ],
+          "requiredEnvironment": "Captured prompt fixtures plus isolated tmux clients on each supported provider version; add explicit clear-modals fixtures because the existing modal suite is not complete coverage of this helper.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-02-C03",
+          "description": "Keep wait timeout/death/quiet outcomes distinct from execution and acceptance, including missing or changed busy markers.",
+          "existingTests": [
+            "dashboard/test_lifecycle.sh",
+            "dashboard/test_launch.sh"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve tunable send/quiet/read settings with their source and supported range.",
+        "Pending text and partially submitted messages need an explicit reconciliation record before switching delivery paths.",
+        "Document any new consent requirement as a behavior change; source removal or loss of manual key control is not authorized."
+      ],
+      "limitations": [
+        "Terminal text can change between observation and input.",
+        "clear-modals.sh currently has broader authority than unblock; do not treat both as the same safe automatic behavior.",
+        "No captured prompt or live-provider suite ran during this review."
+      ]
+    },
+    {
+      "id": "HAR-03",
+      "name": "Lifecycle cleanup, archives and Claude credential convergence",
+      "files": [
+        "agentmux.sh"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-01",
+        "BASE-16",
+        "BASE-19"
+      ],
+      "ownerPhase": "P06",
+      "disposition": "extract",
+      "currentBehavior": [
+        "list reports sessions and stale metadata. kill closes named sessions, performs optional Jira/Confluence close-out and sidecar cleanup. reap handles dead sessions and rechecks liveness plus spawn timestamp after slow external calls.",
+        "idle uses a configurable timeout, skips attached sessions and sessions without this home's ownership marker, and refuses action when tmux is unavailable. The detached watchdog closes inherited descriptors and ends when its home or sessions disappear.",
+        "Logs are archived before same-name reuse, with collision suffixes, per-agent counts and an aggregate size limit; failed archive moves append rather than truncate. Pruning avoids following links.",
+        "Claude mirrors are archived after credential files are removed. Credential convergence adopts a newer valid refresh file atomically into the shared owner store and repairs mirror links under a lock."
+      ],
+      "reusePlan": "Reuse the cleanup ordering, generation checks, archive retention and credential-convergence rules as separate execution/evidence/secret-owner operations. Keep the current implementation while new lifetime ownership is verified.",
+      "enhancements": [
+        "Use explicit session generations and project ownership rather than same-name sidecars as cross-user authority.",
+        "Bind cleanup to task reservations and immutable evidence references; retain logs before process termination where required.",
+        "Move provider secret coordination behind a dedicated scoped secret facility without copying token values into NATS records."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-03-C01",
+          "description": "Exercise kill/reap/idle with attached sessions, foreign homes, disappeared homes, failed tmux queries, failed kills and same-name respawn during external close-out.",
+          "existingTests": [
+            "dashboard/test_idle.sh",
+            "dashboard/test_lifecycle.sh",
+            "dashboard/test_residue.sh"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-03-C02",
+          "description": "Re-spawn repeatedly without truncating evidence; verify archive collisions, retention bounds, link handling, credential exclusion and recovery after an archive failure.",
+          "existingTests": [
+            "dashboard/test_evidence_archive.sh",
+            "dashboard/test_lifecycle.sh"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-03-C03",
+          "description": "Use synthetic credential files to verify refreshed-token convergence and owner-only permissions without disclosing values, including concurrent cleanup and spawn.",
+          "existingTests": [
+            "dashboard/test_auth.py",
+            "dashboard/test_evidence_archive.sh"
+          ],
+          "requiredEnvironment": "Isolated local POSIX homes with synthetic credentials; actual provider refresh behavior separately qualified.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Inventory existing logs, archives, config mirrors and stale sidecars before cutover; preserve their generation and retention intent.",
+        "Do not copy inherited idle defaults into connected-hub reservation logic: process idleness does not free accepted remote work.",
+        "Retain credential ownership and refresh continuity across upgrade and rollback."
+      ],
+      "limitations": [
+        "Existing lifecycle cleanup may perform external ticket transitions; new owner policy must not equate process exit with accepted work.",
+        "Same-user filesystem protection is not a product-wide security boundary.",
+        "Credential refresh compatibility remains version-dependent and was not tested here."
+      ]
+    },
+    {
+      "id": "HAR-04",
+      "name": "Provider authentication, key entry and operator permission setup",
+      "files": [
+        "taskmgmt/setup_auth.py",
+        "enter-key.sh",
+        "verify-grok.sh",
+        "add-allow-rule.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-19",
+        "BASE-23",
+        "BASE-36"
+      ],
+      "ownerPhase": "P06",
+      "disposition": "extend",
+      "currentBehavior": [
+        "setup_auth.py reads the committed provider/method manifest, validates typed settings, distinguishes provider-wide and method-specific values, preserves legacy v1 settings, writes private files atomically, and generates Codex profiles.",
+        "Provides configure, verify, select and list flows with missing-credential diagnostics and operator-terminal secret input.",
+        "enter-key.sh reads an xAI key without terminal echo, writes the legacy env file at mode 0600 and prints only length/prefix metadata. It currently overwrites that file and relies on shell env syntax.",
+        "verify-grok.sh inspects local setup and makes a live xAI request when run; it records a historical unsupported Codex-to-xAI tool route rather than treating authentication as compatibility.",
+        "add-allow-rule.py is an operator helper that checks or inserts a fixed Claude Bash permission rule, backs up settings and verifies that unrelated parsed settings do not change. Its rule contains a hardcoded Ubuntu/Nick path."
+      ],
+      "reusePlan": "Retain the manifest-driven setup and private-write helpers. Fold the single-purpose key and permission helpers into scoped setup commands with compatibility entrypoints and explicit migration notices.",
+      "enhancements": [
+        "Use credential references and typed input rather than shell-sourced secrets; preserve existing env entries during migration.",
+        "Make permission-rule proposals use discovered paths and require operator action for the exact rule.",
+        "Separate offline setup checks from explicitly invoked live provider compatibility checks, with supported-version results."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-04-C01",
+          "description": "Verify v1/v2 settings preservation, provider/method separation, private writes, missing fields, invalid model/endpoint input and configuration selection using synthetic secrets.",
+          "existingTests": [
+            "dashboard/test_auth.py",
+            "dashboard/check_key_exposure.sh"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-04-C02",
+          "description": "Verify legacy key-entry migration preserves unrelated env entries and special characters and never exports secret values into logs, process arguments or shared records.",
+          "existingTests": [
+            "dashboard/test_auth.py",
+            "dashboard/check_key_exposure.sh"
+          ],
+          "requiredEnvironment": "Isolated terminal fixtures with synthetic values; add direct enter-key compatibility cases.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-04-C03",
+          "description": "Preview and apply a generated permission rule against a temporary user settings fixture, preserving other values and backups; default diagnostic paths perform no live inference.",
+          "existingTests": [],
+          "requiredEnvironment": "Offline temporary homes on Windows/WSL/macOS/Linux; any live Grok check is separately authorized and capped.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve active provider/method selections, _v1_settings, user profiles and credential references.",
+        "Keep existing secrets in their owner facility; migrate values locally without adding them to ordinary NATS state.",
+        "Do not silently run verify-grok.sh or modify the real user's permission settings during import."
+      ],
+      "limitations": [
+        "The legacy key helper overwrites env and prints a key prefix; these behaviors require explicit improvement, not literal duplication.",
+        "verify-grok.sh contains dated model/client assumptions and Linux-specific utilities.",
+        "No secret file or live account was accessed."
+      ]
+    },
+    {
+      "id": "HAR-05",
+      "name": "Installation and Windows-to-WSL state compatibility",
+      "files": [
+        "install.sh",
+        "agentmux.cmd",
+        "link-windows-state.sh",
+        "agentmux_windows.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-36",
+        "BASE-19"
+      ],
+      "ownerPhase": "P12",
+      "disposition": "extend",
+      "currentBehavior": [
+        "install.sh finds the checkout, modern Bash, tmux, Python and Node, creates a CRLF-tolerant launcher, diagnoses Windows npm shims and optionally generates a macOS launchd configuration.",
+        "agentmux.cmd translates drive-letter paths before forwarding arguments to the WSL harness, but currently hardcodes Ubuntu and /home/nick.",
+        "link-windows-state.sh supports check/apply/revert, backups and Windows-home discovery. It links reusable state while keeping path-bearing Claude plugin indexes, IDE and shell state local to each OS; it translates paths in local copies."
+      ],
+      "reusePlan": "Extend the existing installer and state-sharing procedures, keeping reversible migration and entrypoint compatibility. Retain the command launcher until a portable replacement passes the same quoting and exit-status checks.",
+      "enhancements": [
+        "Discover or explicitly select the WSL distribution and home; preserve native macOS/Linux operation.",
+        "Add pinned prerequisites and local/team broker profiles, update/rollback/uninstall and actionable setup diagnostics.",
+        "Preserve existing client settings and separate Windows/WSL path-bearing registries during plugin installation."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-05-C01",
+          "description": "Exercise clean install, paths with spaces, CRLF source, old/missing Bash/Python/Node, foreign npm shims, launchd generation, update and uninstall without overwriting unrelated settings.",
+          "existingTests": [
+            "dashboard/test_launch.sh",
+            "dashboard/test_lifecycle.sh"
+          ],
+          "requiredEnvironment": "Fresh macOS/Linux/WSL fixture homes and a native Windows launcher test; add dedicated installer cases.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-05-C02",
+          "description": "Verify check is read-only and apply/revert restores backups while OS-specific plugin paths remain local; ambiguous Windows-home discovery must require an explicit target.",
+          "existingTests": [],
+          "requiredEnvironment": "Synthetic Windows/WSL profiles and plugin indexes; no real credential stores.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-05-C03",
+          "description": "Round-trip spaces, backslashes, quotes, empty/dash-prefixed arguments and subprocess exit status through the Windows entrypoint.",
+          "existingTests": [
+            "dashboard/test_argguard.sh"
+          ],
+          "requiredEnvironment": "Native cmd/PowerShell to a disposable WSL distribution; new launcher-specific fixtures are required.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Record installed launcher/service locations, discovered distro/home and state-link targets before changes.",
+        "Version and retain backups; rollback must preserve changes made after installation rather than replacing entire user profiles.",
+        "Keep repository checkout paths and platform-local plugin caches distinct from portable package identity."
+      ],
+      "limitations": [
+        "Current launcher path and some fallback discovery assumptions are machine-specific.",
+        "The installer warns that the Windows entrypoint can lose exit status; the audit did not execute it.",
+        "Linking whole client state across OS versions requires explicit support tests."
+      ]
+    },
+    {
+      "id": "HAR-06",
+      "name": "macOS command compatibility helpers",
+      "files": [
+        "compat/README.md",
+        "compat/bin/flock",
+        "compat/bin/setsid",
+        "compat/bin/tac",
+        "compat/bin/timeout"
+      ],
+      "role": "test-support",
+      "baselineGroups": [
+        "BASE-36",
+        "BASE-37"
+      ],
+      "ownerPhase": "P06",
+      "disposition": "retain",
+      "currentBehavior": [
+        "Provides a file-descriptor-only flock shim with exclusive/shared/unlock/nonblocking/timeout behavior, a setsid shim with fork/wait handling, a timeout wrapper with TERM then kill and exit 124, and tac via tail -r.",
+        "Scripts select these helpers only on macOS; the standalone harness includes equivalent inline helpers because tests copy it alone.",
+        "Python helper shebangs avoid a test's stub python3 on PATH."
+      ],
+      "reusePlan": "Retain the portable helpers and their documented limited contracts. Share implementations only after standalone-copy and fixture expectations remain valid.",
+      "enhancements": [
+        "Add explicit parity fixtures for supported helper forms across macOS and GNU environments.",
+        "Report unsupported options clearly and pin platform prerequisites used by packaged execution."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-06-C01",
+          "description": "Verify inherited descriptor lock lifetime, contention timeout, child exit/signal propagation, timeout escalation and reversed-line output.",
+          "existingTests": [
+            "dashboard/test_testlib.sh",
+            "dashboard/test_runlock.py",
+            "dashboard/test_no_inherited_stdin.py"
+          ],
+          "requiredEnvironment": "macOS and Linux/WSL subprocess fixtures; add direct shim conformance cases.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-06-C02",
+          "description": "Ensure native Linux tools retain priority and fixtures that stub PATH cannot replace the intended shim interpreter.",
+          "existingTests": [
+            "dashboard/test_testlib.sh",
+            "dashboard/test_residue.sh"
+          ],
+          "requiredEnvironment": "Isolated macOS and Linux PATH fixtures.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Keep existing supported flags and exit statuses; document any consolidation of inline and directory copies.",
+        "Do not advertise full GNU command equivalence."
+      ],
+      "limitations": [
+        "These are partial utility implementations, not general replacements for GNU tools.",
+        "No subprocess compatibility tests ran."
+      ]
+    },
+    {
+      "id": "HAR-07",
+      "name": "Agent definition parsing and roster selection",
+      "files": [
+        "taskmgmt/agentdefs.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-02",
+        "BASE-03"
+      ],
+      "ownerPhase": "P03",
+      "disposition": "extract",
+      "currentBehavior": [
+        "Parses constrained Markdown frontmatter into AgentSpec with identity, CLI/model/auth, posture, tools, capabilities, role, worktree policy, max instances, persona and source checksum.",
+        "Discovers repository/user .agentmux/agents and compatible .claude/agents directories, diagnoses unknown keys, validates bounds, refuses nonregular/symlink inputs and reserves invalid duplicate names instead of silently selecting another definition.",
+        "choose_roster considers task type, touched directories, acceptance count, dependency depth, capability labels and configured caps. It selects a deterministic lead, proposes workers/reviewers and reports missing capabilities.",
+        "Non-Claude named tool restrictions are reported as advisory rather than enforced."
+      ],
+      "reusePlan": "Extract the parser and deterministic roster rules into definition/team plugins. Keep Markdown import and checksums as compatibility features, translating to versioned manifests without losing original source text.",
+      "enhancements": [
+        "Declare independent and parent-owned package identity while retaining explicit source provenance.",
+        "Use project-approved lead and member selection instead of automatically choosing the first alphabetical lead.",
+        "Keep capability eligibility deterministic before any optional Jev ranking, and distinguish desired tools from enforceable host capabilities."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-07-C01",
+          "description": "Import all supported definition fields, duplicate names, malformed/oversized input, unknown keys, symlink/FIFO replacement and stale checksums without silently accepting a different persona.",
+          "existingTests": [
+            "dashboard/test_agentdefs.py",
+            "dashboard/test_boardagents.py",
+            "dashboard/test_agentcli.py"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-07-C02",
+          "description": "Preserve roster caps, bug reviewer preference, deep-dependency behavior, capability tie-breaks and gaps; prevent unrelated bundled personas from becoming a project's lead.",
+          "existingTests": [
+            "dashboard/test_agentdefs.py",
+            "dashboard/test_boardteams.py",
+            "dashboard/test_teamcli.py"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Keep original path/scope/checksum and unsupported-field diagnostics on repeated imports.",
+        "Do not convert advisory tools into a claimed security boundary.",
+        "Preserve approved rosters independently of future definition edits; show when a definition revision changes."
+      ],
+      "limitations": [
+        "The current lead selection is alphabetical and can choose an unrelated project persona.",
+        "Persona prose does not enforce permission or model diversity.",
+        "Parser and roster tests were read as regression references, not run."
+      ]
+    },
+    {
+      "id": "HAR-08",
+      "name": "Bundled personas and workflow instructions",
+      "files": [
+        ".agentmux/agents/agora-brain.md",
+        ".agentmux/agents/agora-defect.md",
+        ".agentmux/agents/agora-lead.md",
+        ".agentmux/agents/agora-perf.md",
+        ".agentmux/agents/agora-release.md",
+        ".agentmux/agents/agora-review.md",
+        ".agentmux/agents/agora-ui.md",
+        ".agentmux/agents/agora-unreal.md",
+        ".agentmux/agents/catalog-lead.md",
+        ".agentmux/agents/ccc-orchestrator.md",
+        ".agentmux/agents/netcap-reviewer.md",
+        ".agentmux/agents/scan-dev.md",
+        ".agentmux/agents/scan-host.md",
+        ".agentmux/agents/scan-user.md"
+      ],
+      "role": "configuration",
+      "baselineGroups": [
+        "BASE-02",
+        "BASE-03",
+        "BASE-07"
+      ],
+      "ownerPhase": "P03",
+      "disposition": "retain",
+      "currentBehavior": [
+        "Fourteen Markdown definitions include the eight Agora role profiles, a catalog lead, three inventory scanners, the CCC orchestrator and a nettraffic reviewer.",
+        "Profiles contain capabilities, CLI, role, posture, worktree and instance declarations, plus project-specific territory, claim/journal, evidence and review instructions.",
+        "The CCC orchestrator describes a narrow warrant, independent review, operator approval and escalation. Scanner/catalog profiles describe bounded discovery and one-file ownership. Agora profiles retain the older ticket aliases and project-specific acceptance instructions.",
+        "Several profiles contain local paths, current ticket numbers and unrestricted posture; they are existing user/project content, not universal product defaults."
+      ],
+      "reusePlan": "Retain every profile as source-backed configuration. Import them as opt-in project packages or examples with original text and revisions; do not activate every bundled profile for every project.",
+      "enhancements": [
+        "Show applicability, host support, permissions and stale machine-specific references before adoption.",
+        "Use package-scoped roles and approved project membership with clear independent-child ownership.",
+        "Keep examples usable while allowing administrators to supply updated paths and bounded execution profiles."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-08-C01",
+          "description": "Load all fourteen profiles, preserve fields and persona text, report incompatible/missing client capabilities and keep each profile's project scope.",
+          "existingTests": [
+            "dashboard/test_agentdefs.py",
+            "dashboard/test_boardagents.py",
+            "dashboard/test_plugin_skills.py"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-08-C02",
+          "description": "Verify default enrollment does not recruit a scanner or Agora lead into an unrelated project, and edits do not silently alter an approved team.",
+          "existingTests": [
+            "dashboard/test_boardteams.py",
+            "dashboard/test_teamcli.py"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve original persona files and checksums; record any transformed path or field as a derived value.",
+        "Map old task aliases and example project names without importing them as live work.",
+        "Require explicit project adoption for profiles that request network or filesystem scanning."
+      ],
+      "limitations": [
+        "The definitions contain historical workflow instructions and machine-specific paths that need user review.",
+        "Different CLI labels alone do not prove different model behavior.",
+        "No persona was launched or installed."
+      ]
+    },
+    {
+      "id": "HAR-09",
+      "name": "Claims, local identity, warrants and journal",
+      "files": [
+        "taskmgmt/coordination.py",
+        "agentmux.sh"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-08",
+        "BASE-10",
+        "BASE-07"
+      ],
+      "ownerPhase": "P04",
+      "disposition": "extract",
+      "currentBehavior": [
+        "claim/release/claims use resource names, staged publication, atomic links and inode-generation locks to avoid deleting or replacing another claim during races.",
+        "Identity resolution checks the pane environment against an explicit actor and live tmux sessions; unavailable tmux is reported as unknown rather than an empty session set.",
+        "An expiring private orchestrator warrant permits the named pane to use only the consulted orchestration verbs. Issuance separates its secret from the general worker env; revocation precedes process termination.",
+        "orchestrator start/stop/status resolves the CLI from its definition, avoids a second live orchestrator, issues/revokes warrants and records a request. journal and coordination announcements retain actor, kind, subject, body and resource interest."
+      ],
+      "reusePlan": "Reuse claim conflict rules, identity diagnostics, journal vocabulary and warrant scope as contract fixtures. Move authoritative ownership into scoped domain operations; retain filesystem claims only for the legacy path during a fenced transition.",
+      "enhancements": [
+        "Authenticate user/project/session identities across NATS instead of treating writable environment variables as authority.",
+        "Record claim generations and operation identifiers in durable owner records, preserving resource conflict semantics.",
+        "Separate expiring local presence/leases from accepted or acceptance-unknown remote reservations."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-09-C01",
+          "description": "Exercise concurrent claim replacement/release, path/name collisions, stale generation, expiry, force policy and unavailable tmux without losing another actor's claim.",
+          "existingTests": [
+            "dashboard/test_coordination.sh",
+            "dashboard/test_sandbox_coordination.py"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-09-C02",
+          "description": "Reject forged actor flags, worker use of orchestrator-only verbs, expired/wrong-pane warrants and a reserved orchestrator name; verify revocation before stop and secret exclusion from ordinary workers.",
+          "existingTests": [
+            "dashboard/test_warrant.py",
+            "dashboard/test_argguard.sh",
+            "dashboard/test_coordination.sh"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-09-C03",
+          "description": "Preserve journal and targeted/broadcast coordination records through repeated import without executing historical announcements.",
+          "existingTests": [
+            "dashboard/test_coordination.sh",
+            "dashboard/test_courier.py"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Map each active claim to its source resource, holder, generation and project before admission moves to the new owner.",
+        "Import journal timestamps and actor provenance without granting current authority to historical identities.",
+        "Do not carry the test-only identity bypass into production authentication."
+      ],
+      "limitations": [
+        "Existing identity and warrants are cooperative safeguards under a shared OS user, not hostile-code isolation.",
+        "One local orchestrator limit must become an explicit scoped policy for multiple users/projects.",
+        "No concurrency or warrant tests ran."
+      ]
+    },
+    {
+      "id": "HAR-10",
+      "name": "Board, task, epic and team command compatibility",
+      "files": [
+        "taskmgmt/coordination.py",
+        "agentmux.sh"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-04",
+        "BASE-05",
+        "BASE-03",
+        "BASE-15"
+      ],
+      "ownerPhase": "P05",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "tasks and task expose new/add/show/edit, start/done/block/todo/park/backlog, acceptance criteria, labels, dependencies, evidence/commit/touched-path attachment, comments, links, assignment, move, why and next.",
+        "epic exposes new/status/use/list; board exposes config, doctor, history, find, triage and recorded overrides. The underlying coordination CLI also exposes generic entity creation and sprint commitments.",
+        "roster/recruit/approve/retire/hire reach the existing board team API; definition listing/update/drop are also available through coordination.",
+        "Wrappers bind actor values rather than allowing repeated --agent/--holder/--by flags to replace the caller. Task todo maps to the board's open state, and block/park reasons are retained."
+      ],
+      "reusePlan": "Keep command names, output contracts and board validation behavior through a compatibility caller that invokes the new owning plugins over NATS. Reuse existing validation and formatting where appropriate instead of designing a second task model.",
+      "enhancements": [
+        "Expose one declared command registry to CLI and MCP with discoverable verbs and versioned errors.",
+        "Carry all entity kinds and their relationships into retained owner records and rebuildable views.",
+        "Apply the same readiness, WIP, override and project authorization decisions to every entrypoint."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-10-C01",
+          "description": "Exercise every task/epic/board/team verb and status shorthand, including reason forwarding, actor spoof rejection, unavailable board errors and unsupported fields.",
+          "existingTests": [
+            "dashboard/test_agentcli.py",
+            "dashboard/test_teamcli.py",
+            "dashboard/test_board.py",
+            "dashboard/test_boardteams.py"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-10-C02",
+          "description": "Import EP/TM/ADR/SP/CAP records with labels, links, criteria, comments, commits, paths, deletion history and assignments twice without lost relationships or duplicate effects.",
+          "existingTests": [
+            "dashboard/test_board.py",
+            "dashboard/test_coordination.sh"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-10-C03",
+          "description": "Preserve readiness/WIP/override and approved roster behavior across CLI and new NATS/MCP callers; unknown or stale revisions cannot bypass the owner.",
+          "existingTests": [
+            "dashboard/test_board.py",
+            "dashboard/test_dispatch.py",
+            "dashboard/test_boardteams.py"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Maintain explicit source identity mappings rather than treating board tasks, run jobs, hub work and shared cards as one ID.",
+        "Freeze/fence legacy writes at cutover; do not make both HTTP-backed and NATS-backed commands authoritative.",
+        "Keep script-visible statuses and diagnostics compatible or document a versioned change before rollout."
+      ],
+      "limitations": [
+        "Current commands depend on dashboard HTTP and local actor conventions.",
+        "This mapping includes direct coordination entrypoints; it does not claim every one already has a top-level shell alias.",
+        "No board data was imported or changed."
+      ]
+    },
+    {
+      "id": "HAR-11",
+      "name": "Dispatch, worker pool, team worktrees and collection",
+      "files": [
+        "taskmgmt/dispatch.py",
+        "agentmux.sh"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-03",
+        "BASE-06",
+        "BASE-05"
+      ],
+      "ownerPhase": "P05",
+      "disposition": "extract",
+      "currentBehavior": [
+        "dispatch chooses ready work from board policy, refuses a foreign board, reads the complete brief, resolves an agent definition and performs spawn, claims, board start and delivery with unwind paths.",
+        "Dry-run reports the selected worker without launching. If direct brief delivery meets a modal, it queues the brief; failure to deliver or queue triggers withdrawal.",
+        "Collection checks real process state, preserves busy workers, collects members before the lead, integrates approved worktrees and leaves submitted work for review rather than marking the card done.",
+        "Pool cycles collect before refill, reread configuration, respect WIP/global agent capacity and expose start/stop/status/once/loop behavior.",
+        "Worktree creation/integration and teardown preserve dirty/conflicted/unmerged work; an orphaned team is parked instead of silently redispatched."
+      ],
+      "reusePlan": "Extract the proven selection, brief, collection and worktree logic behind task/execution/workspace contracts. Keep the legacy dispatch path isolated until state transitions and failure handling match.",
+      "enhancements": [
+        "Commit dispatch intent and operation identifiers before external launch, reconciling uncertain replies without a second worker.",
+        "Use scoped execution profiles that permit coordination without requiring unrestricted workers.",
+        "Add fair multi-user/project capacity policy while preserving explicit team membership and branch ownership."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-11-C01",
+          "description": "Inject failures before/after spawn, claim, board start, direct send and queued fallback; verify no silent lost task, leaked claim or duplicate worker.",
+          "existingTests": [
+            "dashboard/test_dispatch.py",
+            "dashboard/test_launch.sh",
+            "dashboard/test_courier.py"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-11-C02",
+          "description": "Exercise dry-run, collect-before-refill, disabled pool, live capacity changes, busy member preservation, failed kill, orphan parking and restart recovery.",
+          "existingTests": [
+            "dashboard/test_dispatch.py",
+            "dashboard/test_boardteams.py"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-11-C03",
+          "description": "Verify branch/worktree ownership, dirty/conflicted work preservation, member integration and cleanup across multiple repositories.",
+          "existingTests": [
+            "dashboard/test_dispatch.py",
+            "dashboard/test_boardteams.py",
+            "dashboard/test_teamcli.py"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve briefs, pool settings/state, approved rosters, worktree locations, branches and unresolved collection outcomes.",
+        "Reconcile every in-flight task and process before switching the dispatch owner.",
+        "Review any change to cleanup-triggered external ticket writes separately from local task rollback."
+      ],
+      "limitations": [
+        "Dispatch currently refuses bounded postures and AGENTMUX_NO_BYPASS; the target must remove that limitation through explicit host capabilities.",
+        "Worker idleness and attached evidence are not equivalent to acceptance.",
+        "No workers, worktrees or pool processes were created."
+      ]
+    },
+    {
+      "id": "HAR-12",
+      "name": "Run ledger, submission review, objections and completion",
+      "files": [
+        "taskmgmt/run.py",
+        "agentmux.sh"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-07",
+        "BASE-15",
+        "BASE-16"
+      ],
+      "ownerPhase": "P05",
+      "disposition": "extract",
+      "currentBehavior": [
+        "run start/assign/submit/verdict/status/complete/teardown maintain append-only events, job state and sidecars with per-run locking.",
+        "Submission histories and verdict files are retained, rejected work requires a reason, assigned identities constrain submission/review and a worker cannot verify its own job.",
+        "Three failed reviews escalate rather than granting a fourth self-service attempt. Completion uses independent review and required operator approval, checks open board cards, and reports run completion separately from card status.",
+        "Objections, notices, approval files and file-drift checks retain the reason work cannot complete. Forced completion captures evidence; teardown is scoped to ledger members, rejects invalid/open runs without explicit force and supports keeping agents."
+      ],
+      "reusePlan": "Reuse the event fold, gate decisions, archived review text and teardown scope as the run plugin's starting point. Translate persistence to versioned durable records while retaining original ledgers and readable evidence.",
+      "enhancements": [
+        "Bind each submission, verdict and approval to immutable repository/commit/artifact identities across repositories.",
+        "Check changed evidence at review and acceptance boundaries, using durable revisions and operation IDs.",
+        "Persist completion intent and reservations so restart/replay cannot fabricate review or repeat teardown effects."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-12-C01",
+          "description": "Verify assigned identities, self-review rejection, required rejection reason, resubmission history, three-failure escalation and concurrent assign/submit/verdict/complete transitions.",
+          "existingTests": [
+            "dashboard/test_run.sh",
+            "dashboard/test_runlock.py",
+            "dashboard/test_warrant.py"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-12-C02",
+          "description": "Exercise missing/stale approval, changed evidence, objections and linked open board cards; retain distinct submitted, verified, completed and accepted outcomes.",
+          "existingTests": [
+            "dashboard/test_runsview.py",
+            "dashboard/test_runcards.py",
+            "dashboard/test_run.sh"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-12-C03",
+          "description": "Reject premature/invalid teardown, preserve forced evidence and unrelated sessions, honor keep-agents and retain courier/dashboard service operation.",
+          "existingTests": [
+            "dashboard/test_run.sh",
+            "dashboard/test_lifecycle.sh",
+            "dashboard/test_evidence_archive.sh"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Import event sequence, job IDs, submission/verdict attempts, sidecars, approvals and notices with source digests.",
+        "Never infer acceptance from COMPLETE alone or combine a run ID with a board card by title.",
+        "Historical imports and view rebuilds must not trigger notification, merge, teardown or worker launch."
+      ],
+      "limitations": [
+        "Submission hashes are not fully rechecked at every verdict/completion boundary; file-list completeness and multi-repository binding need stronger checks.",
+        "Different agent identities do not prove independent models.",
+        "No gate or review test ran."
+      ]
+    },
+    {
+      "id": "HAR-13",
+      "name": "Courier, post, virtual inbox and backlog recovery",
+      "files": [
+        "taskmgmt/courier.py",
+        "agentmux.sh"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-09",
+        "BASE-10"
+      ],
+      "ownerPhase": "P05",
+      "disposition": "extract",
+      "currentBehavior": [
+        "post appends typed messages to a sender outbox; inbox reads or clears a recipient's inbox. Supported kinds include plan/request/reply/status/finding/error/claim/release.",
+        "Courier exposes start/stop/status/once/watch/dead/requeue. Initial legacy outboxes are adopted at EOF unless explicitly replayed; later new outboxes start at zero.",
+        "Cursors retain device/inode/offset; replaced/truncated files reset visibly, partial trailing lines wait for completion and oversized records cannot block an outbox forever.",
+        "Input checks reject linked/nonregular files and malformed records. Pending traffic preserves recipient order without blocking other recipients, bounded retry/backoff ends in a retained dead letter, and virtual recipients receive inbox files.",
+        "Delivery never forces a modal and courier-generated errors are not addressed back into a failure loop."
+      ],
+      "reusePlan": "Reuse parsing, cursor, retry, ordering and virtual-recipient rules as compatibility contracts. Import pending and dead-letter records into the messaging owner's durable channels once, then fence the old courier.",
+      "enhancements": [
+        "Use durable message IDs and explicit delivered/received/acknowledged/processed/accepted states.",
+        "Expose per-recipient backlog and failure reasons through authorized events without using notifications as prompt input.",
+        "Recover interrupted cutover and unknown delivery outcomes without automatically typing duplicate instructions."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-13-C01",
+          "description": "Verify initial EOF adoption, later outbox creation, rotation/truncation, partial/oversized/malformed lines and symlink/hardlink rejection.",
+          "existingTests": [
+            "dashboard/test_courier.py",
+            "dashboard/test_inbox_guard.sh"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-13-C02",
+          "description": "Exercise recipient ordering, backlog limits, exponential retry, virtual inbox delivery, dead-letter requeue and no forced modal or courier error loop.",
+          "existingTests": [
+            "dashboard/test_courier.py",
+            "dashboard/test_modal_guard.sh"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-13-C03",
+          "description": "Migrate active cursors, pending rows and dead letters with replay/duplicate fixtures; distinguish clear/read from explicit execution acceptance.",
+          "existingTests": [
+            "dashboard/test_courier.py",
+            "dashboard/test_inbox_guard.sh",
+            "dashboard/test_coordination.sh"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Retain original queue files, consumed offsets, pending attempt counts, dead-letter reasons and unresolved inbox entries.",
+        "Assign stable import IDs and a cutover boundary; only one delivery path may act on each logical message.",
+        "Keep legacy and hub receipt semantics distinct until the owner reconciles them."
+      ],
+      "limitations": [
+        "The source has filesystem and hub delivery paths with different receipt meanings.",
+        "Terminal send success does not prove client processing.",
+        "No queued message was delivered, cleared or requeued."
+      ]
+    },
+    {
+      "id": "HAR-14",
+      "name": "Notifications and originating-terminal feedback",
+      "files": [
+        "taskmgmt/notify.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-10"
+      ],
+      "ownerPhase": "P05",
+      "disposition": "extract",
+      "currentBehavior": [
+        "Provides bounded notifications to Windows/macOS desktop surfaces, a tmux status bar and a configured external command; it returns channel-specific results.",
+        "Configured command text is split once; message data is sent on stdin with shell disabled, rather than interpolated into executable text.",
+        "tmux target resolution is checked before display-message because that command can report success for a nonexistent target. Child tools use closed stdin where appropriate.",
+        "No desktop, no configured channels and delivery failure remain different outcomes; every configured channel is attempted."
+      ],
+      "reusePlan": "Reuse channel-specific delivery and safe payload handling inside notification plugins. Retain the durable notice owner and originating-session routing rather than implementing notices as terminal keystrokes.",
+      "enhancements": [
+        "Scope subscriptions and notification preferences by user/project and bind messages to durable notice IDs.",
+        "Add deduplication, acknowledgment and escalation without suppressing mandatory review/failure events.",
+        "Treat externally configured commands as explicit trusted contributions with bounded execution."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-14-C01",
+          "description": "Verify shell metacharacters remain data, child stdin cannot consume the caller's input, missing targets are not reported delivered and all configured channels receive bounded payloads.",
+          "existingTests": [
+            "dashboard/test_notify.py",
+            "dashboard/test_no_inherited_stdin.py"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-14-C02",
+          "description": "Verify missing desktop/configuration, timeout, command failure and repeated notices preserve useful status and required durable evidence.",
+          "existingTests": [
+            "dashboard/test_notify.py",
+            "dashboard/test_chatter.py"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Import notification preferences and destination identity separately from private command credentials.",
+        "Replay notice state without replaying old external notifications.",
+        "Preserve origin-terminal association when the observer disconnects."
+      ],
+      "limitations": [
+        "Desktop delivery is platform/session dependent.",
+        "Configured external commands can have side effects and require explicit trust.",
+        "No notification was sent."
+      ]
+    },
+    {
+      "id": "HAR-15",
+      "name": "Jira and Confluence clients, scripts and setup",
+      "files": [
+        "taskmgmt/atlassian.py",
+        "taskmgmt/task.py",
+        "taskmgmt/setup_atlassian.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-22",
+        "BASE-19"
+      ],
+      "ownerPhase": "P06",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Atlassian client supports Cloud API-token/basic authentication and Server/DC bearer authentication, HTTPS verification, bounded requests, empty 204 responses and user-facing HTTP error hints.",
+        "Jira operations include creation, search, comments, workflow transition listing and selected transitions; Confluence supports page lookup and versioned upsert.",
+        "task.py offers whoami/create/comment/done/report/transitions for shell lifecycle hooks, with dry-run request shapes, machine-readable key/URL stdout and separate diagnostics.",
+        "Log-to-comment/report paths validate names, resolve within the log directory, refuse hardlinked files, cap input and strip ANSI escapes.",
+        "setup_atlassian.py collects secrets without echo and writes configuration privately through a temporary file and rename; it preserves a chosen home override."
+      ],
+      "reusePlan": "Wrap the existing HTTP and payload transformations in explicit Jira/Confluence tool plugins. Keep the script interface for legacy spawn/cleanup callers until their operations migrate to the new owner.",
+      "enhancements": [
+        "Bind external mutations to actor, project/space, operation intent and current approval.",
+        "Reconcile lost replies before retrying issue/page creation or workflow changes.",
+        "Separate local task acceptance and process cleanup from remote ticket transitions."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-15-C01",
+          "description": "Preserve Cloud/Server headers, Jira/Confluence payloads, transitions, dry-run output and 401/403/404/timeout diagnostics using mocked HTTP.",
+          "existingTests": [
+            "dashboard/test_tickets.py"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-15-C02",
+          "description": "Verify log exports enforce path/link/size checks and strip control sequences while preserving useful evidence.",
+          "existingTests": [
+            "dashboard/test_tickets.py"
+          ],
+          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-15-C03",
+          "description": "Exercise creation/update lost replies and duplicate operations; local rollback or cleanup must not unconditionally replay an external transition.",
+          "existingTests": [
+            "dashboard/test_tickets.py",
+            "dashboard/test_lifecycle.sh"
+          ],
+          "requiredEnvironment": "Mock services and isolated homes first; supported Jira/Confluence deployment versions require separately approved service tests.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Keep external issue/page IDs, selected transition rules, project/space settings and associated agent/run provenance.",
+        "Move credential references separately from configuration; never place tokens in shared history.",
+        "Record unresolved side effects before switching lifecycle hooks to a new tool owner."
+      ],
+      "limitations": [
+        "External side effects cannot be rolled back with a local state change.",
+        "The CLI's transition selection is name/regex based and needs deployment-specific compatibility fixtures.",
+        "No external service request was made."
+      ]
+    },
+    {
+      "id": "HAR-16",
+      "name": "Bedrock Responses-to-Chat gateway",
+      "files": [
+        "taskmgmt/bedrock_gateway.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-20"
+      ],
+      "ownerPhase": "P06",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Translates selected Responses input items into Chat Completions messages and flattens nested function-tool namespaces to a bounded depth while reporting unsupported tool types.",
+        "Maps output text, tool calls, usage and streaming events back to Responses shapes; the text filter handles reasoning tags split across chunks and preserves short or malformed-tag output.",
+        "Reads the Bedrock bearer credential from the environment, limits request size, uses an upstream timeout and binds a threaded HTTP server to loopback.",
+        "Uses a static model list and local logging; loopback callers are not authenticated. Source was reconstructed and retains intentional compatibility details documented beside the functions."
+      ],
+      "reusePlan": "Retain the translation implementation and differential fixtures inside a provider compatibility plugin. Add a scoped local caller boundary before exposing it to multiple users; do not rewrite wire transformations without evidence.",
+      "enhancements": [
+        "Declare exact supported input/tool/event/model capabilities and explicit unsupported outcomes.",
+        "Authenticate/scoped-route callers without exposing a shared cloud credential to arbitrary local or remote requests.",
+        "Add upstream cancellation/timeout and usage provenance where supported, preserving outcome-unknown reporting."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-16-C01",
+          "description": "Preserve message/tool translation, namespace depth, duplicate-tool handling, short replies, split tags, malformed tags, tool streaming, usage and error framing.",
+          "existingTests": [
+            "dashboard/test_gateway.py"
+          ],
+          "requiredEnvironment": "Offline Python HTTP/stream fixtures; CPython 3.12 for the preserved-bytecode differential subset.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-16-C02",
+          "description": "Verify request limits, loopback exposure and logs with synthetic credentials; new multi-user access rules deny unrelated users/projects.",
+          "existingTests": [
+            "dashboard/test_gateway.py",
+            "dashboard/check_key_exposure.sh"
+          ],
+          "requiredEnvironment": "Isolated HTTP fixtures; actual Bedrock endpoint/model tests are separately approved.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Keep reconstructed source provenance and preserved bytecode reference intact.",
+        "Inventory missing setup/probe scripts and unsupported authentication-manifest paths before claiming a supported end-to-end Bedrock setup.",
+        "Preserve configured region/model and secret references without assuming old live compatibility remains current."
+      ],
+      "limitations": [
+        "The shipped manifest/setup paths do not establish complete Bedrock support.",
+        "The gateway implements a subset of the APIs and accepts loopback requests without a client credential.",
+        "No network request or model inference ran."
+      ]
+    },
+    {
+      "id": "HAR-17",
+      "name": "Recovered Bedrock reference artifact",
+      "files": [
+        "taskmgmt/recovered/README.md",
+        "taskmgmt/recovered/bedrock_gateway.cpython-312.pyc.bin"
+      ],
+      "role": "historical-evidence",
+      "baselineGroups": [
+        "BASE-20",
+        "BASE-37"
+      ],
+      "ownerPhase": "P01",
+      "disposition": "retain-evidence",
+      "currentBehavior": [
+        "README records loss/reconstruction provenance, the reason the bytecode has a .bin suffix and the role of the original CPython 3.12 artifact in differential checks.",
+        "The retained bytecode is reference evidence rather than a normal import cache. Its SHA-256 was read as FEDBA136C42822AED1E8BCB430C2F6EBA48B63C392D2CC1A3B6DA1487A83400F."
+      ],
+      "reusePlan": "Preserve the reference bytes and provenance unchanged. Use the original differential cases when changing the compatibility plugin and report interpreter-dependent skips.",
+      "enhancements": [
+        "Register source/runtime version and artifact digest alongside compatibility evidence.",
+        "Keep separate results for source-only fixtures, bytecode comparison and approved live provider tests."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-17-C01",
+          "description": "Verify the archived digest and ensure packaging/cleanup does not delete or overwrite the reference.",
+          "existingTests": [
+            "dashboard/test_gateway.py"
+          ],
+          "requiredEnvironment": "Read-only artifact inspection; no bytecode execution required for inventory.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-17-C02",
+          "description": "Run the differential suite only in its supported interpreter and report incompatible interpreter skips separately.",
+          "existingTests": [
+            "dashboard/test_gateway.py"
+          ],
+          "requiredEnvironment": "Isolated CPython 3.12; no credentials or network.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Retain the .bin file and README through reorganizations with old-to-new path mapping.",
+        "Do not count historical reconstruction evidence as target release qualification."
+      ],
+      "limitations": [
+        "The binary was hashed and its documented role inspected; it was not executed or independently decompiled in this audit."
+      ]
+    },
+    {
+      "id": "HAR-18",
+      "name": "Small orchestration acceptance workloads and their tests",
+      "files": [
+        "orchtest/cidr.py",
+        "orchtest/digest8.py",
+        "orchtest/durations.py",
+        "orchtest/ordinal.py",
+        "orchtest/shorten.py",
+        "orchtest/sizes.py",
+        "orchtest/slug.py",
+        "orchtest/test_cidr.py",
+        "orchtest/test_digest8.py",
+        "orchtest/test_durations.py",
+        "orchtest/test_ordinal.py",
+        "orchtest/test_shorten.py",
+        "orchtest/test_sizes.py",
+        "orchtest/test_slug.py"
+      ],
+      "role": "test-support",
+      "baselineGroups": [
+        "BASE-37"
+      ],
+      "ownerPhase": "P01",
+      "disposition": "retain",
+      "currentBehavior": [
+        "Seven small implementations and seven paired unittest modules cover IPv4 usable-host counts, eight-character digests, duration formatting, English ordinals, bounded shortening, byte formatting and filename slugs.",
+        "Fixtures include IPv4 /31 and /32 behavior, invalid/IPv6 inputs, numeric and suffix boundaries, ellipsis length, binary units and empty/punctuation slug fallback.",
+        "digest8 and its test explicitly preserve a known collision and explain why eight hexadecimal characters cannot guarantee uniqueness for arbitrary bytes."
+      ],
+      "reusePlan": "Retain these small workloads and their expected results as orchestration/evidence acceptance fixtures. Preserve the intentionally unmet digest uniqueness criterion so a passing suite is not misreported as satisfying an impossible requirement.",
+      "enhancements": [
+        "Run the same work examples through legacy and target workflows with traceable task, evidence and acceptance records.",
+        "Capture tests that can fail, version/host metadata and total cost/time when later evaluating agent productivity."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-18-C01",
+          "description": "Run each paired test module unchanged as the source baseline and verify target orchestration attaches the actual result and source revision.",
+          "existingTests": [
+            "orchtest/test_cidr.py",
+            "orchtest/test_digest8.py",
+            "orchtest/test_durations.py",
+            "orchtest/test_ordinal.py",
+            "orchtest/test_shorten.py",
+            "orchtest/test_sizes.py",
+            "orchtest/test_slug.py"
+          ],
+          "requiredEnvironment": "Offline Python unittest environment on supported platforms.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-18-C02",
+          "description": "Verify the digest collision remains a reported limitation rather than accepted collision-free behavior, even when the regression test passes.",
+          "existingTests": [
+            "orchtest/test_digest8.py"
+          ],
+          "requiredEnvironment": "Offline Python; owner-side acceptance fixture for an impossible or unmet criterion.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Keep all seven source/test pairs, original task associations where available and historical evidence semantics.",
+        "Do not replace small examples with bigger demos that hide the specific edge cases."
+      ],
+      "limitations": [
+        "These are bounded example workloads, not a production benchmark or cryptographic library.",
+        "No unittest was run during this audit."
+      ]
+    },
+    {
+      "id": "HAR-19",
+      "name": "Historical communication extraction tools",
+      "files": [
+        "analysis/comms-2026-09/README.md",
+        "analysis/comms-2026-09/.gitignore",
+        "analysis/comms-2026-09/extract_transcripts.py",
+        "analysis/comms-2026-09/extract_panes.py",
+        "analysis/comms-2026-09/extract_receipts.py",
+        "analysis/comms-2026-09/extract_courier.py"
+      ],
+      "role": "historical-evidence",
+      "baselineGroups": [
+        "BASE-09",
+        "BASE-10",
+        "BASE-37"
+      ],
+      "ownerPhase": "P01",
+      "disposition": "retain-evidence",
+      "currentBehavior": [
+        "Four separate extractors read orchestrator transcripts, raw pane logs, client receipt records and courier/queue/run/claim/journal snapshots.",
+        "They preserve source references, normalized body hashes, sender/recipient, message paths and explicit timestamp basis. Extracted records distinguish typed input, visible arrival, actual client receipt, pending input, modal/death/busy states and courier outcomes.",
+        "Snapshot cutoffs, indexed log lengths, sorted output and a fixed historical timezone prevent growing source logs from silently changing the analysis.",
+        "README documents source locations and schema; generated out/ files are ignored. Paths and some source-version assumptions are specific to the original workstation."
+      ],
+      "reusePlan": "Preserve the historical scripts and schema as evidence. Derive a separately versioned diagnostic/evaluation tool only when needed, using explicit authorized input paths and target event schemas.",
+      "enhancements": [
+        "Keep raw-source attribution and confidence/freshness when mapping new NATS/client events into comparable outcomes.",
+        "Add synthetic portable input fixtures so future debugging does not depend on the original user's directories.",
+        "Separate terminal observations from client receipts and accepted work in dashboards and evaluation reports."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-19-C01",
+          "description": "Feed portable synthetic transcript/pane/receipt/courier snapshots and compare normalized records, cutoff handling, partial logs, timezone uncertainty and missing-source diagnostics.",
+          "existingTests": [],
+          "requiredEnvironment": "Offline Python fixtures; new extraction tests are required. Historical raw snapshots are not assumed available.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-19-C02",
+          "description": "Verify input paths remain read-only, generated data stays under an explicit output directory and imported historical observations trigger no message delivery.",
+          "existingTests": [],
+          "requiredEnvironment": "Offline fixture directories and a filesystem write audit.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Retain original scripts, schema and historical paths as provenance; new tooling must not overwrite historical outputs.",
+        "Do not scan current private client logs merely because an old script contains a path.",
+        "Carry source offsets, hashes, time basis and uncertain identity mappings through later evidence imports."
+      ],
+      "limitations": [
+        "The tools were reviewed statically, including constants and main extraction paths; the historical raw snapshot was not reloaded.",
+        "Heuristic pane timing and fuzzy rendering matches do not establish exact receipt or acceptance.",
+        "Scripts contain machine-specific paths and are not ready as general product services."
+      ]
+    },
+    {
+      "id": "HAR-20",
+      "name": "Communication correlation, spot checks and determinism history",
+      "files": [
+        "analysis/comms-2026-09/correlate.py",
+        "analysis/comms-2026-09/spotcheck.py",
+        "analysis/comms-2026-09/determinism.sh",
+        "analysis/comms-2026-09/spotcheck.judgments.json",
+        "analysis/comms-2026-09/spotcheck.pass1.judgments.json"
+      ],
+      "role": "historical-evidence",
+      "baselineGroups": [
+        "BASE-09",
+        "BASE-37"
+      ],
+      "ownerPhase": "P01",
+      "disposition": "retain-evidence",
+      "currentBehavior": [
+        "Correlation joins intent, pane, receipt and courier observations using agent/body/time evidence and classifies received, typed-not-submitted, into-modal, deferred-then-received, dead-lettered, lost-silent, wrong-recipient, truncated, duplicated or unknown.",
+        "Spot checks use a fixed sample seed, inspect raw source references and preserve reviewer agreement/disagreement notes.",
+        "Two committed judgment datasets retain first-pass disagreements and the later interpretation; determinism.sh regenerates derived correlation/spot-check outputs twice and compares hashes."
+      ],
+      "reusePlan": "Keep both judgment histories and existing correlation rules as historical evidence. Add target-specific adapters and portable fixtures alongside them when evaluating new messaging behavior; never rewrite old judgments as current proof.",
+      "enhancements": [
+        "Use the outcome taxonomy to compare delivery reliability before and after changes.",
+        "Require known source coverage before classifying missing receipts as loss, and preserve unknown results.",
+        "Record analysis version, thresholds and sample provenance for repeatable before/after evaluation."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-20-C01",
+          "description": "Use synthetic matching and nonmatching sources to check wrong recipients, clock skew, truncation, duplicates and missing-source unknowns; compare both judgment passes without deleting disagreements.",
+          "existingTests": [],
+          "requiredEnvironment": "Offline Python with portable fixture records; add direct correlation regression cases.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-20-C02",
+          "description": "Verify repeated analysis yields identical derived hashes on a frozen input set while retaining prior judgment files.",
+          "existingTests": [
+            "analysis/comms-2026-09/determinism.sh"
+          ],
+          "requiredEnvironment": "An isolated copy of a frozen dataset; this script writes derived outputs and is not a read-only command.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Retain source references and both judgment passes with their original names and hashes.",
+        "Run new analysis in a new output location, not against the preserved historical judgment files.",
+        "Do not interpret a deterministic analysis result as proof of semantic correctness."
+      ],
+      "limitations": [
+        "The committed JSON structures were inspected but every referenced raw source was not available or rechecked.",
+        "determinism.sh mutates derived output and the current judgment file, so it was not run.",
+        "Correlation uses historical heuristic windows rather than exact distributed tracing."
+      ]
+    },
+    {
+      "id": "HAR-21",
+      "name": "Recorded orchestration demonstration results",
+      "files": [
+        "evals/orchestrations/20260929-221859-calib.json",
+        "evals/orchestrations/20260929-222043-team.json",
+        "evals/orchestrations/20260929-225538-team.json",
+        "evals/orchestrations/20260929-225924-crossrepo.json",
+        "evals/orchestrations/20260929-230317-team.json",
+        "evals/orchestrations/20260929-230742-swarm.json",
+        "evals/orchestrations/20260929-230935-swarm.json",
+        "evals/orchestrations/20260929-231132-crossrepo.json",
+        "evals/orchestrations/20260929-232307-crossrepo.json",
+        "evals/orchestrations/20260930-140310-team.json",
+        "evals/orchestrations/20260930-142203-team.json",
+        "evals/orchestrations/20261002-094245-calib.json",
+        "evals/orchestrations/20261002-094337-team.json",
+        "evals/orchestrations/20261002-094624-crossrepo.json",
+        "evals/orchestrations/20261002-094942-swarm.json",
+        "evals/orchestrations/20261002-095139-calib.json",
+        "evals/orchestrations/20261002-095252-team.json",
+        "evals/orchestrations/20261002-095629-crossrepo.json",
+        "evals/orchestrations/20261002-095926-swarm.json",
+        "evals/orchestrations/20261002-100423-swarm.json",
+        "evals/orchestrations/20261002-100651-swarm.json",
+        "evals/orchestrations/SCOREBOARD.md"
+      ],
+      "role": "historical-evidence",
+      "baselineGroups": [
+        "BASE-37",
+        "BASE-01",
+        "BASE-09"
+      ],
+      "ownerPhase": "P01",
+      "disposition": "retain-evidence",
+      "currentBehavior": [
+        "Twenty-one JSON records capture calibration, team, cross-repository and swarm demonstrations with agents, work, errors, timelines, verification, checks, statistics and pane tails.",
+        "The scoreboard preserves failures and reports 14 of 21 runs error-free under its E1–E6 definition; the stored JSON result flags agree with that historical total.",
+        "Records expose modal blocks, failed/submitted bell events, outstanding acknowledgments and terminal death alongside work completion."
+      ],
+      "reusePlan": "Retain every recorded run and the scoreboard unchanged. Use their scenarios and failure examples to define target regressions, keeping new runs in separate versioned records.",
+      "enhancements": [
+        "Add source/client/broker versions, environment, per-stage outcome and task acceptance evidence to new runs.",
+        "Compare matched legacy/target scenarios without treating old runs or a green aggregate count as current release proof.",
+        "Track recovery effort and accepted result quality as well as time and delivery counts."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-21-C01",
+          "description": "Verify the 21 records remain parseable, every scoreboard row resolves to its original record and failures are retained rather than filtered.",
+          "existingTests": [],
+          "requiredEnvironment": "Read-only JSON/Markdown evidence inventory; new validation may run offline.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-21-C02",
+          "description": "Repeat calibration/team/cross-repository/swarm scenarios in an isolated environment with pinned supported clients and explicit recording of all failed/skipped checks.",
+          "existingTests": [
+            "hub/demo/orchestrate.py"
+          ],
+          "requiredEnvironment": "Disposable repositories and hub/tmux environments; live agents and paid providers only when separately authorized.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P06"
+        }
+      ],
+      "migrationChecks": [
+        "Keep original run IDs, timestamps, source evidence and pass/fail flags; imports must not create live work.",
+        "Place future records under new IDs with source version and environment attribution.",
+        "Preserve pane-tail privacy controls when showing historical results to team viewers."
+      ],
+      "limitations": [
+        "These are historical demonstrations, not a reliability estimate for the target platform.",
+        "JSON metadata and result flags were read; no provider claims inside results were reverified.",
+        "No live orchestration was run."
+      ]
+    },
+    {
+      "id": "HAR-22",
+      "name": "Historical test-gate isolation evidence",
+      "files": [
+        "evals/gate_isolation/2026-10-01_TM-223.md"
+      ],
+      "role": "historical-evidence",
+      "baselineGroups": [
+        "BASE-37",
+        "BASE-36"
+      ],
+      "ownerPhase": "P01",
+      "disposition": "retain-evidence",
+      "currentBehavior": [
+        "The recorded five-run exercise verifies that the test gate used a private dashboard/home while operator board reads and a write continued.",
+        "It preserves the first failed residue assertion and the later four passing runs, explaining why the older test expected an operator-server restart and how the regression was corrected.",
+        "The documented failure modes include suite failure, signals, failed server start, differing homes and a changed operator listener."
+      ],
+      "reusePlan": "Retain this evidence and carry its isolation assertions into the new test harness before running platform or broker failure drills.",
+      "enhancements": [
+        "Add per-run broker domains/accounts, ports, homes, repository worktrees and cleanup ownership to the same isolation contract.",
+        "Ensure failure drills cannot stop an operator's dashboard, consume real queued work or alter real credentials."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-22-C01",
+          "description": "Verify normal/failure/signal/startup-error paths clean only the test resources and never restart or rewrite the operator's service/home.",
+          "existingTests": [
+            "dashboard/test_residue.sh",
+            "dashboard/check_test_residue.sh",
+            "dashboard/run_tests.sh"
+          ],
+          "requiredEnvironment": "Disposable test homes/services with a separate sentinel operator service.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-22-C02",
+          "description": "Deliberately swap the sentinel listener or leave a test resource and verify the gate fails with evidence.",
+          "existingTests": [
+            "dashboard/test_residue.sh",
+            "dashboard/check_test_failability.sh"
+          ],
+          "requiredEnvironment": "Isolated process/port fixtures; no production dashboard or user state.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve the historical report; new test results require fresh run IDs and exact source versions.",
+        "Carry operator/test resource separation into NATS integration tests before enabling them in CI."
+      ],
+      "limitations": [
+        "The old five-run result is retained evidence, not a new execution result.",
+        "No dashboard or service was started or stopped."
+      ]
+    },
+    {
+      "id": "HAR-23",
+      "name": "Maintained legacy orchestration plugin replacement",
+      "files": [
+        "plugins/agentmux-orchestration/.claude-plugin/plugin.json",
+        "plugins/agentmux-orchestration/.mcp.json",
+        "plugins/agentmux-orchestration/PROVENANCE.md",
+        "plugins/agentmux-orchestration/README.md",
+        "plugins/agentmux-orchestration/bin/agentmux-plugin",
+        "plugins/agentmux-orchestration/hooks/agentmux-hook.sh",
+        "plugins/agentmux-orchestration/hooks/hooks.json",
+        "plugins/agentmux-orchestration/lib/gateway.py",
+        "plugins/agentmux-orchestration/lib/policy.py",
+        "plugins/agentmux-orchestration/lib/roster_mcp.py",
+        "plugins/agentmux-orchestration/skills/agent-config/SKILL.md",
+        "plugins/agentmux-orchestration/skills/agent-config/scripts/runtime.py",
+        "plugins/agentmux-orchestration/skills/agent-doctor/SKILL.md",
+        "plugins/agentmux-orchestration/skills/agent-edit/SKILL.md",
+        "plugins/agentmux-orchestration/skills/agent-new/SKILL.md",
+        "plugins/agentmux-orchestration/skills/agent-remove/SKILL.md",
+        "plugins/agentmux-orchestration/skills/agent-roster/SKILL.md",
+        "plugins/agentmux-orchestration/skills/team-compose/SKILL.md",
+        "plugins/agentmux-orchestration/skills/team-dispatch/SKILL.md",
+        "plugins/agentmux-orchestration/skills/team-merge/SKILL.md",
+        "plugins/agentmux-orchestration/tests/test_hook_mcp.py",
+        "plugins/agentmux-orchestration/tests/test_packaging.py",
+        "tests/contracts/plugin_preservation.py"
+      ],
+      "role": "runtime-and-client-guidance",
+      "baselineGroups": [],
+      "ownerPhase": "P01",
+      "disposition": "extend",
+      "currentBehavior": [
+        "New maintained package restores nine source-backed legacy workflow names using current coordination, dispatch and setup-auth commands. Original external plugin source was not recovered.",
+        "POSIX pre-tool hook reads current roster/live worker observations; read-only newline JSON-RPC MCP exposes two roster tools. Discovery is independent of dashboard readiness.",
+        "Explicit runtime binding forwards literal arguments and preserves output/exit status. Live-definition protection is hook-only, with a preflight race; direct HTTP lacks that protection."
+      ],
+      "reusePlan": "Preserve current runtime business rules and unchanged twenty external-plugin assertions. Ship reviewed maintained replacement with explicit provenance, compatibility evidence and original gap history; no personal install/publication.",
+      "enhancements": [
+        "Additional parser, HTTP, frame and relocation negatives plus independent real dashboard checks.",
+        "P06 owns actual supported-host plugin launch, Windows-native interop and framework integration."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HAR-23-C01",
+          "description": "Validate nine maintained skill guides and metadata, literal-argument runtime forwarding, explicit binding and relocation with spaces; distinguish new provenance from unavailable original source.",
+          "existingTests": [
+            "dashboard/test_plugin_skills.py",
+            "plugins/agentmux-orchestration/tests/test_packaging.py"
+          ],
+          "requiredEnvironment": "Private Linux/WSL package/runtime fixtures; actual installed-host metadata validator; no inference.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-23-C02",
+          "description": "Verify irrelevant hook bypass, approved literal hire, live definition refusals, ambiguous/path/patch/HTTP denials and continued-service read-only roster MCP.",
+          "existingTests": [
+            "dashboard/test_orchestration_plugin.py",
+            "plugins/agentmux-orchestration/tests/test_hook_mcp.py",
+            "tests/contracts/plugin_preservation.py"
+          ],
+          "requiredEnvironment": "Disposable HTTP/dashboard/tmux and package fixtures; native Windows hook launch remains P06-unqualified.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HAR-23-C03",
+          "description": "Run current definition/team CLI contracts through the relocated launcher against actual disposable dashboard state; map all nine workflows to supported commands and preserve collection/identity/checksum policy.",
+          "existingTests": [
+            "dashboard/test_agentcli.py",
+            "dashboard/test_teamcli.py",
+            "dashboard/test_dispatch.py"
+          ],
+          "requiredEnvironment": "Private real dashboard/SQLite and bounded original provider fixtures; no real-model equivalence claim.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Require explicit trusted AGENTMUX_REPO; do not infer a sibling runtime or copy credentials.",
+        "Preserve current agent identity, scope, checksum, team approval and guarded collection semantics.",
+        "Retain original-source gap and unknown original prose/metadata; compatibility is not historical byte equality."
+      ],
+      "limitations": [
+        "Initial package processes run on Linux/macOS or explicitly selected WSL; Windows-owned clients remain Windows-owned, native Windows hook launch unqualified.",
+        "Host hooks are defense in depth, not authentication, endpoint authorization or universal shell containment.",
+        "No model skill-performance eval, authenticated inference, original-source equality or P06 acceptance implied."
+      ]
+    }
+  ],
+  "reviewHistory": [
+    {
+      "date": "2026-10-09",
+      "reviewer": "Codex",
+      "scope": "Add source ownership for bounded P01 platform/callback fixtures; preserve original behavioral obligations",
+      "addedFiles": [
+        "agentmux_windows.py"
+      ]
+    },
+    {
+      "date": "2026-10-09",
+      "reviewer": "Codex",
+      "scope": "Approved P01 maintained original-plugin preservation repair; original baseline/components retained",
+      "addedFiles": [
+        "plugins/agentmux-orchestration/.claude-plugin/plugin.json",
+        "plugins/agentmux-orchestration/.mcp.json",
+        "plugins/agentmux-orchestration/PROVENANCE.md",
+        "plugins/agentmux-orchestration/README.md",
+        "plugins/agentmux-orchestration/bin/agentmux-plugin",
+        "plugins/agentmux-orchestration/hooks/agentmux-hook.sh",
+        "plugins/agentmux-orchestration/hooks/hooks.json",
+        "plugins/agentmux-orchestration/lib/gateway.py",
+        "plugins/agentmux-orchestration/lib/policy.py",
+        "plugins/agentmux-orchestration/lib/roster_mcp.py",
+        "plugins/agentmux-orchestration/skills/agent-config/SKILL.md",
+        "plugins/agentmux-orchestration/skills/agent-config/scripts/runtime.py",
+        "plugins/agentmux-orchestration/skills/agent-doctor/SKILL.md",
+        "plugins/agentmux-orchestration/skills/agent-edit/SKILL.md",
+        "plugins/agentmux-orchestration/skills/agent-new/SKILL.md",
+        "plugins/agentmux-orchestration/skills/agent-remove/SKILL.md",
+        "plugins/agentmux-orchestration/skills/agent-roster/SKILL.md",
+        "plugins/agentmux-orchestration/skills/team-compose/SKILL.md",
+        "plugins/agentmux-orchestration/skills/team-dispatch/SKILL.md",
+        "plugins/agentmux-orchestration/skills/team-merge/SKILL.md",
+        "plugins/agentmux-orchestration/tests/test_hook_mcp.py",
+        "plugins/agentmux-orchestration/tests/test_packaging.py"
+      ],
+      "newComponent": "HAR-23",
+      "evidence": "delivery/evidence/P01/plugin-restoration-spec.md"
+    },
+    {
+      "date": "2026-10-09",
+      "reviewer": "Codex",
+      "scope": "Owned native plugin36-method evidence runner with exact method/source admission; existing22CIchecks retained",
+      "addedFiles": [
+        "tests/contracts/plugin_preservation.py"
+      ]
+    },
+    {
+      "date": "2026-10-13T18:02:02.393069+00:00",
+      "reviewer": "Codex",
+      "scope": "Separate P01 environmental characterization from P06 actual supported-host qualification under WSL-CLIENT-01. Preserve all original scenario assertions, partial results and failed evidence; this is a qualification ownership correction, not a waiver or phase acceptance.",
+      "componentId": "HAR-21",
+      "checkId": "HAR-21-C02",
+      "previousCheck": {
+        "id": "HAR-21-C02",
+        "description": "Repeat calibration/team/cross-repository/swarm scenarios in an isolated environment with pinned supported clients and explicit recording of all failed/skipped checks.",
+        "existingTests": [
+          "hub/demo/orchestrate.py"
+        ],
+        "requiredEnvironment": "Disposable repositories and hub/tmux environments; live agents and paid providers only when separately authorized.",
+        "baselineStatus": "not-run",
+        "targetStatus": "not-run"
+      },
+      "qualificationPhase": "P06",
+      "qualificationTask": "P06-T03",
+      "assertionsUnchanged": true
+    }
+  ]
+}

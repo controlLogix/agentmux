@@ -1,0 +1,876 @@
+{
+  "scope": "Repository instructions, governance, CI, documentation and packaging metadata",
+  "reviewMethod": "Static source and documentation review; no runtime tests run",
+  "components": [
+    {
+      "id": "REPO-01",
+      "name": "Repository instructions and writing rules",
+      "files": [
+        "AGENTS.md",
+        "CLAUDE.md",
+        ".claude/rules/plain-language.md"
+      ],
+      "role": "configuration",
+      "baselineGroups": [],
+      "ownerPhase": "P00",
+      "disposition": "extend",
+      "currentBehavior": [
+        "Both AGENTS.md and CLAUDE.md require autonomous Codex delivery review, bounded subagents within one active phase, repository task/evidence updates, verified commit/push before advancement, and final acceptance with real agent-operated hubs. All work stays on feat/agentmux-platform-rearchitecture; no merge or release is authorized. Both link shared plain-language and local fast-test rules.",
+        "This is a static review of the current instruction files after the user changed delivery governance. Historical source-bound reviews remain below. Actual delivery/loading in every supported agent host remains unqualified under P06."
+      ],
+      "reusePlan": "Retain root entry files and the shared writing rules. Extend their links as implementation contracts gain evidence.",
+      "enhancements": [
+        "Consistent contributor and agent instructions for every language and plugin."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "REPO-01-C01",
+          "description": "Each supported agent host loads or receives the shared rules, autonomous Codex delivery review, one-active-phase subagent restriction and feature-branch-only/no-merge restriction; add missing host-specific instruction links before qualification.",
+          "existingTests": [],
+          "requiredEnvironment": "Static instruction review and supported agent sessions",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P06"
+        }
+      ],
+      "migrationChecks": [
+        "Do not overwrite user instructions while installing plugins; preserve managed markers and user-authored sections."
+      ],
+      "limitations": [
+        "Static root-file review does not prove tool-specific instruction loading. Qualify supported agent-host versions and installation/upgrade preservation in P06/P12."
+      ],
+      "reviewHistory": [
+        {
+          "date": "2026-10-09",
+          "reviewer": "Codex",
+          "sourceCommit": "c513ffa0565936916b342ae8ad7a8dc837b4d6e8",
+          "previous": {
+            "currentBehavior": [
+              "AGENTS.md carries the branch and Ryan/Nick merge restriction. Both root agent instruction files link the shared plain-language rules.",
+              "CLAUDE.md does not currently repeat the branch restriction or link AGENTS.md; host-specific loading of all required rules needs verification."
+            ],
+            "limitations": [
+              "Tool-specific instruction loading has not been tested; CLAUDE.md alone does not include every AGENTS.md restriction."
+            ]
+          },
+          "reason": "Reconcile the earlier missing-CLAUDE restriction finding with the committed instructions; preserve actual host-loading gap.",
+          "evidence": "delivery/evidence/P00/preflight.md"
+        },
+        {
+          "date": "2026-10-09",
+          "reviewer": "Codex",
+          "previousQualificationPhase": "P00 (implicit component owner)",
+          "qualificationPhase": "P06",
+          "reason": "P00 owns static instruction review. Actual host loading must be proved with P06 host integrations; the assertion and final release requirement are unchanged."
+        },
+        {
+          "date": "2026-10-09",
+          "reviewer": "Codex",
+          "sourceCommit": "19e61678a1ec543963a4b327e723d0a5f7737fec",
+          "previous": {
+            "currentBehavior": [
+              "Both AGENTS.md and CLAUDE.md carry the feature-branch restriction, Ryan/Nick real-instance merge gate, local fast-test workflow and repository delivery tracking requirements. Both link the shared plain-language rules.",
+              "Presence and content were statically reviewed at c513ffa0565936916b342ae8ad7a8dc837b4d6e8. Actual delivery/loading in every supported agent host remains unqualified under P06."
+            ],
+            "behaviorChecks": [
+              {
+                "id": "REPO-01-C01",
+                "description": "Each supported agent host loads or receives the shared rules and the Ryan/Nick merge restriction; add missing host-specific instruction links before qualification.",
+                "existingTests": [],
+                "requiredEnvironment": "Static instruction review and supported agent sessions",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run",
+                "qualificationPhase": "P06"
+              }
+            ]
+          },
+          "reason": "Latest user instruction replaces Ryan/Nick delivery approvals with autonomous Codex review and subagents within one active phase. Feature-branch-only work and no merge remain; qualification still belongs to P06.",
+          "evidence": [
+            "../../../AGENTS.md",
+            "../../../CLAUDE.md",
+            "phases.json:governanceHistory",
+            "implementation-plan.md:MERGE-01"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REPO-02",
+      "name": "Design-pattern governance and recorded history",
+      "files": [
+        ".bytedesk/design-patterns/README.md",
+        ".bytedesk/design-patterns/agent-rules.md",
+        ".bytedesk/design-patterns/baseline.md",
+        ".bytedesk/design-patterns/catalog.json",
+        ".bytedesk/design-patterns/check.mjs",
+        ".bytedesk/design-patterns/frontend-rules.md",
+        ".bytedesk/design-patterns/project.json",
+        ".bytedesk/design-patterns/remediation.json",
+        ".bytedesk/design-patterns/review.json",
+        ".context/design-patterns-diagrams.md",
+        ".context/design-patterns.md",
+        ".claude/rules/design-patterns.md",
+        ".claude/rules/frontend-components.md"
+      ],
+      "role": "configuration",
+      "baselineGroups": [
+        "BASE-37"
+      ],
+      "ownerPhase": "P01",
+      "disposition": "extend",
+      "currentBehavior": [
+        "Pinned catalog, baseline rules, project scope, registry, diagrams and source-digest review records form the existing governance gate.",
+        "Six active baseline findings remain recorded; current backend scope is not a qualification of the future frontend."
+      ],
+      "reusePlan": "Retain checker, approved sources and historical records. Extend registry entries and change declared product surfaces explicitly when the frontend is introduced.",
+      "enhancements": [
+        "Evidence for reused components and future plugin boundaries stays traceable."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "REPO-02-C01",
+          "description": "The gate rejects stale reviews, missing pattern evidence and unresolved findings; prior records remain readable.",
+          "existingTests": [
+            ".bytedesk/design-patterns/check.mjs"
+          ],
+          "requiredEnvironment": "Node and Git; read-only checker",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Never reset adoption or erase findings to admit the new design; qualify new web surfaces before release."
+      ],
+      "limitations": [
+        "Current check fails on six recorded baseline findings."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-09",
+          "scope": "Authorized six-finding governance repair",
+          "note": "Six baseline findings repaired with preserved history and executed source-bound evidence; full platform acceptance remains open.",
+          "evidence": [
+            "governance-repairs.md",
+            "governance-repair-evidence.json"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "REPO-03",
+      "name": "Continuous integration workflows",
+      "files": [
+        ".github/workflows/contracts.yml",
+        ".github/workflows/design-patterns.yml",
+        ".github/workflows/tests.yml",
+        ".github/workflows/platform-foundation.yml",
+        "tests/platform/native_go.py",
+        "tests/platform/native_compose.py",
+        ".github/workflows/platform-compose.yml"
+      ],
+      "role": "configuration",
+      "baselineGroups": [
+        "BASE-37"
+      ],
+      "ownerPhase": "P01",
+      "disposition": "extend",
+      "currentBehavior": [
+        "CI performs syntax, selected hub/federation and dashboard suites, plus pattern governance.",
+        "A green selected job does not prove the tmux, browser, broker or hardware matrices."
+      ],
+      "reusePlan": "Retain existing jobs and assertions; add isolated compatibility and migration jobs without replacing them with narrower tests.",
+      "enhancements": [
+        "Baseline and candidate comparisons on supported platforms with explicit skip reasons."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "REPO-03-C01",
+          "description": "Deliberately failing an existing assertion blocks the relevant gate; skipped environments cannot count as passes.",
+          "existingTests": [
+            ".github/workflows/tests.yml",
+            ".github/workflows/design-patterns.yml"
+          ],
+          "requiredEnvironment": "CI with declared Node, Python and supported OS jobs",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "REPO-03-C02",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T01",
+          "description": "Run candidate-bound native Go foundation checks and independently review version/archive pins, real broker commands, closed terminal Go event admission, all source maps and artifact hashes. Keep Darwin research/fail-closed control separate; no skipped/mocked result or foundation-only pass qualifies native product boot, Compose or a phase gate. Preserve existing CI jobs and P01 REPO-03-C01. Also review the native Compose collector, complete SDK status-shape admission, exact engine enrollment and held-descriptor guards. Collector controls and WSL helper proof remain separate from actual supported-environment Compose and installed CLI qualification.",
+          "existingTests": [
+            "tests/platform/native_go.py",
+            ".github/workflows/platform-foundation.yml",
+            "tests/platform/native_compose.py",
+            ".github/workflows/platform-compose.yml"
+          ],
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "requiredEnvironment": "Current candidate-bound native Linux/macOS/WSL environment and real broker/artifact evidence as applicable; source/unit checks do not imply product boot."
+        }
+      ],
+      "migrationChecks": [
+        "Preserve test identities, environment requirements and logs across pipeline changes."
+      ],
+      "limitations": [],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-09",
+          "scope": "Authorized six-finding governance repair",
+          "note": "The existing CI unittest command now includes hub.tests.test_governance. Live broker evidence was collected in WSL; this edit does not add a broker to CI.",
+          "evidence": [
+            "governance-repairs.md",
+            "governance-repair-evidence.json"
+          ]
+        },
+        {
+          "date": "2026-10-14T10:15:57.206889+00:00",
+          "reviewer": "Codex",
+          "scope": "Native Compose verification tooling registration",
+          "previousCheck": {
+            "id": "REPO-03-C02",
+            "qualificationPhase": "P02",
+            "ownerTask": "P02-T01",
+            "description": "Run candidate-bound native Go foundation checks and independently review version/archive pins, real broker commands, closed terminal Go event admission, all source maps and artifact hashes. Keep Darwin research/fail-closed control separate; no skipped/mocked result or foundation-only pass qualifies native product boot, Compose or a phase gate. Preserve existing CI jobs and P01 REPO-03-C01.",
+            "existingTests": [
+              "tests/platform/native_go.py",
+              ".github/workflows/platform-foundation.yml"
+            ],
+            "baselineStatus": "not-run",
+            "targetStatus": "not-run",
+            "requiredEnvironment": "Current candidate-bound native Linux/macOS/WSL environment and real broker/artifact evidence as applicable; source/unit checks do not imply product boot."
+          },
+          "note": "REPO-03-C02 owns verification tooling; PLAT-03 retains product acceptance. REPO-10-C08 review-server coverage and P01 REPO-03-C01 are unchanged."
+        }
+      ]
+    },
+    {
+      "id": "REPO-04",
+      "name": "Git text, binary and privacy rules",
+      "files": [
+        ".gitattributes",
+        ".gitignore"
+      ],
+      "role": "configuration",
+      "baselineGroups": [
+        "BASE-16",
+        "BASE-36"
+      ],
+      "ownerPhase": "P12",
+      "disposition": "extend",
+      "currentBehavior": [
+        "LF rules protect sourced shell scripts; explicit binary rules protect recovered bytecode, captures and images.",
+        "Ignore rules keep credentials, machine state, downloaded vendor manuals, caches and presentation locks out of source control."
+      ],
+      "reusePlan": "Retain rules and add narrowly scoped entries only when new outputs require them.",
+      "enhancements": [
+        "New plugins and release packaging preserve binary fixtures and exclude private state."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "REPO-04-C01",
+          "description": "A fresh supported-platform checkout preserves binary digests and executable shell line endings; packaging excludes private runtime files.",
+          "existingTests": [],
+          "requiredEnvironment": "Git checkout and release-package inspection on macOS, Linux and WSL",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Keep source fixtures, agent definitions and license records versioned; never run text conversion over captures or recovered bytecode."
+      ],
+      "limitations": []
+    },
+    {
+      "id": "REPO-05",
+      "name": "Product version and main user guide",
+      "files": [
+        "VERSION",
+        "README.md"
+      ],
+      "role": "configuration",
+      "baselineGroups": [
+        "BASE-01",
+        "BASE-19",
+        "BASE-36"
+      ],
+      "ownerPhase": "P12",
+      "disposition": "extend",
+      "currentBehavior": [
+        "The version file identifies the release; README lists entry points, installation, authentication and operational workflows."
+      ],
+      "reusePlan": "Preserve working commands while updating examples to the qualified plugin product. Keep compatibility instructions during transition.",
+      "enhancements": [
+        "A new user can complete existing workflows and the added team workflow from published instructions."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "REPO-05-C01",
+          "description": "Every advertised command and setup method resolves to shipped code or an explicit supported replacement.",
+          "existingTests": [
+            "dashboard/test_launch.sh",
+            "dashboard/test_auth.py"
+          ],
+          "requiredEnvironment": "Clean supported host with documented prerequisites",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Label historical setup gaps rather than copying them into a supported product claim."
+      ],
+      "limitations": []
+    },
+    {
+      "id": "REPO-06",
+      "name": "Harness contracts and known operational limits",
+      "files": [
+        "docs/CONTRACTS_agents.md",
+        "docs/TM-068-sandbox-dispatch.md",
+        "docs/USING_THE_HARNESS.md"
+      ],
+      "role": "configuration",
+      "baselineGroups": [
+        "BASE-01",
+        "BASE-02",
+        "BASE-03",
+        "BASE-06"
+      ],
+      "ownerPhase": "P06",
+      "disposition": "extend",
+      "currentBehavior": [
+        "Documents preserve agent definition schemas, roster/worktree conventions and dispatch sandbox limitations.",
+        "Older contract text says the full gate repoints the live dashboard; current test runner uses an isolated server."
+      ],
+      "reusePlan": "Retain amendment history; add dated corrections tied to code and link versioned replacement contracts.",
+      "enhancements": [
+        "Instructions match actual isolation and supported client capabilities."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "REPO-06-C01",
+          "description": "Run every advertised workflow in isolated fixtures; stale operational warnings are corrected with code evidence.",
+          "existingTests": [
+            "dashboard/test_sandbox_coordination.py",
+            "dashboard/run_tests.sh"
+          ],
+          "requiredEnvironment": "Supported client/tmux test host; isolated data root",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Do not treat old documentation as current test evidence; preserve source and amendment dates."
+      ],
+      "limitations": [
+        "These documents contain historical claims requiring reconciliation with current implementation."
+      ]
+    },
+    {
+      "id": "REPO-07",
+      "name": "Hub, federation and transport specifications",
+      "files": [
+        "docs/PROTOCOL.md",
+        "docs/FEDERATION.md",
+        "docs/TRANSPORT.md",
+        "docs/LOCAL_TESTING.md"
+      ],
+      "role": "configuration",
+      "baselineGroups": [
+        "BASE-11",
+        "BASE-12",
+        "BASE-13",
+        "BASE-14"
+      ],
+      "ownerPhase": "P10",
+      "disposition": "extend",
+      "currentBehavior": [
+        "Current verb, envelope, identity, account and terminal-delivery contracts document the existing installed system."
+      ],
+      "reusePlan": "Retain old contract versions; add an explicit old-to-new command, event, permission and state mapping.",
+      "enhancements": [
+        "Operators can move from shared-circle deployments to independent hubs without losing delivery evidence."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "REPO-07-C01",
+          "description": "Every documented public verb and protocol field has a retained contract or reviewed migration entry.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py",
+            "hub/tests/test_fed_unit.py",
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated hub and NATS environments; pinned clients",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Keep prior behavior and topology decisions attributed to their version; publish mixed-version compatibility limits."
+      ],
+      "limitations": [],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-09",
+          "scope": "User-requested faster local test iteration",
+          "change": "Added focused, fast, offline, live and full hub selections; failed-test reruns; local timing and source-hash reports; WSL launcher reuses prepared tools. Existing assertions and phase gates are preserved.",
+          "evidence": "docs/LOCAL_TESTING.md"
+        }
+      ]
+    },
+    {
+      "id": "REPO-08",
+      "name": "Historical handover and reference screenshots",
+      "files": [
+        "HANDOVER.md",
+        "docs/images/board.png",
+        "docs/images/iiot.png",
+        "docs/images/runs-view.png",
+        "docs/images/settings-orchestration.png",
+        "docs/images/status-feed.png"
+      ],
+      "role": "historical-evidence",
+      "baselineGroups": [
+        "BASE-17",
+        "BASE-37"
+      ],
+      "ownerPhase": "P07",
+      "disposition": "retain-evidence",
+      "currentBehavior": [
+        "Handover and five screenshots preserve prior UI, implementation decisions and reported test outcomes."
+      ],
+      "reusePlan": "Retain original evidence with dates; add current before/after captures using controlled fixture data.",
+      "enhancements": [
+        "Reviewers can compare navigation, controls and meaningful display states across migration."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "REPO-08-C01",
+          "description": "Each retained screenshot has provenance; new screenshots use the exact candidate and contain no private operator data.",
+          "existingTests": [],
+          "requiredEnvironment": "Static review and isolated browser captures",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Do not overwrite historical screenshots or turn old reported test counts into current pass claims."
+      ],
+      "limitations": []
+    },
+    {
+      "id": "REPO-09",
+      "name": "Vendor documentation references",
+      "files": [
+        "docs/vendor/README.md"
+      ],
+      "role": "configuration",
+      "baselineGroups": [
+        "BASE-30"
+      ],
+      "ownerPhase": "P11",
+      "disposition": "extend",
+      "currentBehavior": [
+        "Vendor links distinguish open Logix data-access protocols from licensed Windows engineering SDKs."
+      ],
+      "reusePlan": "Retain references and redistribution limits; version references when qualified adapters change.",
+      "enhancements": [
+        "Tool prerequisites and supported operations remain accurate for industrial plugins."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "REPO-09-C01",
+          "description": "Each claimed vendor operation has a source/tool version and simulator or hardware evidence, with redistribution rights checked.",
+          "existingTests": [],
+          "requiredEnvironment": "Vendor documentation review and approved integration environment",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Do not bundle ignored vendor manuals or imply an SDK integration from a protocol library."
+      ],
+      "limitations": []
+    },
+    {
+      "id": "REPO-10",
+      "name": "Delivery review notes and local repository helper",
+      "files": [
+        "docs/reviews/.gitattributes",
+        "docs/reviews/agentmux-visual-review/document-version.json",
+        "docs/reviews/agentmux-visual-review/notes/nick.md",
+        "docs/reviews/agentmux-visual-review/notes/ryan.md",
+        "docs/reviews/agentmux-visual-review/README.md",
+        "docs/reviews/agentmux-visual-review/review.json",
+        "docs/reviews/check.mjs",
+        "docs/reviews/open.mjs",
+        "docs/reviews/README.md",
+        "docs/reviews/src/features/local-review.mjs",
+        "docs/reviews/src/features/local-review.test.mjs",
+        "docs/reviews/src/features/notes-controller.mjs",
+        "docs/reviews/src/features/notes-controller.test.mjs",
+        "docs/reviews/src/features/notes-format.mjs",
+        "docs/reviews/src/features/notes-format.test.mjs",
+        "docs/reviews/src/features/notes-local.mjs",
+        "docs/reviews/src/features/notes-local.test.mjs",
+        "docs/reviews/src/features/notes-lock.mjs",
+        "docs/reviews/src/features/notes-lock.test.mjs",
+        "docs/reviews/src/features/packaging.test.mjs",
+        ".agents/skills/review-inbox/SKILL.md",
+        ".agents/skills/review-inbox/agents/openai.yaml",
+        ".agents/skills/review-inbox/references/workflow.md",
+        ".agents/skills/review-inbox/scripts/inbox.mjs",
+        ".claude/skills/review-inbox/SKILL.md",
+        ".agents/skills/review-inbox/scripts/inbox.test.mjs",
+        ".agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs",
+        "docs/reviews/review-inbox-verification.json",
+        "docs/reviews/server-lifecycle-verification.json",
+        "docs/reviews/src/features/review-server.mjs",
+        "docs/reviews/src/features/review-server.test.mjs"
+      ],
+      "role": "tooling",
+      "baselineGroups": [],
+      "ownerPhase": "P01",
+      "disposition": "extend",
+      "currentBehavior": [
+        "Standalone review notes support import, draft restore and export.",
+        "An optional loopback helper uses Git identity and saves reviewer notes with revision checks and process-held locks."
+      ],
+      "reusePlan": "Preserve standalone review and existing notes; qualify the optional repository helper as delivery tooling.",
+      "enhancements": [
+        "Preserve reviewer identity across import, restore and export.",
+        "Verify confined writes, failed-save recovery and competing writers without changing product runtime scope.",
+        "Add read-only Git review-inbox discovery and a shared skill for explicit selection and isolated review opening without treating notes, replies or opening as implementation approval."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "REPO-10-C01",
+          "description": "Preserve text, version and reviewer identity through standalone import/edit/restore/export, reset identity only on author switch; keep legacy drafts and known reviewer filenames.",
+          "existingTests": [
+            "docs/reviews/src/features/notes-controller.test.mjs",
+            "docs/reviews/src/features/notes-format.test.mjs"
+          ],
+          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "REPO-10-C02",
+          "description": "Use effective Git identity; configure only repo-local name/email; confine writes to assigned notes files and reject stale identity/revision.",
+          "existingTests": [
+            "docs/reviews/src/features/local-review.test.mjs"
+          ],
+          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "REPO-10-C03",
+          "description": "Reject foreign Host/Origin/missing token, links escaping notes/repository, malformed/oversized payloads; rejected writes preserve existing data.",
+          "existingTests": [
+            "docs/reviews/src/features/local-review.test.mjs"
+          ],
+          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "REPO-10-C04",
+          "description": "Lock competing writers, release locks on process exit, retain pending edits/conflict drafts and warn before delayed/unconfirmed saves; retry temporary failures.",
+          "existingTests": [
+            "docs/reviews/src/features/notes-lock.test.mjs",
+            "docs/reviews/src/features/notes-local.test.mjs",
+            "docs/reviews/src/features/notes-controller.test.mjs"
+          ],
+          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "REPO-10-C05",
+          "description": "Escape feedback, preserve exact assets/plan, keep stable source-version rules and standalone network restrictions, generate matching HTML/report/version.",
+          "existingTests": [
+            "docs/reviews/src/features/packaging.test.mjs",
+            "docs/reviews/src/features/notes-format.test.mjs"
+          ],
+          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "REPO-10-C06",
+          "description": "Verify offline review-inbox discovery across local and cached remote refs: valid nonempty notes and configured work paths, duplicate grouping, versions and Git attribution, local drafts, explicit reply receipts and unknown/mixed states. Reject unsafe paths/arguments and malformed input, report bounded/truncated history honestly, and prove repository/config/index/ref preservation. Review shared/Claude entry points and agent metadata for selection, cached-history labeling, untrusted-content handling and separate write authorization.",
+          "existingTests": [
+            ".agents/skills/review-inbox/scripts/inbox.test.mjs",
+            ".agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs"
+          ],
+          "requiredEnvironment": "Disposable offline Git repositories on Windows and native POSIX; credential-free scanner invocation and shared skill/reference/YAML inspection. No network, models, real reviewer notes or browser needed.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P01"
+        },
+        {
+          "id": "REPO-10-C07",
+          "description": "Qualify the promised review-inbox opening workflow in each supported installed Claude Code/Codex host: explicit selection, latest selected branch head/version, safe reuse or isolated workspace, documented owned server, verified page/session and browser opening. Preserve dirty/occupied branches, unknown listeners and settings; honor cached/fetch errors and browser denials. Opening never writes notes, records answers, commits, pushes or authorizes implementation without a separate request.",
+          "existingTests": [],
+          "requiredEnvironment": "Actual supported installed agent hosts and disposable review repositories/workspaces; owned loopback server and supported browser tool. Keep unsupported host/transport behavior explicit.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P06"
+        },
+        {
+          "id": "REPO-10-C08",
+          "description": "One authenticated review server slot per repository/worktrees; concurrent open reuse, explicit requested port, unknown/starting/unresponsive owners never falsely inactive; explicit stop/restart drains connected and disconnected note handlers before exact ownership release, preserving notes/drafts/settings/unrelated listeners.",
+          "existingTests": [
+            "docs/reviews/src/features/review-server.test.mjs",
+            "docs/reviews/src/features/local-review.test.mjs",
+            "docs/reviews/src/features/notes-controller.test.mjs"
+          ],
+          "requiredEnvironment": "Native local Node with disposable repositories/worktrees/processes, not product-dashboard or terminal-host acceptance.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P02"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve existing reviewer notes, known filenames and legacy browser drafts.",
+        "Keep pinned P00 source blobs and historical acceptance intact.",
+        "Do not treat review tooling as an Agentmux runtime service or P06 acceptance."
+      ],
+      "limitations": [
+        "Browser rendering and current full check evidence remain open until independently reviewed."
+      ]
+    }
+  ],
+  "reviewHistory": [
+    {
+      "date": "2026-10-09",
+      "reviewer": "Codex",
+      "scope": "P01 recovery, signed leaf exchange and portable CI fixture ownership",
+      "addedFiles": [
+        ".github/workflows/contracts.yml"
+      ],
+      "note": "Existing ownership, baseline behavior and qualification requirements are unchanged; new fixtures do not establish phase acceptance."
+    },
+    {
+      "date": "2026-10-13T16:40:36.663526+00:00",
+      "reviewer": "Codex",
+      "scope": "P01 delivery review notes ownership",
+      "addedFiles": [
+        "docs/reviews/.gitattributes",
+        "docs/reviews/agentmux-visual-review/document-version.json",
+        "docs/reviews/agentmux-visual-review/notes/nick.md",
+        "docs/reviews/agentmux-visual-review/notes/ryan.md",
+        "docs/reviews/agentmux-visual-review/README.md",
+        "docs/reviews/agentmux-visual-review/review.json",
+        "docs/reviews/check.mjs",
+        "docs/reviews/open.mjs",
+        "docs/reviews/README.md",
+        "docs/reviews/src/features/local-review.mjs",
+        "docs/reviews/src/features/local-review.test.mjs",
+        "docs/reviews/src/features/notes-controller.mjs",
+        "docs/reviews/src/features/notes-controller.test.mjs",
+        "docs/reviews/src/features/notes-format.mjs",
+        "docs/reviews/src/features/notes-format.test.mjs",
+        "docs/reviews/src/features/notes-local.mjs",
+        "docs/reviews/src/features/notes-local.test.mjs",
+        "docs/reviews/src/features/notes-lock.mjs",
+        "docs/reviews/src/features/notes-lock.test.mjs",
+        "docs/reviews/src/features/packaging.test.mjs"
+      ],
+      "note": "Append five checks owned by P01-T04. Proposed test claims do not establish acceptance."
+    },
+    {
+      "date": "2026-10-13T18:12:46.758717+00:00",
+      "reviewer": "Codex",
+      "scope": "Own the new review-inbox scanner and shared Claude/Codex skill under existing REPO-10 delivery tooling. P01 qualifies offline discovery and skill contracts; P06 qualifies the promised installed-host opening workflow. Preserve current assertions and history; no execution or phase acceptance claimed.",
+      "componentId": "REPO-10",
+      "addedFiles": [
+        ".agents/skills/review-inbox/SKILL.md",
+        ".agents/skills/review-inbox/agents/openai.yaml",
+        ".agents/skills/review-inbox/references/workflow.md",
+        ".agents/skills/review-inbox/scripts/inbox.mjs",
+        ".claude/skills/review-inbox/SKILL.md"
+      ],
+      "previousComponent": {
+        "id": "REPO-10",
+        "name": "Delivery review notes and local repository helper",
+        "files": [
+          "docs/reviews/.gitattributes",
+          "docs/reviews/agentmux-visual-review/document-version.json",
+          "docs/reviews/agentmux-visual-review/notes/nick.md",
+          "docs/reviews/agentmux-visual-review/notes/ryan.md",
+          "docs/reviews/agentmux-visual-review/README.md",
+          "docs/reviews/agentmux-visual-review/review.json",
+          "docs/reviews/check.mjs",
+          "docs/reviews/open.mjs",
+          "docs/reviews/README.md",
+          "docs/reviews/src/features/local-review.mjs",
+          "docs/reviews/src/features/local-review.test.mjs",
+          "docs/reviews/src/features/notes-controller.mjs",
+          "docs/reviews/src/features/notes-controller.test.mjs",
+          "docs/reviews/src/features/notes-format.mjs",
+          "docs/reviews/src/features/notes-format.test.mjs",
+          "docs/reviews/src/features/notes-local.mjs",
+          "docs/reviews/src/features/notes-local.test.mjs",
+          "docs/reviews/src/features/notes-lock.mjs",
+          "docs/reviews/src/features/notes-lock.test.mjs",
+          "docs/reviews/src/features/packaging.test.mjs"
+        ],
+        "role": "tooling",
+        "baselineGroups": [],
+        "ownerPhase": "P01",
+        "disposition": "extend",
+        "currentBehavior": [
+          "Standalone review notes support import, draft restore and export.",
+          "An optional loopback helper uses Git identity and saves reviewer notes with revision checks and process-held locks."
+        ],
+        "reusePlan": "Preserve standalone review and existing notes; qualify the optional repository helper as delivery tooling.",
+        "enhancements": [
+          "Preserve reviewer identity across import, restore and export.",
+          "Verify confined writes, failed-save recovery and competing writers without changing product runtime scope."
+        ],
+        "replacementReason": null,
+        "behaviorChecks": [
+          {
+            "id": "REPO-10-C01",
+            "description": "Preserve text, version and reviewer identity through standalone import/edit/restore/export, reset identity only on author switch; keep legacy drafts and known reviewer filenames.",
+            "existingTests": [
+              "docs/reviews/src/features/notes-controller.test.mjs",
+              "docs/reviews/src/features/notes-format.test.mjs"
+            ],
+            "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+            "baselineStatus": "not-run",
+            "targetStatus": "not-run"
+          },
+          {
+            "id": "REPO-10-C02",
+            "description": "Use effective Git identity; configure only repo-local name/email; confine writes to assigned notes files and reject stale identity/revision.",
+            "existingTests": [
+              "docs/reviews/src/features/local-review.test.mjs"
+            ],
+            "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+            "baselineStatus": "not-run",
+            "targetStatus": "not-run"
+          },
+          {
+            "id": "REPO-10-C03",
+            "description": "Reject foreign Host/Origin/missing token, links escaping notes/repository, malformed/oversized payloads; rejected writes preserve existing data.",
+            "existingTests": [
+              "docs/reviews/src/features/local-review.test.mjs"
+            ],
+            "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+            "baselineStatus": "not-run",
+            "targetStatus": "not-run"
+          },
+          {
+            "id": "REPO-10-C04",
+            "description": "Lock competing writers, release locks on process exit, retain pending edits/conflict drafts and warn before delayed/unconfirmed saves; retry temporary failures.",
+            "existingTests": [
+              "docs/reviews/src/features/notes-lock.test.mjs",
+              "docs/reviews/src/features/notes-local.test.mjs",
+              "docs/reviews/src/features/notes-controller.test.mjs"
+            ],
+            "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+            "baselineStatus": "not-run",
+            "targetStatus": "not-run"
+          },
+          {
+            "id": "REPO-10-C05",
+            "description": "Escape feedback, preserve exact assets/plan, keep stable source-version rules and standalone network restrictions, generate matching HTML/report/version.",
+            "existingTests": [
+              "docs/reviews/src/features/packaging.test.mjs",
+              "docs/reviews/src/features/notes-format.test.mjs"
+            ],
+            "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+            "baselineStatus": "not-run",
+            "targetStatus": "not-run"
+          }
+        ],
+        "migrationChecks": [
+          "Preserve existing reviewer notes, known filenames and legacy browser drafts.",
+          "Keep pinned P00 source blobs and historical acceptance intact.",
+          "Do not treat review tooling as an Agentmux runtime service or P06 acceptance."
+        ],
+        "limitations": [
+          "Browser rendering and current full check evidence remain open until independently reviewed."
+        ]
+      },
+      "addedChecks": [
+        "REPO-10-C06",
+        "REPO-10-C07"
+      ]
+    },
+    {
+      "date": "2026-10-13T18:13:20.353848+00:00",
+      "reviewer": "Codex",
+      "scope": "Add the concurrently introduced isolated review-inbox scanner regression fixture to existing REPO-10-C06 ownership; source producer retains implementation ownership and tests are not yet accepted.",
+      "addedFiles": [
+        ".agents/skills/review-inbox/scripts/inbox.test.mjs"
+      ],
+      "previousCheck": {
+        "id": "REPO-10-C06",
+        "description": "Verify offline review-inbox discovery across local and cached remote refs: valid nonempty notes and configured work paths, duplicate grouping, versions and Git attribution, local drafts, explicit reply receipts and unknown/mixed states. Reject unsafe paths/arguments and malformed input, report bounded/truncated history honestly, and prove repository/config/index/ref preservation. Review shared/Claude entry points and agent metadata for selection, cached-history labeling, untrusted-content handling and separate write authorization.",
+        "existingTests": [],
+        "requiredEnvironment": "Disposable offline Git repositories on Windows and native POSIX; credential-free scanner invocation and shared skill/reference/YAML inspection. No network, models, real reviewer notes or browser needed.",
+        "baselineStatus": "not-run",
+        "targetStatus": "not-run",
+        "qualificationPhase": "P01"
+      },
+      "qualificationCheck": "REPO-10-C06"
+    },
+    {
+      "date": "2026-10-13T18:16:38.685948+00:00",
+      "reviewer": "Codex",
+      "scope": "Own the producer-authorized review-inbox boundary regressions and record the inspected scanner controls: disable optional Git index locks, use literal pathspecs, enumerate configured notes independently. Preserve original tests and prior surface hashes; execution evidence and independent acceptance remain separate.",
+      "addedFiles": [
+        ".agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs"
+      ],
+      "previousCheck": {
+        "id": "REPO-10-C06",
+        "description": "Verify offline review-inbox discovery across local and cached remote refs: valid nonempty notes and configured work paths, duplicate grouping, versions and Git attribution, local drafts, explicit reply receipts and unknown/mixed states. Reject unsafe paths/arguments and malformed input, report bounded/truncated history honestly, and prove repository/config/index/ref preservation. Review shared/Claude entry points and agent metadata for selection, cached-history labeling, untrusted-content handling and separate write authorization.",
+        "existingTests": [
+          ".agents/skills/review-inbox/scripts/inbox.test.mjs"
+        ],
+        "requiredEnvironment": "Disposable offline Git repositories on Windows and native POSIX; credential-free scanner invocation and shared skill/reference/YAML inspection. No network, models, real reviewer notes or browser needed.",
+        "baselineStatus": "not-run",
+        "targetStatus": "not-run",
+        "qualificationPhase": "P01"
+      }
+    },
+    {
+      "date": "2026-10-13T18:29:58.029951+00:00",
+      "reviewer": "Codex",
+      "scope": "Register the current review-inbox verification artifact and inspect final scanner/skill surfaces. Preserve tested-old versus current-new provenance and original criteria; root independently reviews immutable Windows/POSIX execution evidence before any passing claim.",
+      "componentId": "REPO-10",
+      "addedFiles": [
+        "docs/reviews/review-inbox-verification.json"
+      ],
+      "inspectedSourceHashes": {
+        ".agents/skills/review-inbox/scripts/inbox.mjs": "d9646e1a713340b7db00be60f3505d067bb9d1d4c03adaab4b867e16e160b10e",
+        ".agents/skills/review-inbox/SKILL.md": "e67de77914e48c2ec6e58ab75d2d902a8bfa4fc7ac220b10ca4fc85563baf3c0",
+        ".agents/skills/review-inbox/references/workflow.md": "4f5fc7db9dc928365798357aa17abaf87719098802a88a3b3e6cc2dae81170e7",
+        "docs/reviews/review-inbox-verification.json": "eadc96d7d9b4d67613b343f435e60a07d7b27929ef1a671ec65523c82d5ef42f"
+      },
+      "contractReview": "Shared workflow still requires explicit selection, latest branch/source version, isolated safe workspace, verified owned server and supported browser. Date ordering, authoredAt and per-ref version clarifications remain inside C06; installed opening remains C07/P06. No new scope or acceptance claim."
+    },
+    {
+      "date": "2026-10-13T23:51:33.417100+00:00",
+      "reviewer": "Codex",
+      "scope": "P02 actual component/source ownership",
+      "evidence": "delivery/evidence/P02/component-registration-review/proposal.json",
+      "note": "Added actual files and reserved components/checks. Existing baseline records and behavior assertions retained. Qualification is not implied."
+    }
+  ]
+}

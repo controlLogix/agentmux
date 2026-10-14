@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "1.0.0",
+  "scope": "Independent bounded source and saved-evidence review of two promoted P02 CI repairs",
+  "sourceSHA256": {
+    "tests/platform/native_go.py": "833d56b88053718f0d9baca802d9150e28f4681f05741a922e591bec04a6a50e",
+    "platform/privatefs/access_darwin.go": "b220031c600e02b1217706ebfc4268361fc33e56f29ac7753d37f9a5cc9b5646"
+  },
+  "workerRecord": {
+    "path": "/mnt/c/Users/RyanHelms/GitHub/agentmux/docs/planning/2026-10-09/delivery/evidence/P02/native-ci-targeted-repairs/controls-review.json",
+    "sha256": "c708ce75f03656e7a3489c531a36f26aceb03819e648407f52ae069a7b636175"
+  },
+  "rootRecord": {
+    "path": "/mnt/c/Users/RyanHelms/GitHub/agentmux/docs/planning/2026-10-09/delivery/evidence/P02/native-ci-targeted-repairs/root-review.json",
+    "sha256": "67149317d02c8fe4a70c4b1160eacb43d5459958ab9f5c3f50560d892ab998b7"
+  },
+  "verifiedArtifacts": {
+    "access_darwin-after.go": "b220031c600e02b1217706ebfc4268361fc33e56f29ac7753d37f9a5cc9b5646",
+    "access_darwin-before.go": "09eb387cf9bb75bbf8afbbed0e3c72c6af44526ba68cabdd6b9c7a643372de82",
+    "controls-review.json": "c708ce75f03656e7a3489c531a36f26aceb03819e648407f52ae069a7b636175",
+    "metadata-after.stderr": "966c961ba511f6487eda943792259a7149421359cfbede46dab67903d63e2ef7",
+    "metadata-after.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "metadata-before.stderr": "4c17abf944c91fa6cae4aeaab69e2b86b4a32ed94d6d85ca37b8cb85767a1fca",
+    "metadata-before.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "metadata-control-method.py.txt": "1e79ee95615aeaf61d54c0e9c91b4c1b7fb85a410293892436c7baf65f90dbb6",
+    "metadata-repair.diff": "5ece54728fbefc94e934c587e89643a53f3603afe10c4dcff56ec61358d62939",
+    "mount-after.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mount-after.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mount-before.stderr": "f314c2e960e5b915f5b911e3d319bde3952eef15435ffabe66d59daf8eb39ca6",
+    "mount-before.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mount-flags-after.c": "91099fe8c89af5e8225d5b34ac80c079f1525b2f9c91e6070f1690585a3a9dbb",
+    "mount-flags-before.c": "5dc2523515bb148c184fd9cae03b2b3c21b705a6400ba56812784d7ca1b76aa9",
+    "mount-predicate.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mount-predicate.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mount-repair.diff": "1dc497b6de1d3bb7903dc4470090d89aa74c0b18bbcbb83da8365a360edd53ca",
+    "native_go-after.py": "833d56b88053718f0d9baca802d9150e28f4681f05741a922e591bec04a6a50e",
+    "native_go-before.py": "743f28e7d17e9f95448ac5375b3a5864efe00bfad09c2eda099f3434d5632682",
+    "producer-controls.py": "6e2cb83ae6b81ef1e1b0747eae86075187de891e96d477217441e4f1f1c2af21",
+    "root-review.json": "67149317d02c8fe4a70c4b1160eacb43d5459958ab9f5c3f50560d892ab998b7",
+    "run-metadata-controls.py": "2a773873fe4324021317c99ef27d4e21d91ac9db2fdb1f9bcfad4bd2c2d5c10d",
+    "runner-affected.stderr": "37aa8b36563c1d68cf3aa4be71f3317db1fb63d056c723cc1160a5d39e9c7564",
+    "runner-affected.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "findings": [],
+  "conclusions": [
+    "Collector AST outside RunnerTests is byte-independent structurally unchanged. Production platform.platform metadata, actual host/authorization admission, source guards and cleanup ownership remain unchanged.",
+    "Fixture now mocks platform.platform while it also mocks Popen. Durable regression forces a Darwin uname and clears metadata cache, verifies the synthetic host marker, denies native protected-boot qualification and asserts no stdlib file metadata subprocess is invoked. Its before error reproduces the actual unsafe interaction.",
+    "Darwin source changes only MNT_IGNORE_OWNERS to the Apple-declared MNT_IGNORE_OWNERSHIP. fstatfs failure, nonlocal mount and ownership-ignored mount still refuse before ACL inspection. ACL validation, allow/deny rules, cleanup failure handling and ErrAccessDenied are unchanged."
+  ],
+  "primarySource": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/xnu/main/bsd/sys/mount.h",
+    "verifiedDefinitions": {
+      "MNT_LOCAL": "0x00001000",
+      "MNT_IGNORE_OWNERSHIP": "0x00200000",
+      "MNT_UNKNOWNPERMISSIONS": "MNT_IGNORE_OWNERSHIP"
+    },
+    "retrieval": "Read through web tool during this review; no source execution."
+  },
+  "rawResults": {
+    "metadataBeforeExit": 1,
+    "metadataAfterExit": 0,
+    "affectedRunnerTests": 38,
+    "affectedExit": 0,
+    "mountBeforeCompileExit": 1,
+    "mountAfterCompileExit": 0,
+    "fourFlagCombinationExit": 0
+  },
+  "limits": [
+    "Reviewer ran no tests, compiler, native collector, CI rerun or engine call and changed no repository files.",
+    "Durable regression guards the synthetic fixture from a real stdlib probe; its repaired path intentionally does not execute that native metadata probe.",
+    "Linux C flag stubs test the predicate and declared identifier only. They do not prove Apple SDK compilation, fstatfs, ACL or mounted-volume behavior.",
+    "Native macOS compilation and permission/collector checks, unresolved ARM evidence and full P02 acceptance remain open."
+  ],
+  "decision": "No concrete finding in these two bounded repairs. Source and archived component evidence support their stated narrow scope."
+}

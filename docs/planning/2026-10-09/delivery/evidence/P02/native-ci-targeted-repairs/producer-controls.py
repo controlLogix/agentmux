@@ -1,0 +1,17 @@
+from pathlib import Path
+import difflib,hashlib,json,subprocess,sys,time
+p=Path(__file__).parent;sha=lambda q:hashlib.sha256(q.read_bytes()).hexdigest()
+owned=['native_go-before.py','native_go-after.py','metadata-control-method.py.txt','run-metadata-controls.py','access_darwin-before.go','access_darwin-after.go','mount-flags-before.c','mount-flags-after.c','producer-controls.py']
+before={f:sha(p/f) for f in owned};runs=[]
+selections=[('metadata-before',[sys.executable,str(p/'run-metadata-controls.py'),'native_go-before.py','darwin'],1),('metadata-after',[sys.executable,str(p/'run-metadata-controls.py'),'native_go-after.py','darwin'],0),('runner-affected',[sys.executable,str(p/'run-metadata-controls.py'),'native_go-after.py','affected'],0),('mount-before',['cc','-Werror',str(p/'mount-flags-before.c'),'-o',str(p/'mount-flags-before')],1),('mount-after',['cc','-Werror',str(p/'mount-flags-after.c'),'-o',str(p/'mount-flags-after')],0),('mount-predicate',[str(p/'mount-flags-after')],0)]
+for name,cmd,wanted in selections:
+ start=time.monotonic()
+ with (p/(name+'.stdout')).open('wb') as out,(p/(name+'.stderr')).open('wb') as err:run=subprocess.run(cmd,stdout=out,stderr=err,timeout=60)
+ runs.append({'name':name,'command':cmd,'exitCode':run.returncode,'expectedExitCode':wanted,'seconds':time.monotonic()-start,'stdoutSHA256':sha(p/(name+'.stdout')),'stderrSHA256':sha(p/(name+'.stderr'))})
+ if run.returncode!=wanted:break
+for name,a,b in [('metadata-repair.diff','native_go-before.py','native_go-after.py'),('mount-repair.diff','access_darwin-before.go','access_darwin-after.go')]:
+ (p/name).write_text(''.join(difflib.unified_diff((p/a).read_text().splitlines(True),(p/b).read_text().splitlines(True),fromfile=a,tofile=b)))
+record={'scope':'Cache-only CI admission and Darwin mount flag identifier repairs','sourceSHA256':before,'sourceStable':before=={f:sha(p/f) for f in owned},'runs':runs,'counts':{'darwinMetadataRegression':1,'affectedRunnerTests':38,'pureMountFlagCombinations':4},'primarySource':{'url':'https://raw.githubusercontent.com/apple-oss-distributions/xnu/main/bsd/sys/mount.h','definitionLines':[303,317],'explanation':'Apple declares MNT_IGNORE_OWNERSHIP and its MNT_UNKNOWNPERMISSIONS compatibility alias; MNT_IGNORE_OWNERS is not declared.'},'limitations':['Synthetic Darwin stdlib metadata path regression only, not a native macOS collector run. Production platform metadata and actual host admission remain unchanged.','Four C predicate combinations compile/run under Linux cc with explicit Apple declaration values; this is not an actual Apple SDK, fstatfs, ACL or mount execution.','Original native macOS research failed at compile before any named test. Identifier spelling repair preserves ownership-disabled mount refusal; later reviewed native execution remains required.','ARM runtime failure remains ambiguous because original assertion omitted poll count/errno; no lifetime product repair or ARM rerun claimed.','No shared source, native CI rerun, branch push, runtime/phase acceptance or tracker update.']}
+(p/'controls-review.json').write_text(json.dumps(record,indent=2)+'\n')
+print(json.dumps({'recordSHA256':sha(p/'controls-review.json'),'metadataSourceSHA256':sha(p/'native_go-after.py'),'mountSourceSHA256':sha(p/'access_darwin-after.go'),'sourceStable':record['sourceStable'],'runs':[(x['name'],x['exitCode']) for x in runs]}))
+sys.exit(0 if len(runs)==len(selections) and record['sourceStable'] and all(x['exitCode']==x['expectedExitCode'] for x in runs) else 1)

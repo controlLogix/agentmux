@@ -1,0 +1,2808 @@
+{
+  "scope": "All 50 git-tracked paths under hub/ and deploy/ at df46e94570fadf78ef67a75a692dd48b968a10f7 on feat/agentmux-platform-rearchitecture. Runtime, configuration, test fixtures, demo scripts, documentation and empty package files are included. No removal or runtime implementation is authorized by this inventory.",
+  "reviewMethod": "static source review; no runtime tests run",
+  "components": [
+    {
+      "id": "HUB-01",
+      "name": "Protocol names and local addresses",
+      "files": [
+        "contracts/v1/README.md",
+        "contracts/v1/models/README.md",
+        "contracts/v1/models/state-machines.json",
+        "contracts/v1/recovery.md",
+        "contracts/v1/registry.json",
+        "contracts/v1/schemas/cancellation-request.schema.json",
+        "contracts/v1/schemas/common.schema.json",
+        "contracts/v1/schemas/delegation-decision.schema.json",
+        "contracts/v1/schemas/delegation-offer.schema.json",
+        "contracts/v1/schemas/delivery-receipt.schema.json",
+        "contracts/v1/schemas/execution-report.schema.json",
+        "contracts/v1/schemas/ingress-attestation.schema.json",
+        "contracts/v1/schemas/message-envelope.schema.json",
+        "contracts/v1/schemas/operation-context.schema.json",
+        "contracts/v1/schemas/operation-outcome.schema.json",
+        "contracts/v1/schemas/owner-record.schema.json",
+        "contracts/v1/schemas/plugin-context.schema.json",
+        "contracts/v1/schemas/plugin-lifecycle.schema.json",
+        "contracts/v1/schemas/plugin-manifest.schema.json",
+        "contracts/v1/schemas/protected-assembly.schema.json",
+        "contracts/v1/schemas/startup-status-observation.schema.json",
+        "contracts/v1/schemas/status-query.schema.json",
+        "contracts/v1/schemas/task-inspect.schema.json",
+        "contracts/v1/schemas/task-reserve.schema.json",
+        "hub/names.py",
+        "contracts/v1/schemas/host-owner-status-reply.schema.json",
+        "contracts/v1/schemas/host-owner-status-request.schema.json",
+        "tests/contracts/test_owner_bridge.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-11",
+        "BASE-15"
+      ],
+      "ownerPhase": "P01",
+      "disposition": "retain",
+      "currentBehavior": [
+        "Validates bounded lowercase protocol parts, suggests normalized names and changes them only when explicitly accepted.",
+        "Builds and parses repo-role-agent session names; supports agent, role, cross-repository group, team and virtual addresses.",
+        "Maps current local addresses to core-NATS subjects; direct-agent subjects are independent of the sending node."
+      ],
+      "reusePlan": "Keep the existing parsers and their refusal cases as the compatibility baseline. Reuse their fixtures in language-neutral contracts; place transport-specific subject mapping behind the compatibility interface.",
+      "enhancements": [
+        "Add organization, project, instance and generation identity without silently changing existing human-facing aliases.",
+        "Define versioned translation between legacy addresses and authorized NATS operations."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-01-C01",
+          "description": "Round-trip every supported address form; preserve invalid-name suggestions, explicit normalization and refusal of malformed or wildcard-bearing identity tokens.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-01-C02",
+          "description": "Translate legacy aliases to new identities without collisions across projects or agent generations; compare local and remote recipient selection.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. Two contract SDKs and isolated NATS.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-01-C03",
+          "description": "Qualify the accepted L04 status observation shape through both independent SDKs, including observed zero versus unknown, caller-scoped visibility, forbidden versus unavailable hub inventory, explicit failures and unsupported-service observations. Wire fixtures do not prove runtime readiness or authorization.",
+          "existingTests": [
+            "tests/contracts/test_startup_status.py",
+            "tests/contracts/test_payloads.py"
+          ],
+          "requiredEnvironment": "Independent Python and TypeScript contract clients on native Linux/macOS and Linux filesystems in WSL.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Store the original session/address as an alias with source hub and generation.",
+        "Preserve the difference between role broadcast, first-claim work and team-lead addressing; never infer an organization from a legacy unscoped name."
+      ],
+      "limitations": [
+        "Current name and subject grammar is not a tenant security boundary."
+      ],
+      "reviewHistory": [
+        {
+          "date": "2026-10-09",
+          "reviewer": "Codex",
+          "addedFiles": [
+            "contracts/v1/README.md",
+            "contracts/v1/schemas/common.schema.json",
+            "contracts/v1/schemas/ingress-attestation.schema.json",
+            "contracts/v1/schemas/message-envelope.schema.json",
+            "contracts/v1/schemas/operation-context.schema.json",
+            "contracts/v1/schemas/owner-record.schema.json",
+            "contracts/v1/schemas/plugin-context.schema.json",
+            "contracts/v1/schemas/plugin-manifest.schema.json",
+            "contracts/v1/schemas/protected-assembly.schema.json"
+          ],
+          "note": "Own new isolated contract schemas/clients/tests; current behavior and original assertions remain required."
+        },
+        {
+          "date": "2026-10-09",
+          "reviewer": "Codex",
+          "scope": "P01 payload registry, semantic checks and isolated storage qualification",
+          "addedFiles": [
+            "contracts/v1/registry.json",
+            "contracts/v1/schemas/cancellation-request.schema.json",
+            "contracts/v1/schemas/delegation-decision.schema.json",
+            "contracts/v1/schemas/delegation-offer.schema.json",
+            "contracts/v1/schemas/delivery-receipt.schema.json",
+            "contracts/v1/schemas/execution-report.schema.json",
+            "contracts/v1/schemas/operation-outcome.schema.json",
+            "contracts/v1/schemas/plugin-lifecycle.schema.json",
+            "contracts/v1/schemas/status-query.schema.json",
+            "contracts/v1/schemas/task-inspect.schema.json",
+            "contracts/v1/schemas/task-reserve.schema.json"
+          ],
+          "note": "Preserve legacy behavior, assertions and qualification phases. SDK files remain HUB-26-owned conformance primitives; no production runtime path is replaced."
+        },
+        {
+          "date": "2026-10-09",
+          "reviewer": "Codex",
+          "scope": "P01 pure state model oracles and isolated two-broker leaf fixture",
+          "addedFiles": [
+            "contracts/v1/models/README.md",
+            "contracts/v1/models/state-machines.json"
+          ],
+          "note": "Preserve five P00 tables/68 edges, add explicit cancellation context and test missing guard/role/revision rejection. Leaf fixture does not replace production federation or final bilateral acceptance."
+        },
+        {
+          "date": "2026-10-13T19:21:29.079274+00:00",
+          "reviewer": "Codex",
+          "scope": "Recover omitted accepted P00 L04/S03 qualification",
+          "addedFiles": [
+            "contracts/v1/schemas/startup-status-observation.schema.json"
+          ],
+          "addedBehaviorCheck": "HUB-01-C03",
+          "note": "Original files, checks and history retained. New qualification is pending; no runtime replacement or later-phase pass is implied."
+        }
+      ]
+    },
+    {
+      "id": "HUB-02",
+      "name": "Local hub server, identity, lifecycle and legacy adoption",
+      "files": [
+        "hub/__init__.py",
+        "hub/server.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-09",
+        "BASE-10",
+        "BASE-11",
+        "BASE-16"
+      ],
+      "ownerPhase": "P05",
+      "disposition": "extract",
+      "currentBehavior": [
+        "An asyncio server sends Store operations to one database executor and blocking process/terminal work to a separate I/O pool.",
+        "Newline JSON over a private Unix socket identifies callers using peer UID and process ancestry; loopback TCP uses hashed operator/agent tokens and ignores caller-supplied impersonation.",
+        "Implements repository and team registration, role overrides, spawn/adopt/kill, inbox/ack, claims, heartbeat, release, cancel, event/mail subscriptions and operator shutdown.",
+        "Adopts a running legacy session without renaming its terminal; imports courier backlog using inode/offset identities and records unresolved recipients.",
+        "Runs doorbell, terminal liveness, receipt/hold-alert, lease, backup and pruning loops; kill/reap calls the harness to clean dashboard sidecars.",
+        "Subscriptions and operator inbox peeks do not claim that an agent received or acknowledged mail; work-result notices also reach the parent holder."
+      ],
+      "reusePlan": "Extract current routing, lifecycle, delivery and migration logic into owning plugins, retaining a legacy edge adapter during transition. Preserve commands and observed outcomes; route new internal exchanges through NATS. Existing business behavior does not belong in the protected boot kernel.",
+      "enhancements": [
+        "Replace same-user ancestry as the product-wide identity basis with enrolled scoped callers.",
+        "Separate process death, input receipt, work completion and accepted result; add durable recovery for lifecycle effects.",
+        "Provide bounded authorized event replay and safe cancellation with explicit unknown outcomes."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-02-C01",
+          "description": "Compare every dispatch branch and CLI-visible response/error with captured legacy fixtures, including subscribe framing, operator/agent restrictions and unknown verbs.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. Unix sockets, loopback TCP and Bash.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-02-C02",
+          "description": "Rehearse adoption, repeated courier import, unavailable recipients, spawn failure and restart with live agents; preserve one session and one imported message.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. tmux and the installed harness.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-02-C03",
+          "description": "Check doorbell-in-flight boundaries, held-input alerts, no-live-lead notices, kill/reap sidecar cleanup and busy-worker behavior on each claimed client.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py",
+            "hub/demo/smoke_shell.sh"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. tmux; separately qualified agent CLIs.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Import repo/role/team configuration and source aliases before changing routing.",
+        "Fence the former domain writer and record the cutover point; old and new listeners must not both authorize work.",
+        "Preserve pending courier cursors, dead letters, delivery receipt stages, brief-file hashes, open leases and work relationships.",
+        "Migrate token references privately; do not copy secret values into shared NATS records. Preserve the user-selected socket/home and local WSL placement."
+      ],
+      "limitations": [
+        "Current socket identity assumes a cooperative local account; it is not multi-user isolation.",
+        "Some loops call broad hub/store methods and must be separated without changing visible behavior.",
+        "Known baseline result-staging and other federation blockers remain owned by P01."
+      ]
+    },
+    {
+      "id": "HUB-03",
+      "name": "Hub store, work ownership, messaging and recovery",
+      "files": [
+        "hub/store.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-08",
+        "BASE-09",
+        "BASE-11",
+        "BASE-15",
+        "BASE-16"
+      ],
+      "ownerPhase": "P04",
+      "disposition": "extract",
+      "currentBehavior": [
+        "Four SQLite migrations define repositories/aliases/paths/groups, agents and legacy names, teams, message kinds/messages/FTS/deliveries, work/parent links, resource claims, audit events and two outbox families.",
+        "Uses WAL, foreign keys, BEGIN IMMEDIATE and one writing connection; rejects Windows-mounted/9p paths for hub.db and takes a backup before schema upgrades.",
+        "Supports sender-scoped idempotent posts, ordered inboxes, explicit receipt/ack/dead states, role/group broadcast and terminal-generation protections.",
+        "Claims work by priority and declared capabilities/CLI, renews leases, releases/blocks/returns results, tracks parent waiting, cancels open children and scopes resource claims by repository.",
+        "Maintains local and federated work identities, source placeholders, event-tail pagination, online backup/rotation and pruning that retains undelivered mail."
+      ],
+      "reusePlan": "Reuse the domain rules, schema inventory, source IDs and regression assertions. Extract storage access behind owners. Keep the SQLite reader and migration path until parity and recovery pass; build optional SQL query views from authoritative NATS records under STATE-01.",
+      "enhancements": [
+        "Use conditional owner-side NATS commits and durable operation identity for shared records.",
+        "Retain source ID relationships while separating task ownership, execution attempts and accepted results.",
+        "Add replay/checkpoint recovery without repeating tool effects and fix the recorded backup collision."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-03-C01",
+          "description": "Re-run messaging, work, ownership, FTS, parent/child, cross-process claim, per-repository resource claim, retention and backup fixtures against the legacy store and equivalent target contracts.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. Real NATS for target storage.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-03-C02",
+          "description": "Import all schema families twice and compare IDs, counts, bodies/hashes, parent links, flags, audit order and unresolved work; rebuild query indexes without dispatching commands.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. Representative versioned legacy databases and NATS records.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-03-C03",
+          "description": "Exercise backup-name collision, pre-migration backup, interrupted cutover, retention gaps and reverse migration after new writes; preserve remote reservations.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. P04/P10/P12 recovery environments.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Export all tables, plugin-owned tables, relevant brief files and schema/application versions consistently; a hub.db copy alone is not a complete platform backup.",
+        "Preserve both nats_outbox and fed_outbox plus fed_seen, fed_audit, fed_quarantine and fed_state; do not restart their delivery as new operations.",
+        "Carry original W IDs, parent/task keys, source node/peer and flags separately from target task/attempt IDs.",
+        "Current local lease expiry may return local work; it must not release an accepted or acceptance-unknown remote reservation.",
+        "After NATS-era commands, rollback requires verified reverse migration and reconciliation, not simply restoring an old SQLite backup."
+      ],
+      "limitations": [
+        "STATE-01 changes the authority provider; preserving functionality does not require preserving SQLite as the shared authority.",
+        "Known baseline backup and federation defects require focused regression evidence before progress.",
+        "The existing SQL transaction boundary cannot be assumed across NATS streams, projections and external effects."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-09",
+          "scope": "User-authorized six baseline repairs",
+          "change": "Schema migration 5 persists terminal return intent; backups use exclusive temporary creation and no-replace publication. Existing schema history and local store behavior remain the migration source for STATE-01.",
+          "evidence": "docs/planning/2026-10-09/governance-repairs.md",
+          "targetPhaseStatus": "not-qualified-by-this-incremental-repair"
+        }
+      ]
+    },
+    {
+      "id": "HUB-04",
+      "name": "Hub CLI and federation command client",
+      "files": [
+        "hub/cli.py",
+        "agentmux_windows.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-11",
+        "BASE-12",
+        "BASE-36"
+      ],
+      "ownerPhase": "P06",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Offers daemon lifecycle, identity/status, inbox/ack, work create/list/show/cancel/claim/release/heartbeat, repo/team setup, spawn/adopt/kill, courier import and event subscription.",
+        "Uses Unix sockets or token-authenticated TCP selected by environment; prints human guidance or structured --json results.",
+        "Discovers federation commands from fed_verbs, parses typed/positional arguments including stdin bodies, supports know aliases, and adds the current checkout.",
+        "Creates a federation virtual environment from pinned requirements, chooses an interpreter and starts the hub with a private log."
+      ],
+      "reusePlan": "Retain command names, argument behavior and output fixtures as a compatibility layer. Translate calls into the new authorized owners through NATS; keep current entry points usable until their replacements qualify.",
+      "enhancements": [
+        "Add portable enrollment/setup, version negotiation and explicit unsupported capabilities.",
+        "Make client disconnect and ambiguous replies recoverable using durable operation identity."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-04-C01",
+          "description": "Capture and compare help, command parsing, aliases, stdin/body-file, JSON results, refusals and unavailable-hub messages across all commands.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py",
+            "hub/tests/test_fed_unit.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. Bash and a pinned CLI installation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-04-C02",
+          "description": "Check Unix and TCP authentication, --as behavior, long-lived subscriptions and disconnect/reconnect without duplicated work.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. NATS and supported client/WSL-to-desktop arrangements.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Record command and output compatibility changes individually; do not silently reinterpret done as final acceptance.",
+        "Preserve user environment/configuration and secure token-file references.",
+        "Fence old command writers during cutover while allowing an authorized adapter to reach the new owner."
+      ],
+      "limitations": [
+        "Existing tests cover representative API calls, not every CLI argument combination; a complete captured command fixture is still required."
+      ]
+    },
+    {
+      "id": "HUB-05",
+      "name": "Terminal transport abstraction and tmux backend",
+      "files": [
+        "hub/transport.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-01",
+        "BASE-09"
+      ],
+      "ownerPhase": "P06",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Defines abstract terminal enumeration, liveness, handle, mode, screen capture, text/buffer/key input, output mark and kill operations.",
+        "The tmux implementation uses literal text or stdin-loaded bracketed paste, validates abstract keys and separates copy/dead modes.",
+        "Uses pipe-pane log growth as an output signal; includes scripted FakeTransport for offline delivery tests."
+      ],
+      "reusePlan": "Keep the current abstraction and tmux backend as the first execution adapter. Expose scoped plugin operations around them; reuse FakeTransport for deterministic contract tests.",
+      "enhancements": [
+        "Add instance/generation binding, cancellation and declared backend capabilities.",
+        "Permit other qualified backends without changing delivery or task contracts."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-05-C01",
+          "description": "Preserve literal text, large/multiline buffer, abstract-key refusal, copy mode, dead pane and handle-mismatch behavior using fake and actual tmux fixtures.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. tmux.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-05-C02",
+          "description": "Verify cancellation and reconnect never send input to a reused pane handle or kill an unrelated session; preserve output-log progress signals.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. tmux and target execution adapter.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Keep socket selection, actual adopted terminal names, handle/PID generation and log references distinct from stable agent identity.",
+        "Do not stop shared transport infrastructure when one plugin instance is removed."
+      ],
+      "limitations": [
+        "Only tmux is currently a real implementation; FakeTransport does not prove another backend or native Windows support."
+      ]
+    },
+    {
+      "id": "HUB-06",
+      "name": "CLI screen profiles and guarded terminal input",
+      "files": [
+        "hub/profiles.py",
+        "hub/deliver.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-01",
+        "BASE-09"
+      ],
+      "ownerPhase": "P06",
+      "disposition": "extract",
+      "currentBehavior": [
+        "Codex, Claude, Grok and shell profiles recognize readiness, busy markers, paste placeholders, startup timing, modals and doorbell text.",
+        "Delivery records resolved/mode/modal/ready/typed/submitted stages, validates handles, exits copy mode, defers busy/booting panes and blocks unknown or login prompts.",
+        "Known menu choices use labels where available; stale submitted text is retried without retyping, retries are spaced, and a newly appearing modal prevents Enter.",
+        "Shell doorbells use an executable inbox command; agent-client profiles have distinct measured timing behavior."
+      ],
+      "reusePlan": "Extract these existing profiles and delivery mechanics into the terminal client adapter; retain their screen fixtures and detailed receipt stages.",
+      "enhancements": [
+        "Version profiles by supported client releases; surface unsupported screens rather than inventing success.",
+        "Apply explicit task/client policy to any automatic trust or permission consent before input is sent."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-06-C01",
+          "description": "Compare every existing scripted screen case, including non-modal update banners, reordered consent choices, unknown prompts, busy state, boot state and unsubmitted paste recovery.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-06-C02",
+          "description": "On each supported real client version, check receipt stages, interruption, changed prompts and bounded retries without accidental update, exit or extra task execution.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. tmux and approved provider accounts.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve selected profile and stage evidence for active deliveries.",
+        "Treat existing auto-consent behavior as a separately reviewed policy decision; do not grant new permissions merely to reproduce a screen fixture."
+      ],
+      "limitations": [
+        "Screen recognition is version-sensitive and does not prove that a model received, executed or accepted work."
+      ]
+    },
+    {
+      "id": "HUB-07",
+      "name": "Native client receipt scanning and hold evidence",
+      "files": [
+        "hub/receipts.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-09",
+        "BASE-10"
+      ],
+      "ownerPhase": "P06",
+      "disposition": "retain",
+      "currentBehavior": [
+        "Parses supported Codex, Claude and Grok JSONL user-turn formats; ignores assistant text and Claude sidechains.",
+        "Tails by inode/offset, starts existing files at EOF, handles partial lines and rotated/truncated files, and joins split Grok chunks.",
+        "Matches hub doorbells to recipient sessions and returns source file/offset evidence for the hub's received/held states."
+      ],
+      "reusePlan": "Reuse the format parsers and fixtures as an optional receipt capability of each client adapter. Keep provenance and receipt semantics explicit.",
+      "enhancements": [
+        "Bind receipt evidence to enrolled client/session generations and declared read scope.",
+        "Add client-version qualification and an honest unavailable state when a host exposes no usable log."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-07-C01",
+          "description": "Preserve each user-turn format, EOF priming, assistant exclusion, split chunks, partial lines and one-time incremental observations.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-07-C02",
+          "description": "Test log rotation and session reuse together with a pending bell so old or quoted content cannot acknowledge a different operation.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. Representative supported client logs.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Carry pending delivery identity and source cursor policy through adapter restart; do not rescan history as new acknowledgments.",
+        "Preserve privacy and local log paths as scoped references rather than exporting whole client conversations."
+      ],
+      "limitations": [
+        "Native logs cover only supported observable formats; they do not expose all conversation events or hidden reasoning."
+      ]
+    },
+    {
+      "id": "HUB-08",
+      "name": "Existing core-NATS bridge",
+      "files": [
+        "hub/bridge.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-13"
+      ],
+      "ownerPhase": "P10",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Provides a small standard-library NATS text client with bounded connect/INFO timeout, subscriptions, queue groups, publish and reconnect backoff.",
+        "Routes direct messages, dynamically subscribed role work and results between a single operator's hubs.",
+        "Drains nats_outbox after socket writes and uses store-level idempotency for incoming message/work records."
+      ],
+      "reusePlan": "Keep the legacy bridge isolated as a compatibility boundary while the supported NATS client and durable federation path qualify. Reuse routing and timeout fixtures; preserve old queued obligations before any retirement.",
+      "enhancements": [
+        "Move new shared work to authenticated, durable, versioned NATS contracts and separate acceptance from result receipt.",
+        "Provide deliberate coexistence or drain/cutover rules for core bridge and JetStream federation."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-08-C01",
+          "description": "Re-run two-node direct messaging and role-work/result round trips; preserve address translation and bounded failure on a silent endpoint.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py",
+            "hub/tests/test_nats_federation.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. Isolated real NATS and two hubs.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-08-C02",
+          "description": "Stop either bridge during publish or result receipt, migrate pending nats_outbox records, and prove no obligation is lost or dispatched twice.",
+          "existingTests": [
+            "hub/tests/test_nats_federation.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Identify which flow owns each work item when both nats_url and federation are configured; preserve nats:federated placeholders and node:work origin IDs.",
+        "Drain or import pending bridge messages before disabling subscriptions; map subjects and operation IDs explicitly.",
+        "Any retirement requires a reviewed record, passing comparison and recovery evidence; no file removal is approved by this inventory."
+      ],
+      "limitations": [
+        "writer.drain is not a JetStream durable acknowledgment.",
+        "The current client does not implement the target authenticated/TLS/JetStream feature set; its source comments do not establish end-to-end exactly-once execution."
+      ]
+    },
+    {
+      "id": "HUB-09",
+      "name": "Existing federation plugin contract and package structure",
+      "files": [
+        "hub/fed/__init__.py",
+        "hub/fed/plugin.py",
+        "hub/fed/plugins/__init__.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-13",
+        "BASE-14"
+      ],
+      "ownerPhase": "P03",
+      "disposition": "extend",
+      "currentBehavior": [
+        "Defines Param and Verb metadata, required/positional/type/help fields and operator-only flags reused by CLI/MCP.",
+        "Defines plugin name, envelope handlers, prefixed tables, start/connect/tick/envelope/local-event/revoke hooks and dashboard panels.",
+        "Current built-ins are Python PLUGIN instances loaded into one process; empty package initializers preserve import paths."
+      ],
+      "reusePlan": "Use the existing plugin contract as the migration input, not a blank slate. Map Param/Verb to versioned contribution schemas, handles/on_envelope to authorized NATS subscriptions, lifecycle hooks to supervision, panel to registered UI contributions, and tables/context access to owned storage contracts.",
+      "enhancements": [
+        "Add language-neutral manifests and SDKs, scoped PluginContext/OperationContext, nested independent/private children and dependency/version checks.",
+        "Prevent direct access to another plugin's database, connection or mutable current-user state; keep ordinary capabilities outside the protected boot kernel."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-09-C01",
+          "description": "Run each of the five built-in plugins through a compatibility adapter and compare its verbs, parameters, events and panel data with the existing registry.",
+          "existingTests": [
+            "hub/tests/test_fed_unit.py",
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-09-C02",
+          "description": "Qualify two language SDKs for lifecycle cleanup, nested ownership, scope narrowing, duplicated handlers and dependency failure while preserving the built-in workflows.",
+          "existingTests": [],
+          "requiredEnvironment": "P03 plugin conformance harness, two SDK languages and isolated NATS.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Maintain a one-to-one mapping for every existing hook/verb/panel/table contribution and record any unsupported field.",
+        "Preserve trusted installed extension entry points until a reviewed adapter or migration is available; detect unsupported modules explicitly.",
+        "A broader new framework does not authorize replacing working built-in business logic without an evidenced reason."
+      ],
+      "limitations": [
+        "The current context exposes the hub/store and is not a security sandbox or language-neutral process contract.",
+        "New conformance and nested-plugin tests do not exist yet."
+      ]
+    },
+    {
+      "id": "HUB-10",
+      "name": "Federation runtime, supervision, control and observations",
+      "files": [
+        "hub/fed/runtime.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-13",
+        "BASE-14",
+        "BASE-16"
+      ],
+      "ownerPhase": "P10",
+      "disposition": "extract",
+      "currentBehavior": [
+        "Loads five built-ins or configured module plugins, registers their verbs/routes and initializes prefixed tables.",
+        "Connects/reconnects JetStream, binds per-peer/node message/share durables, invokes plugin hooks, stages audited outbox records and acknowledges ingested envelopes.",
+        "Tracks presence/capability advertisements, shared-repository aliases, counters, last errors, peers and composite dashboard panels.",
+        "Offers share/unshare/trust/status/peers/quarantine/approve/deny/audit/gate/kill/resume operations; kill state persists locally and revoke withdraws unsent work and notifies connected peers."
+      ],
+      "reusePlan": "Extract transport/lifecycle, policy, collaboration and observation responsibilities around the existing runtime. Retain core verbs, plugin hooks and data contracts through adapters; improve the recorded unsafe boundaries instead of reproducing them.",
+      "enhancements": [
+        "Add durable revocations, explicit scoped trust agreements, independent hub domains, origin-owned acceptance and disconnected reservation recovery.",
+        "Replace raw shared context with injected scoped handles and authenticated operation context.",
+        "Add supervised failure states and authorized AG-UI observations from the same recorded events."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-10-C01",
+          "description": "Compare plugin loading, verb schemas, reconnect callbacks, counters, presence, peer alias resolution and composite panels for all configured built-ins.",
+          "existingTests": [
+            "hub/tests/test_fed_unit.py",
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-10-C02",
+          "description": "Capture legacy durable positions and outbox/seen/quarantine/kill state, interrupt publish/ingest/revoke, then resume or migrate without duplicate effects or lost pending review.",
+          "existingTests": [
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores. Partition and fault injection.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-10-C03",
+          "description": "Run existing same-peer multi-node and subject/type/result-binding regressions plus three independent hubs; preserve accepted and uncertain reservations while disconnected.",
+          "existingTests": [
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores. P01 defect fixtures and P10 independent domains.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Map msg_<peer>_<node>, share_<peer>_<node> and work_<from>_<rid>_<role> consumer names/ack positions explicitly.",
+        "Preserve policy/primary-node settings and the meaning of killed, withdrawn, held, approved and denied states.",
+        "Translate envelope IDs and pending result obligations before changing streams/accounts; never equate a historical result with newly approved work.",
+        "Preserve legacy panel contributions via the UI adapter until equivalent authorized views pass."
+      ],
+      "limitations": [
+        "Current revocation notices use transient core NATS and can be missed by disconnected peers.",
+        "Known baseline transaction, subject/dispatch, same-peer and result-binding findings remain unresolved.",
+        "Current runtime is central-circle federation, not independent leaf-node authority."
+      ]
+    },
+    {
+      "id": "HUB-11",
+      "name": "Federation configuration, trust and repository identity",
+      "files": [
+        "hub/fed/config.py",
+        "hub/fed/policy.py",
+        "hub/fed/envelope.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-13",
+        "BASE-15",
+        "BASE-16"
+      ],
+      "ownerPhase": "P01",
+      "disposition": "extend",
+      "currentBehavior": [
+        "Reads/writes federation TOML with explicit opt-in, plugin list, connection/credential references, capture/notification settings and per-repository/per-peer policy.",
+        "Normalizes Git remotes into stable r-prefixed repository IDs, maps different local repo names, supports board prefixes and default approve trust.",
+        "Defines v2 envelope identity, message types, subject grammar and type-to-plane mappings."
+      ],
+      "reusePlan": "Retain the existing repository identity and configuration fixtures. Wrap the v2 envelope at a versioned boundary; extend rather than silently reinterpret fields.",
+      "enhancements": [
+        "Add organization/project/task/delegation/attempt/operation/schema/trace identity and deterministic subject/type/recipient validation.",
+        "Translate broad circle trust into explicit scoped agreements and managed credential references."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-11-C01",
+          "description": "Round-trip configuration and permissions, compare remote URL forms and local aliases, preserve sharing defaults and reject malformed IDs/envelopes.",
+          "existingTests": [
+            "hub/tests/test_fed_unit.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-11-C02",
+          "description": "Reject mismatched plane/type/recipient/account and unsupported versions; translate valid legacy envelopes without losing sender, source node, repository or original ID.",
+          "existingTests": [
+            "hub/tests/test_fed_unit.py",
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores. New versioned contract fixtures.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve rid mappings rather than recomputing them with a changed normalization rule during import.",
+        "Import per-peer trust, wildcard defaults, shared repo peer lists, board prefixes, capture, primary and notify settings with a reviewable diff.",
+        "Keep secrets outside ordinary shared configuration records; map paths to private provider references."
+      ],
+      "limitations": [
+        "Current envelope validation is incomplete for the new trust model; AMX-BASE-001 remains active.",
+        "Legacy normalizations and local names are compatibility identifiers, not proof that two independently administered projects may share data."
+      ]
+    },
+    {
+      "id": "HUB-12",
+      "name": "Federation guard and outbound secret filtering",
+      "files": [
+        "hub/fed/guard.py",
+        "hub/fed/redact.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-13",
+        "BASE-14"
+      ],
+      "ownerPhase": "P04",
+      "disposition": "extend",
+      "currentBehavior": [
+        "Outbound guards verify sharing, recursively scrub string values, block private keys/nkey seeds/NATS credentials and enforce payload size.",
+        "Inbound guards compare subject sender with envelope sender, check sharing/trust, quarantine privileged remote work and distinguish informational planes.",
+        "Wraps remote text as attributed data; audit records receive redaction kinds rather than secret values."
+      ],
+      "reusePlan": "Reuse pure guard/filter functions and their fixtures as the starting policy implementation. Keep their checks at the owning boundaries and expand coverage for new account/project contracts.",
+      "enhancements": [
+        "Add complete subject/type/target binding and per-project authorization before dispatch.",
+        "Separate semantic Jev advice from deterministic authorization; evaluate derived data and artifact export separately from text filtering."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-12-C01",
+          "description": "Preserve clean payloads and nested filtering; confirm blocked keys never publish and redacted secret values do not appear in audit or diagnostics.",
+          "existingTests": [
+            "hub/tests/test_fed_unit.py",
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-12-C02",
+          "description": "Exercise every trust level, unshared repository, spoofed sender, inconsistent envelope plane and privileged-work condition through real broker identities.",
+          "existingTests": [
+            "hub/tests/test_fed_unit.py",
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Record guard policy versions alongside migrated decisions and pending quarantine entries.",
+        "Do not automatically broaden auto/flag/approve/deny grants during account changes.",
+        "Keep previously attributed remote content marked as remote data after UI or storage migration."
+      ],
+      "limitations": [
+        "Pattern-based filtering can miss new secret formats and cannot scrub the Git content behind a code pointer.",
+        "Remote-data framing is model guidance; it does not enforce authorization.",
+        "Existing guard defects require P01 repairs before target parity can claim safe equivalence."
+      ]
+    },
+    {
+      "id": "HUB-13",
+      "name": "Privileged remote-work host hook",
+      "files": [
+        "hub/fed/hooks/__init__.py",
+        "hub/fed/hooks/privileged_gate.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-35"
+      ],
+      "ownerPhase": "P11",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Claude Code PreToolUse recognizes selected PCM import, CODESYS write/force/script and PROFINET/BOOTP/PCM600 command surfaces.",
+        "Queries fed_gate for current remote-origin work and denies selected privileged calls without privileged approval.",
+        "Denies on unavailable hub when federation is enabled; emits the host's permission-denial structure."
+      ],
+      "reusePlan": "Keep the current hook as one host adapter and regression fixture. Move authoritative target/action/grant checks into the owning tool plugin so other clients receive the same protection.",
+      "enhancements": [
+        "Add host/version capability declarations and explicit equipment-operation authority.",
+        "Preserve the distinction between approving remote work and approving a privileged action."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-13-C01",
+          "description": "Preserve harmless-tool allowance, privileged remote-work denial, approved-work behavior and federation-enabled hub-failure denial.",
+          "existingTests": [
+            "hub/tests/test_fed_unit.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. Mocked hook input; real Claude hook qualification separately.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-13-C02",
+          "description": "Invoke each owned industrial operation through CLI, MCP and dashboard paths and show that bypassing an optional host hook cannot bypass endpoint authorization.",
+          "existingTests": [],
+          "requiredEnvironment": "P04/P06/P11 tool-owner fixtures and supported host versions; simulators before controlled hardware.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Import approval provenance and bind it to the exact task/attempt/target/action; do not copy a boolean into a general permission.",
+        "Preserve hook installation/configuration without overwriting unrelated user hooks."
+      ],
+      "limitations": [
+        "Name matching covers only recognized surfaces and is not universal enforcement or a complete ABB/PCM600 adapter."
+      ]
+    },
+    {
+      "id": "HUB-14",
+      "name": "Federation outbox, idempotency, audit and quarantine ledger",
+      "files": [
+        "hub/fed/ledger.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-13",
+        "BASE-16"
+      ],
+      "ownerPhase": "P04",
+      "disposition": "extract",
+      "currentBehavior": [
+        "Records unique message IDs, ordered pending outbox records, attempts/errors/sent/withdrawn state and persistent seen IDs.",
+        "Hashes and sizes inbound/outbound payloads for audit with decisions/reasons and peer/repository/subject attribution.",
+        "Stores held envelopes, approval/denial actor/time and persistent local runtime state."
+      ],
+      "reusePlan": "Reuse record semantics, identifiers and transaction-intent behavior behind a storage-owner interface. Keep the SQLite ledger reader for import and compare all fields with new NATS-backed records.",
+      "enhancements": [
+        "Make operation outcomes and unsent intent recoverable after crash, deduplication-window expiry and restore.",
+        "Retain audit/quarantine history independently from work-queue acknowledgments and derived views."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-14-C01",
+          "description": "Import pending, sent, failed and withdrawn outbox entries plus seen IDs twice; no duplicate dispatch or revival of withdrawn work is allowed.",
+          "existingTests": [
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores. Versioned legacy ledger fixtures.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-14-C02",
+          "description": "Compare audit hashes, decisions, order and quarantine approval provenance before and after restart, cutover and query-view rebuild.",
+          "existingTests": [
+            "hub/tests/test_fed_unit.py",
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores. Recovery fixtures.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve original envelope IDs, payload hashes, sequence/source identity, attempt errors and approval actors.",
+        "Quarantine records retain the original envelope and the policy under which they were held; new policy must revalidate release.",
+        "Do not expire unresolved operations or seen IDs merely because the broker's duplicate window elapsed."
+      ],
+      "limitations": [
+        "Existing integration tests cover parts of this behavior; complete ledger migration/fault fixtures are still required.",
+        "The ledger alone cannot repair a caller that commits business state and outbox intent separately."
+      ]
+    },
+    {
+      "id": "HUB-15",
+      "name": "NATS connection, storage layout and administration API",
+      "files": [
+        "hub/fed/conn.py",
+        "hub/fed/admin.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-13",
+        "BASE-16",
+        "BASE-36"
+      ],
+      "ownerPhase": "P02",
+      "disposition": "extend",
+      "currentBehavior": [
+        "Uses lazy nats-py loading, credential files, optional custom CA, explicit connection timeout/retry policy and bounded close handling.",
+        "Declares AM_MSG, AM_WORK and AM_SHARE retention, duplicate window, am_board revision history and expiring am_presence.",
+        "Provisioning creates/updates file-backed replicated streams and creates missing KV buckets; admin push publishes account JWT changes through the system account."
+      ],
+      "reusePlan": "Reuse the supported client wrapper, central layout declaration and provisioning entry points. Version storage profiles and make new lifecycle/authorization limits explicit.",
+      "enhancements": [
+        "Add local/team/independent-domain profiles and qualify required NATS APIs in P01 before production use.",
+        "Add storage limits, freshness, checkpoint, backup and artifact contracts under STATE-01."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-15-C01",
+          "description": "Provision an isolated installation twice; verify exact stream subjects, retention, replicas, duplicate window and KV history/TTL, then compare the approved target profile.",
+          "existingTests": [
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-15-C02",
+          "description": "Test absent dependencies, wrong CA/endpoint, missing credentials, revoked account and interrupted provisioning with bounded and actionable failure.",
+          "existingTests": [
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores. TLS and system-account test credentials.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Capture old stream/consumer/bucket names, policies, revisions and outstanding work before changing layouts.",
+        "Do not let a routine upgrade alter retention or replicas without recorded migration/recovery evidence.",
+        "Existing KV buckets are not automatically reconciled by provision; detect policy differences explicitly.",
+        "Never run test reset or stream deletion against customer data."
+      ],
+      "limitations": [
+        "Current layout has no Object Store, independent domain configuration or complete storage qualification.",
+        "Pinning a server/client version does not prove atomicity, durability or recovery promises."
+      ]
+    },
+    {
+      "id": "HUB-16",
+      "name": "Federation messages and handoffs plugin",
+      "files": [
+        "hub/fed/plugins/messages.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-13"
+      ],
+      "ownerPhase": "P10",
+      "disposition": "extract",
+      "currentBehavior": [
+        "Parses peer/operator, peer/repository/role and peer/repository/role/agent addresses.",
+        "Publishes note/request/reply/handoff messages with sender identity, task/code references and optional automatic handoff capture.",
+        "Translates repository names through rid/presence, frames remote data, supplies reply pointers and falls back to an operator when a target is absent.",
+        "Uses envelope-based local idempotency and primary-node behavior to avoid treating every node as the operator's inbox."
+      ],
+      "reusePlan": "Retain parsing, translation, message formatting and fallback logic in a collaboration plugin. Replace direct hub/store calls with scoped messaging and lookup contracts.",
+      "enhancements": [
+        "Add durable delivery/receipt status across independent hubs and authorize every source/recipient project.",
+        "Bind messages to enrolled identities and operation generations."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-16-C01",
+          "description": "Compare direct, role and operator delivery, peer-local alias replies, code-linked handoffs, missing-recipient fallback and trust framing.",
+          "existingTests": [
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-16-C02",
+          "description": "Deliver duplicates across nodes and after reconnect; preserve one intended local message and original task/code/ref provenance.",
+          "existingTests": [
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores. Same-peer multi-node and partition fixtures.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve envelope IDs, local fed:<id> idempotency keys, message kinds, sender/target mapping and pending recipient state.",
+        "Keep old reply addresses usable through explicit aliases for the supported compatibility window."
+      ],
+      "limitations": [
+        "Current primary-node and multi-node behavior needs explicit target ownership tests; source comments are not proof of correct cross-node delivery."
+      ]
+    },
+    {
+      "id": "HUB-17",
+      "name": "Federated work distribution and result plugin",
+      "files": [
+        "hub/fed/plugins/work.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-13",
+        "BASE-15"
+      ],
+      "ownerPhase": "P10",
+      "disposition": "extend",
+      "currentBehavior": [
+        "Creates a local fed:pending origin placeholder and stages work by publisher/repository/role.",
+        "Pulls shared durable work only for locally available role capacity and allowed publishers; keeps requirements, priority and task_key.",
+        "Ingests attributed remote work, handles local self-pickup, returns done/failed results, reports pending/incoming items and cancels unclaimed work on revoke."
+      ],
+      "reusePlan": "Reuse capability/capacity routing, task metadata and existing happy-path fixtures. Extend the current work plugin around explicit offer/accept/reserve/execute/result/acceptance records; repair known provenance and result boundaries first.",
+      "enhancements": [
+        "Bind delegation to executor, project/repository, task version and attempt; origin keeps final acceptance.",
+        "Preserve accepted or acceptance-unknown work during disconnection and require explicit reassignment.",
+        "Allow receiving-hub automation only within approved rules; Jev may rank eligible options without granting authority."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-17-C01",
+          "description": "Compare role capacity, requirements, priority, task links, incoming/outgoing lists, creator notices and revocation of unclaimed work.",
+          "existingTests": [
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-17-C02",
+          "description": "Inject all six relevant baseline/future failure boundaries: mismatched subject/type, split provenance, completion-before-publication, same-peer consumption, wrong executor/result and lost acceptance acknowledgment.",
+          "existingTests": [
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores. P01 regression fixtures and P10 fault injection.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-17-C03",
+          "description": "Disconnect a receiving hub after acceptance, continue allowed work and reconcile after reconnect or older-origin restore without overlapping execution.",
+          "existingTests": [],
+          "requiredEnvironment": "Three actual hubs across two test organizations with independent persistence and leaf links.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Map W IDs, origin_id, env, rid, origin_peer, claimed_by, fed_flags and task_key explicitly; retain legacy IDs as source identities.",
+        "Migrate work consumer ack positions with local ready/claimed/pending state and result outbox intent as one checked cutover set.",
+        "Preserve already accepted obligations even when policy expires; quarantining historical results must not erase the reservation.",
+        "Record the deliberate behavior change: receiving-worker done is a submitted result until the origin accepts it."
+      ],
+      "limitations": [
+        "AMX-BASE-002–005 identify existing provenance, result and multi-node defects; parity must preserve intended capability rather than reproduce those defects.",
+        "The current workqueue is not the target reservation/acceptance protocol."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-09",
+          "scope": "User-authorized six baseline repairs",
+          "change": "The scoped P01 baseline repair adds version-isolated v3 offers, blocked receiver candidates, origin-owned executor grants and bound results. P10 broader independent-hub federation remains planned.",
+          "evidence": "docs/planning/2026-10-09/governance-repairs.md",
+          "targetPhaseStatus": "not-qualified-by-this-incremental-repair"
+        }
+      ]
+    },
+    {
+      "id": "HUB-18",
+      "name": "Shared board plugin and local mirror",
+      "files": [
+        "hub/fed/plugins/board.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-14",
+        "BASE-15"
+      ],
+      "ownerPhase": "P10",
+      "disposition": "extend",
+      "currentBehavior": [
+        "Stores cards under <rid>.card.<KEY> in am_board and mints prefix-specific sequence keys with compare-and-set.",
+        "Provides add/list/show/move/assign/comment/claim, with title/body/labels/assignee/comments/history and a local-board source link.",
+        "Watches KV into p_board_cards for offline reads, ignores stale revisions, marks deletions, filters denied peers and notifies a newly assigned recipient.",
+        "Reads local TM cards through the current dashboard endpoint and contributes shared-board rows/actions to the dashboard."
+      ],
+      "reusePlan": "Reuse card operations, CAS conflict handling, data shapes, mirror rules and assignment notices. Route local-card lookup and writes through authorized owning plugins while adapting the existing view contribution.",
+      "enhancements": [
+        "Add explicit board ownership and project access, retained history beyond bounded KV revisions and documented offline freshness.",
+        "Keep shared-board cards distinct from origin tasks and execution attempts while linking them."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-18-C01",
+          "description": "Compare key minting, simultaneous comments, claim conflicts, status validation, assignments and notification translation across differing local repository names.",
+          "existingTests": [
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-18-C02",
+          "description": "Rebuild offline mirrors from retained source state including deleted cards and stale revisions; retain comments, history and local TM links without emitting assignment notices again.",
+          "existingTests": [
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores. Snapshot, retention-gap and replay fixtures.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Import am_board card keys and sequence counters, card revisions, p_board_cards tombstones and observed watermark together.",
+        "Never renumber SH/custom-prefix keys or collapse board done into accepted work.",
+        "Replace the local HTTP card lookup with a NATS owner contract while preserving --from semantics and explicit unavailable-card errors.",
+        "Any move away from the shared central-board write model needs a separate ownership decision and conflict migration plan before cutover."
+      ],
+      "limitations": [
+        "KV history is bounded and card history is truncated to 50 entries; missing historical data must be reported, not reconstructed as fact.",
+        "Existing direct bucket permissions do not provide the planned project authorization."
+      ]
+    },
+    {
+      "id": "HUB-19",
+      "name": "Shared knowledge, offline search, capture and notifications",
+      "files": [
+        "hub/fed/plugins/knowledge.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-14"
+      ],
+      "ownerPhase": "P10",
+      "disposition": "extract",
+      "currentBehavior": [
+        "Publishes explicit title/body/tags/ref findings with author, source, repository and trust attribution.",
+        "Indexes p_knowledge_items and FTS5 for ranked offline search with snippets, recent/show views and dashboard rows.",
+        "Automatically captures local completed-work results, handoffs and returned federated results when capture is enabled.",
+        "Notifies live agents of new findings using a one-line pointer and idempotent notice; marks a peer's findings withdrawn on revoke."
+      ],
+      "reusePlan": "Keep the knowledge record schema, explicit capture triggers, search behavior and notification controls. Extract database access into an authorized projection/index service; keep SQL FTS as a rebuildable option where it remains useful.",
+      "enhancements": [
+        "Add scoped source provenance, authorization-aware search and controlled onward sharing.",
+        "Allow optional Jev classification/selection without replacing lexical search, hiding mandatory notices or exporting unapproved data."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-19-C01",
+          "description": "Compare explicit share, ranked multiword search/snippets, recent/show, differing local repo names, trust/withdrawn flags and the panel.",
+          "existingTests": [
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores. SQLite FTS5 for the current projection.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-19-C02",
+          "description": "Trigger each auto:work, auto:handoff and auto:result path; verify capture=false and notify_findings=false, one-line notices and duplicate/replay suppression.",
+          "existingTests": [
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores. New targeted capture/notification fixtures.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-19-C03",
+          "description": "Rebuild the search index from retained authorized records with the same IDs and queryable bodies; revocation must constrain later access and derived use.",
+          "existingTests": [],
+          "requiredEnvironment": "P04/P10 retained-record and projection recovery environment.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve finding IDs, author/source/ref/tags, timestamps, trust/untrusted/withdrawn state and existing local-repository mapping.",
+        "Do not treat imported historical completion/handoff records as fresh auto-capture or notification triggers.",
+        "Keep capture and notification settings distinct and preserve user choices.",
+        "Retain existing FTS query semantics or document and approve any relevance change with comparison fixtures."
+      ],
+      "limitations": [
+        "Current live test exercises explicit share, auto-work and notification, but does not cover every capture setting or source trigger.",
+        "Retaining a local withdrawn marker does not undo previously exported knowledge."
+      ]
+    },
+    {
+      "id": "HUB-20",
+      "name": "Git code sharing and verified fetch plugin",
+      "files": [
+        "hub/fed/plugins/code.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-14"
+      ],
+      "ownerPhase": "P10",
+      "disposition": "extract",
+      "currentBehavior": [
+        "Validates a checkout by its shared remote/rid, resolves a commit, pushes refs/agentmux/<peer>/<slug> and sends metadata rather than file contents.",
+        "Records sha/base/files/stat/log/note/author, optionally sends a handoff, lists shares and contributes fetch actions.",
+        "Checks inbound ref namespace and SHA shape; fetches into the requested matching checkout and rejects a moved ref when its SHA differs.",
+        "Provides review/switch command suggestions; it does not merge the shared work."
+      ],
+      "reusePlan": "Reuse Git operations, checkout proof, pointer schema and SHA verification behind a scoped workspace/artifact plugin. Replace direct calls to the messages plugin with a NATS contribution contract.",
+      "enhancements": [
+        "Authorize source export before Git push, record durable publication intent and reconcile a pushed ref whose metadata publish failed.",
+        "Bind evidence to immutable commit/artifact identity and preserve origin review authority."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-20-C01",
+          "description": "Compare share/list/handoff/fetch, wrong checkout, invalid address and moved-ref rejection using isolated bare remotes.",
+          "existingTests": [
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores. Isolated Git remotes; no customer repositories.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-20-C02",
+          "description": "Interrupt before/after Git push and metadata publication; reconcile the same share without duplicate export or claiming that a local rollback removed remote content.",
+          "existingTests": [],
+          "requiredEnvironment": "P04/P10 Git effect-intent and recovery fixtures.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Retain share IDs, ref namespace, full sha/base and source/rid mapping, fetched state and reachable Git content.",
+        "Import pointers without fetching, pushing, checking out or merging as a side effect.",
+        "Do not substitute an Object Store upload for the existing Git workflow without an explicit behavior and compatibility decision."
+      ],
+      "limitations": [
+        "Text redaction cannot scrub referenced Git history; force-pushed refs are detected only when fetched.",
+        "Current publication performs Git push before the final metadata guard/staging step and needs explicit repair."
+      ]
+    },
+    {
+      "id": "HUB-21",
+      "name": "Stdio MCP gateway",
+      "files": [
+        "hub/fed/mcp.py"
+      ],
+      "role": "runtime",
+      "baselineGroups": [
+        "BASE-12"
+      ],
+      "ownerPhase": "P06",
+      "disposition": "wrap",
+      "currentBehavior": [
+        "Implements newline JSON-RPC initialize/ping/tools-list/tools-call and returns MCP tool content/errors.",
+        "Exposes fixed agent tools plus dynamically generated non-operator federation tools, keeping CLI/hub verbs authoritative.",
+        "Transforms required capabilities for work creation, adds cwd and relies on the hub caller identity instead of asserting its own."
+      ],
+      "reusePlan": "Retain the existing gateway and tool names as an adapter to scoped owners. Reuse registry-driven discovery and protocol fixtures; version any schema change.",
+      "enhancements": [
+        "Add explicit external-client enrollment beyond process ancestry and host capability/version qualification.",
+        "Expose portable Jev and Agentmux plugins through the same authorized operation contracts where supported."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-21-C01",
+          "description": "Preserve tool names/schemas, required arguments, operator-tool exclusion, notification handling and JSON-RPC/tool error behavior.",
+          "existingTests": [
+            "hub/tests/test_fed_unit.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-21-C02",
+          "description": "Run the same scoped reference workflow from each supported client host; verify a caller cannot gain another user's authority through MCP arguments or cwd.",
+          "existingTests": [],
+          "requiredEnvironment": "P06 actual client/version support matrix and scoped test identities.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Maintain tool-name aliases and schema compatibility; do not silently expose formerly operator-only verbs.",
+        "Retain user MCP configuration and migrate only the approved server entry/credential references."
+      ],
+      "limitations": [
+        "Current MCP support is a minimal fixed protocol implementation; broad Desktop/CLI interoperability is not yet qualified.",
+        "MCP tool availability does not imply conversation/event/compaction visibility."
+      ]
+    },
+    {
+      "id": "HUB-22",
+      "name": "Federation dependency manifests",
+      "files": [
+        "hub/requirements.txt",
+        "hub/requirements.lock"
+      ],
+      "role": "configuration",
+      "baselineGroups": [
+        "BASE-36",
+        "BASE-37"
+      ],
+      "ownerPhase": "P12",
+      "disposition": "retain",
+      "currentBehavior": [
+        "Pins nats-py and nkeys directly and constrains their recorded transitive Python dependencies.",
+        "The lock header records historical interpreter/test context; hub fed setup consumes both files."
+      ],
+      "reusePlan": "Keep the reproducible dependency inputs and historical version attribution. Extend packaging checks when SDKs or NATS features change.",
+      "enhancements": [
+        "Add repeatable supported-host installation, dependency integrity/license inventory and version-qualified NATS features."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-22-C01",
+          "description": "Install from the declared manifests in clean supported environments and record resolved versions; distinguish incompatible interpreter or missing packages from test failures.",
+          "existingTests": [],
+          "requiredEnvironment": "P02/P06/P12 clean Python environments with permitted package access.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Preserve old lock files with the migration/release record so legacy recovery can reproduce the prior runtime.",
+        "Qualify upgrades before enabling new protocol/storage features."
+      ],
+      "limitations": [
+        "The header's historical test statement is not evidence that this audit ran or passed those tests."
+      ]
+    },
+    {
+      "id": "HUB-23",
+      "name": "NATS deployment, account enrollment and credentials",
+      "files": [
+        "deploy/nats/circle.sh",
+        "deploy/nats/up.sh",
+        "deploy/nats/values.yaml",
+        "deploy/nats/kind.yaml",
+        "deploy/nats/nodeport.yaml"
+      ],
+      "role": "configuration",
+      "baselineGroups": [
+        "BASE-13",
+        "BASE-16",
+        "BASE-36"
+      ],
+      "ownerPhase": "P10",
+      "disposition": "extend",
+      "currentBehavior": [
+        "circle.sh provisions an operator, SYS/circle accounts, admin and peer users, signing material, scoped subject permissions, JWT revocation/push and generated Helm/server configuration.",
+        "up.sh provisions kind or the current Kubernetes context, self-signed CA/server TLS secret, pinned Helm chart, streams/KV and replica count.",
+        "values.yaml enables clustered file-backed JetStream, PVCs, full JWT resolver and monitoring; leaf/WebSocket/MQTT ports are currently disabled.",
+        "kind.yaml/nodeport.yaml expose a local TLS client port; credential/signing-key material lives in private generated directories."
+      ],
+      "reusePlan": "Retain and extend the deployment/enrollment tooling as a documented existing installation path. Add the approved local/team/leaf profiles incrementally and keep generated secrets outside source and ordinary shared state.",
+      "enhancements": [
+        "Support independent organization accounts/domains and explicit scoped leaf links.",
+        "Separate tenant/project permissions, improve upgrade/backup diagnostics and qualify real supported topology versions."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-23-C01",
+          "description": "Reproduce the existing test-circle and clustered deployment, peer add/revoke, JWT push, TLS validation and stream provisioning before comparing the target installer.",
+          "existingTests": [
+            "hub/tests/test_fed_live.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores. Optional disposable kind/Kubernetes, Helm, OpenSSL and kubectl.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-23-C02",
+          "description": "Migrate an existing circle with active consumers and queued work to the approved topology; verify identity mapping, denied cross-project reads/writes and preservation of accepted work.",
+          "existingTests": [],
+          "requiredEnvironment": "P10 disposable old/new installations, independent organizations and leaf links.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-23-C03",
+          "description": "Restore private signing/credential references and persistent broker data in a recovery drill without widening permissions or republishing historical work.",
+          "existingTests": [],
+          "requiredEnvironment": "P12 isolated backup/restore environment.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Inventory operator/account/user public identities, signing-key custody, revocations, peer ACLs, credentials/CA references and resolver claims before enrollment changes.",
+        "Preserve AM_* and KV_* records, durable consumers/ack positions, storage paths and replica/retention settings; no destructive reprovisioning.",
+        "Current broad $JS.API permissions and am_board writes require a reviewed restrictive mapping, not a blind copy into the multi-user product.",
+        "Keep the current central-circle deployment supported during migration; record whether it remains a topology option or is retired only after approval."
+      ],
+      "limitations": [
+        "Cluster creation targets the selected Kubernetes context when --no-kind is used; these scripts are not run by this audit.",
+        "Existing source config has no leaf links or independent organization authority.",
+        "Existing tests do not prove every peer API permission is sufficiently restricted for the new product."
+      ]
+    },
+    {
+      "id": "HUB-24",
+      "name": "Local live demo, sample repositories and scoring",
+      "files": [
+        "hub/demo/README.md",
+        "hub/demo/orchestrate.py",
+        "hub/demo/scoreboard.py",
+        "hub/demo/setup_repos.sh",
+        "hub/demo/smoke_shell.sh"
+      ],
+      "role": "test-support",
+      "baselineGroups": [
+        "BASE-01",
+        "BASE-09",
+        "BASE-37"
+      ],
+      "ownerPhase": "P01",
+      "disposition": "retain-evidence",
+      "currentBehavior": [
+        "Builds throwaway calc/report Git fixtures, demonstrates shell delivery/ack/claim/death and checks harness sidecar cleanup.",
+        "Runs calibration, team decomposition, cross-repository and mixed-client swarm scenarios with provider CLIs.",
+        "Scores E1–E6 for terminal work state, delivery/bell failures, liveness, acknowledgments and repository verification; preserves reports/pane tails and generates a scoreboard.",
+        "Drains in-flight mail before scoring and cancels unfinished demo work to limit contamination across runs."
+      ],
+      "reusePlan": "Keep scenarios, fixtures, scoring meanings and historical output formats. Adapt calls to the new owners and add evidence/acceptance checks without rewriting old results.",
+      "enhancements": [
+        "Add exact source/dependency/environment identity, true origin acceptance and per-repository artifact validation.",
+        "Run supported-host comparisons in isolated workspaces with clearly labeled provider substitutions."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-24-C01",
+          "description": "Execute the shell smoke on a disposable home; preserve delivery/claim/death and sidecar cleanup observations.",
+          "existingTests": [
+            "hub/demo/smoke_shell.sh"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. tmux and harness; no model needed.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-24-C02",
+          "description": "Compare all four orchestration scenarios and E1–E6 against baseline and target; add explicit acceptance checks and keep failed/skipped outcomes.",
+          "existingTests": [
+            "hub/demo/orchestrate.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. tmux, isolated repos and approved real provider accounts/budget.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P06"
+        },
+        {
+          "id": "HUB-24-C03",
+          "description": "Regenerate scoreboard from copied historical fixtures and verify totals/failed-check attribution without overwriting original reports.",
+          "existingTests": [],
+          "requiredEnvironment": "Offline copied report fixtures.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Retain historic report IDs and meaning of checks; new checks need a versioned score schema.",
+        "Move machine-specific paths to declared configuration while preserving sample workflow behavior.",
+        "Do not run reset-capable demos against user projects or the normal hub home."
+      ],
+      "limitations": [
+        "Demo scripts reset sample repositories and may launch paid agents; none were executed.",
+        "The old demo README has machine-specific paths and historical test counts, not current qualification evidence.",
+        "E1 done and six passing demo checks do not alone establish accepted work or production reliability."
+      ]
+    },
+    {
+      "id": "HUB-25",
+      "name": "Cross-user federation walkthrough and live-agent demo",
+      "files": [
+        "hub/fed/demo.py",
+        "deploy/nats/demo.sh"
+      ],
+      "role": "test-support",
+      "baselineGroups": [
+        "BASE-13",
+        "BASE-14",
+        "BASE-37"
+      ],
+      "ownerPhase": "P10",
+      "disposition": "retain-evidence",
+      "currentBehavior": [
+        "Sets up three isolated hub homes and differently named clones for nick/alice/mallory, then demonstrates presence, shared board, code handoff, work return, knowledge, guards and kill/resume.",
+        "Can launch real Claude sessions with MCP on two hubs; the shell wrapper manages up/run/live/down/dashboard and operator commands.",
+        "The deterministic walkthrough acts through operator --as rather than proving independently enrolled users; live mode explicitly configures bypass and disables other settings sources."
+      ],
+      "reusePlan": "Preserve the narrated workflow and expected collaboration artifacts as a compatibility scenario. Add a separately qualified cross-organization version with explicit users and scoped execution.",
+      "enhancements": [
+        "Demonstrate independent leaf/domain operation, origin acceptance, partitions and durable reservations.",
+        "Replace demo-specific broad bypass assumptions with the product's approved execution profile for release evidence."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-25-C01",
+          "description": "Compare the full deterministic walkthrough against isolated baseline and target systems, including shared card/code/finding/ref identities and guard decisions.",
+          "existingTests": [
+            "hub/fed/demo.py"
+          ],
+          "requiredEnvironment": "Isolated macOS/Linux/WSL hubs, pinned Python federation dependencies, nsc, Git and a real NATS server; use separate test accounts and stores. Disposable demo homes and Git remotes.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-25-C02",
+          "description": "Run a separately authorized real-client demonstration and verify origin evidence/acceptance after a receiving-hub disconnect; report provider and host limitations.",
+          "existingTests": [
+            "hub/fed/demo.py"
+          ],
+          "requiredEnvironment": "P06/P10 approved real client accounts and budget, isolated homes, two organizations and leaf links.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Keep old demonstrations/results labeled as central-circle evidence; do not relabel them as independent-organization qualification.",
+        "Keep demo reset logic isolated; prevent a test helper from deleting customer streams, KV buckets or data.",
+        "Preserve user normal agent configuration and unrelated tmux sessions during demo setup/teardown."
+      ],
+      "limitations": [
+        "Current up/reset paths delete demo data and, for kind, reset configured streams/buckets; none were run.",
+        "Current live success detection is narrower than proof of a correct accepted artifact.",
+        "Existing names are sample identities, not a real multi-user trust boundary."
+      ]
+    },
+    {
+      "id": "HUB-26",
+      "name": "Hub regression suites and federation test harness",
+      "files": [
+        "hub/tests/__init__.py",
+        "hub/tests/fedharness.py",
+        "hub/tests/local.ps1",
+        "hub/tests/run_local.py",
+        "hub/tests/test_fed_live.py",
+        "hub/tests/test_fed_unit.py",
+        "hub/tests/test_governance.py",
+        "hub/tests/test_hub_offline.py",
+        "hub/tests/test_local_runner.py",
+        "hub/tests/test_nats_federation.py",
+        "hub/tests/test_windows_callbacks.py",
+        "sdk/python/README.md",
+        "sdk/python/agentmux_contracts/__init__.py",
+        "sdk/python/agentmux_contracts/__main__.py",
+        "sdk/python/agentmux_contracts/attestation.py",
+        "sdk/python/agentmux_contracts/state_models.py",
+        "sdk/python/agentmux_contracts/validation.py",
+        "sdk/python/agentmux_contracts/wire.py",
+        "sdk/python/pyproject.toml",
+        "sdk/python/requirements.lock",
+        "sdk/python/tests/test_contracts.py",
+        "sdk/python/tests/test_state_models.py",
+        "sdk/typescript/README.md",
+        "sdk/typescript/package-lock.json",
+        "sdk/typescript/package.json",
+        "sdk/typescript/src/cli.ts",
+        "sdk/typescript/src/index.ts",
+        "sdk/typescript/src/state-models.test.ts",
+        "sdk/typescript/src/state-models.ts",
+        "sdk/typescript/src/test.ts",
+        "sdk/typescript/test-examples.json",
+        "sdk/typescript/tsconfig.json",
+        "tests/contracts/README.md",
+        "tests/contracts/ci.py",
+        "tests/contracts/fake-execution.md",
+        "tests/contracts/fake_execution.py",
+        "tests/contracts/run.py",
+        "tests/contracts/test_conformance.py",
+        "tests/contracts/test_fake_execution.py",
+        "tests/contracts/test_payloads.py",
+        "tests/contracts/test_recovery.py",
+        "tests/contracts/test_semantics.py",
+        "tests/contracts/test_startup_status.py",
+        "tests/contracts/test_state_models.py",
+        "tests/contracts/vectors/payload-examples.json",
+        "tests/contracts/vectors/semantic-examples.json",
+        "tests/contracts/vectors/startup-status-examples.json",
+        "tests/contracts/vectors/valid-examples.json",
+        "tests/leaf/README.md",
+        "tests/leaf/run.py",
+        "tests/leaf/signed_run.py",
+        "tests/platform/README.md",
+        "tests/platform/fixtures/wsl-inventory.json",
+        "tests/platform/inventory.py",
+        "tests/platform/test_inventory.py",
+        "tests/storage/README.md",
+        "tests/storage/capacity.py",
+        "tests/storage/python_client.py",
+        "tests/storage/run.py",
+        "tests/storage/typescript/README.md",
+        "tests/storage/typescript/package-lock.json",
+        "tests/storage/typescript/package.json",
+        "tests/storage/typescript/src/client.ts",
+        "tests/storage/typescript/tsconfig.json"
+      ],
+      "role": "test-support",
+      "baselineGroups": [
+        "BASE-37"
+      ],
+      "ownerPhase": "P01",
+      "disposition": "retain",
+      "currentBehavior": [
+        "Offline tests cover names, messages/FTS/idempotency, claims/leases/team children, delivery profiles, receipt logs, backup/retention, actual socket/TCP API, courier import and subscriptions.",
+        "Core-NATS tests start two hubs and check direct delivery and work/result distribution.",
+        "Federation unit tests cover config, rid/envelopes, guards/redaction, MCP and privileged hooks.",
+        "Federation live tests and Circle/Person helpers provide real JWT users, optional TLS/kind, shared Git remotes and three hub homes for presence, spoofing, sharing, work, board CAS, knowledge, code and revoke.",
+        "Harnesses directly seed stores and use operator impersonation for deterministic agents; missing prerequisites cause skips."
+      ],
+      "reusePlan": "Retain the tests and embedded fixtures. Run them as baseline evidence, then reuse behavioral assertions against compatibility adapters and target contracts; append focused missing-failure cases without deleting old history.",
+      "enhancements": [
+        "Add complete per-component parity evidence, exact environment/source digests and independently administered hub/worker fixtures.",
+        "Distinguish deterministic mocked agents, live brokers and actual provider clients; add current blocker regressions and migration rehearsals."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "HUB-26-C01",
+          "description": "Run all existing suites in their declared environments, recording every pass/fail/skip and known baseline failure; do not import old counts as a new result.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py",
+            "hub/tests/test_nats_federation.py",
+            "hub/tests/test_fed_unit.py",
+            "hub/tests/test_fed_live.py",
+            "hub/tests/test_governance.py",
+            "hub/tests/test_local_runner.py"
+          ],
+          "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. Bash; real NATS/nsc/nats-py/Git for broker suites; disposable kind only when requested.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-26-C02",
+          "description": "Run a mapped target comparison for each owning component and retain old failing cases until fixed or disproved with evidence.",
+          "existingTests": [
+            "hub/tests/test_hub_offline.py",
+            "hub/tests/test_nats_federation.py",
+            "hub/tests/test_fed_unit.py",
+            "hub/tests/test_fed_live.py",
+            "hub/tests/test_governance.py",
+            "hub/tests/test_local_runner.py"
+          ],
+          "requiredEnvironment": "P01 verification harness plus each component's target environment.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-26-C03",
+          "description": "Check fixture isolation, cleanup, account boundaries and repeatability; a skipped broker suite cannot satisfy a phase's live gate.",
+          "existingTests": [
+            "hub/tests/test_governance.py",
+            "hub/tests/test_local_runner.py"
+          ],
+          "requiredEnvironment": "P01 harness validation in disposable local and cluster test installations.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "HUB-26-C04",
+          "description": "Qualify the accepted S03 application capacity reserve with a real disposable JetStream fixture: competing bulk admissions, completion/reconciliation headroom, restart/replay, explicit quota exhaustion and a failing bypass control. Preserve all earlier storage assertions. Production policy and physical disk-failure guarantees remain later obligations.",
+          "existingTests": [
+            "tests/storage/run.py"
+          ],
+          "requiredEnvironment": "Pinned real file-backed NATS JetStream on native Linux/macOS and Linux filesystems in WSL; isolated data directories.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Map each old test/assertion to a target case or approved behavior change; preserve original requirement/failure labels.",
+        "Record configuration and runtime digests separately for old and new evidence.",
+        "Do not run Circle.reset against any shared deployment that contains customer or unrelated work."
+      ],
+      "limitations": [
+        "All checks in this file are not-run; this is static source review, not a test report.",
+        "Some legacy suites use real process/broker environments and have platform/dependency requirements; the word offline in a filename is not a guarantee of no services.",
+        "No existing suite establishes exhaustive target parity, worker containment or independent-hub ownership."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-09",
+          "scope": "User-authorized six baseline repairs",
+          "change": "Added test_governance.py for all six findings, plus real NATS tests in test_fed_live.py. Original invariant assertions are retained; the approval test now waits for the explicitly required grant before claiming.",
+          "evidence": "docs/planning/2026-10-09/governance-repairs.md",
+          "targetPhaseStatus": "not-qualified-by-this-incremental-repair"
+        },
+        {
+          "date": "2026-10-09",
+          "scope": "User-requested faster local test iteration",
+          "change": "Added focused, fast, offline, live and full hub selections; failed-test reruns; local timing and source-hash reports; WSL launcher reuses prepared tools. Existing assertions and phase gates are preserved.",
+          "evidence": "docs/LOCAL_TESTING.md"
+        }
+      ],
+      "reviewHistory": [
+        {
+          "date": "2026-10-09",
+          "reviewer": "Codex",
+          "addedFiles": [
+            "sdk/python/README.md",
+            "sdk/python/agentmux_contracts/__init__.py",
+            "sdk/python/agentmux_contracts/__main__.py",
+            "sdk/python/agentmux_contracts/attestation.py",
+            "sdk/python/agentmux_contracts/validation.py",
+            "sdk/python/agentmux_contracts/wire.py",
+            "sdk/python/pyproject.toml",
+            "sdk/python/requirements.lock",
+            "sdk/python/tests/test_contracts.py",
+            "sdk/typescript/README.md",
+            "sdk/typescript/package-lock.json",
+            "sdk/typescript/package.json",
+            "sdk/typescript/src/cli.ts",
+            "sdk/typescript/src/index.ts",
+            "sdk/typescript/src/test.ts",
+            "sdk/typescript/test-examples.json",
+            "sdk/typescript/tsconfig.json",
+            "tests/contracts/README.md",
+            "tests/contracts/run.py",
+            "tests/contracts/test_conformance.py",
+            "tests/contracts/vectors/valid-examples.json"
+          ],
+          "note": "Own new isolated contract schemas/clients/tests; current behavior and original assertions remain required."
+        },
+        {
+          "date": "2026-10-09",
+          "reviewer": "Codex",
+          "scope": "P01 payload registry, semantic checks and isolated storage qualification",
+          "addedFiles": [
+            "tests/contracts/test_payloads.py",
+            "tests/contracts/test_semantics.py",
+            "tests/contracts/vectors/payload-examples.json",
+            "tests/contracts/vectors/semantic-examples.json",
+            "tests/storage/README.md",
+            "tests/storage/python_client.py",
+            "tests/storage/run.py",
+            "tests/storage/typescript/README.md",
+            "tests/storage/typescript/package-lock.json",
+            "tests/storage/typescript/package.json",
+            "tests/storage/typescript/src/client.ts",
+            "tests/storage/typescript/tsconfig.json"
+          ],
+          "note": "Preserve legacy behavior, assertions and qualification phases. SDK files remain HUB-26-owned conformance primitives; no production runtime path is replaced."
+        },
+        {
+          "date": "2026-10-09",
+          "reviewer": "Codex",
+          "scope": "P01 pure state model oracles and isolated two-broker leaf fixture",
+          "addedFiles": [
+            "sdk/python/agentmux_contracts/state_models.py",
+            "sdk/python/tests/test_state_models.py",
+            "sdk/typescript/src/state-models.test.ts",
+            "sdk/typescript/src/state-models.ts",
+            "tests/contracts/test_state_models.py",
+            "tests/leaf/README.md",
+            "tests/leaf/run.py"
+          ],
+          "note": "Preserve five P00 tables/68 edges, add explicit cancellation context and test missing guard/role/revision rejection. Leaf fixture does not replace production federation or final bilateral acceptance."
+        },
+        {
+          "date": "2026-10-13T19:21:29.079274+00:00",
+          "reviewer": "Codex",
+          "scope": "Recover omitted accepted P00 L04/S03 qualification",
+          "addedFiles": [
+            "tests/contracts/test_startup_status.py",
+            "tests/contracts/vectors/startup-status-examples.json"
+          ],
+          "addedBehaviorCheck": "HUB-26-C04",
+          "note": "Original files, checks and history retained. New qualification is pending; no runtime replacement or later-phase pass is implied."
+        },
+        {
+          "date": "2026-10-13T19:26:19.035640+00:00",
+          "reviewer": "Codex",
+          "scope": "S03 reserve fixture ownership",
+          "addedFiles": [
+            "tests/storage/capacity.py"
+          ],
+          "note": "Bounded single-task aggregate admission fixture; existing production and20storage assertions retained. Actual fixture qualification and independent review remain separate evidence."
+        }
+      ]
+    },
+    {
+      "id": "PLAT-04",
+      "name": "Additive Go source coverage qualification",
+      "files": [
+        "tests/platform/test_source_surface.py"
+      ],
+      "role": "test-support",
+      "baselineGroups": [],
+      "ownerPhase": "P02",
+      "disposition": "extend",
+      "currentBehavior": [
+        "The existing guard requires component and source ownership for current languages; it had no Go runtime source to qualify in P01."
+      ],
+      "reusePlan": "Extend only eligible suffixes and test-file exclusion; preserve the rest of the guard byte for byte.",
+      "enhancements": [
+        "Check real Go missing, stale and duplicate surface records and test ownership."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "PLAT-04-C01",
+          "description": "Go runtime sources require ownership and fresh unique surface records; test files retain inventory ownership. Missing/stale/duplicate controls must fail.",
+          "existingTests": [
+            "tests/platform/test_source_surface.py"
+          ],
+          "requiredEnvironment": "Python and disposable Git repositories on native Linux/macOS/WSL; focused Windows review also recorded.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "PLAT-04-C02",
+          "description": "Preserve all original Python/JS/TS/mjs/shell eligibility assertions and historical evidence; no historical Go qualification claim.",
+          "existingTests": [
+            "tests/platform/test_source_surface.py"
+          ],
+          "requiredEnvironment": "Exact guard source comparison and focused language controls.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "No runtime or data migration. Preserve every old inventory record and qualification owner."
+      ],
+      "reviewHistory": [
+        {
+          "date": "2026-10-13T20:34:17.124060+00:00",
+          "reviewer": "Codex",
+          "scope": "Actual Go guard fixtures only",
+          "note": "Approved P02 preflight mapping; no fictional future source or test pass attestation in component manifest."
+        }
+      ]
+    },
+    {
+      "id": "PLAT-01",
+      "name": "Opt-in Go launcher/profile/bootstrap",
+      "files": [
+        "platform/go.mod",
+        "platform/go.sum",
+        "platform/launcher/lock_unix.go",
+        "platform/launcher/lock_unix_test.go",
+        "platform/launcher/docker.go",
+        "platform/launcher/docker_test.go",
+        "platform/launcher/bootstrap.go",
+        "platform/launcher/bootstrap_config.go",
+        "platform/launcher/bootstrap_config_test.go",
+        "platform/launcher/bootstrap_integration_test.go",
+        "platform/launcher/docker_config_test.go",
+        "platform/launcher/docker_environment.go",
+        "platform/launcher/docker_environment_test.go",
+        "platform/launcher/docker_instance.go",
+        "platform/launcher/docker_instance_test.go",
+        "platform/launcher/doctor.go",
+        "platform/launcher/doctor_test.go",
+        "platform/launcher/host_config.go",
+        "platform/launcher/host_config_test.go",
+        "platform/launcher/kernel_status.go",
+        "platform/launcher/kernel_status_test.go",
+        "platform/launcher/profile.go",
+        "platform/launcher/profile_boundary_test.go",
+        "platform/launcher/profile_test.go",
+        "platform/launcher/release.go",
+        "platform/launcher/release_test.go",
+        "platform/launcher/startup_session.go",
+        "platform/launcher/startup_session_lifecycle_test.go",
+        "platform/launcher/startup_session_test.go",
+        "platform/launcher/startup_status.go",
+        "platform/launcher/startup_status_test.go",
+        "platform/cmd/agentmux-runtime/main.go",
+        "platform/cmd/agentmux-runtime/main_test.go",
+        "platform/launcher/authority_proof_test.go",
+        "platform/launcher/bootstrap_compose_binding.go",
+        "platform/launcher/bootstrap_invocation_test.go",
+        "platform/launcher/docker_archive_linux_test.go",
+        "platform/launcher/docker_archive_test.go",
+        "platform/launcher/docker_archives.go",
+        "platform/launcher/docker_reads.go",
+        "platform/launcher/docker_reads_linux_test.go",
+        "platform/launcher/docker_reads_test.go",
+        "platform/launcher/docker_stdio.go",
+        "platform/launcher/docker_stdio_inspection_test.go",
+        "platform/launcher/docker_stdio_test.go",
+        "platform/launcher/docker_tls.go",
+        "platform/launcher/docker_tls_test.go",
+        "platform/launcher/host_policy.go",
+        "platform/launcher/host_policy_test.go",
+        "platform/launcher/kernel_status_stage_test.go",
+        "platform/launcher/kernel_status_tls_test.go",
+        "platform/launcher/local_broker_authority.go",
+        "platform/launcher/local_server_trust.go",
+        "platform/launcher/local_server_trust_test.go",
+        "platform/launcher/lock_acl_darwin_test.go",
+        "platform/launcher/owner_bridge.go",
+        "platform/launcher/owner_bridge_admission_test.go",
+        "platform/launcher/owner_bridge_host_loader_test.go",
+        "platform/launcher/owner_bridge_test.go",
+        "platform/launcher/owner_bridge_validation.go",
+        "platform/launcher/session_cleanup.go",
+        "platform/launcher/session_cleanup_test.go",
+        "platform/launcher/startup_session_deadline_test.go",
+        "platform/launcher/startup_write_proof.go",
+        "platform/launcher/startup_write_proof_test.go",
+        "platform/launcher/transport_cleanup.go",
+        "platform/launcher/transport_cleanup_test.go",
+        "platform/privatefs/access.go",
+        "platform/privatefs/access_darwin.go",
+        "platform/privatefs/access_darwin_nocgo.go",
+        "platform/privatefs/access_darwin_nocgo_test.go",
+        "platform/privatefs/access_darwin_test.go",
+        "platform/privatefs/access_linux.go",
+        "platform/privatefs/access_linux_test.go",
+        "platform/privatefs/access_test.go",
+        "platform/privatefs/access_unsupported.go",
+        "platform/launcher/bootstrap_operation.go",
+        "platform/launcher/bootstrap_operation_test.go",
+        "platform/launcher/startup_pending_test.go",
+        "platform/launcher/host_receipt_binding.go",
+        "platform/launcher/host_receipt_binding_test.go",
+        "platform/launcher/host_receipt_server.go",
+        "platform/launcher/owner_bridge_receipt.go",
+        "platform/launcher/owner_bridge_pending_test.go",
+        "platform/launcher/installed_cli_startup_test.go",
+        "platform/launcher/owner_bridge_receipt_test.go",
+        "platform/cmd/agentmux-runtime/main_child_exit_linux_test.go",
+        "platform/launcher/owner_bridge_refresh_test.go",
+        "platform/launcher/installed_cli_compose_integration_linux_test.go",
+        "platform/cmd/agentmux-runtime/main_frontend_budget_test.go",
+        "platform/launcher/request_diagnostic.go",
+        "platform/launcher/request_diagnostic_test.go",
+        "platform/cmd/agentmux-runtime/main_diagnostic_test.go",
+        "platform/launcher/installed_cli_compose_failures_integration_test.go",
+        "platform/launcher/owner_bridge_probe.go",
+        "platform/launcher/owner_bridge_probe_test.go",
+        "platform/launcher/bootstrap_history.go",
+        "platform/launcher/bootstrap_history_fs.go",
+        "platform/launcher/bootstrap_history_root.go",
+        "platform/launcher/bootstrap_history_stage.go",
+        "platform/launcher/bootstrap_history.schema.json",
+        "platform/launcher/bootstrap_history_test.go",
+        "platform/launcher/bootstrap_history_linux_test.go",
+        "platform/launcher/bootstrap_history_fault_test.go",
+        "platform/launcher/bootstrap_history_close_cause_test.go",
+        "platform/launcher/host_history_policy.go",
+        "platform/launcher/host_history_policy_test.go",
+        "platform/launcher/host_history_policy_linux_test.go",
+        "platform/launcher/owner_bridge_history.go",
+        "platform/launcher/bootstrap_history_owner_integration_test.go",
+        "platform/cmd/agentmux-runtime/main_history.go",
+        "platform/cmd/agentmux-runtime/main_history_test.go",
+        "platform/launcher/owner_bridge_request_permission_test.go",
+        "platform/launcher/owner_bridge_nonce_window_linux_test.go",
+        "platform/launcher/bootstrap_docker_current_qualification_controls_test.go",
+        "platform/launcher/installed_cli_history_controls_test.go"
+      ],
+      "role": "platform-foundation",
+      "baselineGroups": [],
+      "ownerPhase": "P02",
+      "disposition": "extend",
+      "currentBehavior": [
+        "New isolated opt-in P02 source; no legacy entrypoint or business writer is replaced."
+      ],
+      "reusePlan": "Retain legacy sources and assertion history; add only the approved foundation boundary.",
+      "enhancements": [
+        "Explicit release/profile/endpoint and fixed assembly validation before spawn; deterministic no-Jev/no-LLM boot.",
+        "Process-held advisory lock; context/daemon/resource identity, cold/warm/concurrent/crashed-owner and persistent reuse checks with real Compose.",
+        "Bounded doctor/readiness/error/status shape; later services unavailable and zero distinct from unknown."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "PLAT-01-C01",
+          "description": "Explicit release/profile/endpoint and fixed assembly validation before spawn; deterministic no-Jev/no-LLM boot.",
+          "existingTests": [
+            "platform/launcher/lock_unix_test.go"
+          ],
+          "requiredEnvironment": "Actual native Linux/macOS and WSL process/broker/Compose fixtures as applicable; unit tests do not substitute for integration.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "PLAT-01-C02",
+          "description": "Process-held advisory lock; context/daemon/resource identity, cold/warm/concurrent/crashed-owner and persistent reuse checks with real Compose.",
+          "existingTests": [
+            "platform/launcher/lock_unix_test.go"
+          ],
+          "requiredEnvironment": "Actual native Linux/macOS and WSL process/broker/Compose fixtures as applicable; unit tests do not substitute for integration.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "PLAT-01-C03",
+          "description": "Bounded doctor/readiness/error/status shape; later services unavailable and zero distinct from unknown.",
+          "existingTests": [
+            "platform/launcher/lock_unix_test.go"
+          ],
+          "requiredEnvironment": "Actual native Linux/macOS and WSL process/broker/Compose fixtures as applicable; unit tests do not substitute for integration.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "PLAT-01-C04",
+          "description": "Actual installed ensure/status/host with fully authenticated NATS L04; exact invocation and owner/full-scope freshness; malformed/revoked replies; cold/warm/concurrent/owner recovery, frontend-exit survival, ten-second legitimate starting and refresh. Separately validate receipt-only bootstrap-progress: it records admitted request acceptance, leaves current instance state unknown, never replaces NATS L04, and never hides authority, revoked enrollment, malformed replies, completed child or concrete cleanup failure. Verify the real installed candidate within ten seconds from invocation entry.",
+          "existingTests": [
+            "platform/launcher/owner_bridge_test.go",
+            "platform/launcher/owner_bridge_admission_test.go",
+            "platform/launcher/owner_bridge_host_loader_test.go",
+            "platform/launcher/bootstrap_integration_test.go",
+            "platform/cmd/agentmux-runtime/main_test.go",
+            "platform/launcher/bootstrap_operation_test.go",
+            "platform/launcher/startup_pending_test.go",
+            "platform/launcher/owner_bridge_pending_test.go",
+            "platform/launcher/host_receipt_binding_test.go",
+            "platform/launcher/installed_cli_startup_test.go",
+            "platform/launcher/owner_bridge_receipt_test.go",
+            "platform/cmd/agentmux-runtime/main_child_exit_linux_test.go",
+            "platform/launcher/owner_bridge_refresh_test.go",
+            "platform/launcher/installed_cli_compose_integration_linux_test.go",
+            "platform/cmd/agentmux-runtime/main_frontend_budget_test.go",
+            "platform/launcher/request_diagnostic_test.go",
+            "platform/cmd/agentmux-runtime/main_diagnostic_test.go",
+            "platform/launcher/installed_cli_compose_failures_integration_test.go",
+            "platform/launcher/owner_bridge_probe_test.go",
+            "platform/launcher/bootstrap_history_test.go",
+            "platform/launcher/bootstrap_history_linux_test.go",
+            "platform/launcher/bootstrap_history_fault_test.go",
+            "platform/launcher/bootstrap_history_close_cause_test.go",
+            "platform/launcher/host_history_policy_test.go",
+            "platform/launcher/host_history_policy_linux_test.go",
+            "platform/launcher/bootstrap_history_owner_integration_test.go",
+            "platform/cmd/agentmux-runtime/main_history_test.go",
+            "platform/launcher/owner_bridge_request_permission_test.go",
+            "platform/launcher/owner_bridge_nonce_window_linux_test.go",
+            "platform/launcher/bootstrap_docker_current_qualification_controls_test.go",
+            "platform/launcher/installed_cli_history_controls_test.go"
+          ],
+          "requiredEnvironment": "Native Linux, native macOS and approved WSL actual installed CLI with pinned Compose and NATS; component TLS/socket passes are separate. Require Linux amd64 and arm64, native macOS amd64 and arm64, and approved WSL. Darwin cgo-enabled execution and cgo-disabled refusal are distinct checks; cross-compilation alone is insufficient.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P02"
+        },
+        {
+          "id": "PLAT-01-C05",
+          "description": "Actual held-descriptor owner/mode/nlink/no-follow/ancestry plus Darwin private-object/public-ancestor ACL and local ownership-enabled mount admission; bound secret/trust files and refusal without cgo.",
+          "existingTests": [
+            "platform/privatefs/access_darwin_test.go",
+            "platform/privatefs/access_darwin_nocgo_test.go",
+            "platform/privatefs/access_linux_test.go",
+            "platform/launcher/lock_acl_darwin_test.go",
+            "platform/launcher/local_server_trust_test.go"
+          ],
+          "requiredEnvironment": "Linux/WSL and actual native Darwin cgo; native ownership-disabled mount control remains required. Require Linux amd64 and arm64, native macOS amd64 and arm64, and approved WSL. Darwin cgo-enabled execution and cgo-disabled refusal are distinct checks; cross-compilation alone is insufficient.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P02"
+        }
+      ],
+      "migrationChecks": [
+        "Distinct profile/account/process/volume ownership; no business migration or legacy policy changes. Stop only exact-owned new resources; retain new and old persistent state."
+      ],
+      "reviewHistory": [
+        {
+          "date": "2026-10-13T20:38:37.464979+00:00",
+          "reviewer": "Codex",
+          "scope": "Register actual files during implementation",
+          "note": "Implementation remains under review. Current files do not establish that all planned checks pass."
+        },
+        {
+          "date": "2026-10-14T14:55:59.382784+00:00",
+          "reviewer": "Codex",
+          "scope": "Promote reviewed diagnostic history foundation",
+          "note": "Private fixed-schema history grants no readiness or ownership; actual Run and CLI integration remain pending."
+        }
+      ]
+    },
+    {
+      "id": "KERN-01",
+      "name": "Fixed assembly and boot role",
+      "files": [
+        "platform/kernel/assembly/README.md",
+        "platform/kernel/assembly/verify.go",
+        "platform/kernel/assembly/verify_test.go",
+        "platform/cmd/agentmux-kernel/main.go",
+        "platform/kernel/assembly/limits_test.go",
+        "platform/kernel/assembly/open_unix.go",
+        "platform/kernel/assembly/open_unix_test.go",
+        "platform/kernel/assembly/open_unsupported.go",
+        "platform/kernel/assembly/root_test.go",
+        "platform/kernel/boot/integration_test.go",
+        "platform/kernel/boot/process_integration_test.go",
+        "platform/kernel/boot/run.go"
+      ],
+      "role": "platform-foundation",
+      "baselineGroups": [],
+      "ownerPhase": "P02",
+      "disposition": "extend",
+      "currentBehavior": [
+        "New isolated opt-in P02 source; no legacy entrypoint or business writer is replaced."
+      ],
+      "reusePlan": "Retain legacy sources and assertion history; add only the approved foundation boundary.",
+      "enhancements": [
+        "Four distinct approved roles, manifest/release/binary/API checks and contained entrypoints; substitutions rejected before spawn.",
+        "Boot dependency readiness via NATS; no hosted prerequisite or domain mutation; exact partial failure/recovery status."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "KERN-01-C01",
+          "description": "Four distinct approved roles, manifest/release/binary/API checks and contained entrypoints; substitutions rejected before spawn.",
+          "existingTests": [
+            "platform/kernel/assembly/verify_test.go"
+          ],
+          "requiredEnvironment": "Actual native Linux/macOS and WSL process/broker/Compose fixtures as applicable; unit tests do not substitute for integration.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "KERN-01-C02",
+          "description": "Boot dependency readiness via NATS; no hosted prerequisite or domain mutation; exact partial failure/recovery status.",
+          "existingTests": [
+            "platform/kernel/assembly/verify_test.go"
+          ],
+          "requiredEnvironment": "Actual native Linux/macOS and WSL process/broker/Compose fixtures as applicable; unit tests do not substitute for integration.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        }
+      ],
+      "migrationChecks": [
+        "Distinct profile/account/process/volume ownership; no business migration or legacy policy changes. Stop only exact-owned new resources; retain new and old persistent state."
+      ],
+      "reviewHistory": [
+        {
+          "date": "2026-10-13T20:38:37.464979+00:00",
+          "reviewer": "Codex",
+          "scope": "Register actual files during implementation",
+          "note": "Implementation remains under review. Current files do not establish that all planned checks pass."
+        }
+      ]
+    },
+    {
+      "id": "KERN-03",
+      "name": "Protected internal communication role",
+      "files": [
+        "platform/kernel/communication/README.md",
+        "platform/kernel/communication/config.go",
+        "platform/kernel/communication/config_test.go",
+        "platform/kernel/communication/run.go",
+        "platform/kernel/protocol/README.md",
+        "platform/kernel/protocol/aliases_test.go",
+        "platform/kernel/protocol/codec.go",
+        "platform/kernel/protocol/codec_test.go",
+        "platform/kernel/protocol/credentials.go",
+        "platform/kernel/protocol/credentials_unix_test.go",
+        "platform/kernel/protocol/private_unix.go",
+        "platform/kernel/protocol/private_unsupported.go",
+        "platform/kernel/protocol/transport.go",
+        "platform/kernel/protocol/server_trust.go",
+        "platform/kernel/protocol/server_trust_darwin.go",
+        "platform/kernel/protocol/server_trust_linux.go",
+        "platform/kernel/protocol/server_trust_test.go",
+        "platform/kernel/protocol/server_trust_unix.go",
+        "platform/kernel/protocol/server_trust_unsupported.go",
+        "platform/kernel/protocol/transport_cleanup_test.go",
+        "platform/localtls/client.go",
+        "platform/localtls/client_test.go"
+      ],
+      "role": "platform-foundation",
+      "baselineGroups": [],
+      "ownerPhase": "P02",
+      "disposition": "extend",
+      "currentBehavior": [
+        "New isolated P02 source; actual integrated protected role processes and native boot remain under implementation."
+      ],
+      "reusePlan": "Retain legacy application/bridge/config identities; add only approved protected account or infrastructure execution boundary.",
+      "enhancements": [
+        "Real account/credentials/exports prove approved reads and denial of internal subscriptions/publications, forged status, wildcard/request commands and system/JetStream administration."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "KERN-03-C01",
+          "description": "Real account/credentials/exports prove approved reads and denial of internal subscriptions/publications, forged status, wildcard/request commands and system/JetStream administration.",
+          "existingTests": [
+            "platform/kernel/communication/config_test.go"
+          ],
+          "requiredEnvironment": "Real supported native Linux/macOS and WSL process/NATS fixtures; initial isolated nativeWSL evidence does not prove full platform boot.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "KERN-03-C02",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T03",
+          "description": "Validate closed bounded protected-role wire objects and exact field casing; reject duplicate/unknown/UTF8/context/release/role/revision/freshness errors. Preserve broker-bound role identity, private canonical per-role credentials, owned bounded NATS transport and fail-closed faults. No ordinary plugin ABI or general auth service is qualified.",
+          "existingTests": [
+            "platform/kernel/communication/config_test.go",
+            "platform/kernel/protocol/aliases_test.go",
+            "platform/kernel/protocol/codec_test.go",
+            "platform/kernel/protocol/credentials_unix_test.go"
+          ],
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "requiredEnvironment": "Current candidate-bound native Linux/macOS/WSL environment and real broker/artifact evidence as applicable; source/unit checks do not imply product boot."
+        },
+        {
+          "id": "KERN-03-C03",
+          "description": "All credential-bearing installed local clients use explicit enrolled roots/DNS/leaf pin and TLS before CONNECT, original loopback only, no discovery/downgrade/system roots; copied complete scope and bounded reconnect/retained cleanup. Actual optional HOST matrix denies protected/internal/SYS/JS/business/other-hub/inverted publish and subscribe and account crossover.",
+          "existingTests": [
+            "platform/localtls/client_test.go",
+            "platform/kernel/protocol/server_trust_test.go",
+            "platform/kernel/protocol/transport_cleanup_test.go",
+            "platform/launcher/kernel_status_tls_test.go",
+            "platform/launcher/owner_bridge_test.go"
+          ],
+          "requiredEnvironment": "Actual TLS peers/NATS plus final installed candidate; mocked inspection and plaintext historical APIs cannot qualify installed admission. Require Linux amd64 and arm64, native macOS amd64 and arm64, and approved WSL. Component-only fixture results are separate from actual supported-environment qualification.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P02"
+        }
+      ],
+      "migrationChecks": [
+        "No legacy business migration/account changes. Exact owned process/resources only; preserve data and report partial or unsupported states."
+      ],
+      "reviewHistory": [
+        {
+          "date": "2026-10-13T20:59:21.490926+00:00",
+          "reviewer": "Codex",
+          "scope": "Actual source registration during active P02",
+          "note": "No future files or test pass claims; separate independent review/execution evidence required."
+        }
+      ],
+      "qualificationRevisions": [
+        {
+          "date": "2026-10-14T06:47:22.657439+00:00",
+          "reviewer": "Codex",
+          "checkId": "KERN-03-C03",
+          "previousRequiredEnvironment": "Actual TLS peers/NATS plus final installed candidate; mocked inspection and plaintext historical APIs cannot qualify installed admission.",
+          "reason": "Make the existing supported architecture matrix explicit after independent metadata review; all checks remain not-run."
+        }
+      ]
+    },
+    {
+      "id": "PLAT-02",
+      "name": "Narrow infrastructure supervision",
+      "files": [
+        "platform/runtime/README.md",
+        "platform/runtime/snapshot_darwin_test.go",
+        "platform/runtime/snapshot_linux.go",
+        "platform/runtime/snapshot_unsupported.go",
+        "platform/runtime/supervisor.go",
+        "platform/runtime/supervisor_linux_test.go",
+        "platform/kernel/boot/parent_lifetime_test.go",
+        "platform/runtime/parent_linux_test.go",
+        "platform/runtime/parent_unix.go",
+        "platform/runtime/stop_role.go",
+        "platform/runtime/stop_role_linux_test.go",
+        "platform/runtime/testdata/dynamic/main.go",
+        "platform/runtime/testdata/role/main.go",
+        "platform/runtime/acl_darwin.go",
+        "platform/runtime/installed_host.go",
+        "platform/runtime/installed_host_darwin.go",
+        "platform/runtime/installed_host_darwin_install_test.go",
+        "platform/runtime/installed_host_darwin_nocgo.go",
+        "platform/runtime/installed_host_linux.go",
+        "platform/runtime/installed_host_linux_test.go",
+        "platform/runtime/installed_host_test.go",
+        "platform/runtime/installed_host_unsupported.go",
+        "platform/runtime/macho_entry.go",
+        "platform/runtime/macho_entry_test.go",
+        "platform/runtime/snapshot_darwin.go",
+        "platform/runtime/snapshot_darwin_install_test.go",
+        "platform/runtime/snapshot_darwin_policy_test.go",
+        "platform/runtime/start_validation_linux_test.go",
+        "platform/runtime/bootstrap_receipt.go",
+        "platform/runtime/bootstrap_receipt_test.go",
+        "platform/runtime/bootstrap_receipt_linux_test.go",
+        "platform/runtime/startup_cleanup_cause.go",
+        "platform/runtime/startup_cleanup_cause_test.go",
+        "platform/runtime/testdata/darwin_identity_probe/main_darwin.go",
+        "platform/runtime/testdata/darwin_identity_probe/native_darwin.go",
+        "platform/runtime/testdata/darwin_identity_probe/README.md",
+        "platform/runtime/bootstrap_receipt_prestart_cleanup_test.go"
+      ],
+      "role": "platform-foundation",
+      "baselineGroups": [],
+      "ownerPhase": "P02",
+      "disposition": "extend",
+      "currentBehavior": [
+        "New isolated P02 source; actual integrated protected role processes and native boot remain under implementation."
+      ],
+      "reusePlan": "Retain legacy application/bridge/config identities; add only approved protected account or infrastructure execution boundary.",
+      "enhancements": [
+        "Exact owned process handles, bounded startup/teardown/broker/member recovery; protect unrelated processes/listeners/homes and use NATS for plugin traffic."
+      ],
+      "replacementReason": null,
+      "behaviorChecks": [
+        {
+          "id": "PLAT-02-C01",
+          "description": "Exact owned process handles, bounded startup/teardown/broker/member recovery; protect unrelated processes/listeners/homes and use NATS for plugin traffic.",
+          "existingTests": [
+            "platform/runtime/snapshot_darwin_test.go",
+            "platform/runtime/supervisor_linux_test.go"
+          ],
+          "requiredEnvironment": "Real supported native Linux/macOS and WSL process/NATS fixtures; initial isolated nativeWSL evidence does not prove full platform boot.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run"
+        },
+        {
+          "id": "PLAT-02-C02",
+          "description": "Native protected installed images and observed Apple library dependencies/ACL/inode/digest boundaries; immediate spawn revalidation; exact child Stop/Wait and frontend exit, cancellation and replacement refusal without PID adoption. Receipt controls must bind full scope, enrollment, actual cold invocation and held runtime digest; require one closed frame of at most 4096 bytes including header, EOF, inherited descriptor/CLOEXEC checks, bounded canceled I/O joins and exact child retention after post-spawn cleanup failure. A Linux frontend fixture cannot qualify Darwin execution.",
+          "existingTests": [
+            "platform/runtime/installed_host_linux_test.go",
+            "platform/runtime/installed_host_darwin_install_test.go",
+            "platform/runtime/snapshot_darwin_install_test.go",
+            "platform/runtime/snapshot_darwin_policy_test.go",
+            "platform/runtime/start_validation_linux_test.go",
+            "platform/runtime/bootstrap_receipt_test.go",
+            "platform/runtime/bootstrap_receipt_linux_test.go",
+            "platform/runtime/startup_cleanup_cause_test.go",
+            "platform/runtime/bootstrap_receipt_prestart_cleanup_test.go"
+          ],
+          "requiredEnvironment": "Actual Linux/WSL sealed processes and native macOS protected installation; crossbuilds and research-only fixtures are not native product proof. Require Linux amd64 and arm64, native macOS amd64 and arm64, and approved WSL. Darwin cgo-enabled execution and cgo-disabled refusal are distinct checks; cross-compilation alone is insufficient.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P02"
+        }
+      ],
+      "migrationChecks": [
+        "No legacy business migration/account changes. Exact owned process/resources only; preserve data and report partial or unsupported states."
+      ],
+      "reviewHistory": [
+        {
+          "date": "2026-10-13T20:59:21.490926+00:00",
+          "reviewer": "Codex",
+          "scope": "Actual source registration during active P02",
+          "note": "No future files or test pass claims; separate independent review/execution evidence required."
+        },
+        {
+          "date": "2026-10-14T11:22:24.910640+00:00",
+          "reviewer": "Codex",
+          "scope": "Test-only Darwin identity probe source registration",
+          "note": "Source declarations and hashes verified; this helper is not product runtime and does not qualify PLAT-02-C02. No compiler, native ABI, process controls or installed CLI execution. Remaining cleanup error handling is under further source review."
+        }
+      ]
+    },
+    {
+      "id": "KERN-02",
+      "name": "Protected lifecycle role",
+      "ownerPhase": "P02",
+      "status": "implementation-under-review-not-qualified",
+      "plannedPaths": [
+        "platform/kernel/lifecycle/**"
+      ],
+      "primaryTask": "P02-T02",
+      "collaboratingTasks": [
+        "P02-T04"
+      ],
+      "behaviorChecks": [
+        {
+          "id": "KERN-02-C01",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T02",
+          "assertion": "Protected lifecycle via NATS, bounded ordered exact-owned start/stop and failed-member recovery; no external membership mutation.",
+          "status": "not-run",
+          "description": "Protected lifecycle via NATS, bounded ordered exact-owned start/stop and failed-member recovery; no external membership mutation.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "requiredEnvironment": "Actual native Linux/macOS and WSL scoped NATS/process/Compose fixtures as required; no mock or cross-build substitute.",
+          "existingTests": [
+            "platform/kernel/boot/integration_test.go",
+            "platform/kernel/boot/process_integration_test.go",
+            "platform/runtime/stop_role_linux_test.go"
+          ]
+        }
+      ],
+      "actualFiles": [
+        "platform/kernel/lifecycle/run.go"
+      ],
+      "registrationStatus": "append-proposed-component-with-actual-files-only",
+      "historicalPlannedPathsRetained": [
+        "platform/kernel/lifecycle/**"
+      ],
+      "role": "runtime",
+      "baselineGroups": [],
+      "disposition": "extend",
+      "replacementReason": null,
+      "files": [
+        "platform/kernel/lifecycle/run.go"
+      ],
+      "migrationChecks": [
+        "Retain legacy source, caller interfaces, credentials and data; no legacy business store conversion in this slice.",
+        "Keep the new namespace and profile ownership explicit; never let a fixture or partial implementation qualify a later owner."
+      ],
+      "currentBehavior": [
+        "The real lifecycle actor publishes its own readiness and four observed peers through NATS.",
+        "Its current command handler supports announce only; process controls and complete recovery qualification remain separate."
+      ],
+      "reusePlan": "Retain the fixed role and shared stateless protocol; integrate only approved protected lifecycle controls without external membership writes.",
+      "enhancements": [
+        "Complete the originally planned bounded lifecycle and failed-member recovery contract, with actual owned processes and denial tests."
+      ],
+      "limitations": [
+        "Current observation slice is not full KERN-02-C01 acceptance."
+      ],
+      "reviewHistory": [
+        {
+          "date": "2026-10-13T23:51:33.417100+00:00",
+          "reviewer": "Codex",
+          "scope": "Register previously reserved component at actual P02 source paths",
+          "note": "Actual source ownership only; original assertions and planned paths retained. Full native/Compose/remote qualification remains open."
+        }
+      ]
+    },
+    {
+      "id": "KERN-04",
+      "name": "Protected exported-status role",
+      "ownerPhase": "P02",
+      "status": "implementation-under-review-not-qualified",
+      "plannedPaths": [
+        "platform/kernel/status/**"
+      ],
+      "primaryTask": "P02-T04",
+      "collaboratingTasks": [
+        "P02-T02",
+        "P02-T03"
+      ],
+      "behaviorChecks": [
+        {
+          "id": "KERN-04-C01",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T04",
+          "assertion": "Consistent late-subscriber snapshot/revisioned update, gap/reconnect/stale/slow-consumer tests using accepted L04 reply; kernel exports information only.",
+          "status": "not-run",
+          "description": "Consistent late-subscriber snapshot/revisioned update, gap/reconnect/stale/slow-consumer tests using accepted L04 reply; kernel exports information only.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "requiredEnvironment": "Actual native Linux/macOS and WSL scoped NATS/process/Compose fixtures as required; no mock or cross-build substitute.",
+          "existingTests": [
+            "platform/kernel/boot/integration_test.go",
+            "platform/kernel/boot/process_integration_test.go",
+            "platform/kernel/protocol/codec_test.go",
+            "platform/launcher/kernel_status_test.go",
+            "platform/launcher/startup_status_test.go",
+            "platform/launcher/startup_session_test.go"
+          ]
+        }
+      ],
+      "actualFiles": [
+        "platform/kernel/status/run.go"
+      ],
+      "registrationStatus": "append-proposed-component-with-actual-files-only",
+      "historicalPlannedPathsRetained": [
+        "platform/kernel/status/**"
+      ],
+      "role": "runtime",
+      "baselineGroups": [],
+      "disposition": "extend",
+      "replacementReason": null,
+      "files": [
+        "platform/kernel/status/run.go"
+      ],
+      "migrationChecks": [
+        "Retain legacy source, caller interfaces, credentials and data; no legacy business store conversion in this slice.",
+        "Keep the new namespace and profile ownership explicit; never let a fixture or partial implementation qualify a later owner."
+      ],
+      "currentBehavior": [
+        "The real protected status actor publishes full kernel-info snapshots and updates with scope, incarnation, revision and expiry.",
+        "The frame reports four peer observations and does not invent business work or connected hubs."
+      ],
+      "reusePlan": "Keep protected kernel information separate from the surrounding owner-scoped L04 mapper and enforce the original permissions/freshness requirements.",
+      "enhancements": [
+        "Complete late-subscriber, gap, reconnect, stale and slow-consumer qualification and the accepted outer status reply integration."
+      ],
+      "limitations": [
+        "Kernel-info is not itself L04 or application readiness."
+      ],
+      "reviewHistory": [
+        {
+          "date": "2026-10-13T23:51:33.417100+00:00",
+          "reviewer": "Codex",
+          "scope": "Register previously reserved component at actual P02 source paths",
+          "note": "Actual source ownership only; original assertions and planned paths retained. Full native/Compose/remote qualification remains open."
+        }
+      ]
+    },
+    {
+      "id": "PLAT-03",
+      "name": "Owned Compose/NATS profiles",
+      "ownerPhase": "P02",
+      "status": "implementation-under-review-not-qualified",
+      "plannedPaths": [
+        "deploy/compose/**"
+      ],
+      "primaryTask": "P02-T05",
+      "collaboratingTasks": [
+        "P02-T03",
+        "P02-T07"
+      ],
+      "behaviorChecks": [
+        {
+          "id": "PLAT-03-C01",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T05",
+          "assertion": "Pinned tested images/Compose, R1 storage/domain/limits/account/health and declared team connection profile; idempotent provision and mismatch/interruption failure checks.",
+          "status": "not-run",
+          "description": "Pinned tested images/Compose, R1 storage/domain/limits/account/health and declared team connection profile; idempotent provision and mismatch/interruption failure checks.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "requiredEnvironment": "Actual native Linux/macOS and WSL scoped NATS/process/Compose fixtures as required; no mock or cross-build substitute.",
+          "existingTests": [
+            "platform/deployment/compose_test.go",
+            "platform/deployment/observe_test.go",
+            "platform/deployment/probe_test.go",
+            "platform/deployment/profile_test.go",
+            "platform/deployment/sync_policy_test.go"
+          ]
+        },
+        {
+          "id": "PLAT-03-C02",
+          "qualificationPhase": "P02",
+          "ownerTask": "P02-T07",
+          "assertion": "Actual labels/authenticated instance/project/volume identity and durable probes across cold/warm/restart; reject incompatible release/context/endpoint, no deletion/migration.",
+          "status": "not-run",
+          "description": "Actual labels/authenticated instance/project/volume identity and durable probes across cold/warm/restart; reject incompatible release/context/endpoint, no deletion/migration.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "requiredEnvironment": "Actual native Linux/macOS and WSL scoped NATS/process/Compose fixtures as required; no mock or cross-build substitute.",
+          "existingTests": [
+            "platform/launcher/bootstrap_docker_integration_test.go",
+            "platform/launcher/bootstrap_network_cleanup_integration_test.go"
+          ]
+        },
+        {
+          "id": "PLAT-03-C03",
+          "description": "Explicit per-profile TLS enrollment/material copies/redaction, complete canonical CA/leaf admission, secure factory and Compose cert/key binding, health/read-only transport authentication before CONNECT and retained concrete cleanup on every exit; separately qualify declared team TLS/JWT/basic profiles.",
+          "existingTests": [
+            "platform/deployment/local_tls_material_test.go",
+            "platform/deployment/local_tls_probe_test.go",
+            "platform/deployment/local_tls_adversary_test.go",
+            "platform/deployment/probe_cleanup_test.go",
+            "platform/deployment/owner_bridge_config_test.go",
+            "platform/deployment/secure_compose_test.go",
+            "platform/deployment/team_connection_test.go",
+            "platform/deployment/team_credentials_test.go",
+            "platform/deployment/team_credentials_privatefs_linux_test.go",
+            "platform/deployment/team_credentials_privatefs_darwin_test.go",
+            "platform/deployment/team_credentials_privatefs_darwin_nocgo_test.go",
+            "platform/deployment/raw_transport_cleanup_test.go",
+            "platform/launcher/bootstrap_network_cleanup_integration_test.go"
+          ],
+          "requiredEnvironment": "Actual NATS TLS-first and private file fixtures; supported-platform Compose/native filesystem proof separately required. Require Linux amd64 and arm64, native macOS amd64 and arm64, and approved WSL. Component-only fixture results are separate from actual supported-environment qualification.",
+          "baselineStatus": "not-run",
+          "targetStatus": "not-run",
+          "qualificationPhase": "P02"
+        }
+      ],
+      "actualFiles": [
+        "platform/deployment/README.md",
+        "platform/deployment/compose.go",
+        "platform/deployment/compose_test.go",
+        "platform/deployment/observe.go",
+        "platform/deployment/observe_test.go",
+        "platform/deployment/probe.go",
+        "platform/deployment/probe_test.go",
+        "platform/deployment/profile.go",
+        "platform/deployment/profile_test.go",
+        "platform/launcher/bootstrap_docker_integration_test.go",
+        "platform/launcher/bootstrap_network_cleanup_integration_test.go"
+      ],
+      "registrationStatus": "append-proposed-component-with-actual-files-only",
+      "historicalPlannedPathsRetained": [
+        "deploy/compose/**"
+      ],
+      "role": "runtime",
+      "baselineGroups": [],
+      "disposition": "extend",
+      "replacementReason": null,
+      "files": [
+        "platform/deployment/README.md",
+        "platform/deployment/compose.go",
+        "platform/deployment/compose_test.go",
+        "platform/deployment/observe.go",
+        "platform/deployment/observe_test.go",
+        "platform/deployment/probe.go",
+        "platform/deployment/probe_test.go",
+        "platform/deployment/profile.go",
+        "platform/deployment/profile_test.go",
+        "platform/launcher/bootstrap_docker_integration_test.go",
+        "platform/deployment/sync_policy_test.go",
+        "platform/deployment/local_tls_adversary_test.go",
+        "platform/deployment/local_tls_material.go",
+        "platform/deployment/local_tls_material_test.go",
+        "platform/deployment/local_tls_probe_test.go",
+        "platform/deployment/local_tls_probe_transport.go",
+        "platform/deployment/owner_bridge_config.go",
+        "platform/deployment/owner_bridge_config_test.go",
+        "platform/deployment/probe_cancellation_test.go",
+        "platform/deployment/probe_cleanup.go",
+        "platform/deployment/probe_cleanup_test.go",
+        "platform/deployment/secure_compose.go",
+        "platform/deployment/secure_compose_test.go",
+        "platform/deployment/secure_local_config.go",
+        "platform/deployment/secure_local_config_test.go",
+        "platform/deployment/team_basic_test.go",
+        "platform/deployment/team_connection.go",
+        "platform/deployment/team_connection_test.go",
+        "platform/deployment/team_credentials.go",
+        "platform/deployment/team_credentials_test.go",
+        "platform/deployment/team_credentials_unix.go",
+        "platform/deployment/team_credentials_unsupported.go",
+        "platform/deployment/team_jwt_test.go",
+        "platform/deployment/team_tls_fixture_test.go",
+        "platform/launcher/bootstrap_docker_selection_test.go",
+        "platform/launcher/bootstrap_docker_selection_controls_test.go",
+        "platform/launcher/bootstrap_docker_native_linux_test.go",
+        "platform/launcher/bootstrap_docker_native_darwin_test.go",
+        "platform/deployment/team_credentials_privatefs_linux_test.go",
+        "platform/deployment/team_credentials_privatefs_darwin_test.go",
+        "platform/deployment/team_credentials_privatefs_darwin_nocgo_test.go",
+        "platform/deployment/raw_transport_cleanup.go",
+        "platform/deployment/raw_transport_cleanup_test.go",
+        "platform/launcher/bootstrap_network_cleanup_integration_test.go",
+        "platform/launcher/docker_refusal.go"
+      ],
+      "migrationChecks": [
+        "Retain legacy source, caller interfaces, credentials and data; no legacy business store conversion in this slice.",
+        "Keep the new namespace and profile ownership explicit; never let a fixture or partial implementation qualify a later owner."
+      ],
+      "currentBehavior": [
+        "The actual deployment package builds bounded local file-backed NATS/health configuration and private pinned Compose data.",
+        "Real probes and read-only observations distinguish stored infrastructure evidence from protected process and business readiness."
+      ],
+      "reusePlan": "Keep the existing Kubernetes/federation deployment scripts unchanged; add only explicit selected local profile provisioning and owned storage checks.",
+      "enhancements": [
+        "Finish declared team profile, full native Compose matrix, mismatch/restart behavior and current always-sync source qualification."
+      ],
+      "limitations": [
+        "Current local health storage is not business-state/R3/completion reserve proof; source remains under current sync-policy review."
+      ],
+      "reviewHistory": [
+        {
+          "date": "2026-10-13T23:51:33.417100+00:00",
+          "reviewer": "Codex",
+          "scope": "Register previously reserved component at actual P02 source paths",
+          "note": "Actual source ownership only; original assertions and planned paths retained. Full native/Compose/remote qualification remains open."
+        }
+      ],
+      "qualificationRevisions": [
+        {
+          "date": "2026-10-14T06:47:22.657439+00:00",
+          "reviewer": "Codex",
+          "checkId": "PLAT-03-C03",
+          "previousRequiredEnvironment": "Actual NATS TLS-first and private file fixtures; supported-platform Compose/native filesystem proof separately required.",
+          "reason": "Make the existing supported architecture matrix explicit after independent metadata review; all checks remain not-run."
+        }
+      ]
+    }
+  ],
+  "reviewHistory": [
+    {
+      "date": "2026-10-09",
+      "reviewer": "Codex",
+      "scope": "P01 recovery, signed leaf exchange and portable CI fixture ownership",
+      "addedFiles": [
+        "contracts/v1/recovery.md",
+        "tests/contracts/ci.py",
+        "tests/contracts/test_recovery.py",
+        "tests/leaf/signed_run.py"
+      ],
+      "note": "Existing ownership, baseline behavior and qualification requirements are unchanged; new fixtures do not establish phase acceptance."
+    },
+    {
+      "date": "2026-10-09",
+      "reviewer": "Codex",
+      "scope": "P01 controlled execution and storage recovery qualification",
+      "addedFiles": [
+        "tests/contracts/fake-execution.md",
+        "tests/contracts/fake_execution.py",
+        "tests/contracts/test_fake_execution.py"
+      ],
+      "note": "HUB-26 retains fixture ownership. Existing baseline behavior checks and phase qualification requirements are unchanged; storage fixture extensions remain evidence rather than production cutover."
+    },
+    {
+      "date": "2026-10-09",
+      "reviewer": "Codex",
+      "scope": "Add source ownership for bounded P01 platform/callback fixtures; preserve original behavioral obligations",
+      "addedFiles": [
+        "agentmux_windows.py",
+        "hub/tests/test_windows_callbacks.py",
+        "tests/platform/README.md",
+        "tests/platform/fixtures/wsl-inventory.json",
+        "tests/platform/inventory.py",
+        "tests/platform/test_inventory.py"
+      ]
+    },
+    {
+      "date": "2026-10-13T18:02:02.393069+00:00",
+      "reviewer": "Codex",
+      "scope": "Separate P01 environmental characterization from P06 actual supported-host qualification under WSL-CLIENT-01. Preserve all original scenario assertions, partial results and failed evidence; this is a qualification ownership correction, not a waiver or phase acceptance.",
+      "componentId": "HUB-24",
+      "checkId": "HUB-24-C02",
+      "previousCheck": {
+        "id": "HUB-24-C02",
+        "description": "Compare all four orchestration scenarios and E1–E6 against baseline and target; add explicit acceptance checks and keep failed/skipped outcomes.",
+        "existingTests": [
+          "hub/demo/orchestrate.py"
+        ],
+        "requiredEnvironment": "Pinned Python and SQLite with FTS5 on native macOS/Linux and Linux filesystems in WSL; isolated temporary homes. tmux, isolated repos and approved real provider accounts/budget.",
+        "baselineStatus": "not-run",
+        "targetStatus": "not-run"
+      },
+      "qualificationPhase": "P06",
+      "qualificationTask": "P06-T03",
+      "assertionsUnchanged": true
+    },
+    {
+      "date": "2026-10-13T20:34:17.124060+00:00",
+      "reviewer": "Codex",
+      "note": "Initial additive Go test ownership; remaining approved components enter when created."
+    },
+    {
+      "date": "2026-10-13T23:51:33.417100+00:00",
+      "reviewer": "Codex",
+      "scope": "P02 actual component/source ownership",
+      "evidence": "delivery/evidence/P02/component-registration-review/proposal.json",
+      "note": "Added actual files and reserved components/checks. Existing baseline records and behavior assertions retained. Qualification is not implied."
+    }
+  ]
+}

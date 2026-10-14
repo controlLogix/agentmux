@@ -869,6 +869,7 @@ else:
                     mock.patch.object(platform, 'system', return_value=host), \
                     mock.patch.object(platform, 'machine', return_value='x86_64'), \
                     mock.patch.object(platform, 'release', return_value='synthetic-native'), \
+                    mock.patch.object(platform, 'platform', return_value='synthetic-native-runner-control'), \
                     mock.patch.object(os, 'geteuid', return_value=uid, create=True), \
                     mock.patch(__name__ + '.toolchain', side_effect=prepared) as go_setup, \
                     mock.patch(__name__ + '.broker_downloader', return_value=downloader) as broker_setup, \
@@ -880,6 +881,19 @@ else:
                 code = main(argv)
                 record = json.loads((evidence / 'result.json').read_text(encoding='utf-8'))
                 return code, record, calls, go_setup.call_count, broker_setup.call_count
+
+    def test_synthetic_darwin_metadata_never_uses_process_fake(self):
+        # Exercise Darwin's real stdlib metadata branch while the collector's
+        # owned-process boundary is mocked. This is a fixture, not native proof.
+        uname = platform.uname_result('Darwin', 'synthetic', '25.0', 'synthetic', 'arm64')
+        with mock.patch.object(platform, 'uname', return_value=uname), \
+                mock.patch.dict(platform._platform_cache, {}, clear=True), \
+                mock.patch.object(platform, '_syscmd_file', wraps=platform._syscmd_file) as metadata_query:
+            code, record, _, _, _ = self.exercise(host='Darwin')
+        self.assertEqual(code, 0)
+        self.assertEqual(record['host'], 'synthetic-native-runner-control')
+        self.assertFalse(record['nativeProtectedBootQualified'])
+        metadata_query.assert_not_called()
 
     def test_install_requires_native_host_authorization_and_nonroot_before_effects(self):
         for controls in ({'host': 'Linux'}, {'host': 'Darwin', 'authorized': False}, {'host': 'Darwin', 'uid': 0}):

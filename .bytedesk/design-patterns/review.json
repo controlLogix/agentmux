@@ -1,6 +1,6 @@
 {
   "reviewer": "Codex; corrected P01 native evidence and complete preservation review",
-  "sourceDigest": "e93a8ae3204b04ca2c1c2f68b8fca0eafef5c04ecbbf9837e4dbe7fe5d190e58",
+  "sourceDigest": "b87f52df5c33dafe86fc353d5d0af208f4248261e22fc1e8e9722db09101de85",
   "incrementalReviews": [
     {
       "date": "2026-10-13",
@@ -929,6 +929,28 @@
         "docs/planning/2026-10-09/delivery/evidence/P02/feature-checkpoint-source-review/reviewed-source-map.json"
       ],
       "rationale": "Reviewed all current changed production/tooling/contracts/workflow/module source against accepted2740 baseline through115 exact-pinned semantic rows/34 raw records;130 component test/fixture and35 document/metadata entries retain separate scope and root review. Collector cleanup finding resolved with durable controls. Registry, diagrams, remediation and source/tracking histories retained. Raw evidence has scoped -text attributes; actual source is LF. Cache-only observers/midboot drafts and runtime/native gaps remain unqualified. This attests current source freshness for a feature checkpoint, not P02 acceptance or merge/release."
+    },
+    {
+      "date": "2026-10-14T20:46:05.489228+00:00",
+      "scope": "P02 native CI fixture and Darwin flag corrections",
+      "reviewer": "Codex",
+      "sourceDigestRefreshed": false,
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/retained-p01-tracker-fixture-repair/root-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-targeted-repairs/root-review.json"
+      ],
+      "rationale": "Reviewed the actual two-line tracker fixture reset, synthetic collector metadata isolation and durable regression, and Darwin mount flag identifier correction against Apple header. Production tracker dependencies, collector host admission, filesystem ownership refusal, and registered pattern relationships are unchanged. Current-worktree tracker tests pass; worker collector and C predicate controls have explicit synthetic limits. Native Mac and ARM CI qualification remain open. Preserve the previous global digest until the next stable source slice is fully reviewed; this is not phase acceptance."
+    },
+    {
+      "date": "2026-10-14T20:51:02.339949+00:00",
+      "scope": "Reviewed targeted P02 CI repair checkpoint",
+      "reviewer": "Codex with independent source review",
+      "sourceDigestRefreshed": true,
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/native-ci-targeted-repairs/independent-review.json",
+        "docs/planning/2026-10-09/delivery/evidence/P02/retained-p01-tracker-fixture-repair/root-review.json"
+      ],
+      "rationale": "All changes since 93b0278 are the three reviewed source/test corrections, corresponding source-index history, tracker history and raw reviewed CI evidence. No registered pattern relationship changes. Prior raw evidence and review history are preserved. Exact raw staged bytes were checked. Native qualification and P02 acceptance remain open."
     }
   ],
   "rules": {
@@ -1339,14 +1361,14 @@
     }
   ],
   "finalVerification": {
-    "date": "2026-10-14T20:20:46.891671+00:00",
+    "date": "2026-10-14T20:51:02.339972+00:00",
     "command": "node .bytedesk/design-patterns/check.mjs check --root .",
     "result": {
       "baselineVersion": "1.1.0",
       "ok": true,
       "errors": []
     },
-    "scope": "Current feature checkpoint source freshness/pattern attestation; no P02 runtime acceptance."
+    "scope": "Targeted P02 CI repair checkpoint source freshness; no runtime or phase acceptance."
   },
   "finalVerificationHistory": [
     {
@@ -1358,6 +1380,16 @@
         "errors": [],
         "assurance": "Validates review attestations, source freshness and remediation; does not prove semantic correctness or execute build/tests."
       }
+    },
+    {
+      "date": "2026-10-14T20:20:46.891671+00:00",
+      "command": "node .bytedesk/design-patterns/check.mjs check --root .",
+      "result": {
+        "baselineVersion": "1.1.0",
+        "ok": true,
+        "errors": []
+      },
+      "scope": "Current feature checkpoint source freshness/pattern attestation; no P02 runtime acceptance."
     }
   ]
 }

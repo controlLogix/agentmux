@@ -13,7 +13,7 @@ package privatefs
 static int agentmux_private_acl_safe(int fd, int private_object) {
     struct statfs mount;
     if (fstatfs(fd, &mount) != 0 || (mount.f_flags & MNT_LOCAL) == 0 ||
-        (mount.f_flags & MNT_IGNORE_OWNERS) != 0) return 0;
+        (mount.f_flags & MNT_IGNORE_OWNERSHIP) != 0) return 0;
     acl_t acl = acl_get_fd_np(fd, ACL_TYPE_EXTENDED);
     if (acl == NULL) return 0;
     int safe = 0;

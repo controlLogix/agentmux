@@ -1,0 +1,120 @@
+{
+  "scope": "Cache-only CI admission and Darwin mount flag identifier repairs",
+  "sourceSHA256": {
+    "native_go-before.py": "743f28e7d17e9f95448ac5375b3a5864efe00bfad09c2eda099f3434d5632682",
+    "native_go-after.py": "833d56b88053718f0d9baca802d9150e28f4681f05741a922e591bec04a6a50e",
+    "metadata-control-method.py.txt": "1e79ee95615aeaf61d54c0e9c91b4c1b7fb85a410293892436c7baf65f90dbb6",
+    "run-metadata-controls.py": "2a773873fe4324021317c99ef27d4e21d91ac9db2fdb1f9bcfad4bd2c2d5c10d",
+    "access_darwin-before.go": "09eb387cf9bb75bbf8afbbed0e3c72c6af44526ba68cabdd6b9c7a643372de82",
+    "access_darwin-after.go": "b220031c600e02b1217706ebfc4268361fc33e56f29ac7753d37f9a5cc9b5646",
+    "mount-flags-before.c": "5dc2523515bb148c184fd9cae03b2b3c21b705a6400ba56812784d7ca1b76aa9",
+    "mount-flags-after.c": "91099fe8c89af5e8225d5b34ac80c079f1525b2f9c91e6070f1690585a3a9dbb",
+    "producer-controls.py": "6e2cb83ae6b81ef1e1b0747eae86075187de891e96d477217441e4f1f1c2af21"
+  },
+  "sourceStable": true,
+  "runs": [
+    {
+      "name": "metadata-before",
+      "command": [
+        "/usr/bin/python3",
+        "/home/ryan/.cache/agentmux-governance/p02-ci-admission-diagnosis-93b0278/run-metadata-controls.py",
+        "native_go-before.py",
+        "darwin"
+      ],
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "seconds": 0.22922423999989405,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "4c17abf944c91fa6cae4aeaab69e2b86b4a32ed94d6d85ca37b8cb85767a1fca"
+    },
+    {
+      "name": "metadata-after",
+      "command": [
+        "/usr/bin/python3",
+        "/home/ryan/.cache/agentmux-governance/p02-ci-admission-diagnosis-93b0278/run-metadata-controls.py",
+        "native_go-after.py",
+        "darwin"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 0.22635938100575004,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "966c961ba511f6487eda943792259a7149421359cfbede46dab67903d63e2ef7"
+    },
+    {
+      "name": "runner-affected",
+      "command": [
+        "/usr/bin/python3",
+        "/home/ryan/.cache/agentmux-governance/p02-ci-admission-diagnosis-93b0278/run-metadata-controls.py",
+        "native_go-after.py",
+        "affected"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 0.8671240250114352,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "37aa8b36563c1d68cf3aa4be71f3317db1fb63d056c723cc1160a5d39e9c7564"
+    },
+    {
+      "name": "mount-before",
+      "command": [
+        "cc",
+        "-Werror",
+        "/home/ryan/.cache/agentmux-governance/p02-ci-admission-diagnosis-93b0278/mount-flags-before.c",
+        "-o",
+        "/home/ryan/.cache/agentmux-governance/p02-ci-admission-diagnosis-93b0278/mount-flags-before"
+      ],
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "seconds": 0.21963577400310896,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "f314c2e960e5b915f5b911e3d319bde3952eef15435ffabe66d59daf8eb39ca6"
+    },
+    {
+      "name": "mount-after",
+      "command": [
+        "cc",
+        "-Werror",
+        "/home/ryan/.cache/agentmux-governance/p02-ci-admission-diagnosis-93b0278/mount-flags-after.c",
+        "-o",
+        "/home/ryan/.cache/agentmux-governance/p02-ci-admission-diagnosis-93b0278/mount-flags-after"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 1.4225573699950473,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "mount-predicate",
+      "command": [
+        "/home/ryan/.cache/agentmux-governance/p02-ci-admission-diagnosis-93b0278/mount-flags-after"
+      ],
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "seconds": 0.0027805290010292083,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "counts": {
+    "darwinMetadataRegression": 1,
+    "affectedRunnerTests": 38,
+    "pureMountFlagCombinations": 4
+  },
+  "primarySource": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/xnu/main/bsd/sys/mount.h",
+    "definitionLines": [
+      303,
+      317
+    ],
+    "explanation": "Apple declares MNT_IGNORE_OWNERSHIP and its MNT_UNKNOWNPERMISSIONS compatibility alias; MNT_IGNORE_OWNERS is not declared."
+  },
+  "limitations": [
+    "Synthetic Darwin stdlib metadata path regression only, not a native macOS collector run. Production platform metadata and actual host admission remain unchanged.",
+    "Four C predicate combinations compile/run under Linux cc with explicit Apple declaration values; this is not an actual Apple SDK, fstatfs, ACL or mount execution.",
+    "Original native macOS research failed at compile before any named test. Identifier spelling repair preserves ownership-disabled mount refusal; later reviewed native execution remains required.",
+    "ARM runtime failure remains ambiguous because original assertion omitted poll count/errno; no lifetime product repair or ARM rerun claimed.",
+    "No shared source, native CI rerun, branch push, runtime/phase acceptance or tracker update."
+  ]
+}

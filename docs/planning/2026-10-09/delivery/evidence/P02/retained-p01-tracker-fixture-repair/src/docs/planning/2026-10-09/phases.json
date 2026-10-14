@@ -1,0 +1,1273 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "proposed-awaiting-review",
+  "date": "2026-10-09",
+  "branch": "feat/agentmux-platform-rearchitecture",
+  "baseline": "df46e94570fadf78ef67a75a692dd48b968a10f7",
+  "sequence": "Execute one phase at a time in P00–P14 order. Use subagents to parallelize bounded implementation, tests and independent review within the active phase only. Codex integrates and reviews their evidence, commits and pushes the candidate, verifies the remote commit, and records the gate before starting the next phase.",
+  "phases": [
+    {
+      "id": "P00",
+      "name": "Scope, baseline, and architecture decisions",
+      "size": "M",
+      "owner": "Product + architecture",
+      "outcome": "An approved implementation contract with no unresolved decision hidden in code.",
+      "work": [
+        "Freeze df46e94570fadf78ef67a75a692dd48b968a10f7 as the behavioral comparison baseline and inventory every CLI verb, dashboard view, protocol, state store, integration, and evaluation.",
+        "Resolve launch workflow, dashboard controls, language/runtime and initial SDKs, storage topology, NATS account/domain layout, supported OS/tool versions, initial scale, identity enrollment, and provider/data policy.",
+        "Reproduce or explicitly scope the previously reported federation correctness defects. Turn each into a regression case owned by the replacing phase.",
+        "Approve versioned state machines, authority boundaries, plugin manifest/context schemas, migration ownership, and the requirement-to-phase matrix.",
+        "Record approved storage direction STATE-01. Select JetStream authority boundaries, retention/checkpoint policy, replication/sync profiles, broker/API access scopes and supported SDK versions. Keep any proposed authoritative SQL exception visible for review.",
+        "Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation.",
+        "Record LOCAL-01: automatic Docker Compose startup or verified reuse on supported agent-client launch. Approve instance/profile ownership, Docker context selection, enrollment prerequisites, host startup hooks, status schema and timeout targets."
+      ],
+      "criteria": [
+        {
+          "id": "P00-AC01",
+          "text": "Every accepted user decision and all existing functional groups have a named owner phase and verification scenario."
+        },
+        {
+          "id": "P00-AC02",
+          "text": "Codex reviews the complete plan, decision log, contracts and criterion-level evidence, records its review and advancement decision, and verifies the committed and pushed P00 candidate before P01 starts. Ryan and Nick are not required for delivery approval."
+        },
+        {
+          "id": "P00-AC03",
+          "text": "All P01–P04 blocking choices have recorded alternatives, rationale, and consequences. Later choices have a deadline before their owning phase."
+        },
+        {
+          "id": "P00-AC04",
+          "text": "Baseline checks identify passes, failures, missing environments, and historic-only claims separately."
+        },
+        {
+          "id": "P00-AC05",
+          "text": "The complete source inventory, component reuse decisions and behavior checks are reviewed. Every baseline file and additional governed source file has an owner; unmapped entry points or uncertain behavior are recorded as blocking gaps. No retirement is implied by a launch-scope choice."
+        },
+        {
+          "id": "P00-AC06",
+          "text": "LOCAL-01 has a reviewed host/platform support matrix, stable instance identity, safe Docker context and credential rules, readiness/status contract, and assigned verification owners. Automatic launch is required for every integration advertised as supporting it."
+        }
+      ],
+      "verify": [
+        "Review the traceability matrix and inspect contracts together.",
+        "Run existing relevant suites on supported environments and reproduce the four reported crash/dispatch defects with isolated fixtures.",
+        "Record the exact commit, tools, fixtures, and results. Review missing environments as gaps, not passes.",
+        "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.",
+        "Review the LOCAL-01 flow and FAIL-55–FAIL-62 against actual host startup capabilities; distinguish approved behavior from unresolved host/version choices."
+      ],
+      "evidence": [
+        "Approved plan revision and decision log",
+        "Baseline behavior inventory and defect fixtures",
+        "Compatibility and capacity profiles",
+        "Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01"
+      ],
+      "rollback": "Planning only. Preserve current checkout behavior and the existing review history.",
+      "dependsOn": [],
+      "status": "proposed",
+      "deliveryOwner": "Codex with bounded subagents in the active phase"
+    },
+    {
+      "id": "P01",
+      "name": "Executable contracts, baseline repairs, and verification",
+      "size": "L",
+      "owner": "Architecture + quality",
+      "outcome": "Contracts and failure scenarios can be tested before business plugins grow.",
+      "work": [
+        "Publish language-neutral command/event schemas and compatibility rules with organization, project, task, delegation, attempt, operation, schema version, and trace identifiers.",
+        "Create reusable contract fixtures and controllable fake workers/providers plus real NATS integration environments for CI. Include WSL-CLIENT-01 environmental contract fixtures and an actual Windows/WSL client inventory; distinguish this preparation from P06 host integration.",
+        "Specify lifecycle, delivery acknowledgment, idempotency, deadline, cancellation, approval, and unavailable/unknown result semantics.",
+        "Establish per-phase evidence records, dependency gates, migration fixtures, and security/quality regression jobs. Bind WSL evidence to Windows-owned client identity, version, configuration ownership and explicit interop limits; native Linux evidence cannot stand in for the Windows/WSL path.",
+        "Build an early two-hub contract spike with separate broker accounts and a leaf link. Exercise lost acceptance acknowledgment and reservation reconciliation before the later production federation phase.",
+        "Preserve and extend the verified repairs for the six baseline findings. Ryan authorized this bounded repair pass; its source hashes and executed regressions are in governance-repair-evidence.json. Complete every other P01 criterion before advancing to P02.",
+        "Build a bounded NATS persistence spike before production storage code: one owning task record, persistent operation identity, conditional competing writes, complete provenance/effect intent, lost acknowledgments and replay. Exercise single-record commits and any required atomic batch inside one stream.",
+        "Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation."
+      ],
+      "criteria": [
+        {
+          "id": "P01-AC01",
+          "text": "Two independently implemented test clients exchange valid requests and reject incompatible or malformed envelopes."
+        },
+        {
+          "id": "P01-AC02",
+          "text": "Fixtures cover duplicate, delayed, out-of-order, unauthorized, canceled, timed-out, and replayed messages without conflating execution with delivery."
+        },
+        {
+          "id": "P01-AC03",
+          "text": "A failing predecessor gate prevents promotion. Waivers cannot bypass accepted ownership or security invariants."
+        },
+        {
+          "id": "P01-AC04",
+          "text": "CI captures exact versions and logs without recording credentials or private model reasoning. Known baseline blockers are repaired or disproved with evidence, and the required repository governance gate passes before P02 progression. WSL-CLIENT-01 has a recorded placement contract, Windows/WSL client/version inventory and honest current interop observations; P06-specific integration claims remain unaccepted until actual-host qualification."
+        },
+        {
+          "id": "P01-AC05",
+          "text": "Two language clients pass the NATS storage fixtures on pinned server/client versions: competing revisions admit one transition, partial atomic batches leave no partial record set, and lost acknowledgments reconcile the same operation. Unsupported cross-stream or external-effect transactions are rejected or handled by an explicit recovery contract."
+        },
+        {
+          "id": "P01-AC06",
+          "text": "The existing regression assertions are retained or mapped to equivalent assertions. Characterization fixtures capture each affected behavior before refactoring; a deliberately removed assertion, missing component, or unapproved retirement prevents progression."
+        }
+      ],
+      "verify": [
+        "Run schema/contract suites in macOS, Linux, and WSL test jobs.",
+        "Break one contract fixture and one phase gate deliberately and confirm the pipeline refuses promotion.",
+        "Exercise a real broker restart and reconnect in the harness.",
+        "Run FAIL-42, FAIL-43 and FAIL-47 with real JetStream. Record which server/API/SDK capabilities provide each guarantee, including batch behavior and authoritative read freshness.",
+        "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.",
+        "For WSL-CLIENT-01, record direct Windows and WSL-resolved client identity/version, configuration ownership and observed interop failures without copying credentials. Keep platform-runtime tests distinct from Windows-client transport tests; identify P06-owned qualification gaps."
+      ],
+      "evidence": [
+        "Contract version 1 fixtures",
+        "Failure injection harness",
+        "CI gate and compatibility reports",
+        "NATS storage capability report and transaction-boundary fixtures for STATE-01",
+        "Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01",
+        "WSL-CLIENT-01 client ownership contract, current environment inventory and explicit interop gap record"
+      ],
+      "rollback": "Keep the new test path isolated from the legacy runtime. If a baseline repair is reverted, reopen its finding and invalidate the affected regression and phase-gate evidence.",
+      "dependsOn": [
+        "P00"
+      ],
+      "status": "proposed",
+      "deliveryOwner": "Codex with bounded subagents in the active phase"
+    },
+    {
+      "id": "P02",
+      "name": "Protected boot and the NATS foundation",
+      "size": "L",
+      "owner": "Runtime + messaging",
+      "outcome": "A local installation boots deterministically with protected kernel plugins.",
+      "work": [
+        "Implement a minimal launcher that establishes the configured NATS substrate and loads the fixed protected boot assembly.",
+        "Implement boot, protected-plugin lifecycle, protected internal communication, and deliberate publication of kernel status.",
+        "Separate protected internal subjects/accounts from exported information and surrounding application services.",
+        "Provide readiness snapshots, bounded startup/shutdown, broker recovery, basic installer/doctor skeleton, and local bootstrap diagnostics.",
+        "Provision the approved local file-backed JetStream profile and team connection profile with explicit storage paths, limits, health and domain settings. Business state ownership stays in surrounding plugins.",
+        "Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation.",
+        "Implement LOCAL-01 bootstrap with pinned Docker Compose configuration, persistent NATS volumes, explicit project identity, bounded health/readiness checks and one startup owner across concurrent terminals. Reuse an authorized compatible healthy instance without recreating it."
+      ],
+      "criteria": [
+        {
+          "id": "P02-AC01",
+          "text": "macOS, Linux, and WSL installations boot without an LLM or hosted Jev connection."
+        },
+        {
+          "id": "P02-AC02",
+          "text": "An outside plugin can subscribe only to permitted kernel information and cannot publish commands or writes into the kernel."
+        },
+        {
+          "id": "P02-AC03",
+          "text": "Bad configuration, occupied ports, unavailable broker, and failed protected plugin produce actionable bounded failures."
+        },
+        {
+          "id": "P02-AC04",
+          "text": "Surrounding plugin failure does not corrupt boot state. Ordinary runtime communication uses NATS after bootstrap."
+        },
+        {
+          "id": "P02-AC05",
+          "text": "The existing launcher, environment selection and failure diagnostics remain available while the new boot path is opt-in. Both paths pass their defined startup and shutdown comparisons without sharing ownership of a live task."
+        },
+        {
+          "id": "P02-AC06",
+          "text": "LOCAL-01 cold launch starts the selected local Compose stack and waits for broker persistence and application readiness. Warm launch reuses the same instance without recreation or lost state. macOS, Linux and WSL fixtures pass without an LLM or Jev."
+        },
+        {
+          "id": "P02-AC07",
+          "text": "Simultaneous launches and a crashed startup owner converge on one owned instance. Wrong Docker context, conflicting ports, incompatible versions and partial startup produce bounded, specific diagnostics without deleting volumes, starting a shadow stack or attaching to another user."
+        },
+        {
+          "id": "P02-AC08",
+          "text": "The same versioned status response follows successful start and reuse. It includes instance identity/version, selected profile and endpoint, readiness, persistence health and authorized hub information with freshness. Missing or unimplemented services are labeled unavailable, never healthy."
+        }
+      ],
+      "verify": [
+        "Capture broker traffic and audit permissions while running normal and unauthorized clients.",
+        "Cold-start and restart each platform. Kill NATS and one protected plugin at controlled points.",
+        "Verify late subscribers receive a consistent readiness snapshot and updates.",
+        "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.",
+        "Exercise FAIL-55–FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12."
+      ],
+      "evidence": [
+        "Boot and shutdown matrix",
+        "Kernel publication contract and permission tests",
+        "Bootstrap recovery guide",
+        "Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01"
+      ],
+      "rollback": "Disable the new runtime entrypoint and retain the old launcher. No legacy data conversion yet.",
+      "dependsOn": [
+        "P01"
+      ],
+      "status": "proposed",
+      "deliveryOwner": "Codex with bounded subagents in the active phase"
+    },
+    {
+      "id": "P03",
+      "name": "Plugin framework, nested packages, and inherited context",
+      "size": "XL",
+      "owner": "Plugin platform + SDK",
+      "outcome": "A third-party author can build a compatible trusted plugin without changing the kernel.",
+      "work": [
+        "Start with hub/fed/plugin.py, runtime context, command registry and the five installed plugins. Extract or wrap proven behavior before writing replacement framework code; document language/security boundaries that require a different implementation.",
+        "Implement manifest validation, dependency/version resolution, lifecycle supervision, package provenance, configuration schemas, and contribution registration.",
+        "Support independently reusable and parent-owned child packages, separately declaring runtime instance ownership and placement.",
+        "Inject PluginContext and per-call OperationContext. Supply identity, scoped logger, tracing/metrics, config, lifecycle, clock, and approved NATS service clients.",
+        "Add declared storage, artifacts, secrets, workspace, process, policy, and decision handles without sharing raw service implementations or an unrestricted container.",
+        "Build starter SDKs and conformance tooling in at least two selected languages. Provide install/upgrade/disable/uninstall and drain behavior.",
+        "Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation."
+      ],
+      "criteria": [
+        {
+          "id": "P03-AC01",
+          "text": "Both child package modes install and activate correctly. Removing one parent retains independent children used elsewhere."
+        },
+        {
+          "id": "P03-AC02",
+          "text": "Two concurrent users cannot overwrite an ambient current-user/current-project value. A child cannot widen its grant or forge logger identity."
+        },
+        {
+          "id": "P03-AC03",
+          "text": "Dependency cycles, missing versions, partial initialization, and stale handles fail deterministically and clean up resources."
+        },
+        {
+          "id": "P03-AC04",
+          "text": "A plugin in each selected language passes the same contract fixtures and interacts with another plugin over NATS."
+        },
+        {
+          "id": "P03-AC05",
+          "text": "The protected kernel has no replacement option in package management. Trusted native code is accurately documented as unsandboxed."
+        },
+        {
+          "id": "P03-AC06",
+          "text": "Existing federation plugin lifecycle, command registry, contributions and context each have a documented reuse or justified replacement decision. Existing bundled plugins pass compatibility fixtures before their old runtime path is disabled."
+        }
+      ],
+      "verify": [
+        "Run an independent author exercise using only published SDK/docs.",
+        "Test lifecycle/resource leaks, dependency failure, configuration precedence, version skew, and upgrades with active operations.",
+        "Inspect NATS traces and execute negative tests at remote resource owners.",
+        "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records."
+      ],
+      "evidence": [
+        "Plugin manifest and SDK reference",
+        "Conformance matrix and author tutorial",
+        "Nested-package/lifecycle test report",
+        "Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01"
+      ],
+      "rollback": "Pin the last working package set, drain active work, and restore compatible configuration. Never silently downgrade incompatible storage.",
+      "dependsOn": [
+        "P02"
+      ],
+      "status": "proposed",
+      "deliveryOwner": "Codex with bounded subagents in the active phase"
+    },
+    {
+      "id": "P04",
+      "name": "Identity, projects, durable state, and workspaces",
+      "size": "XL",
+      "owner": "Security + data platform",
+      "outcome": "Multiple users and projects share a hub with explicit authority and durable ownership.",
+      "work": [
+        "Implement human, device, service, and plugin identities, enrollment/revocation, organization/project membership, permissions, approvals, and audit outside the kernel. Distinguish allowed, denied, and review-required actions; ordinary approval cannot override a hard denial.",
+        "Implement NATS-backed persistence through ordinary domain-owner plugins. Commit validated state changes, provenance, operation outcomes and recoverable outgoing intent together in the owning JetStream record or qualified same-stream batch. Provide KV configuration/current views, Object Store evidence references, scoped access, retention and backup/restore.",
+        "Provide scoped workspace/Git/worktree management, configuration, connection/secret references, quotas, and resource reservations.",
+        "Provide local single-user defaults and self-hosted identity configuration using the same contracts.",
+        "Implement the approved worker execution profile so mutually untrusted task code cannot share unrestricted access to another user's files or credentials. Qualify OS/container/host separation independently of the later third-party-plugin sandbox.",
+        "Build optional SQLite/SQL query indexes and caches from committed records and versioned checkpoints. Record consumed sequence and schema version, expose freshness, rebuild without commands or side effects, and prevent projections from granting execution or approval.",
+        "Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation."
+      ],
+      "criteria": [
+        {
+          "id": "P04-AC01",
+          "text": "Cross-user/project/organization negative tests deny unauthorized commands, subscriptions, files, artifacts, and secret resolution."
+        },
+        {
+          "id": "P04-AC02",
+          "text": "A committed NATS record or qualified same-stream batch preserves the state change, provenance and recoverable outgoing intent. Crashes before or after commit, publication or acknowledgment converge to the recorded operation without a second business effect."
+        },
+        {
+          "id": "P04-AC03",
+          "text": "Duplicate delivery with the same operation ID and payload hash returns the existing outcome without allocating a second workspace or task. Reusing an operation ID with a different payload is rejected as a conflict."
+        },
+        {
+          "id": "P04-AC04",
+          "text": "Backup/restore preserves ownership and result provenance. Migration fences the former writer, preserves stable IDs, dirty worktrees and unmerged branches, and verifies imported records before admitting new writes."
+        },
+        {
+          "id": "P04-AC05",
+          "text": "Node revocation and secret rotation have tested online behavior and explicit offline limits."
+        },
+        {
+          "id": "P04-AC06",
+          "text": "Deleting or corrupting an optional SQL index or derived KV view is recoverable from retained authoritative records and validated checkpoints. Rebuild preserves authorized results and cursors, detects missing history, and cannot launch work or replay external effects."
+        },
+        {
+          "id": "P04-AC07",
+          "text": "Task history and reservations survive work-queue acknowledgment and presence expiry. Storage/API permissions prevent unauthorized reads and raw writes. Stale views expose their revision and cannot authorize a claim, approval or reassignment."
+        },
+        {
+          "id": "P04-AC08",
+          "text": "Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification."
+        }
+      ],
+      "verify": [
+        "Run the permission matrix against application owners and real broker accounts. Run an adversarial worker that attempts cross-project file, process, network, and credential access under the supported execution profile.",
+        "Inject failures before/after commit and publish acknowledgment, exhaust disk/quota, and restore from backup.",
+        "Run concurrency tests against every supported storage provider. Reject a provider that lacks required guarantees.",
+        "Run FAIL-42 through FAIL-48, delete projections, corrupt a checkpoint, simulate lagging views and test direct broker APIs. Verify snapshots and retained history form a complete recovery chain.",
+        "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records."
+      ],
+      "evidence": [
+        "Threat model and permission matrix",
+        "Storage capability and migration contracts",
+        "Recovery and isolation reports",
+        "Authoritative record, KV and object inventory with retention, checkpoint and projection rebuild evidence",
+        "Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01"
+      ],
+      "rollback": "Quiesce and fence writers, retain verified backups and record the authority-switch revision. A return to SQLite authority requires an explicit compatible reverse migration and reconciliation of all NATS-era writes; reverting binaries or restoring an old database alone cannot reopen admission.",
+      "dependsOn": [
+        "P03"
+      ],
+      "status": "proposed",
+      "deliveryOwner": "Codex with bounded subagents in the active phase"
+    },
+    {
+      "id": "P05",
+      "name": "Local orchestration and evidence-based completion",
+      "size": "XL",
+      "owner": "Orchestration + developer workflow",
+      "outcome": "A developer can finish a reviewable software task through durable coordinated work.",
+      "work": [
+        "Reuse the existing task, dispatch, run, coordination and courier behavior behind the new contracts. Replace persistence and coupling only at recorded boundaries, retaining existing test assertions and data relationships.",
+        "Implement project plans, tasks, dependencies, boards, role/agent/team definitions, assignment, run/attempt state, claims, resource scheduling, and explicit acceptance.",
+        "Implement supervised workers, session resume capability, isolated worktrees, tool calls, messages, handoffs, progress, conversation records, artifacts, validation, and review workflows.",
+        "Separate provider/process exit, reported completion, verified evidence, and owner acceptance. Model cancellation-requested, canceled, failed, and unknown states.",
+        "Port existing journal/notice/dead-letter, search/knowledge, code sharing, cost/resource, and orchestration evaluation behavior behind plugins.",
+        "Produce a software-change workflow from request through test evidence and a reviewable diff/PR proposal. Publishing and merging follow explicit permissions.",
+        "Preserve epics, sprints, ADR/capability proposal records, WIP/readiness gates, notifications, objections, and independent reviewer policy. Bind reviews to immutable repository/commit/artifact identities across multiple repositories.",
+        "Persist orchestration transitions through the NATS-owning domain contracts. Drive dispatch and result publication from recoverable committed intent, and keep queue acknowledgment separate from task completion and origin acceptance.",
+        "Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation."
+      ],
+      "criteria": [
+        {
+          "id": "P05-AC01",
+          "text": "A complete fixture workflow creates a plan, delegates tasks, executes in isolated workspaces, validates the result, and returns reviewable evidence."
+        },
+        {
+          "id": "P05-AC02",
+          "text": "Two developers working on different or shared projects do not steal each other's claims, sessions, workspaces, or tool credentials."
+        },
+        {
+          "id": "P05-AC03",
+          "text": "No task becomes accepted from terminal text, process exit, or a worker's self-reported done event alone."
+        },
+        {
+          "id": "P05-AC04",
+          "text": "A crashed or disconnected worker leaves a recoverable known or explicitly unknown attempt. Retry preserves the prior attempt and its effects."
+        },
+        {
+          "id": "P05-AC05",
+          "text": "Every P05-owned legacy functional group has parity evidence or an explicit replacement and data migration decision. Later client, dashboard, federation, and domain groups have an owned inventory and migration plan, with parity gated in their own phases. Changed artifacts invalidate bound approvals, and migration preserves distinct board, run, hub-work, and shared-board identities."
+        },
+        {
+          "id": "P05-AC06",
+          "text": "Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification."
+        }
+      ],
+      "verify": [
+        "Run normal, failure, retry, cancellation, resume, parallel-team, cross-repo, and swarm-style scenario suites.",
+        "Inject crash windows around work attribution and result publication identified in the repository analysis.",
+        "Use real CLI worker smoke tests plus deterministic fake workers for exhaustive state transitions.",
+        "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records."
+      ],
+      "evidence": [
+        "End-to-end workflow recording",
+        "Completion/ownership invariant report",
+        "Legacy parity and migration checklist",
+        "Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01"
+      ],
+      "rollback": "Route new tasks back to the legacy path only after draining or explicitly reconciling active attempts. Never run both paths as writers for one task.",
+      "dependsOn": [
+        "P04"
+      ],
+      "status": "proposed",
+      "deliveryOwner": "Codex with bounded subagents in the active phase"
+    },
+    {
+      "id": "P06",
+      "name": "Agent-client entry points and portable tooling",
+      "size": "L",
+      "owner": "Integrations + developer experience",
+      "outcome": "Developers use Agentmux from their preferred supported client.",
+      "work": [
+        "Extend current CLI, MCP, provider and workspace tooling. Preserve command semantics, safe prompt handling, session cleanup boundaries and credential setup; expose new scopes through the existing entry points where compatible. Apply WSL-CLIENT-01: WSL wrappers or symlinks invoke the Windows-owned client installation; preserve argument and working-directory semantics without installing duplicate Linux clients.",
+        "Provide stable CLI and MCP interfaces generated from declared command contracts, with discoverable resources and error semantics.",
+        "Package and test integrations for Claude Code, Codex CLI, Pi, and Claude Desktop using each host's documented capabilities. On Windows/WSL, qualify the same Windows installation from direct Windows launch and WSL/tmux entry, including version parity, Windows-only updates and explicit unsupported interop behavior.",
+        "Distinguish external client sessions submitting work from Agentmux-managed worker sessions. Publish coverage for events, controls, resume, hooks, and compaction. Prove concurrent WSL tmux workers and external Windows clients retain separate project, hub, session and host identity and route callbacks correctly.",
+        "Add setup, credential references, diagnostics, install checks, and client-specific documentation without silently replacing user configuration. Keep Windows authentication/configuration authoritative. Use durable discovery or stable launchers that survive Windows-only updates; do not copy credentials, pin version-specific executables or silently replace unrelated settings.",
+        "Inventory and qualify existing Grok/provider authentication methods and any Bedrock compatibility path. Migrate GitHub and Jira/Confluence workflows as tool plugins with explicit writes and credentials.",
+        "Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation.",
+        "Wire LOCAL-01 ensure-running into each supported terminal/client startup integration. Show one concise status summary with dashboard access; provide structured status for clients, suppress recursive bootstrap in managed workers, and keep protocol stdout free of banners. Route Windows client callbacks and CLI/MCP traffic to the selected WSL hub; verify startup/reuse status, path translation, protocol framing and concurrent launches."
+      ],
+      "criteria": [
+        {
+          "id": "P06-AC01",
+          "text": "Each supported client can submit a task, inspect progress/evidence, participate in required approvals, and retrieve the result."
+        },
+        {
+          "id": "P06-AC02",
+          "text": "Unsupported event capture, cancellation, or compaction reports an explicit capability limit instead of simulating success. Windows/WSL interop failures and unsupported client/path combinations remain explicit; a Linux fallback or version-only check cannot simulate a supported workflow."
+        },
+        {
+          "id": "P06-AC03",
+          "text": "Closing the originating client or observer does not duplicate or implicitly terminate durable work."
+        },
+        {
+          "id": "P06-AC04",
+          "text": "Fresh-user install and uninstall preserve unrelated client settings and secrets. Under WSL-CLIENT-01, Windows retains sole ownership of each Windows-installed AI client and its updates, authentication and configuration; no duplicate Linux installation or credential copying is introduced."
+        },
+        {
+          "id": "P06-AC05",
+          "text": "All existing supported harness commands, session safeguards, agent definitions, provider setup methods and integration workflows have passing comparisons or an explicitly approved capability change. Retained and added tests cover modal decisions, idle cleanup, credential refresh, WSL paths and external-write uncertainty. Direct Windows and WSL/tmux launches resolve the same installed version before and after a Windows-only update. Stable launchers survive updates without version-specific binary paths; arguments and working directories preserve spaces, quoting, mounted Windows paths and WSL UNC paths."
+        },
+        {
+          "id": "P06-AC06",
+          "text": "Installing and configuring the Agentmux plugin makes each supported terminal/client launch automatically start or reuse the selected stack and show its instance and authorized hub summary. Actual-host tests qualify startup hooks or a clearly named installed launcher; manual commands cannot stand in for promised automatic launch. Windows-owned client callbacks reach the selected WSL hub, and concurrent tmux workers/external clients preserve distinct project, hub, session and host identities without cross-session configuration or callbacks."
+        },
+        {
+          "id": "P06-AC07",
+          "text": "Client startup preserves MCP/JSON-RPC framing, never prints secrets and avoids recursive starts by managed workers. Closing a terminal leaves shared work running; an explicit authorized stop follows the drain policy. Failed prerequisites report recovery steps without silently installing privileged software or changing client settings."
+        }
+      ],
+      "verify": [
+        "Execute the same reference workflow on every pinned client version in the support matrix.",
+        "Test reconnect, authentication expiry, missing tool, malformed MCP request, and client shutdown.",
+        "Review provider commercial integration terms before promising a supported paid distribution.",
+        "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.",
+        "Run cold, warm and concurrent launches on each advertised client/OS version, including separate WSL sessions and paths with spaces. Capture client-visible status and protocol streams; exercise FAIL-60–FAIL-61.",
+        "Execute WSL-CLIENT-01 on each supported Windows-installed client: compare direct/WSL version and installation identity, perform a Windows-only update and repeat, verify Windows auth/config ownership without secret copying, test exact arguments and working directories with spaces and WSL UNC paths, verify selected-hub callbacks, and run concurrent tmux/host sessions. Capture actual failures and recovery; retain native macOS/Linux runtime tests separately."
+      ],
+      "evidence": [
+        "Actual-host compatibility matrix",
+        "CLI/MCP reference and setup guides",
+        "Per-client workflow results",
+        "Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01",
+        "WSL-CLIENT-01 direct-Windows/WSL identity and update parity, configuration ownership, argument/path, callback and concurrent-session evidence"
+      ],
+      "rollback": "Disable only the affected adapter and preserve the underlying task state and alternate CLI access.",
+      "dependsOn": [
+        "P05"
+      ],
+      "status": "proposed",
+      "deliveryOwner": "Codex with bounded subagents in the active phase"
+    },
+    {
+      "id": "P07",
+      "name": "Existing dashboard: AG-UI and Atomic Design migration",
+      "size": "L",
+      "owner": "Frontend + interface platform",
+      "outcome": "Authorized users can understand work across agents, projects, and hubs.",
+      "work": [
+        "Extend the existing dashboard incrementally with a NATS-facing interface plugin that maps authorized state/events to a pinned AG-UI contract for CopilotKit.",
+        "Retain the ten existing views and their useful actions. Extract reusable behavior and migrate components in slices; add plans, cross-hub activity, evidence, decision/cost views and domain slots without losing terminal or operator workflows.",
+        "Use snapshots, ordered deltas, stable IDs/cursors, resynchronization, redaction, and explicit unknown/stale state.",
+        "Use atoms, molecules, organisms, templates, and feature/page composition. Implement keyboard, contrast, accessible names, empty/error/offline states.",
+        "Include approvals and run controls only to the approved scope. Commands always return to their authoritative owner over NATS.",
+        "Read authorized NATS-backed views with source revisions/checkpoint cursors. Show lag or rebuild status explicitly; destructive controls revalidate at the record owner instead of trusting cached display state.",
+        "Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation.",
+        "Display the LOCAL-01 instance, readiness and authorized hub status in the existing dashboard through its NATS-to-AG-UI interface, using the same versioned status contract as terminal clients."
+      ],
+      "criteria": [
+        {
+          "id": "P07-AC01",
+          "text": "Refresh, reconnect, duplicate events, delayed events, and history gaps converge to the same authorized view without starting work."
+        },
+        {
+          "id": "P07-AC02",
+          "text": "An unauthorized user cannot access another project's snapshots, streams, conversation, or artifact by guessing an ID."
+        },
+        {
+          "id": "P07-AC03",
+          "text": "Every displayed completion or cancellation state distinguishes worker output from accepted/confirmed state."
+        },
+        {
+          "id": "P07-AC04",
+          "text": "Domain UI contributions use versioned registered components. Core views remain usable when an optional plugin fails."
+        },
+        {
+          "id": "P07-AC05",
+          "text": "Reusable component boundaries and accessibility checks pass for all launch views."
+        },
+        {
+          "id": "P07-AC06",
+          "text": "All ten existing dashboard views and their actions, terminal streams, saved preferences, editor conflicts, themes and integration panels have reviewed before/after evidence. Existing capabilities remain reachable until their replacements pass; AG-UI and component restructuring do not authorize dropping controls."
+        },
+        {
+          "id": "P07-AC07",
+          "text": "Terminal and dashboard status agree at the same source revision. Refresh and reconnect preserve explicit stale/unknown states, hide inaccessible hubs and do not start a second stack or grant additional control."
+        }
+      ],
+      "verify": [
+        "Run multi-viewer browser tests, revoked-session tests, stream replay, and network interruptions.",
+        "Compare UI snapshots to authoritative records after each failure scenario.",
+        "Run component dependency checks, keyboard/screen-reader review, and visual regression tests.",
+        "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.",
+        "Compare terminal and dashboard status snapshots, versions and timestamps, including absent federation support, no configured hubs, denied scope and stale observations."
+      ],
+      "evidence": [
+        "AG-UI event mapping",
+        "UI extension and accessibility reports",
+        "Dashboard before/after demonstration",
+        "Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01"
+      ],
+      "rollback": "Retain CLI access and pin the prior interface/UI version. A UI rollback cannot roll back task ownership.",
+      "dependsOn": [
+        "P06"
+      ],
+      "status": "proposed",
+      "deliveryOwner": "Codex with bounded subagents in the active phase"
+    },
+    {
+      "id": "P08",
+      "name": "Jev decision services and measured efficiency",
+      "size": "L",
+      "owner": "Decision platform + evaluation",
+      "outcome": "Plugins request bounded semantic advice with traceable evidence and safe fallback.",
+      "work": [
+        "Implement a language-neutral decision service with optional Jev provider, versioned definitions/rubrics/schemas, scoped NATS requests, cache, budgets, cancellation, and evidence ledger.",
+        "Check exact rules and data-export authority before hosted inference. Distinguish known answer, abstention, partial evidence, unavailable provider, and ambiguous billing.",
+        "Support the eight reusable decision families and contributed definitions. Start in shadow/advisory mode for capability discovery, evidence selection, failure triage, and review.",
+        "Preserve exact source IDs/spans, required facts, contrary evidence, and context-expansion routes. Mandatory events bypass relevance filters.",
+        "Measure downstream tokens, provider costs, prompt-cache effects, latency, retries, rework, and accepted outcomes against a baseline.",
+        "Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation."
+      ],
+      "criteria": [
+        {
+          "id": "P08-AC01",
+          "text": "Boot and core orchestration still work when Jev is disabled or unreachable, using documented fallbacks."
+        },
+        {
+          "id": "P08-AC02",
+          "text": "Jev cannot grant authority, mutate kernel state, invent tool success, transfer task ownership, or accept a result."
+        },
+        {
+          "id": "P08-AC03",
+          "text": "Cache keys bind tenant, scope, source/version, definition/model, and policy. Revoked sharing cannot return a cached restricted result."
+        },
+        {
+          "id": "P08-AC04",
+          "text": "All calls obey size/time/budget limits and account for failed/uncertain attempts. Replay of stored annotations makes no new paid call."
+        },
+        {
+          "id": "P08-AC05",
+          "text": "Each enabled definition passes its own labeled holdout criteria and workflow non-regression threshold before promotion."
+        },
+        {
+          "id": "P08-AC06",
+          "text": "Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification."
+        }
+      ],
+      "verify": [
+        "Run the existing synthetic examples and 44-case policy illustration as historical inputs, then extend with real service and NATS tests.",
+        "Evaluate with provider mocks for mechanics, separately with capped live calls for semantic quality after local token configuration and budget approval.",
+        "Compare deterministic baseline, Jev tools only, and tools plus skills on equivalent fresh tasks.",
+        "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records."
+      ],
+      "evidence": [
+        "Decision contracts and policy ledger",
+        "Definition-specific scorecards",
+        "Cost per accepted outcome and fallback report",
+        "Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01"
+      ],
+      "rollback": "Disable a definition or provider and use the deterministic/manual fallback. Retain audit/evaluation history.",
+      "dependsOn": [
+        "P07"
+      ],
+      "status": "proposed",
+      "deliveryOwner": "Codex with bounded subagents in the active phase"
+    },
+    {
+      "id": "P09",
+      "name": "Portable Jev plugin and first skill wave",
+      "size": "L",
+      "owner": "Skills + client integrations",
+      "outcome": "The same Jev capabilities improve supported clients with host-specific packaging.",
+      "work": [
+        "Build one shared Jev CLI/MCP runtime and portable skill content with separate Claude, Codex, Pi, and Desktop packaging.",
+        "Keep standalone Jev usable without Agentmux or NATS. In Agentmux mode route decision requests through scoped hub services.",
+        "Create the proposed first general skill wave: setup, classify, scout, context, triage, review, author, and eval.",
+        "Create the first Agentmux wave: prepare-worker, delegate, inspect-hub, and review-results. Qualify local-hub behavior in P09 and keep remote-hub modes disabled until P10 actual-hub acceptance. Keep final delegation authorization with platform owners.",
+        "Use skill-creator to draft, run paired behavioral and trigger tests, review results, revise, and qualify untouched holdout cases.",
+        "Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation."
+      ],
+      "criteria": [
+        {
+          "id": "P09-AC01",
+          "text": "All first-wave skills have a clear trigger, declared input/output, real use case, error/fallback behavior, and evaluation fixtures."
+        },
+        {
+          "id": "P09-AC02",
+          "text": "Whole-suite near-miss tests show skills do not compete unnecessarily or trigger a broad ask-everything path."
+        },
+        {
+          "id": "P09-AC03",
+          "text": "Every claimed host capability passes on that actual host. Unsupported hooks/compaction are declared."
+        },
+        {
+          "id": "P09-AC04",
+          "text": "Skills preserve counterevidence and required obligations and cannot override system permissions or invent authority."
+        },
+        {
+          "id": "P09-AC05",
+          "text": "Live semantic and end-to-end cost gates pass before the corresponding skill is enabled by default."
+        },
+        {
+          "id": "P09-AC06",
+          "text": "Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification."
+        }
+      ],
+      "verify": [
+        "Run approximately 20 positive/near-miss trigger prompts per skill and representative task pairs plus shared boundary cases.",
+        "Use independent review and separate tuning/validation/release sets.",
+        "Measure skill discovery metadata overhead, context cost, accuracy, and accepted outcomes across hosts.",
+        "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records."
+      ],
+      "evidence": [
+        "Host packages and skill catalog",
+        "Paired skill-creator evaluation reports",
+        "Cross-host conformance and release holdout",
+        "Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01"
+      ],
+      "rollback": "Disable or uninstall the specific skill/package, preserve user config, and retain CLI/MCP access where independently qualified.",
+      "dependsOn": [
+        "P08"
+      ],
+      "status": "proposed",
+      "deliveryOwner": "Codex with bounded subagents in the active phase"
+    },
+    {
+      "id": "P10",
+      "name": "Connected hubs, leaf nodes, and cross-organization work",
+      "size": "XL",
+      "owner": "Federation + security + reliability",
+      "outcome": "Independent teams share authorized work while retaining their own authority.",
+      "work": [
+        "Extend current federation capability. Move one recorded protocol and persistence boundary at a time, preserving existing messages, work, board, knowledge, code and deployment administration workflows.",
+        "Implement scoped trust agreements, node/peer enrollment, NATS leaf topology, independent JetStream domains where needed, and selective sharing/replication.",
+        "Publish authorized capabilities and capacity. Filter deterministic eligibility before optional Jev suitability scoring and revalidate at offer time.",
+        "Implement durable offer, acceptance, reservation, execution reporting, result submission, origin acceptance, reconciliation, revocation, and explicit reassignment.",
+        "Support work/context/artifacts/code/findings/messages/board projections with authenticated provenance, digests, visibility, and retention.",
+        "Add automatic receiving-hub acceptance inside approved rules, pending human approval for review-required work, and rejection for hard-denied work. Enforce any onward delegation/export separately.",
+        "Qualify and enable the remote-hub modes of P09 delegate, inspect-hub, and review-results skills on real connected hubs and supported clients. Their earlier local qualification does not count as federation evidence.",
+        "Use separate persistent JetStream domains for hubs that must operate autonomously. Share selected authorized records and views, preserve origin task versus receiver execution authority, and reconcile replication gaps without treating mirrors or merged sources as a shared mutable task.",
+        "Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation.",
+        "Populate LOCAL-01 status with authorized configured/connected hubs, trust scope, last observation and known delegated/reserved work. Separate NATS link reachability from federation readiness, permission and capacity."
+      ],
+      "criteria": [
+        {
+          "id": "P10-AC01",
+          "text": "Same-organization and cross-organization reference workflows both finish with origin-owned result acceptance."
+        },
+        {
+          "id": "P10-AC02",
+          "text": "Accepted work stays reserved while disconnected. Missing acceptance acknowledgment remains ambiguous until reconciled, never automatically redispatched."
+        },
+        {
+          "id": "P10-AC03",
+          "text": "Duplicate offer/result delivery creates one delegation/attempt outcome. Wrong executor, project, repository, or task version is rejected. Stale grants cannot authorize new effects. Authenticated historical results from previously authorized reserved work are retained for reconciliation or quarantine when current policy requires it; grant expiry cannot erase the obligation or its evidence."
+        },
+        {
+          "id": "P10-AC04",
+          "text": "Unauthorized accounts cannot subscribe to private project subjects or fetch protected artifacts. Transitive hub connectivity grants no access."
+        },
+        {
+          "id": "P10-AC05",
+          "text": "Reconnect recovers progress/results and durable revocations. A stop request is not reported as execution stopped until confirmed or clearly unknown."
+        },
+        {
+          "id": "P10-AC06",
+          "text": "A leaf outage and independent local persistence produce the agreed offline behavior without treating broker connectivity as shared ownership."
+        },
+        {
+          "id": "P10-AC07",
+          "text": "After a partition, mirror lag, retention gap or restoration of an older origin snapshot, hubs reconcile authoritative task and execution records before admitting overlapping work. Replication never grants write authority, and accepted or acceptance-unknown work remains reserved."
+        },
+        {
+          "id": "P10-AC08",
+          "text": "Migration fixtures retain current hub verbs, five federation plugins, pending outbox/quarantine records, seen IDs, durable consumer positions, shared-board revisions, knowledge search/capture and code pointers. Existing account, credential and ACL installations have an approved migration path."
+        },
+        {
+          "id": "P10-AC09",
+          "text": "Startup and refreshed summaries distinguish connected, disconnected, stale, unknown and not-configured hubs at the caller scope. A partition cannot appear as healthy federation, expose another tenant or release reserved work; broker reachability alone does not establish usable partner capacity."
+        }
+      ],
+      "verify": [
+        "Run at least three hubs and two independently administered organizations with real accounts/leaf links and isolated stores.",
+        "Inject partitions before/after offer acceptance, drop replies, duplicate deliveries, restart hubs, expire/revoke grants, and alter task versions.",
+        "Exercise explicit cancel/reassign with a possibly running old worker and document unavoidable external-effect uncertainty.",
+        "Snapshot the origin before a remote acceptance, let the receiver accept and continue, restore that older origin snapshot, and require reconciliation before overlapping admission. Verify one reservation and no duplicate execution.",
+        "Disconnect beyond configured stream-retention and deduplication horizons using short test limits, then prune, restart, and reconnect. Require gap detection, snapshot/reconciliation or explicit intervention, preserved reservations, and no duplicate effects.",
+        "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.",
+        "Exercise FAIL-62 against two real hubs across reconnect, grant change and outage; compare terminal/dashboard snapshots and retained reservations."
+      ],
+      "evidence": [
+        "Federation state-machine and authority tests",
+        "Partition/reconciliation matrix",
+        "Cross-organization demo with auditable evidence",
+        "Independent-domain storage, retention-gap and older-origin recovery reports",
+        "Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01"
+      ],
+      "rollback": "Disable new links and stop new offers. Preserve reservations and reconcile accepted work before returning to a prior federation version.",
+      "dependsOn": [
+        "P09"
+      ],
+      "status": "proposed",
+      "deliveryOwner": "Codex with bounded subagents in the active phase"
+    },
+    {
+      "id": "P11",
+      "name": "Industrial and vendor extension packages",
+      "size": "XL",
+      "owner": "Domain engineering + plugin SDK",
+      "outcome": "Industrial workflows extend Agentmux through the same contracts as other domains.",
+      "work": [
+        "Package industrial orchestration guidance, tools, schemas, UI renderers, and skills with explicitly independent or parent-owned children.",
+        "Migrate current Modbus, MQTT, network discovery, PROFINET snapshot/DCP, passive BOOTP, EtherNet/IP/Logix, ADS, EtherCAT diagnostics, CODESYS runtime tooling, PCAP analysis, and existing engineering wrappers to declared capability plugins.",
+        "Define CODESYS, Siemens, Rockwell, and related vendor integration slices with actual licensed tool/OS/hardware prerequisites and test environments.",
+        "Add engineering build/migration/evidence skills and Jev definitions for diagnostics and source-preserving comparisons.",
+        "Implement read/simulation-first reference workflows and per-action permissions for equipment changes. Resolve any Windows-native execution host arrangement explicitly.",
+        "Inventory existing PCM600/ABB-related privilege hooks as integration requirements, preserving target/action confirmation and audit. Do not infer a complete vendor adapter from the existence of a guard hook.",
+        "Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation."
+      ],
+      "criteria": [
+        {
+          "id": "P11-AC01",
+          "text": "A selected industrial workflow completes through client, orchestration, tool plugin, evidence, and dashboard without kernel or generic task-model changes."
+        },
+        {
+          "id": "P11-AC02",
+          "text": "Standalone and nested installation of selected domain children behave as declared."
+        },
+        {
+          "id": "P11-AC03",
+          "text": "Every migrated existing integration has a parity/deprecation record, tested tool/platform matrix, and explicit missing capability status."
+        },
+        {
+          "id": "P11-AC04",
+          "text": "Equipment writes require the correct target/action/operation grant and any applicable human approval at the owning tool endpoint."
+        },
+        {
+          "id": "P11-AC05",
+          "text": "A vendor adapter passes with the actual required tool or a clearly labeled simulator. Simulated success is never sold as hardware qualification."
+        },
+        {
+          "id": "P11-AC06",
+          "text": "Every existing protocol, standalone library, CLI and dashboard integration has individual behavior evidence, including bounds and supported host/target versions. Narrowing the first demonstration does not retire an existing capability."
+        }
+      ],
+      "verify": [
+        "Use protocol simulators and recorded fixtures, then controlled hardware/vendor environments for supported claims.",
+        "Test wrong device/project/version, timeout, partial writes, lost replies, credential failure, and disconnected grants.",
+        "Demonstrate missing Windows-native prerequisites as an actionable unsupported environment, not silent fallback.",
+        "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records."
+      ],
+      "evidence": [
+        "Domain package and vendor compatibility matrix",
+        "Industrial workflow and permission report",
+        "Protocol parity and hardware qualification records",
+        "Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01"
+      ],
+      "rollback": "Disable the affected domain capability and drain sessions. Preserve device-state uncertainty and do not automatically reverse external equipment effects.",
+      "dependsOn": [
+        "P10"
+      ],
+      "status": "proposed",
+      "deliveryOwner": "Codex with bounded subagents in the active phase"
+    },
+    {
+      "id": "P12",
+      "name": "Production hardening and first sellable release",
+      "size": "XL",
+      "owner": "Release + operations + product",
+      "outcome": "Customers can install, operate, recover, and support the complete launch product.",
+      "work": [
+        "Finish signed/reproducible distributions, dependency locks/SBOM, versioned configuration, upgrade/rollback, package verification, and support diagnostics.",
+        "Complete self-hosted topology guides, backup/restore drills, durable retention/pruning, quotas/fairness, monitoring, alerts, incident procedures, and consented telemetry.",
+        "Validate launch performance/capacity profiles, broker/storage failure recovery, long-running work, and cross-organization safety.",
+        "Finish onboarding, documentation, reference plugins, accessibility, support ownership, commercial licensing/provider eligibility, and pilot feedback.",
+        "Rehearse migration from v0.32.0 across board/run/hub/federation state, credentials, worktrees, and integrations. Keep an explicit compatibility retirement plan.",
+        "Restore an origin hub while a receiver continues accepted work and reconcile outstanding reservations before admitting replacements. Test backup-name collisions, JetStream/checkpoint restore, and local filesystem requirements for any remaining SQLite indexes or legacy migration inputs.",
+        "Qualify NATS storage capacity, retention, immutable artifact lifecycle, snapshot/archive integrity, sync policy and recovery time for solo and team profiles. Document every remaining SQL component as a rebuildable projection or an explicitly reviewed exception.",
+        "Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation.",
+        "Qualify LOCAL-01 installation, automatic launch, upgrade compatibility, data retention and recovery using the pinned Docker/Compose/OS/client matrix. Document setup prerequisites, diagnosis, explicit stop and backup/restore without making runtime Docker socket access a general plugin capability.",
+        "Prepare the MERGE-01 two-instance, agent-operated rehearsal and evidence package. Final branch acceptance follows all required phases; no phase or final acceptance authorizes merging."
+      ],
+      "criteria": [
+        {
+          "id": "P12-AC01",
+          "text": "Every launch requirement is linked to passing evidence for the exact release candidate. Critical correctness/security defects are closed."
+        },
+        {
+          "id": "P12-AC02",
+          "text": "A new developer installs and completes the reference task using only published docs on every supported platform."
+        },
+        {
+          "id": "P12-AC03",
+          "text": "A team administrator enrolls two organizations, shares a scoped project, delegates work, survives a partition, and restores a backup."
+        },
+        {
+          "id": "P12-AC04",
+          "text": "The approved capacity/SLO targets and recovery drill pass without losing acknowledged durable records within the tested fault model."
+        },
+        {
+          "id": "P12-AC05",
+          "text": "Codex reviews release-readiness evidence and records provisional readiness plus all outstanding MERGE-01 requirements. P12 acceptance does not authorize merge or release; final branch acceptance requires every phase and safe bilateral orchestration between independently enrolled, agent-operated real hubs on the exact candidate."
+        },
+        {
+          "id": "P12-AC06",
+          "text": "The approved NATS storage profile passes record/checkpoint/artifact restore, projection rebuild, retention-gap and migration rollback drills under the declared process/host/disk/quorum failure model. Published RPO/RTO and capacity claims match observed evidence, and no unreviewed SQL authority remains."
+        },
+        {
+          "id": "P12-AC07",
+          "text": "Every component and behavior check has a reviewed release disposition. Required baseline/candidate comparisons and migration drills pass on the supported matrix; no skipped check, missing component or unapproved feature removal can be hidden by a successful new reference workflow."
+        },
+        {
+          "id": "P12-AC08",
+          "text": "Fresh-user and upgrade drills pass LOCAL-01 cold/warm/concurrent startup, actionable Docker failures, explicit stop, persistent data recovery and scoped hub status on the supported platform/client matrix. No launch silently upgrades an incompatible live stack, loses durable work or bypasses a required phase gate."
+        }
+      ],
+      "verify": [
+        "Run the complete release matrix, independent security review, load/soak tests, upgrade/restore rehearsal, and pilot acceptance.",
+        "Compare evidence manifests to the exact candidate digest and invalidate stale results after material changes.",
+        "Review support and commercial readiness with accountable owners.",
+        "Run qualified storage failure and recovery drills with pinned disk/sync/replication settings, including capacity exhaustion. Verify restored reservations before processing queued commands.",
+        "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.",
+        "Repeat FAIL-55–FAIL-62 with the exact packaged release, real federation and each advertised launch integration; record readiness deadlines, versions, volume identity and observed timing.",
+        "Review MERGE-01 evidence completeness and remaining required phases. Rehearsals may happen here, but repeat the final run on the exact final branch candidate after all required phases pass."
+      ],
+      "evidence": [
+        "Release readiness dossier",
+        "Pilot and migration acceptance",
+        "Signed merge/release decision",
+        "Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01"
+      ],
+      "rollback": "Use rehearsed backup/restore and version compatibility procedures. Stop new work where safe downgrade is impossible; reconcile in-flight tasks first.",
+      "dependsOn": [
+        "P11"
+      ],
+      "status": "proposed",
+      "deliveryOwner": "Codex with bounded subagents in the active phase"
+    },
+    {
+      "id": "P13",
+      "name": "Remaining Jev catalog and skill expansion",
+      "size": "L–XL per batch",
+      "owner": "Decision platform + domain owners",
+      "outcome": "Every remaining research proposal receives a measured implementation decision.",
+      "work": [
+        "Implement the complete remaining catalog in bounded batches using the coverage appendix, without duplicating overlapping video and original use cases.",
+        "Complete general extract, compare, checkpoint, integrate, and optimize skills plus remaining Agentmux planning, coordination, diagnosis, knowledge, plugin review, and policy-tuning skills.",
+        "Expand temporary bounded questions, semantic inventories, federated source inspection, compaction/retention controls, what-if replay, fidelity review, bilateral contract interpretation, and opportunity scorecards.",
+        "Promote only qualified definitions. Record rejected or deferred cases with evidence, reasons, owner, and next review point.",
+        "Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation."
+      ],
+      "criteria": [
+        {
+          "id": "P13-AC01",
+          "text": "All 88 original uses, 14 video additions, four enablers, and 26 skills retain a traceable disposition and owning phase."
+        },
+        {
+          "id": "P13-AC02",
+          "text": "Each batch passes schema, access, failure, semantic holdout, host-capability, and end-to-end economic gates."
+        },
+        {
+          "id": "P13-AC03",
+          "text": "Compaction preserves mandatory obligations and active evidence and runs only on supported hosts."
+        },
+        {
+          "id": "P13-AC04",
+          "text": "No savings claim relies only on shortened context or a provider's confidence score. Outcome quality and total cost meet approved thresholds."
+        },
+        {
+          "id": "P13-AC05",
+          "text": "Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification."
+        }
+      ],
+      "verify": [
+        "Repeat the P08/P09 evaluation protocol per changed definition/skill and representative combined workflows.",
+        "Use stored factors for policy-only replay and record when a fresh inference is necessary.",
+        "Run regression tests for cache isolation, missing evidence, mandatory messages, provider failure, and decision drift.",
+        "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records."
+      ],
+      "evidence": [
+        "Catalog disposition register",
+        "Per-batch holdout and economics",
+        "Complete skill-suite release matrix",
+        "Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01"
+      ],
+      "rollback": "Independently disable definitions/skills and return to the prior pinned set while preserving all evidence.",
+      "dependsOn": [
+        "P12"
+      ],
+      "status": "proposed",
+      "deliveryOwner": "Codex with bounded subagents in the active phase"
+    },
+    {
+      "id": "P14",
+      "name": "Sandboxed plugins and ecosystem expansion",
+      "size": "XL",
+      "owner": "Security + plugin platform",
+      "outcome": "Untrusted third-party plugins gain a tested containment option.",
+      "work": [
+        "Choose and threat-model isolated execution profiles, process/container/WASM options, host brokers, and platform limitations against actual plugin needs.",
+        "Enforce declared filesystem/network/process/device access, secret isolation, quotas, termination, and package provenance at runtime.",
+        "Qualify UI contribution isolation and publisher/distribution controls before enabling a public plugin ecosystem.",
+        "Retain trusted native profiles only with clear administrator choice. Assess future hosted service and native Windows as separate product decisions.",
+        "Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation."
+      ],
+      "criteria": [
+        {
+          "id": "P14-AC01",
+          "text": "Adversarial plugins fail to escape their declared profile or access unauthorized host/team data in the supported threat model."
+        },
+        {
+          "id": "P14-AC02",
+          "text": "Sandboxed and trusted implementations pass the same language-neutral domain contract tests."
+        },
+        {
+          "id": "P14-AC03",
+          "text": "Required native/device integrations declare and enforce narrower support or an explicitly trusted execution host."
+        },
+        {
+          "id": "P14-AC04",
+          "text": "Security review and per-platform tests pass before claiming untrusted-plugin support. Marketplace availability requires this gate or a clearly restricted trusted catalog."
+        },
+        {
+          "id": "P14-AC05",
+          "text": "Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification."
+        }
+      ],
+      "verify": [
+        "Run exploit-oriented confinement, resource exhaustion, cross-tenant, lifecycle, dependency, and upgrade tests on each supported profile.",
+        "Review residual risk and performance/compatibility effects with independent security expertise.",
+        "Re-run representative local, team, federation, UI, and industrial workflows.",
+        "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records."
+      ],
+      "evidence": [
+        "Sandbox threat model and test report",
+        "Profile compatibility matrix",
+        "Ecosystem launch decision",
+        "Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01"
+      ],
+      "rollback": "Disable new untrusted profiles/packages and preserve the prior trusted-only support promise.",
+      "dependsOn": [
+        "P13"
+      ],
+      "status": "proposed",
+      "deliveryOwner": "Codex with bounded subagents in the active phase"
+    }
+  ],
+  "storageDecision": {
+    "id": "STATE-01",
+    "date": "2026-10-09",
+    "status": "direction-approved-implementation-not-authorized",
+    "decision": "NATS-backed persistence is the preferred shared source of truth. Ordinary domain plugins own validated writes. SQL is optional for rebuildable queries/caches; any authoritative SQL exception requires a documented unmet requirement and explicit review.",
+    "qualification": "P01 proves the pinned NATS protocol and SDK contracts. P04 qualifies storage ownership, recovery and projection rebuild. P10 qualifies independent-hub reconciliation. P12 qualifies capacity, migration, backup/restore and the promised failure model.",
+    "supersedes": "The earlier open comparison of local SQLite and team PostgreSQL as default authoritative storage."
+  },
+  "additiveDecision": {
+    "id": "ADD-01",
+    "date": "2026-10-09",
+    "status": "User-directed planning requirement; implementation remains paused",
+    "requirement": "Preserve and improve all current functionality; reuse existing implementation where suitable; justify replacements and explicitly approve any capability reduction.",
+    "componentManifests": [
+      "component-audit-harness.json",
+      "component-audit-hub.json",
+      "component-audit-dashboard.json",
+      "component-audit-repository.json"
+    ],
+    "inventory": "component-inventory.json",
+    "matrix": "component-preservation.md",
+    "validator": "verify-component-coverage.py",
+    "runtimeVerification": "not-run"
+  },
+  "localStartupDecision": {
+    "id": "LOCAL-01",
+    "status": "direction-approved-implementation-not-run",
+    "date": "2026-10-09",
+    "source": "Ryan requested plan update, commit and push before gated phase work; automatically start or reuse Docker Compose on Agentmux-enabled terminal/CLI launch and show instance and connected hubs.",
+    "ownerPhases": [
+      "P00",
+      "P02",
+      "P06",
+      "P07",
+      "P10",
+      "P12"
+    ],
+    "failureCases": [
+      "FAIL-55",
+      "FAIL-56",
+      "FAIL-57",
+      "FAIL-58",
+      "FAIL-59",
+      "FAIL-60",
+      "FAIL-61",
+      "FAIL-62"
+    ]
+  },
+  "authorizationNote": "The user authorizes autonomous completion of all phases through final commit and push on feat/agentmux-platform-rearchitecture. Codex is the delivery reviewer and advancement authority; Ryan and Nick are not required. All verification, preservation, security and evidence requirements remain. No merge or release is authorized.",
+  "mergeGate": {
+    "id": "MERGE-01",
+    "status": "not-run",
+    "branch": "feat/agentmux-platform-rearchitecture",
+    "requiredPhases": [
+      "P00",
+      "P01",
+      "P02",
+      "P03",
+      "P04",
+      "P05",
+      "P06",
+      "P07",
+      "P08",
+      "P09",
+      "P10",
+      "P11",
+      "P12",
+      "P13",
+      "P14"
+    ],
+    "scopeRule": "All P00-P14 phases and complete user scope remain required. Codex reviews implementation decisions and evidence; no capability removal, scope reduction or weaker qualification is authorized.",
+    "realInstanceOwners": [
+      "Agent-operated hub A",
+      "Agent-operated hub B"
+    ],
+    "directions": [
+      "Hub A origin to hub B executor",
+      "Hub B origin to hub A executor"
+    ],
+    "evidenceRecord": "gate-record.template.json:finalMergeGate",
+    "requiredApproval": "Codex reviews exact-candidate phase evidence and real bilateral orchestration, records final branch acceptance, and verifies the final commit is pushed. No Ryan/Nick action is required.",
+    "autoMergeAllowed": false,
+    "purpose": "Final branch acceptance; historical MERGE-01 identifier retained, never merge permission.",
+    "mergeAuthorized": false
+  },
+  "baselineRepair": {
+    "date": "2026-10-09",
+    "status": "six-baseline-defects-repaired-and-verified",
+    "authorization": "Ryan explicitly authorized autonomous repair decisions for these six findings.",
+    "report": "governance-repairs.md",
+    "evidence": "governance-repair-evidence.json",
+    "completePhaseGatePassed": false,
+    "mergeApproved": false
+  },
+  "governanceHistory": [
+    {
+      "date": "2026-10-09",
+      "reason": "User explicitly requests fully autonomous delivery with Codex as reviewer, subagents within one active phase, and no Ryan/Nick dependency through final commit and push.",
+      "previousAuthorizationNote": "Ryan requested proceeding toward phased implementation after committing and pushing this package. No phase evidence or Nick review is attested here. P00 exit, sequential promotion and explicit Ryan/Nick merge review remain required. Ryan later explicitly authorized autonomous implementation decisions for the six baseline governance findings. That bounded repair is verified; it does not pass a complete phase gate or authorize later promotion.",
+      "previousSequence": "Sequential promotion. Independent preparation may overlap only after its required contracts are approved; no later phase claims acceptance before its predecessor.",
+      "previousMergeGate": {
+        "id": "MERGE-01",
+        "status": "not-run",
+        "branch": "feat/agentmux-platform-rearchitecture",
+        "requiredPhases": [
+          "P00",
+          "P01",
+          "P02",
+          "P03",
+          "P04",
+          "P05",
+          "P06",
+          "P07",
+          "P08",
+          "P09",
+          "P10",
+          "P11",
+          "P12",
+          "P13",
+          "P14"
+        ],
+        "scopeRule": "All P00–P14 phases and complete user scope remain required. Codex reviews implementation decisions and evidence; no capability removal, scope reduction or weaker qualification is authorized.",
+        "realInstanceOwners": [
+          "Agent-operated hub A",
+          "Agent-operated hub B"
+        ],
+        "directions": [
+          "Hub A origin to hub B executor",
+          "Hub B origin to hub A executor"
+        ],
+        "evidenceRecord": "gate-record.template.json:finalMergeGate",
+        "requiredApproval": "Codex reviews exact-candidate phase evidence and real bilateral orchestration, records final branch acceptance, and verifies the final commit is pushed. No Ryan/Nick action is required.",
+        "autoMergeAllowed": false,
+        "purpose": "Final branch acceptance; historical MERGE-01 identifier retained, never merge permission.",
+        "mergeAuthorized": false
+      },
+      "supersededCriteria": {
+        "P00-AC02": "Ryan and Nick review the plan and decision log. Ryan explicitly authorizes implementation before P01 starts.",
+        "P12-AC05": "Ryan and Nick review the release-readiness evidence and record provisional readiness plus all outstanding MERGE-01 requirements. P12 acceptance does not authorize merge or release; the separate final gate requires the entire approved plan, their real-instance orchestration evidence and Ryan's explicit merge approval.",
+        "preservationApprovalClause": "Missing environments remain open; removal or reduced capability requires Ryan's explicit approval after review with Nick."
+      }
+    },
+    {
+      "date": "2026-10-09T23:22:59.252092+00:00",
+      "actor": "Codex",
+      "reason": "WSL-CLIENT-01: user requires Windows-owned AI client installations, updates, authentication and configuration; WSL invokes the same installation.",
+      "previousPhases": [
+        {
+          "id": "P01",
+          "name": "Executable contracts, baseline repairs, and verification",
+          "size": "L",
+          "owner": "Architecture + quality",
+          "outcome": "Contracts and failure scenarios can be tested before business plugins grow.",
+          "work": [
+            "Publish language-neutral command/event schemas and compatibility rules with organization, project, task, delegation, attempt, operation, schema version, and trace identifiers.",
+            "Create reusable contract fixtures and controllable fake workers/providers plus real NATS integration environments for CI.",
+            "Specify lifecycle, delivery acknowledgment, idempotency, deadline, cancellation, approval, and unavailable/unknown result semantics.",
+            "Establish per-phase evidence records, dependency gates, migration fixtures, and security/quality regression jobs.",
+            "Build an early two-hub contract spike with separate broker accounts and a leaf link. Exercise lost acceptance acknowledgment and reservation reconciliation before the later production federation phase.",
+            "Preserve and extend the verified repairs for the six baseline findings. Ryan authorized this bounded repair pass; its source hashes and executed regressions are in governance-repair-evidence.json. Complete every other P01 criterion before advancing to P02.",
+            "Build a bounded NATS persistence spike before production storage code: one owning task record, persistent operation identity, conditional competing writes, complete provenance/effect intent, lost acknowledgments and replay. Exercise single-record commits and any required atomic batch inside one stream.",
+            "Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation."
+          ],
+          "criteria": [
+            {
+              "id": "P01-AC01",
+              "text": "Two independently implemented test clients exchange valid requests and reject incompatible or malformed envelopes."
+            },
+            {
+              "id": "P01-AC02",
+              "text": "Fixtures cover duplicate, delayed, out-of-order, unauthorized, canceled, timed-out, and replayed messages without conflating execution with delivery."
+            },
+            {
+              "id": "P01-AC03",
+              "text": "A failing predecessor gate prevents promotion. Waivers cannot bypass accepted ownership or security invariants."
+            },
+            {
+              "id": "P01-AC04",
+              "text": "CI captures exact versions and logs without recording credentials or private model reasoning. Known baseline blockers are repaired or disproved with evidence, and the required repository governance gate passes before P02 progression."
+            },
+            {
+              "id": "P01-AC05",
+              "text": "Two language clients pass the NATS storage fixtures on pinned server/client versions: competing revisions admit one transition, partial atomic batches leave no partial record set, and lost acknowledgments reconcile the same operation. Unsupported cross-stream or external-effect transactions are rejected or handled by an explicit recovery contract."
+            },
+            {
+              "id": "P01-AC06",
+              "text": "The existing regression assertions are retained or mapped to equivalent assertions. Characterization fixtures capture each affected behavior before refactoring; a deliberately removed assertion, missing component, or unapproved retirement prevents progression."
+            }
+          ],
+          "verify": [
+            "Run schema/contract suites in macOS, Linux, and WSL test jobs.",
+            "Break one contract fixture and one phase gate deliberately and confirm the pipeline refuses promotion.",
+            "Exercise a real broker restart and reconnect in the harness.",
+            "Run FAIL-42, FAIL-43 and FAIL-47 with real JetStream. Record which server/API/SDK capabilities provide each guarantee, including batch behavior and authoritative read freshness.",
+            "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records."
+          ],
+          "evidence": [
+            "Contract version 1 fixtures",
+            "Failure injection harness",
+            "CI gate and compatibility reports",
+            "NATS storage capability report and transaction-boundary fixtures for STATE-01",
+            "Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01"
+          ],
+          "rollback": "Keep the new test path isolated from the legacy runtime. If a baseline repair is reverted, reopen its finding and invalidate the affected regression and phase-gate evidence.",
+          "dependsOn": [
+            "P00"
+          ],
+          "status": "proposed",
+          "deliveryOwner": "Codex with bounded subagents in the active phase"
+        },
+        {
+          "id": "P06",
+          "name": "Agent-client entry points and portable tooling",
+          "size": "L",
+          "owner": "Integrations + developer experience",
+          "outcome": "Developers use Agentmux from their preferred supported client.",
+          "work": [
+            "Extend current CLI, MCP, provider and workspace tooling. Preserve command semantics, safe prompt handling, session cleanup boundaries and credential setup; expose new scopes through the existing entry points where compatible.",
+            "Provide stable CLI and MCP interfaces generated from declared command contracts, with discoverable resources and error semantics.",
+            "Package and test integrations for Claude Code, Codex CLI, Pi, and Claude Desktop using each host's documented capabilities.",
+            "Distinguish external client sessions submitting work from Agentmux-managed worker sessions. Publish coverage for events, controls, resume, hooks, and compaction.",
+            "Add setup, credential references, diagnostics, install checks, and client-specific documentation without silently replacing user configuration.",
+            "Inventory and qualify existing Grok/provider authentication methods and any Bedrock compatibility path. Migrate GitHub and Jira/Confluence workflows as tool plugins with explicit writes and credentials.",
+            "Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation.",
+            "Wire LOCAL-01 ensure-running into each supported terminal/client startup integration. Show one concise status summary with dashboard access; provide structured status for clients, suppress recursive bootstrap in managed workers, and keep protocol stdout free of banners."
+          ],
+          "criteria": [
+            {
+              "id": "P06-AC01",
+              "text": "Each supported client can submit a task, inspect progress/evidence, participate in required approvals, and retrieve the result."
+            },
+            {
+              "id": "P06-AC02",
+              "text": "Unsupported event capture, cancellation, or compaction reports an explicit capability limit instead of simulating success."
+            },
+            {
+              "id": "P06-AC03",
+              "text": "Closing the originating client or observer does not duplicate or implicitly terminate durable work."
+            },
+            {
+              "id": "P06-AC04",
+              "text": "Fresh-user install and uninstall preserve unrelated client settings and secrets."
+            },
+            {
+              "id": "P06-AC05",
+              "text": "All existing supported harness commands, session safeguards, agent definitions, provider setup methods and integration workflows have passing comparisons or an explicitly approved capability change. Retained and added tests cover modal decisions, idle cleanup, credential refresh, WSL paths and external-write uncertainty."
+            },
+            {
+              "id": "P06-AC06",
+              "text": "Installing and configuring the Agentmux plugin makes each supported terminal/client launch automatically start or reuse the selected stack and show its instance and authorized hub summary. Actual-host tests qualify startup hooks or a clearly named installed launcher; manual commands cannot stand in for promised automatic launch."
+            },
+            {
+              "id": "P06-AC07",
+              "text": "Client startup preserves MCP/JSON-RPC framing, never prints secrets and avoids recursive starts by managed workers. Closing a terminal leaves shared work running; an explicit authorized stop follows the drain policy. Failed prerequisites report recovery steps without silently installing privileged software or changing client settings."
+            }
+          ],
+          "verify": [
+            "Execute the same reference workflow on every pinned client version in the support matrix.",
+            "Test reconnect, authentication expiry, missing tool, malformed MCP request, and client shutdown.",
+            "Review provider commercial integration terms before promising a supported paid distribution.",
+            "Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.",
+            "Run cold, warm and concurrent launches on each advertised client/OS version, including separate WSL sessions and paths with spaces. Capture client-visible status and protocol streams; exercise FAIL-60–FAIL-61."
+          ],
+          "evidence": [
+            "Actual-host compatibility matrix",
+            "CLI/MCP reference and setup guides",
+            "Per-client workflow results",
+            "Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01"
+          ],
+          "rollback": "Disable only the affected adapter and preserve the underlying task state and alternate CLI access.",
+          "dependsOn": [
+            "P05"
+          ],
+          "status": "proposed",
+          "deliveryOwner": "Codex with bounded subagents in the active phase"
+        }
+      ],
+      "scopeLimit": "Existing phase and criterion IDs retained. P06 remains planned; no later-phase implementation authorized by this documentation update."
+    }
+  ],
+  "deliveryGovernance": {
+    "reviewer": "Codex",
+    "advancementAuthority": "Codex",
+    "humanDeliveryApprovalRequired": false,
+    "parallelism": "subagents within one active phase only",
+    "mergeAuthorized": false,
+    "scopeReductionAuthorized": false
+  },
+  "clientOwnershipDecision": {
+    "id": "WSL-CLIENT-01",
+    "date": "2026-10-09T23:22:59.252092+00:00",
+    "source": "Explicit user instruction during P01",
+    "decision": "For Windows-installed AI terminal clients, Windows owns the installation, updates, authentication and configuration. WSL symlinks or wrappers invoke that same Windows installation. Do not add a separate Linux client installation or copy credentials to make the bridge work.",
+    "runtimePlacement": "Agentmux remains native on macOS/Linux; the Windows Agentmux runtime, Docker Compose integration and tmux remain in WSL/Linux. This decision changes client ownership, not runtime placement.",
+    "phaseBoundary": "P01 records the environmental contract, actual environment observations and explicit gaps. P06 delivers and qualifies complete client integration after its predecessors pass.",
+    "acceptance": [
+      "Direct Windows and WSL-invoked client version and installation identity agree.",
+      "A Windows-only client update is reflected through the same durable launcher without editing a version-specific binary path or maintaining a second installation.",
+      "Windows configuration and authentication remain authoritative; no credential copying, secret logging or silent secondary login store.",
+      "Exact arguments and working directories survive spaces, quoting, mounted Windows paths and WSL UNC paths; unsupported paths fail explicitly.",
+      "Client callbacks, CLI/MCP transports and LOCAL-01 startup/status target the correct WSL hub and preserve protocol framing.",
+      "Concurrent tmux workers and external clients preserve project, hub, session and host identity without cross-session callbacks or configuration changes.",
+      "Actual Windows/WSL interop failures are retained as failed or unsupported observations with recovery steps; Linux substitutes and successful version checks cannot count as full workflow proof."
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+/home/ryan/.cache/agentmux-governance/p02-ci-admission-diagnosis-93b0278/mount-flags-before.c: In function ‘admissible’:
+/home/ryan/.cache/agentmux-governance/p02-ci-admission-diagnosis-93b0278/mount-flags-before.c:3:85: error: ‘MNT_IGNORE_OWNERS’ undeclared (first use in this function); did you mean ‘MNT_IGNORE_OWNERSHIP’?
+    3 | static int admissible(unsigned int flags){return (flags & MNT_LOCAL)!=0 && (flags & MNT_IGNORE_OWNERS)==0;}
+      |                                                                                     ^~~~~~~~~~~~~~~~~
+      |                                                                                     MNT_IGNORE_OWNERSHIP
+/home/ryan/.cache/agentmux-governance/p02-ci-admission-diagnosis-93b0278/mount-flags-before.c:3:85: note: each undeclared identifier is reported only once for each function it appears in

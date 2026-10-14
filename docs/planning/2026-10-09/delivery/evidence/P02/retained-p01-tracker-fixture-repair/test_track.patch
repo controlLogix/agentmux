@@ -1,0 +1,11 @@
+--- before/test_track.py
++++ after/test_track.py
+@@ -29,6 +29,8 @@
+             track.validate(self.data)
+ 
+     def test_predecessor_cannot_be_bypassed(self):
++        for row in self.data['tasks']:
++            row['status'] = 'planned'
+         task = next(t for t in self.data['tasks'] if t['id'] == 'P02-T01')
+         task['status'] = 'in_progress'
+         with self.assertRaisesRegex(AssertionError, 'predecessor|prior phase|only one phase'):

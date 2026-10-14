@@ -1,0 +1,17 @@
+{
+  "reviewer": "Codex",
+  "decision": "promoted two bounded repairs",
+  "verifiedFiles": 24,
+  "fixtureRepair": "Synthetic RunnerTests host metadata no longer calls real stdlib subprocess machinery while subprocess.Popen is mocked. Production platform metadata and host admission are unchanged.",
+  "darwinRepair": "Use the Apple-declared mount flag identifier; retain the same rejection of mounts that ignore ownership.",
+  "primarySource": "https://raw.githubusercontent.com/apple-oss-distributions/xnu/main/bsd/sys/mount.h",
+  "sourceSHA256": {
+    "tests/platform/native_go.py": "833d56b88053718f0d9baca802d9150e28f4681f05741a922e591bec04a6a50e",
+    "platform/privatefs/access_darwin.go": "b220031c600e02b1217706ebfc4268361fc33e56f29ac7753d37f9a5cc9b5646"
+  },
+  "limits": [
+    "38 affected RunnerTests and four synthetic C flag combinations passed in worker evidence.",
+    "Actual Apple SDK compilation, file-system permissions and native macOS collector execution remain required.",
+    "ARM poll failure remains unresolved. No P02 acceptance."
+  ]
+}
