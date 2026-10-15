@@ -1,0 +1,218 @@
+{
+  "scope": "One real current WSL/Windows Docker cold/warm invocation. Failed cold refresh; no warm invocation reached.",
+  "commit": "8978b7ae5ce8aad69d017b774861f19231c26b63",
+  "directExit": 1,
+  "namedTestElapsedSeconds": 50.07,
+  "failureLocation": "installed_cli_compose_integration_linux_test.go:576",
+  "coldFrontendTiming": {
+    "boundNanoseconds": 10000000000,
+    "entryToExitNanoseconds": 3409794032,
+    "exitSuccess": true,
+    "stderrBytes": 0,
+    "stdoutBytes": 999
+  },
+  "coldFrontendJoinedDiagnostic": {
+    "entryToExitNanoseconds": 3409794032,
+    "exactHostPinned": true,
+    "exitOutcome": "success",
+    "exitStatus": 0,
+    "frontendWaitJoined": true,
+    "stderrBytes": 0,
+    "stdoutBytes": 999
+  },
+  "coldOutputKind": "bootstrap-progress",
+  "creatorRefreshFailure": {
+    "coldInvocationId": "attempt_05a2777848bf2e536a79a861fc04bdfa",
+    "deadlineExpired": false,
+    "errorCode": "creator_host_observation_unknown",
+    "lastRequestErrorCode": "owner_bridge_deadline"
+  },
+  "requestAttemptClosedFacts": [
+    {
+      "errorCode": "owner_bridge_connection_unavailable",
+      "deadlineExpired": false,
+      "disposition": ""
+    },
+    {
+      "errorCode": "owner_bridge_connection_unavailable",
+      "deadlineExpired": false,
+      "disposition": ""
+    },
+    {
+      "errorCode": "owner_bridge_connection_unavailable",
+      "deadlineExpired": false,
+      "disposition": ""
+    }
+  ],
+  "history": {
+    "latestOutcome": "failed",
+    "diagnosticCode": "docker_command_timeout_outcome_unknown",
+    "recordedCleanup": "unknown",
+    "diagnosticStage": null,
+    "diagnosticStagePresent": false,
+    "completedAt": "2026-10-15T01:02:56.434802Z",
+    "creatorInvocationMatches": true,
+    "runtimeBindingMatches": true,
+    "scopeBindingMatches": true,
+    "enrollmentBindingMatches": true,
+    "rawBytes": 1577,
+    "rawSHA256": "7b0a02632fe65c704d89cf48e814563ed13a2c37cc9a0e498c223805d9925384"
+  },
+  "cleanup": {
+    "brokerStopped": true,
+    "volumeRetained": true,
+    "networkRemoved": true,
+    "foreignNetworkBaselineUnchanged": true,
+    "stoppedContainerRetained": true,
+    "networkCleanupStage": {
+      "cleanupVerified": true,
+      "contextExpired": false,
+      "elapsedNanoseconds": 9285535004,
+      "failureCode": "none",
+      "readStage": "not_applicable",
+      "stage": "complete"
+    },
+    "removalOutput": {
+      "bytes": 65,
+      "exactRemovedID": true,
+      "sha256": "sha256:9a3d4f545ea8da65e3209fa1775fa3aa77b4ce116e838673734edad667aedca7"
+    }
+  },
+  "sourceBeforeCopyAfterAndAfterTestEqual": true,
+  "executedSourceCount": 282,
+  "stderrBytes": 0,
+  "collectorExit": 0,
+  "limits": [
+    "creator_host_observation_unknown is not evidence of creator exit or its specific poll flags.",
+    "The bound private terminal failure reports a Docker command timeout but no diagnosticStage; it does not identify which command or original timing cause.",
+    "Cold bootstrap-progress is historical acceptance/control; it is not an authenticated L04 completion.",
+    "No four-role pin, completed authenticated refresh, warm ensure/status or persistence-read assertions were reached.",
+    "Fixture cleanup hooks returned without test cleanup errors; no standalone per-handle successful cleanup record exists.",
+    "No subsequent engine inspection, mutation, retry or old-fixture adoption was performed."
+  ],
+  "runArtifacts": {
+    "after-test-evidence.json": "607e8a16bb954e79cef24b91605fc2b8465909c287c4197809dce830a7f48097",
+    "checkpoint-supplement.json": "aa9e3e8858d5674bdb11b324c9e27247a97cf1cb439eb6ecc125637efbc10d3b",
+    "collection-exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "collection-stderr.private": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "collection-stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "completion.json": "f94503a96368db44acbbd0f583ea19b00c31c687ef462916b0c990fbeba160c1",
+    "containers-stderr.private": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "containers-stdout.private": "898618272d9a9dd9d433d4212c9a49395d8f83edc4cd1bf864231ba43aa19b1c",
+    "endpoint-stderr.private": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "endpoint-stdout.private": "0d1284cdbf15f9de9be8524a923374e8dffede3d62a65a022b0c8f58bfaa26b7",
+    "engine-stderr.private": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "engine-stdout.private": "6d55604f0ba68ca5feeb8edeaf2294bf533f17e299bed0970b6d3b964edc9e65",
+    "events.jsonl": "a183a59978caf0bd64817b588a677765d63e128af095cb01bf1eb8f151476af4",
+    "exit.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "fixture-directories-before.json": "78ef1179b11a0843524dccd4667008da20a9ed6bc3ac11cf70d54868d00c5904",
+    "history-after-test.private": "7b0a02632fe65c704d89cf48e814563ed13a2c37cc9a0e498c223805d9925384",
+    "image-stderr.private": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "image-stdout.private": "86c5d014a0c0b378786c9934d5b8ccaaa57eccb6e2685ee6d47086f0d0bb46d3",
+    "invocation.json": "f5e57019e62891ded1ace96368db1215b06caa8563abc00673d449d69bc5bdd7",
+    "networks-stderr.private": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "networks-stdout.private": "d9e30819c7021ad143b995653cd990ab5febf289e7076a966d1d0639cf5064a1",
+    "preflight.json": "7ff3f367614d91288662d3f10c0eb247bed53d2e1d10d32d5009e38da7b66611",
+    "producer.sh": "681b345f1f31d4ef82d4bbf57e2f8024c046d874f7360020033af5367378be71",
+    "review.py": "e5ddd19c5dc08e947243497887da1c58a4dfe8d5d4b819a0b4103a16a91e1788",
+    "selection.json": "724f2d7863838b26114a45ab335a93cce9b9a44b47df9bb3ecb5bff3d53c11fb",
+    "shared-after-test.json": "3e02c320cce249a4eb9bc68f0ac3d90fa4e01ae20c9eaaa76c929fa4de4cfe21",
+    "shared-after.json": "3e02c320cce249a4eb9bc68f0ac3d90fa4e01ae20c9eaaa76c929fa4de4cfe21",
+    "shared-before.json": "3e02c320cce249a4eb9bc68f0ac3d90fa4e01ae20c9eaaa76c929fa4de4cfe21",
+    "signature-stderr.private": "2ce70d6c8c9ad6726c794690c8b14a2b83673648cac88edf4ff1acc50ec46348",
+    "signature-stdout.private": "a3d0a2dedf4fc89a451661af66a948dec65b1c1d2261a129b73060385bab8647",
+    "source-manifest.json": "3e02c320cce249a4eb9bc68f0ac3d90fa4e01ae20c9eaaa76c929fa4de4cfe21",
+    "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "windows-signature-summary.json": "b3058fcd0b99fa54c59d4fd3f9f475444ccd2319f71717db2c653d1fc12b13d3"
+  },
+  "fixtureArtifacts": {
+    "baseline-guard-8dc901af.json": {
+      "bytes": 98,
+      "sha256": "855bb21b60a7deb62b7852b954e160b6b3e9bd217548054237fe0c127c7a2cd4"
+    },
+    "baseline-guard-90f43b19.json": {
+      "bytes": 98,
+      "sha256": "4fe244d82b2bdce5ff61cb00e5ae8a963254dd0204aef8a3b0d5b3e50487cd33"
+    },
+    "baseline.json": {
+      "bytes": 5513,
+      "sha256": "1cba96c18b3c951f1df057ac01592eaf00d5771325e1c33aa5c52ff4a5521e2c"
+    },
+    "cleanup.json": {
+      "bytes": 742,
+      "sha256": "71bb7839f2dfa9967477f5e3a6fc12ecfcc5bec0310c20231ad7eec2439df544"
+    },
+    "cold-joined-diagnostic.json": {
+      "bytes": 189,
+      "sha256": "c5c0a0efa05ab6e45e548f0736f47e65c3494a0e6a4a63726dc3339a0ca9327d"
+    },
+    "cold-output-capture.json": {
+      "bytes": 275,
+      "sha256": "b6a3272266c027dc05fab3bec67b497e14193e323a9c2d4344384a28bc7306b6"
+    },
+    "cold-receipt-expected.json": {
+      "bytes": 742,
+      "sha256": "010d5d806ebb23f04e89d83728f2798788b3724777f00ad3455a91a611c2da4b"
+    },
+    "cold-stderr.private": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cold-stdout.private": {
+      "bytes": 999,
+      "sha256": "ad07d826d441584dea3e8e0fe6cd57132847e54d81b433194f75830d0868b90a"
+    },
+    "cold-timing.json": {
+      "bytes": 143,
+      "sha256": "ac559a8efe1fd5c8184cadc90fc4549950d90aed06e0b408ab8bc8044a6f9d15"
+    },
+    "cold.json": {
+      "bytes": 1159,
+      "sha256": "da515b2e84ff21f07a38db2f668ba770042076e8654c9cb5845b743f43522a14"
+    },
+    "creator-refresh-failure.json": {
+      "bytes": 199,
+      "sha256": "0ce122dc575838f14fab55ce2b685b149936318224c3f9e0845f24d819856391"
+    },
+    "fixture.json": {
+      "bytes": 1144,
+      "sha256": "da1cf63d2f5618c9e5a77a299f585dd83812008354c509a66d7f1039657f4cb9"
+    },
+    "network-baseline.json": {
+      "bytes": 1453,
+      "sha256": "f50acec38cb4aa9e02b04fdcf7e86c6eed0dfbb899e2f0fedff63eac6a1fa686"
+    },
+    "network-cleanup-stage.json": {
+      "bytes": 174,
+      "sha256": "d18c3015cda8c7180cbd2726154b7813403a33a49846caf1d47b49d16c28733f"
+    },
+    "network-cleanup.json": {
+      "bytes": 1292,
+      "sha256": "b1235a429a2467863773eda032f61efc292f14f4807a62b414a5ce0f3e250d7c"
+    },
+    "network-provenance.json": {
+      "bytes": 883,
+      "sha256": "137ba0b8a2be6d8c11907af3467845b7612587b5c5f5781d84ffcd0ab2d17d86"
+    },
+    "network-removal-output.json": {
+      "bytes": 118,
+      "sha256": "99b9a052aa45f2d3ed8d79a3346957ede1047324857dc3ba7cedd4e4da9565a2"
+    },
+    "network-removal-stdout.private": {
+      "bytes": 65,
+      "sha256": "9a3d4f545ea8da65e3209fa1775fa3aa77b4ce116e838673734edad667aedca7"
+    },
+    "refresh-attempt-0862d0df.json": {
+      "bytes": 106,
+      "sha256": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc"
+    },
+    "refresh-attempt-d54453f2.json": {
+      "bytes": 106,
+      "sha256": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc"
+    },
+    "refresh-attempt-fc39df59.json": {
+      "bytes": 106,
+      "sha256": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc"
+    }
+  }
+}

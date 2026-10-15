@@ -1,0 +1,89 @@
+{
+  "scope": "Read-only actual8978 research failure and current source analysis. No test, CI dispatch, engine or shared change.",
+  "commit": "8978b7ae5ce8aad69d017b774861f19231c26b63",
+  "sourcePins": {
+    "platform/runtime/snapshot_darwin.go": "01c92e4d4dadacdbdc4ef0671e49c74367e01e61f9bef1916a93ea9a930365e4",
+    "platform/runtime/snapshot_darwin_test.go": "29823b7772b37e6935c3d4261016dcc05cb9c3ba1a84deff8e69ff1dc6f5b93d",
+    "platform/runtime/installed_host_darwin.go": "dfb82e401929befde882136522c9fe4380c06d8ed8c7bc12980e2086a080aa07",
+    "platform/runtime/installed_host.go": "94cb640c7422bd3725af089511958699bb7d7418455273bccc7ba3dde06df780",
+    "platform/runtime/supervisor.go": "45437190fd61616c18c35c79ff4fc02c97b558d607bf2043bea2e6b14d40d824",
+    "platform/runtime/snapshot_darwin_install_test.go": "0165adcb9769541c8c48788754e91638b3ead7a584ede9b9f697add85aa321c9",
+    "platform/runtime/installed_host_darwin_install_test.go": "cdb7e8f50d25628af7d20355a61e7f7d1c070dbc316e8a422ba9062d5ce6cac1",
+    "platform/launcher/host_policy.go": "3d850105741224ebae1853e53c239a2e6346f4eb6375d3eeb29dda6f151555ad",
+    "platform/launcher/bootstrap_docker_native_darwin_test.go": "df175d949cd5f63a564efedcb87e0d1ad67f05ac42f7be83c94e089d33b1f029",
+    "platform/launcher/bootstrap_integration_test.go": "2c991a1bffd6412f79e56a3a6992b626bc1831b4d9bed65518da97d7fd55d317",
+    "tests/platform/native_go.py": "833d56b88053718f0d9baca802d9150e28f4681f05741a922e591bec04a6a50e"
+  },
+  "currentSourceMatches8978Report": {
+    "platform/runtime/snapshot_darwin.go": true,
+    "platform/runtime/snapshot_darwin_test.go": true,
+    "platform/runtime/installed_host_darwin.go": true,
+    "platform/runtime/installed_host.go": true,
+    "platform/runtime/supervisor.go": true,
+    "platform/runtime/snapshot_darwin_install_test.go": true,
+    "platform/runtime/installed_host_darwin_install_test.go": true,
+    "platform/launcher/host_policy.go": true,
+    "platform/launcher/bootstrap_docker_native_darwin_test.go": true,
+    "platform/launcher/bootstrap_integration_test.go": true,
+    "tests/platform/native_go.py": true
+  },
+  "finding": "The /dev/fd/3 execution denial blocks the unlinked descriptor research option, not the implemented protected root-owned Darwin installation path. No production repair is justified by this failure.",
+  "actualEvidence": {
+    "armResearchArtifact": 11939887545,
+    "intelResearchArtifact": 11939718334,
+    "researchFailure": "TestDarwinUnlinkedDescriptorResearch: actualChildExecuted=false; fork/exec /dev/fd/3 permission denied; sameUIDImmutabilityProven=false",
+    "failClosedControl": "Passed separately on both Darwin architectures.",
+    "installArtifacts": [
+      11940185429,
+      11940155556
+    ],
+    "installOutcomes": "Each architecture passed18 named tests/7 top-level tests: protected installed image/path/Mach-O/fail-closed plus actual host survival/replacement refusal/owned stop and wait. These are native fixture controls, not full installed Compose acceptance."
+  },
+  "callsites": [
+    {
+      "file": "platform/runtime/snapshot_darwin_test.go",
+      "line": 77,
+      "meaning": "Only exec.CommandContext /dev/fd/3 call; explicitly research-only."
+    },
+    {
+      "file": "platform/runtime/snapshot_darwin.go",
+      "line": 32,
+      "meaning": "Production protectedDarwinExecutable.command executes the fixed protected path, retaining ancestor and image descriptors."
+    },
+    {
+      "file": "platform/runtime/snapshot_darwin.go",
+      "line": 48,
+      "meaning": "validateForStart freshly opens and checks exact path/held identities before spawn; privileged root/updater integrity remains trusted."
+    },
+    {
+      "file": "platform/runtime/installed_host_darwin.go",
+      "line": 24,
+      "meaning": "PrepareProtectedInstalledHost uses actual root-owned protected path; ordinary user staging PrepareInstalledHost remains unqualified."
+    },
+    {
+      "file": "platform/launcher/host_policy.go",
+      "line": 311,
+      "meaning": "Darwin installed launcher chooses PrepareProtectedInstalledHost, not descriptor research."
+    },
+    {
+      "file": "platform/runtime/installed_host.go",
+      "line": 152,
+      "meaning": "startHost constructs image command then validates immediately before cmd.Start; no /dev/fd fallback."
+    },
+    {
+      "file": "platform/runtime/supervisor.go",
+      "line": 281,
+      "meaning": "Each role validates its protected image before actual spawn."
+    }
+  ],
+  "requirements": [
+    "P02-T01-AC08: actual native installed launcher evidence remains required.",
+    "P02-GATE-AC01 and AC06: native macOS installations and selected real Compose cold/warm startup remain required; install fixture success does not close these."
+  ],
+  "recommendedNextCheck": {
+    "first": "On an independently enrolled native macOS Docker environment, run only TestBootstrapRealDockerIdentityPreflight with actual selected context/engine and separate fixture authorization.",
+    "then": "After that passes and root authorizes engine effects, run existing TestBootstrapRealComposeConcurrentColdWarmAndOwnerRecovery using bootstrapPrepareNativeRelease, exact root-owned installed release/signature/member admission and original preservation/cleanup.",
+    "remainingGap": "That existing case qualifies core Compose startup/recovery. Genuine native installed-CLI ensure/status and frontend lifetime qualification must still be bound to the Darwin protected factory; the current Linux-only installed CLI companion cannot substitute.",
+    "avoid": "Do not chmod /dev/fd, use a mutable staging pathname fallback, treat descriptor execution success as same-UID immutability proof, suppress the research failure or rerun it as a prerequisite for the root-owned backend."
+  }
+}

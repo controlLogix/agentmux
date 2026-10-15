@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"strings"
+	"syscall"
 	"testing"
 	"time"
 
@@ -529,24 +530,60 @@ func composeCLIObservation(t *testing.T, f *bootstrapDockerFixture, x *composeCL
 // composeCLICreatorObservation borrows only the creator handle already retained by
 // the fixture. Exit or an unknown observation is a failure hint, never readiness.
 func composeCLICreatorObservation(x *composeCLIFront) string {
+	return composeCLICreatorPollObservation(x).Result
+}
+
+type composeCLICreatorPollFacts struct {
+	Result        string  `json:"result"`
+	Performed     bool    `json:"pollPerformed"`
+	Count         *int    `json:"pollCount,omitempty"`
+	Revents       *uint16 `json:"pollRevents,omitempty"`
+	ErrnoCategory string  `json:"pollErrnoCategory"`
+}
+
+// These facts come from the same single nonblocking call that supplies the
+// existing result. They retain no descriptor, process ID, attempt or raw error.
+func composeCLICreatorPollObservation(x *composeCLIFront) composeCLICreatorPollFacts {
+	facts := composeCLICreatorPollFacts{Result: "creator_host_observation_unknown", ErrnoCategory: "not_observed"}
 	if x == nil {
-		return "not_provided"
+		facts.Result = "not_provided"
+		return facts
 	}
 	if x.hostFD < 0 || int64(x.hostFD) > 2147483647 || !ownerBridgeInvocation.MatchString(x.hostAttempt) {
-		return "creator_host_observation_unknown"
+		return facts
 	}
 	poll := []unix.PollFd{{Fd: int32(x.hostFD), Events: unix.POLLIN}}
 	n, err := unix.Poll(poll, 0)
+	bits := uint16(poll[0].Revents)
+	facts.Performed = true
+	facts.Count = &n
+	facts.Revents = &bits
+	facts.ErrnoCategory = "none"
 	if err != nil {
-		return "creator_host_observation_unknown"
+		facts.ErrnoCategory = "unclassified"
+		if errno, ok := err.(syscall.Errno); ok {
+			switch errno {
+			case unix.EINTR:
+				facts.ErrnoCategory = "interrupted"
+			case unix.EBADF:
+				facts.ErrnoCategory = "invalid_descriptor"
+			case unix.EINVAL:
+				facts.ErrnoCategory = "invalid_argument"
+			default:
+				facts.ErrnoCategory = "other_errno"
+			}
+		}
+		return facts
 	}
 	if n == 0 && poll[0].Revents == 0 {
-		return "live"
+		facts.Result = "live"
+		return facts
 	}
 	if n == 1 && poll[0].Revents == unix.POLLIN {
-		return "creator_host_exited"
+		facts.Result = "creator_host_exited"
+		return facts
 	}
-	return "creator_host_observation_unknown"
+	return facts
 }
 
 func composeCLIRefresh(t *testing.T, f *bootstrapDockerFixture, startupDeadline time.Time) StartupStatusObservation {
@@ -564,15 +601,16 @@ func composeCLIRefreshForCreator(t *testing.T, f *bootstrapDockerFixture, startu
 	defer cancel()
 	lastCode := "none"
 	checkCreator := func() {
-		fact := composeCLICreatorObservation(x)
+		observed := composeCLICreatorPollObservation(x)
+		fact := observed.Result
 		if fact == "not_provided" || fact == "live" {
 			return
 		}
 		attempt := ""
-		if ownerBridgeInvocation.MatchString(x.hostAttempt) {
+		if observed.Performed && ownerBridgeInvocation.MatchString(x.hostAttempt) {
 			attempt = x.hostAttempt
 		}
-		f.WriteEvidence(t, "creator-refresh-failure.json", map[string]any{"errorCode": fact, "coldInvocationId": attempt, "deadlineExpired": ctx.Err() != nil, "lastRequestErrorCode": lastCode})
+		f.WriteEvidence(t, "creator-refresh-failure.json", map[string]any{"errorCode": fact, "coldInvocationId": attempt, "deadlineExpired": ctx.Err() != nil, "lastRequestErrorCode": lastCode, "creatorPoll": observed})
 		t.Fatal("actual creator host exited or its retained handle could not be observed")
 	}
 	for ctx.Err() == nil {

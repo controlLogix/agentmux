@@ -1,0 +1,317 @@
+2026-10-15T01:01:35.8012660Z Current runner version: '2.337.0'
+2026-10-15T01:01:35.8027830Z ##[group]Runner Image Provisioner
+2026-10-15T01:01:35.8028390Z Hosted Compute Agent
+2026-10-15T01:01:35.8028780Z Version: 20260828.587
+2026-10-15T01:01:35.8029230Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+2026-10-15T01:01:35.8029730Z Build Date: 2026-08-28T16:44:25Z
+2026-10-15T01:01:35.8030190Z Worker ID: {e799fd88-cb85-43a9-b18c-cf196d43f51c}
+2026-10-15T01:01:35.8030670Z Azure Region: westus
+2026-10-15T01:01:35.8031060Z ##[endgroup]
+2026-10-15T01:01:35.8031940Z ##[group]Operating System
+2026-10-15T01:01:35.8032350Z macOS
+2026-10-15T01:01:35.8032690Z 15.7.9
+2026-10-15T01:01:35.8033040Z 24G830
+2026-10-15T01:01:35.8033390Z ##[endgroup]
+2026-10-15T01:01:35.8033760Z ##[group]Runner Image
+2026-10-15T01:01:35.8034160Z Image: macos-15-arm64
+2026-10-15T01:01:35.8034550Z Version: 20260907.0337.1
+2026-10-15T01:01:35.8035450Z Included Software: https://github.com/actions/runner-images/blob/macos-15-arm64/20260907.0337/images/macos/macos-15-arm64-Readme.md
+2026-10-15T01:01:35.8036610Z Image Release: https://github.com/actions/runner-images/releases/tag/macos-15-arm64%2F20260907.0337
+2026-10-15T01:01:35.8037330Z ##[endgroup]
+2026-10-15T01:01:35.8038110Z ##[group]GITHUB_TOKEN Permissions
+2026-10-15T01:01:35.8039610Z Contents: read
+2026-10-15T01:01:35.8040030Z Metadata: read
+2026-10-15T01:01:35.8040410Z ##[endgroup]
+2026-10-15T01:01:35.8041770Z Secret source: Actions
+2026-10-15T01:01:35.8042370Z Cache mode: write
+2026-10-15T01:01:35.8042830Z Prepare workflow directory
+2026-10-15T01:01:35.8297880Z Prepare all required actions
+2026-10-15T01:01:35.8339030Z Getting action download info
+2026-10-15T01:01:36.1070260Z Download action repository 'actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09' (SHA:fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09)
+2026-10-15T01:01:36.3049520Z Download action repository 'actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1' (SHA:ece7cb06caefa5fff74198d8649806c4678c61a1)
+2026-10-15T01:01:36.3840320Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-15T01:01:36.5687230Z Complete job name: darwin-install (macos-15)
+2026-10-15T01:01:36.6088220Z ##[group]Run actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+2026-10-15T01:01:36.6088890Z with:
+2026-10-15T01:01:36.6089220Z   persist-credentials: false
+2026-10-15T01:01:36.6089590Z   fetch-depth: 0
+2026-10-15T01:01:36.6089930Z   repository: controlLogix/agentmux
+2026-10-15T01:01:36.6092430Z   token: ***
+2026-10-15T01:01:36.6092740Z   ssh-strict: true
+2026-10-15T01:01:36.6093070Z   ssh-user: git
+2026-10-15T01:01:36.6093380Z   clean: true
+2026-10-15T01:01:36.6093720Z   sparse-checkout-cone-mode: true
+2026-10-15T01:01:36.6094090Z   fetch-tags: false
+2026-10-15T01:01:36.6094430Z   show-progress: true
+2026-10-15T01:01:36.6094760Z   lfs: false
+2026-10-15T01:01:36.6095070Z   submodules: false
+2026-10-15T01:01:36.6095400Z   set-safe-directory: true
+2026-10-15T01:01:36.6095780Z   allow-unsafe-pr-checkout: false
+2026-10-15T01:01:36.6096320Z ##[endgroup]
+2026-10-15T01:01:36.8913300Z Syncing repository: controlLogix/agentmux
+2026-10-15T01:01:36.8915090Z ##[group]Getting Git version info
+2026-10-15T01:01:36.8916060Z Working directory is '/Users/runner/work/agentmux/agentmux'
+2026-10-15T01:01:36.8930560Z [command]/opt/homebrew/bin/git version
+2026-10-15T01:01:36.9900220Z git version 2.55.0
+2026-10-15T01:01:36.9912760Z ##[endgroup]
+2026-10-15T01:01:36.9919230Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/854d6c1a-81a2-47fe-9861-3d302e00e591/.gitconfig'
+2026-10-15T01:01:36.9931630Z Temporarily overriding HOME='/Users/runner/work/_temp/854d6c1a-81a2-47fe-9861-3d302e00e591' before making global git config changes
+2026-10-15T01:01:36.9932850Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-15T01:01:36.9934600Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/agentmux/agentmux
+2026-10-15T01:01:37.0044750Z Deleting the contents of '/Users/runner/work/agentmux/agentmux'
+2026-10-15T01:01:37.0047290Z ##[group]Initializing the repository
+2026-10-15T01:01:37.0050850Z [command]/opt/homebrew/bin/git init /Users/runner/work/agentmux/agentmux
+2026-10-15T01:01:37.0245080Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-15T01:01:37.0246070Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-15T01:01:37.0246880Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-15T01:01:37.0247560Z hint: call:
+2026-10-15T01:01:37.0247950Z hint:
+2026-10-15T01:01:37.0248410Z hint: 	git config --global init.defaultBranch <name>
+2026-10-15T01:01:37.0248930Z hint:
+2026-10-15T01:01:37.0249430Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-15T01:01:37.0250130Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-15T01:01:37.0250780Z hint:
+2026-10-15T01:01:37.0251150Z hint: 	git branch -m <name>
+2026-10-15T01:01:37.0251570Z hint:
+2026-10-15T01:01:37.0252090Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-15T01:01:37.0252860Z Initialized empty Git repository in /Users/runner/work/agentmux/agentmux/.git/
+2026-10-15T01:01:37.0256190Z [command]/opt/homebrew/bin/git remote add origin https://github.com/controlLogix/agentmux
+2026-10-15T01:01:37.0326830Z ##[endgroup]
+2026-10-15T01:01:37.0327600Z ##[group]Disabling automatic garbage collection
+2026-10-15T01:01:37.0329060Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2026-10-15T01:01:37.0391450Z ##[endgroup]
+2026-10-15T01:01:37.0392200Z ##[group]Setting up auth
+2026-10-15T01:01:37.0395660Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-15T01:01:37.0455820Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-15T01:01:37.1834910Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-15T01:01:37.1900890Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-15T01:01:37.2594670Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-15T01:01:37.2658830Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-15T01:01:37.3527610Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-15T01:01:37.3580480Z ##[endgroup]
+2026-10-15T01:01:37.3581180Z ##[group]Fetching the repository
+2026-10-15T01:01:37.3585710Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+2026-10-15T01:01:39.7571830Z From https://github.com/controlLogix/agentmux
+2026-10-15T01:01:39.7572800Z  * [new branch]      backup/pre-reset-2026-09-26 -> origin/backup/pre-reset-2026-09-26
+2026-10-15T01:01:39.7574090Z  * [new branch]      feat/agentmux-platform-rearchitecture -> origin/feat/agentmux-platform-rearchitecture
+2026-10-15T01:01:39.7575120Z  * [new branch]      main       -> origin/main
+2026-10-15T01:01:39.7577740Z [command]/opt/homebrew/bin/git branch --list --remote origin/feat/agentmux-platform-rearchitecture
+2026-10-15T01:01:39.7636940Z   origin/feat/agentmux-platform-rearchitecture
+2026-10-15T01:01:39.7642200Z [command]/opt/homebrew/bin/git rev-parse refs/remotes/origin/feat/agentmux-platform-rearchitecture
+2026-10-15T01:01:39.7698390Z 8978b7ae5ce8aad69d017b774861f19231c26b63
+2026-10-15T01:01:39.7700640Z ##[endgroup]
+2026-10-15T01:01:39.7701430Z ##[group]Determining the checkout info
+2026-10-15T01:01:39.7702640Z ##[endgroup]
+2026-10-15T01:01:39.7709390Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2026-10-15T01:01:39.7775490Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-15T01:01:39.7831550Z ##[group]Checking out the ref
+2026-10-15T01:01:39.7833940Z [command]/opt/homebrew/bin/git checkout --progress --force -B feat/agentmux-platform-rearchitecture refs/remotes/origin/feat/agentmux-platform-rearchitecture
+2026-10-15T01:01:40.7164830Z Switched to a new branch 'feat/agentmux-platform-rearchitecture'
+2026-10-15T01:01:40.7167990Z branch 'feat/agentmux-platform-rearchitecture' set up to track 'origin/feat/agentmux-platform-rearchitecture'.
+2026-10-15T01:01:40.7198780Z ##[endgroup]
+2026-10-15T01:01:40.7270980Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2026-10-15T01:01:40.7328460Z 8978b7ae5ce8aad69d017b774861f19231c26b63
+2026-10-15T01:01:40.7334060Z ##[group]Removing auth
+2026-10-15T01:01:40.7336660Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-15T01:01:40.7384700Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-15T01:01:40.7989450Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-15T01:01:40.8031240Z http.https://github.com/.extraheader
+2026-10-15T01:01:40.8034980Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-15T01:01:40.8081070Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-15T01:01:40.8666180Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-15T01:01:40.8712340Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-15T01:01:40.9290530Z ##[endgroup]
+2026-10-15T01:01:40.9516760Z ##[group]Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+2026-10-15T01:01:40.9517550Z with:
+2026-10-15T01:01:40.9518100Z   python-version: 3.14.8
+2026-10-15T01:01:40.9518690Z   check-latest: false
+2026-10-15T01:01:40.9521280Z   token: ***
+2026-10-15T01:01:40.9521840Z   update-environment: true
+2026-10-15T01:01:40.9522460Z   allow-prereleases: false
+2026-10-15T01:01:40.9523550Z   freethreaded: false
+2026-10-15T01:01:40.9524150Z ##[endgroup]
+2026-10-15T01:01:41.0575080Z ##[group]Installed versions
+2026-10-15T01:01:41.0584700Z Version 3.14.8 was not found in the local cache
+2026-10-15T01:01:41.8542340Z Version 3.14.8 is available for downloading
+2026-10-15T01:01:41.8543110Z Download from "https://github.com/actions/python-versions/releases/download/3.14.8-36806082737/python-3.14.8-darwin-arm64.tar.gz"
+2026-10-15T01:01:42.5919030Z Extract downloaded archive
+2026-10-15T01:01:42.6093430Z [command]/usr/bin/tar xz -C /Users/runner/work/_temp/3388077b-ef36-4ff4-b24f-60913c642d22 -f /Users/runner/work/_temp/60e3614d-9bb2-4a23-95a9-3d1cc437bf1a
+2026-10-15T01:01:42.7235100Z Execute installation script
+2026-10-15T01:01:42.7440130Z Check if Python hostedtoolcache folder exist...
+2026-10-15T01:01:42.7498070Z Deleting Python /Users/runner/hostedtoolcache/Python/3.14.7/arm64
+2026-10-15T01:01:42.7594680Z Install Python binaries from prebuilt package
+2026-10-15T01:01:58.4311120Z installer: Package name is Python
+2026-10-15T01:01:58.4312300Z installer: choices changes file '/var/folders/nj/vtw8zd2j31d1gdrtntc5y4600000gn/T/tmp.JU4MyQhzTK' applied
+2026-10-15T01:01:58.4314370Z installer: Upgrading at base path /
+2026-10-15T01:01:58.4315720Z installer: The upgrade was successful.
+2026-10-15T01:01:58.4327950Z Create hostedtoolcach symlinks (Required for the backward compatibility)
+2026-10-15T01:01:58.4333230Z Create Python 3.14.8 folder
+2026-10-15T01:01:58.4487750Z Create additional symlinks (Required for the UsePythonVersion Azure Pipelines task and the setup-python GitHub Action)
+2026-10-15T01:01:58.4551380Z Upgrading pip...
+2026-10-15T01:01:59.1304890Z Collecting pip
+2026-10-15T01:01:59.1347620Z Using cached pip-26.2.1-py3-none-any.whl.metadata (4.6 kB)
+2026-10-15T01:01:59.1393820Z Using cached pip-26.2.1-py3-none-any.whl (1.8 MB)
+2026-10-15T01:01:59.1630240Z Installing collected packages: pip
+2026-10-15T01:01:59.1631070Z Attempting uninstall: pip
+2026-10-15T01:01:59.1645620Z Found existing installation: pip 26.2.1
+2026-10-15T01:01:59.1853280Z Uninstalling pip-26.2.1:
+2026-10-15T01:01:59.2921550Z Successfully uninstalled pip-26.2.1
+2026-10-15T01:02:00.2325060Z Successfully installed pip-26.2.1
+2026-10-15T01:02:00.3221310Z Install OpenSSL certificates
+2026-10-15T01:02:00.6186960Z Requirement already satisfied: certifi in /Library/Frameworks/Python.framework/Versions/3.14/lib/python3.14/site-packages (2026.7.22)
+2026-10-15T01:02:00.7502520Z -- pip install --upgrade certifi
+2026-10-15T01:02:00.7503460Z  -- removing any existing file or link
+2026-10-15T01:02:00.7503880Z  -- creating symlink to certifi certificate bundle
+2026-10-15T01:02:00.7504570Z  -- setting permissions
+2026-10-15T01:02:00.7504840Z  -- update complete
+2026-10-15T01:02:00.7573440Z Create complete file
+2026-10-15T01:02:00.7653180Z Successfully set up CPython (3.14.8)
+2026-10-15T01:02:00.7654150Z ##[endgroup]
+2026-10-15T01:02:00.7841330Z ##[group]Run python tests/platform/native_go.py --self-test
+2026-10-15T01:02:00.7841970Z [36;1mpython tests/platform/native_go.py --self-test[0m
+2026-10-15T01:02:00.7893380Z shell: /bin/bash -e {0}
+2026-10-15T01:02:00.7893720Z env:
+2026-10-15T01:02:00.7894120Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.14.8/arm64
+2026-10-15T01:02:00.7894650Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.14.8/arm64/lib/pkgconfig
+2026-10-15T01:02:00.7895220Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.14.8/arm64
+2026-10-15T01:02:00.7895680Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.14.8/arm64
+2026-10-15T01:02:00.7896220Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.14.8/arm64
+2026-10-15T01:02:00.7896580Z ##[endgroup]
+2026-10-15T01:02:00.9641590Z test_a_pass_cannot_hide_skip_failure_or_missing_package_end (__main__.AdmissionTests.test_a_pass_cannot_hide_skip_failure_or_missing_package_end) ... ok
+2026-10-15T01:02:00.9642440Z test_actual_pass (__main__.AdmissionTests.test_actual_pass) ... ok
+2026-10-15T01:02:00.9643390Z test_completion_order_requires_run_then_test_end_then_package_end (__main__.AdmissionTests.test_completion_order_requires_run_then_test_end_then_package_end) ... ok
+2026-10-15T01:02:00.9693210Z test_downloader_import_does_not_write_checkout_bytecode (__main__.AdmissionTests.test_downloader_import_does_not_write_checkout_bytecode) ... ok
+2026-10-15T01:02:00.9694230Z test_empty_skip_failure_and_malformed_are_not_passes (__main__.AdmissionTests.test_empty_skip_failure_and_malformed_are_not_passes) ... ok
+2026-10-15T01:02:00.9708830Z test_interrupted_checkpoint_publication_preserves_prior_report (__main__.AdmissionTests.test_interrupted_checkpoint_publication_preserves_prior_report) ... ok
+2026-10-15T01:02:00.9709980Z test_local_tls_package_cannot_be_omitted_or_declared_without_tests (__main__.AdmissionTests.test_local_tls_package_cannot_be_omitted_or_declared_without_tests) ... ok
+2026-10-15T01:02:00.9711030Z test_missing_mismatched_and_incomplete_package_events_fail (__main__.AdmissionTests.test_missing_mismatched_and_incomplete_package_events_fail) ... ok
+2026-10-15T01:02:00.9711940Z test_module_pins_are_structured_and_replacements_refused (__main__.AdmissionTests.test_module_pins_are_structured_and_replacements_refused) ... ok
+2026-10-15T01:02:00.9712900Z test_nonzero_exit_and_package_only_are_not_passes (__main__.AdmissionTests.test_nonzero_exit_and_package_only_are_not_passes) ... ok
+2026-10-15T01:02:00.9714100Z test_package_matrix_cannot_hide_missing_new_or_incomplete_tests (__main__.AdmissionTests.test_package_matrix_cannot_hide_missing_new_or_incomplete_tests) ... ok
+2026-10-15T01:02:00.9715570Z test_private_files_package_cannot_be_omitted_or_declared_without_tests (__main__.AdmissionTests.test_private_files_package_cannot_be_omitted_or_declared_without_tests) ... ok
+2026-10-15T01:02:00.9716590Z test_runtime_command_package_cannot_be_omitted_or_declared_without_tests (__main__.AdmissionTests.test_runtime_command_package_cannot_be_omitted_or_declared_without_tests) ... ok
+2026-10-15T01:02:00.9717590Z test_cgo0_deployment_events_require_exact_actual_named_completion (__main__.RunnerTests.test_cgo0_deployment_events_require_exact_actual_named_completion) ... ok
+2026-10-15T01:02:00.9727780Z test_cgo0_deployment_inventory_rejects_wrong_missing_and_repeated_test (__main__.RunnerTests.test_cgo0_deployment_inventory_rejects_wrong_missing_and_repeated_test) ... ok
+2026-10-15T01:02:00.9736500Z test_cgo0_inventory_and_named_events_cannot_hide_missing_or_wrong_test (__main__.RunnerTests.test_cgo0_inventory_and_named_events_cannot_hide_missing_or_wrong_test) ... ok
+2026-10-15T01:02:01.1224200Z test_darwin_cgo0_deployment_refusal_has_separate_command_and_report (__main__.RunnerTests.test_darwin_cgo0_deployment_refusal_has_separate_command_and_report) ... ok
+2026-10-15T01:02:01.1861680Z test_darwin_cgo0_refusal_is_exact_separate_and_not_product_qualification (__main__.RunnerTests.test_darwin_cgo0_refusal_is_exact_separate_and_not_product_qualification) ... ok
+2026-10-15T01:02:01.2172760Z test_darwin_normal_matrix_never_claims_native_protected_boot (__main__.RunnerTests.test_darwin_normal_matrix_never_claims_native_protected_boot) ... ok
+2026-10-15T01:02:01.2548160Z test_darwin_normal_matrix_requires_actual_cgo_compiler_sdk_for_private_files (__main__.RunnerTests.test_darwin_normal_matrix_requires_actual_cgo_compiler_sdk_for_private_files) ... Foundation collection failed; inspect the source-bound report and scoped logs.
+2026-10-15T01:02:01.2648500Z Foundation collection failed; inspect the source-bound report and scoped logs.
+2026-10-15T01:02:01.2735790Z Foundation collection failed; inspect the source-bound report and scoped logs.
+2026-10-15T01:02:01.2763840Z ok
+2026-10-15T01:02:01.3322000Z test_deployment_refusal_claim_requires_stable_original_and_executed_source (__main__.RunnerTests.test_deployment_refusal_claim_requires_stable_original_and_executed_source) ... ok
+2026-10-15T01:02:01.3330200Z test_hidden_preparation_refuses_populated_workspace_before_writes (__main__.RunnerTests.test_hidden_preparation_refuses_populated_workspace_before_writes) ... usage: native_go.py [-h] [--workspace WORKSPACE] [--evidence EVIDENCE]
+2026-10-15T01:02:01.3333010Z                     [--self-test] [--darwin-research | --darwin-install]
+2026-10-15T01:02:01.3334310Z native_go.py: error: Preparation requires a fresh workspace with one empty mode marker at most
+2026-10-15T01:02:01.3335510Z ok
+2026-10-15T01:02:01.3338250Z test_host_scope_cannot_borrow_protected_image_passes (__main__.RunnerTests.test_host_scope_cannot_borrow_protected_image_passes) ... ok
+2026-10-15T01:02:01.4088640Z test_host_selection_failure_or_source_drift_never_qualifies_collection (__main__.RunnerTests.test_host_selection_failure_or_source_drift_never_qualifies_collection) ... ok
+2026-10-15T01:02:01.4091780Z test_install_admission_requires_every_reviewed_top_level_test (__main__.RunnerTests.test_install_admission_requires_every_reviewed_top_level_test) ... ok
+2026-10-15T01:02:01.4095640Z test_install_and_research_flags_are_mutually_exclusive (__main__.RunnerTests.test_install_and_research_flags_are_mutually_exclusive) ... usage: native_go.py [-h] [--workspace WORKSPACE] [--evidence EVIDENCE]
+2026-10-15T01:02:01.4097810Z                     [--self-test] [--darwin-research | --darwin-install]
+2026-10-15T01:02:01.4099100Z native_go.py: error: argument --darwin-research: not allowed with argument --darwin-install
+2026-10-15T01:02:01.4101550Z ok
+2026-10-15T01:02:01.4106350Z test_install_inventory_refuses_missing_tests_or_cgo (__main__.RunnerTests.test_install_inventory_refuses_missing_tests_or_cgo) ... ok
+2026-10-15T01:02:01.4164390Z test_install_inventory_requires_all_host_declarations_exactly_once (__main__.RunnerTests.test_install_inventory_requires_all_host_declarations_exactly_once) ... ok
+2026-10-15T01:02:01.4226510Z test_install_refuses_malformed_apple_compiler_version_before_tests (__main__.RunnerTests.test_install_refuses_malformed_apple_compiler_version_before_tests) ... Foundation collection failed; inspect the source-bound report and scoped logs.
+2026-10-15T01:02:01.4322580Z Foundation collection failed; inspect the source-bound report and scoped logs.
+2026-10-15T01:02:01.4687570Z Foundation collection failed; inspect the source-bound report and scoped logs.
+2026-10-15T01:02:01.4780880Z Foundation collection failed; inspect the source-bound report and scoped logs.
+2026-10-15T01:02:01.4803270Z ok
+2026-10-15T01:02:01.4830940Z test_install_requires_native_host_authorization_and_nonroot_before_effects (__main__.RunnerTests.test_install_requires_native_host_authorization_and_nonroot_before_effects) ... Foundation collection failed; inspect the source-bound report and scoped logs.
+2026-10-15T01:02:01.4880100Z Foundation collection failed; inspect the source-bound report and scoped logs.
+2026-10-15T01:02:01.4924850Z Foundation collection failed; inspect the source-bound report and scoped logs.
+2026-10-15T01:02:01.4941230Z ok
+2026-10-15T01:02:01.5142820Z test_install_selection_is_separate_and_never_qualifies_full_boot (__main__.RunnerTests.test_install_selection_is_separate_and_never_qualifies_full_boot) ... ok
+2026-10-15T01:02:01.5147870Z test_interrupted_owned_wait_stops_and_reaps_before_propagation (__main__.RunnerTests.test_interrupted_owned_wait_stops_and_reaps_before_propagation) ... ok
+2026-10-15T01:02:01.5160750Z test_interruption_after_reaping_never_signals_saved_identity (__main__.RunnerTests.test_interruption_after_reaping_never_signals_saved_identity) ... ok
+2026-10-15T01:02:01.5579910Z test_normal_native_selection_executes_local_tls_on_both_hosts (__main__.RunnerTests.test_normal_native_selection_executes_local_tls_on_both_hosts) ... ok
+2026-10-15T01:02:01.5940560Z test_normal_native_selection_executes_runtime_command_on_both_hosts (__main__.RunnerTests.test_normal_native_selection_executes_runtime_command_on_both_hosts) ... ok
+2026-10-15T01:02:01.6040330Z test_owned_builtin_timeout_reaps_actual_child (__main__.RunnerTests.test_owned_builtin_timeout_reaps_actual_child) ... ok
+2026-10-15T01:02:01.6045070Z test_owned_cleanup_interruption_retains_owner (__main__.RunnerTests.test_owned_cleanup_interruption_retains_owner) ... ok
+2026-10-15T01:02:01.7356010Z test_owned_cleanup_shutdown_reaps_exact_retained_child (__main__.RunnerTests.test_owned_cleanup_shutdown_reaps_exact_retained_child) ... ok
+2026-10-15T01:02:01.7456340Z test_owned_cleanup_stop_failure_never_disappears_after_reap (__main__.RunnerTests.test_owned_cleanup_stop_failure_never_disappears_after_reap) ... ok
+2026-10-15T01:02:01.7557860Z test_owned_cleanup_timeout_retains_owner_and_retry_resolves (__main__.RunnerTests.test_owned_cleanup_timeout_retains_owner_and_retry_resolves) ... ok
+2026-10-15T01:02:01.7596610Z test_preparation_accepts_only_empty_regular_marker (__main__.RunnerTests.test_preparation_accepts_only_empty_regular_marker) ... ok
+2026-10-15T01:02:01.7597730Z test_preparation_rejects_combined_install_and_research_markers (__main__.RunnerTests.test_preparation_rejects_combined_install_and_research_markers) ... ok
+2026-10-15T01:02:01.7607130Z test_protected_image_pass_cannot_hide_failed_host_scope (__main__.RunnerTests.test_protected_image_pass_cannot_hide_failed_host_scope) ... ok
+2026-10-15T01:02:01.7718220Z test_research_has_separate_results_and_actual_fail_closed_control (__main__.RunnerTests.test_research_has_separate_results_and_actual_fail_closed_control) ... ok
+2026-10-15T01:02:01.7921710Z test_research_refusal_claim_requires_stable_original_and_executed_source (__main__.RunnerTests.test_research_refusal_claim_requires_stable_original_and_executed_source) ... ok
+2026-10-15T01:02:01.7953370Z test_setup_failure_retains_failed_report_without_private_error_text (__main__.RunnerTests.test_setup_failure_retains_failed_report_without_private_error_text) ... Foundation collection failed; inspect the source-bound report and scoped logs.
+2026-10-15T01:02:01.7971600Z ok
+2026-10-15T01:02:01.8208710Z test_synthetic_darwin_metadata_never_uses_process_fake (__main__.RunnerTests.test_synthetic_darwin_metadata_never_uses_process_fake) ... ok
+2026-10-15T01:02:01.8375570Z test_synthetic_normal_runner_records_every_scope_and_isolates_environment (__main__.RunnerTests.test_synthetic_normal_runner_records_every_scope_and_isolates_environment) ... ok
+2026-10-15T01:02:01.8721170Z test_synthetic_test_failure_and_changed_execution_source_cannot_pass (__main__.RunnerTests.test_synthetic_test_failure_and_changed_execution_source_cannot_pass) ... ok
+2026-10-15T01:02:01.9083910Z test_timeout_is_checkpointed_and_exhausted_scopes_are_unexecuted (__main__.RunnerTests.test_timeout_is_checkpointed_and_exhausted_scopes_are_unexecuted) ... Foundation collection failed; inspect the source-bound report and scoped logs.
+2026-10-15T01:02:01.9100400Z ok
+2026-10-15T01:02:01.9128120Z test_unsupported_host_refuses_before_tools_or_tests (__main__.RunnerTests.test_unsupported_host_refuses_before_tools_or_tests) ... Foundation collection failed; inspect the source-bound report and scoped logs.
+2026-10-15T01:02:01.9146960Z ok
+2026-10-15T01:02:01.9147280Z 
+2026-10-15T01:02:01.9147870Z ----------------------------------------------------------------------
+2026-10-15T01:02:01.9148190Z Ran 51 tests in 0.950s
+2026-10-15T01:02:01.9148300Z 
+2026-10-15T01:02:01.9148360Z OK
+2026-10-15T01:02:01.9342290Z ##[group]Run python tests/platform/native_go.py --darwin-install --workspace "/Users/runner/work/_temp/agentmux-p02-install" --evidence "/Users/runner/work/_temp/agentmux-p02-install-evidence"
+2026-10-15T01:02:01.9343340Z [36;1mpython tests/platform/native_go.py --darwin-install --workspace "/Users/runner/work/_temp/agentmux-p02-install" --evidence "/Users/runner/work/_temp/agentmux-p02-install-evidence"[0m
+2026-10-15T01:02:01.9378330Z shell: /bin/bash -e {0}
+2026-10-15T01:02:01.9378520Z env:
+2026-10-15T01:02:01.9378780Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.14.8/arm64
+2026-10-15T01:02:01.9379220Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.14.8/arm64/lib/pkgconfig
+2026-10-15T01:02:01.9379620Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.14.8/arm64
+2026-10-15T01:02:01.9379970Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.14.8/arm64
+2026-10-15T01:02:01.9380360Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.14.8/arm64
+2026-10-15T01:02:01.9380670Z   AMX_DARWIN_INSTALL_AUTHORIZED: 1
+2026-10-15T01:02:01.9380880Z ##[endgroup]
+2026-10-15T01:02:10.6224120Z go: downloading golang.org/x/sys v0.48.0
+2026-10-15T01:02:10.6643200Z go: downloading github.com/nats-io/nats.go v1.54.0
+2026-10-15T01:02:11.2422870Z go: downloading github.com/nats-io/nkeys v0.4.16
+2026-10-15T01:02:11.2423660Z go: downloading github.com/klauspost/compress v1.20.0
+2026-10-15T01:02:11.3545880Z go: downloading github.com/nats-io/nuid v1.0.1
+2026-10-15T01:02:11.3990030Z go: downloading golang.org/x/crypto v0.57.0
+2026-10-15T01:02:58.9042880Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+2026-10-15T01:02:58.9043450Z with:
+2026-10-15T01:02:58.9043930Z   name: p02-darwin-install-macos-15-8978b7ae5ce8aad69d017b774861f19231c26b63
+2026-10-15T01:02:58.9044410Z   path: /Users/runner/work/_temp/agentmux-p02-install-evidence/
+2026-10-15T01:02:58.9044840Z   if-no-files-found: error
+2026-10-15T01:02:58.9045080Z   retention-days: 30
+2026-10-15T01:02:58.9045400Z   compression-level: 6
+2026-10-15T01:02:58.9045650Z   overwrite: false
+2026-10-15T01:02:58.9045960Z   include-hidden-files: false
+2026-10-15T01:02:58.9046200Z env:
+2026-10-15T01:02:58.9046580Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.14.8/arm64
+2026-10-15T01:02:58.9046990Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.14.8/arm64/lib/pkgconfig
+2026-10-15T01:02:58.9057300Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.14.8/arm64
+2026-10-15T01:02:58.9058850Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.14.8/arm64
+2026-10-15T01:02:58.9060170Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.14.8/arm64
+2026-10-15T01:02:58.9061170Z ##[endgroup]
+2026-10-15T01:02:59.1419370Z (node:5207) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-15T01:02:59.1420280Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-15T01:02:59.1459460Z With the provided path, there will be 5 files uploaded
+2026-10-15T01:02:59.1461830Z Artifact name is valid!
+2026-10-15T01:02:59.1462190Z Root directory input is valid!
+2026-10-15T01:02:59.4489820Z Beginning upload of artifact content to blob storage
+2026-10-15T01:02:59.4709580Z (node:5207) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-15T01:02:59.6716040Z Uploaded bytes 23960
+2026-10-15T01:02:59.7150490Z Finished uploading artifact content to blob storage!
+2026-10-15T01:02:59.7151110Z SHA256 digest of uploaded artifact zip is 5dd146af6a4763c52fbcc8dc95b1094f71a5708a5da4e5c42f6e4ab243b55daf
+2026-10-15T01:02:59.7151610Z Finalizing artifact upload
+2026-10-15T01:02:59.9817160Z Artifact p02-darwin-install-macos-15-8978b7ae5ce8aad69d017b774861f19231c26b63.zip successfully finalized. Artifact ID 11940185429
+2026-10-15T01:02:59.9820220Z Artifact p02-darwin-install-macos-15-8978b7ae5ce8aad69d017b774861f19231c26b63 has been successfully uploaded! Final size is 23960 bytes. Artifact ID is 11940185429
+2026-10-15T01:02:59.9839550Z Artifact download URL: https://github.com/controlLogix/agentmux/actions/runs/38663191521/artifacts/11940185429
+2026-10-15T01:03:00.0047750Z Post job cleanup.
+2026-10-15T01:03:00.1589220Z Post job cleanup.
+2026-10-15T01:03:00.2534770Z [command]/opt/homebrew/bin/git version
+2026-10-15T01:03:00.2616290Z git version 2.55.0
+2026-10-15T01:03:00.2633940Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/5bd2aa90-375d-43d9-bf4c-87975723d111/.gitconfig'
+2026-10-15T01:03:00.2641900Z Temporarily overriding HOME='/Users/runner/work/_temp/5bd2aa90-375d-43d9-bf4c-87975723d111' before making global git config changes
+2026-10-15T01:03:00.2642570Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-15T01:03:00.2644780Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/agentmux/agentmux
+2026-10-15T01:03:00.2754840Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-15T01:03:00.2778270Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-15T01:03:00.3649890Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-15T01:03:00.3701990Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-15T01:03:00.4327710Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-15T01:03:00.4375430Z [command]/opt/homebrew/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-15T01:03:00.5281370Z Cleaning up orphan processes
+2026-10-15T01:03:01.3724160Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
