@@ -1,0 +1,369 @@
+--- before/owner_bridge.go
++++ candidate/owner_bridge.go
+@@ -94,7 +94,7 @@
+ 	if code == "authority_rejected" {
+ 		return errOwnerBridgeAuthority
+ 	}
+-	return errors.New("owner_bridge_" + code)
++	return &bridgeFailure{code: code}
+ }
+ func IsOwnerBridgeAuthorityError(err error) bool { return errors.Is(err, errOwnerBridgeAuthority) }
+ func bridgeTime(t time.Time) string {
+@@ -202,8 +202,14 @@
+ // A live socket follows its owned lifetime; connection work is also bounded
+ // by the startup or terminal-failure budget supplied by the same Run.
+ func bridgeConnectWithin(parent, budget context.Context, c BootstrapConfig, credential OwnerBridgeCredential) (*nats.Conn, *localtls.Dialer, error) {
+-	if parent == nil || budget == nil || parent.Err() != nil || budget.Err() != nil {
++	if parent == nil || budget == nil {
+ 		return nil, nil, bridgeError("deadline")
++	}
++	if parent.Err() != nil {
++		return nil, nil, bridgeContextError("deadline", parent.Err())
++	}
++	if budget.Err() != nil {
++		return nil, nil, bridgeContextError("deadline", budget.Err())
+ 	}
+ 	if c.Kernel.authority == nil || c.Kernel.TLS == nil {
+ 		return nil, nil, bridgeError("authority_rejected")
+@@ -217,7 +223,7 @@
+ 	authority, err := inspectLocalBrokerAuthority(ctx, c)
+ 	if err != nil {
+ 		if ctx.Err() != nil {
+-			return nil, nil, bridgeError("deadline")
++			return nil, nil, bridgeContextError("deadline", ctx.Err())
+ 		}
+ 		return nil, nil, bridgeAuthorityFailure(err)
+ 	}
+@@ -229,7 +235,10 @@
+ 	}
+ 	deadline, _ := ctx.Deadline()
+ 	remaining := time.Until(deadline)
+-	if ctx.Err() != nil || remaining <= 0 {
++	if ctx.Err() != nil {
++		return nil, nil, bridgeContextError("deadline", ctx.Err())
++	}
++	if remaining <= 0 {
+ 		return nil, nil, bridgeError("deadline")
+ 	}
+ 	dialer, err := authority.trust.NewDialer(parent, remaining)
+@@ -245,7 +254,7 @@
+ 		<-stopped
+ 	}
+ 	if ctx.Err() != nil {
+-		return nil, nil, closeBridgeConnection(nc, dialer, bridgeError("deadline"))
++		return nil, nil, closeBridgeConnection(nc, dialer, bridgeContextError("deadline", ctx.Err()))
+ 	}
+ 	if err != nil {
+ 		code := "connection_unavailable"
+@@ -296,7 +305,7 @@
+ 	ctx, cancel := context.WithTimeout(parent, 5*time.Second)
+ 	defer cancel()
+ 	if ctx.Err() != nil {
+-		return empty, bridgeError("deadline")
++		return empty, bridgeContextError("deadline", ctx.Err())
+ 	}
+ 	// Reopen the enrollment on every request so revoked or changed credentials
+ 	// do not survive in a cached client handle.
+@@ -340,7 +349,7 @@
+ 			return empty, authority
+ 		}
+ 		if ctx.Err() != nil {
+-			return empty, bridgeError("deadline")
++			return empty, bridgeContextError("deadline", ctx.Err())
+ 		}
+ 		// Core NATS may have no service subscriber during host startup. Repeat
+ 		// only the identical read-only request; the owner's nonce guard accepts
+@@ -364,7 +373,10 @@
+ 		if err == nil {
+ 			break
+ 		}
+-		if ctx.Err() != nil || !errors.Is(err, context.DeadlineExceeded) {
++		if ctx.Err() != nil {
++			return empty, bridgeContextError("reply_unavailable", ctx.Err())
++		}
++		if !errors.Is(err, context.DeadlineExceeded) {
+ 			return empty, bridgeError("reply_unavailable")
+ 		}
+ 	}
+@@ -382,7 +394,7 @@
+ 		return empty, authority
+ 	}
+ 	if ctx.Err() != nil {
+-		return empty, bridgeError("deadline")
++		return empty, bridgeContextError("deadline", ctx.Err())
+ 	}
+ 	return reply.Observation, nil
+ }
+@@ -850,7 +862,7 @@
+ 	}
+ 	facts, operationProof, inspectErr := inspectLocalBrokerOperation(ctx, s.config)
+ 	if ctx.Err() != nil {
+-		return StartupStatusObservation{}, bridgeError("deadline")
++		return StartupStatusObservation{}, bridgeContextError("deadline", ctx.Err())
+ 	}
+ 	if inspectErr != nil || facts.trust == nil || s.config.Kernel.TLS == nil || !reflect.DeepEqual(facts.trust.Policy(), s.config.Kernel.TLS.Policy()) {
+ 		return StartupStatusObservation{}, bridgeError("authority_rejected")
+--- before/owner_bridge_diagnostic.go
++++ candidate/owner_bridge_diagnostic.go
+@@ -0,0 +1,34 @@
++//go:build linux || darwin
++
++package launcher
++
++import (
++	"context"
++	"encoding/json"
++	"fmt"
++)
++
++// The private leaf retains the existing code and only an observed standard
++// context sentinel. It has no Unwrap method, so operational errors.Is behavior
++// remains unchanged. The public projector reads this exact type directly.
++type bridgeFailure struct {
++	code         string
++	contextCause error
++}
++
++func (e bridgeFailure) Error() string                { return "owner_bridge_" + e.code }
++func (e bridgeFailure) Format(s fmt.State, _ rune)   { fmt.Fprint(s, e.Error()) }
++func (e bridgeFailure) MarshalJSON() ([]byte, error) { return json.Marshal(e.Error()) }
++
++// Call only from an executed context-error branch. Other errors and labels
++// cannot supply a retained diagnostic cause.
++func bridgeContextError(code string, observed error) error {
++	if code == "authority_rejected" {
++		return errOwnerBridgeAuthority
++	}
++	value := bridgeFailure{code: code}
++	if observed == context.DeadlineExceeded || observed == context.Canceled {
++		value.contextCause = observed
++	}
++	return &value
++}
+--- before/owner_bridge_diagnostic_test.go
++++ candidate/owner_bridge_diagnostic_test.go
+@@ -0,0 +1,155 @@
++//go:build linux || darwin
++
++package launcher
++
++import (
++	"context"
++	"encoding/json"
++	"errors"
++	"fmt"
++	"testing"
++	"time"
++
++	"github.com/controlLogix/agentmux/platform/deployment"
++	"github.com/controlLogix/agentmux/platform/kernel/protocol"
++	"github.com/nats-io/nats.go"
++)
++
++type bridgeDiagnosticOpaque struct{}
++
++func (bridgeDiagnosticOpaque) Error() string { panic("unknown Error called") }
++func (bridgeDiagnosticOpaque) Unwrap() error { panic("unknown Unwrap called") }
++func (bridgeDiagnosticOpaque) Is(error) bool { panic("unknown Is called") }
++func (bridgeDiagnosticOpaque) As(any) bool   { panic("unknown As called") }
++
++func TestBridgeContextDiagnosticActualRequestDeadline(t *testing.T) {
++	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(-time.Second))
++	defer cancel()
++	client := &OwnerBridgeClient{}
++	_, failure := client.Request(ctx, "status", "attempt_0123456789abcdef0123456789abcdef")
++	if failure == nil || failure.Error() != "owner_bridge_deadline" || ProjectRequestDiagnostic(failure).Code != "request_deadline" {
++		t.Fatal("actual request deadline not retained")
++	}
++	// The diagnostic cause is private; existing operational sentinel behavior stays unchanged.
++	if errors.Is(failure, context.DeadlineExceeded) || errors.Is(failure, context.Canceled) {
++		t.Fatal("operational errors.Is changed")
++	}
++	canceled, stop := context.WithCancel(context.Background())
++	stop()
++	_, failure = client.Request(canceled, "status", "attempt_0123456789abcdef0123456789abcdef")
++	if failure == nil || failure.Error() != "owner_bridge_deadline" || ProjectRequestDiagnostic(failure).Code != "request_failed" {
++		t.Fatal("cancellation invented a deadline")
++	}
++}
++
++func TestBridgeContextDiagnosticPresentationAndSentinels(t *testing.T) {
++	value := bridgeFailure{code: "deadline", contextCause: context.DeadlineExceeded}
++	for _, actual := range []any{value, &value} {
++		for _, format := range []string{"%v", "%+v", "%#v"} {
++			if fmt.Sprintf(format, actual) != "owner_bridge_deadline" {
++				t.Fatal("private leaf state exposed")
++			}
++		}
++		raw, err := json.Marshal(actual)
++		if err != nil || string(raw) != `"owner_bridge_deadline"` {
++			t.Fatal("private leaf JSON changed")
++		}
++	}
++	for _, code := range []string{"deadline", "reply_unavailable", "connection_unavailable", "request_invalid", "future_unknown"} {
++		failure := bridgeError(code)
++		if failure.Error() != "owner_bridge_"+code || errors.Is(failure, context.DeadlineExceeded) || errors.Is(failure, bridgeError(code)) {
++			t.Fatal("legacy error behavior changed")
++		}
++	}
++	if bridgeError("authority_rejected") != errOwnerBridgeAuthority || !IsOwnerBridgeAuthorityError(bridgeError("authority_rejected")) {
++		t.Fatal("authority sentinel changed")
++	}
++}
++
++func TestBridgeContextDiagnosticUnknownAndPriority(t *testing.T) {
++	genuine := bridgeContextError("reply_unavailable", context.DeadlineExceeded)
++	var nilTyped *bridgeFailure
++	cases := []struct {
++		name    string
++		failure error
++		code    string
++	}{
++		{"observed", genuine, "request_deadline"},
++		{"raw_text", errors.New("owner_bridge_deadline"), "request_failed"},
++		{"label_only", bridgeError("deadline"), "request_failed"},
++		{"unknown_cause", bridgeContextError("deadline", bridgeDiagnosticOpaque{}), "request_failed"},
++		{"opaque_graph", bridgeDiagnosticOpaque{}, "request_failed"},
++		{"nil", nil, "request_failed"}, {"nil_typed", nilTyped, "request_failed"},
++		{"cleanup", &TransportCleanupError{cause: genuine}, "owned_cleanup_incomplete"},
++		{"authentication", errors.Join(genuine, nats.ErrAuthorization), "runtime_authority_rejected"},
++		{"authority", errors.Join(genuine, errOwnerBridgeAuthority), "runtime_authority_rejected"},
++	}
++	for _, tc := range cases {
++		t.Run(tc.name, func(t *testing.T) {
++			got := ProjectRequestDiagnostic(tc.failure)
++			if got.Code != tc.code || !ValidRequestDiagnostic(got) {
++				t.Fatal("closed diagnostic or priority changed")
++			}
++		})
++	}
++	children := make([]error, 65)
++	for i := range children {
++		children[i] = genuine
++	}
++	if ProjectRequestDiagnostic(errors.Join(children...)).Code != "request_failed" {
++		t.Fatal("graph bound changed")
++	}
++}
++
++// This component uses genuine authenticated NATS with the existing explicitly
++// controlled Docker inspection fixture. It does not qualify an actual engine.
++func TestBridgeContextDiagnosticActualReplyWaitDeadline(t *testing.T) {
++	f := newBridgeFixture(t)
++	f.startBroker(t)
++	host, err := f.rawTLSClient(t, deployment.OwnerBridgeServerUser)
++	if err != nil {
++		t.Fatal("actual pinned HOST connection failed")
++	}
++	client, err := LoadOwnerBridgeClient(f.config, f.enrollment)
++	if err != nil {
++		t.Fatal("actual enrolled client failed")
++	}
++	sub, err := host.SubscribeSync(client.subjects.Request)
++	if err != nil {
++		t.Fatal("actual HOST request subscription failed")
++	}
++	defer func() {
++		if sub.Unsubscribe() != nil {
++			t.Error("owned HOST subscription cleanup failed")
++		}
++	}()
++	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
++	defer cancel()
++	if host.FlushWithContext(ctx) != nil {
++		t.Fatal("actual HOST subscription not admitted")
++	}
++	done := make(chan error, 1)
++	joined := false
++	go func() {
++		_, failure := client.Request(ctx, "status", "attempt_0123456789abcdef0123456789abcdef")
++		done <- failure
++	}()
++	defer func() {
++		cancel()
++		if !joined {
++			<-done
++		}
++	}()
++	msg, err := sub.NextMsgWithContext(ctx)
++	if err != nil || msg == nil || validateOwnerBridgeJSON(msg.Data, "host-owner-status-request", protocol.MaxPayload) != nil {
++		t.Fatal("actual request did not reach HOST before deadline")
++	}
++	failure := <-done
++	joined = true
++	if ctx.Err() != context.DeadlineExceeded || failure == nil || failure.Error() != "owner_bridge_reply_unavailable" || ProjectRequestDiagnostic(failure).Code != "request_deadline" {
++		t.Fatal("actual reply wait expiry lost exact cause")
++	}
++	if errors.Is(failure, context.DeadlineExceeded) {
++		t.Fatal("reply wait operational sentinel behavior changed")
++	}
++}
+--- before/owner_bridge_probe.go
++++ candidate/owner_bridge_probe.go
+@@ -22,7 +22,7 @@
+ 	ctx, cancel := context.WithTimeout(parent, 5*time.Second)
+ 	defer cancel()
+ 	if ctx.Err() != nil {
+-		return empty, bridgeError("deadline")
++		return empty, bridgeContextError("deadline", ctx.Err())
+ 	}
+ 	credential, _, err := loadBridgeCredential(c.config, c.enrollment, deployment.OwnerBridgeClientUser)
+ 	if err != nil {
+@@ -65,7 +65,7 @@
+ 			return empty, authority
+ 		}
+ 		if ctx.Err() != nil {
+-			return empty, bridgeError("deadline")
++			return empty, bridgeContextError("deadline", ctx.Err())
+ 		}
+ 		return empty, bridgeError("connection_unavailable")
+ 	}
+@@ -81,7 +81,7 @@
+ 		return empty, authority
+ 	}
+ 	if ctx.Err() != nil {
+-		return empty, bridgeError("deadline")
++		return empty, bridgeContextError("deadline", ctx.Err())
+ 	}
+ 	if err != nil {
+ 		return empty, bridgeError("connection_unavailable")
+@@ -93,13 +93,13 @@
+ 		if authority := ownerBridgeProbeAuthorityError(nc); authority != nil {
+ 			return empty, authority
+ 		}
+-		return empty, bridgeError("deadline")
++		return empty, bridgeContextError("deadline", ctx.Err())
+ 	}
+ 	if authority := ownerBridgeProbeAuthorityError(nc); authority != nil {
+ 		return empty, authority
+ 	}
+ 	if ctx.Err() != nil {
+-		return empty, bridgeError("deadline")
++		return empty, bridgeContextError("deadline", ctx.Err())
+ 	}
+ 	if validOwnerBridgeNoResponders(msg, c.subjects.Request, replySubject) {
+ 		return empty, bridgeError("no_responders")
+@@ -109,7 +109,7 @@
+ 		return empty, bridgeError("reply_invalid")
+ 	}
+ 	if ctx.Err() != nil {
+-		return empty, bridgeError("deadline")
++		return empty, bridgeContextError("deadline", ctx.Err())
+ 	}
+ 	return reply.Observation, nil
+ }
+--- before/request_diagnostic.go
++++ candidate/request_diagnostic.go
+@@ -145,6 +145,12 @@
+ 			continue
+ 		}
+ 		switch value := err.(type) {
++		case bridgeFailure:
++			deadline = deadline || value.contextCause == context.DeadlineExceeded
++		case *bridgeFailure:
++			if value != nil {
++				deadline = deadline || value.contextCause == context.DeadlineExceeded
++			}
+ 		case *hostPolicyFailure:
+ 			if value != nil {
+ 				category := hostPolicyDiagnosticCategory(value.code)

@@ -1,0 +1,324 @@
+{
+  "scope": "Source review only for private bridge context provenance and checked component fixtures. Focused tests and P02 acceptance remain pending. No pattern or transport relationship added.",
+  "baseSHA256": {
+    "component-inventory.json": "f76a7d1014b2e120c578e8b0d3620b3a3cc1b195cfc61d756e74f51e1726e8cc",
+    "component-audit-hub.json": "aa898c82b937bd5c0e1a80a51cf59582fff211b1bb5179c95e863e232095063c",
+    "source-surface-index.json": "9d13f285ca885389ef3301bce33e54e9d33040ca4aea2a9a97434fa67198a184"
+  },
+  "candidateSHA256": {
+    "component-inventory.json": "52c8e32b0c3d867d30e1dc7d28ccf3888a7ec27b726ec42df9146f2f9fb57ff9",
+    "component-audit-hub.json": "cd7e1da4fc6bb7f5dc2af42809b8b9ca9ce582f51231f4c0dbbbeb629f47ea6d",
+    "source-surface-index.json": "1cb1346ca9c435aec103f7ded39716227af7cd2be8b422f1907c6088c00e12fb"
+  },
+  "diffSHA256": "8a8c14966812f167d11d6585ed0245b6a94b56b315cbe9cd7b65613ee7cdc7f7",
+  "sourcePins": {
+    "owner_bridge.go": "babd2aba6d80ff06b115061bd2e8a36778b80fc62a0a43d8ddae03d39193d2de",
+    "owner_bridge_diagnostic.go": "719be0a2f7b1eb100e461bb9990461cce3706eb80782e8613225c52324947649",
+    "owner_bridge_diagnostic_fixture_test.go": "384336787b0810bb68afee6cd173a789221683d3f556743243e5e4ee121e5a54",
+    "owner_bridge_diagnostic_test.go": "a25330fef623a2a659f08f702066f6fc1e38622c190bb4a677d6c38326e10662",
+    "owner_bridge_probe.go": "92b44259262955f3dbf624b7f2af9ff58c6ca467276b7bbd416cbc5a50b2fc36",
+    "request_diagnostic.go": "3571ae97858bf601aab29eccd78cb8bb718dffcb23de4097d9876421f6ae96fe"
+  },
+  "addedFiles": [
+    "platform/launcher/owner_bridge_diagnostic.go",
+    "platform/launcher/owner_bridge_diagnostic_test.go",
+    "platform/launcher/owner_bridge_diagnostic_fixture_test.go"
+  ],
+  "componentId": "PLAT-01",
+  "behaviorCheckId": "PLAT-01-C04",
+  "declarationUpdates": [
+    {
+      "path": "platform/launcher/owner_bridge.go",
+      "sourceSHA256": "babd2aba6d80ff06b115061bd2e8a36778b80fc62a0a43d8ddae03d39193d2de",
+      "declarations": [
+        {
+          "name": "String",
+          "line": 49,
+          "kind": "go-function"
+        },
+        {
+          "name": "GoString",
+          "line": 50,
+          "kind": "go-function"
+        },
+        {
+          "name": "String",
+          "line": 86,
+          "kind": "go-function"
+        },
+        {
+          "name": "GoString",
+          "line": 87,
+          "kind": "go-function"
+        },
+        {
+          "name": "String",
+          "line": 88,
+          "kind": "go-function"
+        },
+        {
+          "name": "GoString",
+          "line": 89,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeError",
+          "line": 93,
+          "kind": "go-function"
+        },
+        {
+          "name": "IsOwnerBridgeAuthorityError",
+          "line": 99,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeTime",
+          "line": 100,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeFresh",
+          "line": 103,
+          "kind": "go-function"
+        },
+        {
+          "name": "loadBridgeCredential",
+          "line": 108,
+          "kind": "go-function"
+        },
+        {
+          "name": "LoadOwnerBridgeClient",
+          "line": 180,
+          "kind": "go-function"
+        },
+        {
+          "name": "LoadOwnerBridgeServer",
+          "line": 187,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeConnect",
+          "line": 198,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeConnectWithin",
+          "line": 204,
+          "kind": "go-function"
+        },
+        {
+          "name": "ownerBridgeAsyncErrorHandler",
+          "line": 277,
+          "kind": "go-function"
+        },
+        {
+          "name": "ownerBridgeAuthorityLastError",
+          "line": 279,
+          "kind": "go-function"
+        },
+        {
+          "name": "ownerBridgeRecordedAuthorityError",
+          "line": 283,
+          "kind": "go-function"
+        },
+        {
+          "name": "closeBridgeConnection",
+          "line": 290,
+          "kind": "go-function"
+        },
+        {
+          "name": "Request",
+          "line": 300,
+          "kind": "go-function"
+        },
+        {
+          "name": "decodeBridgeReply",
+          "line": 402,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeObservationBound",
+          "line": 417,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeStartingUnknown",
+          "line": 429,
+          "kind": "go-function"
+        },
+        {
+          "name": "accept",
+          "line": 453,
+          "kind": "go-function"
+        },
+        {
+          "name": "validateBridgeRequest",
+          "line": 467,
+          "kind": "go-function"
+        },
+        {
+          "name": "Run",
+          "line": 487,
+          "kind": "go-function"
+        },
+        {
+          "name": "serve",
+          "line": 553,
+          "kind": "go-function"
+        },
+        {
+          "name": "serveOperation",
+          "line": 556,
+          "kind": "go-function"
+        },
+        {
+          "name": "serveLoop",
+          "line": 560,
+          "kind": "go-function"
+        },
+        {
+          "name": "observeBridgeRequest",
+          "line": 800,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeRetainedExpired",
+          "line": 824,
+          "kind": "go-function"
+        },
+        {
+          "name": "refresh",
+          "line": 847,
+          "kind": "go-function"
+        },
+        {
+          "name": "hexDigest",
+          "line": 937,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeObservationCleanupFailure",
+          "line": 942,
+          "kind": "go-function"
+        },
+        {
+          "name": "ownerBridgeReplyOutcome",
+          "line": 955,
+          "kind": "go-function"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/owner_bridge_probe.go",
+      "sourceSHA256": "92b44259262955f3dbf624b7f2af9ff58c6ca467276b7bbd416cbc5a50b2fc36",
+      "declarations": [
+        {
+          "name": "probe",
+          "line": 17,
+          "kind": "go-function"
+        },
+        {
+          "name": "ownerBridgeProbeAuthorityError",
+          "line": 117,
+          "kind": "go-function"
+        },
+        {
+          "name": "validOwnerBridgeNoResponders",
+          "line": 129,
+          "kind": "go-function"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/request_diagnostic.go",
+      "sourceSHA256": "3571ae97858bf601aab29eccd78cb8bb718dffcb23de4097d9876421f6ae96fe",
+      "declarations": [
+        {
+          "name": "diagnosticReviewedWrapper",
+          "line": 26,
+          "kind": "go-function"
+        },
+        {
+          "name": "Error",
+          "line": 54,
+          "kind": "go-function"
+        },
+        {
+          "name": "Format",
+          "line": 62,
+          "kind": "go-function"
+        },
+        {
+          "name": "MarshalJSON",
+          "line": 63,
+          "kind": "go-function"
+        },
+        {
+          "name": "Unwrap",
+          "line": 64,
+          "kind": "go-function"
+        },
+        {
+          "name": "localAuthorityFailure",
+          "line": 70,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeAuthorityFailure",
+          "line": 73,
+          "kind": "go-function"
+        },
+        {
+          "name": "requestDiagnostic",
+          "line": 87,
+          "kind": "go-function"
+        },
+        {
+          "name": "ValidRequestDiagnostic",
+          "line": 126,
+          "kind": "go-function"
+        },
+        {
+          "name": "ProjectRequestDiagnostic",
+          "line": 133,
+          "kind": "go-function"
+        }
+      ]
+    },
+    {
+      "path": "platform/launcher/owner_bridge_diagnostic.go",
+      "sourceSHA256": "719be0a2f7b1eb100e461bb9990461cce3706eb80782e8613225c52324947649",
+      "declarations": [
+        {
+          "name": "Error",
+          "line": 19,
+          "kind": "go-function"
+        },
+        {
+          "name": "Format",
+          "line": 20,
+          "kind": "go-function"
+        },
+        {
+          "name": "MarshalJSON",
+          "line": 21,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeContextError",
+          "line": 25,
+          "kind": "go-function"
+        }
+      ]
+    }
+  ],
+  "preservation": "All existing inventory rows and baseline blobs preserved. Criteria, status and complete previous histories preserved; existing index rows copied in full to reviewHistory.",
+  "scripts": {
+    "coverageValidator": "docs/planning/2026-10-09/verify-component-coverage.py",
+    "tracker": "docs/planning/2026-10-09/delivery/track.py",
+    "patternChecker": ".bytedesk/design-patterns/check.mjs"
+  },
+  "limitations": [
+    "Cache draft only. No shared metadata, source, tracker or pattern edits. No tests or validator runs. Root must apply after source promotion and evidence review."
+  ]
+}

@@ -6,8 +6,8 @@
     "phases.json": "882de6f13f309b878ebd8898ba73ab05fe94dc68ec517b311054f2a99f3102f7",
     "verification-matrix.json": "516813fd034d6c73b4b0d6f9eaaf4b1b54798828e137336324605d0b956085bc",
     "jev-coverage.json": "c7df684ce9162c36fb0d77ed8cf76c656824b7339b6c8464dce7ef2ce5988f95",
-    "component-inventory.json": "f76a7d1014b2e120c578e8b0d3620b3a3cc1b195cfc61d756e74f51e1726e8cc",
-    "component-audit-hub.json": "aa898c82b937bd5c0e1a80a51cf59582fff211b1bb5179c95e863e232095063c",
+    "component-inventory.json": "52c8e32b0c3d867d30e1dc7d28ccf3888a7ec27b726ec42df9146f2f9fb57ff9",
+    "component-audit-hub.json": "cd7e1da4fc6bb7f5dc2af42809b8b9ca9ce582f51231f4c0dbbbeb629f47ea6d",
     "component-audit-harness.json": "c7e1dd0f2bedf0f6d65ea7445d4c6e2fa3c28a2f6c06bc9a967db8dc048c8fdc",
     "component-audit-dashboard.json": "a406607c28ee44054de9dc5f3b40b4b7e7d6e4e7989d29666fe09adb4904741f",
     "component-audit-repository.json": "0ead6d65f71ef2e6115a194bd3a8501f46ecb2db0fa70a44a3b0cad25acd128c"
@@ -4145,6 +4145,27 @@
           "evidence": [
             "docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-boundary-diagnostics/root-promotion-review.json"
           ]
+        },
+        {
+          "at": "2026-10-15T00:41:11.097534+00:00",
+          "actor": "Codex",
+          "from": "in_progress",
+          "to": "in_progress",
+          "note": "Codex verified the pushed bae3c53 candidate and one actual cold/warm run: 279 current and executed source hashes, 32 run artifact hashes and 35 fixture artifact hashes and sizes matched. Cold frontend succeeded in 3.944 seconds; authenticated refresh reported all four kernel services ready. The warm ensure frontend exited 1 after 5.279 seconds, inside its ten-second limit, with the closed request_failed diagnostic. The underlying cause is unproved. The test failed after 98.08 seconds. Saved evidence verifies broker stop, retained volume, exact network removal and unchanged unrelated network baseline. Role pin, lease and persistence checks passed before warm launch by verified source order; individual handle cleanup has no separate success record. No retry or old-fixture action occurred. Next: review and test private typed bridge deadline provenance while preserving hard-error priority and existing deadlines. P02 remains active.",
+          "commit": "bae3c5316e3ca89354055aa299c3e3c35a4c7c28",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/current-coldwarm-warm-ensure-failure/root-review.json"
+          ]
+        },
+        {
+          "at": "2026-10-15T00:56:45.552019+00:00",
+          "actor": "Codex",
+          "from": "in_progress",
+          "to": "in_progress",
+          "note": "Codex promoted six reviewed bridge diagnostic files after 14 focused race checks and 81 affected named checks passed, followed by vet for launcher and CLI. All 282 executed source hashes were verified. Only context deadlines observed in actual branches project the existing request_deadline code; raw text, cancellation and unproven labels remain generic. Error strings, authority sentinel identity, operational errors.Is behavior and public fields remain unchanged. The actual NATS no-reply control checked its owned broker, log, TLS dialer, subscription and returned cleanup controller. Three new files and four production declaration maps were reconciled without changing baseline rows, criteria or prior history. No Docker rerun, native qualification or P02 acceptance is claimed.",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/bridge-context-diagnostics/root-promotion-review.json"
+          ]
         }
       ],
       "phaseCriteria": [
@@ -4965,6 +4986,27 @@
           "note": "Codex promoted the reviewed failure-only creator observation after an actual Linux owned-child race control passed. Refresh can fail promptly when its already-held creator handle reports exit or an unknown state. Existing deadlines, success assertions and concurrent-creator behavior remain unchanged. Independent review verified checked cleanup under the original context. Combined-source checks remain required. No real Docker refresh or phase acceptance is claimed.",
           "evidence": [
             "docs/planning/2026-10-09/delivery/evidence/P02/creator-refresh-failfast/root-promotion-review.json"
+          ]
+        },
+        {
+          "at": "2026-10-15T00:41:11.097534+00:00",
+          "actor": "Codex",
+          "from": "in_progress",
+          "to": "in_progress",
+          "note": "Codex verified the pushed bae3c53 candidate and one actual cold/warm run: 279 current and executed source hashes, 32 run artifact hashes and 35 fixture artifact hashes and sizes matched. Cold frontend succeeded in 3.944 seconds; authenticated refresh reported all four kernel services ready. The warm ensure frontend exited 1 after 5.279 seconds, inside its ten-second limit, with the closed request_failed diagnostic. The underlying cause is unproved. The test failed after 98.08 seconds. Saved evidence verifies broker stop, retained volume, exact network removal and unchanged unrelated network baseline. Role pin, lease and persistence checks passed before warm launch by verified source order; individual handle cleanup has no separate success record. No retry or old-fixture action occurred. Next: review and test private typed bridge deadline provenance while preserving hard-error priority and existing deadlines. P02 remains active.",
+          "commit": "bae3c5316e3ca89354055aa299c3e3c35a4c7c28",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/current-coldwarm-warm-ensure-failure/root-review.json"
+          ]
+        },
+        {
+          "at": "2026-10-15T00:56:45.552019+00:00",
+          "actor": "Codex",
+          "from": "in_progress",
+          "to": "in_progress",
+          "note": "Codex promoted six reviewed bridge diagnostic files after 14 focused race checks and 81 affected named checks passed, followed by vet for launcher and CLI. All 282 executed source hashes were verified. Only context deadlines observed in actual branches project the existing request_deadline code; raw text, cancellation and unproven labels remain generic. Error strings, authority sentinel identity, operational errors.Is behavior and public fields remain unchanged. The actual NATS no-reply control checked its owned broker, log, TLS dialer, subscription and returned cleanup controller. Three new files and four production declaration maps were reconciled without changing baseline rows, criteria or prior history. No Docker rerun, native qualification or P02 acceptance is claimed.",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/bridge-context-diagnostics/root-promotion-review.json"
           ]
         }
       ],
@@ -6747,6 +6789,27 @@
           "note": "Codex promoted the exact 13-file startup boundary and cleanup-cause change after independent source review and verification of 21 focused and 163 affected named race passes across 63 existing top-level tests. Launcher vet passed. All 278 tested source hashes remained unchanged. Three closed private failure stages distinguish initial inspection, inspection after lease acquisition and broker startup; public responses and original deadlines remain unchanged. Cleanup retains the original error and exact returned Session. These tests use synthetic Docker subprocesses, not a real stack. P02 remains active; the next real cold-start run is still required.",
           "evidence": [
             "docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-boundary-diagnostics/root-promotion-review.json"
+          ]
+        },
+        {
+          "at": "2026-10-15T00:41:11.097534+00:00",
+          "actor": "Codex",
+          "from": "in_progress",
+          "to": "in_progress",
+          "note": "Codex verified the pushed bae3c53 candidate and one actual cold/warm run: 279 current and executed source hashes, 32 run artifact hashes and 35 fixture artifact hashes and sizes matched. Cold frontend succeeded in 3.944 seconds; authenticated refresh reported all four kernel services ready. The warm ensure frontend exited 1 after 5.279 seconds, inside its ten-second limit, with the closed request_failed diagnostic. The underlying cause is unproved. The test failed after 98.08 seconds. Saved evidence verifies broker stop, retained volume, exact network removal and unchanged unrelated network baseline. Role pin, lease and persistence checks passed before warm launch by verified source order; individual handle cleanup has no separate success record. No retry or old-fixture action occurred. Next: review and test private typed bridge deadline provenance while preserving hard-error priority and existing deadlines. P02 remains active.",
+          "commit": "bae3c5316e3ca89354055aa299c3e3c35a4c7c28",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/current-coldwarm-warm-ensure-failure/root-review.json"
+          ]
+        },
+        {
+          "at": "2026-10-15T00:56:45.552019+00:00",
+          "actor": "Codex",
+          "from": "in_progress",
+          "to": "in_progress",
+          "note": "Codex promoted six reviewed bridge diagnostic files after 14 focused race checks and 81 affected named checks passed, followed by vet for launcher and CLI. All 282 executed source hashes were verified. Only context deadlines observed in actual branches project the existing request_deadline code; raw text, cancellation and unproven labels remain generic. Error strings, authority sentinel identity, operational errors.Is behavior and public fields remain unchanged. The actual NATS no-reply control checked its owned broker, log, TLS dialer, subscription and returned cleanup controller. Three new files and four production declaration maps were reconciled without changing baseline rows, criteria or prior history. No Docker rerun, native qualification or P02 acceptance is claimed.",
+          "evidence": [
+            "docs/planning/2026-10-09/delivery/evidence/P02/bridge-context-diagnostics/root-promotion-review.json"
           ]
         }
       ],
@@ -38754,6 +38817,42 @@
       "evidence": [
         "docs/planning/2026-10-09/delivery/evidence/P02/creator-refresh-failfast/combined/review.json",
         "docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-boundary-diagnostics/metadata/proposal.json"
+      ]
+    },
+    {
+      "date": "2026-10-15T00:41:11.097534+00:00",
+      "action": "actual_cold_startup_completed_warm_ensure_failure_reviewed",
+      "note": "Codex verified the pushed bae3c53 candidate and one actual cold/warm run: 279 current and executed source hashes, 32 run artifact hashes and 35 fixture artifact hashes and sizes matched. Cold frontend succeeded in 3.944 seconds; authenticated refresh reported all four kernel services ready. The warm ensure frontend exited 1 after 5.279 seconds, inside its ten-second limit, with the closed request_failed diagnostic. The underlying cause is unproved. The test failed after 98.08 seconds. Saved evidence verifies broker stop, retained volume, exact network removal and unchanged unrelated network baseline. Role pin, lease and persistence checks passed before warm launch by verified source order; individual handle cleanup has no separate success record. No retry or old-fixture action occurred. Next: review and test private typed bridge deadline provenance while preserving hard-error priority and existing deadlines. P02 remains active.",
+      "commit": "bae3c5316e3ca89354055aa299c3e3c35a4c7c28",
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/current-coldwarm-warm-ensure-failure/root-review.json"
+      ]
+    },
+    {
+      "date": "2026-10-15T00:47:31.291665+00:00",
+      "action": "exact_bae3_native_and_retained_p01_evidence_reviewed",
+      "note": "Codex verified 160 artifact hashes for the pushed bae3c53 candidate, retained the original manifest and its explicit relative-path correction, and parsed the actual native Go event streams. Linux AMD64 and ARM64 each had 1744 named passes; Mac ARM64 and Intel each had 1564. Limited Darwin install selections each had 18 passes. Both descriptor experiments had one failure and a separate passing fail-closed control; the aggregate native workflow remains failed. Both retained P01 reports have 23 checks with direct exit zero and unchanged source. These checks do not qualify full native Compose startup or pass P02.",
+      "commit": "bae3c5316e3ca89354055aa299c3e3c35a4c7c28",
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/native-cohort-bae3c53/root-review.json"
+      ]
+    },
+    {
+      "date": "2026-10-15T00:56:45.552019+00:00",
+      "action": "bridge_context_diagnostics_promoted_after_verified_controls",
+      "note": "Codex promoted six reviewed bridge diagnostic files after 14 focused race checks and 81 affected named checks passed, followed by vet for launcher and CLI. All 282 executed source hashes were verified. Only context deadlines observed in actual branches project the existing request_deadline code; raw text, cancellation and unproven labels remain generic. Error strings, authority sentinel identity, operational errors.Is behavior and public fields remain unchanged. The actual NATS no-reply control checked its owned broker, log, TLS dialer, subscription and returned cleanup controller. Three new files and four production declaration maps were reconciled without changing baseline rows, criteria or prior history. No Docker rerun, native qualification or P02 acceptance is claimed.",
+      "reviewedSourceHashUpdates": {
+        "component-inventory.json": {
+          "before": "f76a7d1014b2e120c578e8b0d3620b3a3cc1b195cfc61d756e74f51e1726e8cc",
+          "after": "52c8e32b0c3d867d30e1dc7d28ccf3888a7ec27b726ec42df9146f2f9fb57ff9"
+        },
+        "component-audit-hub.json": {
+          "before": "aa898c82b937bd5c0e1a80a51cf59582fff211b1bb5179c95e863e232095063c",
+          "after": "cd7e1da4fc6bb7f5dc2af42809b8b9ca9ce582f51231f4c0dbbbeb629f47ea6d"
+        }
+      },
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/bridge-context-diagnostics/root-promotion-review.json"
       ]
     }
   ],

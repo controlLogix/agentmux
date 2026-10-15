@@ -1,0 +1,15 @@
+from pathlib import Path
+import json,re,hashlib
+p=Path('/home/ryan/.cache/agentmux-governance/p02-bridge-context-focused-5wusriyi');src=p/'src/platform'
+launcher=['TestRequestDiagnosticActualDockerAdmission','TestRequestDiagnosticUnknownAncestryIsNotInvoked','TestRequestDiagnosticRawCleanupPriority','TestRequestDiagnosticTrustedRefusalAndSpoof','TestRequestDiagnosticRetainsJoinedCleanupAndAuthority','TestRequestDiagnosticAuthorityPresentationIsClosed','TestRequestDiagnosticRejectsUnapprovedFields','TestOwnerBridgeNativeNoRespondersFrame','TestOwnerBridgeInitialProbeNoResponderHint','TestOwnerBridgeProbeNativeHintShapeRefusals','TestOwnerBridgeOptionalReplyMustMatchValidatedNonce','TestOwnerBridgeProbeAvailablePreservesLegacyRouting','TestOwnerBridgeProbeRejectsActualMalformedHint','TestOwnerBridgeProbePermissionFailureStaysHard','TestOwnerBridgeProbeCanceledContextHasNoHint','TestOwnerBridgeDefaultRequestPermissionFailureStaysHard','TestOwnerBridgeActualNATSCorrelatedL04AndRefusals','TestOwnerBridgeActualNATSRejectsForgedReply','TestOwnerBridgeActualNATSConnectedIdentity','TestTransportCleanupRetainsActualOwnedSocket']
+cmd=['TestInitialLookupNeverStartsOnStatusOrHardFailure','TestInstalledLauncherFailedEnsureEmitsEvidenceAndFails','TestInstalledLauncherReceiptDoesNotInventInstanceDetails','TestInstalledLauncherProgressNeverMasksAuthorityOrCleanupFailure','TestFrontendBudgetReservesResponseAndCleanup','TestFrontendCleanupNeverExtendsTotal','TestFrontendStatusUsesOriginalFiveSecondTotal','TestFrontendEarlierCancelledCallerDoesNotGainTime','TestFrontendNearExpiryOwnedReceiptRetainsUnknownFactsAndCleanup','TestFrontendHistoryBudgetKeepsOriginalReserve','TestFrontendHistoryNeverMasksHardRequestFailure','TestFrontendHistoryKeepsNonzeroResultAndSeparateShape','TestFrontendHistoryFailedWriterRetainsOriginalFailure','TestRequestDiagnosticOutputDoesNotTrustErrorText','TestOwnedBootstrapProgressChecksActualChildAndCaller']
+locations={}
+for package,names in [('launcher',launcher),('cmd/agentmux-runtime',cmd)]:
+ for name in names:
+  found=[]
+  for f in (src/package).glob('*_test.go'):
+   for i,line in enumerate(f.read_text().splitlines(),1):
+    if re.match(r'^func '+re.escape(name)+r'\(',line):found.append({'path':str(f.relative_to(src)),'line':i,'fileSHA256':hashlib.sha256(f.read_bytes()).hexdigest()})
+  assert len(found)==1,name;locations[name]=found[0]
+record={'scope':'Affected existing controls; excludes all four new BridgeContextDiagnostic groups. AUTH0, no Docker engine.','launcher':launcher,'cmd':cmd,'locations':locations,'sequence':['launcher race with failfast','CLI consumer race with failfast only after launcher passes','vet launcher and CLI only after both pass']}
+out=p/'affected';out.mkdir(exist_ok=False);(out/'selection.json').write_text(json.dumps(record,indent=2)+'\n');print(json.dumps({'selection':str(out/'selection.json'),'sha256':hashlib.sha256((out/'selection.json').read_bytes()).hexdigest(),'launcherTopLevelCount':len(launcher),'cmdTopLevelCount':len(cmd)}))

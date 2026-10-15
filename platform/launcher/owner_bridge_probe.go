@@ -22,7 +22,7 @@ func (c *OwnerBridgeClient) probe(parent context.Context, invocationID string) (
 	ctx, cancel := context.WithTimeout(parent, 5*time.Second)
 	defer cancel()
 	if ctx.Err() != nil {
-		return empty, bridgeError("deadline")
+		return empty, bridgeContextError("deadline", ctx.Err())
 	}
 	credential, _, err := loadBridgeCredential(c.config, c.enrollment, deployment.OwnerBridgeClientUser)
 	if err != nil {
@@ -65,7 +65,7 @@ func (c *OwnerBridgeClient) probe(parent context.Context, invocationID string) (
 			return empty, authority
 		}
 		if ctx.Err() != nil {
-			return empty, bridgeError("deadline")
+			return empty, bridgeContextError("deadline", ctx.Err())
 		}
 		return empty, bridgeError("connection_unavailable")
 	}
@@ -81,7 +81,7 @@ func (c *OwnerBridgeClient) probe(parent context.Context, invocationID string) (
 		return empty, authority
 	}
 	if ctx.Err() != nil {
-		return empty, bridgeError("deadline")
+		return empty, bridgeContextError("deadline", ctx.Err())
 	}
 	if err != nil {
 		return empty, bridgeError("connection_unavailable")
@@ -93,13 +93,13 @@ func (c *OwnerBridgeClient) probe(parent context.Context, invocationID string) (
 		if authority := ownerBridgeProbeAuthorityError(nc); authority != nil {
 			return empty, authority
 		}
-		return empty, bridgeError("deadline")
+		return empty, bridgeContextError("deadline", ctx.Err())
 	}
 	if authority := ownerBridgeProbeAuthorityError(nc); authority != nil {
 		return empty, authority
 	}
 	if ctx.Err() != nil {
-		return empty, bridgeError("deadline")
+		return empty, bridgeContextError("deadline", ctx.Err())
 	}
 	if validOwnerBridgeNoResponders(msg, c.subjects.Request, replySubject) {
 		return empty, bridgeError("no_responders")
@@ -109,7 +109,7 @@ func (c *OwnerBridgeClient) probe(parent context.Context, invocationID string) (
 		return empty, bridgeError("reply_invalid")
 	}
 	if ctx.Err() != nil {
-		return empty, bridgeError("deadline")
+		return empty, bridgeContextError("deadline", ctx.Err())
 	}
 	return reply.Observation, nil
 }

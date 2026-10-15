@@ -145,6 +145,12 @@ func ProjectRequestDiagnostic(failure error) RequestDiagnostic {
 			continue
 		}
 		switch value := err.(type) {
+		case bridgeFailure:
+			deadline = deadline || value.contextCause == context.DeadlineExceeded
+		case *bridgeFailure:
+			if value != nil {
+				deadline = deadline || value.contextCause == context.DeadlineExceeded
+			}
 		case *hostPolicyFailure:
 			if value != nil {
 				category := hostPolicyDiagnosticCategory(value.code)

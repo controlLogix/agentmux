@@ -1,0 +1,57 @@
+{
+  "plans": [
+    {
+      "stage": "launcher",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-race",
+        "-failfast",
+        "-count=1",
+        "-json",
+        "./launcher",
+        "-run",
+        "^(TestRequestDiagnosticActualDockerAdmission|TestRequestDiagnosticUnknownAncestryIsNotInvoked|TestRequestDiagnosticRawCleanupPriority|TestRequestDiagnosticTrustedRefusalAndSpoof|TestRequestDiagnosticRetainsJoinedCleanupAndAuthority|TestRequestDiagnosticAuthorityPresentationIsClosed|TestRequestDiagnosticRejectsUnapprovedFields|TestOwnerBridgeNativeNoRespondersFrame|TestOwnerBridgeInitialProbeNoResponderHint|TestOwnerBridgeProbeNativeHintShapeRefusals|TestOwnerBridgeOptionalReplyMustMatchValidatedNonce|TestOwnerBridgeProbeAvailablePreservesLegacyRouting|TestOwnerBridgeProbeRejectsActualMalformedHint|TestOwnerBridgeProbePermissionFailureStaysHard|TestOwnerBridgeProbeCanceledContextHasNoHint|TestOwnerBridgeDefaultRequestPermissionFailureStaysHard|TestOwnerBridgeActualNATSCorrelatedL04AndRefusals|TestOwnerBridgeActualNATSRejectsForgedReply|TestOwnerBridgeActualNATSConnectedIdentity|TestTransportCleanupRetainsActualOwnedSocket)$"
+      ]
+    },
+    {
+      "stage": "cmd",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-race",
+        "-failfast",
+        "-count=1",
+        "-json",
+        "./cmd/agentmux-runtime",
+        "-run",
+        "^(TestInitialLookupNeverStartsOnStatusOrHardFailure|TestInstalledLauncherFailedEnsureEmitsEvidenceAndFails|TestInstalledLauncherReceiptDoesNotInventInstanceDetails|TestInstalledLauncherProgressNeverMasksAuthorityOrCleanupFailure|TestFrontendBudgetReservesResponseAndCleanup|TestFrontendCleanupNeverExtendsTotal|TestFrontendStatusUsesOriginalFiveSecondTotal|TestFrontendEarlierCancelledCallerDoesNotGainTime|TestFrontendNearExpiryOwnedReceiptRetainsUnknownFactsAndCleanup|TestFrontendHistoryBudgetKeepsOriginalReserve|TestFrontendHistoryNeverMasksHardRequestFailure|TestFrontendHistoryKeepsNonzeroResultAndSeparateShape|TestFrontendHistoryFailedWriterRetainsOriginalFailure|TestRequestDiagnosticOutputDoesNotTrustErrorText|TestOwnedBootstrapProgressChecksActualChildAndCaller)$"
+      ]
+    },
+    {
+      "stage": "vet",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "vet",
+        "./launcher",
+        "./cmd/agentmux-runtime"
+      ]
+    }
+  ],
+  "environment": {
+    "GOTOOLCHAIN": "local",
+    "GOENV": "off",
+    "GOFLAGS": "-mod=readonly",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "0",
+    "AGENTMUX_TEST_NATS": "/home/ryan/.cache/agentmux-governance/tools/nats-server"
+  },
+  "removedOverrideNames": [],
+  "cwd": "/home/ryan/.cache/agentmux-governance/p02-bridge-context-focused-5wusriyi/src/platform",
+  "producerSHA256": "a849c0b61f13ed942c6352f45ee2e9a474c630fb02a92e157b53d5ba04d2184d",
+  "selectionSHA256": "0c9ae5b45f58726881b7141fd91cf7c9c83e709e3862dafb84722ee4e5a07dfd",
+  "startedUtc": "2026-10-15T00:53:30.278473+00:00"
+}

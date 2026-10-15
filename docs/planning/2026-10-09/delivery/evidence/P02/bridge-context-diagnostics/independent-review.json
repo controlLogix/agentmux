@@ -1,0 +1,40 @@
+{
+  "scope": "Independent read-only source review, no tests, compiler, NATS or Docker execution.",
+  "status": "source_clear_for_root_focused_test_authorization",
+  "sourceSHA256": {
+    "owner_bridge.go": "babd2aba6d80ff06b115061bd2e8a36778b80fc62a0a43d8ddae03d39193d2de",
+    "owner_bridge_diagnostic.go": "719be0a2f7b1eb100e461bb9990461cce3706eb80782e8613225c52324947649",
+    "owner_bridge_diagnostic_fixture_test.go": "384336787b0810bb68afee6cd173a789221683d3f556743243e5e4ee121e5a54",
+    "owner_bridge_diagnostic_test.go": "a25330fef623a2a659f08f702066f6fc1e38622c190bb4a677d6c38326e10662",
+    "owner_bridge_probe.go": "92b44259262955f3dbf624b7f2af9ff58c6ca467276b7bbd416cbc5a50b2fc36",
+    "request_diagnostic.go": "3571ae97858bf601aab29eccd78cb8bb718dffcb23de4097d9876421f6ae96fe"
+  },
+  "recordSHA256": "c3c0c60980bf16e85bebdfdcdce2a37b4a3f49106d24eb5246d2716eae0764e0",
+  "diffSHA256": "8b628f23f619626cf6daa0c003c8a51527adbcfe18aaa4b951fceb23b762ddf9",
+  "historicalFinding": {
+    "code": "BRIDGE-DIAGNOSTIC-FIXTURE-CLEANUP",
+    "originalReviewSHA256": "5c28b4bfc94e8a99d0508ca770b55b2bc8658683fbd3ff32cd21b6f0ddfdb378",
+    "originalTestSHA256": "be4ae2dfb35af0428a796c52db278593ab5b861d1473f1641719255a7372fb0c",
+    "finding": "The original new control reused broker and TLS helpers that ignored cleanup results and registered log cleanup only after successful Start; returned request cleanup ownership was not registered before assertions.",
+    "resolution": "Dedicated helper registers exact log before Start, exact cmd after Start, exact dialers before Connect; all cleanup results checked. Request has sole result join on fatal paths and retains exact top-level TransportCleanupError before assertions."
+  },
+  "productionReview": [
+    "Exact observed context sentinels alone provide private deadline provenance; no Unwrap, Is or As changes operational behavior.",
+    "Authority sentinel identity, hard authentication and LastError ordering, cleanup priority and bounded projector traversal remain intact.",
+    "Value and pointer presentation use old fixed error text; JSON exposes no private context field.",
+    "Generic publish, flush, time-remaining-only and TLS label failures do not invent context provenance."
+  ],
+  "cleanupReview": [
+    "Original thirty-second context is created before acquisitions and its cleanup is registered first so cancellation runs last.",
+    "Broker uses original CommandContext, exact cmd.Process SIGTERM and sole checked Wait; only original deadline SIGKILL is accepted fallback.",
+    "No historical startBroker or rawTLSClient helper is called; the new helper owns its broker and HOST dialer once.",
+    "Failed connection dialers remain captured for the registered exact retry; raw Close is checked before NATS Close.",
+    "Subscription Unsubscribe is checked; request cancellation and sole result join precede its exact cleanup attempt on every fatal path."
+  ],
+  "remainingFindings": [],
+  "limits": [
+    "Source clearance only; no actual controls executed by this reviewer.",
+    "Synchronous physical Wait and Close are not proven hard-preemptible; observed cleanup failures fail the test rather than qualify clean ownership.",
+    "Controlled Docker inspection remains synthetic. No actual engine, original warm failure cause, native host or phase acceptance."
+  ]
+}
