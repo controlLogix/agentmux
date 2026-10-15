@@ -25,7 +25,8 @@ var diagnosticStandardWrappers = []reflect.Type{
 
 func diagnosticReviewedWrapper(failure error) bool {
 	switch failure.(type) {
-	case authorityCauseError, *authorityCauseError,
+	case bootstrapCleanupFailure, *bootstrapCleanupFailure,
+		authorityCauseError, *authorityCauseError,
 		*dockerInspectionFailure, kernelStatusStageError, *kernelStatusStageError,
 		bridgeCompletionCause, *bridgeCompletionCause, *StartingElsewhereError,
 		TransportCleanupError, *TransportCleanupError, RuntimeCleanupError, *RuntimeCleanupError,
@@ -168,7 +169,7 @@ func ProjectRequestDiagnostic(failure error) RequestDiagnostic {
 			}
 		case dockerRefusalError:
 			refusalCode = value.code
-		case *TransportCleanupError, TransportCleanupError, *RuntimeCleanupError, RuntimeCleanupError, *deployment.ProbeCleanupError, deployment.ProbeCleanupError, *deployment.RawTransportCleanupError, deployment.RawTransportCleanupError, *protocol.CleanupError:
+		case bootstrapCleanupFailure, *bootstrapCleanupFailure, *TransportCleanupError, TransportCleanupError, *RuntimeCleanupError, RuntimeCleanupError, *deployment.ProbeCleanupError, deployment.ProbeCleanupError, *deployment.RawTransportCleanupError, deployment.RawTransportCleanupError, *protocol.CleanupError:
 			cleanup = true
 		}
 		cleanup = cleanup || err == ErrTransportCleanup || err == errRuntimeCleanup || err == deployment.ErrProbeCleanup || err == deployment.ErrRawTransportCleanup || err == localtls.ErrCleanup || err == protocol.ErrCleanup

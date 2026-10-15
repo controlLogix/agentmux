@@ -366,7 +366,7 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 	broker, err := inspect(warm)
 	if err != nil {
 		cancelWarm()
-		return nil, err
+		return nil, bootstrapBoundaryFailure("initial_warm_inspection", err)
 	}
 	if broker.State == "running" {
 		if reused, err := observe(warm); err == nil {
@@ -395,14 +395,14 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 			defer cancel()
 			if err := session.Close(cleanup); err != nil {
 				result = session
-				failure = bootstrapError("owned_cleanup_incomplete")
+				failure = retainBootstrapCleanup(session, failure, err)
 			}
 		}
 	}()
 	owner.LockHeld = true
 	broker, err = inspect(ctx)
 	if err != nil {
-		return nil, err
+		return nil, bootstrapBoundaryFailure("post_lease_inspection", err)
 	}
 	if broker.State == "running" {
 		if reused, err := observe(ctx); err == nil {
@@ -428,7 +428,7 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 	}
 	if broker.State != "running" {
 		if err := driver.StartOwned(ctx, owner, c.Compose); err != nil {
-			return nil, err
+			return nil, bootstrapBoundaryFailure("broker_start", err)
 		}
 		broker, err = inspect(ctx)
 		if err != nil {

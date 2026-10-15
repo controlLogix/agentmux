@@ -433,7 +433,7 @@ func TestInstalledCLIRealComposeDifferentWorkingDirectoryReuse(t *testing.T) {
 		t.Fatal("actual cwd control cold frontend unavailable")
 	}
 	composeCLIObservation(t, f, x, r, composeCLIWait(t, f, x, s, r, "cwd-cold"), "cwd-cold", true)
-	composeCLIRefresh(t, f, x.started.Add(f.Config.StartupTimeout))
+	composeCLIRefreshForCreator(t, f, x.started.Add(f.Config.StartupTimeout), x)
 	composeCLIPinRoles(t, f, x)
 	broker := bootstrapFixtureBroker(t, f)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

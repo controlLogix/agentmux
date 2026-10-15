@@ -2,6 +2,7 @@ package launcher
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"sync"
 )
@@ -12,13 +13,15 @@ const dockerInfoReadFormat = `{"ID":{{json .ID}},"OS":{{json .OSType}}}`
 // The code stays unchanged for callers. The private stage contains only a
 // fixed operation name; it never contains an argument, endpoint or output.
 type dockerInspectionFailure struct {
-	stage string
-	cause error
+	stage             string
+	cause             error
+	bootstrapBoundary bool
 }
 
-func (e *dockerInspectionFailure) Error() string           { return e.cause.Error() }
-func (e *dockerInspectionFailure) Unwrap() error           { return e.cause }
-func (e *dockerInspectionFailure) inspectionStage() string { return e.stage }
+func (e *dockerInspectionFailure) Error() string                  { return e.cause.Error() }
+func (e *dockerInspectionFailure) Format(state fmt.State, _ rune) { fmt.Fprint(state, e.Error()) }
+func (e *dockerInspectionFailure) Unwrap() error                  { return e.cause }
+func (e *dockerInspectionFailure) inspectionStage() string        { return e.stage }
 func inspectionFailure(stage string, cause error) error {
 	return &dockerInspectionFailure{stage: stage, cause: cause}
 }

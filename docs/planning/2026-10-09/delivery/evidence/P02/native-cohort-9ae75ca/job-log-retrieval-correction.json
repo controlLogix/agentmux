@@ -1,0 +1,259 @@
+{
+  "scope": "Append-only correction and terminal-run completed log retrieval",
+  "originalReviewSHA256": "ed67f9a2ac18814d19ddaf99f600c19191f708da14eb8c27d1231b64c62d0480",
+  "correction": "Earlier message counted10 attempted completed-job log downloads as10 successful downloads. Seven initial native-job retrievals were refused while the overall run was still in progress, leaving0-byte logs and82-byte stderr. Initially only MacIntel foundation and two retainedP01 job logs were nonempty.",
+  "initialAttemptCount": 10,
+  "initialSuccessfulLogCount": 3,
+  "initialRefusedLogCount": 7,
+  "newCompletedSuccessfulLogCount": 7,
+  "originalManifestMeaning": "Original artifactManifest records actual bytes and hashes, including empty logs and refusal stderr. It has no per-log success status. Native overall failure and both research failure statuses are recorded explicitly and remain unchanged.",
+  "newAttempts": [
+    {
+      "jobId": 116154996664,
+      "name": "darwin-research (macos-15)",
+      "jobConclusion": "failure",
+      "oldLogBytes": 0,
+      "oldLogSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "oldStderrBytes": 82,
+      "oldStderrSHA256": "5c29e6572f268d0bba5405cbbe183be16dd4c935859c000a8c1881b1b278857e",
+      "initialRetrievalStatus": "refused_run_in_progress",
+      "initialExitRecorded": false,
+      "completed_log": {
+        "sha256": "e6c4a2b6545e5af0f6a4f492d020a75cfa4ababae7134e62cfa22ff713067b38",
+        "bytes": 42914,
+        "name": "job-116154996664.completed.log"
+      },
+      "completed_stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "name": "job-116154996664.completed.stderr"
+      },
+      "completed_exit": {
+        "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+        "bytes": 1,
+        "name": "job-116154996664.completed.exit"
+      },
+      "completed_invocation.json": {
+        "sha256": "2dbcc51406100fd293e774979c011cdc7d2ad1723be534a7e5ffa00f78209ae5",
+        "bytes": 347,
+        "name": "job-116154996664.completed.invocation.json"
+      },
+      "completedDirectExit": 0,
+      "completedRetrievalStatus": "successful"
+    },
+    {
+      "jobId": 116154996984,
+      "name": "darwin-install (macos-15)",
+      "jobConclusion": "success",
+      "oldLogBytes": 0,
+      "oldLogSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "oldStderrBytes": 82,
+      "oldStderrSHA256": "5c29e6572f268d0bba5405cbbe183be16dd4c935859c000a8c1881b1b278857e",
+      "initialRetrievalStatus": "refused_run_in_progress",
+      "initialExitRecorded": false,
+      "completed_log": {
+        "sha256": "e2131f4eb3d8143f6949dc5c55f24c1ebc0718648d37466866653902a26a80b0",
+        "bytes": 56223,
+        "name": "job-116154996984.completed.log"
+      },
+      "completed_stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "name": "job-116154996984.completed.stderr"
+      },
+      "completed_exit": {
+        "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+        "bytes": 1,
+        "name": "job-116154996984.completed.exit"
+      },
+      "completed_invocation.json": {
+        "sha256": "96dd7b4e35a5f99af83bfccd4d2d4ee2e9d59bd3b8f8c4f47aaf74db5e9aa409",
+        "bytes": 347,
+        "name": "job-116154996984.completed.invocation.json"
+      },
+      "completedDirectExit": 0,
+      "completedRetrievalStatus": "successful"
+    },
+    {
+      "jobId": 116154997037,
+      "name": "foundation (ubuntu-24.04-arm, arm64)",
+      "jobConclusion": "success",
+      "oldLogBytes": 0,
+      "oldLogSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "oldStderrBytes": 82,
+      "oldStderrSHA256": "5c29e6572f268d0bba5405cbbe183be16dd4c935859c000a8c1881b1b278857e",
+      "initialRetrievalStatus": "refused_run_in_progress",
+      "initialExitRecorded": false,
+      "completed_log": {
+        "sha256": "0e7898a7b6defd1c646402e18d5e57373c84db3196d0b2221ff1dbce3d37f4a2",
+        "bytes": 55119,
+        "name": "job-116154997037.completed.log"
+      },
+      "completed_stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "name": "job-116154997037.completed.stderr"
+      },
+      "completed_exit": {
+        "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+        "bytes": 1,
+        "name": "job-116154997037.completed.exit"
+      },
+      "completed_invocation.json": {
+        "sha256": "a42c0a51157b0c3c24847fc4bc87a59a928ad9dd0f2d1b3f6d72412c21af4a5d",
+        "bytes": 347,
+        "name": "job-116154997037.completed.invocation.json"
+      },
+      "completedDirectExit": 0,
+      "completedRetrievalStatus": "successful"
+    },
+    {
+      "jobId": 116154997050,
+      "name": "darwin-research (macos-15-intel)",
+      "jobConclusion": "failure",
+      "oldLogBytes": 0,
+      "oldLogSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "oldStderrBytes": 82,
+      "oldStderrSHA256": "5c29e6572f268d0bba5405cbbe183be16dd4c935859c000a8c1881b1b278857e",
+      "initialRetrievalStatus": "refused_run_in_progress",
+      "initialExitRecorded": false,
+      "completed_log": {
+        "sha256": "1153d7924a6719dd7a382dde3bb6493985368dadc71ed9bf8a807e261cdf8213",
+        "bytes": 52517,
+        "name": "job-116154997050.completed.log"
+      },
+      "completed_stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "name": "job-116154997050.completed.stderr"
+      },
+      "completed_exit": {
+        "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+        "bytes": 1,
+        "name": "job-116154997050.completed.exit"
+      },
+      "completed_invocation.json": {
+        "sha256": "384e9ca7459b0fcde64e5dc4cbacf9362742263da9f99f147d8b891936e992fb",
+        "bytes": 347,
+        "name": "job-116154997050.completed.invocation.json"
+      },
+      "completedDirectExit": 0,
+      "completedRetrievalStatus": "successful"
+    },
+    {
+      "jobId": 116154997086,
+      "name": "foundation (macos-15, arm64)",
+      "jobConclusion": "success",
+      "oldLogBytes": 0,
+      "oldLogSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "oldStderrBytes": 82,
+      "oldStderrSHA256": "5c29e6572f268d0bba5405cbbe183be16dd4c935859c000a8c1881b1b278857e",
+      "initialRetrievalStatus": "refused_run_in_progress",
+      "initialExitRecorded": false,
+      "completed_log": {
+        "sha256": "ab207e4c5ca46894f7b32be3f9f0bb6b9769ebe2a6522f8e47f3c1c260b880b0",
+        "bytes": 58864,
+        "name": "job-116154997086.completed.log"
+      },
+      "completed_stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "name": "job-116154997086.completed.stderr"
+      },
+      "completed_exit": {
+        "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+        "bytes": 1,
+        "name": "job-116154997086.completed.exit"
+      },
+      "completed_invocation.json": {
+        "sha256": "f7e4bbec070ca03b436217cbb323527cb3964d6c414a3bf89066b0c88a3ed16f",
+        "bytes": 347,
+        "name": "job-116154997086.completed.invocation.json"
+      },
+      "completedDirectExit": 0,
+      "completedRetrievalStatus": "successful"
+    },
+    {
+      "jobId": 116154997115,
+      "name": "foundation (ubuntu-24.04, amd64)",
+      "jobConclusion": "success",
+      "oldLogBytes": 0,
+      "oldLogSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "oldStderrBytes": 82,
+      "oldStderrSHA256": "5c29e6572f268d0bba5405cbbe183be16dd4c935859c000a8c1881b1b278857e",
+      "initialRetrievalStatus": "refused_run_in_progress",
+      "initialExitRecorded": false,
+      "completed_log": {
+        "sha256": "6adce22be7e8db761cdcd4199e8989b9bd284fe6389eea676c9f49c2475b314e",
+        "bytes": 53839,
+        "name": "job-116154997115.completed.log"
+      },
+      "completed_stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "name": "job-116154997115.completed.stderr"
+      },
+      "completed_exit": {
+        "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+        "bytes": 1,
+        "name": "job-116154997115.completed.exit"
+      },
+      "completed_invocation.json": {
+        "sha256": "503d5832aee3aaa6b7c97a3cad052fdea2fb63d43c0e3caf2d03fffd042afc75",
+        "bytes": 347,
+        "name": "job-116154997115.completed.invocation.json"
+      },
+      "completedDirectExit": 0,
+      "completedRetrievalStatus": "successful"
+    },
+    {
+      "jobId": 116154997161,
+      "name": "foundation (macos-15-intel, amd64)",
+      "jobConclusion": "success",
+      "oldLogBytes": 77387,
+      "oldLogSHA256": "f4bb534d7175819f9d7dc8dcfd4e18ea445052ad7a23ac007f5ccfc3f419c6a2",
+      "oldStderrBytes": 0,
+      "oldStderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "initialRetrievalStatus": "successful",
+      "initialExitRecorded": true
+    },
+    {
+      "jobId": 116154997174,
+      "name": "darwin-install (macos-15-intel)",
+      "jobConclusion": "success",
+      "oldLogBytes": 0,
+      "oldLogSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "oldStderrBytes": 82,
+      "oldStderrSHA256": "5c29e6572f268d0bba5405cbbe183be16dd4c935859c000a8c1881b1b278857e",
+      "initialRetrievalStatus": "refused_run_in_progress",
+      "initialExitRecorded": false,
+      "completed_log": {
+        "sha256": "f8e5127b8865951c1192e43e0b2a9f2da2ece0bd365fae8e5820647f939bb3f0",
+        "bytes": 72808,
+        "name": "job-116154997174.completed.log"
+      },
+      "completed_stderr": {
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bytes": 0,
+        "name": "job-116154997174.completed.stderr"
+      },
+      "completed_exit": {
+        "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+        "bytes": 1,
+        "name": "job-116154997174.completed.exit"
+      },
+      "completed_invocation.json": {
+        "sha256": "ed53c50839747ce328163d340109a8092c0a47342776eef110f6bb26a5c0fa3c",
+        "bytes": 347,
+        "name": "job-116154997174.completed.invocation.json"
+      },
+      "completedDirectExit": 0,
+      "completedRetrievalStatus": "successful"
+    }
+  ],
+  "limits": [
+    "No old log/error/review/artifact was overwritten.",
+    "Authenticated Windows personal account used only perprocess; no token persisted.",
+    "Actual artifact raw test counts/source hashes remain independently checked; no CIrerun/cancel/dispatch or phase acceptance."
+  ]
+}

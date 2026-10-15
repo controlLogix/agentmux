@@ -202,6 +202,13 @@
                     "incomplete",
                     "unknown"
                   ]
+                },
+                "diagnosticStage": {
+                  "enum": [
+                    "initial_warm_inspection",
+                    "post_lease_inspection",
+                    "broker_start"
+                  ]
                 }
               },
               "required": [
@@ -251,6 +258,22 @@
                           "host_executable_invalid"
                         ]
                       }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "outcome": {
+                        "const": "completed"
+                      }
+                    }
+                  },
+                  "then": {
+                    "not": {
+                      "required": [
+                        "diagnosticStage"
+                      ]
                     }
                   }
                 }
@@ -307,6 +330,13 @@
                 "complete",
                 "incomplete",
                 "unknown"
+              ]
+            },
+            "diagnosticStage": {
+              "enum": [
+                "initial_warm_inspection",
+                "post_lease_inspection",
+                "broker_start"
               ]
             }
           },

@@ -1,0 +1,161 @@
+{
+  "scope": "Exactly one actual current installed CLI Compose cold/warm+refresh regression; failed, no retry",
+  "acceptedFeatureCommit": "9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+  "producerSHA256": "956c003ec110028e7adc0125f4ff6255baa6c47b02f550e58d68ff6b9852777f",
+  "directExit": 1,
+  "namedResults": [
+    {
+      "test": "TestInstalledCLIRealComposeColdWarmAndRefresh",
+      "elapsed": 80.5
+    },
+    {
+      "test": null,
+      "elapsed": 80.557
+    }
+  ],
+  "preflightAdmitted": true,
+  "sourceCount": 272,
+  "currentExecutedBeforeAfterEqual": true,
+  "overlays": {},
+  "closedFailure": {
+    "source": "installed_cli_compose_integration_linux_test.go:634",
+    "stage": "completion_refresh",
+    "message": "actual installed runtime did not complete within startup budget"
+  },
+  "frontend": {
+    "entryToExitSeconds": 3.946209204,
+    "exitSuccess": true,
+    "waitJoined": true,
+    "exactCreatorHostPinned": true,
+    "stdoutBytes": 999,
+    "stderrBytes": 0,
+    "outputKind": "bootstrap-progress",
+    "requestDisposition": "accepted",
+    "instanceState": "unknown",
+    "note": "Historical accepted bootstrap control, not authenticated L04 starting/readiness."
+  },
+  "refresh": {
+    "count": 37,
+    "errorCodes": {
+      "owner_bridge_connection_unavailable": 36,
+      "owner_bridge_deadline": 1
+    },
+    "deadlineExpiredCount": 1,
+    "authenticatedCompletedResultCount": 0
+  },
+  "cleanup": {
+    "noCleanupFailureReportedInRawEvents": true,
+    "savedContainerBaselineGuards": [
+      {
+        "at": "2026-10-14T23:27:00.668120775Z",
+        "existingContainerCount": 15,
+        "unchanged": true
+      },
+      {
+        "at": "2026-10-14T23:28:07.331298492Z",
+        "existingContainerCount": 15,
+        "unchanged": true
+      }
+    ],
+    "cleanupRecordPresent": false,
+    "networkRemovalRecordPresent": false,
+    "scope": "Source cleanup ran after sole test failure; exact pinned host stop/exit checks and canonical lease acquisition returned without t.Error; final container guard saved15 unchanged. No saved final broker/network inspection record; do not infer stopped broker/retained volume/removal from absent files.",
+    "noNewRecoveryAuthority": "No reconstructed PIDs or oldfixture mutations."
+  },
+  "publicFixtureArtifacts": {
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/baseline-guard-64dd4df2.json": "ab1acc261529960815f43df54c790616bc08bc3f8c34b0da0de9145b4b62d3ef",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/baseline-guard-c264e18a.json": "cab17a755f80058c38d4c0346a15b614a292cf7408eaed1c97322db286f24bef",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/baseline.json": "10342a40a820a70efc5d8ce9ef337ff5e7dbfe6e7fd585ecb12802640c668f4e",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/cold-joined-diagnostic.json": "b7d6d0620fd4784e89bf76c17fa86460c76c6e685bb338ff9d11d8e278125b4e",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/cold-output-capture.json": "bafb658b252d922cbb25772fd786240cac5a3914e4d688155924c4d390384cf7",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/cold-receipt-expected.json": "43b84b6e015906f68802741abaacf1bba617a8a66c97dba7d91d3716c4552670",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/cold-timing.json": "c4c7264a832a326494792eb7cc2b97e526d1be5b00171bc1dbe5164c784084e2",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/cold.json": "8611b8dda8dce78a86849f259f5cc403508af876653ed4f5e23dcad5b381612b",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/fixture.json": "0965e3b061b562f90814f6b1911f87110380a7100c510c54b480b34e4907cc89",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/network-baseline.json": "f50acec38cb4aa9e02b04fdcf7e86c6eed0dfbb899e2f0fedff63eac6a1fa686",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-09394823.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-1d41de4e.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-1e25af79.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-2ccf1aed.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-3445be4a.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-362cf9d8.json": "bc4492501719f877cf5bd58aeee35ab28b6c8ebcdf704ab894c38130e06e126b",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-3ad285a7.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-468f7d40.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-53801c16.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-5d5ef394.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-5e5caf48.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-60df3efb.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-684ec348.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-758c73a9.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-87406e0b.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-8c7302a7.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-9222d715.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-99d4bafa.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-a837ffde.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-b06e6e4f.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-b150070e.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-b56aa15e.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-b56eda0d.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-bf222d85.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-c4607aec.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-c587b951.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-cb0ab51b.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-d2b5c50d.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-d4163247.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-d7e0f89c.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-d8b4a747.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-e5e1ae0d.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-ee8a92ad.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-f3f663e9.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-f5a2a9a8.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-fa93a6dc.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc",
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/refresh-attempt-fc87f880.json": "904dd21b82e77e21f69360b21418d67a69f55f87d20a9954c4a3d36bdb0cdffc"
+  },
+  "privateCLIArtifactHashes": {
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/cold-stderr.private": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "mode": 384
+    },
+    "/home/ryan/.cache/agentmux-governance/p02-bootstrap-private-2507393929/cold-stdout.private": {
+      "sha256": "0cd74d4cf6e366755eddac906d7142737c1e35d0f84b7ccbf539f75d28c08dcf",
+      "bytes": 999,
+      "mode": 384
+    }
+  },
+  "runArtifactHashes": {
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/selection.json": "724f2d7863838b26114a45ab335a93cce9b9a44b47df9bb3ecb5bff3d53c11fb",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/exit.txt": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/containers-stdout.private": "506e88ce7f830192599942f5b87aa75ee9d371bee69393c9df2f81f832dd2617",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/engine-stderr.private": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/completion.json": "5c60fc51f830131c43c7c93af3ba0a74163a10e4cb28ec756b7a2a41ca0b99ae",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/image-stderr.private": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/windows-signature-summary.json": "4da89d0df6d364186a01c47e1f90e20e8624c04c6181e461569d74889637dc83",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/shared-after.json": "1c75bb65d447acf84ea057e12386e47ec937024c02c6333d6a6068020927a170",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/events.jsonl": "0f9579aa7536ba72a48a5d6e916ae2db918f272bc3d5746c17181c669815eb9a",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/executed-after-terminal.json": "1c75bb65d447acf84ea057e12386e47ec937024c02c6333d6a6068020927a170",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/engine-stdout.private": "6d55604f0ba68ca5feeb8edeaf2294bf533f17e299bed0970b6d3b964edc9e65",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/containers-stderr.private": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/networks-stdout.private": "d9e30819c7021ad143b995653cd990ab5febf289e7076a966d1d0639cf5064a1",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/producer.sh": "956c003ec110028e7adc0125f4ff6255baa6c47b02f550e58d68ff6b9852777f",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/image-stdout.private": "86c5d014a0c0b378786c9934d5b8ccaaa57eccb6e2685ee6d47086f0d0bb46d3",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/signature-stderr.private": "2ce70d6c8c9ad6726c794690c8b14a2b83673648cac88edf4ff1acc50ec46348",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/signature-stdout.private": "a3d0a2dedf4fc89a451661af66a948dec65b1c1d2261a129b73060385bab8647",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/endpoint-stderr.private": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/invocation.json": "ab35b7cffff7951a8a0119a7f979e435218998ad1c18ebb96680efdc408b9004",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/source-manifest.json": "1c75bb65d447acf84ea057e12386e47ec937024c02c6333d6a6068020927a170",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/endpoint-stdout.private": "0d1284cdbf15f9de9be8524a923374e8dffede3d62a65a022b0c8f58bfaa26b7",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/networks-stderr.private": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/shared-after-terminal.json": "1c75bb65d447acf84ea057e12386e47ec937024c02c6333d6a6068020927a170",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/shared-before.json": "1c75bb65d447acf84ea057e12386e47ec937024c02c6333d6a6068020927a170",
+    "/home/ryan/.cache/agentmux-governance/p02-current-wsl-coldwarm-4Pld6f/preflight.json": "c7dc734f575166325213ece377cd96200bb6467a9e843cf132ce1f9a065514a5"
+  },
+  "limits": [
+    "Whole case failed before protected-role pinning/warm reuse assertions; no ready/coldwarm acceptance.",
+    "36 connection_unavailable and1 deadline prove request outcomes only; host terminal cause remains unproven.",
+    "No raw installed host terminal output captured by this existing fixture.",
+    "No retry, engine read/mutation after test, source changes or later phase work.",
+    "Saved fixture binding and isolated producer are evidence provenance only, not new cleanup authority."
+  ]
+}

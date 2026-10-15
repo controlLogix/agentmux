@@ -1,0 +1,55 @@
+{
+  "scope": "Eight pure error-retention policies only; no main function/status/network/helper binary execution",
+  "argv": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "/home/ryan/.cache/agentmux-governance/p02-status-parking-policy-pure-a9c6vuxj/main.go",
+    "/home/ryan/.cache/agentmux-governance/p02-status-parking-policy-pure-a9c6vuxj/parking_policy_test.go",
+    "-run",
+    "^TestRecoveryParkingPolicy$"
+  ],
+  "cwd": "/home/ryan/.cache/agentmux-governance/p02-status-parking-policy-pure-a9c6vuxj/src/platform",
+  "environment": {
+    "GOTOOLCHAIN": "local",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GOENV": "off",
+    "GOFLAGS": "-mod=readonly",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "0"
+  },
+  "directExit": 0,
+  "elapsedSeconds": 5.719156202001614,
+  "namedPasses": [
+    "TestRecoveryParkingPolicy/nil",
+    "TestRecoveryParkingPolicy/ordinary_error",
+    "TestRecoveryParkingPolicy/spoofed_text",
+    "TestRecoveryParkingPolicy/unknown_wrapper",
+    "TestRecoveryParkingPolicy/concrete_pointer",
+    "TestRecoveryParkingPolicy/concrete_value",
+    "TestRecoveryParkingPolicy/reviewed_join",
+    "TestRecoveryParkingPolicy/oversized_joined_cleanup",
+    "TestRecoveryParkingPolicy"
+  ],
+  "failures": [],
+  "skips": [],
+  "subtestCount": 8,
+  "ownedSourceSHA256": {
+    "main.go": "af056f57b99dcc629b207e4e24fcc7ec89d090afc6c3bf9a19abf2e4a9c1f2cd",
+    "parking_policy_test.go": "1cb730870fe2e204335eb2e05eaab2a7d66ab6b416a0b7e803d54489f2dc5c5c"
+  },
+  "sourceCount": 133,
+  "sourceStable": true,
+  "stdoutSHA256": "aef882f85a2e4eba4e3bef362b4b9d3b05ccd344914c94285d1a7d69f2262857",
+  "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "limits": [
+    "Concrete cleanup errors are zero-value classification controls, not actual socket cleanup.",
+    "Unknown wrapper has a panic Unwrap; policy does not invoke it.",
+    "Oversized80-node graph retained without inspecting/truncating ownership.",
+    "Live capture/recovery controller remains unapproved."
+  ]
+}

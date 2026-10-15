@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-tags",
+    "agentmux_bootstrap_docker",
+    "-race",
+    "-count=1",
+    "-json",
+    "./launcher",
+    "-run",
+    "^(TestBootstrapBoundaryStageTrustedAndClosed|TestBootstrapHistoryBoundaryStageRoundTrip|TestBootstrapBoundaryActualColdMutationGuard|TestBootstrapCleanupFailureRetainsActualSessionAndCauses|TestComposeCLICreatorObservation)$"
+  ],
+  "cwd": "/home/ryan/.cache/agentmux-governance/p02-refresh-failfast-run-1koig_ez/src/platform",
+  "clearedOverrideNames": [],
+  "fixedEnvironment": {
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "0",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GOTOOLCHAIN": "local",
+    "GOENV": "off",
+    "GOFLAGS": "-mod=readonly",
+    "GORACE": "atexit_sleep_ms=0",
+    "GOCACHE": "/home/ryan/.cache/go-build",
+    "GOMODCACHE": "/home/ryan/go/pkg/mod"
+  }
+}

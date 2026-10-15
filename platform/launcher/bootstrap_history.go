@@ -47,10 +47,11 @@ type bootstrapHistoryBinding struct {
 }
 
 type bootstrapHistoryTerminal struct {
-	CompletedAt    string  `json:"completedAt"`
-	Outcome        string  `json:"outcome"`
-	DiagnosticCode *string `json:"diagnosticCode"`
-	Cleanup        string  `json:"cleanup"`
+	CompletedAt     string  `json:"completedAt"`
+	Outcome         string  `json:"outcome"`
+	DiagnosticCode  *string `json:"diagnosticCode"`
+	Cleanup         string  `json:"cleanup"`
+	DiagnosticStage *string `json:"diagnosticStage,omitempty"`
 }
 type bootstrapHistoryAttempt struct {
 	InvocationID string                    `json:"invocationId"`
@@ -58,10 +59,11 @@ type bootstrapHistoryAttempt struct {
 	Terminal     *bootstrapHistoryTerminal `json:"terminal"`
 }
 type bootstrapHistoryFailure struct {
-	InvocationID   string `json:"invocationId"`
-	CompletedAt    string `json:"completedAt"`
-	DiagnosticCode string `json:"diagnosticCode"`
-	Cleanup        string `json:"cleanup"`
+	InvocationID    string  `json:"invocationId"`
+	CompletedAt     string  `json:"completedAt"`
+	DiagnosticCode  string  `json:"diagnosticCode"`
+	Cleanup         string  `json:"cleanup"`
+	DiagnosticStage *string `json:"diagnosticStage,omitempty"`
 }
 type bootstrapHistoryRecord struct {
 	SchemaVersion      string                   `json:"schemaVersion"`
@@ -153,11 +155,17 @@ func decodeBootstrapHistory(raw []byte, now time.Time) (bootstrapHistoryRecord, 
 		if err != nil || completed.Before(began) || completed.After(written) {
 			return result, historyError("invalid", nil)
 		}
+		if terminal.DiagnosticStage != nil && (terminal.Outcome != "failed" || !validBootstrapDiagnosticStage(*terminal.DiagnosticStage)) {
+			return result, historyError("invalid", nil)
+		}
 		if terminal.Outcome == "completed" && result.PreviousFailure != nil {
 			return result, historyError("invalid", nil)
 		}
 	}
 	if previous := result.PreviousFailure; previous != nil {
+		if previous.DiagnosticStage != nil && !validBootstrapDiagnosticStage(*previous.DiagnosticStage) {
+			return result, historyError("invalid", nil)
+		}
 		completed, err := stamp(previous.CompletedAt)
 		if err != nil || completed.After(began) || previous.InvocationID == result.LatestAttempt.InvocationID {
 			return result, historyError("invalid", nil)
@@ -344,7 +352,7 @@ func (s *bootstrapHistoryStore) Begin(ctx context.Context) error {
 	if s.state.expected != nil {
 		next.PreviousFailure = s.state.expected.PreviousFailure
 		if t := s.state.expected.LatestAttempt.Terminal; t != nil && t.Outcome == "failed" {
-			next.PreviousFailure = &bootstrapHistoryFailure{s.state.expected.LatestAttempt.InvocationID, t.CompletedAt, *t.DiagnosticCode, t.Cleanup}
+			next.PreviousFailure = &bootstrapHistoryFailure{InvocationID: s.state.expected.LatestAttempt.InvocationID, CompletedAt: t.CompletedAt, DiagnosticCode: *t.DiagnosticCode, Cleanup: t.Cleanup, DiagnosticStage: copyBootstrapDiagnosticStage(t.DiagnosticStage)}
 		}
 	}
 	return s.publish(ctx, &next)
@@ -391,6 +399,7 @@ func (s *bootstrapHistoryStore) RecordTerminal(ctx context.Context) error {
 		code := ProjectRequestDiagnostic(cause).Code
 		next.LatestAttempt.Terminal.Outcome = "failed"
 		next.LatestAttempt.Terminal.DiagnosticCode = &code
+		next.LatestAttempt.Terminal.DiagnosticStage = bootstrapDiagnosticStage(cause)
 		if code == "owned_cleanup_incomplete" {
 			next.LatestAttempt.Terminal.Cleanup = "incomplete"
 		}

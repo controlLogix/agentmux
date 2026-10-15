@@ -1,0 +1,22 @@
+{
+  "scope": "Read-only child-control source review; no tests, compiler, process inspection or Docker calls.",
+  "status": "source_finding_closed",
+  "hashes": {
+    "child-control-review-repair.diff": "5e8ae08412145e4dae17708b1f877bfc51392df80c1c58ccbba9909dbae319bd",
+    "child-control-repair-review.json": "68f4f0a84f347c4e7fb6ec5fd7c24a47354d1a6a52ebb713c93654afbd2d175d",
+    "installed_cli_creator_observation_linux_test.go": "bc91afddbf3a226f3ef543e8d93d1b96775cab5a6376f4a545c4b032fa78611e"
+  },
+  "originalFindingReviewSHA256": "25b192191af6bf7db5f8d7e9d0be8094e1a6979ee1671082c91d3a1a583f0828",
+  "findings": [],
+  "basis": [
+    "The original three-second context begins before Start and governs the exact CommandContext-owned child through cleanup.",
+    "Successful observation requires stdin EOF followed by a successful sole Wait. Failure cleanup checks Wait and only accepts an expired original context with an exact SIGKILL exit status.",
+    "Cleanup is registered immediately after successful Start, before pidfd acquisition. Input and pidfd closes are checked and marked consumed before close; Wait is recorded before any fatal assertion, preventing duplicate waits.",
+    "No process is adopted from observed metadata and no fresh cleanup deadline is introduced."
+  ],
+  "limits": [
+    "Source closure only. The actual anchored child control has not been executed by this reviewer.",
+    "Physical bounds for unpreemptible OS reap are not established.",
+    "This does not close broader historical refresh error-owner retention or installed lifecycle qualification."
+  ]
+}

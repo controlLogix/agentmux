@@ -1,0 +1,47 @@
+{
+  "argv": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "./launcher",
+    "-run",
+    "^(TestBootstrapBoundaryStageTrustedAndClosed|TestBootstrapHistoryBoundaryStageRoundTrip|TestBootstrapBoundaryActualColdMutationGuard|TestBootstrapCleanupFailureRetainsActualSessionAndCauses)$"
+  ],
+  "cwd": "/home/ryan/.cache/agentmux-governance/p02-cold-boundary-focused-7m2krb06/src/platform",
+  "environment": {
+    "GOTOOLCHAIN": "local",
+    "GOENV": "off",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GOFLAGS": "-mod=readonly",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "0",
+    "AGENTMUX_TEST_NATS": "/home/ryan/.cache/agentmux-governance/tools/nats-server"
+  },
+  "sourceReviewSHA256": "fe44a21d3185489ee2c062c5ee43725f51f6897cf0e6ad3efdee5730fe66d07b",
+  "diffSHA256": "bb8e70c2e0b4eabe0f0aa4d8dc7212882ea625f08c4e6649864c325ac8664f9f",
+  "overlayPins": {
+    "platform/launcher/bootstrap_history_fs.go": "b01c765177b7de2c0c0e051b4fe4569185ac146ec505563f1b58e85c6f21c33c",
+    "platform/launcher/bootstrap.go": "21654b65615e949ab39d81d907b64e40c9a6831adf0dd50b940e442d650d9dc7",
+    "platform/launcher/request_diagnostic.go": "501819b66d8437a34b1ea233fef4e0fff5efd29b8d66707f8c3ea1c1c5b6ebaf",
+    "platform/launcher/bootstrap_history.go": "d95d4d388211570dfc6cfd2c81888c8946bb79b6fd053964892f6b3b0502801a",
+    "platform/launcher/host_history_policy.go": "0c7bb3b517311ed8cf9f1c3324ef5610e7b790127cc8fb6753cb7c88c418d28f",
+    "platform/launcher/bootstrap_cleanup_failure_test.go": "d02eec51719148be441546e86283f0c0a9c369edffce10992793530116d65d97",
+    "platform/launcher/bootstrap_boundary_cold_test.go": "6945d645d33d9afdac8d09f4d8a0721d6834a859bb9ee69b35856692f25941ba",
+    "platform/launcher/bootstrap_history.schema.json": "08576ba0038af3251b2cfe3486970ff21fb9f8e231d74ffb222172f26e830a92",
+    "platform/launcher/bootstrap_boundary_stage_test.go": "0f7940acb460fe76d3852fa3d39f7480cef8a750c3af023120ae9c0ba5fa6a20",
+    "platform/launcher/bootstrap_history_stage_test.go": "bd3c36b63f5077a61e2b9d56949fdc601cb0b59770f717cf350ac5f2c339b5f7",
+    "platform/launcher/docker_reads.go": "44b1cff92cd6dc0e00206c70b8050c5855f6e2306c162389db84151cb16e7b8a",
+    "platform/launcher/bootstrap_boundary_stage.go": "e0ed08d0067825d47cbd39eccc79bee80026cf49cf3add54659919b189c348b8",
+    "platform/launcher/bootstrap_cleanup_failure.go": "4e74cb4997f4c099c51a0d4be9b99882b7da4367f025fd8d3666edcf6fc2b7d6"
+  },
+  "parentFixtureOverridesAbsent": true,
+  "TestMainSHA256": "c134b20a73191c5def882bc0c29277dd5b479af09791294935809eed6a35f35c",
+  "sourceCounts": {
+    "shared": 272,
+    "executed": 278
+  }
+}

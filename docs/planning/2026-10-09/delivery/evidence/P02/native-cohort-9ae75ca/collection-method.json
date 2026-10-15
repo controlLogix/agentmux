@@ -1,0 +1,16 @@
+{
+  "scope": "Read-only collection and offline review provenance supplement",
+  "reviewSHA256": "ed67f9a2ac18814d19ddaf99f600c19191f708da14eb8c27d1231b64c62d0480",
+  "account": "ryanhelms Windows saved personal credential, used only per-process",
+  "commands": [
+    "gh run view 38652680172 --repo controlLogix/agentmux --json status,conclusion,headSha,url,jobs",
+    "gh api repos/controlLogix/agentmux/actions/runs/38652680172/artifacts",
+    "gh run download 38652680172 --repo controlLogix/agentmux --dir <fresh-cache>/artifacts",
+    "gh run view <existing-run> --repo controlLogix/agentmux --job <completed-job-id> --log",
+    "gh run view 38652680238 --repo controlLogix/agentmux --json status,conclusion,headSha,url,jobs",
+    "gh run download 38652680238 --repo controlLogix/agentmux --dir <fresh-cache>/qualification-artifacts"
+  ],
+  "counterCorrection": "Research collector failureEvents includes the package fail event; independent named failures are counted separately. Original source-only review parser retained, raw execution bytes unchanged.",
+  "producerSHA256": "31fc82180f8806f53b13c7f0fdae7f29be3fff4f14e1a5e27179ab59e5e4567e",
+  "originalProducerSHA256": "6f4c5e42835d4b65d6038f6c4e5a52bef3f937f985be5c27e577b8006c382de9"
+}
