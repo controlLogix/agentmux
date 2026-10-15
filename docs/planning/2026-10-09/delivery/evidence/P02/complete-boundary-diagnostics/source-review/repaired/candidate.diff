@@ -1,0 +1,1193 @@
+--- before/bootstrap.go
++++ candidate/bootstrap.go
+@@ -229,10 +229,19 @@
+ 	if operation != nil {
+ 		defer func() {
+ 			if err := operation.complete(result, failure); err != nil {
++				if failure == nil {
++					err = bootstrapBoundaryFailure("operation_completion", err)
++				}
+ 				failure = errors.Join(failure, err)
+ 			}
+ 		}()
+ 	}
++	boundaryStage := "invocation_validation"
++	defer func() {
++		if failure != nil {
++			failure = bootstrapBoundaryFailure(boundaryStage, failure)
++		}
++	}()
+ 	if !regexp.MustCompile(`^attempt_[0-9a-f]{32}$`).MatchString(attemptID) {
+ 		return nil, bootstrapError("invocation_invalid")
+ 	}
+@@ -250,6 +259,7 @@
+ 	// A blocked filesystem syscall remains an explicitly unsupported timing case.
+ 	warm, cancelWarm := context.WithTimeout(ctx, 4*time.Second)
+ 	defer cancelWarm()
++	boundaryStage = "profile_admission"
+ 	profile, err := LoadProfile(c.ProfilePolicy)
+ 	if err != nil {
+ 		return nil, err
+@@ -276,11 +286,13 @@
+ 	if err != nil || port < 1 || port > 65535 {
+ 		return nil, bootstrapError("local_port_invalid")
+ 	}
++	boundaryStage = "docker_admission"
+ 	driver, err := NewDocker(DockerConfig{Executable: selection.Executable, Context: selection.Context, Endpoint: selection.Endpoint, EngineID: selection.EngineID, Versions: DockerVersions{selection.ClientVersion, selection.ServerVersion, selection.ComposeVersion}, Timeout: 60 * time.Second, Backend: selection.Backend})
+ 	if err != nil {
+ 		return nil, err
+ 	}
+ 	owner := OwnershipPreflight{Project: declaration.ComposeProject, InstanceID: declaration.InstanceID, ProfileID: declaration.ProfileID, ReleaseDigest: declaration.ReleaseFingerprint, ConfigDigest: composeHash}
++	boundaryStage = "compose_admission"
+ 	if err := validateCompose(c.Compose, owner); err != nil {
+ 		return nil, err
+ 	}
+@@ -301,6 +313,7 @@
+ 			return nil, err
+ 		}
+ 	}
++	boundaryStage = "role_admission"
+ 	if err := validateBootstrapRoles(c, declaration); err != nil {
+ 		return nil, err
+ 	}
+@@ -309,17 +322,20 @@
+ 	if c.LocalTLS == nil || c.Kernel.TLS == nil || c.Health.TLS == nil || c.admissionPolicy == nil || c.Kernel.authority == nil {
+ 		return nil, bootstrapError("local_tls_required")
+ 	}
++	boundaryStage = "assembly_preparation"
+ 	prepared, err := protected.Prepare(warm, c.Assembly, c.PackageDirectory, c.ReleaseTrust, protected.Limits{})
+ 	if err != nil {
+ 		return nil, bootstrapError("assembly_preparation_failed")
+ 	}
+ 	defer prepared.Close()
++	boundaryStage = "operation_entry"
+ 	if operation != nil {
+ 		if err := operation.enter(ctx, c, declaration, attemptID); err != nil {
+ 			return nil, err
+ 		}
+ 		// Receipt I/O follows genuine admission and runs outside the operation's
+ 		// state lock. A departing frontend does not cancel this owned startup.
++		boundaryStage = "accepted_receipt"
+ 		if err := operation.emitBootstrapAccepted(ctx); err != nil {
+ 			return nil, err
+ 		}
+@@ -363,11 +379,13 @@
+ 		return &Session{Status: BootstrapStatus{Disposition: "reused", Profile: profile.Summary(), Kernel: k, Persistence: p}, startupAttemptID: attemptID, observedAt: time.Now().UTC()}, nil
+ 	}
+ 	// All initial warm inspection shares one budget, reserving exec pipe cleanup.
++	boundaryStage = "initial_warm_inspection"
+ 	broker, err := inspect(warm)
+ 	if err != nil {
+ 		cancelWarm()
+-		return nil, bootstrapBoundaryFailure("initial_warm_inspection", err)
+-	}
++		return nil, err
++	}
++	boundaryStage = "initial_warm_observation"
+ 	if broker.State == "running" {
+ 		if reused, err := observe(warm); err == nil {
+ 			cancelWarm()
+@@ -382,6 +400,7 @@
+ 	// A concurrent owner may still be starting the protected roles. Wait for
+ 	// its bootstrap lease, then inspect again before any mutation. A runtime
+ 	// that remains degraded after that wait is refused by the second observation.
++	boundaryStage = "bootstrap_lease"
+ 	lease, err := AcquireBootstrapLock(ctx, declaration.ProfileDirectory, declaration.InstanceID, selection.EngineID)
+ 	if err != nil {
+ 		return nil, err
+@@ -400,10 +419,12 @@
+ 		}
+ 	}()
+ 	owner.LockHeld = true
++	boundaryStage = "post_lease_inspection"
+ 	broker, err = inspect(ctx)
+ 	if err != nil {
+-		return nil, bootstrapBoundaryFailure("post_lease_inspection", err)
+-	}
++		return nil, err
++	}
++	boundaryStage = "post_lease_observation"
+ 	if broker.State == "running" {
+ 		if reused, err := observe(ctx); err == nil {
+ 			return reused, nil
+@@ -418,6 +439,7 @@
+ 			lease.Close()
+ 		}
+ 	}()
++	boundaryStage = "role_leases"
+ 	for i, role := range c.Roles {
+ 		lease, err := AcquireBootstrapLock(ctx, declaration.ProfileDirectory, declaration.InstanceID, selection.EngineID+":runtime:"+role.ID)
+ 		if err != nil {
+@@ -427,9 +449,11 @@
+ 		c.Roles[i].LifetimeLease = lease.file
+ 	}
+ 	if broker.State != "running" {
++		boundaryStage = "broker_start"
+ 		if err := driver.StartOwned(ctx, owner, c.Compose); err != nil {
+-			return nil, bootstrapBoundaryFailure("broker_start", err)
+-		}
++			return nil, err
++		}
++		boundaryStage = "post_start_inspection"
+ 		broker, err = inspect(ctx)
+ 		if err != nil {
+ 			return nil, err
+@@ -441,11 +465,13 @@
+ 	// Provisioning and child startup change the observed deployment. Do not
+ 	// carry a pre-mutation inspection into their later readiness observation.
+ 	operationProof = nil
++	boundaryStage = "broker_provision"
+ 	probe, err := deployment.ProvisionAndProbe(ctx, c.Health)
+ 	if err != nil {
+ 		return nil, err
+ 	}
+ 	session.healthProof = &completedHealthProbe{result: probe, scope: c.Kernel.Scope, endpoint: c.Health.Endpoint, completedAt: time.Now().UTC()}
++	boundaryStage = "protected_start"
+ 	group, err := prepared.Start(lifetime, c.Roles, c.Deadlines)
+ 	session.group = group
+ 	session.cleanupState.recordGroup(group)
+@@ -477,6 +503,7 @@
+ 	}
+ 	roleLeases = nil
+ 	for {
++		boundaryStage = "readiness_inspection"
+ 		broker, err = inspect(ctx)
+ 		if err != nil {
+ 			return nil, err
+@@ -484,8 +511,10 @@
+ 		if broker.State != "running" {
+ 			return nil, bootstrapError("broker_not_running")
+ 		}
++		boundaryStage = "readiness_observation"
+ 		ready, err := observe(ctx)
+ 		if err == nil {
++			boundaryStage = "readiness_finalize"
+ 			session.mu.Lock()
+ 			if lifetime.Err() != nil {
+ 				session.mu.Unlock()
+@@ -520,6 +549,7 @@
+ 		case <-ctx.Done():
+ 			return nil, bootstrapError("readiness_deadline")
+ 		case <-group.Done():
++			boundaryStage = "readiness_finalize"
+ 			return nil, bootstrapError("protected_process_exited")
+ 		case <-time.After(25 * time.Millisecond):
+ 		}
+--- before/bootstrap_boundary_cold_test.go
++++ candidate/bootstrap_boundary_cold_test.go
+@@ -11,6 +11,7 @@
+ 	"io"
+ 	"os"
+ 	"path/filepath"
++	"reflect"
+ 	"strings"
+ 	"testing"
+ 	"time"
+@@ -23,6 +24,10 @@
+ 	Mode          string
+ 	Log           string
+ 	ComposeSHA256 string
++	BridgeSpec    string
++	Started       string
++	Pause         string
++	Release       string
+ }
+ 
+ func init() {
+@@ -49,6 +54,41 @@
+ 	closeErr := log.Close()
+ 	if err != nil || closeErr != nil {
+ 		os.Exit(9)
++	}
++	if spec.Mode == "post_start_refusal" && args[0] == "context" {
++		if _, e := os.Stat(spec.Started); e == nil {
++			os.Exit(4)
++		}
++	}
++	if strings.HasPrefix(spec.Mode, "cold_readiness_") {
++		if args[0] == "context" {
++			ledger, e := os.ReadFile(spec.Log)
++			if e != nil {
++				os.Exit(9)
++			}
++			count := 0
++			for _, line := range strings.Split(string(ledger), "\n") {
++				var row []string
++				if json.Unmarshal([]byte(line), &row) == nil && len(row) > 0 && row[0] == "context" {
++					count++
++				}
++			}
++			if count == 5 {
++				if os.WriteFile(spec.Pause, []byte("ready"), 0600) != nil {
++					os.Exit(9)
++				}
++				for {
++					if _, e := os.Stat(spec.Release); e == nil {
++						break
++					}
++					time.Sleep(time.Millisecond)
++				}
++			}
++		}
++		if _, e := os.Stat(spec.Started); e == nil {
++			bridgeDockerProcess(spec.BridgeSpec)
++			os.Exit(0)
++		}
+ 	}
+ 	if spec.Mode == "initial_timeout" && args[0] == "context" {
+ 		time.Sleep(10 * time.Second)
+@@ -81,8 +121,14 @@
+ 		if readErr != nil || len(body) > 4*1024*1024 || "sha256:"+hex.EncodeToString(sum[:]) != spec.ComposeSHA256 {
+ 			os.Exit(9)
+ 		}
+-		if !strings.Contains(strings.Join(args, " "), "up --detach --pull never --no-build") {
++		if !reflect.DeepEqual(args, []string{"compose", "--project-name", spec.Profile.ComposeProject, "--file", "-", "up", "--detach", "--wait", "--wait-timeout", "60", "--pull", "never", "--no-build"}) {
+ 			os.Exit(9)
++		}
++		if spec.Mode == "post_start_refusal" || strings.HasPrefix(spec.Mode, "cold_readiness_") {
++			if os.WriteFile(spec.Started, []byte("started"), 0600) != nil {
++				os.Exit(9)
++			}
++			os.Exit(0)
+ 		}
+ 		os.Exit(4)
+ 	default:
+@@ -91,7 +137,7 @@
+ 	os.Exit(0)
+ }
+ func TestBootstrapBoundaryActualColdMutationGuard(t *testing.T) {
+-	for _, mode := range []string{"initial_timeout", "cold_to_guard"} {
++	for _, mode := range []string{"initial_timeout", "cold_to_guard", "post_start_refusal"} {
+ 		t.Run(mode, func(t *testing.T) {
+ 			// Genuine signed static image/private enrollment and actual Bootstrap API,
+ 			// with fixed controlled Docker subprocesses; no enter/complete substitution.
+@@ -99,7 +145,7 @@
+ 			directory := t.TempDir()
+ 			log := filepath.Join(directory, "commands.private")
+ 			name := filepath.Join(directory, "fixture.private")
+-			raw := mustStatusJSON(bootstrapBoundaryDockerSpec{f.profile, mode, log, releaseDigest(f.config.Compose)})
++			raw := mustStatusJSON(bootstrapBoundaryDockerSpec{Profile: f.profile, Mode: mode, Log: log, ComposeSHA256: releaseDigest(f.config.Compose), Started: filepath.Join(directory, "started")})
+ 			if os.WriteFile(name, raw, 0600) != nil {
+ 				t.Fatal("boundary_fixture_write_failed")
+ 			}
+@@ -111,7 +157,7 @@
+ 			session, err := BootstrapForInvocation(ctx, ctx, f.config, "attempt_"+strings.Repeat("c", 32))
+ 			if session != nil {
+ 				defer func() {
+-					cleanup, stop := context.WithTimeout(context.Background(), 2*time.Second)
++					cleanup, stop := context.WithCancel(ctx)
+ 					defer stop()
+ 					if session.Close(cleanup) != nil {
+ 						t.Error("exact_boundary_session_cleanup_failed")
+@@ -123,6 +169,9 @@
+ 			}
+ 			stage := bootstrapDiagnosticStage(err)
+ 			want := "broker_start"
++			if mode == "post_start_refusal" {
++				want = "post_start_inspection"
++			}
+ 			code := "docker_command_failed"
+ 			if mode == "initial_timeout" {
+ 				want = "initial_warm_inspection"
+@@ -145,13 +194,13 @@
+ 					mutation = true
+ 				}
+ 			}
+-			if mutation != (mode == "cold_to_guard") {
++			if mutation != (mode != "initial_timeout") {
+ 				t.Fatal("initial_timeout_mutated_or_allowed_cold_skipped_guard")
+ 			}
+ 			// Lease reacquisition proves actual Bootstrap and role cleanup released
+ 			// exclusion; it grants no authority over any unrelated installation.
+ 			for _, id := range append([]string{f.profile.Docker.EngineID}, bootstrapBoundaryRoleLeaseIDs(f.profile.Docker.EngineID)...) {
+-				lockCtx, stop := context.WithTimeout(context.Background(), 100*time.Millisecond)
++				lockCtx, stop := context.WithTimeout(ctx, 100*time.Millisecond)
+ 				lease, e := AcquireBootstrapLock(lockCtx, f.profile.ProfileDirectory, f.profile.InstanceID, id)
+ 				stop()
+ 				if e != nil {
+--- before/bootstrap_boundary_readiness_test.go
++++ candidate/bootstrap_boundary_readiness_test.go
+@@ -0,0 +1,164 @@
++//go:build linux
++
++package launcher
++
++import (
++	"context"
++	"encoding/json"
++	"os"
++	"path/filepath"
++	"strings"
++	"testing"
++	"time"
++
++	"github.com/controlLogix/agentmux/platform/deployment"
++	"github.com/nats-io/nats.go"
++)
++
++// The actual Bootstrap starts four separately signed real kernel executables.
++// Only Docker inspection and its successful compose guard are controlled; no
++// actual engine or container exists. The pause is confined to that test child.
++func TestBootstrapBoundaryActualReadinessCallSites(t *testing.T) {
++	kernelPath := filepath.Join(t.TempDir(), "kernel")
++	installedCLIBuild(t, "./cmd/agentmux-kernel", kernelPath)
++	kernel, e := os.ReadFile(kernelPath)
++	if e != nil {
++		t.Fatal("actual_kernel_fixture_unavailable")
++	}
++	for _, mode := range []string{"cold_readiness_failure", "cold_readiness_success"} {
++		t.Run(mode, func(t *testing.T) {
++			fixtureContext, stopFixture := context.WithTimeout(context.Background(), 45*time.Second)
++			t.Cleanup(stopFixture)
++			f := installedCLIRoleFixture(t, kernel)
++			// This checked helper owns the actual TLS broker and its exact creator.
++			bridgeDiagnosticOwnedBroker(t, fixtureContext, f)
++			bridgeSpec := os.Getenv("AMX_OWNER_BRIDGE_DOCKER_FIXTURE")
++			if bridgeSpec == "" {
++				t.Fatal("controlled_identity_spec_unavailable")
++			}
++			t.Setenv("AMX_OWNER_BRIDGE_DOCKER_FIXTURE", "")
++			dir := t.TempDir()
++			spec := bootstrapBoundaryDockerSpec{Profile: f.profile, Mode: mode, Log: filepath.Join(dir, "commands.private"), ComposeSHA256: releaseDigest(f.config.Compose), BridgeSpec: bridgeSpec, Started: filepath.Join(dir, "started"), Pause: filepath.Join(dir, "paused"), Release: filepath.Join(dir, "release")}
++			name := filepath.Join(dir, "spec.private")
++			if os.WriteFile(name, mustStatusJSON(spec), 0600) != nil {
++				t.Fatal("fixed_boundary_spec_unavailable")
++			}
++			t.Setenv("AMX_BOOTSTRAP_BOUNDARY_DOCKER_FIXTURE", name)
++			t.Setenv("DOCKER_HOST", "")
++			t.Setenv("DOCKER_CONTEXT", "")
++			dialer, e := f.config.Health.TLS.NewDialer(fixtureContext, time.Second)
++			if e != nil {
++				t.Fatal("exact_health_dialer_unavailable")
++			}
++			var health *nats.Conn
++			t.Cleanup(func() {
++				if dialer.Close() != nil {
++					t.Error("exact_health_dialer_cleanup_failed")
++				}
++				if health != nil {
++					health.Close()
++				}
++			})
++			health, e = nats.Connect(f.config.Health.Endpoint, nats.UserInfo(deployment.HealthUser, f.config.Health.Password), nats.TLSHandshakeFirst(), nats.SetCustomDialer(dialer), nats.NoReconnect(), nats.IgnoreDiscoveredServers(), nats.Timeout(time.Second), nats.ErrorHandler(ownerBridgeAsyncErrorHandler))
++			if e != nil {
++				t.Fatal("actual_health_account_unavailable")
++			}
++			startup, stopStartup := context.WithCancel(fixtureContext)
++			type result struct {
++				session *Session
++				failure error
++			}
++			done := make(chan result, 1)
++			joined := false
++			var owned result
++			go func() {
++				s, e := BootstrapForInvocation(startup, fixtureContext, f.config, "attempt_"+strings.Repeat("d", 32))
++				done <- result{s, e}
++			}()
++			defer func() {
++				stopStartup()
++				if !joined {
++					owned = <-done
++					joined = true
++				}
++				if owned.session != nil && owned.session.Close(fixtureContext) != nil {
++					t.Error("actual_protected_owner_cleanup_failed")
++				}
++			}()
++			// The fifth endpoint inspect occurs after actual provisioning and group Start,
++			// before the first readiness Observe. StartOwned also performs its own
++			// warm guard inspection. The same startup budget stays live.
++			for {
++				if _, e := os.Stat(spec.Pause); e == nil {
++					break
++				}
++				select {
++				case owned = <-done:
++					joined = true
++					t.Fatal("actual_bootstrap_returned_before_readiness_boundary")
++				case <-startup.Done():
++					t.Fatal("original_startup_expired_before_readiness_boundary")
++				case <-time.After(time.Millisecond):
++				}
++			}
++			if mode == "cold_readiness_failure" {
++				js, e := health.JetStream()
++				if e != nil {
++					t.Fatal("actual_health_stream_context_unavailable")
++				}
++				if _, e = js.Publish(deployment.HealthSubject(f.config.Health.HubID), []byte("invalid-isolated-health-record"), nats.Context(startup)); e != nil {
++					t.Fatal("isolated_health_fault_not_persisted")
++				}
++			}
++			if os.WriteFile(spec.Release, []byte("release"), 0600) != nil {
++				t.Fatal("fixed_readiness_child_release_failed")
++			}
++			owned = <-done
++			joined = true
++			if startup.Err() != nil || fixtureContext.Err() != nil {
++				t.Fatal("original_context_exhausted")
++			}
++			if mode == "cold_readiness_failure" {
++				stage := bootstrapDiagnosticStage(owned.failure)
++				if owned.failure == nil || owned.failure.Error() != "observe_record_invalid" || stage == nil || *stage != "readiness_observation" {
++					t.Fatal("actual_hard_observation_misattributed")
++				}
++			} else {
++				if owned.failure != nil || owned.session == nil || owned.session.Status.Disposition != "started" || owned.session.Status.Kernel.KernelReadiness != "ready" {
++					t.Fatal("actual_successful_finalization_changed")
++				}
++			}
++			if owned.session != nil {
++				if owned.session.Close(fixtureContext) != nil {
++					t.Fatal("actual_session_close_failed")
++				}
++				owned.session = nil
++			}
++			for _, id := range append([]string{f.profile.Docker.EngineID}, bootstrapBoundaryRoleLeaseIDs(f.profile.Docker.EngineID)...) {
++				bounded, cancel := context.WithTimeout(fixtureContext, 100*time.Millisecond)
++				lease, e := AcquireBootstrapLock(bounded, f.profile.ProfileDirectory, f.profile.InstanceID, id)
++				cancel()
++				if e != nil {
++					t.Fatal("actual_exclusion_not_released")
++				}
++				if lease.Close() != nil {
++					t.Fatal("actual_contender_close_failed")
++				}
++			}
++			ledger, e := os.ReadFile(spec.Log)
++			if e != nil {
++				t.Fatal("fixed_command_ledger_unavailable")
++			}
++			mutations := 0
++			for _, line := range strings.Split(string(ledger), "\n") {
++				var args []string
++				if json.Unmarshal([]byte(line), &args) == nil && len(args) > 0 && args[0] == "compose" && strings.Contains(strings.Join(args, " "), " up ") {
++					mutations++
++				}
++			}
++			if mutations != 1 {
++				t.Fatal("actual_original_mutation_guard_changed")
++			}
++		})
++	}
++}
+--- before/bootstrap_boundary_stage.go
++++ candidate/bootstrap_boundary_stage.go
+@@ -7,7 +7,7 @@
+ // These stages are private provenance, never readiness or mutation authority.
+ func validBootstrapDiagnosticStage(stage string) bool {
+ 	switch stage {
+-	case "initial_warm_inspection", "post_lease_inspection", "broker_start":
++	case "operation_completion", "invocation_validation", "profile_admission", "docker_admission", "compose_admission", "role_admission", "assembly_preparation", "operation_entry", "accepted_receipt", "initial_warm_inspection", "initial_warm_observation", "bootstrap_lease", "post_lease_inspection", "post_lease_observation", "role_leases", "broker_start", "post_start_inspection", "broker_provision", "protected_start", "readiness_inspection", "readiness_observation", "readiness_finalize":
+ 		return true
+ 	}
+ 	return false
+--- before/bootstrap_boundary_stage_test.go
++++ candidate/bootstrap_boundary_stage_test.go
+@@ -16,7 +16,7 @@
+ func (unknownBoundaryGraffiti) Unwrap() error           { panic("unknown_unwrap_called") }
+ func (unknownBoundaryGraffiti) inspectionStage() string { panic("unknown_stage_called") }
+ func TestBootstrapBoundaryStageTrustedAndClosed(t *testing.T) {
+-	for _, stage := range []string{"initial_warm_inspection", "post_lease_inspection", "broker_start"} {
++	for _, stage := range []string{"operation_completion", "invocation_validation", "profile_admission", "docker_admission", "compose_admission", "role_admission", "assembly_preparation", "operation_entry", "accepted_receipt", "initial_warm_inspection", "initial_warm_observation", "bootstrap_lease", "post_lease_inspection", "post_lease_observation", "role_leases", "broker_start", "post_start_inspection", "broker_provision", "protected_start", "readiness_inspection", "readiness_observation", "readiness_finalize"} {
+ 		t.Run(stage, func(t *testing.T) {
+ 			cause := refusal("command_timeout_outcome_unknown")
+ 			failure := bootstrapBoundaryFailure(stage, inspectionFailure("version", cause))
+--- before/bootstrap_failed_read.go
++++ candidate/bootstrap_failed_read.go
+@@ -0,0 +1,82 @@
++package launcher
++
++import (
++	"context"
++	"reflect"
++	"time"
++)
++
++// Failed reads are private diagnostic facts, never successful observations.
++type bootstrapFailedRead struct {
++	Kind                    string `json:"kind"`
++	ElapsedNanoseconds      int64  `json:"elapsedNanoseconds"`
++	RemainingNanoseconds    int64  `json:"remainingNanoseconds"`
++	EffectiveCapNanoseconds int64  `json:"effectiveCapNanoseconds"`
++}
++
++func validBootstrapFailedRead(m *bootstrapFailedRead) bool {
++	if m == nil || m.ElapsedNanoseconds < 0 || m.ElapsedNanoseconds > int64(120*time.Second) || m.RemainingNanoseconds <= 0 || m.RemainingNanoseconds > int64(60*time.Second) || m.EffectiveCapNanoseconds <= 0 || m.EffectiveCapNanoseconds > int64(4*time.Second) || m.EffectiveCapNanoseconds > m.RemainingNanoseconds {
++		return false
++	}
++	switch m.Kind {
++	case "endpoint", "version", "compose_version", "engine", "roster", "engine_stdio", "container_inspection", "image_inspection", "volume_inspection", "config_archive", "certificate_archive", "key_archive":
++		return true
++	}
++	return false
++}
++func failedDockerRead(kind string, parent context.Context, started time.Time, remaining, effectiveCap time.Duration, cause error) error {
++	if cause == nil || kind == "" || parent == nil {
++		return cause
++	}
++	metric := &bootstrapFailedRead{kind, int64(time.Since(started)), int64(remaining), int64(effectiveCap)}
++	if !validBootstrapFailedRead(metric) {
++		return cause
++	}
++	failure := inspectionFailure("fixed_read", cause).(*dockerInspectionFailure)
++	failure.failedRead = metric
++	return failure
++}
++func copyBootstrapFailedRead(m *bootstrapFailedRead) *bootstrapFailedRead {
++	if m == nil {
++		return nil
++	}
++	copied := *m
++	return &copied
++}
++func bootstrapFailedReadFromError(cause error) *bootstrapFailedRead {
++	queue := []error{cause}
++	var found *bootstrapFailedRead
++	for inspected := 0; len(queue) > 0; inspected++ {
++		if inspected >= 64 {
++			return nil
++		}
++		current := queue[0]
++		queue = queue[1:]
++		if current == nil || (reflect.ValueOf(current).Kind() == reflect.Pointer && reflect.ValueOf(current).IsNil()) {
++			continue
++		}
++		if e, ok := current.(*dockerInspectionFailure); ok && e.failedRead != nil {
++			if !validBootstrapFailedRead(e.failedRead) || (found != nil && *found != *e.failedRead) {
++				return nil
++			}
++			found = e.failedRead
++		}
++		if !diagnosticReviewedWrapper(current) {
++			continue
++		}
++		switch known := current.(type) {
++		case interface{ Unwrap() []error }:
++			children := known.Unwrap()
++			if len(children) > 63-inspected-len(queue) {
++				return nil
++			}
++			queue = append(queue, children...)
++		case interface{ Unwrap() error }:
++			if len(queue) >= 63-inspected {
++				return nil
++			}
++			queue = append(queue, known.Unwrap())
++		}
++	}
++	return copyBootstrapFailedRead(found)
++}
+--- before/bootstrap_failed_read_test.go
++++ candidate/bootstrap_failed_read_test.go
+@@ -0,0 +1,83 @@
++//go:build linux || darwin
++
++package launcher
++
++import (
++	"context"
++	"encoding/json"
++	"errors"
++	"fmt"
++	"os"
++	"path/filepath"
++	"strings"
++	"testing"
++	"time"
++)
++
++func TestBootstrapFailedReadActualOwnedExecutor(t *testing.T) {
++	t.Setenv("DOCKER_CONTEXT", "")
++	t.Setenv("DOCKER_HOST", "")
++	executable := filepath.Join(t.TempDir(), "fixed-read")
++	if os.WriteFile(executable, []byte("#!/bin/sh\nexit 7\n"), 0700) != nil {
++		t.Fatal("owned_executor_fixture_failed")
++	}
++	d := &Docker{config: DockerConfig{Executable: executable, Context: "fixed", Timeout: time.Second}}
++	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
++	defer cancel()
++	_, failure := d.runFixedRead(ctx, "version", nil, "version", "--format", dockerVersionReadFormat)
++	metric := bootstrapFailedReadFromError(failure)
++	if failure == nil || failure.Error() != "docker_command_failed" || metric == nil || metric.Kind != "version" || !validBootstrapFailedRead(metric) || ctx.Err() != nil {
++		t.Fatal("actual_joined_read_failure_metric_missing")
++	}
++	if ProjectRequestDiagnostic(failure) != ProjectRequestDiagnostic(refusal("command_failed")) {
++		t.Fatal("public_diagnostic_changed")
++	}
++	for _, format := range []string{"%v", "%+v", "%#v"} {
++		if fmt.Sprintf(format, failure) != failure.Error() {
++			t.Fatal("private_metric_format_leak")
++		}
++	}
++	b, err := json.Marshal(failure)
++	if err != nil || string(b) != "{}" {
++		t.Fatal("private_metric_json_leak")
++	}
++}
++
++func TestBootstrapFailedReadClosedBoundsAndGraph(t *testing.T) {
++	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
++	defer cancel()
++	original := refusal("command_failed")
++	valid := failedDockerRead("roster", ctx, time.Now(), time.Second, time.Second, original)
++	if !errors.Is(valid, original) || bootstrapFailedReadFromError(valid) == nil {
++		t.Fatal("original_cause_lost")
++	}
++	for name, failure := range map[string]error{
++		"opaque":          unknownBoundaryGraffiti{},
++		"text":            errors.New("roster elapsedNanoseconds"),
++		"mutation":        failedDockerRead("compose_up", ctx, time.Now(), time.Second, time.Second, original),
++		"absent_budget":   failedDockerRead("version", ctx, time.Now(), 0, time.Second, original),
++		"invalid_budget":  failedDockerRead("version", ctx, time.Now(), 61*time.Second, time.Second, original),
++		"expired_elapsed": failedDockerRead("version", ctx, time.Now().Add(-121*time.Second), time.Second, time.Second, original),
++	} {
++		t.Run(name, func(t *testing.T) {
++			if bootstrapFailedReadFromError(failure) != nil {
++				t.Fatal("unqualified_metric_accepted")
++			}
++		})
++	}
++	oversized := make([]error, 65)
++	for i := range oversized {
++		oversized[i] = valid
++	}
++	if bootstrapFailedReadFromError(errors.Join(oversized...)) != nil {
++		t.Fatal("metric_graph_bound_changed")
++	}
++	conflicting := failedDockerRead("version", ctx, time.Now(), time.Second, time.Second, original)
++	if bootstrapFailedReadFromError(errors.Join(valid, conflicting)) != nil {
++		t.Fatal("ambiguous_metric_accepted")
++	}
++	public, err := terminalHistory(&bootstrapHistoryFailure{InvocationID: "attempt_" + strings.Repeat("a", 32), CompletedAt: historyTimestamp(time.Now().UTC()), DiagnosticCode: "request_failed", Cleanup: "unknown", FailedRead: bootstrapFailedReadFromError(valid)}, time.Now().UTC())
++	if err != nil || strings.Contains(string(mustStatusJSON(public)), "failedRead") {
++		t.Fatal("metric_public_projection_leak")
++	}
++}
+--- before/bootstrap_history.go
++++ candidate/bootstrap_history.go
+@@ -47,11 +47,12 @@
+ }
+ 
+ type bootstrapHistoryTerminal struct {
+-	CompletedAt     string  `json:"completedAt"`
+-	Outcome         string  `json:"outcome"`
+-	DiagnosticCode  *string `json:"diagnosticCode"`
+-	Cleanup         string  `json:"cleanup"`
+-	DiagnosticStage *string `json:"diagnosticStage,omitempty"`
++	CompletedAt     string               `json:"completedAt"`
++	Outcome         string               `json:"outcome"`
++	DiagnosticCode  *string              `json:"diagnosticCode"`
++	Cleanup         string               `json:"cleanup"`
++	DiagnosticStage *string              `json:"diagnosticStage,omitempty"`
++	FailedRead      *bootstrapFailedRead `json:"failedRead,omitempty"`
+ }
+ type bootstrapHistoryAttempt struct {
+ 	InvocationID string                    `json:"invocationId"`
+@@ -59,11 +60,12 @@
+ 	Terminal     *bootstrapHistoryTerminal `json:"terminal"`
+ }
+ type bootstrapHistoryFailure struct {
+-	InvocationID    string  `json:"invocationId"`
+-	CompletedAt     string  `json:"completedAt"`
+-	DiagnosticCode  string  `json:"diagnosticCode"`
+-	Cleanup         string  `json:"cleanup"`
+-	DiagnosticStage *string `json:"diagnosticStage,omitempty"`
++	InvocationID    string               `json:"invocationId"`
++	CompletedAt     string               `json:"completedAt"`
++	DiagnosticCode  string               `json:"diagnosticCode"`
++	Cleanup         string               `json:"cleanup"`
++	DiagnosticStage *string              `json:"diagnosticStage,omitempty"`
++	FailedRead      *bootstrapFailedRead `json:"failedRead,omitempty"`
+ }
+ type bootstrapHistoryRecord struct {
+ 	SchemaVersion      string                   `json:"schemaVersion"`
+@@ -155,6 +157,9 @@
+ 		if err != nil || completed.Before(began) || completed.After(written) {
+ 			return result, historyError("invalid", nil)
+ 		}
++		if terminal.FailedRead != nil && (terminal.Outcome != "failed" || !validBootstrapFailedRead(terminal.FailedRead)) {
++			return result, historyError("invalid", nil)
++		}
+ 		if terminal.DiagnosticStage != nil && (terminal.Outcome != "failed" || !validBootstrapDiagnosticStage(*terminal.DiagnosticStage)) {
+ 			return result, historyError("invalid", nil)
+ 		}
+@@ -163,6 +168,9 @@
+ 		}
+ 	}
+ 	if previous := result.PreviousFailure; previous != nil {
++		if previous.FailedRead != nil && !validBootstrapFailedRead(previous.FailedRead) {
++			return result, historyError("invalid", nil)
++		}
+ 		if previous.DiagnosticStage != nil && !validBootstrapDiagnosticStage(*previous.DiagnosticStage) {
+ 			return result, historyError("invalid", nil)
+ 		}
+@@ -352,7 +360,7 @@
+ 	if s.state.expected != nil {
+ 		next.PreviousFailure = s.state.expected.PreviousFailure
+ 		if t := s.state.expected.LatestAttempt.Terminal; t != nil && t.Outcome == "failed" {
+-			next.PreviousFailure = &bootstrapHistoryFailure{InvocationID: s.state.expected.LatestAttempt.InvocationID, CompletedAt: t.CompletedAt, DiagnosticCode: *t.DiagnosticCode, Cleanup: t.Cleanup, DiagnosticStage: copyBootstrapDiagnosticStage(t.DiagnosticStage)}
++			next.PreviousFailure = &bootstrapHistoryFailure{InvocationID: s.state.expected.LatestAttempt.InvocationID, CompletedAt: t.CompletedAt, DiagnosticCode: *t.DiagnosticCode, Cleanup: t.Cleanup, DiagnosticStage: copyBootstrapDiagnosticStage(t.DiagnosticStage), FailedRead: copyBootstrapFailedRead(t.FailedRead)}
+ 		}
+ 	}
+ 	return s.publish(ctx, &next)
+@@ -400,6 +408,7 @@
+ 		next.LatestAttempt.Terminal.Outcome = "failed"
+ 		next.LatestAttempt.Terminal.DiagnosticCode = &code
+ 		next.LatestAttempt.Terminal.DiagnosticStage = bootstrapDiagnosticStage(cause)
++		next.LatestAttempt.Terminal.FailedRead = bootstrapFailedReadFromError(cause)
+ 		if code == "owned_cleanup_incomplete" {
+ 			next.LatestAttempt.Terminal.Cleanup = "incomplete"
+ 		}
+--- before/bootstrap_history.schema.json
++++ candidate/bootstrap_history.schema.json
+@@ -205,9 +205,71 @@
+                 },
+                 "diagnosticStage": {
+                   "enum": [
++                    "operation_completion",
++                    "invocation_validation",
++                    "profile_admission",
++                    "docker_admission",
++                    "compose_admission",
++                    "role_admission",
++                    "assembly_preparation",
++                    "operation_entry",
++                    "accepted_receipt",
+                     "initial_warm_inspection",
++                    "initial_warm_observation",
++                    "bootstrap_lease",
+                     "post_lease_inspection",
+-                    "broker_start"
++                    "post_lease_observation",
++                    "role_leases",
++                    "broker_start",
++                    "post_start_inspection",
++                    "broker_provision",
++                    "protected_start",
++                    "readiness_inspection",
++                    "readiness_observation",
++                    "readiness_finalize"
++                  ]
++                },
++                "failedRead": {
++                  "type": "object",
++                  "additionalProperties": false,
++                  "properties": {
++                    "kind": {
++                      "enum": [
++                        "endpoint",
++                        "version",
++                        "compose_version",
++                        "engine",
++                        "roster",
++                        "engine_stdio",
++                        "container_inspection",
++                        "image_inspection",
++                        "volume_inspection",
++                        "config_archive",
++                        "certificate_archive",
++                        "key_archive"
++                      ]
++                    },
++                    "elapsedNanoseconds": {
++                      "type": "integer",
++                      "minimum": 0,
++                      "maximum": 120000000000
++                    },
++                    "remainingNanoseconds": {
++                      "type": "integer",
++                      "minimum": 1,
++                      "maximum": 60000000000
++                    },
++                    "effectiveCapNanoseconds": {
++                      "type": "integer",
++                      "minimum": 1,
++                      "maximum": 4000000000
++                    }
++                  },
++                  "required": [
++                    "kind",
++                    "elapsedNanoseconds",
++                    "remainingNanoseconds",
++                    "effectiveCapNanoseconds"
+                   ]
+                 }
+               },
+@@ -271,8 +333,17 @@
+                   },
+                   "then": {
+                     "not": {
+-                      "required": [
+-                        "diagnosticStage"
++                      "anyOf": [
++                        {
++                          "required": [
++                            "diagnosticStage"
++                          ]
++                        },
++                        {
++                          "required": [
++                            "failedRead"
++                          ]
++                        }
+                       ]
+                     }
+                   }
+@@ -334,9 +405,71 @@
+             },
+             "diagnosticStage": {
+               "enum": [
++                "operation_completion",
++                "invocation_validation",
++                "profile_admission",
++                "docker_admission",
++                "compose_admission",
++                "role_admission",
++                "assembly_preparation",
++                "operation_entry",
++                "accepted_receipt",
+                 "initial_warm_inspection",
++                "initial_warm_observation",
++                "bootstrap_lease",
+                 "post_lease_inspection",
+-                "broker_start"
++                "post_lease_observation",
++                "role_leases",
++                "broker_start",
++                "post_start_inspection",
++                "broker_provision",
++                "protected_start",
++                "readiness_inspection",
++                "readiness_observation",
++                "readiness_finalize"
++              ]
++            },
++            "failedRead": {
++              "type": "object",
++              "additionalProperties": false,
++              "properties": {
++                "kind": {
++                  "enum": [
++                    "endpoint",
++                    "version",
++                    "compose_version",
++                    "engine",
++                    "roster",
++                    "engine_stdio",
++                    "container_inspection",
++                    "image_inspection",
++                    "volume_inspection",
++                    "config_archive",
++                    "certificate_archive",
++                    "key_archive"
++                  ]
++                },
++                "elapsedNanoseconds": {
++                  "type": "integer",
++                  "minimum": 0,
++                  "maximum": 120000000000
++                },
++                "remainingNanoseconds": {
++                  "type": "integer",
++                  "minimum": 1,
++                  "maximum": 60000000000
++                },
++                "effectiveCapNanoseconds": {
++                  "type": "integer",
++                  "minimum": 1,
++                  "maximum": 4000000000
++                }
++              },
++              "required": [
++                "kind",
++                "elapsedNanoseconds",
++                "remainingNanoseconds",
++                "effectiveCapNanoseconds"
+               ]
+             }
+           },
+--- before/bootstrap_history_fs.go
++++ candidate/bootstrap_history_fs.go
+@@ -349,7 +349,7 @@
+ 	if err := bounded.Err(); err != nil {
+ 		return nil, historyError("context_invalid", err)
+ 	}
+-	return &bootstrapHistoryFailure{InvocationID: record.LatestAttempt.InvocationID, CompletedAt: terminal.CompletedAt, DiagnosticCode: *terminal.DiagnosticCode, Cleanup: terminal.Cleanup, DiagnosticStage: copyBootstrapDiagnosticStage(terminal.DiagnosticStage)}, nil
++	return &bootstrapHistoryFailure{InvocationID: record.LatestAttempt.InvocationID, CompletedAt: terminal.CompletedAt, DiagnosticCode: *terminal.DiagnosticCode, Cleanup: terminal.Cleanup, DiagnosticStage: copyBootstrapDiagnosticStage(terminal.DiagnosticStage), FailedRead: copyBootstrapFailedRead(terminal.FailedRead)}, nil
+ }
+ 
+ func joinHistoryCleanup(primary, cause error) error {
+@@ -483,5 +483,5 @@
+ 	if err != nil || completed.After(now) || terminal.DiagnosticCode == nil || now.Sub(completed) > bootstrapHistoryRelevance {
+ 		return nil
+ 	}
+-	return &bootstrapHistoryFailure{InvocationID: record.LatestAttempt.InvocationID, CompletedAt: terminal.CompletedAt, DiagnosticCode: *terminal.DiagnosticCode, Cleanup: terminal.Cleanup, DiagnosticStage: copyBootstrapDiagnosticStage(terminal.DiagnosticStage)}
+-}
++	return &bootstrapHistoryFailure{InvocationID: record.LatestAttempt.InvocationID, CompletedAt: terminal.CompletedAt, DiagnosticCode: *terminal.DiagnosticCode, Cleanup: terminal.Cleanup, DiagnosticStage: copyBootstrapDiagnosticStage(terminal.DiagnosticStage), FailedRead: copyBootstrapFailedRead(terminal.FailedRead)}
++}
+--- before/bootstrap_history_stage_test.go
++++ candidate/bootstrap_history_stage_test.go
+@@ -11,11 +11,11 @@
+ )
+ 
+ func TestBootstrapHistoryBoundaryStageRoundTrip(t *testing.T) {
+-	for _, stage := range []string{"initial_warm_inspection", "post_lease_inspection", "broker_start"} {
++	for _, stage := range []string{"operation_completion", "invocation_validation", "profile_admission", "docker_admission", "compose_admission", "role_admission", "assembly_preparation", "operation_entry", "accepted_receipt", "initial_warm_inspection", "initial_warm_observation", "bootstrap_lease", "post_lease_inspection", "post_lease_observation", "role_leases", "broker_start", "post_start_inspection", "broker_provision", "protected_start", "readiness_inspection", "readiness_observation", "readiness_finalize"} {
+ 		t.Run(stage, func(t *testing.T) {
+ 			first, op, f, lease, binding := historyFixture(t)
+ 			enterHistoryFixture(t, first, op, f)
+-			if op.complete(nil, bootstrapBoundaryFailure(stage, refusal("command_failed"))) != nil || first.RecordTerminal(op.startup) != nil {
++			if op.complete(nil, bootstrapBoundaryFailure(stage, failedDockerRead("version", op.startup, time.Now(), time.Second, time.Second, refusal("command_failed")))) != nil || first.RecordTerminal(op.startup) != nil {
+ 				t.Fatal("stage_terminal_publication_failed")
+ 			}
+ 			raw, _, err := readHistoryFile(op.startup, first.root, first.binding.OwnerUID)
+@@ -23,11 +23,11 @@
+ 				t.Fatal("stage_terminal_read_failed")
+ 			}
+ 			record, err := decodeBootstrapHistory(raw, time.Now().UTC())
+-			if err != nil || record.LatestAttempt.Terminal.DiagnosticStage == nil || *record.LatestAttempt.Terminal.DiagnosticStage != stage {
++			if err != nil || !validBootstrapFailedRead(record.LatestAttempt.Terminal.FailedRead) || record.LatestAttempt.Terminal.DiagnosticStage == nil || *record.LatestAttempt.Terminal.DiagnosticStage != stage {
+ 				t.Fatal("stage_roundtrip_failed")
+ 			}
+ 			relevant := historyRelevantFailure(record, time.Now().UTC())
+-			if relevant == nil || relevant.DiagnosticStage == nil || *relevant.DiagnosticStage != stage {
++			if relevant == nil || !validBootstrapFailedRead(relevant.FailedRead) || relevant.DiagnosticStage == nil || *relevant.DiagnosticStage != stage {
+ 				t.Fatal("creator_relevant_conversion_lost_stage")
+ 			}
+ 			public, err := terminalHistory(relevant, time.Now().UTC())
+@@ -38,7 +38,7 @@
+ 			if json.Unmarshal(mustStatusJSON(public), &fields) != nil || len(fields) != 7 {
+ 				t.Fatal("public_history_shape_changed")
+ 			}
+-			if strings.Contains(string(mustStatusJSON(public)), "diagnosticStage") || strings.Contains(string(mustStatusJSON(public)), stage) {
++			if strings.Contains(string(mustStatusJSON(public)), "failedRead") || strings.Contains(string(mustStatusJSON(public)), "elapsedNanoseconds") || strings.Contains(string(mustStatusJSON(public)), "diagnosticStage") || strings.Contains(string(mustStatusJSON(public)), stage) {
+ 				t.Fatal("private_stage_entered_serialized_nested_public_history")
+ 			}
+ 			if _, present := fields["diagnosticStage"]; present {
+@@ -62,6 +62,7 @@
+ 			legacy := record
+ 			terminal = *record.LatestAttempt.Terminal
+ 			terminal.DiagnosticStage = nil
++			terminal.FailedRead = nil
+ 			legacy.LatestAttempt.Terminal = &terminal
+ 			if _, err := decodeBootstrapHistory(mustStatusJSON(legacy), time.Now().UTC()); err != nil {
+ 				t.Fatal("legacy_absent_stage_rejected")
+@@ -70,7 +71,7 @@
+ 				t.Fatal("first_stage_owner_close_failed")
+ 			}
+ 			general, err := readBootstrapHistory(op.startup, f.owner, binding.RuntimeDigest)
+-			if err != nil || general == nil || general.DiagnosticStage == nil || *general.DiagnosticStage != stage {
++			if err != nil || general == nil || !validBootstrapFailedRead(general.FailedRead) || general.DiagnosticStage == nil || *general.DiagnosticStage != stage {
+ 				t.Fatal("general_reader_lost_stage")
+ 			}
+ 			nextLease, err := AcquireBootstrapLock(op.startup, f.profile.ProfileDirectory, f.profile.InstanceID, "owner-status-service")
+@@ -105,7 +106,7 @@
+ 				t.Fatal("rollover_read_failed")
+ 			}
+ 			record, err = decodeBootstrapHistory(raw, time.Now().UTC())
+-			if err != nil || record.PreviousFailure == nil || record.PreviousFailure.DiagnosticStage == nil || *record.PreviousFailure.DiagnosticStage != stage {
++			if err != nil || record.PreviousFailure == nil || !validBootstrapFailedRead(record.PreviousFailure.FailedRead) || record.PreviousFailure.DiagnosticStage == nil || *record.PreviousFailure.DiagnosticStage != stage {
+ 				t.Fatal("previous_failure_lost_stage")
+ 			}
+ 			record.PreviousFailure.DiagnosticStage = &unknown
+--- before/docker.go
++++ candidate/docker.go
+@@ -103,6 +103,19 @@
+ 
+ // run is private, uses literal arguments, and never returns subprocess text.
+ func (d *Docker) run(ctx context.Context, stdin []byte, args ...string) ([]byte, error) {
++	return d.runFixedRead(ctx, "", stdin, args...)
++}
++func (d *Docker) runFixedRead(ctx context.Context, kind string, stdin []byte, args ...string) (output []byte, failure error) {
++	parent := ctx
++	started := time.Time{}
++	remaining := time.Duration(0)
++	effectiveCap := time.Duration(0)
++	attempted := false
++	defer func() {
++		if attempted && failure != nil {
++			failure = failedDockerRead(kind, parent, started, remaining, effectiveCap, failure)
++		}
++	}()
+ 	if err := d.environment(); err != nil {
+ 		return nil, err
+ 	}
+@@ -121,6 +134,19 @@
+ 	var out limitedOutput
+ 	cmd.Stdout = &out
+ 	cmd.Stderr = io.Discard
++	started = time.Now()
++	if parent != nil {
++		if deadline, ok := parent.Deadline(); ok {
++			remaining = time.Until(deadline)
++		}
++	}
++	if deadline, ok := ctx.Deadline(); ok {
++		effectiveCap = time.Until(deadline)
++	}
++	if effectiveCap > remaining {
++		effectiveCap = remaining
++	}
++	attempted = true
+ 	if err := cmd.Run(); err != nil {
+ 		if ctx.Err() != nil {
+ 			return nil, refusal("command_timeout_outcome_unknown")
+@@ -133,7 +159,10 @@
+ 	return out.Bytes(), nil
+ }
+ func (d *Docker) read(ctx context.Context, dst any, args ...string) error {
+-	b, e := d.run(ctx, nil, args...)
++	return d.readFixed(ctx, "", dst, args...)
++}
++func (d *Docker) readFixed(ctx context.Context, kind string, dst any, args ...string) error {
++	b, e := d.runFixedRead(ctx, kind, nil, args...)
+ 	if e != nil {
+ 		return e
+ 	}
+@@ -144,7 +173,7 @@
+ }
+ func (d *Docker) Inspect(ctx context.Context) (DockerInspection, error) {
+ 	var endpoint string
+-	if e := d.read(ctx, &endpoint, "context", "inspect", d.config.Context, "--format", "{{json .Endpoints.docker.Host}}"); e != nil {
++	if e := d.readFixed(ctx, "endpoint", &endpoint, "context", "inspect", d.config.Context, "--format", "{{json .Endpoints.docker.Host}}"); e != nil {
+ 		return DockerInspection{}, inspectionFailure("endpoint", e)
+ 	}
+ 	if endpoint != d.config.Endpoint {
+@@ -209,13 +238,16 @@
+ 	return labels["agentmux.instance.id"] == o.InstanceID && labels["agentmux.release.digest"] == o.ReleaseDigest && (o.ProfileID == "" || labels["agentmux.profile.id"] == o.ProfileID)
+ }
+ func (d *Docker) labels(ctx context.Context, kind, id string, o OwnershipPreflight) error {
++	return d.labelsFixed(ctx, "", kind, id, o)
++}
++func (d *Docker) labelsFixed(ctx context.Context, readKind, kind, id string, o OwnershipPreflight) error {
+ 	format := "{{json .Labels}}"
+ 	args := []string{kind, "inspect", id, "--format", format}
+ 	if kind == "container" {
+ 		args = []string{"container", "inspect", id, "--format", "{{json .Config.Labels}}"}
+ 	}
+ 	var labels map[string]string
+-	if e := d.read(ctx, &labels, args...); e != nil {
++	if e := d.readFixed(ctx, readKind, &labels, args...); e != nil {
+ 		return e
+ 	}
+ 	if !o.matches(labels) {
+--- before/docker_archives.go
++++ candidate/docker_archives.go
+@@ -33,7 +33,7 @@
+ 	for index, file := range files {
+ 		go func(index int, name string, digest [32]byte, limit int64) {
+ 			defer joined.Done()
+-			raw, err := d.run(ctx, nil, "cp", id+":/etc/nats/"+name, "-")
++			raw, err := d.runFixedRead(ctx, [3]string{"config_archive", "certificate_archive", "key_archive"}[index], nil, "cp", id+":/etc/nats/"+name, "-")
+ 			if err == nil {
+ 				err = verifyPrivateFileArchive(raw, digest, name, limit)
+ 				clear(raw)
+--- before/docker_instance.go
++++ candidate/docker_instance.go
+@@ -53,7 +53,7 @@
+ 	if err != nil || broker.State == "absent" {
+ 		return broker, err
+ 	}
+-	raw, err := d.run(ctx, nil, "cp", broker.ContainerID+":/etc/nats/private.conf", "-")
++	raw, err := d.runFixedRead(ctx, "config_archive", nil, "cp", broker.ContainerID+":/etc/nats/private.conf", "-")
+ 	if err != nil {
+ 		return OwnedBroker{}, err
+ 	}
+@@ -106,7 +106,7 @@
+ 		id = key
+ 	}
+ 	var actual brokerInspection
+-	if e := d.read(ctx, &actual, "container", "inspect", id, "--format", brokerInspectFormat); e != nil {
++	if e := d.readFixed(ctx, "container_inspection", &actual, "container", "inspect", id, "--format", brokerInspectFormat); e != nil {
+ 		return OwnedBroker{}, e
+ 	}
+ 	// No environment, command, mount source or arbitrary label value is captured.
+@@ -114,7 +114,7 @@
+ 		return OwnedBroker{}, refusal("broker_identity_mismatch")
+ 	}
+ 	var imageID string
+-	if e := d.read(ctx, &imageID, "image", "inspect", expectedImage, "--format", "{{json .Id}}"); e != nil {
++	if e := d.readFixed(ctx, "image_inspection", &imageID, "image", "inspect", expectedImage, "--format", "{{json .Id}}"); e != nil {
+ 		return OwnedBroker{}, e
+ 	}
+ 	if imageID == "" || actual.Image != imageID {
+@@ -156,7 +156,7 @@
+ 	if len(actual.Mounts) != 1 || actual.Mounts[0] != (brokerMount{Type: "volume", Name: o.Project + "_data", Destination: "/data", RW: true}) {
+ 		return OwnedBroker{}, refusal("broker_data_mount_mismatch")
+ 	}
+-	if e := d.labels(ctx, "volume", o.Project+"_data", o); e != nil {
++	if e := d.labelsFixed(ctx, "volume_inspection", "volume", o.Project+"_data", o); e != nil {
+ 		return OwnedBroker{}, e
+ 	}
+ 	return OwnedBroker{ContainerID: id, State: state}, nil
+--- before/docker_reads.go
++++ candidate/docker_reads.go
+@@ -16,6 +16,7 @@
+ 	stage             string
+ 	cause             error
+ 	bootstrapBoundary bool
++	failedRead        *bootstrapFailedRead
+ }
+ 
+ func (e *dockerInspectionFailure) Error() string                  { return e.cause.Error() }
+@@ -91,7 +92,7 @@
+ 	for i, args := range commands {
+ 		go func(i int, args []string) {
+ 			defer joined.Done()
+-			output, err := d.run(ctx, nil, args...)
++			output, err := d.runFixedRead(ctx, dockerReadStage(args), nil, args...)
+ 			if err != nil {
+ 				first.Do(func() { failure = inspectionFailure(dockerReadStage(args), err); cancel() })
+ 				return
+--- before/docker_stdio.go
++++ candidate/docker_stdio.go
+@@ -25,7 +25,16 @@
+ // This hidden CLI helper is qualified only for the selected Windows 29.8.0
+ // installation. Callers first verify context endpoint and actual client version.
+ // No generic request, caller headers, daemon discovery or fallback is provided.
+-func (d *Docker) readEngineInfoStdio(parent context.Context, actualClientVersion string) (dockerEngineInfo, error) {
++func (d *Docker) readEngineInfoStdio(parent context.Context, actualClientVersion string) (result dockerEngineInfo, failure error) {
++	started := time.Time{}
++	remaining := time.Duration(0)
++	effectiveCap := time.Duration(0)
++	attempted := false
++	defer func() {
++		if attempted && failure != nil {
++			failure = failedDockerRead("engine_stdio", parent, started, remaining, effectiveCap, failure)
++		}
++	}()
+ 	empty := dockerEngineInfo{}
+ 	if d == nil || parent == nil || d.config.Backend != WindowsInterop || d.config.Versions.Client != "29.8.0" || d.config.Versions.Server != "29.8.0" || actualClientVersion != "29.8.0" {
+ 		return empty, refusal("stdio_transport_unqualified")
+@@ -56,6 +65,17 @@
+ 		return empty, refusal("stdio_pipe_failed")
+ 	}
+ 	defer input.Close()
++	started = time.Now()
++	if deadline, ok := parent.Deadline(); ok {
++		remaining = time.Until(deadline)
++	}
++	if deadline, ok := ctx.Deadline(); ok {
++		effectiveCap = time.Until(deadline)
++	}
++	if effectiveCap > remaining {
++		effectiveCap = remaining
++	}
++	attempted = true
+ 	if cmd.Start() != nil {
+ 		return empty, refusal("command_failed")
+ 	}
+--- before/host_history_policy.go
++++ candidate/host_history_policy.go
+@@ -26,6 +26,9 @@
+ 		return nil, nil
+ 	}
+ 	completed, err := time.Parse(time.RFC3339Nano, failure.CompletedAt)
++	if failure.FailedRead != nil && !validBootstrapFailedRead(failure.FailedRead) {
++		return nil, historyError("invalid", nil)
++	}
+ 	if failure.DiagnosticStage != nil && !validBootstrapDiagnosticStage(*failure.DiagnosticStage) {
+ 		return nil, historyError("invalid", nil)
+ 	}

@@ -1,0 +1,87 @@
+{
+  "scope": "Only pending exact16 CLI affected race groups. Prior403named/91top launcher pass and vet retained, not repeated. Three historyfaultfixture cases remain separately required and unqualified. No real Docker/opt-in lifecycle/shared edits.",
+  "selectionSHA256": "c15d6e12ee118854a80923be4be628970f61e96b90c2b57f27aa55e01bcad497",
+  "sourceReviewSHA256": "e19df198b4a5b1fe3b40474457e89a8f904edae6629deb612f83bf63156a14af",
+  "sourcePins": {
+    "bootstrap.go": "d32ab9c87ffc72f284e9a90bfd6e34421c0b679a52b4a21155a14be2ac9f874c",
+    "bootstrap_boundary_cold_test.go": "e7a000bd75624b31072fe57efa212e003db2fbeb7a1c068dd559d2c2291a407c",
+    "bootstrap_boundary_readiness_test.go": "b7b3bcff778b85c0f30f9d3a1210870e6663a86a785882e350020125c2ab0b89",
+    "bootstrap_boundary_stage.go": "e8cc4bf8f8b3f12ad5308a10f35849b47790c0da91fa5d1a6cbebabd3203d6a9",
+    "bootstrap_boundary_stage_test.go": "6f11509573a0853ab07a0ed1897fc3f8450f08fefa55c574ae298a65431a965f",
+    "bootstrap_failed_read.go": "4a74a3aeb4f13d268eb2453f99c38742f0db37251c696886428273c60d0cc53a",
+    "bootstrap_failed_read_test.go": "9d2aab1dd47ee079d29a9f3cb8ae31308f108371f881c00fabaf0c9a10cd30a9",
+    "bootstrap_history.go": "491d5a941fcb8624fadaa16b10460efb8a4293abb94d886bb18d9351c18cc8b3",
+    "bootstrap_history.schema.json": "6f7f2e0ba411254d76243ccfa6dd01333903f036186c133c030c82cf5aec0100",
+    "bootstrap_history_fs.go": "be407e76d1a6d4dee8fcc959cdb7a7b3c590e4d5b21ba16e177598de665616f0",
+    "bootstrap_history_stage_test.go": "be0ccbfd5f7b72764017bdc9ce682131de013e5075b5dfc3ba212460ddf1c30f",
+    "docker.go": "b59d2666a321054a28cfbd3a1366d84b45bac21c6d296eead71fb3f5aee77deb",
+    "docker_archives.go": "c8a0dd96847f1dfb6907b8dc197e8bb9b671c79682a28dd647ff4f483fd2c17e",
+    "docker_instance.go": "ebbf887e80b5bde6907714159033fd4fecb32f385daaa0b176ef1dda2fa3d8d9",
+    "docker_reads.go": "f1e7029e6aa7704ffba6417a62f8f1609c29829c619dd6542b51254ff84966d8",
+    "docker_stdio.go": "3f21f52d7eb1c85e867ff30f63b355a331a62632feb8011585ae7b7dbd55e2c5",
+    "host_history_policy.go": "5b47f4103aa1499436400489bdbad56b8ff6794d33c221cf59dfa0e568feb62b"
+  },
+  "sameSnapshot": "/home/ryan/.cache/agentmux-governance/p02-complete-boundary-leaf-focused-iosi28um",
+  "sourceCounts": {
+    "shared": 282,
+    "executed": 285
+  },
+  "stages": [
+    {
+      "stage": "cmd",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-race",
+        "-count=1",
+        "-json",
+        "./cmd/agentmux-runtime",
+        "-run",
+        "^(TestInstalledLauncherLiteralCommands|TestInitialLookupNeverStartsOnStatusOrHardFailure|TestInstalledLauncherFailedEnsureEmitsEvidenceAndFails|TestInstalledLauncherReceiptDoesNotInventInstanceDetails|TestInstalledLauncherProgressNeverMasksAuthorityOrCleanupFailure|TestRequestDiagnosticOutputDoesNotTrustErrorText|TestFrontendBudgetReservesResponseAndCleanup|TestFrontendCleanupNeverExtendsTotal|TestFrontendStatusUsesOriginalFiveSecondTotal|TestFrontendEarlierCancelledCallerDoesNotGainTime|TestFrontendNearExpiryOwnedReceiptRetainsUnknownFactsAndCleanup|TestFrontendHistoryBudgetKeepsOriginalReserve|TestFrontendHistoryNeverMasksHardRequestFailure|TestFrontendHistoryKeepsNonzeroResultAndSeparateShape|TestFrontendHistoryFailedWriterRetainsOriginalFailure|TestOwnedBootstrapProgressChecksActualChildAndCaller)$"
+      ],
+      "directExit": 0,
+      "seconds": 4.903025947001879,
+      "exactOwnedGoHandleJoined": true,
+      "passes": [
+        "TestOwnedBootstrapProgressChecksActualChildAndCaller/accepted_then_exited",
+        "TestOwnedBootstrapProgressChecksActualChildAndCaller/cancelled_caller",
+        "TestOwnedBootstrapProgressChecksActualChildAndCaller/live_child_has_unknown_instance",
+        "TestOwnedBootstrapProgressChecksActualChildAndCaller",
+        "TestRequestDiagnosticOutputDoesNotTrustErrorText",
+        "TestFrontendBudgetReservesResponseAndCleanup",
+        "TestFrontendCleanupNeverExtendsTotal",
+        "TestFrontendStatusUsesOriginalFiveSecondTotal",
+        "TestFrontendEarlierCancelledCallerDoesNotGainTime",
+        "TestFrontendNearExpiryOwnedReceiptRetainsUnknownFactsAndCleanup",
+        "TestFrontendHistoryBudgetKeepsOriginalReserve/ensure",
+        "TestFrontendHistoryBudgetKeepsOriginalReserve/status",
+        "TestFrontendHistoryBudgetKeepsOriginalReserve",
+        "TestFrontendHistoryNeverMasksHardRequestFailure",
+        "TestFrontendHistoryKeepsNonzeroResultAndSeparateShape",
+        "TestFrontendHistoryFailedWriterRetainsOriginalFailure",
+        "TestInstalledLauncherLiteralCommands",
+        "TestInitialLookupNeverStartsOnStatusOrHardFailure",
+        "TestInstalledLauncherFailedEnsureEmitsEvidenceAndFails",
+        "TestInstalledLauncherReceiptDoesNotInventInstanceDetails",
+        "TestInstalledLauncherProgressNeverMasksAuthorityOrCleanupFailure"
+      ],
+      "fails": [],
+      "skips": [],
+      "topLevelCount": 16,
+      "expectedTopLevelCount": 16,
+      "exactSelectionExecuted": true,
+      "sourceStable": true,
+      "rawSHA256": {
+        "events": "88f40628f7cb06be5f41e0623f38cdb358b038995ab277d42a0190c7df16fed2",
+        "stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderrBytes": 0
+    }
+  ],
+  "priorVetReviewSHA256": "6e6d0916ceb9636e63dff75c3d781562277e5ffa398e27beb9d31ffd50c89509",
+  "limits": [
+    "Controlled subprocess Docker fixtures and owned real NATS/roles are component evidence, not actual Docker/native Mac/P02 acceptance.",
+    "Exact after-ready finalization-failure injection remains an explicit gate gap.",
+    "Stop on first failure, no retry/broadening."
+  ]
+}

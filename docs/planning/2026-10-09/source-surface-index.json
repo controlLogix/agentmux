@@ -10581,7 +10581,7 @@
       "componentIds": [
         "PLAT-01"
       ],
-      "workingFileSha256": "21654b65615e949ab39d81d907b64e40c9a6831adf0dd50b940e442d650d9dc7",
+      "workingFileSha256": "d32ab9c87ffc72f284e9a90bfd6e34421c0b679a52b4a21155a14be2ac9f874c",
       "declarations": [
         {
           "name": "bootstrapError",
@@ -10620,6 +10620,73 @@
         }
       ],
       "httpPathLiterals": [],
+      "reviewStatus": "Codex source-reviewed private diagnostic slice with 82 focused and 424 affected race checks plus vet; actual engine/native lifecycle and phase qualification remain open."
+    },
+    {
+      "path": "platform/launcher/bootstrap_boundary_stage.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "httpPathLiterals": [],
+      "workingFileSha256": "e8cc4bf8f8b3f12ad5308a10f35849b47790c0da91fa5d1a6cbebabd3203d6a9",
+      "declarations": [
+        {
+          "name": "validBootstrapDiagnosticStage",
+          "line": 8,
+          "kind": "go-function"
+        },
+        {
+          "name": "bootstrapBoundaryFailure",
+          "line": 15,
+          "kind": "go-function"
+        },
+        {
+          "name": "bootstrapDiagnosticStage",
+          "line": 23,
+          "kind": "go-function"
+        },
+        {
+          "name": "copyBootstrapDiagnosticStage",
+          "line": 65,
+          "kind": "go-function"
+        }
+      ],
+      "reviewStatus": "Codex source-reviewed private diagnostic slice with 82 focused and 424 affected race checks plus vet; actual engine/native lifecycle and phase qualification remain open."
+    },
+    {
+      "path": "platform/launcher/bootstrap_cleanup_failure.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "httpPathLiterals": [],
+      "workingFileSha256": "4e74cb4997f4c099c51a0d4be9b99882b7da4367f025fd8d3666edcf6fc2b7d6",
+      "declarations": [
+        {
+          "name": "Error",
+          "line": 19,
+          "kind": "go-function"
+        },
+        {
+          "name": "Format",
+          "line": 20,
+          "kind": "go-function"
+        },
+        {
+          "name": "MarshalJSON",
+          "line": 21,
+          "kind": "go-function"
+        },
+        {
+          "name": "Unwrap",
+          "line": 22,
+          "kind": "go-function"
+        },
+        {
+          "name": "retainBootstrapCleanup",
+          "line": 23,
+          "kind": "go-function"
+        }
+      ],
       "reviewStatus": "Reviewed private cold boundary stages and retained cleanup cause/Session with21 focused and163 affected race entries plus launcher vet0. Cache-only registration awaits root promotion. Real ColdWarmAndRefresh failed; native lifecycle and P02 acceptance remain open."
     },
     {
@@ -10655,125 +10722,156 @@
       "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
     },
     {
+      "path": "platform/launcher/bootstrap_failed_read.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "httpPathLiterals": [],
+      "workingFileSha256": "4a74a3aeb4f13d268eb2453f99c38742f0db37251c696886428273c60d0cc53a",
+      "declarations": [
+        {
+          "name": "validBootstrapFailedRead",
+          "line": 17,
+          "kind": "go-function"
+        },
+        {
+          "name": "failedDockerRead",
+          "line": 27,
+          "kind": "go-function"
+        },
+        {
+          "name": "copyBootstrapFailedRead",
+          "line": 39,
+          "kind": "go-function"
+        },
+        {
+          "name": "bootstrapFailedReadFromError",
+          "line": 46,
+          "kind": "go-function"
+        }
+      ],
+      "reviewStatus": "Codex source-reviewed private diagnostic slice with 82 focused and 424 affected race checks plus vet; actual engine/native lifecycle and phase qualification remain open."
+    },
+    {
       "path": "platform/launcher/bootstrap_history.go",
       "componentIds": [
         "PLAT-01"
       ],
       "httpPathLiterals": [],
-      "workingFileSha256": "d95d4d388211570dfc6cfd2c81888c8946bb79b6fd053964892f6b3b0502801a",
+      "workingFileSha256": "491d5a941fcb8624fadaa16b10460efb8a4293abb94d886bb18d9351c18cc8b3",
       "declarations": [
         {
           "name": "Error",
-          "line": 86,
+          "line": 88,
           "kind": "go-function"
         },
         {
           "name": "Format",
-          "line": 94,
-          "kind": "go-function"
-        },
-        {
-          "name": "MarshalJSON",
-          "line": 95,
-          "kind": "go-function"
-        },
-        {
-          "name": "Unwrap",
           "line": 96,
           "kind": "go-function"
         },
         {
-          "name": "historyError",
+          "name": "MarshalJSON",
           "line": 97,
           "kind": "go-function"
         },
         {
+          "name": "Unwrap",
+          "line": 98,
+          "kind": "go-function"
+        },
+        {
+          "name": "historyError",
+          "line": 99,
+          "kind": "go-function"
+        },
+        {
           "name": "compileBootstrapHistorySchema",
-          "line": 105,
+          "line": 107,
           "kind": "go-function"
         },
         {
           "name": "decodeBootstrapHistory",
-          "line": 122,
+          "line": 124,
           "kind": "go-function"
         },
         {
           "name": "historyTimestamp",
-          "line": 177,
+          "line": 185,
           "kind": "go-function"
         },
         {
           "name": "historyDigest",
-          "line": 180,
+          "line": 188,
           "kind": "go-function"
         },
         {
           "name": "historyGeneration",
-          "line": 184,
-          "kind": "go-function"
-        },
-        {
-          "name": "historyLeaseName",
           "line": 192,
           "kind": "go-function"
         },
         {
+          "name": "historyLeaseName",
+          "line": 200,
+          "kind": "go-function"
+        },
+        {
           "name": "historyLeaseDigest",
-          "line": 196,
+          "line": 204,
           "kind": "go-function"
         },
         {
           "name": "historyBinding",
-          "line": 206,
+          "line": 214,
           "kind": "go-function"
         },
         {
           "name": "Format",
-          "line": 267,
+          "line": 275,
           "kind": "go-function"
         },
         {
           "name": "MarshalJSON",
-          "line": 270,
+          "line": 278,
           "kind": "go-function"
         },
         {
           "name": "openBootstrapHistory",
-          "line": 276,
+          "line": 284,
           "kind": "go-function"
         },
         {
           "name": "Begin",
-          "line": 327,
+          "line": 335,
           "kind": "go-function"
         },
         {
           "name": "RecordTerminal",
-          "line": 361,
+          "line": 369,
           "kind": "go-function"
         },
         {
           "name": "Close",
-          "line": 412,
+          "line": 421,
           "kind": "go-function"
         },
         {
           "name": "historyPending",
-          "line": 456,
+          "line": 465,
           "kind": "go-function"
         },
         {
           "name": "historyCompletion",
-          "line": 469,
+          "line": 478,
           "kind": "go-function"
         },
         {
           "name": "lockHistory",
-          "line": 485,
+          "line": 494,
           "kind": "go-function"
         }
       ],
-      "reviewStatus": "Reviewed private cold boundary stages and retained cleanup cause/Session with21 focused and163 affected race entries plus launcher vet0. Cache-only registration awaits root promotion. Real ColdWarmAndRefresh failed; native lifecycle and P02 acceptance remain open."
+      "reviewStatus": "Codex source-reviewed private diagnostic slice with 82 focused and 424 affected race checks plus vet; actual engine/native lifecycle and phase qualification remain open."
     },
     {
       "path": "platform/launcher/bootstrap_history_fs.go",
@@ -10781,7 +10879,7 @@
         "PLAT-01"
       ],
       "httpPathLiterals": [],
-      "workingFileSha256": "b01c765177b7de2c0c0e051b4fe4569185ac146ec505563f1b58e85c6f21c33c",
+      "workingFileSha256": "be407e76d1a6d4dee8fcc959cdb7a7b3c590e4d5b21ba16e177598de665616f0",
       "declarations": [
         {
           "name": "historyIOContext",
@@ -10844,7 +10942,7 @@
           "kind": "go-function"
         }
       ],
-      "reviewStatus": "Reviewed private cold boundary stages and retained cleanup cause/Session with21 focused and163 affected race entries plus launcher vet0. Cache-only registration awaits root promotion. Real ColdWarmAndRefresh failed; native lifecycle and P02 acceptance remain open."
+      "reviewStatus": "Codex source-reviewed private diagnostic slice with 82 focused and 424 affected race checks plus vet; actual engine/native lifecycle and phase qualification remain open."
     },
     {
       "path": "platform/launcher/bootstrap_history_root.go",
@@ -11009,7 +11107,7 @@
       "componentIds": [
         "PLAT-01"
       ],
-      "workingFileSha256": "e134fffdb7feab298e4ee54e45a453aaa6b7cb2c9ea3e2b8a8dc2060baa7448c",
+      "workingFileSha256": "b59d2666a321054a28cfbd3a1366d84b45bac21c6d296eead71fb3f5aee77deb",
       "declarations": [
         {
           "name": "refusal",
@@ -11037,80 +11135,95 @@
           "kind": "go-function"
         },
         {
+          "name": "runFixedRead",
+          "line": 108,
+          "kind": "go-function"
+        },
+        {
           "name": "read",
-          "line": 135,
+          "line": 161,
+          "kind": "go-function"
+        },
+        {
+          "name": "readFixed",
+          "line": 164,
           "kind": "go-function"
         },
         {
           "name": "Inspect",
-          "line": 145,
+          "line": 174,
           "kind": "go-function"
         },
         {
           "name": "valid",
-          "line": 194,
+          "line": 223,
           "kind": "go-function"
         },
         {
           "name": "matches",
-          "line": 200,
+          "line": 229,
           "kind": "go-function"
         },
         {
           "name": "inputLabels",
-          "line": 203,
+          "line": 232,
           "kind": "go-function"
         },
         {
           "name": "labels",
-          "line": 211,
+          "line": 240,
+          "kind": "go-function"
+        },
+        {
+          "name": "labelsFixed",
+          "line": 243,
           "kind": "go-function"
         },
         {
           "name": "resources",
-          "line": 226,
+          "line": 258,
           "kind": "go-function"
         },
         {
           "name": "WarmReuse",
-          "line": 252,
+          "line": 284,
           "kind": "go-function"
         },
         {
           "name": "safeInlineConfig",
-          "line": 300,
+          "line": 332,
           "kind": "go-function"
         },
         {
           "name": "uniqueComposeJSON",
-          "line": 317,
+          "line": 349,
           "kind": "go-function"
         },
         {
           "name": "validateCompose",
-          "line": 368,
+          "line": 400,
           "kind": "go-function"
         },
         {
           "name": "StartOwned",
-          "line": 460,
+          "line": 492,
           "kind": "go-function"
         },
         {
           "name": "StopOwned",
-          "line": 510,
+          "line": 542,
           "kind": "go-function"
         }
       ],
       "httpPathLiterals": [],
-      "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
+      "reviewStatus": "Codex source-reviewed private diagnostic slice with 82 focused and 424 affected race checks plus vet; actual engine/native lifecycle and phase qualification remain open."
     },
     {
       "path": "platform/launcher/docker_archives.go",
       "componentIds": [
         "PLAT-01"
       ],
-      "workingFileSha256": "c645ce9f3bec78fa5f9d52e6663d27d30c705b99855f381ad33a3ce083377d66",
+      "workingFileSha256": "c8a0dd96847f1dfb6907b8dc197e8bb9b671c79682a28dd647ff4f483fd2c17e",
       "declarations": [
         {
           "name": "verifyOwnedTLSArchives",
@@ -11119,7 +11232,7 @@
         }
       ],
       "httpPathLiterals": [],
-      "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
+      "reviewStatus": "Codex source-reviewed private diagnostic slice with 82 focused and 424 affected race checks plus vet; actual engine/native lifecycle and phase qualification remain open."
     },
     {
       "path": "platform/launcher/docker_environment.go",
@@ -11142,7 +11255,7 @@
       "componentIds": [
         "PLAT-01"
       ],
-      "workingFileSha256": "4d9353f586348f4ed2a8004379a3041669a1c74cdc3ff986e2bd2c0fe6952b56",
+      "workingFileSha256": "ebbf887e80b5bde6907714159033fd4fecb32f385daaa0b176ef1dda2fa3d8d9",
       "declarations": [
         {
           "name": "InspectOwnedBroker",
@@ -11166,58 +11279,58 @@
         }
       ],
       "httpPathLiterals": [],
-      "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
+      "reviewStatus": "Codex source-reviewed private diagnostic slice with 82 focused and 424 affected race checks plus vet; actual engine/native lifecycle and phase qualification remain open."
     },
     {
       "path": "platform/launcher/docker_reads.go",
       "componentIds": [
         "PLAT-01"
       ],
-      "workingFileSha256": "44b1cff92cd6dc0e00206c70b8050c5855f6e2306c162389db84151cb16e7b8a",
+      "workingFileSha256": "f1e7029e6aa7704ffba6417a62f8f1609c29829c619dd6542b51254ff84966d8",
       "declarations": [
         {
           "name": "Error",
-          "line": 21,
-          "kind": "go-function"
-        },
-        {
-          "name": "Format",
           "line": 22,
           "kind": "go-function"
         },
         {
-          "name": "Unwrap",
+          "name": "Format",
           "line": 23,
           "kind": "go-function"
         },
         {
-          "name": "inspectionStage",
+          "name": "Unwrap",
           "line": 24,
           "kind": "go-function"
         },
         {
-          "name": "inspectionFailure",
+          "name": "inspectionStage",
           "line": 25,
           "kind": "go-function"
         },
         {
+          "name": "inspectionFailure",
+          "line": 26,
+          "kind": "go-function"
+        },
+        {
           "name": "dockerReadStage",
-          "line": 28,
+          "line": 29,
           "kind": "go-function"
         },
         {
           "name": "parallelDockerReadAllowed",
-          "line": 44,
+          "line": 45,
           "kind": "go-function"
         },
         {
           "name": "parallelReads",
-          "line": 69,
+          "line": 70,
           "kind": "go-function"
         }
       ],
       "httpPathLiterals": [],
-      "reviewStatus": "Reviewed private cold boundary stages and retained cleanup cause/Session with21 focused and163 affected race entries plus launcher vet0. Cache-only registration awaits root promotion. Real ColdWarmAndRefresh failed; native lifecycle and P02 acceptance remain open."
+      "reviewStatus": "Codex source-reviewed private diagnostic slice with 82 focused and 424 affected race checks plus vet; actual engine/native lifecycle and phase qualification remain open."
     },
     {
       "path": "platform/launcher/docker_refusal.go",
@@ -11250,7 +11363,7 @@
       "componentIds": [
         "PLAT-01"
       ],
-      "workingFileSha256": "151b05060ce4ed601f9985f745834f73c97808645da5008cca48cc501d638197",
+      "workingFileSha256": "3f21f52d7eb1c85e867ff30f63b355a331a62632feb8011585ae7b7dbd55e2c5",
       "declarations": [
         {
           "name": "readEngineInfoStdio",
@@ -11259,17 +11372,17 @@
         },
         {
           "name": "decodeDockerInfoStdio",
-          "line": 91,
+          "line": 111,
           "kind": "go-function"
         },
         {
           "name": "dockerInfoJSONUnique",
-          "line": 157,
+          "line": 177,
           "kind": "go-function"
         }
       ],
       "httpPathLiterals": [],
-      "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
+      "reviewStatus": "Codex source-reviewed private diagnostic slice with 82 focused and 424 affected race checks plus vet; actual engine/native lifecycle and phase qualification remain open."
     },
     {
       "path": "platform/launcher/docker_tls.go",
@@ -11369,7 +11482,7 @@
       "componentIds": [
         "PLAT-01"
       ],
-      "workingFileSha256": "0c7bb3b517311ed8cf9f1c3324ef5610e7b790127cc8fb6753cb7c88c418d28f",
+      "workingFileSha256": "5b47f4103aa1499436400489bdbad56b8ff6794d33c221cf59dfa0e568feb62b",
       "declarations": [
         {
           "name": "terminalHistory",
@@ -11378,17 +11491,17 @@
         },
         {
           "name": "PreviousBootstrapFailure",
-          "line": 41,
+          "line": 44,
           "kind": "go-function"
         },
         {
           "name": "CreatorPreviousBootstrapFailure",
-          "line": 77,
+          "line": 80,
           "kind": "go-function"
         }
       ],
       "httpPathLiterals": [],
-      "reviewStatus": "Reviewed private cold boundary stages and retained cleanup cause/Session with21 focused and163 affected race entries plus launcher vet0. Cache-only registration awaits root promotion. Real ColdWarmAndRefresh failed; native lifecycle and P02 acceptance remain open."
+      "reviewStatus": "Codex source-reviewed private diagnostic slice with 82 focused and 424 affected race checks plus vet; actual engine/native lifecycle and phase qualification remain open."
     },
     {
       "path": "platform/launcher/host_policy.go",
@@ -11912,6 +12025,37 @@
         }
       ],
       "httpPathLiterals": [],
+      "reviewStatus": "Source review only for private bridge context provenance and checked component fixtures. Focused tests and P02 acceptance remain pending. No pattern or transport relationship added."
+    },
+    {
+      "path": "platform/launcher/owner_bridge_diagnostic.go",
+      "componentIds": [
+        "PLAT-01"
+      ],
+      "httpPathLiterals": [],
+      "workingFileSha256": "719be0a2f7b1eb100e461bb9990461cce3706eb80782e8613225c52324947649",
+      "declarations": [
+        {
+          "name": "Error",
+          "line": 19,
+          "kind": "go-function"
+        },
+        {
+          "name": "Format",
+          "line": 20,
+          "kind": "go-function"
+        },
+        {
+          "name": "MarshalJSON",
+          "line": 21,
+          "kind": "go-function"
+        },
+        {
+          "name": "bridgeContextError",
+          "line": 25,
+          "kind": "go-function"
+        }
+      ],
       "reviewStatus": "Source review only for private bridge context provenance and checked component fixtures. Focused tests and P02 acceptance remain pending. No pattern or transport relationship added."
     },
     {
@@ -17038,104 +17182,6 @@
       ],
       "httpPathLiterals": [],
       "reviewStatus": "owned-by-component; maintainers must review behavioral completeness before P00 exit"
-    },
-    {
-      "path": "platform/launcher/bootstrap_boundary_stage.go",
-      "componentIds": [
-        "PLAT-01"
-      ],
-      "httpPathLiterals": [],
-      "workingFileSha256": "e0ed08d0067825d47cbd39eccc79bee80026cf49cf3add54659919b189c348b8",
-      "declarations": [
-        {
-          "name": "validBootstrapDiagnosticStage",
-          "line": 8,
-          "kind": "go-function"
-        },
-        {
-          "name": "bootstrapBoundaryFailure",
-          "line": 15,
-          "kind": "go-function"
-        },
-        {
-          "name": "bootstrapDiagnosticStage",
-          "line": 23,
-          "kind": "go-function"
-        },
-        {
-          "name": "copyBootstrapDiagnosticStage",
-          "line": 65,
-          "kind": "go-function"
-        }
-      ],
-      "reviewStatus": "Reviewed private cold boundary stages and retained cleanup cause/Session with21 focused and163 affected race entries plus launcher vet0. Cache-only registration awaits root promotion. Real ColdWarmAndRefresh failed; native lifecycle and P02 acceptance remain open."
-    },
-    {
-      "path": "platform/launcher/bootstrap_cleanup_failure.go",
-      "componentIds": [
-        "PLAT-01"
-      ],
-      "httpPathLiterals": [],
-      "workingFileSha256": "4e74cb4997f4c099c51a0d4be9b99882b7da4367f025fd8d3666edcf6fc2b7d6",
-      "declarations": [
-        {
-          "name": "Error",
-          "line": 19,
-          "kind": "go-function"
-        },
-        {
-          "name": "Format",
-          "line": 20,
-          "kind": "go-function"
-        },
-        {
-          "name": "MarshalJSON",
-          "line": 21,
-          "kind": "go-function"
-        },
-        {
-          "name": "Unwrap",
-          "line": 22,
-          "kind": "go-function"
-        },
-        {
-          "name": "retainBootstrapCleanup",
-          "line": 23,
-          "kind": "go-function"
-        }
-      ],
-      "reviewStatus": "Reviewed private cold boundary stages and retained cleanup cause/Session with21 focused and163 affected race entries plus launcher vet0. Cache-only registration awaits root promotion. Real ColdWarmAndRefresh failed; native lifecycle and P02 acceptance remain open."
-    },
-    {
-      "path": "platform/launcher/owner_bridge_diagnostic.go",
-      "componentIds": [
-        "PLAT-01"
-      ],
-      "httpPathLiterals": [],
-      "workingFileSha256": "719be0a2f7b1eb100e461bb9990461cce3706eb80782e8613225c52324947649",
-      "declarations": [
-        {
-          "name": "Error",
-          "line": 19,
-          "kind": "go-function"
-        },
-        {
-          "name": "Format",
-          "line": 20,
-          "kind": "go-function"
-        },
-        {
-          "name": "MarshalJSON",
-          "line": 21,
-          "kind": "go-function"
-        },
-        {
-          "name": "bridgeContextError",
-          "line": 25,
-          "kind": "go-function"
-        }
-      ],
-      "reviewStatus": "Source review only for private bridge context provenance and checked component fixtures. Focused tests and P02 acceptance remain pending. No pattern or transport relationship added."
     }
   ],
   "history": [
@@ -29946,6 +29992,41 @@
         "reviewStatus": "Reviewed private cold boundary stages and retained cleanup cause/Session with21 focused and163 affected race entries plus launcher vet0. Cache-only registration awaits root promotion. Real ColdWarmAndRefresh failed; native lifecycle and P02 acceptance remain open."
       },
       "note": "Source review only for private bridge context provenance and checked component fixtures. Focused tests and P02 acceptance remain pending. No pattern or transport relationship added."
+    },
+    {
+      "at": "2026-10-15T02:10:17.323546+00:00",
+      "reviewer": "Codex",
+      "scope": "Private complete bootstrap stage and failed-read diagnostics; exact caller controls and error-held fixture ownership.",
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/complete-boundary-diagnostics/root-promotion-review.json"
+      ],
+      "limits": "Component controls and affected checks passed; no real-engine, native installed lifecycle, tagged injection or phase acceptance.",
+      "previousSourceHashes": {
+        "platform/launcher/bootstrap.go": "21654b65615e949ab39d81d907b64e40c9a6831adf0dd50b940e442d650d9dc7",
+        "platform/launcher/bootstrap_boundary_stage.go": "e0ed08d0067825d47cbd39eccc79bee80026cf49cf3add54659919b189c348b8",
+        "platform/launcher/bootstrap_history.go": "d95d4d388211570dfc6cfd2c81888c8946bb79b6fd053964892f6b3b0502801a",
+        "platform/launcher/bootstrap_history_fs.go": "b01c765177b7de2c0c0e051b4fe4569185ac146ec505563f1b58e85c6f21c33c",
+        "platform/launcher/docker.go": "e134fffdb7feab298e4ee54e45a453aaa6b7cb2c9ea3e2b8a8dc2060baa7448c",
+        "platform/launcher/docker_archives.go": "c645ce9f3bec78fa5f9d52e6663d27d30c705b99855f381ad33a3ce083377d66",
+        "platform/launcher/docker_instance.go": "4d9353f586348f4ed2a8004379a3041669a1c74cdc3ff986e2bd2c0fe6952b56",
+        "platform/launcher/docker_reads.go": "44b1cff92cd6dc0e00206c70b8050c5855f6e2306c162389db84151cb16e7b8a",
+        "platform/launcher/docker_stdio.go": "151b05060ce4ed601f9985f745834f73c97808645da5008cca48cc501d638197",
+        "platform/launcher/host_history_policy.go": "0c7bb3b517311ed8cf9f1c3324ef5610e7b790127cc8fb6753cb7c88c418d28f"
+      },
+      "updatedPaths": [
+        "platform/launcher/bootstrap.go",
+        "platform/launcher/bootstrap_boundary_stage.go",
+        "platform/launcher/bootstrap_failed_read.go",
+        "platform/launcher/bootstrap_history.go",
+        "platform/launcher/bootstrap_history_fs.go",
+        "platform/launcher/docker.go",
+        "platform/launcher/docker_archives.go",
+        "platform/launcher/docker_instance.go",
+        "platform/launcher/docker_reads.go",
+        "platform/launcher/docker_stdio.go",
+        "platform/launcher/host_history_policy.go"
+      ],
+      "previousSourceCommit": "f98fc6aebda2474e40ff8c424558b91abf587d36"
     }
   ]
 }

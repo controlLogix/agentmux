@@ -1,0 +1,29 @@
+{
+  "argv": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-count=1",
+    "-json",
+    "./launcher",
+    "-run",
+    "^(TestBootstrapBoundaryFailureOwnerDispatch|TestBootstrapFailedReadActualOwnedExecutor|TestBootstrapFailedReadClosedBoundsAndGraph)$"
+  ],
+  "cwd": "/home/ryan/.cache/agentmux-governance/p02-complete-boundary-leaf-focused-c7_q2a4m/src/platform",
+  "environment": {
+    "GOTOOLCHAIN": "local",
+    "GOENV": "off",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GOFLAGS": "-mod=readonly",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "0"
+  },
+  "sourceReviewSHA256": "60be463eea7b1404a1331ec91140bacf0a1a3dc17069d028beffb2cb6da0fc46",
+  "TestMainSHA256": "c134b20a73191c5def882bc0c29277dd5b479af09791294935809eed6a35f35c",
+  "overlayFiles": [
+    "bootstrap.go",
+    "bootstrap_boundary_readiness_test.go",
+    "bootstrap_failed_read_test.go"
+  ],
+  "copy": "Independent reflink or byte copy, no hardlinks."
+}

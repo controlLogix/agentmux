@@ -7,7 +7,7 @@ import "reflect"
 // These stages are private provenance, never readiness or mutation authority.
 func validBootstrapDiagnosticStage(stage string) bool {
 	switch stage {
-	case "initial_warm_inspection", "post_lease_inspection", "broker_start":
+	case "operation_completion", "invocation_validation", "profile_admission", "docker_admission", "compose_admission", "role_admission", "assembly_preparation", "operation_entry", "accepted_receipt", "initial_warm_inspection", "initial_warm_observation", "bootstrap_lease", "post_lease_inspection", "post_lease_observation", "role_leases", "broker_start", "post_start_inspection", "broker_provision", "protected_start", "readiness_inspection", "readiness_observation", "readiness_finalize":
 		return true
 	}
 	return false

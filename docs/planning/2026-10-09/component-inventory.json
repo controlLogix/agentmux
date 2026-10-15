@@ -3344,6 +3344,48 @@
       ]
     },
     {
+      "path": "platform/launcher/bootstrap_boundary_cold_test.go",
+      "baselineBlob": null,
+      "componentIds": [
+        "PLAT-01"
+      ]
+    },
+    {
+      "path": "platform/launcher/bootstrap_boundary_readiness_test.go",
+      "baselineBlob": null,
+      "componentIds": [
+        "PLAT-01"
+      ]
+    },
+    {
+      "path": "platform/launcher/bootstrap_boundary_stage.go",
+      "baselineBlob": null,
+      "componentIds": [
+        "PLAT-01"
+      ]
+    },
+    {
+      "path": "platform/launcher/bootstrap_boundary_stage_test.go",
+      "baselineBlob": null,
+      "componentIds": [
+        "PLAT-01"
+      ]
+    },
+    {
+      "path": "platform/launcher/bootstrap_cleanup_failure.go",
+      "baselineBlob": null,
+      "componentIds": [
+        "PLAT-01"
+      ]
+    },
+    {
+      "path": "platform/launcher/bootstrap_cleanup_failure_test.go",
+      "baselineBlob": null,
+      "componentIds": [
+        "PLAT-01"
+      ]
+    },
+    {
       "path": "platform/launcher/bootstrap_compose_binding.go",
       "baselineBlob": null,
       "componentIds": [
@@ -3404,6 +3446,20 @@
       "baselineBlob": null,
       "componentIds": [
         "PLAT-03"
+      ]
+    },
+    {
+      "path": "platform/launcher/bootstrap_failed_read.go",
+      "baselineBlob": null,
+      "componentIds": [
+        "PLAT-01"
+      ]
+    },
+    {
+      "path": "platform/launcher/bootstrap_failed_read_test.go",
+      "baselineBlob": null,
+      "componentIds": [
+        "PLAT-01"
       ]
     },
     {
@@ -3471,6 +3527,13 @@
     },
     {
       "path": "platform/launcher/bootstrap_history_stage.go",
+      "baselineBlob": null,
+      "componentIds": [
+        "PLAT-01"
+      ]
+    },
+    {
+      "path": "platform/launcher/bootstrap_history_stage_test.go",
       "baselineBlob": null,
       "componentIds": [
         "PLAT-01"
@@ -3764,6 +3827,13 @@
       ]
     },
     {
+      "path": "platform/launcher/installed_cli_creator_observation_linux_test.go",
+      "baselineBlob": null,
+      "componentIds": [
+        "PLAT-01"
+      ]
+    },
+    {
       "path": "platform/launcher/installed_cli_history_controls_test.go",
       "baselineBlob": null,
       "componentIds": [
@@ -3856,6 +3926,27 @@
     },
     {
       "path": "platform/launcher/owner_bridge_admission_test.go",
+      "baselineBlob": null,
+      "componentIds": [
+        "PLAT-01"
+      ]
+    },
+    {
+      "path": "platform/launcher/owner_bridge_diagnostic.go",
+      "baselineBlob": null,
+      "componentIds": [
+        "PLAT-01"
+      ]
+    },
+    {
+      "path": "platform/launcher/owner_bridge_diagnostic_fixture_test.go",
+      "baselineBlob": null,
+      "componentIds": [
+        "PLAT-01"
+      ]
+    },
+    {
+      "path": "platform/launcher/owner_bridge_diagnostic_test.go",
       "baselineBlob": null,
       "componentIds": [
         "PLAT-01"
@@ -5149,76 +5240,6 @@
       "componentIds": [
         "HAR-04"
       ]
-    },
-    {
-      "path": "platform/launcher/bootstrap_boundary_cold_test.go",
-      "baselineBlob": null,
-      "componentIds": [
-        "PLAT-01"
-      ]
-    },
-    {
-      "path": "platform/launcher/bootstrap_boundary_stage.go",
-      "baselineBlob": null,
-      "componentIds": [
-        "PLAT-01"
-      ]
-    },
-    {
-      "path": "platform/launcher/bootstrap_boundary_stage_test.go",
-      "baselineBlob": null,
-      "componentIds": [
-        "PLAT-01"
-      ]
-    },
-    {
-      "path": "platform/launcher/bootstrap_cleanup_failure.go",
-      "baselineBlob": null,
-      "componentIds": [
-        "PLAT-01"
-      ]
-    },
-    {
-      "path": "platform/launcher/bootstrap_cleanup_failure_test.go",
-      "baselineBlob": null,
-      "componentIds": [
-        "PLAT-01"
-      ]
-    },
-    {
-      "path": "platform/launcher/bootstrap_history_stage_test.go",
-      "baselineBlob": null,
-      "componentIds": [
-        "PLAT-01"
-      ]
-    },
-    {
-      "path": "platform/launcher/installed_cli_creator_observation_linux_test.go",
-      "baselineBlob": null,
-      "componentIds": [
-        "PLAT-01"
-      ]
-    },
-    {
-      "path": "platform/launcher/owner_bridge_diagnostic.go",
-      "baselineBlob": null,
-      "componentIds": [
-        "PLAT-01"
-      ]
-    },
-    {
-      "path": "platform/launcher/owner_bridge_diagnostic_test.go",
-      "baselineBlob": null,
-      "componentIds": [
-        "PLAT-01"
-      ]
-    },
-    {
-      "path": "platform/launcher/owner_bridge_diagnostic_fixture_test.go",
-      "baselineBlob": null,
-      "componentIds": [
-        "PLAT-01"
-      ]
     }
   ],
   "reviewHistory": [
@@ -5943,6 +5964,15 @@
       "note": "Source review only for private bridge context provenance and checked component fixtures. Focused tests and P02 acceptance remain pending. No pattern or transport relationship added.",
       "phaseAccepted": false,
       "independentReviewSHA256": "5933cc5a3627361f6a342f9a2d66451cb1eac0e49071d2efdb84782957df8dc6"
+    },
+    {
+      "at": "2026-10-15T02:10:17.323546+00:00",
+      "reviewer": "Codex",
+      "scope": "Private complete bootstrap stage and failed-read diagnostics; exact caller controls and error-held fixture ownership.",
+      "evidence": [
+        "docs/planning/2026-10-09/delivery/evidence/P02/complete-boundary-diagnostics/root-promotion-review.json"
+      ],
+      "limits": "Component controls and affected checks passed; no real-engine, native installed lifecycle, tagged injection or phase acceptance."
     }
   ]
 }

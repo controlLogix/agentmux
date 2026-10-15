@@ -1,0 +1,11 @@
+--- failed/bootstrap_boundary_readiness_test.go
++++ corrected/bootstrap_boundary_readiness_test.go
+@@ -249,7 +249,7 @@
+ 		if !diagnosticReviewedWrapper(current) {
+ 			// These exact leaf layouts contain only text/code/context sentinel, no owner.
+ 			switch current.(type) {
+-			case *Error, bridgeFailure, *bridgeFailure:
++			case *dockerRefusalError, bridgeFailure, *bridgeFailure:
+ 				continue
+ 			}
+ 			if current == context.Canceled || current == context.DeadlineExceeded || reflect.TypeOf(current) == reflect.TypeOf(errors.New("")) {

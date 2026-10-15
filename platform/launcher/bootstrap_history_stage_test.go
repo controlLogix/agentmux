@@ -11,11 +11,11 @@ import (
 )
 
 func TestBootstrapHistoryBoundaryStageRoundTrip(t *testing.T) {
-	for _, stage := range []string{"initial_warm_inspection", "post_lease_inspection", "broker_start"} {
+	for _, stage := range []string{"operation_completion", "invocation_validation", "profile_admission", "docker_admission", "compose_admission", "role_admission", "assembly_preparation", "operation_entry", "accepted_receipt", "initial_warm_inspection", "initial_warm_observation", "bootstrap_lease", "post_lease_inspection", "post_lease_observation", "role_leases", "broker_start", "post_start_inspection", "broker_provision", "protected_start", "readiness_inspection", "readiness_observation", "readiness_finalize"} {
 		t.Run(stage, func(t *testing.T) {
 			first, op, f, lease, binding := historyFixture(t)
 			enterHistoryFixture(t, first, op, f)
-			if op.complete(nil, bootstrapBoundaryFailure(stage, refusal("command_failed"))) != nil || first.RecordTerminal(op.startup) != nil {
+			if op.complete(nil, bootstrapBoundaryFailure(stage, failedDockerRead("version", op.startup, time.Now(), time.Second, time.Second, refusal("command_failed")))) != nil || first.RecordTerminal(op.startup) != nil {
 				t.Fatal("stage_terminal_publication_failed")
 			}
 			raw, _, err := readHistoryFile(op.startup, first.root, first.binding.OwnerUID)
@@ -23,11 +23,11 @@ func TestBootstrapHistoryBoundaryStageRoundTrip(t *testing.T) {
 				t.Fatal("stage_terminal_read_failed")
 			}
 			record, err := decodeBootstrapHistory(raw, time.Now().UTC())
-			if err != nil || record.LatestAttempt.Terminal.DiagnosticStage == nil || *record.LatestAttempt.Terminal.DiagnosticStage != stage {
+			if err != nil || !validBootstrapFailedRead(record.LatestAttempt.Terminal.FailedRead) || record.LatestAttempt.Terminal.DiagnosticStage == nil || *record.LatestAttempt.Terminal.DiagnosticStage != stage {
 				t.Fatal("stage_roundtrip_failed")
 			}
 			relevant := historyRelevantFailure(record, time.Now().UTC())
-			if relevant == nil || relevant.DiagnosticStage == nil || *relevant.DiagnosticStage != stage {
+			if relevant == nil || !validBootstrapFailedRead(relevant.FailedRead) || relevant.DiagnosticStage == nil || *relevant.DiagnosticStage != stage {
 				t.Fatal("creator_relevant_conversion_lost_stage")
 			}
 			public, err := terminalHistory(relevant, time.Now().UTC())
@@ -38,7 +38,7 @@ func TestBootstrapHistoryBoundaryStageRoundTrip(t *testing.T) {
 			if json.Unmarshal(mustStatusJSON(public), &fields) != nil || len(fields) != 7 {
 				t.Fatal("public_history_shape_changed")
 			}
-			if strings.Contains(string(mustStatusJSON(public)), "diagnosticStage") || strings.Contains(string(mustStatusJSON(public)), stage) {
+			if strings.Contains(string(mustStatusJSON(public)), "failedRead") || strings.Contains(string(mustStatusJSON(public)), "elapsedNanoseconds") || strings.Contains(string(mustStatusJSON(public)), "diagnosticStage") || strings.Contains(string(mustStatusJSON(public)), stage) {
 				t.Fatal("private_stage_entered_serialized_nested_public_history")
 			}
 			if _, present := fields["diagnosticStage"]; present {
@@ -62,6 +62,7 @@ func TestBootstrapHistoryBoundaryStageRoundTrip(t *testing.T) {
 			legacy := record
 			terminal = *record.LatestAttempt.Terminal
 			terminal.DiagnosticStage = nil
+			terminal.FailedRead = nil
 			legacy.LatestAttempt.Terminal = &terminal
 			if _, err := decodeBootstrapHistory(mustStatusJSON(legacy), time.Now().UTC()); err != nil {
 				t.Fatal("legacy_absent_stage_rejected")
@@ -70,7 +71,7 @@ func TestBootstrapHistoryBoundaryStageRoundTrip(t *testing.T) {
 				t.Fatal("first_stage_owner_close_failed")
 			}
 			general, err := readBootstrapHistory(op.startup, f.owner, binding.RuntimeDigest)
-			if err != nil || general == nil || general.DiagnosticStage == nil || *general.DiagnosticStage != stage {
+			if err != nil || general == nil || !validBootstrapFailedRead(general.FailedRead) || general.DiagnosticStage == nil || *general.DiagnosticStage != stage {
 				t.Fatal("general_reader_lost_stage")
 			}
 			nextLease, err := AcquireBootstrapLock(op.startup, f.profile.ProfileDirectory, f.profile.InstanceID, "owner-status-service")
@@ -105,7 +106,7 @@ func TestBootstrapHistoryBoundaryStageRoundTrip(t *testing.T) {
 				t.Fatal("rollover_read_failed")
 			}
 			record, err = decodeBootstrapHistory(raw, time.Now().UTC())
-			if err != nil || record.PreviousFailure == nil || record.PreviousFailure.DiagnosticStage == nil || *record.PreviousFailure.DiagnosticStage != stage {
+			if err != nil || record.PreviousFailure == nil || !validBootstrapFailedRead(record.PreviousFailure.FailedRead) || record.PreviousFailure.DiagnosticStage == nil || *record.PreviousFailure.DiagnosticStage != stage {
 				t.Fatal("previous_failure_lost_stage")
 			}
 			record.PreviousFailure.DiagnosticStage = &unknown

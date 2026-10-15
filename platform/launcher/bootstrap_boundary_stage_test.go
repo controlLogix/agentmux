@@ -16,7 +16,7 @@ func (unknownBoundaryGraffiti) Error() string           { panic("unknown_error_c
 func (unknownBoundaryGraffiti) Unwrap() error           { panic("unknown_unwrap_called") }
 func (unknownBoundaryGraffiti) inspectionStage() string { panic("unknown_stage_called") }
 func TestBootstrapBoundaryStageTrustedAndClosed(t *testing.T) {
-	for _, stage := range []string{"initial_warm_inspection", "post_lease_inspection", "broker_start"} {
+	for _, stage := range []string{"operation_completion", "invocation_validation", "profile_admission", "docker_admission", "compose_admission", "role_admission", "assembly_preparation", "operation_entry", "accepted_receipt", "initial_warm_inspection", "initial_warm_observation", "bootstrap_lease", "post_lease_inspection", "post_lease_observation", "role_leases", "broker_start", "post_start_inspection", "broker_provision", "protected_start", "readiness_inspection", "readiness_observation", "readiness_finalize"} {
 		t.Run(stage, func(t *testing.T) {
 			cause := refusal("command_timeout_outcome_unknown")
 			failure := bootstrapBoundaryFailure(stage, inspectionFailure("version", cause))

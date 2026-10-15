@@ -16,6 +16,7 @@ type dockerInspectionFailure struct {
 	stage             string
 	cause             error
 	bootstrapBoundary bool
+	failedRead        *bootstrapFailedRead
 }
 
 func (e *dockerInspectionFailure) Error() string                  { return e.cause.Error() }
@@ -91,7 +92,7 @@ func (d *Docker) parallelReads(parent context.Context, commands ...[]string) ([]
 	for i, args := range commands {
 		go func(i int, args []string) {
 			defer joined.Done()
-			output, err := d.run(ctx, nil, args...)
+			output, err := d.runFixedRead(ctx, dockerReadStage(args), nil, args...)
 			if err != nil {
 				first.Do(func() { failure = inspectionFailure(dockerReadStage(args), err); cancel() })
 				return

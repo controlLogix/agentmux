@@ -1,0 +1,502 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "kind": {
+      "const": "bootstrap-operation-history"
+    },
+    "binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ownerUid": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "ownerIdentityRef": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,95}$",
+              "maxLength": 96
+            },
+            "ownerHubId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,95}$",
+              "maxLength": 96
+            },
+            "revision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "id",
+            "ownerHubId",
+            "revision"
+          ]
+        },
+        "ownerEnrollmentDigest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "scope": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "hubId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,95}$",
+              "maxLength": 96
+            },
+            "instanceId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,95}$",
+              "maxLength": 96
+            },
+            "profileId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,95}$",
+              "maxLength": 96
+            },
+            "assemblyDigest": {
+              "type": "string",
+              "pattern": "^sha256:[a-f0-9]{64}$"
+            },
+            "releaseManifestDigest": {
+              "type": "string",
+              "pattern": "^sha256:[a-f0-9]{64}$"
+            },
+            "releaseVersion": {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$",
+              "maxLength": 96
+            }
+          },
+          "required": [
+            "hubId",
+            "instanceId",
+            "profileId",
+            "assemblyDigest",
+            "releaseManifestDigest",
+            "releaseVersion"
+          ]
+        },
+        "runtimeDigest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "composeConfigDigest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "selectedEngineBindingDigest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "serverTrustDigest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "serviceLeaseIdentityDigest": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "ownerUid",
+        "ownerIdentityRef",
+        "ownerEnrollmentDigest",
+        "scope",
+        "runtimeDigest",
+        "composeConfigDigest",
+        "selectedEngineBindingDigest",
+        "serverTrustDigest",
+        "serviceLeaseIdentityDigest"
+      ]
+    },
+    "generation": {
+      "type": "string",
+      "pattern": "^history_[0-9a-f]{32}$"
+    },
+    "previousGeneration": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^history_[0-9a-f]{32}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "writtenAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+    },
+    "latestAttempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "invocationId": {
+          "type": "string",
+          "pattern": "^attempt_[0-9a-f]{32}$"
+        },
+        "beganAt": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+        },
+        "terminal": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "completedAt": {
+                  "type": "string",
+                  "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+                },
+                "outcome": {
+                  "enum": [
+                    "completed",
+                    "failed"
+                  ]
+                },
+                "diagnosticCode": {
+                  "anyOf": [
+                    {
+                      "enum": [
+                        "docker_environment_conflict",
+                        "docker_selection_mismatch",
+                        "docker_versions_unqualified",
+                        "docker_configuration_mismatch",
+                        "docker_resource_conflict",
+                        "docker_command_failed",
+                        "docker_command_timeout_outcome_unknown",
+                        "runtime_authority_rejected",
+                        "owned_cleanup_incomplete",
+                        "request_deadline",
+                        "request_failed",
+                        "selected_host_port_occupied",
+                        "host_policy_invalid",
+                        "host_profile_invalid",
+                        "host_enrollment_invalid",
+                        "host_executable_invalid"
+                      ]
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "cleanup": {
+                  "enum": [
+                    "complete",
+                    "incomplete",
+                    "unknown"
+                  ]
+                },
+                "diagnosticStage": {
+                  "enum": [
+                    "operation_completion",
+                    "invocation_validation",
+                    "profile_admission",
+                    "docker_admission",
+                    "compose_admission",
+                    "role_admission",
+                    "assembly_preparation",
+                    "operation_entry",
+                    "accepted_receipt",
+                    "initial_warm_inspection",
+                    "initial_warm_observation",
+                    "bootstrap_lease",
+                    "post_lease_inspection",
+                    "post_lease_observation",
+                    "role_leases",
+                    "broker_start",
+                    "post_start_inspection",
+                    "broker_provision",
+                    "protected_start",
+                    "readiness_inspection",
+                    "readiness_observation",
+                    "readiness_finalize"
+                  ]
+                },
+                "failedRead": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "enum": [
+                        "endpoint",
+                        "version",
+                        "compose_version",
+                        "engine",
+                        "roster",
+                        "engine_stdio",
+                        "container_inspection",
+                        "image_inspection",
+                        "volume_inspection",
+                        "config_archive",
+                        "certificate_archive",
+                        "key_archive"
+                      ]
+                    },
+                    "elapsedNanoseconds": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 120000000000
+                    },
+                    "remainingNanoseconds": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 60000000000
+                    },
+                    "effectiveCapNanoseconds": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 4000000000
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "elapsedNanoseconds",
+                    "remainingNanoseconds",
+                    "effectiveCapNanoseconds"
+                  ]
+                }
+              },
+              "required": [
+                "completedAt",
+                "outcome",
+                "diagnosticCode",
+                "cleanup"
+              ],
+              "allOf": [
+                {
+                  "if": {
+                    "properties": {
+                      "outcome": {
+                        "const": "completed"
+                      }
+                    },
+                    "required": [
+                      "outcome"
+                    ]
+                  },
+                  "then": {
+                    "properties": {
+                      "diagnosticCode": {
+                        "type": "null"
+                      }
+                    }
+                  },
+                  "else": {
+                    "properties": {
+                      "diagnosticCode": {
+                        "enum": [
+                          "docker_environment_conflict",
+                          "docker_selection_mismatch",
+                          "docker_versions_unqualified",
+                          "docker_configuration_mismatch",
+                          "docker_resource_conflict",
+                          "docker_command_failed",
+                          "docker_command_timeout_outcome_unknown",
+                          "runtime_authority_rejected",
+                          "owned_cleanup_incomplete",
+                          "request_deadline",
+                          "request_failed",
+                          "selected_host_port_occupied",
+                          "host_policy_invalid",
+                          "host_profile_invalid",
+                          "host_enrollment_invalid",
+                          "host_executable_invalid"
+                        ]
+                      }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "outcome": {
+                        "const": "completed"
+                      }
+                    }
+                  },
+                  "then": {
+                    "not": {
+                      "anyOf": [
+                        {
+                          "required": [
+                            "diagnosticStage"
+                          ]
+                        },
+                        {
+                          "required": [
+                            "failedRead"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "invocationId",
+        "beganAt",
+        "terminal"
+      ]
+    },
+    "previousFailure": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "invocationId": {
+              "type": "string",
+              "pattern": "^attempt_[0-9a-f]{32}$"
+            },
+            "completedAt": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+            },
+            "diagnosticCode": {
+              "enum": [
+                "docker_environment_conflict",
+                "docker_selection_mismatch",
+                "docker_versions_unqualified",
+                "docker_configuration_mismatch",
+                "docker_resource_conflict",
+                "docker_command_failed",
+                "docker_command_timeout_outcome_unknown",
+                "runtime_authority_rejected",
+                "owned_cleanup_incomplete",
+                "request_deadline",
+                "request_failed",
+                "selected_host_port_occupied",
+                "host_policy_invalid",
+                "host_profile_invalid",
+                "host_enrollment_invalid",
+                "host_executable_invalid"
+              ]
+            },
+            "cleanup": {
+              "enum": [
+                "complete",
+                "incomplete",
+                "unknown"
+              ]
+            },
+            "diagnosticStage": {
+              "enum": [
+                "operation_completion",
+                "invocation_validation",
+                "profile_admission",
+                "docker_admission",
+                "compose_admission",
+                "role_admission",
+                "assembly_preparation",
+                "operation_entry",
+                "accepted_receipt",
+                "initial_warm_inspection",
+                "initial_warm_observation",
+                "bootstrap_lease",
+                "post_lease_inspection",
+                "post_lease_observation",
+                "role_leases",
+                "broker_start",
+                "post_start_inspection",
+                "broker_provision",
+                "protected_start",
+                "readiness_inspection",
+                "readiness_observation",
+                "readiness_finalize"
+              ]
+            },
+            "failedRead": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "endpoint",
+                    "version",
+                    "compose_version",
+                    "engine",
+                    "roster",
+                    "engine_stdio",
+                    "container_inspection",
+                    "image_inspection",
+                    "volume_inspection",
+                    "config_archive",
+                    "certificate_archive",
+                    "key_archive"
+                  ]
+                },
+                "elapsedNanoseconds": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 120000000000
+                },
+                "remainingNanoseconds": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 60000000000
+                },
+                "effectiveCapNanoseconds": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 4000000000
+                }
+              },
+              "required": [
+                "kind",
+                "elapsedNanoseconds",
+                "remainingNanoseconds",
+                "effectiveCapNanoseconds"
+              ]
+            }
+          },
+          "required": [
+            "invocationId",
+            "completedAt",
+            "diagnosticCode",
+            "cleanup"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "kind",
+    "binding",
+    "generation",
+    "previousGeneration",
+    "writtenAt",
+    "latestAttempt",
+    "previousFailure"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:proposal:bootstrap-operation-history:1",
+  "title": "Proposed private bootstrap terminal history"
+}

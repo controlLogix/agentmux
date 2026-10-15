@@ -25,7 +25,16 @@ const dockerInfoStdioRequest = "GET /info HTTP/1.1\r\nHost: docker\r\nConnection
 // This hidden CLI helper is qualified only for the selected Windows 29.8.0
 // installation. Callers first verify context endpoint and actual client version.
 // No generic request, caller headers, daemon discovery or fallback is provided.
-func (d *Docker) readEngineInfoStdio(parent context.Context, actualClientVersion string) (dockerEngineInfo, error) {
+func (d *Docker) readEngineInfoStdio(parent context.Context, actualClientVersion string) (result dockerEngineInfo, failure error) {
+	started := time.Time{}
+	remaining := time.Duration(0)
+	effectiveCap := time.Duration(0)
+	attempted := false
+	defer func() {
+		if attempted && failure != nil {
+			failure = failedDockerRead("engine_stdio", parent, started, remaining, effectiveCap, failure)
+		}
+	}()
 	empty := dockerEngineInfo{}
 	if d == nil || parent == nil || d.config.Backend != WindowsInterop || d.config.Versions.Client != "29.8.0" || d.config.Versions.Server != "29.8.0" || actualClientVersion != "29.8.0" {
 		return empty, refusal("stdio_transport_unqualified")
@@ -56,6 +65,17 @@ func (d *Docker) readEngineInfoStdio(parent context.Context, actualClientVersion
 		return empty, refusal("stdio_pipe_failed")
 	}
 	defer input.Close()
+	started = time.Now()
+	if deadline, ok := parent.Deadline(); ok {
+		remaining = time.Until(deadline)
+	}
+	if deadline, ok := ctx.Deadline(); ok {
+		effectiveCap = time.Until(deadline)
+	}
+	if effectiveCap > remaining {
+		effectiveCap = remaining
+	}
+	attempted = true
 	if cmd.Start() != nil {
 		return empty, refusal("command_failed")
 	}
