@@ -1,0 +1,14 @@
+import pathlib,json,hashlib,subprocess,os,time,shutil
+p=pathlib.Path('/home/ryan/.cache/agentmux-governance/p02-host-policy-history-parity-x9y2c317');s=p/'snapshot/platform';repo=pathlib.Path('/mnt/c/Users/RyanHelms/GitHub/agentmux');sha=lambda f:hashlib.sha256(f.read_bytes()).hexdigest()
+def scan(root):return {str(f.relative_to(root)):sha(f) for sub in ['platform','contracts'] for f in sorted((root/sub).rglob('*')) if f.is_file()}
+before=scan(repo);prior=json.loads((pathlib.Path('/home/ryan/.cache/agentmux-governance/p02-host-policy-diagnostic-revised-90_wu26t')/'source-before.json').read_text());assert before==prior,'shared_dependency_drift'
+pins=json.loads((p/'preparation.json').read_text())['sourcePins'];assert all(sha(s/'launcher'/n)==pin for n,pin in pins.items()),'parity_candidate_drift'
+(out:=p/'affected').mkdir();(out/'shared-before.json').write_text(json.dumps(before,indent=2)+'\n');(out/'candidate-source-before.json').write_text(json.dumps(scan(p/'snapshot'),indent=2)+'\n')
+env=os.environ.copy();cleared=[]
+for k in list(env):
+ if (k.startswith('AMX_') and ('FIXTURE' in k or k in ['AMX_BOOTSTRAP_SELECTION_FILE','AMX_BOOTSTRAP_SELECTION_SHA256'])) or k in ['AGENTMUX_TEST_NATS','AGENTMUX_NATS_SERVER']:cleared.append(k);env.pop(k)
+env.update({'GOPROXY':'off','GOSUMDB':'off','GOWORK':'off','GOENV':'off','GORACE':'atexit_sleep_ms=0','AMX_BOOTSTRAP_DOCKER_AUTHORIZED':'0'})
+argv=['/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go','test','-race','-count=1','-json','./launcher','-run','^(TestHostPolicyDiagnostic.*|TestRequestDiagnostic.*|TestBootstrapHistory.*|TestHostHistoryPolicy.*)$']
+inv={'argv':argv,'cwd':str(s),'environment':{k:env[k] for k in ['GOPROXY','GOSUMDB','GOWORK','GOENV','GORACE','AMX_BOOTSTRAP_DOCKER_AUTHORIZED']},'clearedOverrideNames':cleared,'AMX_DOCKER_FIXTUREAbsent':'AMX_DOCKER_FIXTURE'not in env,'startedUnix':time.time(),'sourcePins':pins};(out/'invocation.json').write_text(json.dumps(inv,indent=2)+'\n');shutil.copyfile('/mnt/c/Users/RyanHelms/AppData/Local/Temp/agentmux-host-policy-parity-run.py',out/'run.py');print(out,flush=True)
+with (out/'events.jsonl').open('wb') as a,(out/'stderr.log').open('wb') as b:r=subprocess.run(argv,cwd=s,env=env,stdout=a,stderr=b)
+after=scan(repo);(out/'shared-after.json').write_text(json.dumps(after,indent=2)+'\n');inv.update({'endedUnix':time.time(),'directExit':r.returncode,'sharedSourceUnchanged':before==after,'candidatePinsUnchanged':all(sha(s/'launcher'/n)==pin for n,pin in pins.items())});(out/'invocation.json').write_text(json.dumps(inv,indent=2)+'\n');(out/'exit.txt').write_text(str(r.returncode)+'\n');print('exit',r.returncode,flush=True)

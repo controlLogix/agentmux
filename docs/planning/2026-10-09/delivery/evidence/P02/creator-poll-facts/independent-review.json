@@ -1,0 +1,29 @@
+{
+  "scope": "Independent read-only source review. No tests, compilation, process observations, engine calls or shared changes.",
+  "workerReviewSHA256": "c61e9e487af920d2c755cae53d07453e1c49c37271fb132007cd3ae9e756a5c7",
+  "diffSHA256": "7f0e4efb99539601f5c6a5f8fcbab363130d7348e89649f08f7a3f0666059d94",
+  "basePins": {
+    "installed_cli_compose_integration_linux_test.go": "4f86db10142ef18e74ed3b7f1e6f05f1afd4c6218b20483b6f263b8ddd70a1c5",
+    "installed_cli_creator_observation_linux_test.go": "bc91afddbf3a226f3ef543e8d93d1b96775cab5a6376f4a545c4b032fa78611e"
+  },
+  "candidatePins": {
+    "installed_cli_compose_integration_linux_test.go": "d5c07fd5c894b1fce161ab03544b57f1ce0e4d34b06336f81121a7ac19d1c52f",
+    "installed_cli_creator_observation_linux_test.go": "33ea3d9b13daa8d2802a85faf8a650242dd9315ea60629bc0d8001046b81ffe8"
+  },
+  "findings": [],
+  "sourceConclusions": [
+    "The string compatibility helper delegates to exactly one fact-producing helper. Each observation executes the same one unix.Poll(poll,0) as before.",
+    "Nil, negative or overflowing descriptor and malformed attempt return before Poll; absent or consumed inputs expose no count or revents.",
+    "Live remains exact n==0 and Revents==0. Exited remains exact n==1 and Revents==POLLIN. HUP and combined bits remain unknown.",
+    "The helper only borrows the retained descriptor; no Close, duplicate, PID lookup, signals or ownership adoption were added.",
+    "Facts contain fixed result/performed fields, count, uint16 revents and a closed errno category. Type assertion to syscall.Errno never invokes unknown Error/Is/As/Unwrap methods. No PID, FD or raw errors are retained.",
+    "Failure evidence emits the validated cold attempt only when Poll was performed; invalid preflight values remain blank. This is diagnostic correlation, not ownership/readiness authority.",
+    "Control changes assert actual live and unreaped exit facts plus absent/malformed/consumed refusal and serialization. Original three-second lifecycle before Start, immediate sole-Wait cleanup, checked Close results and fd=-1 consumption are unchanged."
+  ],
+  "limits": [
+    "This review does not reconstruct the historical unknown Poll outcome.",
+    "No actual execution or errno-negative control is admitted by this source review.",
+    "The original child control remains subject to supported OS scheduling and physical reap limits."
+  ],
+  "recommendedNextAction": "Root may authorize the single anchored owned-child control on these exact bytes; actual Docker acceptance remains separate."
+}

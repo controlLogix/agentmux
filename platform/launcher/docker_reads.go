@@ -2,6 +2,7 @@ package launcher
 
 import (
 	"context"
+	"fmt"
 	"strings"
 	"sync"
 )
@@ -12,13 +13,16 @@ const dockerInfoReadFormat = `{"ID":{{json .ID}},"OS":{{json .OSType}}}`
 // The code stays unchanged for callers. The private stage contains only a
 // fixed operation name; it never contains an argument, endpoint or output.
 type dockerInspectionFailure struct {
-	stage string
-	cause error
+	stage             string
+	cause             error
+	bootstrapBoundary bool
+	failedRead        *bootstrapFailedRead
 }
 
-func (e *dockerInspectionFailure) Error() string           { return e.cause.Error() }
-func (e *dockerInspectionFailure) Unwrap() error           { return e.cause }
-func (e *dockerInspectionFailure) inspectionStage() string { return e.stage }
+func (e *dockerInspectionFailure) Error() string                  { return e.cause.Error() }
+func (e *dockerInspectionFailure) Format(state fmt.State, _ rune) { fmt.Fprint(state, e.Error()) }
+func (e *dockerInspectionFailure) Unwrap() error                  { return e.cause }
+func (e *dockerInspectionFailure) inspectionStage() string        { return e.stage }
 func inspectionFailure(stage string, cause error) error {
 	return &dockerInspectionFailure{stage: stage, cause: cause}
 }
@@ -88,7 +92,7 @@ func (d *Docker) parallelReads(parent context.Context, commands ...[]string) ([]
 	for i, args := range commands {
 		go func(i int, args []string) {
 			defer joined.Done()
-			output, err := d.run(ctx, nil, args...)
+			output, err := d.runFixedRead(ctx, dockerReadStage(args), nil, args...)
 			if err != nil {
 				first.Do(func() { failure = inspectionFailure(dockerReadStage(args), err); cancel() })
 				return

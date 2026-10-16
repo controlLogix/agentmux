@@ -1,0 +1,91 @@
+{
+  "scope": "Cache-only combined reviewed stage/cleanup and failfast metadata proposal; shared unchanged",
+  "metadataBeforePins": {
+    "component-inventory.json": "d13ed6c65d96ad16c9eb5f9f7dd84ac2a031aa910d5bea241771278fa30a1959",
+    "component-audit-hub.json": "0667aeb686bb3e2632260a3984ca13753fb9d268e82a30032f26ce896b85502b",
+    "source-surface-index.json": "44f6e17b7319ca3ddd16604280bd9159ed27b5a4b92882a020edcce939eeca58"
+  },
+  "metadataCandidatePins": {
+    "component-inventory.json": "f76a7d1014b2e120c578e8b0d3620b3a3cc1b195cfc61d756e74f51e1726e8cc",
+    "component-audit-hub.json": "aa898c82b937bd5c0e1a80a51cf59582fff211b1bb5179c95e863e232095063c",
+    "source-surface-index.json": "9d13f285ca885389ef3301bce33e54e9d33040ca4aea2a9a97434fa67198a184"
+  },
+  "diffSHA256": "2b2dcc6f8b7974ddd49c853f23ac4034d472392e28d88e83f199caa80d13fe82",
+  "addedInventoryFiles": [
+    "platform/launcher/bootstrap_boundary_cold_test.go",
+    "platform/launcher/bootstrap_boundary_stage.go",
+    "platform/launcher/bootstrap_boundary_stage_test.go",
+    "platform/launcher/bootstrap_cleanup_failure.go",
+    "platform/launcher/bootstrap_cleanup_failure_test.go",
+    "platform/launcher/bootstrap_history_stage_test.go",
+    "platform/launcher/installed_cli_creator_observation_linux_test.go"
+  ],
+  "componentId": "PLAT-01",
+  "behaviorCheck": "PLAT-01-C04",
+  "addedTestReferences": [
+    "platform/launcher/bootstrap_boundary_cold_test.go",
+    "platform/launcher/bootstrap_boundary_stage_test.go",
+    "platform/launcher/bootstrap_cleanup_failure_test.go",
+    "platform/launcher/bootstrap_history_stage_test.go",
+    "platform/launcher/installed_cli_creator_observation_linux_test.go"
+  ],
+  "surfaceUpdatedPaths": [
+    "platform/launcher/bootstrap_history_fs.go",
+    "platform/launcher/bootstrap.go",
+    "platform/launcher/request_diagnostic.go",
+    "platform/launcher/bootstrap_history.go",
+    "platform/launcher/host_history_policy.go",
+    "platform/launcher/docker_reads.go",
+    "platform/launcher/bootstrap_boundary_stage.go",
+    "platform/launcher/bootstrap_cleanup_failure.go"
+  ],
+  "surfaceNewPaths": [
+    "platform/launcher/bootstrap_boundary_stage.go",
+    "platform/launcher/bootstrap_cleanup_failure.go"
+  ],
+  "declarationMethod": "Anchored mechanical Go function/method declarations from actual formatted approved source; existing name/line/go-function convention. No dynamic API or runtime acceptance inferred.",
+  "existingScripts": [
+    {
+      "path": "docs/planning/2026-10-09/verify-component-coverage.py",
+      "role": "Canonical read-only inventory/ownership/pinned-baseline/sourcehash coverage validator, no reconcile write command."
+    },
+    {
+      "path": "docs/planning/2026-10-09/delivery/track.py",
+      "role": "Task source of truth/atomic check+update+render; parent sole writer. No task status modified."
+    },
+    {
+      "path": ".bytedesk/design-patterns/check.mjs",
+      "role": "Pattern registry/diagram/history validation. No digest refresh or new pattern proposed."
+    }
+  ],
+  "preservation": {
+    "baselineBlobMapEqual": true,
+    "allPreviousReviewHistoryPrefixEqual": true,
+    "allAcceptanceDescriptionsAndStatusesUnchanged": true,
+    "baselineAndLaterPhaseOwnershipUnchanged": true
+  },
+  "evidence": {
+    "sourceReview": "/home/ryan/.cache/agentmux-governance/p02-cold-stage-implementation-9q417qj7/review-before-tests.json",
+    "sourceReviewSHA256": "fe44a21d3185489ee2c062c5ee43725f51f6897cf0e6ad3efdee5730fe66d07b",
+    "focusedReview": "/home/ryan/.cache/agentmux-governance/p02-cold-boundary-focused-7m2krb06/review.json",
+    "affectedReview": "/home/ryan/.cache/agentmux-governance/p02-cold-boundary-focused-7m2krb06/affected-review.json"
+  },
+  "rationale": [
+    "Six new files implement/test existing private launcher inspection/history/session mechanisms, assigned to existing PLAT-01/C04 rather than creating new component or pattern.",
+    "Eight non-test Go source records require sourcehash/declaration refresh from approved actual source; schema remains inventory/component registration, not callable source surface.",
+    "Previous surface entries preserved whole in top-level reviewHistory; alloldregistry/history/baseline records remain untouched.",
+    "No new orchestration relationship, public API/history envelope or lifetime model introduced; no new pattern registry/diagram edge warranted by this internal delta. Root still owns exact final pattern/sourceDigest review.",
+    "Root must verify/apply source promotion and archive evidence before applying these future sourcepins. Current repository would honestly reject futurepins until then.",
+    "Coverage/pattern checks belong root after promotion; none run during this metadata-only task.",
+    "Three failfast changes are _test.go and deliberately excluded from canonical callable source index; all actual mechanical declarations supplied separately, existing file ownership preserved, new control maps PLAT-01/C04. One self-owned child control does not make full real refresh pass.",
+    "Seven new files total (six stage/cleanup plus one creator control), with baselineBlob null. No modified baseline row, criterion, phase status, original behavior or history deletion."
+  ],
+  "priorProposalSHA256": "2d94aa529666690ad734d75a2bf15d5a0b66552e677775a89aae67f1598f8537",
+  "failfastTestDeclarationsSHA256": "675db19494380f2cac9fb9ddeb90fd6047ad9ee34ca52972c4925c23da461c2a",
+  "failfastSourcePins": {
+    "platform/launcher/installed_cli_compose_integration_linux_test.go": "4f86db10142ef18e74ed3b7f1e6f05f1afd4c6218b20483b6f263b8ddd70a1c5",
+    "platform/launcher/installed_cli_compose_failures_integration_test.go": "48eea7b28b426eb67485bccb500aca58482572e0b62110b63df13725f4b34839",
+    "platform/launcher/installed_cli_creator_observation_linux_test.go": "bc91afddbf3a226f3ef543e8d93d1b96775cab5a6376f4a545c4b032fa78611e"
+  },
+  "failfastControlReviewSHA256": "119fc3d9ff5e2ea518a2120b7953318d358fb24bf47ee745659dbf2cedc4fb2a"
+}

@@ -53,7 +53,7 @@ func (d *Docker) InspectOwnedBroker(ctx context.Context, o OwnershipPreflight, e
 	if err != nil || broker.State == "absent" {
 		return broker, err
 	}
-	raw, err := d.run(ctx, nil, "cp", broker.ContainerID+":/etc/nats/private.conf", "-")
+	raw, err := d.runFixedRead(ctx, "config_archive", nil, "cp", broker.ContainerID+":/etc/nats/private.conf", "-")
 	if err != nil {
 		return OwnedBroker{}, err
 	}
@@ -106,7 +106,7 @@ func (d *Docker) inspectOwnedBrokerIdentity(ctx context.Context, o OwnershipPref
 		id = key
 	}
 	var actual brokerInspection
-	if e := d.read(ctx, &actual, "container", "inspect", id, "--format", brokerInspectFormat); e != nil {
+	if e := d.readFixed(ctx, "container_inspection", &actual, "container", "inspect", id, "--format", brokerInspectFormat); e != nil {
 		return OwnedBroker{}, e
 	}
 	// No environment, command, mount source or arbitrary label value is captured.
@@ -114,7 +114,7 @@ func (d *Docker) inspectOwnedBrokerIdentity(ctx context.Context, o OwnershipPref
 		return OwnedBroker{}, refusal("broker_identity_mismatch")
 	}
 	var imageID string
-	if e := d.read(ctx, &imageID, "image", "inspect", expectedImage, "--format", "{{json .Id}}"); e != nil {
+	if e := d.readFixed(ctx, "image_inspection", &imageID, "image", "inspect", expectedImage, "--format", "{{json .Id}}"); e != nil {
 		return OwnedBroker{}, e
 	}
 	if imageID == "" || actual.Image != imageID {
@@ -156,7 +156,7 @@ func (d *Docker) inspectOwnedBrokerIdentity(ctx context.Context, o OwnershipPref
 	if len(actual.Mounts) != 1 || actual.Mounts[0] != (brokerMount{Type: "volume", Name: o.Project + "_data", Destination: "/data", RW: true}) {
 		return OwnedBroker{}, refusal("broker_data_mount_mismatch")
 	}
-	if e := d.labels(ctx, "volume", o.Project+"_data", o); e != nil {
+	if e := d.labelsFixed(ctx, "volume_inspection", "volume", o.Project+"_data", o); e != nil {
 		return OwnedBroker{}, e
 	}
 	return OwnedBroker{ContainerID: id, State: state}, nil

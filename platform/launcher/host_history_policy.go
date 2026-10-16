@@ -26,6 +26,12 @@ func terminalHistory(failure *bootstrapHistoryFailure, now time.Time) (*Bootstra
 		return nil, nil
 	}
 	completed, err := time.Parse(time.RFC3339Nano, failure.CompletedAt)
+	if failure.FailedRead != nil && !validBootstrapFailedRead(failure.FailedRead) {
+		return nil, historyError("invalid", nil)
+	}
+	if failure.DiagnosticStage != nil && !validBootstrapDiagnosticStage(*failure.DiagnosticStage) {
+		return nil, historyError("invalid", nil)
+	}
 	diagnostic := requestDiagnostic(failure.DiagnosticCode)
 	if !ownerBridgeInvocation.MatchString(failure.InvocationID) || err != nil || completed.IsZero() || completed.After(now) || now.Sub(completed) > bootstrapHistoryRelevance || diagnostic.Code != failure.DiagnosticCode || !ValidRequestDiagnostic(diagnostic) || (failure.Cleanup != "unknown" && failure.Cleanup != "incomplete") {
 		return nil, historyError("invalid", nil)

@@ -1,0 +1,187 @@
+{
+  "scope": "Supplement actual pure-control and compile-only evidence; original independent source review preserved",
+  "sourceReviewSHA256": "09029f8f7efef56d2f00ce9b464a414b16e9c02ca41eceb3290beeaab9c6a4ae",
+  "reports": [
+    {
+      "path": "/home/ryan/.cache/agentmux-governance/p02-midboot-metadata-expanded-95982ea7/review.json",
+      "recordSHA256": "ecaee53ac6d14aaca28ec6855d31e320e34238b19948da582a3164b7f4a706d0",
+      "artifacts": [
+        {
+          "path": "controls-before.go.txt",
+          "matches": true
+        },
+        {
+          "path": "installed_cli_midboot_metadata_predicate_test.go",
+          "matches": true
+        },
+        {
+          "path": "preparation.json",
+          "matches": true
+        },
+        {
+          "path": "stderr.log",
+          "matches": true
+        },
+        {
+          "path": "events.jsonl",
+          "matches": true
+        },
+        {
+          "path": "source-after.json",
+          "matches": true
+        },
+        {
+          "path": "agentmux-metadata-expanded-run.py",
+          "matches": true
+        },
+        {
+          "path": "agentmux-metadata-expanded-prepare.py",
+          "matches": true
+        },
+        {
+          "path": "exit.json",
+          "matches": true
+        },
+        {
+          "path": "copied-source.json",
+          "matches": true
+        },
+        {
+          "path": "invocation.json",
+          "matches": true
+        },
+        {
+          "path": "controls-append.diff",
+          "matches": true
+        },
+        {
+          "path": "installed_cli_midboot_metadata_controls_test.go",
+          "matches": true
+        },
+        {
+          "path": "source-before.json",
+          "matches": true
+        }
+      ],
+      "allHashesMatch": true,
+      "rawCounts": {
+        "namedPass": 49,
+        "fail": 0,
+        "skip": 0
+      },
+      "directExit": 0
+    },
+    {
+      "path": "/home/ryan/.cache/agentmux-governance/p02-midboot-reader-pure-9qnqcp6s/review.json",
+      "recordSHA256": "462fb12dc917680b50acc87df41ed0e699046328b45a035b0fae11329bd9c20b",
+      "artifacts": [
+        {
+          "path": "events.jsonl",
+          "matches": true
+        },
+        {
+          "path": "exit.txt",
+          "matches": true
+        },
+        {
+          "path": "extraction.json",
+          "matches": true
+        },
+        {
+          "path": "invocation.json",
+          "matches": true
+        },
+        {
+          "path": "predicate_test.go",
+          "matches": true
+        },
+        {
+          "path": "reader.go",
+          "matches": true
+        },
+        {
+          "path": "reader_controls_test.go",
+          "matches": true
+        },
+        {
+          "path": "run.py",
+          "matches": true
+        },
+        {
+          "path": "stderr.log",
+          "matches": true
+        }
+      ],
+      "allHashesMatch": true,
+      "rawCounts": {
+        "namedPass": 5,
+        "fail": 0,
+        "skip": 0
+      },
+      "directExit": 0
+    },
+    {
+      "path": "/home/ryan/.cache/agentmux-governance/p02-midboot-bounded-caller-compile-4lx9btnv/review.json",
+      "recordSHA256": "41f0883b5248a8bde9cd4970b63e0d102db6d4a059afb724193d4410ea7e6f91",
+      "artifacts": [
+        {
+          "path": "run.py",
+          "matches": true
+        },
+        {
+          "path": "invocation.json",
+          "matches": true
+        },
+        {
+          "path": "source-before.json",
+          "matches": true
+        },
+        {
+          "path": "source-copy.json",
+          "matches": true
+        },
+        {
+          "path": "source-after.json",
+          "matches": true
+        },
+        {
+          "path": "candidate-source.json",
+          "matches": true
+        },
+        {
+          "path": "stdout.log",
+          "matches": true
+        },
+        {
+          "path": "stderr.log",
+          "matches": true
+        },
+        {
+          "path": "exit.txt",
+          "matches": true
+        },
+        {
+          "path": "launcher.test",
+          "matches": true
+        },
+        {
+          "path": "reader-controls-draft.go",
+          "matches": true
+        },
+        {
+          "path": "reader-controls-review.json",
+          "matches": true
+        }
+      ],
+      "allHashesMatch": true,
+      "directExit": 0
+    }
+  ],
+  "findings": [],
+  "limits": [
+    "Expanded49 controls are source-derived fixed metadata, not live child authority.",
+    "Reader5 controls cover real owned regular-file bounds/open failure and normal close, not injected Close failure or blocked procfs.",
+    "Tagged compile proves type/build compatibility only; test binary not executed.",
+    "No actual recovery case, signals, Docker or candidate acceptance by this reviewer."
+  ]
+}

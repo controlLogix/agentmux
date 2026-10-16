@@ -1,0 +1,34 @@
+{
+  "scope": "Cache-only independent source review before compile/tests",
+  "recordSHA256": "9f044c79c5992678697383aee492224824e8f4d98e7d4ecdc72b129e936ed413",
+  "sourcePins": {
+    "installed_cli_compose_integration_linux_test.go": "4f86db10142ef18e74ed3b7f1e6f05f1afd4c6218b20483b6f263b8ddd70a1c5",
+    "installed_cli_compose_failures_integration_test.go": "48eea7b28b426eb67485bccb500aca58482572e0b62110b63df13725f4b34839",
+    "installed_cli_creator_observation_linux_test.go": "e3ca4715639661a32a7923354d5786f3ea988c2b42e9c5f77dcd81b7984fa56d"
+  },
+  "diffPins": {
+    "installed_cli_compose_integration_linux_test.go.diff": "a53095612376beb39a615614f86e4e9920a3546f9b6766dbedc593fe045701e9",
+    "installed_cli_compose_failures_integration_test.go.diff": "543545a39c4e7bd40a3b8c6a44ddb5301f26500ce054f5445f46613220baafa9"
+  },
+  "findings": [
+    {
+      "id": "CREATOR-CONTROL-CLEANUP",
+      "source": "installed_cli_creator_observation_linux_test.go",
+      "detail": "Cleanup discards exact input.Close/solecmd.Wait/unix.Close results; fallback Wait has no original bounded child lifecycle. Must check failures and establish bound beforeStart, retain consumedfd=-1/no numericretry and soleWait."
+    }
+  ],
+  "sourceAssessment": [
+    "Observer borrows original field only: no descriptor adoption, processlookup, signal, history/start authority.",
+    "Requires originalattempt grammar and int32safe nonnegativeFD; exact Poll0 zero/noevents only live, exact onePOLLIN exited, allcombined/invalidresults unknown.",
+    "Malformedattempt publicevidence emits emptystring, not rawinput.",
+    "Checks surround same originaljoined5secondRequest nested within originalstartupdeadline. Existing currentreadiness/roleassertions unchanged.",
+    "Concurrentfrontend a still uses legacy nilcreator path to allow genuine winningowner.",
+    "Failureonly earlystop cannot grant readiness or bypass authentication/cleanup gates; existingfixture cleanup authority retained."
+  ],
+  "limits": [
+    "No test/compiler/process/engine/network call or sharededit.",
+    "Source-only helper control does not prove actual installedPIDFD/realengine lifecycle.",
+    "Existing refresh harderror Fatal path is unchanged; no broader error-owner retention qualification claimed."
+  ],
+  "recommendation": "Repair concretecontrol cleanup then sourcepeer closure before exact TestComposeCLICreatorObservation execution."
+}

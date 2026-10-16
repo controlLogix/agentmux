@@ -1,0 +1,84 @@
+{
+  "scope": "One local preparation helper; no original failure cause or host ownership claim",
+  "programSHA256": "d50190b0fd9a8432571b7edc9bfb5647f53d0e16bb7eb96250eeb8c89b0cc182",
+  "preparationSHA256": "102b90702ff047a191317667f910e7ab7c5c797df8c1dbec7eabe979cf6fca4a",
+  "sourceCount": 133,
+  "calls": [
+    {
+      "name": "compile",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "build",
+        "-o",
+        "/home/ryan/.cache/agentmux-governance/p02-local-preparation-once-b4bmad2v/helper",
+        "/home/ryan/.cache/agentmux-governance/p02-local-preparation-current-49v6zcs2/main.go"
+      ],
+      "cwd": "/home/ryan/.cache/agentmux-governance/p02-local-preparation-current-49v6zcs2/src/platform",
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 1.6722291890037013,
+      "exactOwnedHandleJoined": true,
+      "stdoutBytes": 0,
+      "stderrBytes": 0,
+      "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "name": "helper",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/p02-local-preparation-once-b4bmad2v/helper"
+      ],
+      "cwd": "/home/ryan/.cache/agentmux-governance/p02-local-preparation-current-49v6zcs2/src/platform",
+      "exitCode": 0,
+      "timedOut": false,
+      "seconds": 0.11431242999969982,
+      "exactOwnedHandleJoined": true,
+      "stdoutBytes": 435,
+      "stderrBytes": 0,
+      "stdoutSHA256": "3bb70547ffd0c3747dd832d50e54600f4fb551445c1be8603f647f11e8b28738",
+      "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "closedOutput": {
+    "schemaVersion": "1.0.0",
+    "kind": "local-preparation-diagnostic",
+    "stages": [
+      {
+        "stage": "admission",
+        "status": "passed",
+        "refusalCode": "none"
+      },
+      {
+        "stage": "local_invocation_constructor",
+        "status": "passed",
+        "refusalCode": "none"
+      },
+      {
+        "stage": "receipt_binding",
+        "status": "passed",
+        "refusalCode": "none"
+      },
+      {
+        "stage": "installed_image_preparation",
+        "status": "passed",
+        "refusalCode": "none"
+      },
+      {
+        "stage": "installed_image_close",
+        "status": "passed",
+        "refusalCode": "none"
+      }
+    ]
+  },
+  "currentAndPreparedSourcesUnchanged": true,
+  "fixtureBytesAndOwnershipUnchanged": true,
+  "fixtureEntryCount": 28,
+  "imageCloseObservation": "Close returned nil and original context remained active",
+  "limits": [
+    "No StartHost/Probe/Request/engine/NATS/process discovery/signals or fixture writes.",
+    "Only exact newly created compiler/helper processes owned; no fixture process authority.",
+    "Synchronous filesystem, crypto and image Close calls are not hard-preemptible.",
+    "Private stream size checked before projection; no timeout occurred unless explicitly recorded.",
+    "Passing current preparation cannot establish the original frontend failure stage."
+  ]
+}

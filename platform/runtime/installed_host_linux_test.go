@@ -221,7 +221,7 @@ func main(){if len(os.Args)!=6{os.Exit(2)};file,e:=os.Open(os.Args[1]);if e!=nil
 	}
 	poll := []unix.PollFd{{Fd: int32(fd), Events: unix.POLLIN}}
 	if count, err := unix.Poll(poll, 100); err != nil || count != 0 {
-		t.Fatal("detached child exited with its frontend")
+		t.Fatal(pidfdSurvivalDiagnostic(count, err, poll[0].Revents))
 	}
 	if unix.PidfdSendSignal(fd, unix.SIGTERM, nil, 0) != nil {
 		t.Fatal("exact detached-child stop failed")

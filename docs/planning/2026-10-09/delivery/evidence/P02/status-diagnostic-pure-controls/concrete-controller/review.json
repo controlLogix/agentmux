@@ -1,0 +1,63 @@
+{
+  "scope": "Two pure fixed-frame/exact-controller groups only; no main/status/network/native execution",
+  "argv": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "/home/ryan/.cache/agentmux-governance/p02-status-concrete-controller-pure-0yaqkiqa/main.go",
+    "/home/ryan/.cache/agentmux-governance/p02-status-concrete-controller-pure-0yaqkiqa/recovery_controller.go",
+    "/home/ryan/.cache/agentmux-governance/p02-status-concrete-controller-pure-0yaqkiqa/recovery_controller_test.go",
+    "-run",
+    "^(TestRecoveryCommandFrame|TestRecoveryExactControllerDispatch)$"
+  ],
+  "cwd": "/home/ryan/.cache/agentmux-governance/p02-status-concrete-controller-pure-0yaqkiqa/src/platform",
+  "environment": {
+    "GOTOOLCHAIN": "local",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GOENV": "off",
+    "GOFLAGS": "-mod=readonly",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "0"
+  },
+  "directExit": 0,
+  "elapsedSeconds": 3.2620785390026867,
+  "namedPasses": [
+    "TestRecoveryCommandFrame/exact",
+    "TestRecoveryCommandFrame/empty",
+    "TestRecoveryCommandFrame/missing_newline",
+    "TestRecoveryCommandFrame/other_command",
+    "TestRecoveryCommandFrame/extra_field",
+    "TestRecoveryCommandFrame/oversized",
+    "TestRecoveryCommandFrame",
+    "TestRecoveryExactControllerDispatch/nil",
+    "TestRecoveryExactControllerDispatch/unknown",
+    "TestRecoveryExactControllerDispatch/value",
+    "TestRecoveryExactControllerDispatch/joined",
+    "TestRecoveryExactControllerDispatch/typed_nil",
+    "TestRecoveryExactControllerDispatch/exact_zero_pointer",
+    "TestRecoveryExactControllerDispatch"
+  ],
+  "failures": [],
+  "skips": [],
+  "subtestCount": 12,
+  "ownedSourceSHA256": {
+    "main.go": "64f29603c647411a9b0122b5821d3da32006e06afaffbb405b52c22fceb740a6",
+    "recovery_controller.go": "63835243d7d009a51314c386bedf03fa5db155ab2d160070578fbc7e8d3aeae3",
+    "recovery_controller_test.go": "133bfa5e4f4b38a4bffe70d18cadd1aaa267b41864cc49fb6a73b69df7cf6bdf"
+  },
+  "sourceCount": 133,
+  "sourceStable": true,
+  "stdoutSHA256": "b8263b6f587bf23edf3869a145d63f33a97ce36ffd1babc38340a7ac6b5fcad5",
+  "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "limits": [
+    "Only first newline command is read; following bytes ignored and never dispatched. The combined duplicate assertion tests validRecoveryFrame directly, not stream trailing-data refusal.",
+    "Concrete zero-value TransportCleanupError.Close returns nil with no socket; no physical cleanup bound is tested.",
+    "Concrete Dialer.Close waits mutex/stopped/calls without context; pre/post checks do not prove total5s wall bound.",
+    "Unknown wrapper Error/Unwrap/Close panic methods are not invoked.",
+    "Live status/capture/retry remains unapproved."
+  ]
+}

@@ -104,6 +104,19 @@ func (b *limitedOutput) Write(p []byte) (int, error) {
 
 // run is private, uses literal arguments, and never returns subprocess text.
 func (d *Docker) run(ctx context.Context, stdin []byte, args ...string) ([]byte, error) {
+	return d.runFixedRead(ctx, "", stdin, args...)
+}
+func (d *Docker) runFixedRead(ctx context.Context, kind string, stdin []byte, args ...string) (output []byte, failure error) {
+	parent := ctx
+	started := time.Time{}
+	remaining := time.Duration(0)
+	effectiveCap := time.Duration(0)
+	attempted := false
+	defer func() {
+		if attempted && failure != nil {
+			failure = failedDockerRead(kind, parent, started, remaining, effectiveCap, failure)
+		}
+	}()
 	if err := d.environment(); err != nil {
 		return nil, err
 	}
@@ -122,6 +135,19 @@ func (d *Docker) run(ctx context.Context, stdin []byte, args ...string) ([]byte,
 	var out limitedOutput
 	cmd.Stdout = &out
 	cmd.Stderr = io.Discard
+	started = time.Now()
+	if parent != nil {
+		if deadline, ok := parent.Deadline(); ok {
+			remaining = time.Until(deadline)
+		}
+	}
+	if deadline, ok := ctx.Deadline(); ok {
+		effectiveCap = time.Until(deadline)
+	}
+	if effectiveCap > remaining {
+		effectiveCap = remaining
+	}
+	attempted = true
 	if err := cmd.Run(); err != nil {
 		if ctx.Err() != nil {
 			return nil, dockerCommandError(d.config.Executable, args, errors.Join(err, ctx.Err()), true)
@@ -134,7 +160,10 @@ func (d *Docker) run(ctx context.Context, stdin []byte, args ...string) ([]byte,
 	return out.Bytes(), nil
 }
 func (d *Docker) read(ctx context.Context, dst any, args ...string) error {
-	b, e := d.run(ctx, nil, args...)
+	return d.readFixed(ctx, "", dst, args...)
+}
+func (d *Docker) readFixed(ctx context.Context, kind string, dst any, args ...string) error {
+	b, e := d.runFixedRead(ctx, kind, nil, args...)
 	if e != nil {
 		return e
 	}
@@ -145,7 +174,7 @@ func (d *Docker) read(ctx context.Context, dst any, args ...string) error {
 }
 func (d *Docker) Inspect(ctx context.Context) (DockerInspection, error) {
 	var endpoint string
-	if e := d.read(ctx, &endpoint, "context", "inspect", d.config.Context, "--format", "{{json .Endpoints.docker.Host}}"); e != nil {
+	if e := d.readFixed(ctx, "endpoint", &endpoint, "context", "inspect", d.config.Context, "--format", "{{json .Endpoints.docker.Host}}"); e != nil {
 		return DockerInspection{}, inspectionFailure("endpoint", e)
 	}
 	if endpoint != d.config.Endpoint {
@@ -210,13 +239,16 @@ func (o OwnershipPreflight) inputLabels(labels map[string]string) bool {
 	return labels["agentmux.instance.id"] == o.InstanceID && labels["agentmux.release.digest"] == o.ReleaseDigest && (o.ProfileID == "" || labels["agentmux.profile.id"] == o.ProfileID)
 }
 func (d *Docker) labels(ctx context.Context, kind, id string, o OwnershipPreflight) error {
+	return d.labelsFixed(ctx, "", kind, id, o)
+}
+func (d *Docker) labelsFixed(ctx context.Context, readKind, kind, id string, o OwnershipPreflight) error {
 	format := "{{json .Labels}}"
 	args := []string{kind, "inspect", id, "--format", format}
 	if kind == "container" {
 		args = []string{"container", "inspect", id, "--format", "{{json .Config.Labels}}"}
 	}
 	var labels map[string]string
-	if e := d.read(ctx, &labels, args...); e != nil {
+	if e := d.readFixed(ctx, readKind, &labels, args...); e != nil {
 		return e
 	}
 	if !o.matches(labels) {

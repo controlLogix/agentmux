@@ -349,7 +349,7 @@ func readBootstrapHistory(ctx context.Context, owner *OwnerStatus, runtimeDigest
 	if err := bounded.Err(); err != nil {
 		return nil, historyError("context_invalid", err)
 	}
-	return &bootstrapHistoryFailure{record.LatestAttempt.InvocationID, terminal.CompletedAt, *terminal.DiagnosticCode, terminal.Cleanup}, nil
+	return &bootstrapHistoryFailure{InvocationID: record.LatestAttempt.InvocationID, CompletedAt: terminal.CompletedAt, DiagnosticCode: *terminal.DiagnosticCode, Cleanup: terminal.Cleanup, DiagnosticStage: copyBootstrapDiagnosticStage(terminal.DiagnosticStage), FailedRead: copyBootstrapFailedRead(terminal.FailedRead)}, nil
 }
 
 func joinHistoryCleanup(primary, cause error) error {
@@ -483,5 +483,5 @@ func historyRelevantFailure(record bootstrapHistoryRecord, now time.Time) *boots
 	if err != nil || completed.After(now) || terminal.DiagnosticCode == nil || now.Sub(completed) > bootstrapHistoryRelevance {
 		return nil
 	}
-	return &bootstrapHistoryFailure{record.LatestAttempt.InvocationID, terminal.CompletedAt, *terminal.DiagnosticCode, terminal.Cleanup}
+	return &bootstrapHistoryFailure{InvocationID: record.LatestAttempt.InvocationID, CompletedAt: terminal.CompletedAt, DiagnosticCode: *terminal.DiagnosticCode, Cleanup: terminal.Cleanup, DiagnosticStage: copyBootstrapDiagnosticStage(terminal.DiagnosticStage), FailedRead: copyBootstrapFailedRead(terminal.FailedRead)}
 }

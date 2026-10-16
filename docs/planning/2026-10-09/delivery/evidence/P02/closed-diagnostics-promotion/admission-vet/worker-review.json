@@ -1,0 +1,109 @@
+{
+  "scope": "Existing constructor/admission regressions plus launcher vet only",
+  "invocation": {
+    "cwd": "/home/ryan/.cache/agentmux-governance/p02-host-policy-history-parity-x9y2c317/snapshot/platform",
+    "environment": {
+      "GOPROXY": "off",
+      "GOSUMDB": "off",
+      "GOWORK": "off",
+      "GOENV": "off",
+      "GORACE": "atexit_sleep_ms=0",
+      "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "0"
+    },
+    "AMX_DOCKER_FIXTUREAbsent": true,
+    "candidateBefore": {
+      "host_policy_diagnostic_test.go": "4a5589e8ea5d80c53f2cd33ab566a52500fea8eb75aa51b54fa3431de82ccf93",
+      "request_diagnostic.go": "dddc1e7562eabfde17265fe2fd41794f0f66c71178669ae796acab5c72e320b4",
+      "bootstrap_history_host_diagnostic_test.go": "b992017a59e0237734beb0b7f0e61b977899c1a3c47a650da878354a665889b9",
+      "bootstrap_history.schema.json": "9fb067de7702d270bc89f1ff400c57503fb3bdfb007e0257862ed1c75c20b21c",
+      "host_policy.go": "3d850105741224ebae1853e53c239a2e6346f4eb6375d3eeb29dda6f151555ad",
+      "host_policy_diagnostic.go": "5c17561f78258a4b0682ea70bbcf7d383fece497d71ec6d1302e7b3bf0fc2dc9"
+    },
+    "commands": {
+      "admission": {
+        "argv": [
+          "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+          "test",
+          "-race",
+          "-count=1",
+          "-json",
+          "./launcher",
+          "-run",
+          "^TestInstalledHostPolicy(BridgeBindingsBeforeFactoryLoad|NullableOwnerAndBoundFiles|RejectsPrivateBoundaryAndDeclarations)$"
+        ],
+        "startedUnix": 1792016968.455652,
+        "endedUnix": 1792016970.9638143,
+        "directExit": 0
+      },
+      "vet": {
+        "argv": [
+          "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+          "vet",
+          "./launcher"
+        ],
+        "startedUnix": 1792016970.9642127,
+        "endedUnix": 1792016972.0134413,
+        "directExit": 0
+      }
+    },
+    "startedUnix": 1792016968.4321272,
+    "candidateAfter": {
+      "host_policy_diagnostic_test.go": "4a5589e8ea5d80c53f2cd33ab566a52500fea8eb75aa51b54fa3431de82ccf93",
+      "request_diagnostic.go": "dddc1e7562eabfde17265fe2fd41794f0f66c71178669ae796acab5c72e320b4",
+      "bootstrap_history_host_diagnostic_test.go": "b992017a59e0237734beb0b7f0e61b977899c1a3c47a650da878354a665889b9",
+      "bootstrap_history.schema.json": "9fb067de7702d270bc89f1ff400c57503fb3bdfb007e0257862ed1c75c20b21c",
+      "host_policy.go": "3d850105741224ebae1853e53c239a2e6346f4eb6375d3eeb29dda6f151555ad",
+      "host_policy_diagnostic.go": "5c17561f78258a4b0682ea70bbcf7d383fece497d71ec6d1302e7b3bf0fc2dc9"
+    },
+    "candidateUnchanged": true
+  },
+  "namedPasses": 30,
+  "topLevelPasses": [
+    "TestInstalledHostPolicyBridgeBindingsBeforeFactoryLoad",
+    "TestInstalledHostPolicyNullableOwnerAndBoundFiles",
+    "TestInstalledHostPolicyRejectsPrivateBoundaryAndDeclarations"
+  ],
+  "namedFailures": 0,
+  "namedSkips": 0,
+  "admissionStderrBytes": 0,
+  "vetStdoutBytes": 0,
+  "vetStderrBytes": 0,
+  "artifacts": {
+    "admission.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "admission-exit.txt": {
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    "admission.stdout": {
+      "sha256": "3fed2ccd6a58728a68fcab02bc046a43453afa0fdbd2808d5d55fb0dbd9240e8",
+      "bytes": 32579
+    },
+    "vet.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "vet.stdout": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "vet-exit.txt": {
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "bytes": 2
+    },
+    "invocation.json": {
+      "sha256": "9c07a0a34e77779a32aefbabf8b063deb9a52e4e7674dbc274510461f3a27f6a",
+      "bytes": 2439
+    },
+    "run.py": {
+      "sha256": "ad17353c18dc986e9b29a942e73ddf00ca34a5f87332c4c5ec31a284f89fab32",
+      "bytes": 2245
+    }
+  },
+  "limits": [
+    "No repeat of113 diagnostic/history checks, no source edits/promotion, no realstack or retainedfixture work.",
+    "Exact sixfile candidate unchanged, offline/auth0; current admission/regression component evidence only."
+  ]
+}

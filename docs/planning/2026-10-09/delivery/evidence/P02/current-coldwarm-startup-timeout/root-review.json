@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-14T23:39:14.455372+00:00",
+  "reviewer": "Codex",
+  "sourceCommit": "9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+  "phase": "P02",
+  "phaseAccepted": false,
+  "verifiedProducerFiles": 27,
+  "verifiedCurrentAndExecutedSourceFiles": 272,
+  "verifiedPublicFixtureFiles": 47,
+  "actualNamedResult": "failed",
+  "failureBoundary": {
+    "source": "installed_cli_compose_integration_linux_test.go:634",
+    "stage": "completion_refresh",
+    "message": "actual installed runtime did not complete within startup budget"
+  },
+  "frontend": {
+    "entryToExitSeconds": 3.946209204,
+    "exitSuccess": true,
+    "waitJoined": true,
+    "exactCreatorHostPinned": true,
+    "stdoutBytes": 999,
+    "stderrBytes": 0,
+    "outputKind": "bootstrap-progress",
+    "requestDisposition": "accepted",
+    "instanceState": "unknown",
+    "note": "Historical accepted bootstrap control, not authenticated L04 starting/readiness."
+  },
+  "refresh": {
+    "count": 37,
+    "errorCodes": {
+      "owner_bridge_connection_unavailable": 36,
+      "owner_bridge_deadline": 1
+    },
+    "deadlineExpiredCount": 1,
+    "authenticatedCompletedResultCount": 0
+  },
+  "cleanup": {
+    "noCleanupFailureReportedInRawEvents": true,
+    "savedContainerBaselineGuards": [
+      {
+        "at": "2026-10-14T23:27:00.668120775Z",
+        "existingContainerCount": 15,
+        "unchanged": true
+      },
+      {
+        "at": "2026-10-14T23:28:07.331298492Z",
+        "existingContainerCount": 15,
+        "unchanged": true
+      }
+    ],
+    "cleanupRecordPresent": false,
+    "networkRemovalRecordPresent": false,
+    "scope": "Source cleanup ran after sole test failure; exact pinned host stop/exit checks and canonical lease acquisition returned without t.Error; final container guard saved15 unchanged. No saved final broker/network inspection record; do not infer stopped broker/retained volume/removal from absent files.",
+    "noNewRecoveryAuthority": "No reconstructed PIDs or oldfixture mutations."
+  },
+  "privateHistorySHA256": "e41719f38433e10ff2f170f9eccfbab1d350938f0f7147c952e06fd63cdd75cb",
+  "privateHistoryCopied": false,
+  "conclusions": [
+    "Accepted creator control is not authenticated runtime readiness.",
+    "Actual attempt terminal reports Docker timeout with unknown outcome. Exact Docker command and bootstrap stage are not yet proved.",
+    "Original deadlines unchanged; no retry or post-test engine operation.",
+    "No final saved broker/network state: do not infer removal or running state."
+  ],
+  "nextAction": "Implement closed bootstrap-boundary diagnostics and focused no-mutation failure controls before another real lifecycle run.",
+  "privateCLICaptureHashesVerified": 2,
+  "receiptToPrivateHistoryAttemptBindingVerified": true,
+  "privateHistoryTerminal": {
+    "outcome": "failed",
+    "diagnosticCode": "docker_command_timeout_outcome_unknown",
+    "cleanup": "unknown"
+  }
+}

@@ -242,10 +242,19 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 	if operation != nil {
 		defer func() {
 			if err := operation.complete(result, failure); err != nil {
+				if failure == nil {
+					err = bootstrapBoundaryFailure("operation_completion", err)
+				}
 				failure = errors.Join(failure, err)
 			}
 		}()
 	}
+	boundaryStage := "invocation_validation"
+	defer func() {
+		if failure != nil {
+			failure = bootstrapBoundaryFailure(boundaryStage, failure)
+		}
+	}()
 	if !regexp.MustCompile(`^attempt_[0-9a-f]{32}$`).MatchString(attemptID) {
 		return nil, bootstrapError("invocation_invalid")
 	}
@@ -263,6 +272,7 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 	// A blocked filesystem syscall remains an explicitly unsupported timing case.
 	warm, cancelWarm := context.WithTimeout(ctx, 4*time.Second)
 	defer cancelWarm()
+	boundaryStage = "profile_admission"
 	profile, err := LoadProfile(c.ProfilePolicy)
 	if err != nil {
 		return nil, err
@@ -289,11 +299,13 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 	if err != nil || port < 1 || port > 65535 {
 		return nil, bootstrapError("local_port_invalid")
 	}
+	boundaryStage = "docker_admission"
 	driver, err := NewDocker(DockerConfig{Executable: selection.Executable, Context: selection.Context, Endpoint: selection.Endpoint, EngineID: selection.EngineID, Versions: DockerVersions{selection.ClientVersion, selection.ServerVersion, selection.ComposeVersion}, Timeout: 60 * time.Second, Backend: selection.Backend})
 	if err != nil {
 		return nil, err
 	}
 	owner := OwnershipPreflight{Project: declaration.ComposeProject, InstanceID: declaration.InstanceID, ProfileID: declaration.ProfileID, ReleaseDigest: declaration.ReleaseFingerprint, ConfigDigest: composeHash}
+	boundaryStage = "compose_admission"
 	if err := validateCompose(c.Compose, owner); err != nil {
 		return nil, err
 	}
@@ -314,6 +326,7 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 			return nil, err
 		}
 	}
+	boundaryStage = "role_admission"
 	if err := validateBootstrapRoles(c, declaration); err != nil {
 		return nil, err
 	}
@@ -322,6 +335,7 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 	if c.LocalTLS == nil || c.Kernel.TLS == nil || c.Health.TLS == nil || c.admissionPolicy == nil || c.Kernel.authority == nil {
 		return nil, bootstrapError("local_tls_required")
 	}
+	boundaryStage = "assembly_preparation"
 	prepared, err := protected.Prepare(warm, c.Assembly, c.PackageDirectory, c.ReleaseTrust, protected.Limits{})
 	if err != nil {
 		return nil, bootstrapRuntimeFailure("assembly_preparation_failed", err, prepared)
@@ -335,12 +349,14 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 			failure = bootstrapCloseFailure(failure, cleanup, prepared, nil, result)
 		}
 	}()
+	boundaryStage = "operation_entry"
 	if operation != nil {
 		if err := operation.enter(ctx, c, declaration, attemptID); err != nil {
 			return nil, err
 		}
 		// Receipt I/O follows genuine admission and runs outside the operation's
 		// state lock. A departing frontend does not cancel this owned startup.
+		boundaryStage = "accepted_receipt"
 		if err := operation.emitBootstrapAccepted(ctx); err != nil {
 			return nil, err
 		}
@@ -384,11 +400,13 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 		return &Session{Status: BootstrapStatus{Disposition: "reused", Profile: profile.Summary(), Kernel: k, Persistence: p}, startupAttemptID: attemptID, observedAt: time.Now().UTC()}, nil
 	}
 	// All initial warm inspection shares one budget, reserving exec pipe cleanup.
+	boundaryStage = "initial_warm_inspection"
 	broker, err := inspect(warm)
 	if err != nil {
 		cancelWarm()
 		return nil, err
 	}
+	boundaryStage = "initial_warm_observation"
 	if broker.State == "running" {
 		if reused, err := observe(warm); err == nil {
 			cancelWarm()
@@ -403,6 +421,7 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 	// A concurrent owner may still be starting the protected roles. Wait for
 	// its bootstrap lease, then inspect again before any mutation. A runtime
 	// that remains degraded after that wait is refused by the second observation.
+	boundaryStage = "bootstrap_lease"
 	lease, err := AcquireBootstrapLock(ctx, declaration.ProfileDirectory, declaration.InstanceID, selection.EngineID)
 	if err != nil {
 		return nil, err
@@ -418,15 +437,17 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 				result = session
 				// Preserve original concrete cleanup owners as well as this
 				// session's failure; projection still prioritizes cleanup.
-				failure = bootstrapCloseFailure(failure, err, nil, nil, session)
+				failure = retainBootstrapCleanup(session, failure, bootstrapCloseFailure(nil, err, nil, nil, session))
 			}
 		}
 	}()
 	owner.LockHeld = true
+	boundaryStage = "post_lease_inspection"
 	broker, err = inspect(ctx)
 	if err != nil {
 		return nil, err
 	}
+	boundaryStage = "post_lease_observation"
 	if broker.State == "running" {
 		if reused, err := observe(ctx); err == nil {
 			return reused, nil
@@ -441,6 +462,7 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 			failure = bootstrapCloseFailure(failure, cleanup, nil, nil, result)
 		}
 	}()
+	boundaryStage = "role_leases"
 	for i, role := range c.Roles {
 		lease, err := AcquireBootstrapLock(ctx, declaration.ProfileDirectory, declaration.InstanceID, selection.EngineID+":runtime:"+role.ID)
 		if err != nil {
@@ -450,6 +472,7 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 		c.Roles[i].LifetimeLease = lease.file
 	}
 	if broker.State != "running" {
+		boundaryStage = "broker_start"
 		// Enrollment, engine/resource inspection and actual bootstrap/role
 		// lease acquisition precede this cold-only native endpoint probe.
 		// Both authorized warm-reuse paths return before reaching it.
@@ -459,6 +482,7 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 		if err := driver.StartOwned(ctx, owner, c.Compose); err != nil {
 			return nil, err
 		}
+		boundaryStage = "post_start_inspection"
 		broker, err = inspect(ctx)
 		if err != nil {
 			return nil, err
@@ -470,11 +494,13 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 	// Provisioning and child startup change the observed deployment. Do not
 	// carry a pre-mutation inspection into their later readiness observation.
 	operationProof = nil
+	boundaryStage = "broker_provision"
 	probe, err := deployment.ProvisionAndProbe(ctx, c.Health)
 	if err != nil {
 		return nil, err
 	}
 	session.healthProof = &completedHealthProbe{result: probe, scope: c.Kernel.Scope, endpoint: c.Health.Endpoint, completedAt: time.Now().UTC()}
+	boundaryStage = "protected_start"
 	group, err := prepared.Start(lifetime, c.Roles, c.Deadlines)
 	session.group = group
 	session.cleanupState.recordGroup(group)
@@ -512,6 +538,7 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 		return nil, roleCleanup
 	}
 	for {
+		boundaryStage = "readiness_inspection"
 		broker, err = inspect(ctx)
 		if err != nil {
 			return nil, err
@@ -519,8 +546,10 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 		if broker.State != "running" {
 			return nil, bootstrapError("broker_not_running")
 		}
+		boundaryStage = "readiness_observation"
 		ready, err := observe(ctx)
 		if err == nil {
+			boundaryStage = "readiness_finalize"
 			session.mu.Lock()
 			if lifetime.Err() != nil {
 				session.mu.Unlock()

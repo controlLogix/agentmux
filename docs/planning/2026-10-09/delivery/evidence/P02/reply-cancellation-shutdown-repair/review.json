@@ -1,0 +1,105 @@
+{
+  "scope": "Cache-only reply cancellation repair. Native NATS/real Run fixture uses controlled Docker inspector, not actual engine or native ARM qualification.",
+  "candidatePins": {
+    "owner_bridge.go": "dd04086919a2451ef886febd4626d7141aeed60132d0b1289e309fd0d937af6b",
+    "owner_bridge_reply_cancellation_test.go": "17105b60f632597893e9d83141a7760fb66eed2120fcaed6a7e598a5e0695a78",
+    "production.diff": "b07eccde8c654b936f648a7422a0815314a18b873f5edb8f3d4dc29f7b8bfdaf"
+  },
+  "results": {
+    "deterministicInstrumented": {
+      "direct": {
+        "exit": 0,
+        "seconds": 12.470492394990288
+      },
+      "topLevelPass": 2,
+      "namedPass": 13,
+      "passedNames": [
+        "TestOwnerBridgeRunPendingTransitionsToActualReuse",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/cancel_late_eof",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/cancel_late_closed",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/preexisting_eof",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/publish_failure",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/authority_before",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/authority_after",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/deadline",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/disconnected_flush",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/unknown_flush",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/only_request_canceled",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/startup_failure",
+        "TestOwnerBridgeReplyCancellationKeepsFailures"
+      ],
+      "failures": [],
+      "skips": [],
+      "facts": [
+        "owner_bridge_pending_test.go:302: reply facts: publish_ok=true flush_canceled=true request_canceled=true authority_error=false"
+      ]
+    },
+    "uninstrumentedAffected": {
+      "direct": {
+        "exit": 0,
+        "seconds": 14.715892852997058
+      },
+      "topLevelPass": 6,
+      "namedPass": 19,
+      "passedNames": [
+        "TestOwnerBridgeNonceCancellationBeforeCompletionKeepsReply",
+        "TestOwnerBridgeRunPendingTransitionsToActualReuse",
+        "TestOwnerBridgeProbePermissionFailureStaysHard",
+        "TestOwnerBridgeProbeCanceledContextHasNoHint",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/cancel_late_eof",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/cancel_late_closed",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/preexisting_eof",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/publish_failure",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/authority_before",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/authority_after",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/deadline",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/disconnected_flush",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/unknown_flush",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/only_request_canceled",
+        "TestOwnerBridgeReplyCancellationKeepsFailures/startup_failure",
+        "TestOwnerBridgeReplyCancellationKeepsFailures",
+        "TestOwnerBridgeDefaultRequestPermissionFailureStaysHard/publish",
+        "TestOwnerBridgeDefaultRequestPermissionFailureStaysHard/reply_subscribe",
+        "TestOwnerBridgeDefaultRequestPermissionFailureStaysHard"
+      ],
+      "failures": [],
+      "skips": [],
+      "facts": []
+    },
+    "vet": {
+      "exit": 0,
+      "seconds": 1.5225112040061504
+    }
+  },
+  "sourceStableDuringAffected": true,
+  "sharedDriftFromOriginalControl": [],
+  "originalFailureReviewSHA256": "1819bc3a09bd692d135a142fae81f71b14c5bbd3b9fd1d9f6fbfd17edee5e432",
+  "intermediateFailedRepairReviewSHA256": "0922a7dffcfec3b147aece6ea0b222221613cc216a7c6f4d29fc96f831c3a179",
+  "policy": "Original lifetime cancellation is normal shutdown, never delivery success. Pre-Publish recorded errors and actual Publish errors remain hard. Trusted authority before/after Flush wins. Only context.Canceled under original canceled lifetime may ignore later non-authority close notices; other Flush/deadline/startup and deferred actual cleanup failures remain hard.",
+  "artifacts": {
+    "affected-events.jsonl": "b71f6d82bd89152d165e2cdefe5ebf5de8c23930507edfad733d30a1c0297149",
+    "affected-exit.json": "52a172f7eeb15d76327f856eb2e388a0259f326f311f1c982d6af7c7ae9d00a9",
+    "affected-invocation.json": "5e08954ee1384896e4bd2bf37ebfb649d79f4971f056eaababb40195a58fec22",
+    "affected-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "agentmux-reply-stable-affected.py": "98f838c2138043bd16c0923c1750eae4a964ceacecce872a251b5fdd3c8511f4",
+    "agentmux-reply-stable-prepare.py": "072b1ef8d1b150b82d69866bb085bc539ef565ee554b74cb23155d0e42d4723e",
+    "agentmux-reply-stable-run.py": "bd25e224378205d1a06672c6e75ef8af00d5904e8f3547a3e80d73b38c6078ad",
+    "candidate-pins.json": "05b22301ac50f1e52877cde9fec87eb1cc0eba93d729d4970d1939f8e6e4028a",
+    "focused-events.jsonl": "bf1e89a554c3c91307e76916950a399abe298362069fd9dcaeaf932dc2dfc4b2",
+    "focused-exit.json": "043cb1f19babbefc31fb7de77f7aa9d39822434044cf6eed19cb841f0a519c9e",
+    "focused-invocation.json": "d8f6373572b9be3a4736524c27e038c4ff95121934c569bfac4a6f46a1baf2fd",
+    "focused-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "owner_bridge.go": "dd04086919a2451ef886febd4626d7141aeed60132d0b1289e309fd0d937af6b",
+    "owner_bridge_reply_cancellation_test.go": "17105b60f632597893e9d83141a7760fb66eed2120fcaed6a7e598a5e0695a78",
+    "production.diff": "b07eccde8c654b936f648a7422a0815314a18b873f5edb8f3d4dc29f7b8bfdaf",
+    "uninstrumented-manifest.json": "5d41a71e5d110cf953829290ef4d2a6ac090031a78498df372ee4b7618b19849",
+    "vet-exit.json": "22657e9663d84250cc268a9c5d7374d8131ce2012bb3ef7700b034f1a0622d2b",
+    "vet-stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vet-stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "limits": [
+    "No shared source changes, full suite, actual Docker or phase acceptance.",
+    "Original ARM failure lacked branch data; deterministic boundary does not prove its exact causal path.",
+    "Same original deadlines; Go race instrumentation exit delay only set to zero as existing prepared controls."
+  ]
+}

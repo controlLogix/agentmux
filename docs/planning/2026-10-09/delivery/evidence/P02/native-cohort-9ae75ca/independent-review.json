@@ -1,0 +1,2472 @@
+{
+  "scope": "Independent downloaded existing native/P01 CI evidence, no new execution",
+  "sourceCommit": "9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+  "nativeRun": {
+    "id": 38652680172,
+    "status": "completed",
+    "conclusion": "failure",
+    "url": "https://github.com/controlLogix/agentmux/actions/runs/38652680172"
+  },
+  "nativeArtifacts": [
+    {
+      "artifact": "p02-darwin-install-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+      "resultSHA256": "b3f5ca5670b81871471cc543efd0bb5d05d1bb7fe06f13e5f94c13275f362145",
+      "host": "macOS-15.7.9-arm64-arm-64bit-Mach-O",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "darwin-protected-install",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02-install/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-tags",
+            "agentmux_darwin_install",
+            "-race",
+            "-count=1",
+            "-json",
+            "-timeout=180s",
+            "-run",
+            "^TestDarwin(ProtectedInstalledExecutable|ProtectedPathPolicy|MachODependencyPolicy|ProductRemainsFailClosed)$",
+            "./runtime"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 11,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "bf91c2a8b8c771440e5ed6c0c38939cfe5a9fdd30dffc01b70d5eeecf8feeb95",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "darwin-installed-host-lifecycle",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02-install/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-tags",
+            "agentmux_darwin_install",
+            "-race",
+            "-count=1",
+            "-json",
+            "-timeout=180s",
+            "-run",
+            "^TestDarwinInstalledHost(SurvivesFrontendExit|ReplacementRefusal|OwnedStopAndWait)$",
+            "./runtime"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 7,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "f525cbc65a711fb2667831c5d0cd579befc86fa7abe6c0040dbd2e97ce9f454d",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        }
+      ],
+      "sourceCommit": "9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+      "sourceHashCount": 275,
+      "executedSourceHashCount": 272,
+      "executedManifestMatchesSource": true,
+      "recordedSourceStable": true,
+      "recordedExecutedStable": true,
+      "phaseAccepted": false,
+      "runtimeQualification": "unqualified",
+      "nativeProtectedBootQualified": false,
+      "composeQualified": false
+    },
+    {
+      "artifact": "p02-darwin-install-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+      "resultSHA256": "ba0cc19a5b4cbc58cb88d9526a436073a3e51b164db8c56a42838cfe5f5c3512",
+      "host": "macOS-15.7.9-x86_64-i386-64bit-Mach-O",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "darwin-protected-install",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02-install/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-tags",
+            "agentmux_darwin_install",
+            "-race",
+            "-count=1",
+            "-json",
+            "-timeout=180s",
+            "-run",
+            "^TestDarwin(ProtectedInstalledExecutable|ProtectedPathPolicy|MachODependencyPolicy|ProductRemainsFailClosed)$",
+            "./runtime"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 11,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "54a20b3d1b989547a10eadbc8cc79d821555a5537f8ebedfc4b542bcd21bb347",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "darwin-installed-host-lifecycle",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02-install/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-tags",
+            "agentmux_darwin_install",
+            "-race",
+            "-count=1",
+            "-json",
+            "-timeout=180s",
+            "-run",
+            "^TestDarwinInstalledHost(SurvivesFrontendExit|ReplacementRefusal|OwnedStopAndWait)$",
+            "./runtime"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 7,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "e20062374b9931d5bc4ab5599086b16ce41b22c05eac49a8677e8bbd7f7e95e0",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        }
+      ],
+      "sourceCommit": "9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+      "sourceHashCount": 275,
+      "executedSourceHashCount": 272,
+      "executedManifestMatchesSource": true,
+      "recordedSourceStable": true,
+      "recordedExecutedStable": true,
+      "phaseAccepted": false,
+      "runtimeQualification": "unqualified",
+      "nativeProtectedBootQualified": false,
+      "composeQualified": false
+    },
+    {
+      "artifact": "p02-darwin-research-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+      "resultSHA256": "cfd658d62cc32f1a319074b53dcdf363b072aba8a6c1061804ad0c86c5054d3e",
+      "host": "macOS-15.7.9-arm64-arm-64bit-Mach-O",
+      "status": "failed",
+      "checks": [
+        {
+          "name": "darwin-descriptor-research",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02-research/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./runtime",
+            "-run",
+            "^TestDarwinUnlinkedDescriptorResearch$"
+          ],
+          "exitCode": 1,
+          "passedNamedEvents": 0,
+          "failedNames": [
+            "TestDarwinUnlinkedDescriptorResearch"
+          ],
+          "skippedNames": [],
+          "rawSHA256": "8d24c54af6e0d1274861274f8493ca281a1e0d2607a7542f21bb2abfea3333f0",
+          "stderrSHA256": "5cde1ee80afa94123874c550600b580f5e996888674e679c77b96dae1851db4e",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "darwin-fail-closed-control",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02-research/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./runtime",
+            "-run",
+            "^TestDarwinProductRemainsFailClosed$"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 1,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "8704209d64cd15072ee8c561ff404b9e1a33cc2f8dbe5ca7030465fe9e0f3308",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        }
+      ],
+      "sourceCommit": "9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+      "sourceHashCount": 275,
+      "executedSourceHashCount": 272,
+      "executedManifestMatchesSource": true,
+      "recordedSourceStable": true,
+      "recordedExecutedStable": true,
+      "phaseAccepted": false,
+      "runtimeQualification": "unqualified",
+      "nativeProtectedBootQualified": false,
+      "composeQualified": null
+    },
+    {
+      "artifact": "p02-darwin-research-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+      "resultSHA256": "4ac7a86eef6b92fa0c9278e6814c2becd5403c7918261cff72d48a1fdf1657b5",
+      "host": "macOS-15.7.9-x86_64-i386-64bit-Mach-O",
+      "status": "failed",
+      "checks": [
+        {
+          "name": "darwin-descriptor-research",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02-research/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./runtime",
+            "-run",
+            "^TestDarwinUnlinkedDescriptorResearch$"
+          ],
+          "exitCode": 1,
+          "passedNamedEvents": 0,
+          "failedNames": [
+            "TestDarwinUnlinkedDescriptorResearch"
+          ],
+          "skippedNames": [],
+          "rawSHA256": "70590974a5053ac1b7fd46853f19b1ad11f1bca2bfaf659aa011d571a4ca326e",
+          "stderrSHA256": "02c56703df5b71a606db04455b6f515a6218cd326fd84262d6f49ecfb008f9fe",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "darwin-fail-closed-control",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02-research/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./runtime",
+            "-run",
+            "^TestDarwinProductRemainsFailClosed$"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 1,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "d2fb6314dbd1742db2fa90cba76e44aec27bf6bae0d6c563ffa9df263509c25d",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        }
+      ],
+      "sourceCommit": "9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+      "sourceHashCount": 275,
+      "executedSourceHashCount": 272,
+      "executedManifestMatchesSource": true,
+      "recordedSourceStable": true,
+      "recordedExecutedStable": true,
+      "phaseAccepted": false,
+      "runtimeQualification": "unqualified",
+      "nativeProtectedBootQualified": false,
+      "composeQualified": null
+    },
+    {
+      "artifact": "p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+      "resultSHA256": "e24f0482dd17e0ca03362027df92ba9fc4a60550dbbccdeb19c5689deaa46090",
+      "host": "macOS-15.7.9-arm64-arm-64bit-Mach-O",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "assembly",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./kernel/assembly"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 65,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "c1c1512cb65a3088de4cfa4d60899bc70439b95d83413c9888c3ea8846470c98",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "accounts",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./kernel/communication"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 53,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "4026a6defe80569586243064b270780e78a2395da5266cc1bbcfd57d12706888",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "deployment",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./deployment"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 210,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "4954b6442c411d0ee9f167fe21a17603dcbe0e88135670558d2a57524867e26e",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "protocol",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./kernel/protocol"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 84,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "f234ba43b7dfc0f69bbcc2452317f7812273f2b7347889ce008d32b1cb53f188",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "boot",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./kernel/boot"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 2,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "47a1ed0f45b6d9eb3383bbe6d68bd6c432a9f91a8bd2fbd53d83b3cfbfc1dcd0",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "launcher",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./launcher"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 1074,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "9f460d902e227ac211eaad0f0e231e0d861af84e17ef3366dd89d14b3e2e7025",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "runtime-command",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./cmd/agentmux-runtime"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 12,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "13e5083435989eaf0141231124df62178abfc1c7a6becfec673ff656e3c26475",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "local-tls",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./localtls"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 30,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "b0ad9d6b4d685cbf3c170e5b84ac1c1191ee26a5fdd5709dd6a55732d1a3b80c",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "private-files",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./privatefs"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 13,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "ad1a23e3e0579c507f23bb78a92ba7f57850e65148d7cc0ace6b3e99bfdc0fe9",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "runtime",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./runtime",
+            "-run",
+            "^TestDarwinProductRemainsFailClosed$"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 1,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "783f6d93b15cb9f20ff6c7bd12d89786ede7e299b7072dcf33f1eb7b5668298e",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "darwin-cgo0-private-refusal",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./privatefs",
+            "-run",
+            "^TestDarwinWithoutCGORefusesDescriptorAccessQualification$"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 1,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "d6c972abc1347166111b78686cdd7450f132340a13c7371e68e5828e57a6c7db",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "darwin-cgo0-deployment-refusal",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./deployment",
+            "-run",
+            "^TestDarwinTeamPrivateCredentialWithoutCGORefuses$"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 1,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "b13642ca52e9b8de78ac15e50755ea3153d923d61cb7f1c9cd5aad97a008be24",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        }
+      ],
+      "sourceCommit": "9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+      "sourceHashCount": 275,
+      "executedSourceHashCount": 272,
+      "executedManifestMatchesSource": true,
+      "recordedSourceStable": true,
+      "recordedExecutedStable": true,
+      "phaseAccepted": false,
+      "runtimeQualification": "unqualified",
+      "nativeProtectedBootQualified": false,
+      "composeQualified": null
+    },
+    {
+      "artifact": "p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+      "resultSHA256": "d87148dd849f7315ba6dc12d4a6cdbc63d225ba511b72d6963851ed7bb551cdb",
+      "host": "macOS-15.7.9-x86_64-i386-64bit-Mach-O",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "assembly",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./kernel/assembly"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 65,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "cbe25615fda639da37a89088ab2a895cc1ef6311014914979a07c223805b9179",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "accounts",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./kernel/communication"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 53,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "baa4371bc5aaddddb4416e25719044c3adcce6da9c2a455ffc494cdf4ed290d0",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "deployment",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./deployment"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 210,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "29b586af880b32a9b1584a721d001fb4c8eabd49fdd00200eff02ffa30bac99c",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "protocol",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./kernel/protocol"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 84,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "e94267d0cb3f36cb5d3447a7dc19fe2c2815e93783ef3af33bb364149e2da21a",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "boot",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./kernel/boot"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 2,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "a09577323c8853ee8ba58863715da532e7b1389e47702c589e6ecf6641bb0b5b",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "launcher",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./launcher"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 1074,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "322342e43a404df76978104255bb24bbe3032b84fc0649d00e05a4df97b909aa",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "runtime-command",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./cmd/agentmux-runtime"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 12,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "45dd0caede6e9a681276670156a65ae79bf6495062d131da0e7603d4deb32135",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "local-tls",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./localtls"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 30,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "9b15c7076d5c9e09fe5a2771dde670f8f0f99f7282c01e060c6f8a18aefbb91d",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "private-files",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./privatefs"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 13,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "85d6c7c355fa7801132cd3fe120199a8e8c491d7907106ae77f78966cfcc59c5",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "runtime",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./runtime",
+            "-run",
+            "^TestDarwinProductRemainsFailClosed$"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 1,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "5b4f81944fb497e1f38203e0258232de2b4b8cbf8fea539dba6c53a0747b61ed",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "darwin-cgo0-private-refusal",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./privatefs",
+            "-run",
+            "^TestDarwinWithoutCGORefusesDescriptorAccessQualification$"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 1,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "8ed5bc997816e5b06c4284868352da6829b2dedfd4c1ca034c41992083e94394",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "darwin-cgo0-deployment-refusal",
+          "command": [
+            "/Users/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./deployment",
+            "-run",
+            "^TestDarwinTeamPrivateCredentialWithoutCGORefuses$"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 1,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "419bc1d503427061175347a51fd839121eafe74172fbf7e811351324b44a07af",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        }
+      ],
+      "sourceCommit": "9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+      "sourceHashCount": 275,
+      "executedSourceHashCount": 272,
+      "executedManifestMatchesSource": true,
+      "recordedSourceStable": true,
+      "recordedExecutedStable": true,
+      "phaseAccepted": false,
+      "runtimeQualification": "unqualified",
+      "nativeProtectedBootQualified": false,
+      "composeQualified": null
+    },
+    {
+      "artifact": "p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+      "resultSHA256": "c44c13b1c654f372affa70c5d73e1b881849d85f2a307b78b81a0939bb095dc5",
+      "host": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "assembly",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./kernel/assembly"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 65,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "09d359efa5f968e3e1877cdf2eae3ccd33e247975247d5d518f359ebf47ed918",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "accounts",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./kernel/communication"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 53,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "4040e880e08b347936b6f1c7a2bc9bec20e12c5a4a373ae4146faaae893f519d",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "deployment",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./deployment"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 204,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "e10647a61fac81b22a7ffed34afd6069c88688fc55686a91e8ed9e84b9bbc358",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "protocol",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./kernel/protocol"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 84,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "2509012363be78c3592057899efa9c33f3f064562126ed9db0f3423ea2bdae8f",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "boot",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./kernel/boot"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 5,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "c7799ad18c91128470ceb5c05b9536351db08271ed3c7a276852263fd06f66ce",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "launcher",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./launcher"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 1134,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "e23740c0e64748d1695d4756a628a99374899a030bfde07d4503763ed012e8d3",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "runtime-command",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./cmd/agentmux-runtime"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 21,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "2d4190ad0be08d2e44710615c842132a00a1eaa11dc2849d8fa90d3ea53a9314",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "local-tls",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./localtls"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 30,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "1030992d5ebbd0095089f7a323ada9ac7960ff2994aa003f510ae072f193303b",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "private-files",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./privatefs"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 2,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "d84ffc408c920f7df58156e1fd1e8c595df0edd9cda578dd505830374fb1fc4e",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "runtime",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./runtime"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 125,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "f4be0eb3cbf1c59a58a1ab128753f19b7050d7b4da34c7885ac607316fca8986",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [
+            "TestBootstrapReceiptSurvivesActualFrontendExit"
+          ],
+          "rawNamedLifecycleComplete": true
+        }
+      ],
+      "sourceCommit": "9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+      "sourceHashCount": 275,
+      "executedSourceHashCount": 272,
+      "executedManifestMatchesSource": true,
+      "recordedSourceStable": true,
+      "recordedExecutedStable": true,
+      "phaseAccepted": false,
+      "runtimeQualification": "foundation-tests-only",
+      "nativeProtectedBootQualified": false,
+      "composeQualified": null
+    },
+    {
+      "artifact": "p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+      "resultSHA256": "d5865ff1b2967a20dffd43a8bd6b0cbbeb0b0306e7a6c7ef9f582c377f87777b",
+      "host": "Linux-6.17.0-1022-azure-aarch64-with-glibc2.39",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "assembly",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./kernel/assembly"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 65,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "3daface9853830ab8d5257c322229d9e2d3ab617adcbb35f25ee3fe911c81dbb",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "accounts",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./kernel/communication"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 53,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "74707fb91dda729d1ac7954c3b2c85b3b22531026e6a6320826e02d14ce337d7",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "deployment",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./deployment"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 204,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "9aa273e19df8c16a7349c73a8f68232bbeed9cb089b4f6b7f5e5f1c2f947fa99",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "protocol",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./kernel/protocol"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 84,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "877135bdfee6b428082a54dc3b2bda5601c0ade5eb9dfdc4d8f803de846ad723",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "boot",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./kernel/boot"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 5,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "c8f331c5110612cb5fbbd956f69d14c9d3cf877904c6dd8832fac80af1301ff7",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "launcher",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./launcher"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 1134,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "4bcb10a0d02ae383d41210b33dc9ca7def420f6aea5e29cf2e6864edb29813a5",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "runtime-command",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./cmd/agentmux-runtime"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 21,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "0285819ddd91a7742525eb736a26c8cc05cfa8d166ce2a76c7ce386f3f0de500",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "local-tls",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./localtls"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 30,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "a390fd957e6a8ccd05a601be88b8c41bd2a1fc78c8a2d38fd7283111f7e005c8",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "private-files",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./privatefs"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 2,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "cd7237976eb428ea75475d0dfaeab69cb2af83fbe1b5d943463f70f77de6e43b",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [],
+          "rawNamedLifecycleComplete": true
+        },
+        {
+          "name": "runtime",
+          "command": [
+            "/home/runner/work/_temp/agentmux-p02/go/bin/go",
+            "test",
+            "-mod=readonly",
+            "-count=1",
+            "-timeout=5m",
+            "-json",
+            "./runtime"
+          ],
+          "exitCode": 0,
+          "passedNamedEvents": 125,
+          "failedNames": [],
+          "skippedNames": [],
+          "rawSHA256": "e4c2a387aefbadf6ed249fc20ead79a2dc0f3586120acbe1481d4ab069dab799",
+          "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "receiptSurvivalPass": [
+            "TestBootstrapReceiptSurvivesActualFrontendExit"
+          ],
+          "rawNamedLifecycleComplete": true
+        }
+      ],
+      "sourceCommit": "9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+      "sourceHashCount": 275,
+      "executedSourceHashCount": 272,
+      "executedManifestMatchesSource": true,
+      "recordedSourceStable": true,
+      "recordedExecutedStable": true,
+      "phaseAccepted": false,
+      "runtimeQualification": "foundation-tests-only",
+      "nativeProtectedBootQualified": false,
+      "composeQualified": null
+    }
+  ],
+  "currentSourceComparison": {
+    "uniqueRecordedSourceCount": 275,
+    "mismatches": []
+  },
+  "retainedQualificationRun": {
+    "id": 38652680238,
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/controlLogix/agentmux/actions/runs/38652680238",
+    "artifacts": [
+      {
+        "artifact": "p01-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+        "ciResultSHA256": "9e4c24ae5e1e819cc3971e5456b66e3be705acac6ca02a8e7ff30beb47ba2eb0",
+        "sourceCommit": "9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+        "directExit": 0,
+        "recordedSourceStable": true,
+        "checkCount": 23,
+        "checks": [
+          {
+            "name": "locked-python-dependencies",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+              "-m",
+              "pip",
+              "install",
+              "-r",
+              "/Users/runner/work/agentmux/agentmux/sdk/python/requirements.lock",
+              "-r",
+              "/Users/runner/work/agentmux/agentmux/hub/requirements.lock"
+            ],
+            "exitCode": 0,
+            "seconds": 4.344
+          },
+          {
+            "name": "contracts-dependencies",
+            "command": [
+              "npm",
+              "ci",
+              "--ignore-scripts",
+              "--no-audit",
+              "--no-fund"
+            ],
+            "exitCode": 0,
+            "seconds": 1.594
+          },
+          {
+            "name": "contracts-build",
+            "command": [
+              "npm",
+              "run",
+              "build"
+            ],
+            "exitCode": 0,
+            "seconds": 0.888
+          },
+          {
+            "name": "storage-dependencies",
+            "command": [
+              "npm",
+              "ci",
+              "--ignore-scripts",
+              "--no-audit",
+              "--no-fund"
+            ],
+            "exitCode": 0,
+            "seconds": 2.87
+          },
+          {
+            "name": "storage-build",
+            "command": [
+              "npm",
+              "run",
+              "build"
+            ],
+            "exitCode": 0,
+            "seconds": 1.247
+          },
+          {
+            "name": "python-sdk-units",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+              "-m",
+              "unittest",
+              "discover",
+              "-s",
+              "sdk/python/tests",
+              "-v"
+            ],
+            "exitCode": 0,
+            "seconds": 1.73
+          },
+          {
+            "name": "typescript-sdk-units",
+            "command": [
+              "npm",
+              "test"
+            ],
+            "exitCode": 0,
+            "seconds": 0.875
+          },
+          {
+            "name": "cross-language-contracts",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+              "tests/contracts/run.py",
+              "--evidence",
+              "/Users/runner/work/_temp/agentmux-evidence/contracts.json"
+            ],
+            "exitCode": 0,
+            "seconds": 33.919
+          },
+          {
+            "name": "conformance-evidence-admission",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+              "docs/planning/2026-10-09/delivery/check_conformance_evidence.py",
+              "--report",
+              "/Users/runner/work/_temp/agentmux-evidence/contracts.json",
+              "--candidate",
+              "9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+              "--environment",
+              "macos",
+              "--evidence",
+              "/Users/runner/work/_temp/agentmux-evidence/conformance-admission.json"
+            ],
+            "exitCode": 0,
+            "seconds": 0.247
+          },
+          {
+            "name": "conformance-evidence-negative-checks",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+              "docs/planning/2026-10-09/delivery/test_conformance_evidence.py",
+              "--evidence",
+              "/Users/runner/work/_temp/agentmux-evidence/conformance-admission-negative.json"
+            ],
+            "exitCode": 0,
+            "seconds": 1.291
+          },
+          {
+            "name": "negative-contract-fixture",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+              "tests/contracts/ci.py",
+              "--negative-fixture",
+              "--evidence",
+              "/Users/runner/work/_temp/agentmux-evidence"
+            ],
+            "exitCode": 0,
+            "seconds": 0.934
+          },
+          {
+            "name": "storage",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+              "tests/storage/run.py"
+            ],
+            "exitCode": 0,
+            "seconds": 8.147
+          },
+          {
+            "name": "leaf",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+              "tests/leaf/run.py"
+            ],
+            "exitCode": 0,
+            "seconds": 3.301
+          },
+          {
+            "name": "leaf/signed",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+              "tests/leaf/signed_run.py"
+            ],
+            "exitCode": 0,
+            "seconds": 11.573
+          },
+          {
+            "name": "original-hub-full-profile",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+              "-m",
+              "hub.tests.run_local",
+              "--profile",
+              "full"
+            ],
+            "exitCode": 0,
+            "seconds": 82.111
+          },
+          {
+            "name": "original-hub-evidence",
+            "exitCode": 0
+          },
+          {
+            "name": "maintained-plugin-preservation",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+              "tests/contracts/plugin_preservation.py",
+              "--evidence",
+              "/Users/runner/work/_temp/agentmux-evidence/plugin-preservation.json"
+            ],
+            "exitCode": 0,
+            "seconds": 62.09
+          },
+          {
+            "name": "platform-placement-contract",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+              "-m",
+              "unittest",
+              "discover",
+              "-s",
+              "tests/platform",
+              "-p",
+              "test_*.py",
+              "-v"
+            ],
+            "exitCode": 0,
+            "seconds": 1.49
+          },
+          {
+            "name": "windows-callback-contract",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+              "-m",
+              "unittest",
+              "hub.tests.test_windows_callbacks",
+              "-v"
+            ],
+            "exitCode": 0,
+            "seconds": 0.611
+          },
+          {
+            "name": "tracker-tests",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+              "-m",
+              "unittest",
+              "discover",
+              "-s",
+              "docs/planning/2026-10-09/delivery",
+              "-p",
+              "test_track.py",
+              "-v"
+            ],
+            "exitCode": 0,
+            "seconds": 0.44
+          },
+          {
+            "name": "regression-preservation",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+              "docs/planning/2026-10-09/delivery/check_regressions.py",
+              "--self-test"
+            ],
+            "exitCode": 0,
+            "seconds": 0.187
+          },
+          {
+            "name": "component-preservation",
+            "command": [
+              "/Library/Frameworks/Python.framework/Versions/3.14/bin/python",
+              "docs/planning/2026-10-09/verify-component-coverage.py"
+            ],
+            "exitCode": 0,
+            "seconds": 0.444
+          },
+          {
+            "name": "pattern-review",
+            "command": [
+              "node",
+              ".bytedesk/design-patterns/check.mjs",
+              "check",
+              "--root",
+              "."
+            ],
+            "exitCode": 0,
+            "seconds": 2.595
+          }
+        ]
+      },
+      {
+        "artifact": "p01-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+        "ciResultSHA256": "1d988c8b1eb8dbc48f148129c2d96649fe1fe03ff37db49cd9a4e82d7da335a4",
+        "sourceCommit": "9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+        "directExit": 0,
+        "recordedSourceStable": true,
+        "checkCount": 23,
+        "checks": [
+          {
+            "name": "locked-python-dependencies",
+            "command": [
+              "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+              "-m",
+              "pip",
+              "install",
+              "-r",
+              "/home/runner/work/agentmux/agentmux/sdk/python/requirements.lock",
+              "-r",
+              "/home/runner/work/agentmux/agentmux/hub/requirements.lock"
+            ],
+            "exitCode": 0,
+            "seconds": 4.773
+          },
+          {
+            "name": "contracts-dependencies",
+            "command": [
+              "npm",
+              "ci",
+              "--ignore-scripts",
+              "--no-audit",
+              "--no-fund"
+            ],
+            "exitCode": 0,
+            "seconds": 0.715
+          },
+          {
+            "name": "contracts-build",
+            "command": [
+              "npm",
+              "run",
+              "build"
+            ],
+            "exitCode": 0,
+            "seconds": 0.366
+          },
+          {
+            "name": "storage-dependencies",
+            "command": [
+              "npm",
+              "ci",
+              "--ignore-scripts",
+              "--no-audit",
+              "--no-fund"
+            ],
+            "exitCode": 0,
+            "seconds": 0.467
+          },
+          {
+            "name": "storage-build",
+            "command": [
+              "npm",
+              "run",
+              "build"
+            ],
+            "exitCode": 0,
+            "seconds": 0.415
+          },
+          {
+            "name": "python-sdk-units",
+            "command": [
+              "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+              "-m",
+              "unittest",
+              "discover",
+              "-s",
+              "sdk/python/tests",
+              "-v"
+            ],
+            "exitCode": 0,
+            "seconds": 0.565
+          },
+          {
+            "name": "typescript-sdk-units",
+            "command": [
+              "npm",
+              "test"
+            ],
+            "exitCode": 0,
+            "seconds": 0.517
+          },
+          {
+            "name": "cross-language-contracts",
+            "command": [
+              "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+              "tests/contracts/run.py",
+              "--evidence",
+              "/home/runner/work/_temp/agentmux-evidence/contracts.json"
+            ],
+            "exitCode": 0,
+            "seconds": 21.817
+          },
+          {
+            "name": "conformance-evidence-admission",
+            "command": [
+              "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+              "docs/planning/2026-10-09/delivery/check_conformance_evidence.py",
+              "--report",
+              "/home/runner/work/_temp/agentmux-evidence/contracts.json",
+              "--candidate",
+              "9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+              "--environment",
+              "linux",
+              "--evidence",
+              "/home/runner/work/_temp/agentmux-evidence/conformance-admission.json"
+            ],
+            "exitCode": 0,
+            "seconds": 0.114
+          },
+          {
+            "name": "conformance-evidence-negative-checks",
+            "command": [
+              "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+              "docs/planning/2026-10-09/delivery/test_conformance_evidence.py",
+              "--evidence",
+              "/home/runner/work/_temp/agentmux-evidence/conformance-admission-negative.json"
+            ],
+            "exitCode": 0,
+            "seconds": 0.464
+          },
+          {
+            "name": "negative-contract-fixture",
+            "command": [
+              "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+              "tests/contracts/ci.py",
+              "--negative-fixture",
+              "--evidence",
+              "/home/runner/work/_temp/agentmux-evidence"
+            ],
+            "exitCode": 0,
+            "seconds": 0.565
+          },
+          {
+            "name": "storage",
+            "command": [
+              "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+              "tests/storage/run.py"
+            ],
+            "exitCode": 0,
+            "seconds": 5.625
+          },
+          {
+            "name": "leaf",
+            "command": [
+              "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+              "tests/leaf/run.py"
+            ],
+            "exitCode": 0,
+            "seconds": 2.619
+          },
+          {
+            "name": "leaf/signed",
+            "command": [
+              "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+              "tests/leaf/signed_run.py"
+            ],
+            "exitCode": 0,
+            "seconds": 7.279
+          },
+          {
+            "name": "original-hub-full-profile",
+            "command": [
+              "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+              "-m",
+              "hub.tests.run_local",
+              "--profile",
+              "full"
+            ],
+            "exitCode": 0,
+            "seconds": 59.353
+          },
+          {
+            "name": "original-hub-evidence",
+            "exitCode": 0
+          },
+          {
+            "name": "maintained-plugin-preservation",
+            "command": [
+              "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+              "tests/contracts/plugin_preservation.py",
+              "--evidence",
+              "/home/runner/work/_temp/agentmux-evidence/plugin-preservation.json"
+            ],
+            "exitCode": 0,
+            "seconds": 6.075
+          },
+          {
+            "name": "platform-placement-contract",
+            "command": [
+              "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+              "-m",
+              "unittest",
+              "discover",
+              "-s",
+              "tests/platform",
+              "-p",
+              "test_*.py",
+              "-v"
+            ],
+            "exitCode": 0,
+            "seconds": 0.314
+          },
+          {
+            "name": "windows-callback-contract",
+            "command": [
+              "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+              "-m",
+              "unittest",
+              "hub.tests.test_windows_callbacks",
+              "-v"
+            ],
+            "exitCode": 0,
+            "seconds": 0.314
+          },
+          {
+            "name": "tracker-tests",
+            "command": [
+              "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+              "-m",
+              "unittest",
+              "discover",
+              "-s",
+              "docs/planning/2026-10-09/delivery",
+              "-p",
+              "test_track.py",
+              "-v"
+            ],
+            "exitCode": 0,
+            "seconds": 0.264
+          },
+          {
+            "name": "regression-preservation",
+            "command": [
+              "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+              "docs/planning/2026-10-09/delivery/check_regressions.py",
+              "--self-test"
+            ],
+            "exitCode": 0,
+            "seconds": 0.114
+          },
+          {
+            "name": "component-preservation",
+            "command": [
+              "/opt/hostedtoolcache/Python/3.14.8/x64/bin/python",
+              "docs/planning/2026-10-09/verify-component-coverage.py"
+            ],
+            "exitCode": 0,
+            "seconds": 0.114
+          },
+          {
+            "name": "pattern-review",
+            "command": [
+              "node",
+              ".bytedesk/design-patterns/check.mjs",
+              "check",
+              "--root",
+              "."
+            ],
+            "exitCode": 0,
+            "seconds": 0.515
+          }
+        ]
+      }
+    ]
+  },
+  "downloadAuth": "Existing Windows ryanhelms account token used only in perprocess GH_TOKEN; no token stored or printed, global account not switched.",
+  "researchObservedFailure": "Both TestDarwinUnlinkedDescriptorResearch fail with permission denied executing /dev/fd/3; actualChildExecuted=false. Separate fail-closed control passes.",
+  "limits": [
+    "Nativefoundation fullmatrix is not installedCLI realCompose/fullphase acceptance.",
+    "NativeLinux receipt-survival namedcase passed onamd64 andarm64; Macfoundation runtime selection differs, do not infer same receiptcase.",
+    "Mac installedhost/protectedimage fixtures pass separately; no four-role NATS/EOF/Compose qualification asserted.",
+    "Research failures preserved as failures; entire native workflow conclusionfailure remains.",
+    "Retained P01 qualification artifacts collected/status checked; no phase advancement decision.",
+    "No CIrerun/cancel/dispatch, compiler/test/engine call, source edit or credential persistence."
+  ],
+  "artifactManifest": {
+    "artifacts/p02-darwin-install-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-installed-host-lifecycle.jsonl": {
+      "sha256": "f525cbc65a711fb2667831c5d0cd579befc86fa7abe6c0040dbd2e97ce9f454d",
+      "bytes": 7518
+    },
+    "artifacts/p02-darwin-install-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-installed-host-lifecycle.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-darwin-install-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-protected-install.jsonl": {
+      "sha256": "bf91c2a8b8c771440e5ed6c0c38939cfe5a9fdd30dffc01b70d5eeecf8feeb95",
+      "bytes": 10518
+    },
+    "artifacts/p02-darwin-install-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-protected-install.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-darwin-install-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/result.json": {
+      "sha256": "b3f5ca5670b81871471cc543efd0bb5d05d1bb7fe06f13e5f94c13275f362145",
+      "bytes": 70875
+    },
+    "artifacts/p02-darwin-install-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-installed-host-lifecycle.jsonl": {
+      "sha256": "e20062374b9931d5bc4ab5599086b16ce41b22c05eac49a8677e8bbd7f7e95e0",
+      "bytes": 7521
+    },
+    "artifacts/p02-darwin-install-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-installed-host-lifecycle.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-darwin-install-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-protected-install.jsonl": {
+      "sha256": "54a20b3d1b989547a10eadbc8cc79d821555a5537f8ebedfc4b542bcd21bb347",
+      "bytes": 10510
+    },
+    "artifacts/p02-darwin-install-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-protected-install.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-darwin-install-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/result.json": {
+      "sha256": "ba0cc19a5b4cbc58cb88d9526a436073a3e51b164db8c56a42838cfe5f5c3512",
+      "bytes": 70878
+    },
+    "artifacts/p02-darwin-research-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-descriptor-research.jsonl": {
+      "sha256": "8d24c54af6e0d1274861274f8493ca281a1e0d2607a7542f21bb2abfea3333f0",
+      "bytes": 2381
+    },
+    "artifacts/p02-darwin-research-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-descriptor-research.stderr.log": {
+      "sha256": "5cde1ee80afa94123874c550600b580f5e996888674e679c77b96dae1851db4e",
+      "bytes": 286
+    },
+    "artifacts/p02-darwin-research-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-fail-closed-control.jsonl": {
+      "sha256": "8704209d64cd15072ee8c561ff404b9e1a33cc2f8dbe5ca7030465fe9e0f3308",
+      "bytes": 1429
+    },
+    "artifacts/p02-darwin-research-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-fail-closed-control.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-darwin-research-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/result.json": {
+      "sha256": "cfd658d62cc32f1a319074b53dcdf363b072aba8a6c1061804ad0c86c5054d3e",
+      "bytes": 68168
+    },
+    "artifacts/p02-darwin-research-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-descriptor-research.jsonl": {
+      "sha256": "70590974a5053ac1b7fd46853f19b1ad11f1bca2bfaf659aa011d571a4ca326e",
+      "bytes": 2380
+    },
+    "artifacts/p02-darwin-research-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-descriptor-research.stderr.log": {
+      "sha256": "02c56703df5b71a606db04455b6f515a6218cd326fd84262d6f49ecfb008f9fe",
+      "bytes": 286
+    },
+    "artifacts/p02-darwin-research-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-fail-closed-control.jsonl": {
+      "sha256": "d2fb6314dbd1742db2fa90cba76e44aec27bf6bae0d6c563ffa9df263509c25d",
+      "bytes": 1430
+    },
+    "artifacts/p02-darwin-research-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-fail-closed-control.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-darwin-research-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/result.json": {
+      "sha256": "4ac7a86eef6b92fa0c9278e6814c2becd5403c7918261cff72d48a1fdf1657b5",
+      "bytes": 68169
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/accounts.jsonl": {
+      "sha256": "4026a6defe80569586243064b270780e78a2395da5266cc1bbcfd57d12706888",
+      "bytes": 64638
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/accounts.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/assembly.jsonl": {
+      "sha256": "c1c1512cb65a3088de4cfa4d60899bc70439b95d83413c9888c3ea8846470c98",
+      "bytes": 68547
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/assembly.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/boot.jsonl": {
+      "sha256": "47a1ed0f45b6d9eb3383bbe6d68bd6c432a9f91a8bd2fbd53d83b3cfbfc1dcd0",
+      "bytes": 2411
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/boot.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-cgo0-deployment-refusal.jsonl": {
+      "sha256": "b13642ca52e9b8de78ac15e50755ea3153d923d61cb7f1c9cd5aad97a008be24",
+      "bytes": 1539
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-cgo0-deployment-refusal.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-cgo0-private-refusal.jsonl": {
+      "sha256": "d6c972abc1347166111b78686cdd7450f132340a13c7371e68e5828e57a6c7db",
+      "bytes": 1580
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-cgo0-private-refusal.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/deployment.jsonl": {
+      "sha256": "4954b6442c411d0ee9f167fe21a17603dcbe0e88135670558d2a57524867e26e",
+      "bytes": 211454
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/deployment.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/launcher.jsonl": {
+      "sha256": "9f460d902e227ac211eaad0f0e231e0d861af84e17ef3366dd89d14b3e2e7025",
+      "bytes": 1043145
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/launcher.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/local-tls.jsonl": {
+      "sha256": "b0ad9d6b4d685cbf3c170e5b84ac1c1191ee26a5fdd5709dd6a55732d1a3b80c",
+      "bytes": 30053
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/local-tls.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/private-files.jsonl": {
+      "sha256": "ad1a23e3e0579c507f23bb78a92ba7f57850e65148d7cc0ace6b3e99bfdc0fe9",
+      "bytes": 13297
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/private-files.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/protocol.jsonl": {
+      "sha256": "f234ba43b7dfc0f69bbcc2452317f7812273f2b7347889ce008d32b1cb53f188",
+      "bytes": 81342
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/protocol.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/result.json": {
+      "sha256": "e24f0482dd17e0ca03362027df92ba9fc4a60550dbbccdeb19c5689deaa46090",
+      "bytes": 84225
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/runtime-command.jsonl": {
+      "sha256": "13e5083435989eaf0141231124df62178abfc1c7a6becfec673ff656e3c26475",
+      "bytes": 12393
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/runtime-command.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/runtime.jsonl": {
+      "sha256": "783f6d93b15cb9f20ff6c7bd12d89786ede7e299b7072dcf33f1eb7b5668298e",
+      "bytes": 1427
+    },
+    "artifacts/p02-foundation-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/runtime.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/accounts.jsonl": {
+      "sha256": "baa4371bc5aaddddb4416e25719044c3adcce6da9c2a455ffc494cdf4ed290d0",
+      "bytes": 64646
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/accounts.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/assembly.jsonl": {
+      "sha256": "cbe25615fda639da37a89088ab2a895cc1ef6311014914979a07c223805b9179",
+      "bytes": 68595
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/assembly.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/boot.jsonl": {
+      "sha256": "a09577323c8853ee8ba58863715da532e7b1389e47702c589e6ecf6641bb0b5b",
+      "bytes": 2415
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/boot.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-cgo0-deployment-refusal.jsonl": {
+      "sha256": "419bc1d503427061175347a51fd839121eafe74172fbf7e811351324b44a07af",
+      "bytes": 1541
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-cgo0-deployment-refusal.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-cgo0-private-refusal.jsonl": {
+      "sha256": "8ed5bc997816e5b06c4284868352da6829b2dedfd4c1ca034c41992083e94394",
+      "bytes": 1580
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/darwin-cgo0-private-refusal.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/deployment.jsonl": {
+      "sha256": "29b586af880b32a9b1584a721d001fb4c8eabd49fdd00200eff02ffa30bac99c",
+      "bytes": 211521
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/deployment.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/launcher.jsonl": {
+      "sha256": "322342e43a404df76978104255bb24bbe3032b84fc0649d00e05a4df97b909aa",
+      "bytes": 1043579
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/launcher.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/local-tls.jsonl": {
+      "sha256": "9b15c7076d5c9e09fe5a2771dde670f8f0f99f7282c01e060c6f8a18aefbb91d",
+      "bytes": 30060
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/local-tls.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/private-files.jsonl": {
+      "sha256": "85d6c7c355fa7801132cd3fe120199a8e8c491d7907106ae77f78966cfcc59c5",
+      "bytes": 13301
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/private-files.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/protocol.jsonl": {
+      "sha256": "e94267d0cb3f36cb5d3447a7dc19fe2c2815e93783ef3af33bb364149e2da21a",
+      "bytes": 81355
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/protocol.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/result.json": {
+      "sha256": "d87148dd849f7315ba6dc12d4a6cdbc63d225ba511b72d6963851ed7bb551cdb",
+      "bytes": 84232
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/runtime-command.jsonl": {
+      "sha256": "45dd0caede6e9a681276670156a65ae79bf6495062d131da0e7603d4deb32135",
+      "bytes": 12396
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/runtime-command.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/runtime.jsonl": {
+      "sha256": "5b4f81944fb497e1f38203e0258232de2b4b8cbf8fea539dba6c53a0747b61ed",
+      "bytes": 1428
+    },
+    "artifacts/p02-foundation-macos-15-intel-9ae75ca1b96da069b3dd91c2cb149723c72215a9/runtime.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/accounts.jsonl": {
+      "sha256": "4040e880e08b347936b6f1c7a2bc9bec20e12c5a4a373ae4146faaae893f519d",
+      "bytes": 65289
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/accounts.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/assembly.jsonl": {
+      "sha256": "09d359efa5f968e3e1877cdf2eae3ccd33e247975247d5d518f359ebf47ed918",
+      "bytes": 69371
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/assembly.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/boot.jsonl": {
+      "sha256": "c7799ad18c91128470ceb5c05b9536351db08271ed3c7a276852263fd06f66ce",
+      "bytes": 6634
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/boot.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/deployment.jsonl": {
+      "sha256": "e10647a61fac81b22a7ffed34afd6069c88688fc55686a91e8ed9e84b9bbc358",
+      "bytes": 207771
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/deployment.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/launcher.jsonl": {
+      "sha256": "e23740c0e64748d1695d4756a628a99374899a030bfde07d4503763ed012e8d3",
+      "bytes": 1115449
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/launcher.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/local-tls.jsonl": {
+      "sha256": "1030992d5ebbd0095089f7a323ada9ac7960ff2994aa003f510ae072f193303b",
+      "bytes": 30424
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/local-tls.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/private-files.jsonl": {
+      "sha256": "d84ffc408c920f7df58156e1fd1e8c595df0edd9cda578dd505830374fb1fc4e",
+      "bytes": 2567
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/private-files.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/protocol.jsonl": {
+      "sha256": "2509012363be78c3592057899efa9c33f3f064562126ed9db0f3423ea2bdae8f",
+      "bytes": 82383
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/protocol.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/result.json": {
+      "sha256": "c44c13b1c654f372affa70c5d73e1b881849d85f2a307b78b81a0939bb095dc5",
+      "bytes": 80808
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/runtime-command.jsonl": {
+      "sha256": "2d4190ad0be08d2e44710615c842132a00a1eaa11dc2849d8fa90d3ea53a9314",
+      "bytes": 21823
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/runtime-command.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/runtime.jsonl": {
+      "sha256": "f4be0eb3cbf1c59a58a1ab128753f19b7050d7b4da34c7885ac607316fca8986",
+      "bytes": 120478
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/runtime.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/accounts.jsonl": {
+      "sha256": "74707fb91dda729d1ac7954c3b2c85b3b22531026e6a6320826e02d14ce337d7",
+      "bytes": 65281
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/accounts.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/assembly.jsonl": {
+      "sha256": "3daface9853830ab8d5257c322229d9e2d3ab617adcbb35f25ee3fe911c81dbb",
+      "bytes": 69356
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/assembly.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/boot.jsonl": {
+      "sha256": "c8f331c5110612cb5fbbd956f69d14c9d3cf877904c6dd8832fac80af1301ff7",
+      "bytes": 6631
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/boot.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/deployment.jsonl": {
+      "sha256": "9aa273e19df8c16a7349c73a8f68232bbeed9cb089b4f6b7f5e5f1c2f947fa99",
+      "bytes": 207767
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/deployment.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/launcher.jsonl": {
+      "sha256": "4bcb10a0d02ae383d41210b33dc9ca7def420f6aea5e29cf2e6864edb29813a5",
+      "bytes": 1115444
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/launcher.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/local-tls.jsonl": {
+      "sha256": "a390fd957e6a8ccd05a601be88b8c41bd2a1fc78c8a2d38fd7283111f7e005c8",
+      "bytes": 30426
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/local-tls.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/private-files.jsonl": {
+      "sha256": "cd7237976eb428ea75475d0dfaeab69cb2af83fbe1b5d943463f70f77de6e43b",
+      "bytes": 2569
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/private-files.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/protocol.jsonl": {
+      "sha256": "877135bdfee6b428082a54dc3b2bda5601c0ade5eb9dfdc4d8f803de846ad723",
+      "bytes": 82366
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/protocol.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/result.json": {
+      "sha256": "d5865ff1b2967a20dffd43a8bd6b0cbbeb0b0306e7a6c7ef9f582c377f87777b",
+      "bytes": 80809
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/runtime-command.jsonl": {
+      "sha256": "0285819ddd91a7742525eb736a26c8cc05cfa8d166ce2a76c7ce386f3f0de500",
+      "bytes": 21817
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/runtime-command.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/runtime.jsonl": {
+      "sha256": "e4c2a387aefbadf6ed249fc20ead79a2dc0f3586120acbe1481d4ab069dab799",
+      "bytes": 120494
+    },
+    "artifacts/p02-foundation-ubuntu-24.04-arm-9ae75ca1b96da069b3dd91c2cb149723c72215a9/runtime.stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "artifacts-final.json": {
+      "sha256": "f355a4e92e4deeff7b69ea58097931737b70e254c9dfb56c5005fde748e5fe65",
+      "bytes": 6219
+    },
+    "artifacts.json": {
+      "sha256": "34299c7b0d718d74617e3faeec812f97f82d2aa6277a35f091367610da69680c",
+      "bytes": 5445
+    },
+    "download-exit.txt": {
+      "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "bytes": 1
+    },
+    "job-116154996664-download.stderr": {
+      "sha256": "5c29e6572f268d0bba5405cbbe183be16dd4c935859c000a8c1881b1b278857e",
+      "bytes": 82
+    },
+    "job-116154996664.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "job-116154996984-download.stderr": {
+      "sha256": "5c29e6572f268d0bba5405cbbe183be16dd4c935859c000a8c1881b1b278857e",
+      "bytes": 82
+    },
+    "job-116154996984.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "job-116154997037-download.stderr": {
+      "sha256": "5c29e6572f268d0bba5405cbbe183be16dd4c935859c000a8c1881b1b278857e",
+      "bytes": 82
+    },
+    "job-116154997037.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "job-116154997050-download.stderr": {
+      "sha256": "5c29e6572f268d0bba5405cbbe183be16dd4c935859c000a8c1881b1b278857e",
+      "bytes": 82
+    },
+    "job-116154997050.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "job-116154997086-download.stderr": {
+      "sha256": "5c29e6572f268d0bba5405cbbe183be16dd4c935859c000a8c1881b1b278857e",
+      "bytes": 82
+    },
+    "job-116154997086.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "job-116154997115-download.stderr": {
+      "sha256": "5c29e6572f268d0bba5405cbbe183be16dd4c935859c000a8c1881b1b278857e",
+      "bytes": 82
+    },
+    "job-116154997115.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "job-116154997161-download.exit": {
+      "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "bytes": 1
+    },
+    "job-116154997161-download.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "job-116154997161.log": {
+      "sha256": "f4bb534d7175819f9d7dc8dcfd4e18ea445052ad7a23ac007f5ccfc3f419c6a2",
+      "bytes": 77387
+    },
+    "job-116154997174-download.stderr": {
+      "sha256": "5c29e6572f268d0bba5405cbbe183be16dd4c935859c000a8c1881b1b278857e",
+      "bytes": 82
+    },
+    "job-116154997174.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "job-116154997299-download.exit": {
+      "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "bytes": 1
+    },
+    "job-116154997299-download.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "job-116154997299.log": {
+      "sha256": "d927a806ba7d6523a7197db598b70c9f5c0ab293de2013ea81bc4ae48850c710",
+      "bytes": 128456
+    },
+    "job-116154997516-download.exit": {
+      "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+      "bytes": 1
+    },
+    "job-116154997516-download.stderr": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "job-116154997516.log": {
+      "sha256": "71c4f667f909fb38294c5cef3a890fb988fc1f9103e7c32d8692e76c198b11a2",
+      "bytes": 132592
+    },
+    "qualification-artifacts/p01-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/ci-result.json": {
+      "sha256": "9e4c24ae5e1e819cc3971e5456b66e3be705acac6ca02a8e7ff30beb47ba2eb0",
+      "bytes": 40363
+    },
+    "qualification-artifacts/p01-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/conformance-admission-negative.json": {
+      "sha256": "1b572fe8be90c9a267359acf14242cc80ddc0e50ce1b9b93a3e591d3b30aaa73",
+      "bytes": 1319
+    },
+    "qualification-artifacts/p01-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/conformance-admission.json": {
+      "sha256": "5503447efdfa8c0120c4b0e773660dc6064500678eda0ef7bb916dd32b73bd33",
+      "bytes": 1192
+    },
+    "qualification-artifacts/p01-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/contracts.json": {
+      "sha256": "a06db3b96aed4af592bd2ba5571d99806e339f954f7abd48bca783a93ecacfdd",
+      "bytes": 453662
+    },
+    "qualification-artifacts/p01-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/hub-full-result.json": {
+      "sha256": "a7adcdbcfed75314083e12456a7ade111bd34ffc91bb1f5c810a7853e723160d",
+      "bytes": 6170
+    },
+    "qualification-artifacts/p01-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/leaf-result.json": {
+      "sha256": "0ae3ae68117891a8197b367447db9a6fd9e728d411f01ec22a3e68a6df5b8296",
+      "bytes": 3178
+    },
+    "qualification-artifacts/p01-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/negative-fixture.json": {
+      "sha256": "c57d5db203daa15a2c7acd7b245b8fd97b44e6a61f50644d550265daf6c8f7b0",
+      "bytes": 32604
+    },
+    "qualification-artifacts/p01-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/plugin-preservation.json": {
+      "sha256": "d09f7ce69fd61798bf199514ea569026d3864a5d948814b9db417a7b77e36531",
+      "bytes": 15813
+    },
+    "qualification-artifacts/p01-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/plugin-preservation.log": {
+      "sha256": "4ea1fa1b5b06404e32605a8517665f0225fc68325cc76802035dc38aa535ea51",
+      "bytes": 5299
+    },
+    "qualification-artifacts/p01-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/signed-leaf-result.json": {
+      "sha256": "f8edbb92b4c247de89badca697141f1eddd309b021920254fb57ed20daa33542",
+      "bytes": 16548
+    },
+    "qualification-artifacts/p01-macos-15-9ae75ca1b96da069b3dd91c2cb149723c72215a9/storage-result.json": {
+      "sha256": "fe8993282d7787b734e6c43aeb07bd3efd9c9ff3502471afa3a94dee2d21e713",
+      "bytes": 8544
+    },
+    "qualification-artifacts/p01-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/ci-result.json": {
+      "sha256": "1d988c8b1eb8dbc48f148129c2d96649fe1fe03ff37db49cd9a4e82d7da335a4",
+      "bytes": 40174
+    },
+    "qualification-artifacts/p01-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/conformance-admission-negative.json": {
+      "sha256": "5a41db07e5ea88f4f032976019b8a458cd4512b7930e797a97731eece0d71eab",
+      "bytes": 1306
+    },
+    "qualification-artifacts/p01-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/conformance-admission.json": {
+      "sha256": "2d1cebeff036b91719d87f6f5ec094b73cc08c6567aab311eacd605053eeac14",
+      "bytes": 1177
+    },
+    "qualification-artifacts/p01-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/contracts.json": {
+      "sha256": "08755e25fe89ba3cea7e01b54806ac1047aa0cf757f8aaf6d9230b9f2a4e94e1",
+      "bytes": 453628
+    },
+    "qualification-artifacts/p01-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/hub-full-result.json": {
+      "sha256": "afe04763132431855a3b75acdaff839b4c1895459a302c3eb84b080d02025f20",
+      "bytes": 6127
+    },
+    "qualification-artifacts/p01-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/leaf-result.json": {
+      "sha256": "ba034d895a7cd87a3bc268ebfe0d7b421c1df2c6491a68295de69120d3d5068a",
+      "bytes": 3187
+    },
+    "qualification-artifacts/p01-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/negative-fixture.json": {
+      "sha256": "c57d5db203daa15a2c7acd7b245b8fd97b44e6a61f50644d550265daf6c8f7b0",
+      "bytes": 32604
+    },
+    "qualification-artifacts/p01-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/plugin-preservation.json": {
+      "sha256": "8ad399c0580f0279a7235cf9dc63bf154a5f1dc31bcb936fdf8925ab0879394b",
+      "bytes": 15823
+    },
+    "qualification-artifacts/p01-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/plugin-preservation.log": {
+      "sha256": "0551c1c21af6445252e556e598b25f840f8ec047cb5b9775cd412130c4dd899b",
+      "bytes": 5297
+    },
+    "qualification-artifacts/p01-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/signed-leaf-result.json": {
+      "sha256": "e7defb891e988e75ce15d8f8ac75674dcd4fdc76d35c528ebb9e415d2a8f6710",
+      "bytes": 16558
+    },
+    "qualification-artifacts/p01-ubuntu-24.04-9ae75ca1b96da069b3dd91c2cb149723c72215a9/storage-result.json": {
+      "sha256": "3d6357d38f76f9c56a2d5a9d2d89576ddd8dbbb6dfca8094a777380e89b76f00",
+      "bytes": 8554
+    },
+    "qualification-artifacts.json": {
+      "sha256": "f2582219506daad6cffce0f57a8f3f5499c57d59ef7f6cbdda673595418fee4e",
+      "bytes": 1547
+    },
+    "qualification-state-final.json": {
+      "sha256": "4bc1173dc092313a4c727970871ca55c305dd684169c3b6d9ccf172657624a73",
+      "bytes": 4071
+    },
+    "qualification-state.json": {
+      "sha256": "4bc1173dc092313a4c727970871ca55c305dd684169c3b6d9ccf172657624a73",
+      "bytes": 4071
+    },
+    "run-state-final.json": {
+      "sha256": "7ce8e470eed19be86e815e344814d208e199d587d65fffb5b94dc41bf16c62be",
+      "bytes": 16071
+    },
+    "run-state.json": {
+      "sha256": "fb8f12ec672d209d8163d373a662fcfb032233c7609601520a5e3832b88b92e3",
+      "bytes": 15877
+    }
+  }
+}

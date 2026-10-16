@@ -1,0 +1,40 @@
+--- original/controls.go
++++ expanded/controls.go
+@@ -42,3 +42,37 @@
+  badDeclaration:=declared;badDeclaration[1].ID=badDeclaration[0].ID
+  if _,ok:=composeCLIMidBootDeclaredMetadata(raw,badDeclaration,scope);ok{t.Fatal("duplicate declared role accepted")}
+ }
++
++
++// These additional tuples check declaration and input boundaries before any
++// caller uses metadata to select an observation. They grant no process authority.
++func TestComposeCLIMidBootMetadataExpandedBoundaries(t *testing.T) {
++ scope:=protocol.Scope{InstanceID:"instance_unit",ProfileID:"profile_unit"}
++ fixture:=func(role string)([]byte,[4]protected.RoleOptions){
++  var declared [4]protected.RoleOptions
++  for i,id:=range protocol.Roles(){declared[i]=protected.RoleOptions{ID:id,Env:map[string]string{"AGENTMUX_NATS_CREDS_FILE":filepath.Join("/private/unit",id+".json"),"AGENTMUX_INSTANCE_ID":scope.InstanceID,"AGENTMUX_PROFILE_ID":scope.ProfileID}}}
++  raw:=[]byte("AGENTMUX_KERNEL_ROLE="+role+"\x00AGENTMUX_KERNEL_API_MAJOR=1\x00AGENTMUX_INSTANCE_ID=instance_unit\x00AGENTMUX_PROFILE_ID=profile_unit\x00AGENTMUX_NATS_CREDS_FILE=/private/unit/"+role+".json\x00")
++  return raw,declared
++ }
++ for _,role:=range protocol.Roles(){t.Run("positive_"+role,func(t *testing.T){raw,d:=fixture(role);got,ok:=composeCLIMidBootDeclaredMetadata(raw,d,scope);if !ok||got!=role{t.Fatal("matching declared role refused")}})}
++ declarations:=[]struct{name string; mutate func(*[4]protected.RoleOptions)}{
++  {"unknown_declared_role",func(d *[4]protected.RoleOptions){d[3].ID="foreign_role"}},
++  {"empty_declared_role",func(d *[4]protected.RoleOptions){d[3].ID=""}},
++  {"duplicate_declared_reference",func(d *[4]protected.RoleOptions){d[3].Env["AGENTMUX_NATS_CREDS_FILE"]=d[0].Env["AGENTMUX_NATS_CREDS_FILE"]}},
++  {"relative_declared_reference",func(d *[4]protected.RoleOptions){d[3].Env["AGENTMUX_NATS_CREDS_FILE"]="relative/file.json"}},
++  {"noncanonical_declared_reference",func(d *[4]protected.RoleOptions){d[3].Env["AGENTMUX_NATS_CREDS_FILE"]="/private/unit/../file.json"}},
++  {"missing_declared_reference",func(d *[4]protected.RoleOptions){delete(d[3].Env,"AGENTMUX_NATS_CREDS_FILE")}},
++  {"foreign_declared_instance",func(d *[4]protected.RoleOptions){d[3].Env["AGENTMUX_INSTANCE_ID"]="foreign_instance"}},
++  {"missing_declared_instance",func(d *[4]protected.RoleOptions){delete(d[3].Env,"AGENTMUX_INSTANCE_ID")}},
++  {"foreign_declared_profile",func(d *[4]protected.RoleOptions){d[3].Env["AGENTMUX_PROFILE_ID"]="foreign_profile"}},
++  {"missing_declared_profile",func(d *[4]protected.RoleOptions){delete(d[3].Env,"AGENTMUX_PROFILE_ID")}},
++ }
++ for _,c:=range declarations{t.Run(c.name,func(t *testing.T){raw,d:=fixture("boot");c.mutate(&d);if role,ok:=composeCLIMidBootDeclaredMetadata(raw,d,scope);ok||role!=""{t.Fatal("invalid complete declaration set admitted")}})}
++ for _,name:=range []string{"instance","profile"}{t.Run("empty_supplied_"+name,func(t *testing.T){raw,d:=fixture("boot");bad:=scope;if name=="instance"{bad.InstanceID=""}else{bad.ProfileID=""};if role,ok:=composeCLIMidBootDeclaredMetadata(raw,d,bad);ok||role!=""{t.Fatal("empty supplied scope admitted")}})}
++ keys:=[]string{"AGENTMUX_KERNEL_ROLE","AGENTMUX_KERNEL_API_MAJOR","AGENTMUX_INSTANCE_ID","AGENTMUX_PROFILE_ID","AGENTMUX_NATS_CREDS_FILE"}
++ for _,key:=range keys{
++  t.Run("empty_value_"+strings.ToLower(key),func(t *testing.T){raw,d:=fixture("boot");entries:=strings.Split(string(raw),"\x00");for i,e:=range entries{if strings.HasPrefix(e,key+"="){entries[i]=key+"="}};if role,ok:=composeCLIMidBootDeclaredMetadata([]byte(strings.Join(entries,"\x00")),d,scope);ok||role!=""{t.Fatal("empty required value admitted")}})
++  t.Run("alias_"+strings.ToLower(key),func(t *testing.T){raw,d:=fixture("boot");raw=append(raw,[]byte(strings.ToLower(key)+"=foreign\x00")...);if role,ok:=composeCLIMidBootDeclaredMetadata(raw,d,scope);ok||role!=""{t.Fatal("required-key case alias admitted")}})
++ }
++ for _,key:=range []string{"AGENTMUX_KERNEL_API_MAJOR","AGENTMUX_INSTANCE_ID"}{t.Run("duplicate_"+strings.ToLower(key),func(t *testing.T){raw,d:=fixture("boot");entries:=strings.Split(string(raw),"\x00");for _,e:=range entries{if strings.HasPrefix(e,key+"="){raw=append(raw,[]byte(e+"\x00")...);break}};if role,ok:=composeCLIMidBootDeclaredMetadata(raw,d,scope);ok||role!=""{t.Fatal("duplicate required key admitted")}})}
++}

@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-14T22:13:49.055990+00:00",
+  "reviewer": "Codex",
+  "decision": "verified failed execution; no acceptance or retry",
+  "sharedSourcePinsVerified": 267,
+  "executedSourcePinsVerified": 270,
+  "producerArtifactsVerified": 24,
+  "fixtureArtifactsVerified": 10,
+  "reportFinding": "Original worker sourceManifestFileCount267 counts shared input; actual executed manifest has270 with three reviewed overlays. Original report retained and correction requested.",
+  "frontendExit": 1,
+  "frontendElapsedNanoseconds": 5141809039,
+  "closedDiagnosticCode": "request_failed",
+  "creatorHandleEstablished": false,
+  "retainedFixture": "p02-bootstrap-private-3887681337",
+  "retainedCleanup": {
+    "at": "2026-10-14T22:08:14.38497832Z",
+    "knownOwnedIDs": {},
+    "manualRecoveryRequired": true,
+    "ownedStopRefused": true,
+    "reason": "startup_workers_not_joined"
+  },
+  "limits": [
+    "Frontend failed within10seconds at5.141809039seconds, not a deadline overrun.",
+    "No creator pidfd ownership was established; knownOwnedIDs empty; do not derive signal authority from a PID.",
+    "No authenticated entry, metadata trigger, partial-role proof, SIGSTOP, crash or recovery assertion reached.",
+    "Cleanup retained fixture because startup workers were not joined; current broker/network state was not re-observed.",
+    "Root tracker/pattern repository reads may have overlapped; exact overlap or failure cause unproven. No competing Docker/compiler/tests reported.",
+    "No retry, retained-resource mutation, process inspection or additional engine call after terminal.",
+    "request_failed fixed diagnostic does not identify the underlying cause."
+  ],
+  "nextAction": "Diagnose initial frontend error with reviewed closed-stage controls; no full startup retry or retained-resource mutation."
+}

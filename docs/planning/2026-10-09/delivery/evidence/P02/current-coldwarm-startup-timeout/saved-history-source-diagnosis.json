@@ -1,0 +1,39 @@
+{
+  "scope": "Read-only saved terminal history and actual source callgraph after failed single cold regression",
+  "originalRunReviewSHA256": "1ed1e10e2e39942941af4abe3dcca4435fc2fdf42c113bf29605703ebbfe16ea",
+  "historyPrivateRawSHA256": "e41719f38433e10ff2f170f9eccfbab1d350938f0f7147c952e06fd63cdd75cb",
+  "historyBytes": 1577,
+  "historyTerminal": {
+    "completedAt": "2026-10-14T23:27:09.641571Z",
+    "outcome": "failed",
+    "diagnosticCode": "docker_command_timeout_outcome_unknown",
+    "cleanup": "unknown"
+  },
+  "historyAttemptMatchesActualAcceptedReceipt": true,
+  "previousFailureAbsent": true,
+  "recordedCompletionSecondsAfterBegin": 4.003334,
+  "sourcePins": {
+    "platform/launcher/owner_bridge.go": "dd04086919a2451ef886febd4626d7141aeed60132d0b1289e309fd0d937af6b",
+    "platform/launcher/bootstrap.go": "7db76af164be1110f1352da993833fc3613c09ab42b4557094bcd4661edb9bcd",
+    "platform/launcher/local_broker_authority.go": "c0fae1257495deeddc8009dd005950022aaeb287948bd7a105aff948713bd59b",
+    "platform/launcher/docker.go": "e134fffdb7feab298e4ee54e45a453aaa6b7cb2c9ea3e2b8a8dc2060baa7448c",
+    "platform/launcher/bootstrap_history.go": "2f7ad3e45fe10a3030355bfd1a76fc58dd65258018265026d230fef1821df96c",
+    "platform/launcher/owner_bridge_history.go": "dbd091ab8c600ebb13cdf24aab0d042a181ac2b629a7f697a6da83d386fb20fd"
+  },
+  "sourceFacts": [
+    "Run creates service lease/actual operation then launches sole Bootstrap worker before serveLoop attempts HOST connection.",
+    "Bootstrap creates warm4s context before profile/release/protected-image admission; accepted receipt follows actual protected.Prepare and entered capability.",
+    "First inspect(warm) performs full private reload and selected Docker identity/config/TLS admission; any error returns before bootstrap lease/roles/StartOwned.",
+    "serveLoop meanwhile performs independent read-only inspection before TLS; hard authority errors can end Run and cancel/join worker, so concurrent transport failure can affect startup.",
+    "After first inspection, cold path gets actual core lease, re-inspects with startupctx, acquires role leases, invokes StartOwned when notrunning, then provisions health/starts roles.",
+    "RecordTerminal projects actual completed operation failure through fixed diagnostic selector; stored category is not arbitrary raw text."
+  ],
+  "proven": "Actual retained record for same receipt invocation reports failed/docker_command_timeout_outcome_unknown; original case never obtained status readiness.",
+  "hypothesis": "Initial warm inspection4s budget exhaustion is consistent with ~4.003s terminal chronology, but exact failing command/stage is not saved; do not label as proven original cause.",
+  "nextMinimalControl": "Fixed source stage marker at initial warm inspection/postlease inspection/StartOwned with original budgets; meaningful actual admitted cold boundary control proving initial warm timeout refuses before mutation. Any test-only marker must be labeled copied instrumentation, not unmodified product evidence.",
+  "limits": [
+    "Private saved history metadata is earlier terminal evidence only, not current liveness/cleanup/readonly status query authority.",
+    "No engine calls, host process reads/signals/PID reconstruction, source edits/retry/fixture mutations.",
+    "Original run review unchanged; supplement does not upgrade full case or cleanup acceptance."
+  ]
+}

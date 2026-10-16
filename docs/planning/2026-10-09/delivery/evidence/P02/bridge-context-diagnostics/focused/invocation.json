@@ -1,0 +1,37 @@
+{
+  "argv": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "./launcher",
+    "-run",
+    "^(TestBridgeContextDiagnosticActualRequestDeadline|TestBridgeContextDiagnosticPresentationAndSentinels|TestBridgeContextDiagnosticUnknownAndPriority|TestBridgeContextDiagnosticActualReplyWaitDeadline)$"
+  ],
+  "cwd": "/home/ryan/.cache/agentmux-governance/p02-bridge-context-focused-5wusriyi/src/platform",
+  "environment": {
+    "GOTOOLCHAIN": "local",
+    "GOENV": "off",
+    "GOFLAGS": "-mod=readonly",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "0",
+    "AGENTMUX_TEST_NATS": "/home/ryan/.cache/agentmux-governance/tools/nats-server"
+  },
+  "removedOverrideNames": [],
+  "overlayPins": {
+    "owner_bridge.go": "babd2aba6d80ff06b115061bd2e8a36778b80fc62a0a43d8ddae03d39193d2de",
+    "owner_bridge_diagnostic.go": "719be0a2f7b1eb100e461bb9990461cce3706eb80782e8613225c52324947649",
+    "owner_bridge_diagnostic_fixture_test.go": "384336787b0810bb68afee6cd173a789221683d3f556743243e5e4ee121e5a54",
+    "owner_bridge_diagnostic_test.go": "a25330fef623a2a659f08f702066f6fc1e38622c190bb4a677d6c38326e10662",
+    "owner_bridge_probe.go": "92b44259262955f3dbf624b7f2af9ff58c6ca467276b7bbd416cbc5a50b2fc36",
+    "request_diagnostic.go": "3571ae97858bf601aab29eccd78cb8bb718dffcb23de4097d9876421f6ae96fe"
+  },
+  "sourceFileCount": 282,
+  "startedUtc": "2026-10-15T00:49:47.131660+00:00",
+  "producerSHA256": "bf6b78afef92fcd07826dbaada7a70596aae392a34ba038b5e8eed12f6c92fd4",
+  "scope": "One local NATS component selection; no Docker engine; cleared TestMain and init fixture overrides."
+}

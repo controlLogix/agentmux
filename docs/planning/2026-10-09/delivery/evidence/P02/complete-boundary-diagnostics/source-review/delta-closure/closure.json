@@ -1,0 +1,38 @@
+{
+  "scope": "Read-only three-file delta review against frozen17 independent review9847f7e2. No tests/compiler/engine/shared edits.",
+  "status": "source_findings_closed",
+  "priorIndependentSHA256": "9847f7e24fe0a47ac4f4b2830efd48cdf5fa389bf0f1d9fba8bc0d88a1f2924f",
+  "candidateRecordSHA256": "60be463eea7b1404a1331ec91140bacf0a1a3dc17069d028beffb2cb6da0fc46",
+  "repairDiffSHA256": "feb8c518cd6d51634766f896a90ffa824b97d88c3a0d25a21ba2b983aa484bd5",
+  "fullDiffSHA256": "8ba325da6e26dd308503f84b99f9b5a4bb611016d246de1e28fbbd29f66eb0e1",
+  "changedPins": {
+    "bootstrap.go": "d32ab9c87ffc72f284e9a90bfd6e34421c0b679a52b4a21155a14be2ac9f874c",
+    "bootstrap_boundary_readiness_test.go": "b00c61a7ec087f1c25886bdbf1a5b2ce895477fa4c165f3806234a7e63c550fc",
+    "bootstrap_failed_read_test.go": "9d2aab1dd47ee079d29a9f3cb8ae31308f108371f881c00fabaf0c9a10cd30a9"
+  },
+  "unchangedOtherFileCount": 14,
+  "closures": [
+    {
+      "id": "BOUNDARY-WAIT-NOT-FINALIZATION",
+      "basis": "The sole group.Done wait assignment was removed. Hard/tolerated observe failures and wait exit keep readiness_observation; only successful observe enters readiness_finalize. Error codes and flow are unchanged."
+    },
+    {
+      "id": "BOUNDARY-FIXTURE-ERROR-OWNER",
+      "basis": "Before assertions and in sole-join fatal cleanup, the helper walks only exact reviewed wrappers and dispatches concrete Transport/Runtime/Probe/RawTransport/protocol/bootstrap Session owners, including nil direct Session. It checks each close, deduplicates pointer owners/Session, reports unknown/oversized graphs as incomplete, never calls unknown methods and keeps the original failure graph live."
+    }
+  ],
+  "capNegatives": "Explicit zero effective cap, over4s command cap and effective>parent controls now refuse optional metric. These supplement the actual failed executor control.",
+  "remainingGateGap": "Genuine deterministic readiness-finalization failure is not demonstrated. Success case and zero-owner dispatch cases must not count as that evidence. Keep the gap in P02 acceptance; no callback/fabricated readiness is required to clear the diagnostic controls.",
+  "recommendedFirstSelection": "^(TestBootstrapBoundaryFailureOwnerDispatch|TestBootstrapFailedReadActualOwnedExecutor|TestBootstrapFailedReadClosedBoundsAndGraph)$",
+  "nextGenuineSelections": [
+    "^TestBootstrapBoundaryActualColdMutationGuard$/^post_start_refusal$",
+    "^TestBootstrapBoundaryActualReadinessCallSites$/^cold_readiness_failure$",
+    "^TestBootstrapBoundaryActualReadinessCallSites$/^cold_readiness_success$"
+  ],
+  "historySelection": "^TestBootstrapHistoryBoundaryStageRoundTrip$",
+  "limits": [
+    "Source closure only; added zero-owner dispatch controls do not inject physical cleanup failure or prove syscall wall bounds.",
+    "Prior17-file source assessment and all historical failures remain unchanged.",
+    "Controlled inspector/compose guard is not real Docker/container qualification."
+  ]
+}

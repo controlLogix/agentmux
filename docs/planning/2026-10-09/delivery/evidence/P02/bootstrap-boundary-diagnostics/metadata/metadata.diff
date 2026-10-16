@@ -1,0 +1,1110 @@
+--- before/component-inventory.json
++++ candidate/component-inventory.json
+@@ -5148,6 +5148,55 @@
+       "baselineBlob": "cc0d1c86afbc0b625510e192b93a69a4aaa6a2fd",
+       "componentIds": [
+         "HAR-04"
++      ]
++    },
++    {
++      "path": "platform/launcher/bootstrap_boundary_cold_test.go",
++      "baselineBlob": null,
++      "componentIds": [
++        "PLAT-01"
++      ]
++    },
++    {
++      "path": "platform/launcher/bootstrap_boundary_stage.go",
++      "baselineBlob": null,
++      "componentIds": [
++        "PLAT-01"
++      ]
++    },
++    {
++      "path": "platform/launcher/bootstrap_boundary_stage_test.go",
++      "baselineBlob": null,
++      "componentIds": [
++        "PLAT-01"
++      ]
++    },
++    {
++      "path": "platform/launcher/bootstrap_cleanup_failure.go",
++      "baselineBlob": null,
++      "componentIds": [
++        "PLAT-01"
++      ]
++    },
++    {
++      "path": "platform/launcher/bootstrap_cleanup_failure_test.go",
++      "baselineBlob": null,
++      "componentIds": [
++        "PLAT-01"
++      ]
++    },
++    {
++      "path": "platform/launcher/bootstrap_history_stage_test.go",
++      "baselineBlob": null,
++      "componentIds": [
++        "PLAT-01"
++      ]
++    },
++    {
++      "path": "platform/launcher/installed_cli_creator_observation_linux_test.go",
++      "baselineBlob": null,
++      "componentIds": [
++        "PLAT-01"
+       ]
+     }
+   ],
+@@ -5844,6 +5893,22 @@
+         "platform/runtime/pidfd_survival_diagnostic_linux_test.go"
+       ],
+       "baselineInventoryChanged": false
++    },
++    {
++      "date": "2026-10-15T00:22:03.290176+00:00",
++      "reviewer": "Codex",
++      "scope": "Cache-only reviewed cold boundary/cleanup metadata proposal; root promotion pending",
++      "addedFiles": [
++        "platform/launcher/bootstrap_boundary_cold_test.go",
++        "platform/launcher/bootstrap_boundary_stage.go",
++        "platform/launcher/bootstrap_boundary_stage_test.go",
++        "platform/launcher/bootstrap_cleanup_failure.go",
++        "platform/launcher/bootstrap_cleanup_failure_test.go",
++        "platform/launcher/bootstrap_history_stage_test.go",
++        "platform/launcher/installed_cli_creator_observation_linux_test.go"
++      ],
++      "baselineInventoryChanged": false,
++      "phaseAccepted": false
+     }
+   ]
+ }
+--- before/component-audit-hub.json
++++ candidate/component-audit-hub.json
+@@ -2034,7 +2034,14 @@
+         "platform/launcher/owner_bridge_reply_cancellation_test.go",
+         "platform/launcher/host_policy_diagnostic_test.go",
+         "platform/launcher/bootstrap_history_host_diagnostic_test.go",
+-        "platform/launcher/host_policy_diagnostic.go"
++        "platform/launcher/host_policy_diagnostic.go",
++        "platform/launcher/bootstrap_boundary_cold_test.go",
++        "platform/launcher/bootstrap_boundary_stage.go",
++        "platform/launcher/bootstrap_boundary_stage_test.go",
++        "platform/launcher/bootstrap_cleanup_failure.go",
++        "platform/launcher/bootstrap_cleanup_failure_test.go",
++        "platform/launcher/bootstrap_history_stage_test.go",
++        "platform/launcher/installed_cli_creator_observation_linux_test.go"
+       ],
+       "role": "platform-foundation",
+       "baselineGroups": [],
+@@ -2115,7 +2122,12 @@
+             "platform/launcher/owner_bridge_request_permission_test.go",
+             "platform/launcher/owner_bridge_nonce_window_linux_test.go",
+             "platform/launcher/bootstrap_docker_current_qualification_controls_test.go",
+-            "platform/launcher/installed_cli_history_controls_test.go"
++            "platform/launcher/installed_cli_history_controls_test.go",
++            "platform/launcher/bootstrap_boundary_cold_test.go",
++            "platform/launcher/bootstrap_boundary_stage_test.go",
++            "platform/launcher/bootstrap_cleanup_failure_test.go",
++            "platform/launcher/bootstrap_history_stage_test.go",
++            "platform/launcher/installed_cli_creator_observation_linux_test.go"
+           ],
+           "requiredEnvironment": "Native Linux, native macOS and approved WSL actual installed CLI with pinned Compose and NATS; component TLS/socket passes are separate. Require Linux amd64 and arm64, native macOS amd64 and arm64, and approved WSL. Darwin cgo-enabled execution and cgo-disabled refusal are distinct checks; cross-compilation alone is insufficient.",
+           "baselineStatus": "not-run",
+@@ -3182,6 +3194,186 @@
+         "platform/runtime/bootstrap_receipt_descriptor_linux_test.go"
+       ],
+       "acceptanceCriteriaChanged": false
++    },
++    {
++      "date": "2026-10-15T00:22:03.290176+00:00",
++      "reviewer": "Codex",
++      "scope": "Cache-only stage/cleanup and creator-liveness test registration; no criteria or acceptance change",
++      "componentId": "PLAT-01",
++      "previousFiles": [
++        "platform/go.mod",
++        "platform/go.sum",
++        "platform/launcher/lock_unix.go",
++        "platform/launcher/lock_unix_test.go",
++        "platform/launcher/docker.go",
++        "platform/launcher/docker_test.go",
++        "platform/launcher/bootstrap.go",
++        "platform/launcher/bootstrap_config.go",
++        "platform/launcher/bootstrap_config_test.go",
++        "platform/launcher/bootstrap_integration_test.go",
++        "platform/launcher/docker_config_test.go",
++        "platform/launcher/docker_environment.go",
++        "platform/launcher/docker_environment_test.go",
++        "platform/launcher/docker_instance.go",
++        "platform/launcher/docker_instance_test.go",
++        "platform/launcher/doctor.go",
++        "platform/launcher/doctor_test.go",
++        "platform/launcher/host_config.go",
++        "platform/launcher/host_config_test.go",
++        "platform/launcher/kernel_status.go",
++        "platform/launcher/kernel_status_test.go",
++        "platform/launcher/profile.go",
++        "platform/launcher/profile_boundary_test.go",
++        "platform/launcher/profile_test.go",
++        "platform/launcher/release.go",
++        "platform/launcher/release_test.go",
++        "platform/launcher/startup_session.go",
++        "platform/launcher/startup_session_lifecycle_test.go",
++        "platform/launcher/startup_session_test.go",
++        "platform/launcher/startup_status.go",
++        "platform/launcher/startup_status_test.go",
++        "platform/cmd/agentmux-runtime/main.go",
++        "platform/cmd/agentmux-runtime/main_test.go",
++        "platform/launcher/authority_proof_test.go",
++        "platform/launcher/bootstrap_compose_binding.go",
++        "platform/launcher/bootstrap_invocation_test.go",
++        "platform/launcher/docker_archive_linux_test.go",
++        "platform/launcher/docker_archive_test.go",
++        "platform/launcher/docker_archives.go",
++        "platform/launcher/docker_reads.go",
++        "platform/launcher/docker_reads_linux_test.go",
++        "platform/launcher/docker_reads_test.go",
++        "platform/launcher/docker_stdio.go",
++        "platform/launcher/docker_stdio_inspection_test.go",
++        "platform/launcher/docker_stdio_test.go",
++        "platform/launcher/docker_tls.go",
++        "platform/launcher/docker_tls_test.go",
++        "platform/launcher/host_policy.go",
++        "platform/launcher/host_policy_test.go",
++        "platform/launcher/kernel_status_stage_test.go",
++        "platform/launcher/kernel_status_tls_test.go",
++        "platform/launcher/local_broker_authority.go",
++        "platform/launcher/local_server_trust.go",
++        "platform/launcher/local_server_trust_test.go",
++        "platform/launcher/lock_acl_darwin_test.go",
++        "platform/launcher/owner_bridge.go",
++        "platform/launcher/owner_bridge_admission_test.go",
++        "platform/launcher/owner_bridge_host_loader_test.go",
++        "platform/launcher/owner_bridge_test.go",
++        "platform/launcher/owner_bridge_validation.go",
++        "platform/launcher/session_cleanup.go",
++        "platform/launcher/session_cleanup_test.go",
++        "platform/launcher/startup_session_deadline_test.go",
++        "platform/launcher/startup_write_proof.go",
++        "platform/launcher/startup_write_proof_test.go",
++        "platform/launcher/transport_cleanup.go",
++        "platform/launcher/transport_cleanup_test.go",
++        "platform/privatefs/access.go",
++        "platform/privatefs/access_darwin.go",
++        "platform/privatefs/access_darwin_nocgo.go",
++        "platform/privatefs/access_darwin_nocgo_test.go",
++        "platform/privatefs/access_darwin_test.go",
++        "platform/privatefs/access_linux.go",
++        "platform/privatefs/access_linux_test.go",
++        "platform/privatefs/access_test.go",
++        "platform/privatefs/access_unsupported.go",
++        "platform/launcher/bootstrap_operation.go",
++        "platform/launcher/bootstrap_operation_test.go",
++        "platform/launcher/startup_pending_test.go",
++        "platform/launcher/host_receipt_binding.go",
++        "platform/launcher/host_receipt_binding_test.go",
++        "platform/launcher/host_receipt_server.go",
++        "platform/launcher/owner_bridge_receipt.go",
++        "platform/launcher/owner_bridge_pending_test.go",
++        "platform/launcher/installed_cli_startup_test.go",
++        "platform/launcher/owner_bridge_receipt_test.go",
++        "platform/cmd/agentmux-runtime/main_child_exit_linux_test.go",
++        "platform/launcher/owner_bridge_refresh_test.go",
++        "platform/launcher/installed_cli_compose_integration_linux_test.go",
++        "platform/cmd/agentmux-runtime/main_frontend_budget_test.go",
++        "platform/launcher/request_diagnostic.go",
++        "platform/launcher/request_diagnostic_test.go",
++        "platform/cmd/agentmux-runtime/main_diagnostic_test.go",
++        "platform/launcher/installed_cli_compose_failures_integration_test.go",
++        "platform/launcher/owner_bridge_probe.go",
++        "platform/launcher/owner_bridge_probe_test.go",
++        "platform/launcher/bootstrap_history.go",
++        "platform/launcher/bootstrap_history_fs.go",
++        "platform/launcher/bootstrap_history_root.go",
++        "platform/launcher/bootstrap_history_stage.go",
++        "platform/launcher/bootstrap_history.schema.json",
++        "platform/launcher/bootstrap_history_test.go",
++        "platform/launcher/bootstrap_history_linux_test.go",
++        "platform/launcher/bootstrap_history_fault_test.go",
++        "platform/launcher/bootstrap_history_close_cause_test.go",
++        "platform/launcher/host_history_policy.go",
++        "platform/launcher/host_history_policy_test.go",
++        "platform/launcher/host_history_policy_linux_test.go",
++        "platform/launcher/owner_bridge_history.go",
++        "platform/launcher/bootstrap_history_owner_integration_test.go",
++        "platform/cmd/agentmux-runtime/main_history.go",
++        "platform/cmd/agentmux-runtime/main_history_test.go",
++        "platform/launcher/owner_bridge_request_permission_test.go",
++        "platform/launcher/owner_bridge_nonce_window_linux_test.go",
++        "platform/launcher/bootstrap_docker_current_qualification_controls_test.go",
++        "platform/launcher/installed_cli_history_controls_test.go",
++        "platform/launcher/owner_bridge_reply_cancellation_test.go",
++        "platform/launcher/host_policy_diagnostic_test.go",
++        "platform/launcher/bootstrap_history_host_diagnostic_test.go",
++        "platform/launcher/host_policy_diagnostic.go"
++      ],
++      "addedFiles": [
++        "platform/launcher/bootstrap_boundary_cold_test.go",
++        "platform/launcher/bootstrap_boundary_stage.go",
++        "platform/launcher/bootstrap_boundary_stage_test.go",
++        "platform/launcher/bootstrap_cleanup_failure.go",
++        "platform/launcher/bootstrap_cleanup_failure_test.go",
++        "platform/launcher/bootstrap_history_stage_test.go",
++        "platform/launcher/installed_cli_creator_observation_linux_test.go"
++      ],
++      "behaviorCheckId": "PLAT-01-C04",
++      "previousExistingTests": [
++        "platform/launcher/owner_bridge_test.go",
++        "platform/launcher/owner_bridge_admission_test.go",
++        "platform/launcher/owner_bridge_host_loader_test.go",
++        "platform/launcher/bootstrap_integration_test.go",
++        "platform/cmd/agentmux-runtime/main_test.go",
++        "platform/launcher/bootstrap_operation_test.go",
++        "platform/launcher/startup_pending_test.go",
++        "platform/launcher/owner_bridge_pending_test.go",
++        "platform/launcher/host_receipt_binding_test.go",
++        "platform/launcher/installed_cli_startup_test.go",
++        "platform/launcher/owner_bridge_receipt_test.go",
++        "platform/cmd/agentmux-runtime/main_child_exit_linux_test.go",
++        "platform/launcher/owner_bridge_refresh_test.go",
++        "platform/launcher/installed_cli_compose_integration_linux_test.go",
++        "platform/cmd/agentmux-runtime/main_frontend_budget_test.go",
++        "platform/launcher/request_diagnostic_test.go",
++        "platform/cmd/agentmux-runtime/main_diagnostic_test.go",
++        "platform/launcher/installed_cli_compose_failures_integration_test.go",
++        "platform/launcher/owner_bridge_probe_test.go",
++        "platform/launcher/bootstrap_history_test.go",
++        "platform/launcher/bootstrap_history_linux_test.go",
++        "platform/launcher/bootstrap_history_fault_test.go",
++        "platform/launcher/bootstrap_history_close_cause_test.go",
++        "platform/launcher/host_history_policy_test.go",
++        "platform/launcher/host_history_policy_linux_test.go",
++        "platform/launcher/bootstrap_history_owner_integration_test.go",
++        "platform/cmd/agentmux-runtime/main_history_test.go",
++        "platform/launcher/owner_bridge_request_permission_test.go",
++        "platform/launcher/owner_bridge_nonce_window_linux_test.go",
++        "platform/launcher/bootstrap_docker_current_qualification_controls_test.go",
++        "platform/launcher/installed_cli_history_controls_test.go"
++      ],
++      "addedExistingTests": [
++        "platform/launcher/bootstrap_boundary_cold_test.go",
++        "platform/launcher/bootstrap_boundary_stage_test.go",
++        "platform/launcher/bootstrap_cleanup_failure_test.go",
++        "platform/launcher/bootstrap_history_stage_test.go",
++        "platform/launcher/installed_cli_creator_observation_linux_test.go"
++      ],
++      "acceptanceCriteriaChanged": false,
++      "phaseAccepted": false
+     }
+   ]
+ }
+--- before/source-surface-index.json
++++ candidate/source-surface-index.json
+@@ -10581,7 +10581,7 @@
+       "componentIds": [
+         "PLAT-01"
+       ],
+-      "workingFileSha256": "7db76af164be1110f1352da993833fc3613c09ab42b4557094bcd4661edb9bcd",
++      "workingFileSha256": "21654b65615e949ab39d81d907b64e40c9a6831adf0dd50b940e442d650d9dc7",
+       "declarations": [
+         {
+           "name": "bootstrapError",
+@@ -10620,7 +10620,7 @@
+         }
+       ],
+       "httpPathLiterals": [],
+-      "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
++      "reviewStatus": "Reviewed private cold boundary stages and retained cleanup cause/Session with21 focused and163 affected race entries plus launcher vet0. Cache-only registration awaits root promotion. Real ColdWarmAndRefresh failed; native lifecycle and P02 acceptance remain open."
+     },
+     {
+       "path": "platform/launcher/bootstrap_compose_binding.go",
+@@ -10660,120 +10660,120 @@
+         "PLAT-01"
+       ],
+       "httpPathLiterals": [],
+-      "workingFileSha256": "2f7ad3e45fe10a3030355bfd1a76fc58dd65258018265026d230fef1821df96c",
++      "workingFileSha256": "d95d4d388211570dfc6cfd2c81888c8946bb79b6fd053964892f6b3b0502801a",
+       "declarations": [
+         {
+           "name": "Error",
+-          "line": 84,
++          "line": 86,
+           "kind": "go-function"
+         },
+         {
+           "name": "Format",
+-          "line": 92,
++          "line": 94,
+           "kind": "go-function"
+         },
+         {
+           "name": "MarshalJSON",
+-          "line": 93,
++          "line": 95,
+           "kind": "go-function"
+         },
+         {
+           "name": "Unwrap",
+-          "line": 94,
++          "line": 96,
+           "kind": "go-function"
+         },
+         {
+           "name": "historyError",
+-          "line": 95,
++          "line": 97,
+           "kind": "go-function"
+         },
+         {
+           "name": "compileBootstrapHistorySchema",
+-          "line": 103,
++          "line": 105,
+           "kind": "go-function"
+         },
+         {
+           "name": "decodeBootstrapHistory",
+-          "line": 120,
++          "line": 122,
+           "kind": "go-function"
+         },
+         {
+           "name": "historyTimestamp",
+-          "line": 169,
++          "line": 177,
+           "kind": "go-function"
+         },
+         {
+           "name": "historyDigest",
+-          "line": 172,
++          "line": 180,
+           "kind": "go-function"
+         },
+         {
+           "name": "historyGeneration",
+-          "line": 176,
++          "line": 184,
+           "kind": "go-function"
+         },
+         {
+           "name": "historyLeaseName",
+-          "line": 184,
++          "line": 192,
+           "kind": "go-function"
+         },
+         {
+           "name": "historyLeaseDigest",
+-          "line": 188,
++          "line": 196,
+           "kind": "go-function"
+         },
+         {
+           "name": "historyBinding",
+-          "line": 198,
++          "line": 206,
+           "kind": "go-function"
+         },
+         {
+           "name": "Format",
+-          "line": 259,
++          "line": 267,
+           "kind": "go-function"
+         },
+         {
+           "name": "MarshalJSON",
+-          "line": 262,
++          "line": 270,
+           "kind": "go-function"
+         },
+         {
+           "name": "openBootstrapHistory",
+-          "line": 268,
++          "line": 276,
+           "kind": "go-function"
+         },
+         {
+           "name": "Begin",
+-          "line": 319,
++          "line": 327,
+           "kind": "go-function"
+         },
+         {
+           "name": "RecordTerminal",
+-          "line": 353,
++          "line": 361,
+           "kind": "go-function"
+         },
+         {
+           "name": "Close",
+-          "line": 403,
++          "line": 412,
+           "kind": "go-function"
+         },
+         {
+           "name": "historyPending",
+-          "line": 447,
++          "line": 456,
+           "kind": "go-function"
+         },
+         {
+           "name": "historyCompletion",
+-          "line": 460,
++          "line": 469,
+           "kind": "go-function"
+         },
+         {
+           "name": "lockHistory",
+-          "line": 476,
++          "line": 485,
+           "kind": "go-function"
+         }
+       ],
+-      "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
++      "reviewStatus": "Reviewed private cold boundary stages and retained cleanup cause/Session with21 focused and163 affected race entries plus launcher vet0. Cache-only registration awaits root promotion. Real ColdWarmAndRefresh failed; native lifecycle and P02 acceptance remain open."
+     },
+     {
+       "path": "platform/launcher/bootstrap_history_fs.go",
+@@ -10781,7 +10781,7 @@
+         "PLAT-01"
+       ],
+       "httpPathLiterals": [],
+-      "workingFileSha256": "6d16bfa9b1cf590295dc93ba67f0fda4a36890dcddfc7ff1d67790a351e74fd6",
++      "workingFileSha256": "b01c765177b7de2c0c0e051b4fe4569185ac146ec505563f1b58e85c6f21c33c",
+       "declarations": [
+         {
+           "name": "historyIOContext",
+@@ -10844,7 +10844,7 @@
+           "kind": "go-function"
+         }
+       ],
+-      "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
++      "reviewStatus": "Reviewed private cold boundary stages and retained cleanup cause/Session with21 focused and163 affected race entries plus launcher vet0. Cache-only registration awaits root promotion. Real ColdWarmAndRefresh failed; native lifecycle and P02 acceptance remain open."
+     },
+     {
+       "path": "platform/launcher/bootstrap_history_root.go",
+@@ -11173,46 +11173,51 @@
+       "componentIds": [
+         "PLAT-01"
+       ],
+-      "workingFileSha256": "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813",
++      "workingFileSha256": "44b1cff92cd6dc0e00206c70b8050c5855f6e2306c162389db84151cb16e7b8a",
+       "declarations": [
+         {
+           "name": "Error",
+-          "line": 19,
++          "line": 21,
++          "kind": "go-function"
++        },
++        {
++          "name": "Format",
++          "line": 22,
+           "kind": "go-function"
+         },
+         {
+           "name": "Unwrap",
+-          "line": 20,
++          "line": 23,
+           "kind": "go-function"
+         },
+         {
+           "name": "inspectionStage",
+-          "line": 21,
++          "line": 24,
+           "kind": "go-function"
+         },
+         {
+           "name": "inspectionFailure",
+-          "line": 22,
++          "line": 25,
+           "kind": "go-function"
+         },
+         {
+           "name": "dockerReadStage",
+-          "line": 25,
++          "line": 28,
+           "kind": "go-function"
+         },
+         {
+           "name": "parallelDockerReadAllowed",
+-          "line": 41,
++          "line": 44,
+           "kind": "go-function"
+         },
+         {
+           "name": "parallelReads",
+-          "line": 66,
++          "line": 69,
+           "kind": "go-function"
+         }
+       ],
+       "httpPathLiterals": [],
+-      "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
++      "reviewStatus": "Reviewed private cold boundary stages and retained cleanup cause/Session with21 focused and163 affected race entries plus launcher vet0. Cache-only registration awaits root promotion. Real ColdWarmAndRefresh failed; native lifecycle and P02 acceptance remain open."
+     },
+     {
+       "path": "platform/launcher/docker_refusal.go",
+@@ -11364,7 +11369,7 @@
+       "componentIds": [
+         "PLAT-01"
+       ],
+-      "workingFileSha256": "e76acbe79b31d9c207d5b040cc591bb413a0323ef87d798380fb281d4bf86e59",
++      "workingFileSha256": "0c7bb3b517311ed8cf9f1c3324ef5610e7b790127cc8fb6753cb7c88c418d28f",
+       "declarations": [
+         {
+           "name": "terminalHistory",
+@@ -11373,17 +11378,17 @@
+         },
+         {
+           "name": "PreviousBootstrapFailure",
+-          "line": 38,
++          "line": 41,
+           "kind": "go-function"
+         },
+         {
+           "name": "CreatorPreviousBootstrapFailure",
+-          "line": 74,
++          "line": 77,
+           "kind": "go-function"
+         }
+       ],
+       "httpPathLiterals": [],
+-      "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
++      "reviewStatus": "Reviewed private cold boundary stages and retained cleanup cause/Session with21 focused and163 affected race entries plus launcher vet0. Cache-only registration awaits root promotion. Real ColdWarmAndRefresh failed; native lifecycle and P02 acceptance remain open."
+     },
+     {
+       "path": "platform/launcher/host_policy.go",
+@@ -12280,7 +12285,7 @@
+       "componentIds": [
+         "PLAT-01"
+       ],
+-      "workingFileSha256": "dddc1e7562eabfde17265fe2fd41794f0f66c71178669ae796acab5c72e320b4",
++      "workingFileSha256": "501819b66d8437a34b1ea233fef4e0fff5efd29b8d66707f8c3ea1c1c5b6ebaf",
+       "declarations": [
+         {
+           "name": "diagnosticReviewedWrapper",
+@@ -12289,52 +12294,52 @@
+         },
+         {
+           "name": "Error",
+-          "line": 53,
++          "line": 54,
+           "kind": "go-function"
+         },
+         {
+           "name": "Format",
+-          "line": 61,
++          "line": 62,
+           "kind": "go-function"
+         },
+         {
+           "name": "MarshalJSON",
+-          "line": 62,
++          "line": 63,
+           "kind": "go-function"
+         },
+         {
+           "name": "Unwrap",
+-          "line": 63,
++          "line": 64,
+           "kind": "go-function"
+         },
+         {
+           "name": "localAuthorityFailure",
+-          "line": 69,
++          "line": 70,
+           "kind": "go-function"
+         },
+         {
+           "name": "bridgeAuthorityFailure",
+-          "line": 72,
++          "line": 73,
+           "kind": "go-function"
+         },
+         {
+           "name": "requestDiagnostic",
+-          "line": 86,
++          "line": 87,
+           "kind": "go-function"
+         },
+         {
+           "name": "ValidRequestDiagnostic",
+-          "line": 125,
++          "line": 126,
+           "kind": "go-function"
+         },
+         {
+           "name": "ProjectRequestDiagnostic",
+-          "line": 132,
++          "line": 133,
+           "kind": "go-function"
+         }
+       ],
+       "httpPathLiterals": [],
+-      "reviewStatus": "Codex reviewed closed typed diagnostic provenance and history parity; component race checks pass, installed lifecycle and P02 acceptance remain open."
++      "reviewStatus": "Reviewed private cold boundary stages and retained cleanup cause/Session with21 focused and163 affected race entries plus launcher vet0. Cache-only registration awaits root promotion. Real ColdWarmAndRefresh failed; native lifecycle and P02 acceptance remain open."
+     },
+     {
+       "path": "platform/launcher/session_cleanup.go",
+@@ -17033,6 +17038,73 @@
+       ],
+       "httpPathLiterals": [],
+       "reviewStatus": "owned-by-component; maintainers must review behavioral completeness before P00 exit"
++    },
++    {
++      "path": "platform/launcher/bootstrap_boundary_stage.go",
++      "componentIds": [
++        "PLAT-01"
++      ],
++      "httpPathLiterals": [],
++      "workingFileSha256": "e0ed08d0067825d47cbd39eccc79bee80026cf49cf3add54659919b189c348b8",
++      "declarations": [
++        {
++          "name": "validBootstrapDiagnosticStage",
++          "line": 8,
++          "kind": "go-function"
++        },
++        {
++          "name": "bootstrapBoundaryFailure",
++          "line": 15,
++          "kind": "go-function"
++        },
++        {
++          "name": "bootstrapDiagnosticStage",
++          "line": 23,
++          "kind": "go-function"
++        },
++        {
++          "name": "copyBootstrapDiagnosticStage",
++          "line": 65,
++          "kind": "go-function"
++        }
++      ],
++      "reviewStatus": "Reviewed private cold boundary stages and retained cleanup cause/Session with21 focused and163 affected race entries plus launcher vet0. Cache-only registration awaits root promotion. Real ColdWarmAndRefresh failed; native lifecycle and P02 acceptance remain open."
++    },
++    {
++      "path": "platform/launcher/bootstrap_cleanup_failure.go",
++      "componentIds": [
++        "PLAT-01"
++      ],
++      "httpPathLiterals": [],
++      "workingFileSha256": "4e74cb4997f4c099c51a0d4be9b99882b7da4367f025fd8d3666edcf6fc2b7d6",
++      "declarations": [
++        {
++          "name": "Error",
++          "line": 19,
++          "kind": "go-function"
++        },
++        {
++          "name": "Format",
++          "line": 20,
++          "kind": "go-function"
++        },
++        {
++          "name": "MarshalJSON",
++          "line": 21,
++          "kind": "go-function"
++        },
++        {
++          "name": "Unwrap",
++          "line": 22,
++          "kind": "go-function"
++        },
++        {
++          "name": "retainBootstrapCleanup",
++          "line": 23,
++          "kind": "go-function"
++        }
++      ],
++      "reviewStatus": "Reviewed private cold boundary stages and retained cleanup cause/Session with21 focused and163 affected race entries plus launcher vet0. Cache-only registration awaits root promotion. Real ColdWarmAndRefresh failed; native lifecycle and P02 acceptance remain open."
+     }
+   ],
+   "history": [
+@@ -29169,6 +29241,389 @@
+         }
+       ],
+       "phaseAccepted": false
++    },
++    {
++      "date": "2026-10-15T00:22:03.290176+00:00",
++      "reviewer": "Codex",
++      "scope": "Cache-only cold boundary/cleanup actual source declarations; root promotion pending",
++      "previousFiles": [
++        {
++          "path": "platform/launcher/bootstrap_history_fs.go",
++          "componentIds": [
++            "PLAT-01"
++          ],
++          "httpPathLiterals": [],
++          "workingFileSha256": "6d16bfa9b1cf590295dc93ba67f0fda4a36890dcddfc7ff1d67790a351e74fd6",
++          "declarations": [
++            {
++              "name": "historyIOContext",
++              "line": 22,
++              "kind": "go-function"
++            },
++            {
++              "name": "readHistoryFile",
++              "line": 39,
++              "kind": "go-function"
++            },
++            {
++              "name": "checkLease",
++              "line": 73,
++              "kind": "go-function"
++            },
++            {
++              "name": "verifyExpected",
++              "line": 93,
++              "kind": "go-function"
++            },
++            {
++              "name": "publish",
++              "line": 129,
++              "kind": "go-function"
++            },
++            {
++              "name": "jsonMarshalHistory",
++              "line": 242,
++              "kind": "go-function"
++            },
++            {
++              "name": "readBootstrapHistory",
++              "line": 254,
++              "kind": "go-function"
++            },
++            {
++              "name": "joinHistoryCleanup",
++              "line": 355,
++              "kind": "go-function"
++            },
++            {
++              "name": "duplicateHistoryLease",
++              "line": 361,
++              "kind": "go-function"
++            },
++            {
++              "name": "readCreatorBootstrapHistory",
++              "line": 387,
++              "kind": "go-function"
++            },
++            {
++              "name": "historyCreatorEligible",
++              "line": 473,
++              "kind": "go-function"
++            },
++            {
++              "name": "historyRelevantFailure",
++              "line": 477,
++              "kind": "go-function"
++            }
++          ],
++          "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
++        },
++        {
++          "path": "platform/launcher/bootstrap.go",
++          "componentIds": [
++            "PLAT-01"
++          ],
++          "workingFileSha256": "7db76af164be1110f1352da993833fc3613c09ab42b4557094bcd4661edb9bcd",
++          "declarations": [
++            {
++              "name": "bootstrapError",
++              "line": 83,
++              "kind": "go-function"
++            },
++            {
++              "name": "validateBootstrapRoles",
++              "line": 85,
++              "kind": "go-function"
++            },
++            {
++              "name": "Close",
++              "line": 145,
++              "kind": "go-function"
++            },
++            {
++              "name": "CleanupError",
++              "line": 190,
++              "kind": "go-function"
++            },
++            {
++              "name": "Bootstrap",
++              "line": 211,
++              "kind": "go-function"
++            },
++            {
++              "name": "BootstrapForInvocation",
++              "line": 222,
++              "kind": "go-function"
++            },
++            {
++              "name": "bootstrapForOperation",
++              "line": 228,
++              "kind": "go-function"
++            }
++          ],
++          "httpPathLiterals": [],
++          "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
++        },
++        {
++          "path": "platform/launcher/request_diagnostic.go",
++          "componentIds": [
++            "PLAT-01"
++          ],
++          "workingFileSha256": "dddc1e7562eabfde17265fe2fd41794f0f66c71178669ae796acab5c72e320b4",
++          "declarations": [
++            {
++              "name": "diagnosticReviewedWrapper",
++              "line": 26,
++              "kind": "go-function"
++            },
++            {
++              "name": "Error",
++              "line": 53,
++              "kind": "go-function"
++            },
++            {
++              "name": "Format",
++              "line": 61,
++              "kind": "go-function"
++            },
++            {
++              "name": "MarshalJSON",
++              "line": 62,
++              "kind": "go-function"
++            },
++            {
++              "name": "Unwrap",
++              "line": 63,
++              "kind": "go-function"
++            },
++            {
++              "name": "localAuthorityFailure",
++              "line": 69,
++              "kind": "go-function"
++            },
++            {
++              "name": "bridgeAuthorityFailure",
++              "line": 72,
++              "kind": "go-function"
++            },
++            {
++              "name": "requestDiagnostic",
++              "line": 86,
++              "kind": "go-function"
++            },
++            {
++              "name": "ValidRequestDiagnostic",
++              "line": 125,
++              "kind": "go-function"
++            },
++            {
++              "name": "ProjectRequestDiagnostic",
++              "line": 132,
++              "kind": "go-function"
++            }
++          ],
++          "httpPathLiterals": [],
++          "reviewStatus": "Codex reviewed closed typed diagnostic provenance and history parity; component race checks pass, installed lifecycle and P02 acceptance remain open."
++        },
++        {
++          "path": "platform/launcher/bootstrap_history.go",
++          "componentIds": [
++            "PLAT-01"
++          ],
++          "httpPathLiterals": [],
++          "workingFileSha256": "2f7ad3e45fe10a3030355bfd1a76fc58dd65258018265026d230fef1821df96c",
++          "declarations": [
++            {
++              "name": "Error",
++              "line": 84,
++              "kind": "go-function"
++            },
++            {
++              "name": "Format",
++              "line": 92,
++              "kind": "go-function"
++            },
++            {
++              "name": "MarshalJSON",
++              "line": 93,
++              "kind": "go-function"
++            },
++            {
++              "name": "Unwrap",
++              "line": 94,
++              "kind": "go-function"
++            },
++            {
++              "name": "historyError",
++              "line": 95,
++              "kind": "go-function"
++            },
++            {
++              "name": "compileBootstrapHistorySchema",
++              "line": 103,
++              "kind": "go-function"
++            },
++            {
++              "name": "decodeBootstrapHistory",
++              "line": 120,
++              "kind": "go-function"
++            },
++            {
++              "name": "historyTimestamp",
++              "line": 169,
++              "kind": "go-function"
++            },
++            {
++              "name": "historyDigest",
++              "line": 172,
++              "kind": "go-function"
++            },
++            {
++              "name": "historyGeneration",
++              "line": 176,
++              "kind": "go-function"
++            },
++            {
++              "name": "historyLeaseName",
++              "line": 184,
++              "kind": "go-function"
++            },
++            {
++              "name": "historyLeaseDigest",
++              "line": 188,
++              "kind": "go-function"
++            },
++            {
++              "name": "historyBinding",
++              "line": 198,
++              "kind": "go-function"
++            },
++            {
++              "name": "Format",
++              "line": 259,
++              "kind": "go-function"
++            },
++            {
++              "name": "MarshalJSON",
++              "line": 262,
++              "kind": "go-function"
++            },
++            {
++              "name": "openBootstrapHistory",
++              "line": 268,
++              "kind": "go-function"
++            },
++            {
++              "name": "Begin",
++              "line": 319,
++              "kind": "go-function"
++            },
++            {
++              "name": "RecordTerminal",
++              "line": 353,
++              "kind": "go-function"
++            },
++            {
++              "name": "Close",
++              "line": 403,
++              "kind": "go-function"
++            },
++            {
++              "name": "historyPending",
++              "line": 447,
++              "kind": "go-function"
++            },
++            {
++              "name": "historyCompletion",
++              "line": 460,
++              "kind": "go-function"
++            },
++            {
++              "name": "lockHistory",
++              "line": 476,
++              "kind": "go-function"
++            }
++          ],
++          "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
++        },
++        {
++          "path": "platform/launcher/host_history_policy.go",
++          "componentIds": [
++            "PLAT-01"
++          ],
++          "workingFileSha256": "e76acbe79b31d9c207d5b040cc591bb413a0323ef87d798380fb281d4bf86e59",
++          "declarations": [
++            {
++              "name": "terminalHistory",
++              "line": 24,
++              "kind": "go-function"
++            },
++            {
++              "name": "PreviousBootstrapFailure",
++              "line": 38,
++              "kind": "go-function"
++            },
++            {
++              "name": "CreatorPreviousBootstrapFailure",
++              "line": 74,
++              "kind": "go-function"
++            }
++          ],
++          "httpPathLiterals": [],
++          "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
++        },
++        {
++          "path": "platform/launcher/docker_reads.go",
++          "componentIds": [
++            "PLAT-01"
++          ],
++          "workingFileSha256": "1f32a695404ea6deea25c76a960591ef7cbe524d19a27377df60cfba567a0813",
++          "declarations": [
++            {
++              "name": "Error",
++              "line": 19,
++              "kind": "go-function"
++            },
++            {
++              "name": "Unwrap",
++              "line": 20,
++              "kind": "go-function"
++            },
++            {
++              "name": "inspectionStage",
++              "line": 21,
++              "kind": "go-function"
++            },
++            {
++              "name": "inspectionFailure",
++              "line": 22,
++              "kind": "go-function"
++            },
++            {
++              "name": "dockerReadStage",
++              "line": 25,
++              "kind": "go-function"
++            },
++            {
++              "name": "parallelDockerReadAllowed",
++              "line": 41,
++              "kind": "go-function"
++            },
++            {
++              "name": "parallelReads",
++              "line": 66,
++              "kind": "go-function"
++            }
++          ],
++          "httpPathLiterals": [],
++          "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
++        }
++      ],
++      "addedFiles": [
++        "platform/launcher/bootstrap_boundary_stage.go",
++        "platform/launcher/bootstrap_cleanup_failure.go"
++      ],
++      "phaseAccepted": false
+     }
+   ]
+ }

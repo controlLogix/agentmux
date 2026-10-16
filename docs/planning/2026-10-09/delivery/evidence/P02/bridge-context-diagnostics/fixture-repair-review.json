@@ -1,0 +1,27 @@
+{
+  "scope": "Cache-only dedicated actual NATS control fixture repair; source and gofmt only. No test/compiler/broker/engine execution.",
+  "sourcePins": {
+    "owner_bridge.go": "babd2aba6d80ff06b115061bd2e8a36778b80fc62a0a43d8ddae03d39193d2de",
+    "owner_bridge_diagnostic.go": "719be0a2f7b1eb100e461bb9990461cce3706eb80782e8613225c52324947649",
+    "owner_bridge_diagnostic_fixture_test.go": "384336787b0810bb68afee6cd173a789221683d3f556743243e5e4ee121e5a54",
+    "owner_bridge_diagnostic_test.go": "a25330fef623a2a659f08f702066f6fc1e38622c190bb4a677d6c38326e10662",
+    "owner_bridge_probe.go": "92b44259262955f3dbf624b7f2af9ff58c6ca467276b7bbd416cbc5a50b2fc36",
+    "request_diagnostic.go": "3571ae97858bf601aab29eccd78cb8bb718dffcb23de4097d9876421f6ae96fe"
+  },
+  "diffSHA256": "8b628f23f619626cf6daa0c003c8a51527adbcfe18aaa4b951fceb23b762ddf9",
+  "originalRecordSHA256": "5c28b4bfc94e8a99d0508ca770b55b2bc8658683fbd3ff32cd21b6f0ddfdb378",
+  "productionFourPinsUnchanged": true,
+  "changes": [
+    "One original thirty-second fixture context starts before fixture acquisitions; it is canceled last by registered cleanup, not before owned controller cleanup. The actual request uses its two-second child context.",
+    "Dedicated broker owns CommandContext process and exclusive private log. Log cleanup registers immediately after Open; exact process cleanup registers immediately after Start before connection readiness.",
+    "Broker graceful SIGTERM targets only cmd.Process; sole Wait is checked. The only accepted nonzero reap is SIGKILL under expiry of the original fixture context, with no fresh cleanup timeout or adoption.",
+    "Each exact TLS dialer is retained in an immediate cleanup hook before Connect, including failed connect/Close. Raw dialer Close is checked before NATS Close; failed closes remain held for the exact registered retry.",
+    "Request goroutine has one joined result on all fatal paths; its actual returned TransportCleanupError is retained before assertions and its exact Close result is checked.",
+    "Input-free broker fixture creates no arbitrary output or engine authority; controlled inspection is still an explicit component seam."
+  ],
+  "limits": [
+    "No actual cleanup failure injection or physically bounded unpreemptible Wait/Close proof.",
+    "Existing newBridgeFixture/control inspection preparation is reused; historical unchecked broker and raw TLS helpers are not called.",
+    "A terminal original-context SIGKILL proves exact process reaping, not why cancellation occurred."
+  ]
+}

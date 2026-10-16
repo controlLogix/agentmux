@@ -1,0 +1,18 @@
+{
+  "originalSelectionSHA256": "c15d6e12ee118854a80923be4be628970f61e96b90c2b57f27aa55e01bcad497",
+  "affectedResultSHA256": "719baba8e7689b3ac6c382ba88741dcb9c34d1fc89faae812d04fa043d32a48a",
+  "listedLauncherTopLevelCount": 94,
+  "selectedNormalTopLevelCount": 91,
+  "actualNamedPassCount": 403,
+  "normalRaceDirectExit": 0,
+  "coverageGuardRefusedBeforeCLI": true,
+  "faultBuildConstraint": "//go:build (linux || darwin) && historyfaultfixture",
+  "faultSourceSHA256": "a617534b2db84ada3e9d7f87412f05a7c0c488f8d7ae0564ab35a25d4a9404ea",
+  "excludedFromNormalBuild": [
+    "TestBootstrapHistoryFaultExpiryAfterSchemaStartsNoMutation",
+    "TestBootstrapHistoryFaultUnresolvedStageDoesNotBlockRetry",
+    "TestBootstrapHistoryFaultFinalRootPrivacyRecheck"
+  ],
+  "remainingRequirement": "All three history fault checks remain required before the P02 gate. Each needs its documented disposable source/environment injection; they are not covered by the403 normal passes. Do not enable historyfaultfixture globally or repeat the91 normal tests.",
+  "cause": "The plan enumerated declarations without applying their existing build constraint. Original plan and raw result remain unchanged."
+}

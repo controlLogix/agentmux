@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-14T22:05:38.208438+00:00",
+  "reviewer": "Codex",
+  "decision": "accepted preparation evidence only",
+  "results": [
+    {
+      "scope": "compile",
+      "reviewSha256": "41f0883b5248a8bde9cd4970b63e0d102db6d4a059afb724193d4410ea7e6f91",
+      "verifiedArtifacts": 12,
+      "limits": [
+        "No test binary, TestMain or lifecycle case executed.",
+        "No Docker, process metadata, services, signals, or shared source edits.",
+        "New regular-file controls remain outside snapshot and unrun."
+      ]
+    },
+    {
+      "scope": "reader",
+      "reviewSha256": "462fb12dc917680b50acc87df41ed0e699046328b45a035b0fae11329bd9c20b",
+      "verifiedArtifacts": 9,
+      "limits": [
+        "Only owned temporary regular files and fixed source-defined tuples were read.",
+        "No launcher TestMain or integration file was compiled or executed.",
+        "No process metadata, signals, services, Docker or lifecycle invocation.",
+        "Normal owned file closure covered; no injected close-failure proof or procfs wall-clock bound.",
+        "No shared source changes or caller integration acceptance."
+      ]
+    },
+    {
+      "scope": "metadata",
+      "reviewSha256": "ecaee53ac6d14aaca28ec6855d31e320e34238b19948da582a3164b7f4a706d0",
+      "verifiedArtifacts": 14,
+      "limits": [
+        "Explicit two-file Go list only; launcherTestMain/package/integration fixtures excluded.",
+        "Source-derived fixed tuple inputs, not actual child metadata or credential file access.",
+        "Offline AUTHORIZED0 race run. No callers, signals, services, Docker or native lifecycle acceptance.",
+        "Shared source unchanged; root owns any caller integration."
+      ]
+    }
+  ],
+  "limits": [
+    "Compile-only binary was not run.",
+    "Standalone fixed-input metadata and owned regular-file controls do not prove actual process behavior.",
+    "Actual recovery scheduling/crash/waiter/lease/recovery checks remain unproven.",
+    "Independent caller review remains separately preserved; no phase acceptance."
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-14T23:20:24.288237+00:00",
+  "reviewer": "Codex",
+  "sourceCommit": "9ae75ca1b96da069b3dd91c2cb149723c72215a9",
+  "phase": "P02",
+  "phaseAccepted": false,
+  "liveExecutionAuthorized": false,
+  "results": [
+    {
+      "slice": "all-errors-retention",
+      "namedPasses": 9,
+      "sourceCount": 133,
+      "currentSourceVerified": true,
+      "artifacts": {
+        "main.go": "af056f57b99dcc629b207e4e24fcc7ec89d090afc6c3bf9a19abf2e4a9c1f2cd",
+        "review.json": "b337aba1c71530b17518f28d708b1ee8556d68251e78876ee0adf94a6f0f9f4a",
+        "source-copy.json": "8d337f707cf231bc331af83812fbf6c1f6f31a95c35fe91e1c80c861d14d0333",
+        "parking_policy_test.go": "1cb730870fe2e204335eb2e05eaab2a7d66ab6b416a0b7e803d54489f2dc5c5c",
+        "test.jsonl": "aef882f85a2e4eba4e3bef362b4b9d3b05ccd344914c94285d1a7d69f2262857",
+        "source-after.json": "8d337f707cf231bc331af83812fbf6c1f6f31a95c35fe91e1c80c861d14d0333",
+        "test.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "source-before.json": "8d337f707cf231bc331af83812fbf6c1f6f31a95c35fe91e1c80c861d14d0333"
+      },
+      "limits": [
+        "Concrete cleanup errors are zero-value classification controls, not actual socket cleanup.",
+        "Unknown wrapper has a panic Unwrap; policy does not invoke it.",
+        "Oversized80-node graph retained without inspecting/truncating ownership.",
+        "Live capture/recovery controller remains unapproved."
+      ]
+    },
+    {
+      "slice": "concrete-controller",
+      "namedPasses": 14,
+      "sourceCount": 133,
+      "currentSourceVerified": true,
+      "artifacts": {
+        "recovery_controller_test.go": "133bfa5e4f4b38a4bffe70d18cadd1aaa267b41864cc49fb6a73b69df7cf6bdf",
+        "artifact-manifest.json": "d3b65a4edb2773a6d338b1aa378f8d333d22288f2b1b83b6db1a2c11546f874b",
+        "main.go": "64f29603c647411a9b0122b5821d3da32006e06afaffbb405b52c22fceb740a6",
+        "review.json": "854ef7e6563cd6b9719b12b6cdeaaf5f226f47cae1bf7216a39c5687cf682642",
+        "source-copy.json": "8d337f707cf231bc331af83812fbf6c1f6f31a95c35fe91e1c80c861d14d0333",
+        "test.jsonl": "b8263b6f587bf23edf3869a145d63f33a97ce36ffd1babc38340a7ac6b5fcad5",
+        "source-after.json": "8d337f707cf231bc331af83812fbf6c1f6f31a95c35fe91e1c80c861d14d0333",
+        "producer.py": "3fb3c608698ed6529acc7244c62253cb93d805f5d1c5d523436cec08081a1cb0",
+        "test.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "recovery_controller.go": "63835243d7d009a51314c386bedf03fa5db155ab2d160070578fbc7e8d3aeae3",
+        "source-before.json": "8d337f707cf231bc331af83812fbf6c1f6f31a95c35fe91e1c80c861d14d0333"
+      },
+      "limits": [
+        "Only first newline command is read; following bytes ignored and never dispatched. The combined duplicate assertion tests validRecoveryFrame directly, not stream trailing-data refusal.",
+        "Concrete zero-value TransportCleanupError.Close returns nil with no socket; no physical cleanup bound is tested.",
+        "Concrete Dialer.Close waits mutex/stopped/calls without context; pre/post checks do not prove total5s wall bound.",
+        "Unknown wrapper Error/Unwrap/Close panic methods are not invoked.",
+        "Live status/capture/retry remains unapproved."
+      ]
+    }
+  ],
+  "conclusions": [
+    "Pure controls cover retention predicate and fixed-frame dispatch only. They do not execute main or status calls.",
+    "All-errors policy is conservative; owner-free standard-library leaf revision remains untested separately.",
+    "Exact-controller zero value has no real socket; no actual recovery or wall-clock cleanup bound proved.",
+    "No private output or credentials copied."
+  ]
+}

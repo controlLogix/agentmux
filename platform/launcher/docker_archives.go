@@ -33,7 +33,7 @@ func (d *Docker) verifyOwnedTLSArchives(parent context.Context, id string, confi
 	for index, file := range files {
 		go func(index int, name string, digest [32]byte, limit int64) {
 			defer joined.Done()
-			raw, err := d.run(ctx, nil, "cp", id+":/etc/nats/"+name, "-")
+			raw, err := d.runFixedRead(ctx, [3]string{"config_archive", "certificate_archive", "key_archive"}[index], nil, "cp", id+":/etc/nats/"+name, "-")
 			if err == nil {
 				err = verifyPrivateFileArchive(raw, digest, name, limit)
 				clear(raw)

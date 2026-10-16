@@ -1,0 +1,53 @@
+{
+  "scope": "One actual owned stdin-gated child control, tagged race; AUTH0, no Docker or NATS.",
+  "directExit": 0,
+  "namedPassCount": 1,
+  "name": "TestComposeCLICreatorObservation",
+  "testElapsedSeconds": 0.06,
+  "completion": {
+    "exit": 0,
+    "elapsedSeconds": 6.0211297149944585
+  },
+  "stderrBytes": 0,
+  "verifiedFactsByActualAssertions": {
+    "live": {
+      "count": 0,
+      "revents": 0,
+      "errnoCategory": "none"
+    },
+    "unreapedExited": {
+      "count": 1,
+      "revents": 1,
+      "errnoCategory": "none"
+    },
+    "missingMalformedConsumed": {
+      "pollPerformed": false,
+      "countAbsent": true,
+      "reventsAbsent": true,
+      "errnoCategory": "not_observed"
+    }
+  },
+  "cleanup": "Original three-second context; input EOF then successful sole Wait; owned input/pidfd close checked, consumed before close. No reported cleanup failure.",
+  "sourcePins": {
+    "installed_cli_compose_integration_linux_test.go": "d5c07fd5c894b1fce161ab03544b57f1ce0e4d34b06336f81121a7ac19d1c52f",
+    "installed_cli_creator_observation_linux_test.go": "33ea3d9b13daa8d2802a85faf8a650242dd9315ea60629bc0d8001046b81ffe8"
+  },
+  "executedSourceCount": 282,
+  "sourceStable": true,
+  "limits": [
+    "Values above are verified by passing actual child assertions; there is no separate raw per-poll JSON trace.",
+    "No HUP/error injection, historical unknown-poll reconstruction, engine or lifecycle acceptance."
+  ],
+  "artifacts": {
+    "completion.json": "504e09563057e52bb9b90c1a594b3ff3363aa324814d494f039b80de5400d92d",
+    "events.jsonl": "54bf89e8bdf51749e7053a04f3375a20194229d1edd1e89971c2b406bf4d830c",
+    "exit.txt": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "freeze.py": "8787d9b97b2964d479f2f8299a09a7bb4f7d62986c86f31e41a5dec4222546d7",
+    "invocation.json": "e4a99895a17bcc168b6906fc5e50c1235bb26d4c322374a5d39f967a697a6e55",
+    "producer.py": "107fbd9df54138c9e13972d8d22025c5b064f89a012c31ac1818685d6bb3a119",
+    "shared-after.json": "3e02c320cce249a4eb9bc68f0ac3d90fa4e01ae20c9eaaa76c929fa4de4cfe21",
+    "shared-before.json": "3e02c320cce249a4eb9bc68f0ac3d90fa4e01ae20c9eaaa76c929fa4de4cfe21",
+    "source-manifest.json": "b2190c0d76f0cc76a142367354319d5cdde35a17265660991c1d5c6bb4ce5143",
+    "stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

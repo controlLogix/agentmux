@@ -1,0 +1,959 @@
+--- original-draft/bootstrap.go
++++ repaired/bootstrap.go
+@@ -513,8 +513,8 @@
+ 		}
+ 		boundaryStage = "readiness_observation"
+ 		ready, err := observe(ctx)
+-		boundaryStage = "readiness_finalize"
+ 		if err == nil {
++			boundaryStage = "readiness_finalize"
+ 			session.mu.Lock()
+ 			if lifetime.Err() != nil {
+ 				session.mu.Unlock()
+--- original-draft/bootstrap_boundary_cold_test.go
++++ repaired/bootstrap_boundary_cold_test.go
+@@ -0,0 +1,218 @@
++//go:build linux
++
++package launcher
++
++import (
++	"context"
++	"crypto/sha256"
++	"encoding/hex"
++	"encoding/json"
++	"fmt"
++	"io"
++	"os"
++	"path/filepath"
++	"reflect"
++	"strings"
++	"testing"
++	"time"
++)
++
++// Only a separately spawned copy of the actual test binary enters this fixed
++// controlled Docker fixture. No real engine, broker or generic callback runs.
++type bootstrapBoundaryDockerSpec struct {
++	Profile       Profile
++	Mode          string
++	Log           string
++	ComposeSHA256 string
++	BridgeSpec    string
++	Started       string
++	Pause         string
++	Release       string
++}
++
++func init() {
++	name := os.Getenv("AMX_BOOTSTRAP_BOUNDARY_DOCKER_FIXTURE")
++	if name == "" {
++		return
++	}
++	raw, err := os.ReadFile(name)
++	var spec bootstrapBoundaryDockerSpec
++	if err != nil || json.Unmarshal(raw, &spec) != nil {
++		os.Exit(9)
++	}
++	args := os.Args[1:]
++	if len(args) < 3 || args[0] != "--context" || args[1] != spec.Profile.Docker.Context {
++		os.Exit(9)
++	}
++	args = args[2:]
++	log, err := os.OpenFile(spec.Log, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0600)
++	if err != nil {
++		os.Exit(9)
++	}
++	line, _ := json.Marshal(args)
++	_, err = log.Write(append(line, '\n'))
++	closeErr := log.Close()
++	if err != nil || closeErr != nil {
++		os.Exit(9)
++	}
++	if spec.Mode == "post_start_refusal" && args[0] == "context" {
++		if _, e := os.Stat(spec.Started); e == nil {
++			os.Exit(4)
++		}
++	}
++	if strings.HasPrefix(spec.Mode, "cold_readiness_") {
++		if args[0] == "context" {
++			ledger, e := os.ReadFile(spec.Log)
++			if e != nil {
++				os.Exit(9)
++			}
++			count := 0
++			for _, line := range strings.Split(string(ledger), "\n") {
++				var row []string
++				if json.Unmarshal([]byte(line), &row) == nil && len(row) > 0 && row[0] == "context" {
++					count++
++				}
++			}
++			if count == 5 {
++				if os.WriteFile(spec.Pause, []byte("ready"), 0600) != nil {
++					os.Exit(9)
++				}
++				for {
++					if _, e := os.Stat(spec.Release); e == nil {
++						break
++					}
++					time.Sleep(time.Millisecond)
++				}
++			}
++		}
++		if _, e := os.Stat(spec.Started); e == nil {
++			bridgeDockerProcess(spec.BridgeSpec)
++			os.Exit(0)
++		}
++	}
++	if spec.Mode == "initial_timeout" && args[0] == "context" {
++		time.Sleep(10 * time.Second)
++		os.Exit(9)
++	}
++	emit := func(v any) {
++		if json.NewEncoder(os.Stdout).Encode(v) != nil {
++			os.Exit(9)
++		}
++	}
++	switch args[0] {
++	case "context":
++		emit(spec.Profile.Docker.Endpoint)
++	case "version":
++		emit(map[string]string{"Client": spec.Profile.Docker.ClientVersion, "Server": spec.Profile.Docker.ServerVersion})
++	case "info":
++		emit(map[string]string{"ID": spec.Profile.Docker.EngineID, "OS": "linux"})
++	case "ps", "volume", "network": // An absent controlled roster; never borrowed real resources.
++	case "compose":
++		if len(args) == 3 && args[1] == "version" && args[2] == "--short" {
++			if _, e := fmt.Fprintln(os.Stdout, spec.Profile.Docker.ComposeVersion); e != nil {
++				os.Exit(9)
++			}
++			break
++		}
++		// Actual StartOwned reached its unchanged mutation guard. Verify the literal
++		// configured stdin digest, then fail; no broker or container is created.
++		body, readErr := io.ReadAll(io.LimitReader(os.Stdin, 4*1024*1024+1))
++		sum := sha256.Sum256(body)
++		if readErr != nil || len(body) > 4*1024*1024 || "sha256:"+hex.EncodeToString(sum[:]) != spec.ComposeSHA256 {
++			os.Exit(9)
++		}
++		if !reflect.DeepEqual(args, []string{"compose", "--project-name", spec.Profile.ComposeProject, "--file", "-", "up", "--detach", "--wait", "--wait-timeout", "60", "--pull", "never", "--no-build"}) {
++			os.Exit(9)
++		}
++		if spec.Mode == "post_start_refusal" || strings.HasPrefix(spec.Mode, "cold_readiness_") {
++			if os.WriteFile(spec.Started, []byte("started"), 0600) != nil {
++				os.Exit(9)
++			}
++			os.Exit(0)
++		}
++		os.Exit(4)
++	default:
++		os.Exit(9)
++	}
++	os.Exit(0)
++}
++func TestBootstrapBoundaryActualColdMutationGuard(t *testing.T) {
++	for _, mode := range []string{"initial_timeout", "cold_to_guard", "post_start_refusal"} {
++		t.Run(mode, func(t *testing.T) {
++			// Genuine signed static image/private enrollment and actual Bootstrap API,
++			// with fixed controlled Docker subprocesses; no enter/complete substitution.
++			f := pendingRealBridgeFixture(t)
++			directory := t.TempDir()
++			log := filepath.Join(directory, "commands.private")
++			name := filepath.Join(directory, "fixture.private")
++			raw := mustStatusJSON(bootstrapBoundaryDockerSpec{Profile: f.profile, Mode: mode, Log: log, ComposeSHA256: releaseDigest(f.config.Compose), Started: filepath.Join(directory, "started")})
++			if os.WriteFile(name, raw, 0600) != nil {
++				t.Fatal("boundary_fixture_write_failed")
++			}
++			t.Setenv("AMX_BOOTSTRAP_BOUNDARY_DOCKER_FIXTURE", name)
++			t.Setenv("DOCKER_HOST", "")
++			t.Setenv("DOCKER_CONTEXT", "")
++			ctx, cancel := context.WithTimeout(context.Background(), 14*time.Second)
++			defer cancel()
++			session, err := BootstrapForInvocation(ctx, ctx, f.config, "attempt_"+strings.Repeat("c", 32))
++			if session != nil {
++				defer func() {
++					cleanup, stop := context.WithCancel(ctx)
++					defer stop()
++					if session.Close(cleanup) != nil {
++						t.Error("exact_boundary_session_cleanup_failed")
++					}
++				}()
++			}
++			if err == nil {
++				t.Fatal("controlled_boundary_failure_missing")
++			}
++			stage := bootstrapDiagnosticStage(err)
++			want := "broker_start"
++			if mode == "post_start_refusal" {
++				want = "post_start_inspection"
++			}
++			code := "docker_command_failed"
++			if mode == "initial_timeout" {
++				want = "initial_warm_inspection"
++				code = "docker_command_timeout_outcome_unknown"
++			}
++			if stage == nil || *stage != want || ProjectRequestDiagnostic(err).Code != code {
++				t.Fatal("actual_boundary_stage_or_cause_mismatch")
++			}
++			ledger, readErr := os.ReadFile(log)
++			if readErr != nil {
++				t.Fatal("boundary_ledger_unavailable")
++			}
++			mutation := false
++			for _, line := range strings.Split(strings.TrimSpace(string(ledger)), "\n") {
++				var args []string
++				if json.Unmarshal([]byte(line), &args) != nil {
++					t.Fatal("boundary_ledger_invalid")
++				}
++				if len(args) > 0 && args[0] == "compose" && strings.Contains(strings.Join(args, " "), " up ") {
++					mutation = true
++				}
++			}
++			if mutation != (mode != "initial_timeout") {
++				t.Fatal("initial_timeout_mutated_or_allowed_cold_skipped_guard")
++			}
++			// Lease reacquisition proves actual Bootstrap and role cleanup released
++			// exclusion; it grants no authority over any unrelated installation.
++			for _, id := range append([]string{f.profile.Docker.EngineID}, bootstrapBoundaryRoleLeaseIDs(f.profile.Docker.EngineID)...) {
++				lockCtx, stop := context.WithTimeout(ctx, 100*time.Millisecond)
++				lease, e := AcquireBootstrapLock(lockCtx, f.profile.ProfileDirectory, f.profile.InstanceID, id)
++				stop()
++				if e != nil {
++					t.Fatal("boundary_lease_not_released")
++				}
++				if lease.Close() != nil {
++					t.Fatal("boundary_contender_close_failed")
++				}
++			}
++		})
++	}
++}
++func bootstrapBoundaryRoleLeaseIDs(engine string) []string {
++	return []string{engine + ":runtime:boot", engine + ":runtime:kernel-lifecycle", engine + ":runtime:internal-communication", engine + ":runtime:exported-status"}
++}
+--- original-draft/bootstrap_boundary_readiness_test.go
++++ repaired/bootstrap_boundary_readiness_test.go
+@@ -0,0 +1,164 @@
++//go:build linux
++
++package launcher
++
++import (
++	"context"
++	"encoding/json"
++	"os"
++	"path/filepath"
++	"strings"
++	"testing"
++	"time"
++
++	"github.com/controlLogix/agentmux/platform/deployment"
++	"github.com/nats-io/nats.go"
++)
++
++// The actual Bootstrap starts four separately signed real kernel executables.
++// Only Docker inspection and its successful compose guard are controlled; no
++// actual engine or container exists. The pause is confined to that test child.
++func TestBootstrapBoundaryActualReadinessCallSites(t *testing.T) {
++	kernelPath := filepath.Join(t.TempDir(), "kernel")
++	installedCLIBuild(t, "./cmd/agentmux-kernel", kernelPath)
++	kernel, e := os.ReadFile(kernelPath)
++	if e != nil {
++		t.Fatal("actual_kernel_fixture_unavailable")
++	}
++	for _, mode := range []string{"cold_readiness_failure", "cold_readiness_success"} {
++		t.Run(mode, func(t *testing.T) {
++			fixtureContext, stopFixture := context.WithTimeout(context.Background(), 45*time.Second)
++			t.Cleanup(stopFixture)
++			f := installedCLIRoleFixture(t, kernel)
++			// This checked helper owns the actual TLS broker and its exact creator.
++			bridgeDiagnosticOwnedBroker(t, fixtureContext, f)
++			bridgeSpec := os.Getenv("AMX_OWNER_BRIDGE_DOCKER_FIXTURE")
++			if bridgeSpec == "" {
++				t.Fatal("controlled_identity_spec_unavailable")
++			}
++			t.Setenv("AMX_OWNER_BRIDGE_DOCKER_FIXTURE", "")
++			dir := t.TempDir()
++			spec := bootstrapBoundaryDockerSpec{Profile: f.profile, Mode: mode, Log: filepath.Join(dir, "commands.private"), ComposeSHA256: releaseDigest(f.config.Compose), BridgeSpec: bridgeSpec, Started: filepath.Join(dir, "started"), Pause: filepath.Join(dir, "paused"), Release: filepath.Join(dir, "release")}
++			name := filepath.Join(dir, "spec.private")
++			if os.WriteFile(name, mustStatusJSON(spec), 0600) != nil {
++				t.Fatal("fixed_boundary_spec_unavailable")
++			}
++			t.Setenv("AMX_BOOTSTRAP_BOUNDARY_DOCKER_FIXTURE", name)
++			t.Setenv("DOCKER_HOST", "")
++			t.Setenv("DOCKER_CONTEXT", "")
++			dialer, e := f.config.Health.TLS.NewDialer(fixtureContext, time.Second)
++			if e != nil {
++				t.Fatal("exact_health_dialer_unavailable")
++			}
++			var health *nats.Conn
++			t.Cleanup(func() {
++				if dialer.Close() != nil {
++					t.Error("exact_health_dialer_cleanup_failed")
++				}
++				if health != nil {
++					health.Close()
++				}
++			})
++			health, e = nats.Connect(f.config.Health.Endpoint, nats.UserInfo(deployment.HealthUser, f.config.Health.Password), nats.TLSHandshakeFirst(), nats.SetCustomDialer(dialer), nats.NoReconnect(), nats.IgnoreDiscoveredServers(), nats.Timeout(time.Second), nats.ErrorHandler(ownerBridgeAsyncErrorHandler))
++			if e != nil {
++				t.Fatal("actual_health_account_unavailable")
++			}
++			startup, stopStartup := context.WithCancel(fixtureContext)
++			type result struct {
++				session *Session
++				failure error
++			}
++			done := make(chan result, 1)
++			joined := false
++			var owned result
++			go func() {
++				s, e := BootstrapForInvocation(startup, fixtureContext, f.config, "attempt_"+strings.Repeat("d", 32))
++				done <- result{s, e}
++			}()
++			defer func() {
++				stopStartup()
++				if !joined {
++					owned = <-done
++					joined = true
++				}
++				if owned.session != nil && owned.session.Close(fixtureContext) != nil {
++					t.Error("actual_protected_owner_cleanup_failed")
++				}
++			}()
++			// The fifth endpoint inspect occurs after actual provisioning and group Start,
++			// before the first readiness Observe. StartOwned also performs its own
++			// warm guard inspection. The same startup budget stays live.
++			for {
++				if _, e := os.Stat(spec.Pause); e == nil {
++					break
++				}
++				select {
++				case owned = <-done:
++					joined = true
++					t.Fatal("actual_bootstrap_returned_before_readiness_boundary")
++				case <-startup.Done():
++					t.Fatal("original_startup_expired_before_readiness_boundary")
++				case <-time.After(time.Millisecond):
++				}
++			}
++			if mode == "cold_readiness_failure" {
++				js, e := health.JetStream()
++				if e != nil {
++					t.Fatal("actual_health_stream_context_unavailable")
++				}
++				if _, e = js.Publish(deployment.HealthSubject(f.config.Health.HubID), []byte("invalid-isolated-health-record"), nats.Context(startup)); e != nil {
++					t.Fatal("isolated_health_fault_not_persisted")
++				}
++			}
++			if os.WriteFile(spec.Release, []byte("release"), 0600) != nil {
++				t.Fatal("fixed_readiness_child_release_failed")
++			}
++			owned = <-done
++			joined = true
++			if startup.Err() != nil || fixtureContext.Err() != nil {
++				t.Fatal("original_context_exhausted")
++			}
++			if mode == "cold_readiness_failure" {
++				stage := bootstrapDiagnosticStage(owned.failure)
++				if owned.failure == nil || owned.failure.Error() != "observe_record_invalid" || stage == nil || *stage != "readiness_observation" {
++					t.Fatal("actual_hard_observation_misattributed")
++				}
++			} else {
++				if owned.failure != nil || owned.session == nil || owned.session.Status.Disposition != "started" || owned.session.Status.Kernel.KernelReadiness != "ready" {
++					t.Fatal("actual_successful_finalization_changed")
++				}
++			}
++			if owned.session != nil {
++				if owned.session.Close(fixtureContext) != nil {
++					t.Fatal("actual_session_close_failed")
++				}
++				owned.session = nil
++			}
++			for _, id := range append([]string{f.profile.Docker.EngineID}, bootstrapBoundaryRoleLeaseIDs(f.profile.Docker.EngineID)...) {
++				bounded, cancel := context.WithTimeout(fixtureContext, 100*time.Millisecond)
++				lease, e := AcquireBootstrapLock(bounded, f.profile.ProfileDirectory, f.profile.InstanceID, id)
++				cancel()
++				if e != nil {
++					t.Fatal("actual_exclusion_not_released")
++				}
++				if lease.Close() != nil {
++					t.Fatal("actual_contender_close_failed")
++				}
++			}
++			ledger, e := os.ReadFile(spec.Log)
++			if e != nil {
++				t.Fatal("fixed_command_ledger_unavailable")
++			}
++			mutations := 0
++			for _, line := range strings.Split(string(ledger), "\n") {
++				var args []string
++				if json.Unmarshal([]byte(line), &args) == nil && len(args) > 0 && args[0] == "compose" && strings.Contains(strings.Join(args, " "), " up ") {
++					mutations++
++				}
++			}
++			if mutations != 1 {
++				t.Fatal("actual_original_mutation_guard_changed")
++			}
++		})
++	}
++}
+--- original-draft/bootstrap_failed_read.go
++++ repaired/bootstrap_failed_read.go
+@@ -8,35 +8,27 @@
+ 
+ // Failed reads are private diagnostic facts, never successful observations.
+ type bootstrapFailedRead struct {
+-	Kind                 string `json:"kind"`
+-	ElapsedNanoseconds   int64  `json:"elapsedNanoseconds"`
+-	RemainingNanoseconds int64  `json:"remainingNanoseconds"`
++	Kind                    string `json:"kind"`
++	ElapsedNanoseconds      int64  `json:"elapsedNanoseconds"`
++	RemainingNanoseconds    int64  `json:"remainingNanoseconds"`
++	EffectiveCapNanoseconds int64  `json:"effectiveCapNanoseconds"`
+ }
+ 
+ func validBootstrapFailedRead(m *bootstrapFailedRead) bool {
+-	if m == nil || m.ElapsedNanoseconds < 0 || m.ElapsedNanoseconds > int64(120*time.Second) || m.RemainingNanoseconds <= 0 || m.RemainingNanoseconds > int64(60*time.Second) {
++	if m == nil || m.ElapsedNanoseconds < 0 || m.ElapsedNanoseconds > int64(120*time.Second) || m.RemainingNanoseconds <= 0 || m.RemainingNanoseconds > int64(60*time.Second) || m.EffectiveCapNanoseconds <= 0 || m.EffectiveCapNanoseconds > int64(4*time.Second) || m.EffectiveCapNanoseconds > m.RemainingNanoseconds {
+ 		return false
+ 	}
+ 	switch m.Kind {
+-	case "endpoint", "version", "compose_version", "engine", "roster", "engine_stdio":
++	case "endpoint", "version", "compose_version", "engine", "roster", "engine_stdio", "container_inspection", "image_inspection", "volume_inspection", "config_archive", "certificate_archive", "key_archive":
+ 		return true
+ 	}
+ 	return false
+ }
+-func fixedDockerReadKind(d *Docker, args []string) string {
+-	if len(args) == 5 && args[0] == "context" && args[1] == "inspect" && args[2] == d.config.Context && args[3] == "--format" && args[4] == "{{json .Endpoints.docker.Host}}" {
+-		return "endpoint"
+-	}
+-	if parallelDockerReadAllowed(args) {
+-		return dockerReadStage(args)
+-	}
+-	return ""
+-}
+-func failedDockerRead(kind string, parent context.Context, started time.Time, remaining time.Duration, cause error) error {
++func failedDockerRead(kind string, parent context.Context, started time.Time, remaining, effectiveCap time.Duration, cause error) error {
+ 	if cause == nil || kind == "" || parent == nil {
+ 		return cause
+ 	}
+-	metric := &bootstrapFailedRead{kind, int64(time.Since(started)), int64(remaining)}
++	metric := &bootstrapFailedRead{kind, int64(time.Since(started)), int64(remaining), int64(effectiveCap)}
+ 	if !validBootstrapFailedRead(metric) {
+ 		return cause
+ 	}
+--- original-draft/bootstrap_failed_read_test.go
++++ repaired/bootstrap_failed_read_test.go
+@@ -24,7 +24,7 @@
+ 	d := &Docker{config: DockerConfig{Executable: executable, Context: "fixed", Timeout: time.Second}}
+ 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+ 	defer cancel()
+-	_, failure := d.run(ctx, nil, "version", "--format", dockerVersionReadFormat)
++	_, failure := d.runFixedRead(ctx, "version", nil, "version", "--format", dockerVersionReadFormat)
+ 	metric := bootstrapFailedReadFromError(failure)
+ 	if failure == nil || failure.Error() != "docker_command_failed" || metric == nil || metric.Kind != "version" || !validBootstrapFailedRead(metric) || ctx.Err() != nil {
+ 		t.Fatal("actual_joined_read_failure_metric_missing")
+@@ -47,17 +47,17 @@
+ 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+ 	defer cancel()
+ 	original := refusal("command_failed")
+-	valid := failedDockerRead("roster", ctx, time.Now(), time.Second, original)
++	valid := failedDockerRead("roster", ctx, time.Now(), time.Second, time.Second, original)
+ 	if !errors.Is(valid, original) || bootstrapFailedReadFromError(valid) == nil {
+ 		t.Fatal("original_cause_lost")
+ 	}
+ 	for name, failure := range map[string]error{
+ 		"opaque":          unknownBoundaryGraffiti{},
+ 		"text":            errors.New("roster elapsedNanoseconds"),
+-		"mutation":        failedDockerRead("compose_up", ctx, time.Now(), time.Second, original),
+-		"absent_budget":   failedDockerRead("version", ctx, time.Now(), 0, original),
+-		"invalid_budget":  failedDockerRead("version", ctx, time.Now(), 61*time.Second, original),
+-		"expired_elapsed": failedDockerRead("version", ctx, time.Now().Add(-121*time.Second), time.Second, original),
++		"mutation":        failedDockerRead("compose_up", ctx, time.Now(), time.Second, time.Second, original),
++		"absent_budget":   failedDockerRead("version", ctx, time.Now(), 0, time.Second, original),
++		"invalid_budget":  failedDockerRead("version", ctx, time.Now(), 61*time.Second, time.Second, original),
++		"expired_elapsed": failedDockerRead("version", ctx, time.Now().Add(-121*time.Second), time.Second, time.Second, original),
+ 	} {
+ 		t.Run(name, func(t *testing.T) {
+ 			if bootstrapFailedReadFromError(failure) != nil {
+@@ -72,15 +72,9 @@
+ 	if bootstrapFailedReadFromError(errors.Join(oversized...)) != nil {
+ 		t.Fatal("metric_graph_bound_changed")
+ 	}
+-	conflicting := failedDockerRead("version", ctx, time.Now(), time.Second, original)
++	conflicting := failedDockerRead("version", ctx, time.Now(), time.Second, time.Second, original)
+ 	if bootstrapFailedReadFromError(errors.Join(valid, conflicting)) != nil {
+ 		t.Fatal("ambiguous_metric_accepted")
+-	}
+-	d := &Docker{config: DockerConfig{Context: "fixed"}}
+-	for _, args := range [][]string{{"compose", "up"}, {"version", "--format", "arbitrary"}, {"context", "inspect", "foreign", "--format", "{{json .Endpoints.docker.Host}}"}} {
+-		if fixedDockerReadKind(d, args) != "" {
+-			t.Fatal("arbitrary_command_metric_minted")
+-		}
+ 	}
+ 	public, err := terminalHistory(&bootstrapHistoryFailure{InvocationID: "attempt_" + strings.Repeat("a", 32), CompletedAt: historyTimestamp(time.Now().UTC()), DiagnosticCode: "request_failed", Cleanup: "unknown", FailedRead: bootstrapFailedReadFromError(valid)}, time.Now().UTC())
+ 	if err != nil || strings.Contains(string(mustStatusJSON(public)), "failedRead") {
+--- original-draft/bootstrap_history.schema.json
++++ repaired/bootstrap_history.schema.json
+@@ -240,7 +240,13 @@
+                         "compose_version",
+                         "engine",
+                         "roster",
+-                        "engine_stdio"
++                        "engine_stdio",
++                        "container_inspection",
++                        "image_inspection",
++                        "volume_inspection",
++                        "config_archive",
++                        "certificate_archive",
++                        "key_archive"
+                       ]
+                     },
+                     "elapsedNanoseconds": {
+@@ -252,12 +258,18 @@
+                       "type": "integer",
+                       "minimum": 1,
+                       "maximum": 60000000000
++                    },
++                    "effectiveCapNanoseconds": {
++                      "type": "integer",
++                      "minimum": 1,
++                      "maximum": 4000000000
+                     }
+                   },
+                   "required": [
+                     "kind",
+                     "elapsedNanoseconds",
+-                    "remainingNanoseconds"
++                    "remainingNanoseconds",
++                    "effectiveCapNanoseconds"
+                   ]
+                 }
+               },
+@@ -428,7 +440,13 @@
+                     "compose_version",
+                     "engine",
+                     "roster",
+-                    "engine_stdio"
++                    "engine_stdio",
++                    "container_inspection",
++                    "image_inspection",
++                    "volume_inspection",
++                    "config_archive",
++                    "certificate_archive",
++                    "key_archive"
+                   ]
+                 },
+                 "elapsedNanoseconds": {
+@@ -440,12 +458,18 @@
+                   "type": "integer",
+                   "minimum": 1,
+                   "maximum": 60000000000
++                },
++                "effectiveCapNanoseconds": {
++                  "type": "integer",
++                  "minimum": 1,
++                  "maximum": 4000000000
+                 }
+               },
+               "required": [
+                 "kind",
+                 "elapsedNanoseconds",
+-                "remainingNanoseconds"
++                "remainingNanoseconds",
++                "effectiveCapNanoseconds"
+               ]
+             }
+           },
+--- original-draft/bootstrap_history_stage_test.go
++++ repaired/bootstrap_history_stage_test.go
+@@ -15,7 +15,7 @@
+ 		t.Run(stage, func(t *testing.T) {
+ 			first, op, f, lease, binding := historyFixture(t)
+ 			enterHistoryFixture(t, first, op, f)
+-			if op.complete(nil, bootstrapBoundaryFailure(stage, failedDockerRead("version", op.startup, time.Now(), time.Second, refusal("command_failed")))) != nil || first.RecordTerminal(op.startup) != nil {
++			if op.complete(nil, bootstrapBoundaryFailure(stage, failedDockerRead("version", op.startup, time.Now(), time.Second, time.Second, refusal("command_failed")))) != nil || first.RecordTerminal(op.startup) != nil {
+ 				t.Fatal("stage_terminal_publication_failed")
+ 			}
+ 			raw, _, err := readHistoryFile(op.startup, first.root, first.binding.OwnerUID)
+--- original-draft/docker.go
++++ repaired/docker.go
+@@ -102,15 +102,18 @@
+ }
+ 
+ // run is private, uses literal arguments, and never returns subprocess text.
+-func (d *Docker) run(ctx context.Context, stdin []byte, args ...string) (output []byte, failure error) {
++func (d *Docker) run(ctx context.Context, stdin []byte, args ...string) ([]byte, error) {
++	return d.runFixedRead(ctx, "", stdin, args...)
++}
++func (d *Docker) runFixedRead(ctx context.Context, kind string, stdin []byte, args ...string) (output []byte, failure error) {
+ 	parent := ctx
+ 	started := time.Time{}
+ 	remaining := time.Duration(0)
+-	kind := fixedDockerReadKind(d, args)
++	effectiveCap := time.Duration(0)
+ 	attempted := false
+ 	defer func() {
+ 		if attempted && failure != nil {
+-			failure = failedDockerRead(kind, parent, started, remaining, failure)
++			failure = failedDockerRead(kind, parent, started, remaining, effectiveCap, failure)
+ 		}
+ 	}()
+ 	if err := d.environment(); err != nil {
+@@ -137,6 +140,12 @@
+ 			remaining = time.Until(deadline)
+ 		}
+ 	}
++	if deadline, ok := ctx.Deadline(); ok {
++		effectiveCap = time.Until(deadline)
++	}
++	if effectiveCap > remaining {
++		effectiveCap = remaining
++	}
+ 	attempted = true
+ 	if err := cmd.Run(); err != nil {
+ 		if ctx.Err() != nil {
+@@ -150,7 +159,10 @@
+ 	return out.Bytes(), nil
+ }
+ func (d *Docker) read(ctx context.Context, dst any, args ...string) error {
+-	b, e := d.run(ctx, nil, args...)
++	return d.readFixed(ctx, "", dst, args...)
++}
++func (d *Docker) readFixed(ctx context.Context, kind string, dst any, args ...string) error {
++	b, e := d.runFixedRead(ctx, kind, nil, args...)
+ 	if e != nil {
+ 		return e
+ 	}
+@@ -161,7 +173,7 @@
+ }
+ func (d *Docker) Inspect(ctx context.Context) (DockerInspection, error) {
+ 	var endpoint string
+-	if e := d.read(ctx, &endpoint, "context", "inspect", d.config.Context, "--format", "{{json .Endpoints.docker.Host}}"); e != nil {
++	if e := d.readFixed(ctx, "endpoint", &endpoint, "context", "inspect", d.config.Context, "--format", "{{json .Endpoints.docker.Host}}"); e != nil {
+ 		return DockerInspection{}, inspectionFailure("endpoint", e)
+ 	}
+ 	if endpoint != d.config.Endpoint {
+@@ -226,13 +238,16 @@
+ 	return labels["agentmux.instance.id"] == o.InstanceID && labels["agentmux.release.digest"] == o.ReleaseDigest && (o.ProfileID == "" || labels["agentmux.profile.id"] == o.ProfileID)
+ }
+ func (d *Docker) labels(ctx context.Context, kind, id string, o OwnershipPreflight) error {
++	return d.labelsFixed(ctx, "", kind, id, o)
++}
++func (d *Docker) labelsFixed(ctx context.Context, readKind, kind, id string, o OwnershipPreflight) error {
+ 	format := "{{json .Labels}}"
+ 	args := []string{kind, "inspect", id, "--format", format}
+ 	if kind == "container" {
+ 		args = []string{"container", "inspect", id, "--format", "{{json .Config.Labels}}"}
+ 	}
+ 	var labels map[string]string
+-	if e := d.read(ctx, &labels, args...); e != nil {
++	if e := d.readFixed(ctx, readKind, &labels, args...); e != nil {
+ 		return e
+ 	}
+ 	if !o.matches(labels) {
+--- original-draft/docker_archives.go
++++ repaired/docker_archives.go
+@@ -0,0 +1,57 @@
++package launcher
++
++import (
++	"context"
++	"sync"
++)
++
++// These three literal reads are separate from the general read batch. Only
++// the owned-broker TLS inspector calls this helper after all identity checks.
++// No path, command, callback or successful subset is returned to a caller.
++func (d *Docker) verifyOwnedTLSArchives(parent context.Context, id string, config, certificate, key [32]byte) error {
++	if parent == nil || !fullID.MatchString(id) || config == ([32]byte{}) || certificate == ([32]byte{}) || key == ([32]byte{}) {
++		return refusal("broker_tls_expectation_invalid")
++	}
++	if parent.Err() != nil {
++		return refusal("command_timeout_outcome_unknown")
++	}
++	ctx, cancel := context.WithCancel(parent)
++	defer cancel()
++	var joined sync.WaitGroup
++	var first sync.Once
++	var failure error
++	files := [3]struct {
++		name   string
++		digest [32]byte
++		limit  int64
++	}{
++		{"private.conf", config, 64 * 1024},
++		{"server-cert.pem", certificate, 16 * 1024},
++		{"server-key.pem", key, 8 * 1024},
++	}
++	joined.Add(len(files))
++	for index, file := range files {
++		go func(index int, name string, digest [32]byte, limit int64) {
++			defer joined.Done()
++			raw, err := d.runFixedRead(ctx, [3]string{"config_archive", "certificate_archive", "key_archive"}[index], nil, "cp", id+":/etc/nats/"+name, "-")
++			if err == nil {
++				err = verifyPrivateFileArchive(raw, digest, name, limit)
++				clear(raw)
++				if err != nil && index != 0 {
++					err = refusal("broker_tls_file_mismatch")
++				}
++			}
++			if err != nil {
++				first.Do(func() { failure = err; cancel() })
++			}
++		}(index, file.name, file.digest, file.limit)
++	}
++	joined.Wait()
++	if failure != nil {
++		return failure
++	}
++	if parent.Err() != nil {
++		return refusal("command_timeout_outcome_unknown")
++	}
++	return nil
++}
+--- original-draft/docker_instance.go
++++ repaired/docker_instance.go
+@@ -0,0 +1,201 @@
++package launcher
++
++import (
++	"archive/tar"
++	"bytes"
++	"context"
++	"crypto/sha256"
++	"io"
++	"regexp"
++	"strconv"
++)
++
++// OwnedBroker reports observed process state, never authenticated readiness.
++type OwnedBroker struct {
++	ContainerID string
++	State       string
++}
++type brokerPort struct {
++	HostIP   string `json:"HostIp"`
++	HostPort string `json:"HostPort"`
++}
++type brokerMount struct {
++	Type, Name, Destination string
++	RW                      bool
++}
++type brokerInspection struct {
++	ID     string `json:"Id"`
++	Image  string
++	Config struct {
++		Image  string
++		Labels map[string]string
++	}
++	State struct {
++		Status                      string
++		Running, Paused, Restarting bool
++	}
++	HostConfig      struct{ PortBindings map[string][]brokerPort }
++	NetworkSettings struct{ Ports map[string][]brokerPort }
++	Mounts          []brokerMount
++}
++
++var brokerImagePin = regexp.MustCompile(`^docker\.io/library/nats@sha256:[0-9a-f]{64}$`)
++var brokerProfileID = regexp.MustCompile(`^profile_[0-9a-f]{32}$`)
++var brokerTarTime = regexp.MustCompile(`^-?[0-9]{1,20}(\.[0-9]{1,9})?$`)
++
++const brokerInspectFormat = `{"Id":{{json .Id}},"Image":{{json .Image}},"Config":{"Image":{{json .Config.Image}},"Labels":{"agentmux.profile.id":{{json (index .Config.Labels "agentmux.profile.id")}},"agentmux.instance.id":{{json (index .Config.Labels "agentmux.instance.id")}},"agentmux.release.digest":{{json (index .Config.Labels "agentmux.release.digest")}},"com.docker.compose.project":{{json (index .Config.Labels "com.docker.compose.project")}},"com.docker.compose.service":{{json (index .Config.Labels "com.docker.compose.service")}},"com.docker.compose.oneoff":{{json (index .Config.Labels "com.docker.compose.oneoff")}}}},"State":{"Status":{{json .State.Status}},"Running":{{json .State.Running}},"Paused":{{json .State.Paused}},"Restarting":{{json .State.Restarting}}},"HostConfig":{"PortBindings":{{json .HostConfig.PortBindings}}},"NetworkSettings":{"Ports":{{json .NetworkSettings.Ports}}},"Mounts":[{{range $i,$m := .Mounts}}{{if $i}},{{end}}{"Type":{{json $m.Type}},"Name":{{json $m.Name}},"Destination":{{json $m.Destination}},"RW":{{json $m.RW}}}{{end}}]}`
++
++// InspectOwnedBroker is read-only. Expected image and config identity come from
++// the trusted bootstrap caller, not labels. Private config is read as an archive
++// in memory only; errors never contain archive bytes, paths or credentials.
++func (d *Docker) InspectOwnedBroker(ctx context.Context, o OwnershipPreflight, expectedImage string, hostPort int, expectedConfig [32]byte) (OwnedBroker, error) {
++	broker, err := d.inspectOwnedBrokerIdentity(ctx, o, expectedImage, hostPort, expectedConfig)
++	if err != nil || broker.State == "absent" {
++		return broker, err
++	}
++	raw, err := d.runFixedRead(ctx, "config_archive", nil, "cp", broker.ContainerID+":/etc/nats/private.conf", "-")
++	if err != nil {
++		return OwnedBroker{}, err
++	}
++	if err := verifyBrokerConfigArchive(raw, expectedConfig); err != nil {
++		return OwnedBroker{}, err
++	}
++	return broker, nil
++}
++
++// Identity checks finish before any private archive is requested. The config
++// digest remains mandatory even though its bytes are checked by the caller.
++func (d *Docker) inspectOwnedBrokerIdentity(ctx context.Context, o OwnershipPreflight, expectedImage string, hostPort int, expectedConfig [32]byte) (OwnedBroker, error) {
++	if ctx == nil {
++		return OwnedBroker{}, refusal("inspection_context_missing")
++	}
++	if e := o.valid(false); e != nil {
++		return OwnedBroker{}, e
++	}
++	if !brokerProfileID.MatchString(o.ProfileID) || !brokerImagePin.MatchString(expectedImage) || hostPort < 1 || hostPort > 65535 || expectedConfig == ([32]byte{}) {
++		return OwnedBroker{}, refusal("broker_expectation_invalid")
++	}
++	if _, e := d.Inspect(ctx); e != nil {
++		return OwnedBroker{}, e
++	}
++	ids := map[string]bool{}
++	reads, e := d.parallelReads(ctx,
++		[]string{"ps", "--all", "--quiet", "--no-trunc", "--filter", "label=com.docker.compose.project=" + o.Project},
++		[]string{"ps", "--all", "--quiet", "--no-trunc", "--filter", "name=" + o.Project + "_"},
++		[]string{"ps", "--all", "--quiet", "--no-trunc", "--filter", "name=" + o.Project + "-"})
++	if e != nil {
++		return OwnedBroker{}, e
++	}
++	for _, b := range reads {
++		for _, id := range bytes.Fields(b) {
++			s := string(id)
++			if !fullID.MatchString(s) {
++				return OwnedBroker{}, refusal("broker_id_invalid")
++			}
++			ids[s] = true
++		}
++	}
++	if len(ids) == 0 {
++		return OwnedBroker{State: "absent"}, nil
++	}
++	if len(ids) != 1 {
++		return OwnedBroker{}, refusal("broker_roster_mismatch")
++	}
++	var id string
++	for key := range ids {
++		id = key
++	}
++	var actual brokerInspection
++	if e := d.readFixed(ctx, "container_inspection", &actual, "container", "inspect", id, "--format", brokerInspectFormat); e != nil {
++		return OwnedBroker{}, e
++	}
++	// No environment, command, mount source or arbitrary label value is captured.
++	if actual.ID != id || actual.Config.Labels["agentmux.profile.id"] != o.ProfileID || !o.matches(actual.Config.Labels) || actual.Config.Labels["com.docker.compose.service"] != "nats" || actual.Config.Labels["com.docker.compose.oneoff"] != "False" || actual.Config.Image != expectedImage {
++		return OwnedBroker{}, refusal("broker_identity_mismatch")
++	}
++	var imageID string
++	if e := d.readFixed(ctx, "image_inspection", &imageID, "image", "inspect", expectedImage, "--format", "{{json .Id}}"); e != nil {
++		return OwnedBroker{}, e
++	}
++	if imageID == "" || actual.Image != imageID {
++		return OwnedBroker{}, refusal("broker_image_mismatch")
++	}
++	state := "stopped"
++	if actual.State.Paused || actual.State.Restarting {
++		return OwnedBroker{}, refusal("broker_state_unsupported")
++	}
++	switch actual.State.Status {
++	case "running":
++		if !actual.State.Running {
++			return OwnedBroker{}, refusal("broker_state_inconsistent")
++		}
++		state = "running"
++	case "created", "exited":
++		if actual.State.Running {
++			return OwnedBroker{}, refusal("broker_state_inconsistent")
++		}
++	default:
++		return OwnedBroker{}, refusal("broker_state_unsupported")
++	}
++	want := brokerPort{HostIP: "127.0.0.1", HostPort: strconv.Itoa(hostPort)}
++	bindings := actual.HostConfig.PortBindings["4222/tcp"]
++	if len(actual.HostConfig.PortBindings) != 1 || len(bindings) != 1 || bindings[0] != want {
++		return OwnedBroker{}, refusal("broker_port_mismatch")
++	}
++	for target, ports := range actual.NetworkSettings.Ports {
++		if len(ports) > 0 && (target != "4222/tcp" || len(ports) != 1 || ports[0] != want) {
++			return OwnedBroker{}, refusal("broker_active_port_mismatch")
++		}
++	}
++	if state == "running" {
++		ports := actual.NetworkSettings.Ports["4222/tcp"]
++		if len(ports) != 1 || ports[0] != want {
++			return OwnedBroker{}, refusal("broker_active_port_mismatch")
++		}
++	}
++	if len(actual.Mounts) != 1 || actual.Mounts[0] != (brokerMount{Type: "volume", Name: o.Project + "_data", Destination: "/data", RW: true}) {
++		return OwnedBroker{}, refusal("broker_data_mount_mismatch")
++	}
++	if e := d.labelsFixed(ctx, "volume_inspection", "volume", o.Project+"_data", o); e != nil {
++		return OwnedBroker{}, e
++	}
++	return OwnedBroker{ContainerID: id, State: state}, nil
++}
++func verifyBrokerConfigArchive(raw []byte, expected [32]byte) error {
++	return verifyPrivateFileArchive(raw, expected, "private.conf", 64*1024)
++}
++
++// Name and limits come only from fixed owned-broker inspection operations.
++// Each archive must contain one exact regular root-owned private file.
++func verifyPrivateFileArchive(raw []byte, expected [32]byte, name string, max int64) error {
++	if expected == ([32]byte{}) || max < 1 || max > 64*1024 {
++		return refusal("broker_config_archive_invalid")
++	}
++	input := bytes.NewReader(raw)
++	reader := tar.NewReader(input)
++	h, e := reader.Next()
++	if e != nil || h.Name != name || (h.Typeflag != tar.TypeReg && h.Typeflag != tar.TypeRegA) || h.Linkname != "" || h.Mode != 0400 || h.Uid != 0 || h.Gid != 0 || h.Size <= 0 || h.Size > max || len(h.Xattrs) != 0 {
++		return refusal("broker_config_archive_invalid")
++	}
++	// Standard timestamp metadata is harmless; path/identity overrides and unknown
++	// metadata are refused. No metadata is retained in the returned observation.
++	for key, value := range h.PAXRecords {
++		if (key != "mtime" && key != "atime" && key != "ctime") || !brokerTarTime.MatchString(value) {
++			return refusal("broker_config_archive_metadata_invalid")
++		}
++	}
++	body, e := io.ReadAll(io.LimitReader(reader, max+1))
++	if e != nil || int64(len(body)) != h.Size || sha256.Sum256(body) != expected {
++		return refusal("broker_config_identity_mismatch")
++	}
++	if _, e = reader.Next(); e != io.EOF {
++		return refusal("broker_config_archive_extra_entry")
++	}
++	tail, _ := io.ReadAll(input)
++	for _, b := range tail {
++		if b != 0 {
++			return refusal("broker_config_archive_trailing_data")
++		}
++	}
++	return nil
++}
+--- original-draft/docker_reads.go
++++ repaired/docker_reads.go
+@@ -92,7 +92,7 @@
+ 	for i, args := range commands {
+ 		go func(i int, args []string) {
+ 			defer joined.Done()
+-			output, err := d.run(ctx, nil, args...)
++			output, err := d.runFixedRead(ctx, dockerReadStage(args), nil, args...)
+ 			if err != nil {
+ 				first.Do(func() { failure = inspectionFailure(dockerReadStage(args), err); cancel() })
+ 				return
+--- original-draft/docker_stdio.go
++++ repaired/docker_stdio.go
+@@ -28,10 +28,11 @@
+ func (d *Docker) readEngineInfoStdio(parent context.Context, actualClientVersion string) (result dockerEngineInfo, failure error) {
+ 	started := time.Time{}
+ 	remaining := time.Duration(0)
++	effectiveCap := time.Duration(0)
+ 	attempted := false
+ 	defer func() {
+ 		if attempted && failure != nil {
+-			failure = failedDockerRead("engine_stdio", parent, started, remaining, failure)
++			failure = failedDockerRead("engine_stdio", parent, started, remaining, effectiveCap, failure)
+ 		}
+ 	}()
+ 	empty := dockerEngineInfo{}
+@@ -67,6 +68,12 @@
+ 	started = time.Now()
+ 	if deadline, ok := parent.Deadline(); ok {
+ 		remaining = time.Until(deadline)
++	}
++	if deadline, ok := ctx.Deadline(); ok {
++		effectiveCap = time.Until(deadline)
++	}
++	if effectiveCap > remaining {
++		effectiveCap = remaining
+ 	}
+ 	attempted = true
+ 	if cmd.Start() != nil {

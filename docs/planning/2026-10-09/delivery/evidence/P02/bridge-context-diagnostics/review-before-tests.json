@@ -1,0 +1,40 @@
+{
+  "scope": "Cache-only typed bridge context diagnostic proposal; source and gofmt only. No test, compiler, NATS or Docker execution.",
+  "sourcePins": {
+    "owner_bridge.go": "babd2aba6d80ff06b115061bd2e8a36778b80fc62a0a43d8ddae03d39193d2de",
+    "owner_bridge_diagnostic.go": "719be0a2f7b1eb100e461bb9990461cce3706eb80782e8613225c52324947649",
+    "owner_bridge_diagnostic_test.go": "be4ae2dfb35af0428a796c52db278593ab5b861d1473f1641719255a7372fb0c",
+    "owner_bridge_probe.go": "92b44259262955f3dbf624b7f2af9ff58c6ca467276b7bbd416cbc5a50b2fc36",
+    "request_diagnostic.go": "3571ae97858bf601aab29eccd78cb8bb718dffcb23de4097d9876421f6ae96fe"
+  },
+  "basePins": {
+    "request_diagnostic.go": "501819b66d8437a34b1ea233fef4e0fff5efd29b8d66707f8c3ea1c1c5b6ebaf",
+    "owner_bridge_probe.go": "1879bfda9cf0e1ba4d7efc25ea0c2ed8a539c2475a119342d1339fa868dea894",
+    "owner_bridge.go": "dd04086919a2451ef886febd4626d7141aeed60132d0b1289e309fd0d937af6b"
+  },
+  "diffSHA256": "e0a2719ee91200b495a9f5176e22b6500ab32bf32183d8f6207531191429c7fb",
+  "changes": [
+    "Non-authority bridge constructors return distinct private pointer leaves preserving old Error strings and authority sentinel identity.",
+    "No Unwrap, Is or As is added. The projector reads only exact private leaf types; retained standard context sentinels do not alter operational errors.Is or retry behavior.",
+    "Only existing executed context-error branches record the exact observed context sentinel. Nil context, time-remaining-only and localtls label-only branches remain opaque.",
+    "Actual terminal Request reply-wait context expiry preserves owner_bridge_reply_unavailable text while recording the originating context privately. Other NextMsg errors remain opaque.",
+    "Existing probe authority, malformed reply and cleanup ordering are unchanged; context cause is not attached to those errors."
+  ],
+  "proposedTests": [
+    "TestBridgeContextDiagnosticActualRequestDeadline",
+    "TestBridgeContextDiagnosticPresentationAndSentinels",
+    "TestBridgeContextDiagnosticUnknownAndPriority",
+    "TestBridgeContextDiagnosticActualReplyWaitDeadline"
+  ],
+  "controlLimits": [
+    "The actual reply-wait control uses genuine pinned authenticated NATS and observes a real request at HOST without replying; existing controlled Docker inspection remains an explicit component seam.",
+    "It does not qualify an actual engine, original warm failure cause, wall-clock physical cleanup bounds, or the full installed lifecycle.",
+    "Constructed cleanup wrappers test projection priority only; existing owned transport controls remain separately required."
+  ],
+  "knownUnchangedGenericPaths": [
+    "Request ordered flush or publish failure still returns connection_unavailable without inventing a cause.",
+    "Probe non-authentication LastError may remain reply_invalid ahead of deadline handling.",
+    "A deadline label from localtls without actual expired ctx remains request_failed."
+  ],
+  "sharedSourceBeforeAfterEqual": true
+}

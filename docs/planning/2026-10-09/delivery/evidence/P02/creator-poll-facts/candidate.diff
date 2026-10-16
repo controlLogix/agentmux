@@ -1,0 +1,179 @@
+--- before/installed_cli_compose_integration_linux_test.go
++++ candidate/installed_cli_compose_integration_linux_test.go
+@@ -14,6 +14,7 @@
+ 	"path/filepath"
+ 	"reflect"
+ 	"strings"
++	"syscall"
+ 	"testing"
+ 	"time"
+ 
+@@ -529,24 +530,60 @@
+ // composeCLICreatorObservation borrows only the creator handle already retained by
+ // the fixture. Exit or an unknown observation is a failure hint, never readiness.
+ func composeCLICreatorObservation(x *composeCLIFront) string {
++	return composeCLICreatorPollObservation(x).Result
++}
++
++type composeCLICreatorPollFacts struct {
++	Result        string  `json:"result"`
++	Performed     bool    `json:"pollPerformed"`
++	Count         *int    `json:"pollCount,omitempty"`
++	Revents       *uint16 `json:"pollRevents,omitempty"`
++	ErrnoCategory string  `json:"pollErrnoCategory"`
++}
++
++// These facts come from the same single nonblocking call that supplies the
++// existing result. They retain no descriptor, process ID, attempt or raw error.
++func composeCLICreatorPollObservation(x *composeCLIFront) composeCLICreatorPollFacts {
++	facts := composeCLICreatorPollFacts{Result: "creator_host_observation_unknown", ErrnoCategory: "not_observed"}
+ 	if x == nil {
+-		return "not_provided"
++		facts.Result = "not_provided"
++		return facts
+ 	}
+ 	if x.hostFD < 0 || int64(x.hostFD) > 2147483647 || !ownerBridgeInvocation.MatchString(x.hostAttempt) {
+-		return "creator_host_observation_unknown"
++		return facts
+ 	}
+ 	poll := []unix.PollFd{{Fd: int32(x.hostFD), Events: unix.POLLIN}}
+ 	n, err := unix.Poll(poll, 0)
++	bits := uint16(poll[0].Revents)
++	facts.Performed = true
++	facts.Count = &n
++	facts.Revents = &bits
++	facts.ErrnoCategory = "none"
+ 	if err != nil {
+-		return "creator_host_observation_unknown"
++		facts.ErrnoCategory = "unclassified"
++		if errno, ok := err.(syscall.Errno); ok {
++			switch errno {
++			case unix.EINTR:
++				facts.ErrnoCategory = "interrupted"
++			case unix.EBADF:
++				facts.ErrnoCategory = "invalid_descriptor"
++			case unix.EINVAL:
++				facts.ErrnoCategory = "invalid_argument"
++			default:
++				facts.ErrnoCategory = "other_errno"
++			}
++		}
++		return facts
+ 	}
+ 	if n == 0 && poll[0].Revents == 0 {
+-		return "live"
++		facts.Result = "live"
++		return facts
+ 	}
+ 	if n == 1 && poll[0].Revents == unix.POLLIN {
+-		return "creator_host_exited"
+-	}
+-	return "creator_host_observation_unknown"
++		facts.Result = "creator_host_exited"
++		return facts
++	}
++	return facts
+ }
+ 
+ func composeCLIRefresh(t *testing.T, f *bootstrapDockerFixture, startupDeadline time.Time) StartupStatusObservation {
+@@ -564,15 +601,16 @@
+ 	defer cancel()
+ 	lastCode := "none"
+ 	checkCreator := func() {
+-		fact := composeCLICreatorObservation(x)
++		observed := composeCLICreatorPollObservation(x)
++		fact := observed.Result
+ 		if fact == "not_provided" || fact == "live" {
+ 			return
+ 		}
+ 		attempt := ""
+-		if ownerBridgeInvocation.MatchString(x.hostAttempt) {
++		if observed.Performed && ownerBridgeInvocation.MatchString(x.hostAttempt) {
+ 			attempt = x.hostAttempt
+ 		}
+-		f.WriteEvidence(t, "creator-refresh-failure.json", map[string]any{"errorCode": fact, "coldInvocationId": attempt, "deadlineExpired": ctx.Err() != nil, "lastRequestErrorCode": lastCode})
++		f.WriteEvidence(t, "creator-refresh-failure.json", map[string]any{"errorCode": fact, "coldInvocationId": attempt, "deadlineExpired": ctx.Err() != nil, "lastRequestErrorCode": lastCode, "creatorPoll": observed})
+ 		t.Fatal("actual creator host exited or its retained handle could not be observed")
+ 	}
+ 	for ctx.Err() == nil {
+--- before/installed_cli_creator_observation_linux_test.go
++++ candidate/installed_cli_creator_observation_linux_test.go
+@@ -4,10 +4,12 @@
+ 
+ import (
+ 	"context"
++	"encoding/json"
+ 	"errors"
+ 	"io"
+ 	"os"
+ 	"os/exec"
++	"strings"
+ 	"syscall"
+ 	"testing"
+ 	"time"
+@@ -88,30 +90,41 @@
+ 		t.Fatal("owned child handle unavailable")
+ 	}
+ 	x := &composeCLIFront{hostFD: fd, hostAttempt: "attempt_0123456789abcdef0123456789abcdef"}
+-	if got := composeCLICreatorObservation(x); got != "live" {
+-		t.Fatalf("live child observation: %s", got)
++	liveFacts := composeCLICreatorPollObservation(x)
++	if liveFacts.Result != "live" || !liveFacts.Performed || liveFacts.Count == nil || *liveFacts.Count != 0 || liveFacts.Revents == nil || *liveFacts.Revents != 0 || liveFacts.ErrnoCategory != "none" {
++		t.Fatal("actual live child facts rejected")
+ 	}
+-	if composeCLICreatorObservation(nil) != "not_provided" {
+-		t.Fatal("legacy path changed")
++	raw, encodeErr := json.Marshal(liveFacts)
++	if encodeErr != nil || strings.Contains(string(raw), x.hostAttempt) || strings.Contains(string(raw), "hostFD") {
++		t.Fatal("creator poll facts exposed identity")
+ 	}
++
++	absent := composeCLICreatorPollObservation(nil)
++	if absent.Result != "not_provided" || absent.Performed || absent.Count != nil || absent.Revents != nil || absent.ErrnoCategory != "not_observed" {
++		t.Fatal("missing creator was observed")
++	}
++
+ 	bad := composeCLIFront{hostFD: x.hostFD, hostAttempt: "malformed"}
+-	if composeCLICreatorObservation(&bad) != "creator_host_observation_unknown" {
+-		t.Fatal("malformed attempt admitted")
++	malformed := composeCLICreatorPollObservation(&bad)
++	if malformed.Result != "creator_host_observation_unknown" || malformed.Performed || malformed.Count != nil || malformed.Revents != nil || malformed.ErrnoCategory != "not_observed" {
++		t.Fatal("malformed creator was observed")
+ 	}
++
+ 	if closeInput() != nil {
+ 		t.Fatal("owned child input close failed")
+ 	}
+ 	// Leave the child unreaped until the borrowed-handle observation completes.
+-	fact := "live"
+-	for fact == "live" && ctx.Err() == nil {
+-		fact = composeCLICreatorObservation(x)
+-		if fact == "live" {
++	fact := liveFacts
++	for fact.Result == "live" && ctx.Err() == nil {
++		fact = composeCLICreatorPollObservation(x)
++		if fact.Result == "live" {
+ 			time.Sleep(time.Millisecond)
+ 		}
+ 	}
+-	if fact != "creator_host_exited" {
+-		t.Fatalf("unreaped child observation: %s", fact)
++	if fact.Result != "creator_host_exited" || !fact.Performed || fact.Count == nil || *fact.Count != 1 || fact.Revents == nil || *fact.Revents != uint16(unix.POLLIN) || fact.ErrnoCategory != "none" {
++		t.Fatal("actual unreaped child facts rejected")
+ 	}
++
+ 	err = cmd.Wait()
+ 	waited = true
+ 	if err != nil {
+@@ -123,7 +136,9 @@
+ 	if unix.Close(owned) != nil {
+ 		t.Fatal("owned child handle close failed")
+ 	}
+-	if composeCLICreatorObservation(x) != "creator_host_observation_unknown" {
+-		t.Fatal("consumed handle admitted")
++	consumed := composeCLICreatorPollObservation(x)
++	if consumed.Result != "creator_host_observation_unknown" || consumed.Performed || consumed.Count != nil || consumed.Revents != nil || consumed.ErrnoCategory != "not_observed" {
++		t.Fatal("consumed handle was observed")
+ 	}
++
+ }

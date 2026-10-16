@@ -14,6 +14,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"strings"
+	"syscall"
 	"testing"
 	"time"
 
@@ -415,6 +416,133 @@ func composeCLIObservation(t *testing.T, f *bootstrapDockerFixture, x *composeCL
 	return composeCLIOutputObservation(t, f, x.outputState(), r, raw, name, allowReceipt, attempt, owned)
 }
 
+// composeCLICreatorObservation borrows only the creator handle already retained by
+// the fixture. Exit or an unknown observation is a failure hint, never readiness.
+func composeCLICreatorObservation(x *composeCLIFront) string {
+	return composeCLICreatorPollObservation(x).Result
+}
+
+type composeCLICreatorPollFacts struct {
+	Result        string  `json:"result"`
+	Performed     bool    `json:"pollPerformed"`
+	Count         *int    `json:"pollCount,omitempty"`
+	Revents       *uint16 `json:"pollRevents,omitempty"`
+	ErrnoCategory string  `json:"pollErrnoCategory"`
+}
+
+// These facts come from the same single nonblocking call that supplies the
+// existing result. They retain no descriptor, process ID, attempt or raw error.
+func composeCLICreatorPollObservation(x *composeCLIFront) composeCLICreatorPollFacts {
+	facts := composeCLICreatorPollFacts{Result: "creator_host_observation_unknown", ErrnoCategory: "not_observed"}
+	if x == nil {
+		facts.Result = "not_provided"
+		return facts
+	}
+	if x.hostFD < 0 || int64(x.hostFD) > 2147483647 || !ownerBridgeInvocation.MatchString(x.hostAttempt) {
+		return facts
+	}
+	poll := []unix.PollFd{{Fd: int32(x.hostFD), Events: unix.POLLIN}}
+	n, err := unix.Poll(poll, 0)
+	bits := uint16(poll[0].Revents)
+	facts.Performed = true
+	facts.Count = &n
+	facts.Revents = &bits
+	facts.ErrnoCategory = "none"
+	if err != nil {
+		facts.ErrnoCategory = "unclassified"
+		if errno, ok := err.(syscall.Errno); ok {
+			switch errno {
+			case unix.EINTR:
+				facts.ErrnoCategory = "interrupted"
+			case unix.EBADF:
+				facts.ErrnoCategory = "invalid_descriptor"
+			case unix.EINVAL:
+				facts.ErrnoCategory = "invalid_argument"
+			default:
+				facts.ErrnoCategory = "other_errno"
+			}
+		}
+		return facts
+	}
+	if n == 0 && poll[0].Revents == 0 {
+		facts.Result = "live"
+		return facts
+	}
+	if n == 1 && poll[0].Revents == unix.POLLIN {
+		facts.Result = "creator_host_exited"
+		return facts
+	}
+	return facts
+}
+
+func composeCLIRefreshForCreator(t *testing.T, f *bootstrapDockerFixture, startupDeadline time.Time, x *composeCLIFront) StartupStatusObservation {
+	t.Helper()
+	client, err := LoadOwnerBridgeClient(f.Config, *f.BridgeEnrollment)
+	if err != nil {
+		t.Fatal("actual authenticated refresh client refused")
+	}
+	ctx, cancel := context.WithDeadline(context.Background(), startupDeadline)
+	defer cancel()
+	lastCode := "none"
+	checkCreator := func() {
+		observed := composeCLICreatorPollObservation(x)
+		fact := observed.Result
+		if fact == "not_provided" || fact == "live" {
+			return
+		}
+		attempt := ""
+		if observed.Performed && ownerBridgeInvocation.MatchString(x.hostAttempt) {
+			attempt = x.hostAttempt
+		}
+		f.WriteEvidence(t, "creator-refresh-failure.json", map[string]any{"errorCode": fact, "coldInvocationId": attempt, "deadlineExpired": ctx.Err() != nil, "lastRequestErrorCode": lastCode, "creatorPoll": observed})
+		t.Fatal("actual creator host exited or its retained handle could not be observed")
+	}
+	for ctx.Err() == nil {
+		checkCreator()
+		request, stop := context.WithTimeout(ctx, 5*time.Second)
+		out, e := client.Request(request, "status", "attempt_"+bootstrapFixtureRandom(t, 16))
+		stop()
+		code := "none"
+		if e != nil {
+			switch e.Error() {
+			case "owner_bridge_connection_unavailable", "owner_bridge_reply_unavailable", "owner_bridge_deadline":
+				code = e.Error()
+			default:
+				code = "closed_unclassified_failure"
+			}
+		}
+		lastCode = code
+		checkCreator()
+		f.WriteEvidence(t, "refresh-attempt-"+bootstrapFixtureRandom(t, 4)+".json", map[string]any{"errorCode": code, "deadlineExpired": ctx.Err() != nil, "disposition": out.Disposition})
+		if e == nil && (out.Disposition == "started" || out.Disposition == "reused") {
+			if out.Instance.RunningVersion == nil || out.Instance.Readiness != "degraded" || out.Work.State != "unavailable" || out.Hubs.InventoryState != "unavailable" {
+				t.Fatal("actual completed status lacks current kernel evidence")
+			}
+			for _, role := range protocol.Roles() {
+				found := false
+				for _, service := range out.Instance.Services {
+					if service.ServiceID == role && service.Readiness == "ready" && service.ObservedAt != nil && service.SourceRevision != nil {
+						found = true
+					}
+				}
+				if !found {
+					t.Fatal("actual completed role lacks current readiness")
+				}
+			}
+			return out
+		}
+		if e != nil && e.Error() != "owner_bridge_connection_unavailable" && e.Error() != "owner_bridge_reply_unavailable" && e.Error() != "owner_bridge_deadline" {
+			t.Fatal("actual refresh authority or runtime failed")
+		}
+		if e == nil && out.Disposition != "starting" {
+			t.Fatal("actual startup failed")
+		}
+		time.Sleep(25 * time.Millisecond)
+	}
+	t.Fatal("actual installed runtime did not complete within startup budget")
+	return StartupStatusObservation{}
+}
+
 func composeCLIPinRoles(t *testing.T, f *bootstrapDockerFixture, x *composeCLIFront) {
 	t.Helper()
 	if x.hostFD < 0 {
@@ -469,7 +597,7 @@ func TestInstalledCLIRealComposeColdWarmAndRefresh(t *testing.T) {
 	x.mustOwnHost = true
 	raw := composeCLIWait(t, f, x, s, r, "cold")
 	composeCLIObservation(t, f, x, r, raw, "cold", true)
-	fresh := composeCLIRefresh(t, f, x.started.Add(f.Config.StartupTimeout))
+	fresh := composeCLIRefreshForCreator(t, f, x.started.Add(f.Config.StartupTimeout), x)
 	composeCLIPinRoles(t, f, x)
 	bootstrapFixtureRoleLeases(t, f, true)
 	poll := []unix.PollFd{{Fd: int32(x.hostFD), Events: unix.POLLIN}}
@@ -599,7 +727,7 @@ func TestInstalledCLIRealComposeAuthenticatedPending(t *testing.T) {
 	if lease.Close() != nil {
 		t.Fatal("pending arbitration release failed")
 	}
-	f.WriteEvidence(t, "pending-completion.json", composeCLIRefresh(t, f, x.started.Add(f.Config.StartupTimeout)))
+	f.WriteEvidence(t, "pending-completion.json", composeCLIRefreshForCreator(t, f, x.started.Add(f.Config.StartupTimeout), x))
 	composeCLIPinRoles(t, f, x)
 	f.AssertBaselineUnchanged(t)
 }
@@ -610,7 +738,7 @@ func TestInstalledCLIRealComposeAbruptHostRestart(t *testing.T) {
 	original := composeCLIStart(t, f, s, r, "ensure")
 	original.mustOwnHost = true
 	composeCLIObservation(t, f, original, r, composeCLIWait(t, f, original, s, r, "abrupt-cold"), "abrupt-cold", true)
-	f.WriteEvidence(t, "abrupt-original-status.json", composeCLIRefresh(t, f, original.started.Add(f.Config.StartupTimeout)))
+	f.WriteEvidence(t, "abrupt-original-status.json", composeCLIRefreshForCreator(t, f, original.started.Add(f.Config.StartupTimeout), original))
 	composeCLIPinRoles(t, f, original)
 	bootstrapFixtureRoleLeases(t, f, true)
 	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
@@ -669,7 +797,7 @@ func TestInstalledCLIRealComposeAbruptHostRestart(t *testing.T) {
 	recovered := composeCLIStart(t, f, s, r, "ensure")
 	recovered.mustOwnHost = true
 	composeCLIObservation(t, f, recovered, r, composeCLIWait(t, f, recovered, s, r, "abrupt-recovery"), "abrupt-recovery", true)
-	f.WriteEvidence(t, "abrupt-recovery-status.json", composeCLIRefresh(t, f, recovered.started.Add(f.Config.StartupTimeout)))
+	f.WriteEvidence(t, "abrupt-recovery-status.json", composeCLIRefreshForCreator(t, f, recovered.started.Add(f.Config.StartupTimeout), recovered))
 	composeCLIPinRoles(t, f, recovered)
 	if recovered.hostPID == original.hostPID || recovered.hostAttempt == original.hostAttempt {
 		t.Fatal("actual restart reused the dead creating host")

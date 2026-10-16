@@ -1,0 +1,38 @@
+{
+  "commit": "bae3c5316e3ca89354055aa299c3e3c35a4c7c28",
+  "runId": 38660457655,
+  "jobId": 116180204322,
+  "artifactId": 11938399009,
+  "scope": "Separate native Darwin descriptor research; not foundation or protected boot acceptance",
+  "checks": [
+    {
+      "name": "darwin-descriptor-research",
+      "status": "failed",
+      "exitCode": 1,
+      "timedOut": false,
+      "rawHashVerified": true,
+      "passedTestEvents": 0,
+      "failureEvents": 2
+    },
+    {
+      "name": "darwin-fail-closed-control",
+      "status": "passed",
+      "exitCode": 0,
+      "timedOut": false,
+      "rawHashVerified": true,
+      "passedTestEvents": 1,
+      "failureEvents": 0
+    }
+  ],
+  "sourceUnchanged": true,
+  "executedSourceUnchanged": true,
+  "nativeProtectedBootQualified": false,
+  "artifacts": {
+    "darwin-descriptor-research.jsonl": "4aff29c8ccba9528a11524dac04f199453ae6bd648f51267928066e4d4d76952",
+    "darwin-fail-closed-control.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "darwin-fail-closed-control.jsonl": "599bf2b77051644aa38e9aeb6fbc5e6bb89d4f06cb6457f080a38afc82f44c84",
+    "result.json": "68e1e9377d76552d9b9370e86b0cbc92271c266b06a34c040652f84e65ad4e91",
+    "darwin-descriptor-research.stderr.log": "5cde1ee80afa94123874c550600b580f5e996888674e679c77b96dae1851db4e"
+  },
+  "observedFailure": "TestDarwinUnlinkedDescriptorResearch: actual child did not execute; fork/exec /dev/fd/3 returned permission denied; product stayed fail-closed"
+}

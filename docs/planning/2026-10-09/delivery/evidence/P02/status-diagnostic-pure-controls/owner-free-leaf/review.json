@@ -1,0 +1,60 @@
+{
+  "scope": "Ten pure exact leaf-retention policy cases only; no main/status/network/native execution",
+  "argv": [
+    "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+    "test",
+    "-race",
+    "-count=1",
+    "-json",
+    "/home/ryan/.cache/agentmux-governance/p02-status-owner-free-leaf-pure-jp_f1fw5/main.go",
+    "/home/ryan/.cache/agentmux-governance/p02-status-owner-free-leaf-pure-jp_f1fw5/recovery_controller.go",
+    "/home/ryan/.cache/agentmux-governance/p02-status-owner-free-leaf-pure-jp_f1fw5/parking_policy_test.go",
+    "-run",
+    "^TestRecoveryParkingPolicy$"
+  ],
+  "cwd": "/home/ryan/.cache/agentmux-governance/p02-status-owner-free-leaf-pure-jp_f1fw5/src/platform",
+  "environment": {
+    "GOTOOLCHAIN": "local",
+    "GOPROXY": "off",
+    "GOSUMDB": "off",
+    "GOWORK": "off",
+    "GOENV": "off",
+    "GOFLAGS": "-mod=readonly",
+    "GORACE": "atexit_sleep_ms=0",
+    "AMX_BOOTSTRAP_DOCKER_AUTHORIZED": "0"
+  },
+  "directExit": 0,
+  "elapsedSeconds": 3.233147573992028,
+  "namedPasses": [
+    "TestRecoveryParkingPolicy/nil",
+    "TestRecoveryParkingPolicy/ordinary_error",
+    "TestRecoveryParkingPolicy/spoofed_text",
+    "TestRecoveryParkingPolicy/wrapped_leaf",
+    "TestRecoveryParkingPolicy/joined_leaf",
+    "TestRecoveryParkingPolicy/unknown_wrapper",
+    "TestRecoveryParkingPolicy/concrete_pointer",
+    "TestRecoveryParkingPolicy/concrete_value",
+    "TestRecoveryParkingPolicy/reviewed_join",
+    "TestRecoveryParkingPolicy/oversized_joined_cleanup",
+    "TestRecoveryParkingPolicy"
+  ],
+  "failures": [],
+  "skips": [],
+  "subtestCount": 10,
+  "ownedSourceSHA256": {
+    "main.go": "0be25777cc479cfceb683c5e3a182d1ba7bb6413802f47e90906d0b5e08c30d4",
+    "recovery_controller.go": "63835243d7d009a51314c386bedf03fa5db155ab2d160070578fbc7e8d3aeae3",
+    "parking_policy_test.go": "0922434c1f4096fc5c254a7f8f6852060fe0b5c0f0220a83e4f892060f3684be"
+  },
+  "sourceCount": 133,
+  "sourceStable": true,
+  "stdoutSHA256": "e49ce862cdc4e313018b0ce358786283f35a7f6c7436364a75811ec375d5d386",
+  "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "limits": [
+    "Only first newline command is read; following bytes ignored and never dispatched. The combined duplicate assertion tests validRecoveryFrame directly, not stream trailing-data refusal.",
+    "Concrete zero-value TransportCleanupError.Close returns nil with no socket; no physical cleanup bound is tested.",
+    "Concrete Dialer.Close waits mutex/stopped/calls without context; pre/post checks do not prove total5s wall bound.",
+    "Unknown wrapper Error/Unwrap/Close panic methods are not invoked.",
+    "Live status/capture/retry remains unapproved."
+  ]
+}

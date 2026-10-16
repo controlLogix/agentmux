@@ -1,0 +1,85 @@
+{
+  "scope": "Standalone exact descriptor helpers and modeled C APIs; not full receipt/native platform proof",
+  "results": [
+    {
+      "name": "format",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/gofmt",
+        "-w",
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-darwin-receipt-pipe-controls/src/platform/runtime/bootstrap_receipt.go",
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-darwin-receipt-pipe-controls/src/platform/runtime/bootstrap_receipt_descriptor_darwin.go",
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-darwin-receipt-pipe-controls/src/platform/runtime/bootstrap_receipt_descriptor_darwin_nocgo.go",
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-darwin-receipt-pipe-controls/src/platform/runtime/bootstrap_receipt_descriptor_darwin_nocgo_test.go",
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-darwin-receipt-pipe-controls/src/platform/runtime/bootstrap_receipt_descriptor_darwin_test.go",
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-darwin-receipt-pipe-controls/src/platform/runtime/bootstrap_receipt_descriptor_linux.go",
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-darwin-receipt-pipe-controls/src/platform/runtime/bootstrap_receipt_descriptor_linux_test.go"
+      ],
+      "cwd": null,
+      "exitCode": 0
+    },
+    {
+      "name": "native-model-compile",
+      "argv": [
+        "cc",
+        "-std=c11",
+        "-Werror=implicit-function-declaration",
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-darwin-receipt-pipe-controls/native-api-control.c",
+        "-o",
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-darwin-receipt-pipe-controls/native-api-control"
+      ],
+      "cwd": null,
+      "exitCode": 0
+    },
+    {
+      "name": "native-model-execute",
+      "argv": [
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-darwin-receipt-pipe-controls/native-api-control"
+      ],
+      "cwd": null,
+      "exitCode": 0
+    },
+    {
+      "name": "linux-preservation",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-race",
+        "-count=1",
+        "-json",
+        ".",
+        "-run",
+        "^TestReceiptLinuxDescriptorPreservesAdmission$"
+      ],
+      "cwd": "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-darwin-receipt-pipe-controls/predicate-only",
+      "exitCode": 0
+    },
+    {
+      "name": "darwin-no-cgo-compile",
+      "argv": [
+        "/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go",
+        "test",
+        "-c",
+        "-o",
+        "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-darwin-receipt-pipe-controls/darwin-no-cgo.test"
+      ],
+      "cwd": "/mnt/c/Users/RyanHelms/.cache/agentmux-governance/p02-darwin-receipt-pipe-controls/predicate-only",
+      "exitCode": 0
+    }
+  ],
+  "sourcePins": {
+    "src/platform/runtime/bootstrap_receipt.go": "a7205206d1eaf4e127d8a59cbf2674a7c164a00a28841141271fea451a59961d",
+    "src/platform/runtime/bootstrap_receipt_descriptor_darwin.go": "355a863902c95c4d2565fea80b53ba2f4e23d22a7f3e750e06e0f78fd150adf5",
+    "src/platform/runtime/bootstrap_receipt_descriptor_darwin_nocgo.go": "563a92e43db65d5b3637f27ae31b81becff1fff3210530b62c4e45116291d168",
+    "src/platform/runtime/bootstrap_receipt_descriptor_darwin_nocgo_test.go": "6a23bd4964ae939f861d72b6817c82fbe116cc1c2ba153182d117312640eed9e",
+    "src/platform/runtime/bootstrap_receipt_descriptor_darwin_test.go": "89e4b88ffa0ed30a5c5579f555dccccad75e67adc38d6428fa88f5fa9ebb257e",
+    "src/platform/runtime/bootstrap_receipt_descriptor_linux.go": "1eacb33705e7208ab5bfb90d082d824974cdfd8d7a788392296b1c0458f9ebcb",
+    "src/platform/runtime/bootstrap_receipt_descriptor_linux_test.go": "80568df1a7ecebb5e3b64625017a96d417c0e47ca725a334381398182ed1979c"
+  },
+  "limits": [
+    "C APIs are modeled; no native macOS pipe creation/query by this worker.",
+    "Linux standalone helper uses actual owned os.Pipe; historical Linux named FIFO metadata allowance remains unchanged, not newly qualified.",
+    "Darwin nocgo is crosscompile only; actual refusal test must execute on native CI.",
+    "Native authored tests prove pipe/regular/socket/namedFIFO type only when actually run later.",
+    "No adoption/close/lifecycle behavior changed by helpers."
+  ]
+}

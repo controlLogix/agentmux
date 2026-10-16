@@ -1,0 +1,20 @@
+import pathlib,hashlib,json,tempfile,subprocess,os,time
+cache=pathlib.Path('/home/ryan/.cache/agentmux-governance/p02-status-concrete-recovery-1b0s3jsf');base=pathlib.Path('/home/ryan/.cache/agentmux-governance/p02-retained-status-preparation-yzxa6mv2');repo=pathlib.Path('/mnt/c/Users/RyanHelms/GitHub/agentmux');pins=json.loads((base/'source-before.json').read_bytes());H=lambda p:hashlib.sha256(p.read_bytes()).hexdigest();out=pathlib.Path(tempfile.mkdtemp(prefix='p02-status-concrete-controller-pure-',dir='/home/ryan/.cache/agentmux-governance'));out.chmod(0o700)
+before={k:H(repo/k) for k in pins};assert before==pins
+for k in pins:
+ p=out/'src'/k;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes((repo/k).read_bytes())
+copy={k:H(out/'src'/k) for k in pins};assert copy==before
+owned={n:H(cache/n) for n in ['main.go','recovery_controller.go','recovery_controller_test.go']}
+for n in owned:(out/n).write_bytes((cache/n).read_bytes())
+assert H(out/'main.go')=='64f29603c647411a9b0122b5821d3da32006e06afaffbb405b52c22fceb740a6'
+assert H(out/'recovery_controller.go')=='63835243d7d009a51314c386bedf03fa5db155ab2d160070578fbc7e8d3aeae3'
+assert H(out/'recovery_controller_test.go')=='133bfa5e4f4b38a4bffe70d18cadd1aaa267b41864cc49fb6a73b69df7cf6bdf'
+env=os.environ.copy();settings=dict(GOTOOLCHAIN='local',GOPROXY='off',GOSUMDB='off',GOWORK='off',GOENV='off',GOFLAGS='-mod=readonly',GORACE='atexit_sleep_ms=0',AMX_BOOTSTRAP_DOCKER_AUTHORIZED='0');env.update(settings)
+argv=['/home/ryan/.cache/agentmux-governance/runtime-comparison/go/bin/go','test','-race','-count=1','-json',str(out/'main.go'),str(out/'recovery_controller.go'),str(out/'recovery_controller_test.go'),'-run','^(TestRecoveryCommandFrame|TestRecoveryExactControllerDispatch)$'];started=time.monotonic();p=subprocess.Popen(argv,cwd=out/'src/platform',env=env,stdout=subprocess.PIPE,stderr=subprocess.PIPE);stdout,stderr=p.communicate();elapsed=time.monotonic()-started
+(out/'test.jsonl').write_bytes(stdout);(out/'test.stderr').write_bytes(stderr);events=[json.loads(line) for line in stdout.splitlines()];passed=[e['Test'] for e in events if e.get('Action')=='pass' and 'Test'in e];fails=[e.get('Test') for e in events if e.get('Action')=='fail'];skips=[e.get('Test') for e in events if e.get('Action')=='skip'];after={k:H(repo/k) for k in pins};copiedAfter={k:H(out/'src'/k) for k in pins};stable=before==copy==after==copiedAfter and owned=={n:H(cache/n) for n in owned}=={n:H(out/n) for n in owned}
+result={'scope':'Two pure fixed-frame/exact-controller groups only; no main/status/network/native execution','argv':argv,'cwd':str(out/'src/platform'),'environment':settings,'directExit':p.returncode,'elapsedSeconds':elapsed,'namedPasses':passed,'failures':fails,'skips':skips,'subtestCount':len([n for n in passed if '/'in n]),'ownedSourceSHA256':owned,'sourceCount':len(pins),'sourceStable':stable,'stdoutSHA256':hashlib.sha256(stdout).hexdigest(),'stderrSHA256':hashlib.sha256(stderr).hexdigest(),'limits':['Only first newline command is read; following bytes ignored and never dispatched. The combined duplicate assertion tests validRecoveryFrame directly, not stream trailing-data refusal.','Concrete zero-value TransportCleanupError.Close returns nil with no socket; no physical cleanup bound is tested.','Concrete Dialer.Close waits mutex/stopped/calls without context; pre/post checks do not prove total5s wall bound.','Unknown wrapper Error/Unwrap/Close panic methods are not invoked.','Live status/capture/retry remains unapproved.']}
+for name,v in [('review.json',result),('source-before.json',before),('source-copy.json',copy),('source-after.json',after)]: (out/name).write_text(json.dumps(v,indent=2)+'\n')
+for x in out.iterdir():
+ if x.is_file():x.chmod(0o600)
+print(json.dumps({'review':str(out/'review.json'),'sha256':H(out/'review.json'),'exit':p.returncode,'namedPasses':passed,'sourceStable':stable,'stderrBytes':len(stderr)}),flush=True)
+assert p.returncode==0 and len(passed)==14 and not fails and not skips and stable

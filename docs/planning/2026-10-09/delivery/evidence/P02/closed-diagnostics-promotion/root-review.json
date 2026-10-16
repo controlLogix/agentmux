@@ -1,0 +1,37 @@
+{
+  "date": "2026-10-14T22:31:09.436156+00:00",
+  "reviewer": "Codex",
+  "decision": "promoted reviewed diagnostic source; no phase acceptance",
+  "sourcePins": {
+    "platform/launcher/host_policy_diagnostic_test.go": "4a5589e8ea5d80c53f2cd33ab566a52500fea8eb75aa51b54fa3431de82ccf93",
+    "platform/launcher/request_diagnostic.go": "dddc1e7562eabfde17265fe2fd41794f0f66c71178669ae796acab5c72e320b4",
+    "platform/launcher/bootstrap_history_host_diagnostic_test.go": "b992017a59e0237734beb0b7f0e61b977899c1a3c47a650da878354a665889b9",
+    "platform/launcher/bootstrap_history.schema.json": "9fb067de7702d270bc89f1ff400c57503fb3bdfb007e0257862ed1c75c20b21c",
+    "platform/launcher/host_policy.go": "3d850105741224ebae1853e53c239a2e6346f4eb6375d3eeb29dda6f151555ad",
+    "platform/launcher/host_policy_diagnostic.go": "5c17561f78258a4b0682ea70bbcf7d383fece497d71ec6d1302e7b3bf0fc2dc9",
+    "platform/runtime/bootstrap_receipt_linux_test.go": "9ca8fcbcfcdaf2525458003d36b2852c249c2c900000f11f0e13a2137c0add11",
+    "platform/runtime/installed_host_linux_test.go": "a4dc31c5f48fa2d5ebc18e3dae9d1b6fcec5ee54729e0aea8811156462023df1",
+    "platform/runtime/pidfd_survival_diagnostic_controls_linux_test.go": "487c0ada1aeb8ec6637729ddd8799bb804728fda1e64db33c740575549a51ea0",
+    "platform/runtime/pidfd_survival_diagnostic_linux_test.go": "eb0196fffbcd7f149aef1542f81727c3026094c328314b44719a0db20a4f83e5"
+  },
+  "addedFiles": [
+    "platform/launcher/host_policy_diagnostic_test.go",
+    "platform/launcher/bootstrap_history_host_diagnostic_test.go",
+    "platform/launcher/host_policy_diagnostic.go",
+    "platform/runtime/pidfd_survival_diagnostic_controls_linux_test.go",
+    "platform/runtime/pidfd_survival_diagnostic_linux_test.go"
+  ],
+  "componentInventoryFiles": 732,
+  "validation": [
+    "113 diagnostic/history race passes",
+    "30 existing admission race passes",
+    "launcher vet passed",
+    "10 pure closed poll-fact controls; one actual local receipt fixture pass remains separate historical evidence"
+  ],
+  "limits": [
+    "No original5.14second failure cause inferred.",
+    "Native receipt failure remains unresolved; actual native execution of diagnostic message still required.",
+    "No current lifecycle/full phase pass or advancement.",
+    "History schema parity found by root and corrected before promotion."
+  ]
+}

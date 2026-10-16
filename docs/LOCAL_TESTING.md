@@ -42,3 +42,7 @@ Serialize tests that share a Docker engine or other mutable fixture. Do not comp
 Keep ownership of any child process through its original wait and output-reader completion. Do not start duplicate jobs or abandon a live owner. Bound output, protect private logs and do not publish credentials, private engine projections or arbitrary error text. Keep failed or uncertain resources when cleanup ownership is unresolved; report their status and required next action.
 
 Product authentication, authorization, security, data-retention, task-management and recovery requirements remain unchanged. Removing development verification scaffolding does not authorize removing product tests or bypassing product safeguards.
+
+When debugging startup failures, use the existing closed diagnostic categories to distinguish engine selection, network inspection, broker creation, host startup and cleanup. Keep private engine details and raw errors out of shared output. A later successful diagnostic does not prove the cause of an earlier failure whose output was lost.
+
+Retained fixtures require current ownership and lock checks before reuse or cleanup. Recheck the exact resource at each mutation boundary. Historical results do not qualify a changed executable.

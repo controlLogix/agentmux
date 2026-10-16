@@ -1,0 +1,35 @@
+{
+  "scope": "Cache-only test diagnostic preparation. Gofmt only; no tests, compiler, process observation, signals or engine calls.",
+  "basePins": {
+    "installed_cli_compose_integration_linux_test.go": "4f86db10142ef18e74ed3b7f1e6f05f1afd4c6218b20483b6f263b8ddd70a1c5",
+    "installed_cli_creator_observation_linux_test.go": "bc91afddbf3a226f3ef543e8d93d1b96775cab5a6376f4a545c4b032fa78611e"
+  },
+  "sourcePins": {
+    "installed_cli_compose_integration_linux_test.go": "d5c07fd5c894b1fce161ab03544b57f1ce0e4d34b06336f81121a7ac19d1c52f",
+    "installed_cli_creator_observation_linux_test.go": "33ea3d9b13daa8d2802a85faf8a650242dd9315ea60629bc0d8001046b81ffe8"
+  },
+  "diffSHA256": "7f0e4efb99539601f5c6a5f8fcbab363130d7348e89649f08f7a3f0666059d94",
+  "changes": [
+    "Legacy string helper delegates to one fact-producing helper; callers never poll twice for one observation.",
+    "The exact original Poll(0), same held creator handle, invocation/descriptor predicates, exact live/exit tests and unknown behavior are preserved. HUP/combined flags are not reclassified.",
+    "Facts carry only performed flag, exact count, 16-bit revents and fixed errno category from that same call. Unknown errors are not asked for Error/Is/As/Unwrap.",
+    "Failure evidence adds creatorPoll. Missing/consumed/malformed inputs have no poll count/bits, not_observed category and empty coldInvocationId. No IDs or arbitrary error text are added.",
+    "The existing real stdin-gated owned-child control asserts live count0/bits0 and unreaped exit count1/exactPOLLIN, then checked sole Wait/consumed-close as before. It verifies unobserved missing/malformed/consumed facts and absence of identity in serialization."
+  ],
+  "fixedErrnoCategories": [
+    "not_observed",
+    "none",
+    "interrupted",
+    "invalid_descriptor",
+    "invalid_argument",
+    "other_errno",
+    "unclassified"
+  ],
+  "proposedControl": "^TestComposeCLICreatorObservation$",
+  "limits": [
+    "No control executed or actual historical unknown poll reconstructed.",
+    "The original failed run remains unknown; future facts can classify one observation but grant no readiness or signal authority.",
+    "Original control cleanup and three-second context remain unchanged."
+  ],
+  "sharedSourceUnchanged": true
+}

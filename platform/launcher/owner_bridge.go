@@ -94,7 +94,7 @@ func bridgeError(code string) error {
 	if code == "authority_rejected" {
 		return errOwnerBridgeAuthority
 	}
-	return errors.New("owner_bridge_" + code)
+	return &bridgeFailure{code: code}
 }
 func IsOwnerBridgeAuthorityError(err error) bool { return errors.Is(err, errOwnerBridgeAuthority) }
 func bridgeTime(t time.Time) string {
@@ -202,8 +202,14 @@ func bridgeConnect(parent context.Context, c BootstrapConfig, credential OwnerBr
 // A live socket follows its owned lifetime; connection work is also bounded
 // by the startup or terminal-failure budget supplied by the same Run.
 func bridgeConnectWithin(parent, budget context.Context, c BootstrapConfig, credential OwnerBridgeCredential) (*nats.Conn, *localtls.Dialer, error) {
-	if parent == nil || budget == nil || parent.Err() != nil || budget.Err() != nil {
+	if parent == nil || budget == nil {
 		return nil, nil, bridgeError("deadline")
+	}
+	if parent.Err() != nil {
+		return nil, nil, bridgeContextError("deadline", parent.Err())
+	}
+	if budget.Err() != nil {
+		return nil, nil, bridgeContextError("deadline", budget.Err())
 	}
 	if c.Kernel.authority == nil || c.Kernel.TLS == nil {
 		return nil, nil, bridgeError("authority_rejected")
@@ -217,7 +223,7 @@ func bridgeConnectWithin(parent, budget context.Context, c BootstrapConfig, cred
 	authority, err := inspectLocalBrokerAuthority(ctx, c)
 	if err != nil {
 		if ctx.Err() != nil {
-			return nil, nil, bridgeError("deadline")
+			return nil, nil, bridgeContextError("deadline", ctx.Err())
 		}
 		return nil, nil, bridgeAuthorityFailure(err)
 	}
@@ -229,7 +235,10 @@ func bridgeConnectWithin(parent, budget context.Context, c BootstrapConfig, cred
 	}
 	deadline, _ := ctx.Deadline()
 	remaining := time.Until(deadline)
-	if ctx.Err() != nil || remaining <= 0 {
+	if ctx.Err() != nil {
+		return nil, nil, bridgeContextError("deadline", ctx.Err())
+	}
+	if remaining <= 0 {
 		return nil, nil, bridgeError("deadline")
 	}
 	dialer, err := authority.trust.NewDialer(parent, remaining)
@@ -245,7 +254,7 @@ func bridgeConnectWithin(parent, budget context.Context, c BootstrapConfig, cred
 		<-stopped
 	}
 	if ctx.Err() != nil {
-		return nil, nil, closeBridgeConnection(nc, dialer, bridgeError("deadline"))
+		return nil, nil, closeBridgeConnection(nc, dialer, bridgeContextError("deadline", ctx.Err()))
 	}
 	if err != nil {
 		code := "connection_unavailable"
@@ -268,7 +277,10 @@ func bridgeConnectWithin(parent, budget context.Context, c BootstrapConfig, cred
 func ownerBridgeAsyncErrorHandler(*nats.Conn, *nats.Subscription, error) {}
 
 func ownerBridgeAuthorityLastError(nc *nats.Conn) error {
-	err := nc.LastError()
+	return ownerBridgeRecordedAuthorityError(nc.LastError())
+}
+
+func ownerBridgeRecordedAuthorityError(err error) error {
 	if errors.Is(err, nats.ErrPermissionViolation) || errors.Is(err, nats.ErrAuthorization) || errors.Is(err, nats.ErrAuthExpired) || errors.Is(err, nats.ErrAuthRevoked) || errors.Is(err, nats.ErrAccountAuthExpired) {
 		return bridgeError("authority_rejected")
 	}
@@ -293,7 +305,7 @@ func (c *OwnerBridgeClient) Request(parent context.Context, operation, invocatio
 	ctx, cancel := context.WithTimeout(parent, 5*time.Second)
 	defer cancel()
 	if ctx.Err() != nil {
-		return empty, bridgeError("deadline")
+		return empty, bridgeContextError("deadline", ctx.Err())
 	}
 	// Reopen the enrollment on every request so revoked or changed credentials
 	// do not survive in a cached client handle.
@@ -337,7 +349,7 @@ func (c *OwnerBridgeClient) Request(parent context.Context, operation, invocatio
 			return empty, authority
 		}
 		if ctx.Err() != nil {
-			return empty, bridgeError("deadline")
+			return empty, bridgeContextError("deadline", ctx.Err())
 		}
 		// Core NATS may have no service subscriber during host startup. Repeat
 		// only the identical read-only request; the owner's nonce guard accepts
@@ -361,7 +373,10 @@ func (c *OwnerBridgeClient) Request(parent context.Context, operation, invocatio
 		if err == nil {
 			break
 		}
-		if ctx.Err() != nil || !errors.Is(err, context.DeadlineExceeded) {
+		if ctx.Err() != nil {
+			return empty, bridgeContextError("reply_unavailable", ctx.Err())
+		}
+		if !errors.Is(err, context.DeadlineExceeded) {
 			return empty, bridgeError("reply_unavailable")
 		}
 	}
@@ -379,7 +394,7 @@ func (c *OwnerBridgeClient) Request(parent context.Context, operation, invocatio
 		return empty, authority
 	}
 	if ctx.Err() != nil {
-		return empty, bridgeError("deadline")
+		return empty, bridgeContextError("deadline", ctx.Err())
 	}
 	return reply.Observation, nil
 }
@@ -752,12 +767,20 @@ func (s *OwnerBridgeServer) serveLoop(lifetime, startup context.Context, coldInv
 			reply := ownerBridgeReply{protocol.Version, "host-owner-status-reply", request.RequestID, request.InvocationID, s.config.Kernel.Scope, bridgeTime(time.Now()), observation}
 			raw, e := json.Marshal(reply)
 			if e == nil && len(raw) <= ownerBridgeReplyLimit && ctx.Err() == nil && (failureDeadline.IsZero() || time.Now().Before(failureDeadline)) && validateOwnerBridgeJSON(raw, "host-owner-status-reply", ownerBridgeReplyLimit) == nil {
-				if nc.Publish(s.subjects.ReplyPrefix+request.RequestID[len("request_"):], raw) != nil {
+				beforePublish := nc.LastError()
+				if beforePublish != nil {
 					cancel()
-					return bridgeError("reply_failed")
+					outcome := ownerBridgeReplyOutcome(lifetime, beforePublish, nil, nil, nil, bootErr)
+					return ownerBridgeReplyFlushResult(lifetime, ctx, nil, outcome, bootErr)
 				}
-				flushErr := nc.FlushWithContext(ctx)
-				replyErr := ownerBridgeReplyFlushResult(lifetime, ctx, flushErr, ownerBridgeAuthorityLastError(nc), bootErr)
+				publishErr := nc.Publish(s.subjects.ReplyPrefix+request.RequestID[len("request_"):], raw)
+				var flushErr error
+				if publishErr == nil {
+					flushErr = nc.FlushWithContext(ctx)
+				}
+				afterFlush := nc.LastError()
+				outcome := ownerBridgeReplyOutcome(lifetime, beforePublish, publishErr, flushErr, afterFlush, bootErr)
+				replyErr := ownerBridgeReplyFlushResult(lifetime, ctx, flushErr, outcome, bootErr)
 				if replyErr != nil {
 					cancel()
 					return replyErr
@@ -860,7 +883,7 @@ func (s *OwnerBridgeServer) refresh(ctx context.Context, id string, session *Ses
 	}
 	facts, operationProof, inspectErr := inspectLocalBrokerOperation(ctx, s.config)
 	if ctx.Err() != nil {
-		return StartupStatusObservation{}, bridgeError("deadline")
+		return StartupStatusObservation{}, bridgeContextError("deadline", ctx.Err())
 	}
 	if inspectErr != nil || facts.trust == nil || s.config.Kernel.TLS == nil || !reflect.DeepEqual(facts.trust.Policy(), s.config.Kernel.TLS.Policy()) {
 		return StartupStatusObservation{}, bridgeError("authority_rejected")
@@ -946,4 +969,25 @@ func bridgeObservationCleanupFailure(causes ...error) error {
 		return nil
 	}
 	return &bridgeCompletionCause{code: "owner_bridge_owned_connection_cleanup_failed", cause: joined}
+}
+
+// Each recorded error is a snapshot from this reply boundary. Cancellation is
+// shutdown only; it does not confirm that Flush completed or a caller accepted a reply.
+func ownerBridgeReplyOutcome(lifetime context.Context, beforePublish, publishErr, flushErr, afterFlush, bootErr error) error {
+	if authority := ownerBridgeRecordedAuthorityError(beforePublish); authority != nil {
+		return authority
+	}
+	if beforePublish != nil || publishErr != nil {
+		return bridgeError("reply_failed")
+	}
+	if authority := ownerBridgeRecordedAuthorityError(afterFlush); authority != nil {
+		return authority
+	}
+	if flushErr != nil && !(errors.Is(flushErr, context.Canceled) && lifetime.Err() == context.Canceled) {
+		return bridgeError("reply_failed")
+	}
+	if bootErr != nil {
+		return bridgeError("startup_failed")
+	}
+	return nil
 }

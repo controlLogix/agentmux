@@ -190,7 +190,11 @@
                         "owned_cleanup_incomplete",
                         "request_deadline",
                         "request_failed",
-                        "selected_host_port_occupied"
+                        "selected_host_port_occupied",
+                        "host_policy_invalid",
+                        "host_profile_invalid",
+                        "host_enrollment_invalid",
+                        "host_executable_invalid"
                       ]
                     },
                     {
@@ -203,6 +207,75 @@
                     "complete",
                     "incomplete",
                     "unknown"
+                  ]
+                },
+                "diagnosticStage": {
+                  "enum": [
+                    "operation_completion",
+                    "invocation_validation",
+                    "profile_admission",
+                    "docker_admission",
+                    "compose_admission",
+                    "role_admission",
+                    "assembly_preparation",
+                    "operation_entry",
+                    "accepted_receipt",
+                    "initial_warm_inspection",
+                    "initial_warm_observation",
+                    "bootstrap_lease",
+                    "post_lease_inspection",
+                    "post_lease_observation",
+                    "role_leases",
+                    "broker_start",
+                    "post_start_inspection",
+                    "broker_provision",
+                    "protected_start",
+                    "readiness_inspection",
+                    "readiness_observation",
+                    "readiness_finalize"
+                  ]
+                },
+                "failedRead": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "kind": {
+                      "enum": [
+                        "endpoint",
+                        "version",
+                        "compose_version",
+                        "engine",
+                        "roster",
+                        "engine_stdio",
+                        "container_inspection",
+                        "image_inspection",
+                        "volume_inspection",
+                        "config_archive",
+                        "certificate_archive",
+                        "key_archive"
+                      ]
+                    },
+                    "elapsedNanoseconds": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 120000000000
+                    },
+                    "remainingNanoseconds": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 60000000000
+                    },
+                    "effectiveCapNanoseconds": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 4000000000
+                    }
+                  },
+                  "required": [
+                    "kind",
+                    "elapsedNanoseconds",
+                    "remainingNanoseconds",
+                    "effectiveCapNanoseconds"
                   ]
                 }
               },
@@ -252,9 +325,38 @@
                           "owned_cleanup_incomplete",
                           "request_deadline",
                           "request_failed",
-                          "selected_host_port_occupied"
+                          "selected_host_port_occupied",
+                          "host_policy_invalid",
+                          "host_profile_invalid",
+                          "host_enrollment_invalid",
+                          "host_executable_invalid"
                         ]
                       }
+                    }
+                  }
+                },
+                {
+                  "if": {
+                    "properties": {
+                      "outcome": {
+                        "const": "completed"
+                      }
+                    }
+                  },
+                  "then": {
+                    "not": {
+                      "anyOf": [
+                        {
+                          "required": [
+                            "diagnosticStage"
+                          ]
+                        },
+                        {
+                          "required": [
+                            "failedRead"
+                          ]
+                        }
+                      ]
                     }
                   }
                 }
@@ -305,7 +407,11 @@
                 "owned_cleanup_incomplete",
                 "request_deadline",
                 "request_failed",
-                "selected_host_port_occupied"
+                "selected_host_port_occupied",
+                "host_policy_invalid",
+                "host_profile_invalid",
+                "host_enrollment_invalid",
+                "host_executable_invalid"
               ]
             },
             "cleanup": {
@@ -313,6 +419,75 @@
                 "complete",
                 "incomplete",
                 "unknown"
+              ]
+            },
+            "diagnosticStage": {
+              "enum": [
+                "operation_completion",
+                "invocation_validation",
+                "profile_admission",
+                "docker_admission",
+                "compose_admission",
+                "role_admission",
+                "assembly_preparation",
+                "operation_entry",
+                "accepted_receipt",
+                "initial_warm_inspection",
+                "initial_warm_observation",
+                "bootstrap_lease",
+                "post_lease_inspection",
+                "post_lease_observation",
+                "role_leases",
+                "broker_start",
+                "post_start_inspection",
+                "broker_provision",
+                "protected_start",
+                "readiness_inspection",
+                "readiness_observation",
+                "readiness_finalize"
+              ]
+            },
+            "failedRead": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "endpoint",
+                    "version",
+                    "compose_version",
+                    "engine",
+                    "roster",
+                    "engine_stdio",
+                    "container_inspection",
+                    "image_inspection",
+                    "volume_inspection",
+                    "config_archive",
+                    "certificate_archive",
+                    "key_archive"
+                  ]
+                },
+                "elapsedNanoseconds": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 120000000000
+                },
+                "remainingNanoseconds": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 60000000000
+                },
+                "effectiveCapNanoseconds": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 4000000000
+                }
+              },
+              "required": [
+                "kind",
+                "elapsedNanoseconds",
+                "remainingNanoseconds",
+                "effectiveCapNanoseconds"
               ]
             }
           },

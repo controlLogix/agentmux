@@ -1,0 +1,782 @@
+--- before/component-inventory.json
++++ candidate/component-inventory.json
+@@ -5194,6 +5194,27 @@
+     },
+     {
+       "path": "platform/launcher/installed_cli_creator_observation_linux_test.go",
++      "baselineBlob": null,
++      "componentIds": [
++        "PLAT-01"
++      ]
++    },
++    {
++      "path": "platform/launcher/owner_bridge_diagnostic.go",
++      "baselineBlob": null,
++      "componentIds": [
++        "PLAT-01"
++      ]
++    },
++    {
++      "path": "platform/launcher/owner_bridge_diagnostic_test.go",
++      "baselineBlob": null,
++      "componentIds": [
++        "PLAT-01"
++      ]
++    },
++    {
++      "path": "platform/launcher/owner_bridge_diagnostic_fixture_test.go",
+       "baselineBlob": null,
+       "componentIds": [
+         "PLAT-01"
+@@ -5909,6 +5930,19 @@
+       ],
+       "baselineInventoryChanged": false,
+       "phaseAccepted": false
++    },
++    {
++      "date": "2026-10-14",
++      "reviewer": "Codex",
++      "scope": "Bridge context diagnostic source registration draft",
++      "addedFiles": [
++        "platform/launcher/owner_bridge_diagnostic.go",
++        "platform/launcher/owner_bridge_diagnostic_test.go",
++        "platform/launcher/owner_bridge_diagnostic_fixture_test.go"
++      ],
++      "note": "Source review only for private bridge context provenance and checked component fixtures. Focused tests and P02 acceptance remain pending. No pattern or transport relationship added.",
++      "phaseAccepted": false,
++      "independentReviewSHA256": "5933cc5a3627361f6a342f9a2d66451cb1eac0e49071d2efdb84782957df8dc6"
+     }
+   ]
+ }
+--- before/component-audit-hub.json
++++ candidate/component-audit-hub.json
+@@ -2041,7 +2041,10 @@
+         "platform/launcher/bootstrap_cleanup_failure.go",
+         "platform/launcher/bootstrap_cleanup_failure_test.go",
+         "platform/launcher/bootstrap_history_stage_test.go",
+-        "platform/launcher/installed_cli_creator_observation_linux_test.go"
++        "platform/launcher/installed_cli_creator_observation_linux_test.go",
++        "platform/launcher/owner_bridge_diagnostic.go",
++        "platform/launcher/owner_bridge_diagnostic_test.go",
++        "platform/launcher/owner_bridge_diagnostic_fixture_test.go"
+       ],
+       "role": "platform-foundation",
+       "baselineGroups": [],
+@@ -2127,7 +2130,9 @@
+             "platform/launcher/bootstrap_boundary_stage_test.go",
+             "platform/launcher/bootstrap_cleanup_failure_test.go",
+             "platform/launcher/bootstrap_history_stage_test.go",
+-            "platform/launcher/installed_cli_creator_observation_linux_test.go"
++            "platform/launcher/installed_cli_creator_observation_linux_test.go",
++            "platform/launcher/owner_bridge_diagnostic_test.go",
++            "platform/launcher/owner_bridge_diagnostic_fixture_test.go"
+           ],
+           "requiredEnvironment": "Native Linux, native macOS and approved WSL actual installed CLI with pinned Compose and NATS; component TLS/socket passes are separate. Require Linux amd64 and arm64, native macOS amd64 and arm64, and approved WSL. Darwin cgo-enabled execution and cgo-disabled refusal are distinct checks; cross-compilation alone is insufficient.",
+           "baselineStatus": "not-run",
+@@ -2295,6 +2300,194 @@
+             "platform/launcher/host_policy_diagnostic.go"
+           ],
+           "phaseAccepted": false
++        },
++        {
++          "date": "2026-10-14",
++          "reviewer": "Codex",
++          "scope": "Bridge context diagnostic source registration draft",
++          "addedFiles": [
++            "platform/launcher/owner_bridge_diagnostic.go",
++            "platform/launcher/owner_bridge_diagnostic_test.go",
++            "platform/launcher/owner_bridge_diagnostic_fixture_test.go"
++          ],
++          "note": "Source review only for private bridge context provenance and checked component fixtures. Focused tests and P02 acceptance remain pending. No pattern or transport relationship added.",
++          "phaseAccepted": false,
++          "independentReviewSHA256": "5933cc5a3627361f6a342f9a2d66451cb1eac0e49071d2efdb84782957df8dc6",
++          "previousFiles": [
++            "platform/go.mod",
++            "platform/go.sum",
++            "platform/launcher/lock_unix.go",
++            "platform/launcher/lock_unix_test.go",
++            "platform/launcher/docker.go",
++            "platform/launcher/docker_test.go",
++            "platform/launcher/bootstrap.go",
++            "platform/launcher/bootstrap_config.go",
++            "platform/launcher/bootstrap_config_test.go",
++            "platform/launcher/bootstrap_integration_test.go",
++            "platform/launcher/docker_config_test.go",
++            "platform/launcher/docker_environment.go",
++            "platform/launcher/docker_environment_test.go",
++            "platform/launcher/docker_instance.go",
++            "platform/launcher/docker_instance_test.go",
++            "platform/launcher/doctor.go",
++            "platform/launcher/doctor_test.go",
++            "platform/launcher/host_config.go",
++            "platform/launcher/host_config_test.go",
++            "platform/launcher/kernel_status.go",
++            "platform/launcher/kernel_status_test.go",
++            "platform/launcher/profile.go",
++            "platform/launcher/profile_boundary_test.go",
++            "platform/launcher/profile_test.go",
++            "platform/launcher/release.go",
++            "platform/launcher/release_test.go",
++            "platform/launcher/startup_session.go",
++            "platform/launcher/startup_session_lifecycle_test.go",
++            "platform/launcher/startup_session_test.go",
++            "platform/launcher/startup_status.go",
++            "platform/launcher/startup_status_test.go",
++            "platform/cmd/agentmux-runtime/main.go",
++            "platform/cmd/agentmux-runtime/main_test.go",
++            "platform/launcher/authority_proof_test.go",
++            "platform/launcher/bootstrap_compose_binding.go",
++            "platform/launcher/bootstrap_invocation_test.go",
++            "platform/launcher/docker_archive_linux_test.go",
++            "platform/launcher/docker_archive_test.go",
++            "platform/launcher/docker_archives.go",
++            "platform/launcher/docker_reads.go",
++            "platform/launcher/docker_reads_linux_test.go",
++            "platform/launcher/docker_reads_test.go",
++            "platform/launcher/docker_stdio.go",
++            "platform/launcher/docker_stdio_inspection_test.go",
++            "platform/launcher/docker_stdio_test.go",
++            "platform/launcher/docker_tls.go",
++            "platform/launcher/docker_tls_test.go",
++            "platform/launcher/host_policy.go",
++            "platform/launcher/host_policy_test.go",
++            "platform/launcher/kernel_status_stage_test.go",
++            "platform/launcher/kernel_status_tls_test.go",
++            "platform/launcher/local_broker_authority.go",
++            "platform/launcher/local_server_trust.go",
++            "platform/launcher/local_server_trust_test.go",
++            "platform/launcher/lock_acl_darwin_test.go",
++            "platform/launcher/owner_bridge.go",
++            "platform/launcher/owner_bridge_admission_test.go",
++            "platform/launcher/owner_bridge_host_loader_test.go",
++            "platform/launcher/owner_bridge_test.go",
++            "platform/launcher/owner_bridge_validation.go",
++            "platform/launcher/session_cleanup.go",
++            "platform/launcher/session_cleanup_test.go",
++            "platform/launcher/startup_session_deadline_test.go",
++            "platform/launcher/startup_write_proof.go",
++            "platform/launcher/startup_write_proof_test.go",
++            "platform/launcher/transport_cleanup.go",
++            "platform/launcher/transport_cleanup_test.go",
++            "platform/privatefs/access.go",
++            "platform/privatefs/access_darwin.go",
++            "platform/privatefs/access_darwin_nocgo.go",
++            "platform/privatefs/access_darwin_nocgo_test.go",
++            "platform/privatefs/access_darwin_test.go",
++            "platform/privatefs/access_linux.go",
++            "platform/privatefs/access_linux_test.go",
++            "platform/privatefs/access_test.go",
++            "platform/privatefs/access_unsupported.go",
++            "platform/launcher/bootstrap_operation.go",
++            "platform/launcher/bootstrap_operation_test.go",
++            "platform/launcher/startup_pending_test.go",
++            "platform/launcher/host_receipt_binding.go",
++            "platform/launcher/host_receipt_binding_test.go",
++            "platform/launcher/host_receipt_server.go",
++            "platform/launcher/owner_bridge_receipt.go",
++            "platform/launcher/owner_bridge_pending_test.go",
++            "platform/launcher/installed_cli_startup_test.go",
++            "platform/launcher/owner_bridge_receipt_test.go",
++            "platform/cmd/agentmux-runtime/main_child_exit_linux_test.go",
++            "platform/launcher/owner_bridge_refresh_test.go",
++            "platform/launcher/installed_cli_compose_integration_linux_test.go",
++            "platform/cmd/agentmux-runtime/main_frontend_budget_test.go",
++            "platform/launcher/request_diagnostic.go",
++            "platform/launcher/request_diagnostic_test.go",
++            "platform/cmd/agentmux-runtime/main_diagnostic_test.go",
++            "platform/launcher/installed_cli_compose_failures_integration_test.go",
++            "platform/launcher/owner_bridge_probe.go",
++            "platform/launcher/owner_bridge_probe_test.go",
++            "platform/launcher/bootstrap_history.go",
++            "platform/launcher/bootstrap_history_fs.go",
++            "platform/launcher/bootstrap_history_root.go",
++            "platform/launcher/bootstrap_history_stage.go",
++            "platform/launcher/bootstrap_history.schema.json",
++            "platform/launcher/bootstrap_history_test.go",
++            "platform/launcher/bootstrap_history_linux_test.go",
++            "platform/launcher/bootstrap_history_fault_test.go",
++            "platform/launcher/bootstrap_history_close_cause_test.go",
++            "platform/launcher/host_history_policy.go",
++            "platform/launcher/host_history_policy_test.go",
++            "platform/launcher/host_history_policy_linux_test.go",
++            "platform/launcher/owner_bridge_history.go",
++            "platform/launcher/bootstrap_history_owner_integration_test.go",
++            "platform/cmd/agentmux-runtime/main_history.go",
++            "platform/cmd/agentmux-runtime/main_history_test.go",
++            "platform/launcher/owner_bridge_request_permission_test.go",
++            "platform/launcher/owner_bridge_nonce_window_linux_test.go",
++            "platform/launcher/bootstrap_docker_current_qualification_controls_test.go",
++            "platform/launcher/installed_cli_history_controls_test.go",
++            "platform/launcher/owner_bridge_reply_cancellation_test.go",
++            "platform/launcher/host_policy_diagnostic_test.go",
++            "platform/launcher/bootstrap_history_host_diagnostic_test.go",
++            "platform/launcher/host_policy_diagnostic.go",
++            "platform/launcher/bootstrap_boundary_cold_test.go",
++            "platform/launcher/bootstrap_boundary_stage.go",
++            "platform/launcher/bootstrap_boundary_stage_test.go",
++            "platform/launcher/bootstrap_cleanup_failure.go",
++            "platform/launcher/bootstrap_cleanup_failure_test.go",
++            "platform/launcher/bootstrap_history_stage_test.go",
++            "platform/launcher/installed_cli_creator_observation_linux_test.go"
++          ],
++          "previousBehaviorCheck": {
++            "id": "PLAT-01-C04",
++            "description": "Actual installed ensure/status/host with fully authenticated NATS L04; exact invocation and owner/full-scope freshness; malformed/revoked replies; cold/warm/concurrent/owner recovery, frontend-exit survival, ten-second legitimate starting and refresh. Separately validate receipt-only bootstrap-progress: it records admitted request acceptance, leaves current instance state unknown, never replaces NATS L04, and never hides authority, revoked enrollment, malformed replies, completed child or concrete cleanup failure. Verify the real installed candidate within ten seconds from invocation entry.",
++            "existingTests": [
++              "platform/launcher/owner_bridge_test.go",
++              "platform/launcher/owner_bridge_admission_test.go",
++              "platform/launcher/owner_bridge_host_loader_test.go",
++              "platform/launcher/bootstrap_integration_test.go",
++              "platform/cmd/agentmux-runtime/main_test.go",
++              "platform/launcher/bootstrap_operation_test.go",
++              "platform/launcher/startup_pending_test.go",
++              "platform/launcher/owner_bridge_pending_test.go",
++              "platform/launcher/host_receipt_binding_test.go",
++              "platform/launcher/installed_cli_startup_test.go",
++              "platform/launcher/owner_bridge_receipt_test.go",
++              "platform/cmd/agentmux-runtime/main_child_exit_linux_test.go",
++              "platform/launcher/owner_bridge_refresh_test.go",
++              "platform/launcher/installed_cli_compose_integration_linux_test.go",
++              "platform/cmd/agentmux-runtime/main_frontend_budget_test.go",
++              "platform/launcher/request_diagnostic_test.go",
++              "platform/cmd/agentmux-runtime/main_diagnostic_test.go",
++              "platform/launcher/installed_cli_compose_failures_integration_test.go",
++              "platform/launcher/owner_bridge_probe_test.go",
++              "platform/launcher/bootstrap_history_test.go",
++              "platform/launcher/bootstrap_history_linux_test.go",
++              "platform/launcher/bootstrap_history_fault_test.go",
++              "platform/launcher/bootstrap_history_close_cause_test.go",
++              "platform/launcher/host_history_policy_test.go",
++              "platform/launcher/host_history_policy_linux_test.go",
++              "platform/launcher/bootstrap_history_owner_integration_test.go",
++              "platform/cmd/agentmux-runtime/main_history_test.go",
++              "platform/launcher/owner_bridge_request_permission_test.go",
++              "platform/launcher/owner_bridge_nonce_window_linux_test.go",
++              "platform/launcher/bootstrap_docker_current_qualification_controls_test.go",
++              "platform/launcher/installed_cli_history_controls_test.go",
++              "platform/launcher/bootstrap_boundary_cold_test.go",
++              "platform/launcher/bootstrap_boundary_stage_test.go",
++              "platform/launcher/bootstrap_cleanup_failure_test.go",
++              "platform/launcher/bootstrap_history_stage_test.go",
++              "platform/launcher/installed_cli_creator_observation_linux_test.go"
++            ],
++            "requiredEnvironment": "Native Linux, native macOS and approved WSL actual installed CLI with pinned Compose and NATS; component TLS/socket passes are separate. Require Linux amd64 and arm64, native macOS amd64 and arm64, and approved WSL. Darwin cgo-enabled execution and cgo-disabled refusal are distinct checks; cross-compilation alone is insufficient.",
++            "baselineStatus": "not-run",
++            "targetStatus": "not-run",
++            "qualificationPhase": "P02"
++          }
+         }
+       ]
+     },
+--- before/source-surface-index.json
++++ candidate/source-surface-index.json
+@@ -11733,7 +11733,7 @@
+       "componentIds": [
+         "PLAT-01"
+       ],
+-      "workingFileSha256": "dd04086919a2451ef886febd4626d7141aeed60132d0b1289e309fd0d937af6b",
++      "workingFileSha256": "babd2aba6d80ff06b115061bd2e8a36778b80fc62a0a43d8ddae03d39193d2de",
+       "declarations": [
+         {
+           "name": "String",
+@@ -11812,107 +11812,107 @@
+         },
+         {
+           "name": "ownerBridgeAsyncErrorHandler",
+-          "line": 268,
++          "line": 277,
+           "kind": "go-function"
+         },
+         {
+           "name": "ownerBridgeAuthorityLastError",
+-          "line": 270,
++          "line": 279,
+           "kind": "go-function"
+         },
+         {
+           "name": "ownerBridgeRecordedAuthorityError",
+-          "line": 274,
++          "line": 283,
+           "kind": "go-function"
+         },
+         {
+           "name": "closeBridgeConnection",
+-          "line": 281,
++          "line": 290,
+           "kind": "go-function"
+         },
+         {
+           "name": "Request",
+-          "line": 291,
++          "line": 300,
+           "kind": "go-function"
+         },
+         {
+           "name": "decodeBridgeReply",
+-          "line": 390,
++          "line": 402,
+           "kind": "go-function"
+         },
+         {
+           "name": "bridgeObservationBound",
+-          "line": 405,
++          "line": 417,
+           "kind": "go-function"
+         },
+         {
+           "name": "bridgeStartingUnknown",
+-          "line": 417,
++          "line": 429,
+           "kind": "go-function"
+         },
+         {
+           "name": "accept",
+-          "line": 441,
++          "line": 453,
+           "kind": "go-function"
+         },
+         {
+           "name": "validateBridgeRequest",
+-          "line": 455,
++          "line": 467,
+           "kind": "go-function"
+         },
+         {
+           "name": "Run",
+-          "line": 475,
++          "line": 487,
+           "kind": "go-function"
+         },
+         {
+           "name": "serve",
+-          "line": 541,
++          "line": 553,
+           "kind": "go-function"
+         },
+         {
+           "name": "serveOperation",
+-          "line": 544,
++          "line": 556,
+           "kind": "go-function"
+         },
+         {
+           "name": "serveLoop",
+-          "line": 548,
++          "line": 560,
+           "kind": "go-function"
+         },
+         {
+           "name": "observeBridgeRequest",
+-          "line": 788,
++          "line": 800,
+           "kind": "go-function"
+         },
+         {
+           "name": "bridgeRetainedExpired",
+-          "line": 812,
++          "line": 824,
+           "kind": "go-function"
+         },
+         {
+           "name": "refresh",
+-          "line": 835,
++          "line": 847,
+           "kind": "go-function"
+         },
+         {
+           "name": "hexDigest",
+-          "line": 925,
++          "line": 937,
+           "kind": "go-function"
+         },
+         {
+           "name": "bridgeObservationCleanupFailure",
+-          "line": 930,
++          "line": 942,
+           "kind": "go-function"
+         },
+         {
+           "name": "ownerBridgeReplyOutcome",
+-          "line": 943,
++          "line": 955,
+           "kind": "go-function"
+         }
+       ],
+       "httpPathLiterals": [],
+-      "reviewStatus": "Exact source and scoped local controls independently reviewed. Native full-platform and phase acceptance remain required."
++      "reviewStatus": "Source review only for private bridge context provenance and checked component fixtures. Focused tests and P02 acceptance remain pending. No pattern or transport relationship added."
+     },
+     {
+       "path": "platform/launcher/owner_bridge_history.go",
+@@ -11986,7 +11986,7 @@
+         "PLAT-01"
+       ],
+       "httpPathLiterals": [],
+-      "workingFileSha256": "1879bfda9cf0e1ba4d7efc25ea0c2ed8a539c2475a119342d1339fa868dea894",
++      "workingFileSha256": "92b44259262955f3dbf624b7f2af9ff58c6ca467276b7bbd416cbc5a50b2fc36",
+       "declarations": [
+         {
+           "name": "probe",
+@@ -12004,7 +12004,7 @@
+           "kind": "go-function"
+         }
+       ],
+-      "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
++      "reviewStatus": "Source review only for private bridge context provenance and checked component fixtures. Focused tests and P02 acceptance remain pending. No pattern or transport relationship added."
+     },
+     {
+       "path": "platform/launcher/owner_bridge_receipt.go",
+@@ -12285,7 +12285,7 @@
+       "componentIds": [
+         "PLAT-01"
+       ],
+-      "workingFileSha256": "501819b66d8437a34b1ea233fef4e0fff5efd29b8d66707f8c3ea1c1c5b6ebaf",
++      "workingFileSha256": "3571ae97858bf601aab29eccd78cb8bb718dffcb23de4097d9876421f6ae96fe",
+       "declarations": [
+         {
+           "name": "diagnosticReviewedWrapper",
+@@ -12339,7 +12339,7 @@
+         }
+       ],
+       "httpPathLiterals": [],
+-      "reviewStatus": "Reviewed private cold boundary stages and retained cleanup cause/Session with21 focused and163 affected race entries plus launcher vet0. Cache-only registration awaits root promotion. Real ColdWarmAndRefresh failed; native lifecycle and P02 acceptance remain open."
++      "reviewStatus": "Source review only for private bridge context provenance and checked component fixtures. Focused tests and P02 acceptance remain pending. No pattern or transport relationship added."
+     },
+     {
+       "path": "platform/launcher/session_cleanup.go",
+@@ -17105,6 +17105,37 @@
+         }
+       ],
+       "reviewStatus": "Reviewed private cold boundary stages and retained cleanup cause/Session with21 focused and163 affected race entries plus launcher vet0. Cache-only registration awaits root promotion. Real ColdWarmAndRefresh failed; native lifecycle and P02 acceptance remain open."
++    },
++    {
++      "path": "platform/launcher/owner_bridge_diagnostic.go",
++      "componentIds": [
++        "PLAT-01"
++      ],
++      "httpPathLiterals": [],
++      "workingFileSha256": "719be0a2f7b1eb100e461bb9990461cce3706eb80782e8613225c52324947649",
++      "declarations": [
++        {
++          "name": "Error",
++          "line": 19,
++          "kind": "go-function"
++        },
++        {
++          "name": "Format",
++          "line": 20,
++          "kind": "go-function"
++        },
++        {
++          "name": "MarshalJSON",
++          "line": 21,
++          "kind": "go-function"
++        },
++        {
++          "name": "bridgeContextError",
++          "line": 25,
++          "kind": "go-function"
++        }
++      ],
++      "reviewStatus": "Source review only for private bridge context provenance and checked component fixtures. Focused tests and P02 acceptance remain pending. No pattern or transport relationship added."
+     }
+   ],
+   "history": [
+@@ -29624,6 +29655,297 @@
+         "platform/launcher/bootstrap_cleanup_failure.go"
+       ],
+       "phaseAccepted": false
++    },
++    {
++      "date": "2026-10-14",
++      "reviewer": "Codex",
++      "scope": "Bridge context diagnostic declaration replacement draft",
++      "previousEntry": {
++        "path": "platform/launcher/owner_bridge.go",
++        "componentIds": [
++          "PLAT-01"
++        ],
++        "workingFileSha256": "dd04086919a2451ef886febd4626d7141aeed60132d0b1289e309fd0d937af6b",
++        "declarations": [
++          {
++            "name": "String",
++            "line": 49,
++            "kind": "go-function"
++          },
++          {
++            "name": "GoString",
++            "line": 50,
++            "kind": "go-function"
++          },
++          {
++            "name": "String",
++            "line": 86,
++            "kind": "go-function"
++          },
++          {
++            "name": "GoString",
++            "line": 87,
++            "kind": "go-function"
++          },
++          {
++            "name": "String",
++            "line": 88,
++            "kind": "go-function"
++          },
++          {
++            "name": "GoString",
++            "line": 89,
++            "kind": "go-function"
++          },
++          {
++            "name": "bridgeError",
++            "line": 93,
++            "kind": "go-function"
++          },
++          {
++            "name": "IsOwnerBridgeAuthorityError",
++            "line": 99,
++            "kind": "go-function"
++          },
++          {
++            "name": "bridgeTime",
++            "line": 100,
++            "kind": "go-function"
++          },
++          {
++            "name": "bridgeFresh",
++            "line": 103,
++            "kind": "go-function"
++          },
++          {
++            "name": "loadBridgeCredential",
++            "line": 108,
++            "kind": "go-function"
++          },
++          {
++            "name": "LoadOwnerBridgeClient",
++            "line": 180,
++            "kind": "go-function"
++          },
++          {
++            "name": "LoadOwnerBridgeServer",
++            "line": 187,
++            "kind": "go-function"
++          },
++          {
++            "name": "bridgeConnect",
++            "line": 198,
++            "kind": "go-function"
++          },
++          {
++            "name": "bridgeConnectWithin",
++            "line": 204,
++            "kind": "go-function"
++          },
++          {
++            "name": "ownerBridgeAsyncErrorHandler",
++            "line": 268,
++            "kind": "go-function"
++          },
++          {
++            "name": "ownerBridgeAuthorityLastError",
++            "line": 270,
++            "kind": "go-function"
++          },
++          {
++            "name": "ownerBridgeRecordedAuthorityError",
++            "line": 274,
++            "kind": "go-function"
++          },
++          {
++            "name": "closeBridgeConnection",
++            "line": 281,
++            "kind": "go-function"
++          },
++          {
++            "name": "Request",
++            "line": 291,
++            "kind": "go-function"
++          },
++          {
++            "name": "decodeBridgeReply",
++            "line": 390,
++            "kind": "go-function"
++          },
++          {
++            "name": "bridgeObservationBound",
++            "line": 405,
++            "kind": "go-function"
++          },
++          {
++            "name": "bridgeStartingUnknown",
++            "line": 417,
++            "kind": "go-function"
++          },
++          {
++            "name": "accept",
++            "line": 441,
++            "kind": "go-function"
++          },
++          {
++            "name": "validateBridgeRequest",
++            "line": 455,
++            "kind": "go-function"
++          },
++          {
++            "name": "Run",
++            "line": 475,
++            "kind": "go-function"
++          },
++          {
++            "name": "serve",
++            "line": 541,
++            "kind": "go-function"
++          },
++          {
++            "name": "serveOperation",
++            "line": 544,
++            "kind": "go-function"
++          },
++          {
++            "name": "serveLoop",
++            "line": 548,
++            "kind": "go-function"
++          },
++          {
++            "name": "observeBridgeRequest",
++            "line": 788,
++            "kind": "go-function"
++          },
++          {
++            "name": "bridgeRetainedExpired",
++            "line": 812,
++            "kind": "go-function"
++          },
++          {
++            "name": "refresh",
++            "line": 835,
++            "kind": "go-function"
++          },
++          {
++            "name": "hexDigest",
++            "line": 925,
++            "kind": "go-function"
++          },
++          {
++            "name": "bridgeObservationCleanupFailure",
++            "line": 930,
++            "kind": "go-function"
++          },
++          {
++            "name": "ownerBridgeReplyOutcome",
++            "line": 943,
++            "kind": "go-function"
++          }
++        ],
++        "httpPathLiterals": [],
++        "reviewStatus": "Exact source and scoped local controls independently reviewed. Native full-platform and phase acceptance remain required."
++      },
++      "note": "Source review only for private bridge context provenance and checked component fixtures. Focused tests and P02 acceptance remain pending. No pattern or transport relationship added."
++    },
++    {
++      "date": "2026-10-14",
++      "reviewer": "Codex",
++      "scope": "Bridge context diagnostic declaration replacement draft",
++      "previousEntry": {
++        "path": "platform/launcher/owner_bridge_probe.go",
++        "componentIds": [
++          "PLAT-01"
++        ],
++        "httpPathLiterals": [],
++        "workingFileSha256": "1879bfda9cf0e1ba4d7efc25ea0c2ed8a539c2475a119342d1339fa868dea894",
++        "declarations": [
++          {
++            "name": "probe",
++            "line": 17,
++            "kind": "go-function"
++          },
++          {
++            "name": "ownerBridgeProbeAuthorityError",
++            "line": 117,
++            "kind": "go-function"
++          },
++          {
++            "name": "validOwnerBridgeNoResponders",
++            "line": 129,
++            "kind": "go-function"
++          }
++        ],
++        "reviewStatus": "Current source semantics reconciled against exact-pinned base and delta reviews in checkpoint-remaining-platform-source-review. Native runtime, full lifecycle, global checkpoint and P02 acceptance remain open."
++      },
++      "note": "Source review only for private bridge context provenance and checked component fixtures. Focused tests and P02 acceptance remain pending. No pattern or transport relationship added."
++    },
++    {
++      "date": "2026-10-14",
++      "reviewer": "Codex",
++      "scope": "Bridge context diagnostic declaration replacement draft",
++      "previousEntry": {
++        "path": "platform/launcher/request_diagnostic.go",
++        "componentIds": [
++          "PLAT-01"
++        ],
++        "workingFileSha256": "501819b66d8437a34b1ea233fef4e0fff5efd29b8d66707f8c3ea1c1c5b6ebaf",
++        "declarations": [
++          {
++            "name": "diagnosticReviewedWrapper",
++            "line": 26,
++            "kind": "go-function"
++          },
++          {
++            "name": "Error",
++            "line": 54,
++            "kind": "go-function"
++          },
++          {
++            "name": "Format",
++            "line": 62,
++            "kind": "go-function"
++          },
++          {
++            "name": "MarshalJSON",
++            "line": 63,
++            "kind": "go-function"
++          },
++          {
++            "name": "Unwrap",
++            "line": 64,
++            "kind": "go-function"
++          },
++          {
++            "name": "localAuthorityFailure",
++            "line": 70,
++            "kind": "go-function"
++          },
++          {
++            "name": "bridgeAuthorityFailure",
++            "line": 73,
++            "kind": "go-function"
++          },
++          {
++            "name": "requestDiagnostic",
++            "line": 87,
++            "kind": "go-function"
++          },
++          {
++            "name": "ValidRequestDiagnostic",
++            "line": 126,
++            "kind": "go-function"
++          },
++          {
++            "name": "ProjectRequestDiagnostic",
++            "line": 133,
++            "kind": "go-function"
++          }
++        ],
++        "httpPathLiterals": [],
++        "reviewStatus": "Reviewed private cold boundary stages and retained cleanup cause/Session with21 focused and163 affected race entries plus launcher vet0. Cache-only registration awaits root promotion. Real ColdWarmAndRefresh failed; native lifecycle and P02 acceptance remain open."
++      },
++      "note": "Source review only for private bridge context provenance and checked component fixtures. Focused tests and P02 acceptance remain pending. No pattern or transport relationship added."
+     }
+   ]
+ }

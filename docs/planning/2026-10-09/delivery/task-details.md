@@ -1,3 +1,5 @@
+> Historical legacy tracker snapshots only. Jira AMUX is the sole current development task authority. Status and acceptance claims below remain historical; this merge establishes no current pass and does not regenerate tracking views. Local macOS ARM64/Jira/no-CI decisions take precedence over older prose.
+
 # Implementation tasks
 
 Generated from tasks.json. Status and evidence remain owned by that file.
@@ -134,6 +136,51 @@ An approved implementation contract with no unresolved decision hidden in code.
 **Evidence:** docs/planning/2026-10-09/delivery/evidence/P00/P00-T03.json
 
 **Commits:** c513ffa0565936916b342ae8ad7a8dc837b4d6e8
+
+
+
+#### Historical remote variant for P00-T03 (not current acceptance or governance)
+
+<a id="P00-T03"></a>
+
+### P00-T03: Reproduce or explicitly scope the previously reported federation correctness defects
+
+**Status:** done. **Owner:** Codex.
+
+**Dependencies:** P00-T06.
+
+**Implementation plan**
+
+1. Read AMX-BASE-001 through AMX-BASE-006, their original acceptance text, repair report and upgrade limitations. Verify the old reproduction source is attributable to the frozen baseline.
+2. Check SHA-256 identity for all eight repaired runtime/test files and three historical logs. Retain old-source failures and the 119-test broker run as historical evidence rather than rerunning unchanged broad suites.
+3. Run ./hub/tests/local.ps1 hub.tests.test_governance in the prepared WSL environment. Retain the result, log, source fingerprints, exit code and any missing coverage.
+4. Assign each assertion to P01-T06 and its replacing state, authorization, orchestration or federation task. Keep repository-version, external-artifact and delegated-actor acceptance gaps explicitly open in P05/P10.
+5. Record every task criterion with current evidence. Do not change runtime behavior, failure-matrix status or phase acceptance through this scoping task.
+
+**Deliverables**
+
+1. Reproduce or explicitly scope the previously reported federation correctness defects. Turn each into a regression case owned by the replacing phase.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P00-T03-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Reproduce or explicitly scope the previously reported federation correctness defects. Turn each into a regression case owned by the replacing phase.
+2. P00-T03-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P00-T03-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P00-T03-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Review the traceability matrix and inspect contracts together.
+2. Run existing relevant suites on supported environments and reproduce the four reported crash/dispatch defects with isolated fixtures.
+3. Record the exact commit, tools, fixtures, and results. Review missing environments as gaps, not passes.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Review the LOCAL-01 flow and FAIL-55–FAIL-62 against actual host startup capabilities; distinguish approved behavior from unresolved host/version choices.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P00/P00-T03.json
+
+**Commits:** c513ffa0565936916b342ae8ad7a8dc837b4d6e8
+
 
 
 <a id="P00-T04"></a>
@@ -356,6 +403,68 @@ Contracts and failure scenarios can be tested before business plugins grow.
 - **P01-AC05:** Two language clients pass the NATS storage fixtures on pinned server/client versions: competing revisions admit one transition, partial atomic batches leave no partial record set, and lost acknowledgments reconcile the same operation. Unsupported cross-stream or external-effect transactions are rejected or handled by an explicit recovery contract.
 - **P01-AC06:** The existing regression assertions are retained or mapped to equivalent assertions. Characterization fixtures capture each affected behavior before refactoring; a deliberately removed assertion, missing component, or unapproved retirement prevents progression.
 
+
+#### Historical remote variant for P00-GATE (not current acceptance or governance)
+
+<a id="P00-GATE"></a>
+
+### P00-GATE: Verify and accept P00
+
+**Status:** done. **Owner:** Codex.
+
+**Dependencies:** P00-T01, P00-T02, P00-T03, P00-T04, P00-T05, P00-T06, P00-T07.
+
+**Implementation plan**
+
+1. Confirm every phase task and prerequisite is complete; inspect the actual deliverables and limitations rather than relying on a done label.
+2. Run the phase's full acceptance, failure, preservation and rollback checks on the exact candidate and supported environments. Retain per-criterion evidence using gate-record.template.json.
+3. Codex reviews actual deliverables and subagent findings and records the advancement decision. Parallelize bounded subagent work only within this phase. Missing evidence remains blocking; no human approval is required.
+4. Commit all phase changes and evidence to feat/agentmux-platform-rearchitecture, push, and verify the remote commit. Record that commit before the next phase starts. MERGE-01 remains separate.
+
+**Deliverables**
+
+1. Approved plan revision and decision log
+2. Baseline behavior inventory and defect fixtures
+3. Compatibility and capacity profiles
+4. Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01
+
+**Acceptance criteria**
+
+1. P00-GATE-AC01: Every accepted user decision and all existing functional groups have a named owner phase and verification scenario.
+2. P00-GATE-AC02: Codex reviews the complete plan, decision log, contracts and criterion-level evidence, records its review and advancement decision, and verifies the committed and pushed P00 candidate before P01 starts. Ryan and Nick are not required for delivery approval.
+3. P00-GATE-AC03: All P01–P04 blocking choices have recorded alternatives, rationale, and consequences. Later choices have a deadline before their owning phase.
+4. P00-GATE-AC04: Baseline checks identify passes, failures, missing environments, and historic-only claims separately.
+5. P00-GATE-AC05: The complete source inventory, component reuse decisions and behavior checks are reviewed. Every baseline file and additional governed source file has an owner; unmapped entry points or uncertain behavior are recorded as blocking gaps. No retirement is implied by a launch-scope choice.
+6. P00-GATE-AC06: LOCAL-01 has a reviewed host/platform support matrix, stable instance identity, safe Docker context and credential rules, readiness/status contract, and assigned verification owners. Automatic launch is required for every integration advertised as supporting it.
+7. P00-GATE-AC07: All assigned failure scenarios and component checks have reviewed evidence for the candidate; missing or skipped required checks remain blocking.
+8. P00-GATE-AC08: The required reviewer and advancement decision are recorded, and the phase commit is verified on the current remote feature branch. No merge is performed.
+
+**Verification**
+
+1. Review the traceability matrix and inspect contracts together.
+2. Run existing relevant suites on supported environments and reproduce the four reported crash/dispatch defects with isolated fixtures.
+3. Record the exact commit, tools, fixtures, and results. Review missing environments as gaps, not passes.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Review the LOCAL-01 flow and FAIL-55–FAIL-62 against actual host startup capabilities; distinguish approved behavior from unresolved host/version choices.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P00/P00-GATE.json
+
+**Commits:** 605e96d495b4763997a13f3935245efb77e6ba84
+
+## P01. Executable contracts, baseline repairs, and verification
+
+Contracts and failure scenarios can be tested before business plugins grow.
+
+**Epic acceptance criteria**
+
+- **P01-AC01:** Two independently implemented test clients exchange valid requests and reject incompatible or malformed envelopes.
+- **P01-AC02:** Fixtures cover duplicate, delayed, out-of-order, unauthorized, canceled, timed-out, and replayed messages without conflating execution with delivery.
+- **P01-AC03:** A failing predecessor gate prevents promotion. Waivers cannot bypass accepted ownership or security invariants.
+- **P01-AC04:** CI captures exact versions and logs without recording credentials or private model reasoning. Known baseline blockers are repaired or disproved with evidence, and the required repository governance gate passes before P02 progression. WSL-CLIENT-01 has a recorded placement contract, Windows/WSL client/version inventory and honest current interop observations; P06-specific integration claims remain unaccepted until actual-host qualification.
+- **P01-AC05:** Two language clients pass the NATS storage fixtures on pinned server/client versions: competing revisions admit one transition, partial atomic batches leave no partial record set, and lost acknowledgments reconcile the same operation. Unsupported cross-stream or external-effect transactions are rejected or handled by an explicit recovery contract.
+- **P01-AC06:** The existing regression assertions are retained or mapped to equivalent assertions. Characterization fixtures capture each affected behavior before refactoring; a deliberately removed assertion, missing component, or unapproved retirement prevents progression.
+
+
 <a id="P01-T01"></a>
 
 ### P01-T01: Publish language-neutral command/event schemas and compatibility rules with organization, project, task, delegation, attempt, operation, schema version, and trace identifiers.
@@ -397,6 +506,53 @@ Contracts and failure scenarios can be tested before business plugins grow.
 **Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/payload-storage-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/model-leaf-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/recovery-ci-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/P01-T01.json, docs/planning/2026-10-09/delivery/evidence/P01/P01-T01-acceptance-d3f8d9d.json
 
 **Commits:** 7ef00dcb299c100d6dda45bfffa2b4e127345a50, f19c6473d56335b8eeb28704b02895b9d9ab7fcc, a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41, d3f8d9d240c84d77865f73935f5fe8cf2a3974de
+
+
+
+#### Historical remote variant for P01-T01 (not current acceptance or governance)
+
+<a id="P01-T01"></a>
+
+### P01-T01: Publish language-neutral command/event schemas and compatibility rules with organization, project, task, delegation, attempt, operation, schema version, and trace identifiers.
+
+**Status:** done. **Owner:** Codex.
+
+**Dependencies:** P00-GATE, P01-T08.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Publish language-neutral command/event schemas and compatibility rules with organization, project, task, delegation, attempt, operation, schema version, and trace identifiers.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+6. Publish and qualify the accepted L04 startup-status observation response through both independent SDKs. Include success/failure fixtures, caller scope, unavailable fields, observed zero counts, and known/unavailable/forbidden hub inventories; reject inconsistent and leaking shapes. Runtime status production remains P02 and later owning phases.
+
+**Deliverables**
+
+1. Publish language-neutral command/event schemas and compatibility rules with organization, project, task, delegation, attempt, operation, schema version, and trace identifiers.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P01-T01-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Publish language-neutral command/event schemas and compatibility rules with organization, project, task, delegation, attempt, operation, schema version, and trace identifiers.
+2. P01-T01-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P01-T01-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P01-T01-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+5. P01-T01-AC05: The accepted L04 response schema and success/failure fixtures pass both independent Python and TypeScript clients. Required fields, closed objects, honest unknown/unavailable states, observed zero values and forbidden hub inventory are covered by positive and negative checks. This does not claim a running status service.
+
+**Verification**
+
+1. Run schema/contract suites in macOS, Linux, and WSL test jobs.
+2. Break one contract fixture and one phase gate deliberately and confirm the pipeline refuses promotion.
+3. Exercise a real broker restart and reconnect in the harness.
+4. Run FAIL-42, FAIL-43 and FAIL-47 with real JetStream. Record which server/API/SDK capabilities provide each guarantee, including batch behavior and authoritative read freshness.
+5. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/payload-storage-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/model-leaf-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/recovery-ci-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/P01-T01.json, docs/planning/2026-10-09/delivery/evidence/P01/P01-T01-acceptance-d3f8d9d.json
+
+**Commits:** 7ef00dcb299c100d6dda45bfffa2b4e127345a50, f19c6473d56335b8eeb28704b02895b9d9ab7fcc, a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41, d3f8d9d240c84d77865f73935f5fe8cf2a3974de
+
 
 
 <a id="P01-T02"></a>
@@ -443,6 +599,54 @@ Contracts and failure scenarios can be tested before business plugins grow.
 **Commits:** 7ef00dcb299c100d6dda45bfffa2b4e127345a50, f19c6473d56335b8eeb28704b02895b9d9ab7fcc, a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41, 00353fd0ccb0b4ce34cb4eb45549703430af30d1, 80f43e02f3344696a3985c48ef12578319f3bd0f
 
 
+
+#### Historical remote variant for P01-T02 (not current acceptance or governance)
+
+<a id="P01-T02"></a>
+
+### P01-T02: Create reusable contract fixtures and controllable fake workers/providers plus real NATS integration environments for CI.
+
+**Status:** done. **Owner:** Codex.
+
+**Dependencies:** P00-GATE, P01-T08.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Create reusable contract fixtures and controllable fake workers/providers plus real NATS integration environments for CI.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+6. Record WSL-CLIENT-01 actual client installation/version ownership and environmental contract fixtures. Separate Windows-client interop observations from native Linux/WSL runtime conformance and leave P06-specific client integration open.
+
+**Deliverables**
+
+1. Create reusable contract fixtures and controllable fake workers/providers plus real NATS integration environments for CI.
+2. Focused regression evidence and affected compatibility/migration records
+3. WSL-CLIENT-01 client ownership contract, current environment inventory and explicit interop gap record
+
+**Acceptance criteria**
+
+1. P01-T02-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Create reusable contract fixtures and controllable fake workers/providers plus real NATS integration environments for CI. WSL-CLIENT-01: Record WSL-CLIENT-01 actual client installation/version ownership and environmental contract fixtures. Separate Windows-client interop observations from native Linux/WSL runtime conformance and leave P06-specific client integration open.
+2. P01-T02-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope. Each applicable WSL-CLIENT-01 claim requires actual evidence; failed interop, omitted host coverage or Linux-client substitution cannot count as success. P01 environmental evidence does not accept P06 integration.
+3. P01-T02-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P01-T02-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Run schema/contract suites in macOS, Linux, and WSL test jobs.
+2. Break one contract fixture and one phase gate deliberately and confirm the pipeline refuses promotion.
+3. Exercise a real broker restart and reconnect in the harness.
+4. Run FAIL-42, FAIL-43 and FAIL-47 with real JetStream. Record which server/API/SDK capabilities provide each guarantee, including batch behavior and authoritative read freshness.
+5. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+6. For WSL-CLIENT-01, record direct Windows and WSL-resolved client identity/version, configuration ownership and observed interop failures without copying credentials. Keep platform-runtime tests distinct from Windows-client transport tests; identify P06-owned qualification gaps.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/payload-storage-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/model-leaf-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/recovery-ci-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/controlled-storage-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/platform-contract/result.json, docs/planning/2026-10-09/delivery/evidence/P01/wsl-inventory/inventory.json, docs/planning/2026-10-09/delivery/evidence/P01/wsl-inventory/validation.json, docs/planning/2026-10-09/delivery/evidence/P01/P01-T02-acceptance.json
+
+**Commits:** 7ef00dcb299c100d6dda45bfffa2b4e127345a50, f19c6473d56335b8eeb28704b02895b9d9ab7fcc, a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41, 00353fd0ccb0b4ce34cb4eb45549703430af30d1, 80f43e02f3344696a3985c48ef12578319f3bd0f
+
+
+
 <a id="P01-T03"></a>
 
 ### P01-T03: Specify lifecycle, delivery acknowledgment, idempotency, deadline, cancellation, approval, and unavailable/unknown result semantics.
@@ -482,6 +686,51 @@ Contracts and failure scenarios can be tested before business plugins grow.
 **Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/payload-storage-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/model-leaf-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/recovery-ci-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/P01-T03.json
 
 **Commits:** 7ef00dcb299c100d6dda45bfffa2b4e127345a50, f19c6473d56335b8eeb28704b02895b9d9ab7fcc, a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41
+
+
+
+#### Historical remote variant for P01-T03 (not current acceptance or governance)
+
+<a id="P01-T03"></a>
+
+### P01-T03: Specify lifecycle, delivery acknowledgment, idempotency, deadline, cancellation, approval, and unavailable/unknown result semantics.
+
+**Status:** done. **Owner:** Codex.
+
+**Dependencies:** P00-GATE, P01-T08.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Specify lifecycle, delivery acknowledgment, idempotency, deadline, cancellation, approval, and unavailable/unknown result semantics.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+
+**Deliverables**
+
+1. Specify lifecycle, delivery acknowledgment, idempotency, deadline, cancellation, approval, and unavailable/unknown result semantics.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P01-T03-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Specify lifecycle, delivery acknowledgment, idempotency, deadline, cancellation, approval, and unavailable/unknown result semantics.
+2. P01-T03-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P01-T03-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P01-T03-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Run schema/contract suites in macOS, Linux, and WSL test jobs.
+2. Break one contract fixture and one phase gate deliberately and confirm the pipeline refuses promotion.
+3. Exercise a real broker restart and reconnect in the harness.
+4. Run FAIL-42, FAIL-43 and FAIL-47 with real JetStream. Record which server/API/SDK capabilities provide each guarantee, including batch behavior and authoritative read freshness.
+5. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/payload-storage-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/model-leaf-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/recovery-ci-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/P01-T03.json
+
+**Commits:** 7ef00dcb299c100d6dda45bfffa2b4e127345a50, f19c6473d56335b8eeb28704b02895b9d9ab7fcc, a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41
+
 
 
 <a id="P01-T04"></a>
@@ -530,6 +779,56 @@ Contracts and failure scenarios can be tested before business plugins grow.
 **Commits:** f19c6473d56335b8eeb28704b02895b9d9ab7fcc, a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41, 00353fd0ccb0b4ce34cb4eb45549703430af30d1, 7a7d47ae6830f86b8fed318ee64da6a5aac52701, 171eb1f8d9254a043e9e2c0598c19fb6a12136c1, 74bee2b6c759f96135f024b2810d6dbcbb517a9e, 0fd64326b9621163b5b550f6419d21e1007b56d3
 
 
+
+#### Historical remote variant for P01-T04 (not current acceptance or governance)
+
+<a id="P01-T04"></a>
+
+### P01-T04: Establish per-phase evidence records, dependency gates, migration fixtures, and security/quality regression jobs.
+
+**Status:** done. **Owner:** Codex.
+
+**Dependencies:** P00-GATE, P01-T08.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Establish per-phase evidence records, dependency gates, migration fixtures, and security/quality regression jobs.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+6. Bind Windows/WSL evidence to client installation/version, Windows auth/config ownership and actual interop observations; keep unsupported environments and P06 qualification gaps explicit rather than treating native Linux results as equivalent.
+7. Qualify delivery review notes preservation, Git identity, confined writes, failed-save recovery, competing writers and matching generated artifacts through REPO-10 checks.
+
+**Deliverables**
+
+1. Establish per-phase evidence records, dependency gates, migration fixtures, and security/quality regression jobs.
+2. Focused regression evidence and affected compatibility/migration records
+3. WSL-CLIENT-01 client ownership contract, current environment inventory and explicit interop gap record
+4. REPO-10 delivery review notes preservation and local helper evidence
+
+**Acceptance criteria**
+
+1. P01-T04-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Establish per-phase evidence records, dependency gates, migration fixtures, and security/quality regression jobs. WSL-CLIENT-01: Bind Windows/WSL evidence to client installation/version, Windows auth/config ownership and actual interop observations; keep unsupported environments and P06 qualification gaps explicit rather than treating native Linux results as equivalent.
+2. P01-T04-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope. Each applicable WSL-CLIENT-01 claim requires actual evidence; failed interop, omitted host coverage or Linux-client substitution cannot count as success. P01 environmental evidence does not accept P06 integration.
+3. P01-T04-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P01-T04-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Run schema/contract suites in macOS, Linux, and WSL test jobs.
+2. Break one contract fixture and one phase gate deliberately and confirm the pipeline refuses promotion.
+3. Exercise a real broker restart and reconnect in the harness.
+4. Run FAIL-42, FAIL-43 and FAIL-47 with real JetStream. Record which server/API/SDK capabilities provide each guarantee, including batch behavior and authoritative read freshness.
+5. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+6. For WSL-CLIENT-01, record direct Windows and WSL-resolved client identity/version, configuration ownership and observed interop failures without copying credentials. Keep platform-runtime tests distinct from Windows-client transport tests; identify P06-owned qualification gaps.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/recovery-ci-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/controlled-storage-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/preservation/repair-review.md, docs/planning/2026-10-09/delivery/evidence/P01/native/37e0d8c/review.json, docs/planning/2026-10-09/delivery/evidence/P01/preservation/acceptance-map.json, docs/planning/2026-10-09/delivery/evidence/P01/native/7a7d47a/review.json, docs/planning/2026-10-09/delivery/evidence/P01/windows-clients/README.md, docs/planning/2026-10-09/delivery/evidence/P01/dashboard-windows/archive-manifest.json, docs/planning/2026-10-09/delivery/evidence/P01/hub-current-pre-followup/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/conformance-reviewed/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/native/09fe9c7/review.json, docs/planning/2026-10-09/delivery/evidence/P01/windows-callback-review.json, docs/planning/2026-10-09/delivery/evidence/P01/windows-callback-final/README.md, docs/planning/2026-10-09/delivery/evidence/P01/hub-callback-incomplete-setup/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/hub-callback-final-failed/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/server-api-diagnostics/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/native/9647b42/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/bash-portability/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/wsl-native-9647b42/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/plugin-restoration-spec.md, docs/planning/2026-10-09/delivery/evidence/P01/recovery-evidence.json, docs/planning/2026-10-09/delivery/evidence/P01/native/80f43e0/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/plugin-restoration/parent-review.json, docs/planning/2026-10-09/delivery/evidence/P01/preservation/har20-fresh/result.json, docs/planning/2026-10-09/delivery/evidence/P01/wsl-native-80f43e0/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/plugin-restoration/metadata-fastpath-parent-review.json, docs/planning/2026-10-09/delivery/evidence/P01/native/a21f03a/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/preservation/fault-sensitivity/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/preservation/legacy-step-negative/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/preservation/assertion-mapping/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/preservation/identity-shell/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/windows-link-failure/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/windows-prerequisites/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/calibration-interop/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/calibration-interop/original-calibration-task-pass/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/actual-checked-observer/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/checked-observer/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/calibration-comparison/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/historical-scenario-inputs/manifest.json, docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/crossrepo-path/manifest.json, docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-startup-failure/README.md, docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-startup-failure/archive-allowlist.json, docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-modal-failure/README.md, docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-modal-failure/archive-allowlist.json, docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/windows-claude-prompt/README.md, docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/windows-claude-prompt/manifest.json, docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/root-review.json, docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-terminal-diagnostics/README.md, docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-terminal-diagnostics/archive-manifest.json, docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/surface-module-coverage.json, docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-terminal-diagnostics/claude-ui-label-provenance.json, docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/module-independent-review.json, docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/serialization-review.json, docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/regression-independent-review.json, docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/regression-self-test-after.json, docs/planning/2026-10-09/delivery/evidence/P01/native/74d6bb9/root-review.json, docs/planning/2026-10-09/delivery/evidence/P01/wsl-native-74d6bb9/root-review.json, docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-74d6-startup-observer-failed-diagnostic-20261013-133431/root-review.json, docs/planning/2026-10-09/delivery/evidence/P01/gate-completeness-audit-20261013.json, docs/planning/2026-10-09/delivery/evidence/P01/wsl-contract-source-reuse-74d6.json, docs/planning/2026-10-09/delivery/evidence/P01/qualification-ownership-root-review-20261013.json, docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/independent-share-review-20261013/root-review.json, docs/planning/2026-10-09/delivery/evidence/P01/preservation/current-scope-20261013/preservation-negative-results.json, docs/planning/2026-10-09/delivery/evidence/P01/review-tooling/independent-share-review-20261013/scanner-root-review.json, docs/planning/2026-10-09/delivery/evidence/P01/P01-T04-acceptance.json
+
+**Commits:** f19c6473d56335b8eeb28704b02895b9d9ab7fcc, a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41, 00353fd0ccb0b4ce34cb4eb45549703430af30d1, 7a7d47ae6830f86b8fed318ee64da6a5aac52701, 171eb1f8d9254a043e9e2c0598c19fb6a12136c1, 74bee2b6c759f96135f024b2810d6dbcbb517a9e, 0fd64326b9621163b5b550f6419d21e1007b56d3
+
+
+
 <a id="P01-T05"></a>
 
 ### P01-T05: Build an early two-hub contract spike with separate broker accounts and a leaf link
@@ -569,6 +868,51 @@ Contracts and failure scenarios can be tested before business plugins grow.
 **Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/model-leaf-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/recovery-ci-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/P01-T05.json
 
 **Commits:** f19c6473d56335b8eeb28704b02895b9d9ab7fcc, a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41
+
+
+
+#### Historical remote variant for P01-T05 (not current acceptance or governance)
+
+<a id="P01-T05"></a>
+
+### P01-T05: Build an early two-hub contract spike with separate broker accounts and a leaf link
+
+**Status:** done. **Owner:** Codex.
+
+**Dependencies:** P00-GATE, P01-T08.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Build an early two-hub contract spike with separate broker accounts and a leaf link. Exercise lost acceptance acknowledgment and reservation reconciliation before the later production federation phase.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+
+**Deliverables**
+
+1. Build an early two-hub contract spike with separate broker accounts and a leaf link. Exercise lost acceptance acknowledgment and reservation reconciliation before the later production federation phase.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P01-T05-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Build an early two-hub contract spike with separate broker accounts and a leaf link. Exercise lost acceptance acknowledgment and reservation reconciliation before the later production federation phase.
+2. P01-T05-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P01-T05-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P01-T05-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Run schema/contract suites in macOS, Linux, and WSL test jobs.
+2. Break one contract fixture and one phase gate deliberately and confirm the pipeline refuses promotion.
+3. Exercise a real broker restart and reconnect in the harness.
+4. Run FAIL-42, FAIL-43 and FAIL-47 with real JetStream. Record which server/API/SDK capabilities provide each guarantee, including batch behavior and authoritative read freshness.
+5. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/model-leaf-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/recovery-ci-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/P01-T05.json
+
+**Commits:** f19c6473d56335b8eeb28704b02895b9d9ab7fcc, a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41
+
 
 
 <a id="P01-T06"></a>
@@ -611,6 +955,52 @@ Contracts and failure scenarios can be tested before business plugins grow.
 **Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/recovery-ci-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/P01-T06.json
 
 **Commits:** f19c6473d56335b8eeb28704b02895b9d9ab7fcc, a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41
+
+
+
+#### Historical remote variant for P01-T06 (not current acceptance or governance)
+
+<a id="P01-T06"></a>
+
+### P01-T06: Preserve and extend the verified repairs for the six baseline findings
+
+**Status:** done. **Owner:** Codex.
+
+**Dependencies:** P00-GATE, P01-T08.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Preserve and extend the verified repairs for the six baseline findings. Ryan authorized this bounded repair pass; its source hashes and executed regressions are in governance-repair-evidence.json. Complete every other P01 criterion before advancing to P02.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+6. Preserve the assertions assigned to this task for AMX-BASE-001, AMX-BASE-002, AMX-BASE-003, AMX-BASE-004, AMX-BASE-005, AMX-BASE-006 in delivery/evidence/P00/baseline-findings.md. Re-run or port the actual fixtures at the changed authority boundary; preserve explicitly open broader acceptance requirements.
+
+**Deliverables**
+
+1. Preserve and extend the verified repairs for the six baseline findings. Ryan authorized this bounded repair pass; its source hashes and executed regressions are in governance-repair-evidence.json. Complete every other P01 criterion before advancing to P02.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P01-T06-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Preserve and extend the verified repairs for the six baseline findings. Ryan authorized this bounded repair pass; its source hashes and executed regressions are in governance-repair-evidence.json. Complete every other P01 criterion before advancing to P02.
+2. P01-T06-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P01-T06-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P01-T06-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Run schema/contract suites in macOS, Linux, and WSL test jobs.
+2. Break one contract fixture and one phase gate deliberately and confirm the pipeline refuses promotion.
+3. Exercise a real broker restart and reconnect in the harness.
+4. Run FAIL-42, FAIL-43 and FAIL-47 with real JetStream. Record which server/API/SDK capabilities provide each guarantee, including batch behavior and authoritative read freshness.
+5. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/recovery-ci-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/P01-T06.json
+
+**Commits:** f19c6473d56335b8eeb28704b02895b9d9ab7fcc, a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41
+
 
 
 <a id="P01-T07"></a>
@@ -657,6 +1047,54 @@ Contracts and failure scenarios can be tested before business plugins grow.
 **Commits:** 7ef00dcb299c100d6dda45bfffa2b4e127345a50, f19c6473d56335b8eeb28704b02895b9d9ab7fcc, a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41, 00353fd0ccb0b4ce34cb4eb45549703430af30d1, 9647b4240a43c60c246512efa1553e8f4cb58530, d3f8d9d240c84d77865f73935f5fe8cf2a3974de
 
 
+
+#### Historical remote variant for P01-T07 (not current acceptance or governance)
+
+<a id="P01-T07"></a>
+
+### P01-T07: Build a bounded NATS persistence spike before production storage code: one owning task record, persistent operation identity, conditional competing writes, complete provenance/effect intent, lost acknowledgments and replay
+
+**Status:** done. **Owner:** Codex.
+
+**Dependencies:** P00-GATE, P01-T08.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Build a bounded NATS persistence spike before production storage code: one owning task record, persistent operation identity, conditional competing writes, complete provenance/effect intent, lost acknowledgments and replay. Exercise single-record commits and any required atomic batch inside one stream.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+6. Preserve the assertions assigned to this task for AMX-BASE-002 in delivery/evidence/P00/baseline-findings.md. Re-run or port the actual fixtures at the changed authority boundary; preserve explicitly open broader acceptance requirements.
+7. Qualify the accepted S03 completion/reconciliation reserve in a bounded real JetStream application fixture. Persist budget and operation outcomes, deny bulk at the admission ceiling under competing owners, preserve admitted completion/reconciliation capacity through restart/replay, and report exhausted broker capacity honestly. Keep production enforcement assigned to P04.
+
+**Deliverables**
+
+1. Build a bounded NATS persistence spike before production storage code: one owning task record, persistent operation identity, conditional competing writes, complete provenance/effect intent, lost acknowledgments and replay. Exercise single-record commits and any required atomic batch inside one stream.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P01-T07-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Build a bounded NATS persistence spike before production storage code: one owning task record, persistent operation identity, conditional competing writes, complete provenance/effect intent, lost acknowledgments and replay. Exercise single-record commits and any required atomic batch inside one stream.
+2. P01-T07-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P01-T07-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P01-T07-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+5. P01-T07-AC05: A real JetStream fixture proves S03 bulk admission and a separately budgeted completion/reconciliation reserve under competing admissions, restart and idempotent replay. Explicit broker exhaustion cannot report committed work. A bypass negative control fails the reserve invariant. Record physical framing/headroom and single-node fixture limits; production enforcement remains required in P04.
+
+**Verification**
+
+1. Run schema/contract suites in macOS, Linux, and WSL test jobs.
+2. Break one contract fixture and one phase gate deliberately and confirm the pipeline refuses promotion.
+3. Exercise a real broker restart and reconnect in the harness.
+4. Run FAIL-42, FAIL-43 and FAIL-47 with real JetStream. Record which server/API/SDK capabilities provide each guarantee, including batch behavior and authoritative read freshness.
+5. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/payload-storage-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/recovery-ci-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/controlled-storage-checkpoint.md, docs/planning/2026-10-09/delivery/evidence/P01/parent-change-review.json, docs/planning/2026-10-09/delivery/evidence/P01/incoming-storage/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/incoming-storage-negative/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/backup-boundary/archive.json, docs/planning/2026-10-09/delivery/evidence/P01/P01-T07-acceptance.json, docs/planning/2026-10-09/delivery/evidence/P01/P01-T07-acceptance-d3f8d9d.json
+
+**Commits:** 7ef00dcb299c100d6dda45bfffa2b4e127345a50, f19c6473d56335b8eeb28704b02895b9d9ab7fcc, a2e9ee6d84a44a0b2f5783c3c0a3a613d50d0e41, 00353fd0ccb0b4ce34cb4eb45549703430af30d1, 9647b4240a43c60c246512efa1553e8f4cb58530, d3f8d9d240c84d77865f73935f5fe8cf2a3974de
+
+
+
 <a id="P01-T08"></a>
 
 ### P01-T08: Apply ADD-01 and the component preservation matrix to every changed source file and affected caller
@@ -695,6 +1133,50 @@ Contracts and failure scenarios can be tested before business plugins grow.
 **Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/P01-T08.json
 
 **Commits:** d337bd509c2e1757c816de2d1dd79afeb31bdc51
+
+
+
+#### Historical remote variant for P01-T08 (not current acceptance or governance)
+
+<a id="P01-T08"></a>
+
+### P01-T08: Apply ADD-01 and the component preservation matrix to every changed source file and affected caller
+
+**Status:** done. **Owner:** Codex.
+
+**Dependencies:** P00-GATE.
+
+**Implementation plan**
+
+1. Review the phase-owned components in the preservation matrix and identify every changed caller, command, route, state record, integration and UI action; also include cross-phase callers affected by this work.
+2. Record retain/wrap/extract/extend/replace decisions with reasons. Map each old assertion and data identity to its target. Capture missing characterization fixtures before refactoring.
+3. Run the available baseline checks and define the candidate, migration/rollback and added-functionality checks. Candidate execution belongs to the implementation and final phase gate, so this preparation does not depend on future code being finished.
+4. Maintain the inventory and behavior ownership throughout the phase. Missing environments stay open. Codex reviews any capability change against the complete user-authorized scope; autonomy does not permit silent scope reduction.
+
+**Deliverables**
+
+1. Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P01-T08-AC01: Every phase-owned component and affected cross-phase caller has a recorded scope, existing behavior and owner; no changed source is unmapped.
+2. P01-T08-AC02: Baseline evidence distinguishes passing, failing, unavailable and historical results. Any gap that prevents a safe planned change remains blocking.
+3. P01-T08-AC03: Reuse and migration decisions name alternatives, preserved IDs/assertions and rollback boundaries; required approval exists before any capability reduction.
+4. P01-T08-AC04: Candidate comparison, added-functionality and migration fixtures are assigned to implementation and phase verification tasks. This preflight does not claim that future candidate tests already passed.
+
+**Verification**
+
+1. Run schema/contract suites in macOS, Linux, and WSL test jobs.
+2. Break one contract fixture and one phase gate deliberately and confirm the pipeline refuses promotion.
+3. Exercise a real broker restart and reconnect in the harness.
+4. Run FAIL-42, FAIL-43 and FAIL-47 with real JetStream. Record which server/API/SDK capabilities provide each guarantee, including batch behavior and authoritative read freshness.
+5. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/P01-T08.json
+
+**Commits:** d337bd509c2e1757c816de2d1dd79afeb31bdc51
+
 
 
 <a id="P01-GATE"></a>
@@ -761,6 +1243,73 @@ A local installation boots deterministically with protected kernel plugins.
 - **P02-AC07:** Simultaneous launches and a crashed startup owner converge on one owned instance. Wrong Docker context, conflicting ports, incompatible versions and partial startup produce bounded, specific diagnostics without deleting volumes, starting a shadow stack or attaching to another user.
 - **P02-AC08:** The same versioned status response follows successful start and reuse. It includes instance identity/version, selected profile and endpoint, readiness, persistence health and authorized hub information with freshness. Missing or unimplemented services are labeled unavailable, never healthy.
 
+
+#### Historical remote variant for P01-GATE (not current acceptance or governance)
+
+<a id="P01-GATE"></a>
+
+### P01-GATE: Verify and accept P01
+
+**Status:** done. **Owner:** Codex.
+
+**Dependencies:** P01-T01, P01-T02, P01-T03, P01-T04, P01-T05, P01-T06, P01-T07, P01-T08.
+
+**Implementation plan**
+
+1. Confirm every phase task and prerequisite is complete; inspect the actual deliverables and limitations rather than relying on a done label.
+2. Run the phase's full acceptance, failure, preservation and rollback checks on the exact candidate and supported environments. Retain per-criterion evidence using gate-record.template.json.
+3. Codex reviews actual deliverables and subagent findings and records the advancement decision. Parallelize bounded subagent work only within this phase. Missing evidence remains blocking; no human approval is required.
+4. Commit all phase changes and evidence to feat/agentmux-platform-rearchitecture, push, and verify the remote commit. Record that commit before the next phase starts. MERGE-01 remains separate.
+5. Review WSL-CLIENT-01 evidence at this phase boundary: environment contract, inventory and honest observations; do not accept P06 integration early.
+
+**Deliverables**
+
+1. Contract version 1 fixtures
+2. Failure injection harness
+3. CI gate and compatibility reports
+4. NATS storage capability report and transaction-boundary fixtures for STATE-01
+5. Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01
+
+**Acceptance criteria**
+
+1. P01-GATE-AC01: Two independently implemented test clients exchange valid requests and reject incompatible or malformed envelopes. WSL-CLIENT-01 is included in this phase's evidence review, with no skipped-environment substitution.
+2. P01-GATE-AC02: Fixtures cover duplicate, delayed, out-of-order, unauthorized, canceled, timed-out, and replayed messages without conflating execution with delivery.
+3. P01-GATE-AC03: A failing predecessor gate prevents promotion. Waivers cannot bypass accepted ownership or security invariants.
+4. P01-GATE-AC04: CI captures exact versions and logs without recording credentials or private model reasoning. Known baseline blockers are repaired or disproved with evidence, and the required repository governance gate passes before P02 progression. WSL-CLIENT-01 has a recorded placement contract, Windows/WSL client/version inventory and honest current interop observations; P06-specific integration claims remain unaccepted until actual-host qualification.
+5. P01-GATE-AC05: Two language clients pass the NATS storage fixtures on pinned server/client versions: competing revisions admit one transition, partial atomic batches leave no partial record set, and lost acknowledgments reconcile the same operation. Unsupported cross-stream or external-effect transactions are rejected or handled by an explicit recovery contract.
+6. P01-GATE-AC06: The existing regression assertions are retained or mapped to equivalent assertions. Characterization fixtures capture each affected behavior before refactoring; a deliberately removed assertion, missing component, or unapproved retirement prevents progression.
+7. P01-GATE-AC07: All assigned failure scenarios and component checks have reviewed evidence for the candidate; missing or skipped required checks remain blocking.
+8. P01-GATE-AC08: The required reviewer and advancement decision are recorded, and the phase commit is verified on the current remote feature branch. No merge is performed.
+
+**Verification**
+
+1. Run schema/contract suites in macOS, Linux, and WSL test jobs.
+2. Break one contract fixture and one phase gate deliberately and confirm the pipeline refuses promotion.
+3. Exercise a real broker restart and reconnect in the harness.
+4. Run FAIL-42, FAIL-43 and FAIL-47 with real JetStream. Record which server/API/SDK capabilities provide each guarantee, including batch behavior and authoritative read freshness.
+5. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+6. For WSL-CLIENT-01, record direct Windows and WSL-resolved client identity/version, configuration ownership and observed interop failures without copying credentials. Keep platform-runtime tests distinct from Windows-client transport tests; identify P06-owned qualification gaps.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/P01-GATE-acceptance.json, docs/planning/2026-10-09/delivery/evidence/P01/P01-GATE-acceptance-d3f8d9d.json
+
+**Commits:** 0fd64326b9621163b5b550f6419d21e1007b56d3, d3f8d9d240c84d77865f73935f5fe8cf2a3974de
+
+## P02. Protected boot and the NATS foundation
+
+A local installation boots deterministically with protected kernel plugins.
+
+**Epic acceptance criteria**
+
+- **P02-AC01:** macOS, Linux, and WSL installations boot without an LLM or hosted Jev connection.
+- **P02-AC02:** An outside plugin can subscribe only to permitted kernel information and cannot publish commands or writes into the kernel.
+- **P02-AC03:** Bad configuration, occupied ports, unavailable broker, and failed protected plugin produce actionable bounded failures.
+- **P02-AC04:** Surrounding plugin failure does not corrupt boot state. Ordinary runtime communication uses NATS after bootstrap.
+- **P02-AC05:** The existing launcher, environment selection and failure diagnostics remain available while the new boot path is opt-in. Both paths pass their defined startup and shutdown comparisons without sharing ownership of a live task.
+- **P02-AC06:** LOCAL-01 cold launch starts the selected local Compose stack and waits for broker persistence and application readiness. Warm launch reuses the same instance without recreation or lost state. macOS, Linux and WSL fixtures pass without an LLM or Jev.
+- **P02-AC07:** Simultaneous launches and a crashed startup owner converge on one owned instance. Wrong Docker context, conflicting ports, incompatible versions and partial startup produce bounded, specific diagnostics without deleting volumes, starting a shadow stack or attaching to another user.
+- **P02-AC08:** The same versioned status response follows successful start and reuse. It includes instance identity/version, selected profile and endpoint, readiness, persistence health and authorized hub information with freshness. Missing or unimplemented services are labeled unavailable, never healthy.
+
+
 <a id="P02-T01"></a>
 
 ### P02-T01: Implement a minimal launcher that establishes the configured NATS substrate and loads the fixed protected boot assembly.
@@ -807,6 +1356,56 @@ A local installation boots deterministically with protected kernel plugins.
 **Commits:** 93b027830d39b496a2eff756d5836caf5563663a, f5202b265c8ef1128534401a8f0ec0e6dc26bf84, 70ed9e33e69c3c4b09736a4cb8e524044545a668
 
 
+
+#### Historical remote variant for P02-T01 (not current acceptance or governance)
+
+<a id="P02-T01"></a>
+
+### P02-T01: Implement a minimal launcher that establishes the configured NATS substrate and loads the fixed protected boot assembly.
+
+**Status:** in_progress. **Owner:** Codex.
+
+**Dependencies:** P01-GATE, P02-T06.
+
+**Implementation plan**
+
+1. Load the explicitly selected private host policy and enrolled owner. Verify private file ownership, trusted ancestor directories, the signed release, factory configuration and immutable executable bytes before starting a process.
+2. Provide installed ensure, status and host commands. Each frontend gets a fresh invocation ID; the detached host acquires the host-service lease before bootstrap and owns its protected children. Frontend exit must not stop the host or adopt another owner’s processes.
+3. Use the isolated NATS HOST account for every frontend status request and response. Bind both private credentials, subjects, broker identity, request nonce, invocation ID, enrolled owner and full kernel scope. Validate the complete unchanged L04 status contract before accepting a response.
+4. Cold ensure starts the pinned Compose substrate and fixed protected assembly. Warm ensure observes the existing owner. Status never starts a runtime. Failed startup returns an honest failure and leaves a bounded recovery path for a later ensure.
+5. Prove concurrent cold launch, warm reuse, terminal exit, cancellation, malformed or forged replies, revoked credentials and owner recovery with real local processes. Run affected suites and native supported-environment checks on a stable candidate; retain missing checks as open work.
+
+**Deliverables**
+
+1. Installed agentmux-runtime CLI, private host policy and sealed or protected host launch implementation
+2. Authenticated NATS owner-status bridge preserving the full L04 contract
+3. Source-bound cold, warm, concurrent, failure and supported-environment evidence
+
+**Acceptance criteria**
+
+1. P02-T01-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Implement a minimal launcher that establishes the configured NATS substrate and loads the fixed protected boot assembly.
+2. P02-T01-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P02-T01-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P02-T01-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+5. P02-T01-AC05: Installed ensure and status use authenticated, fully validated L04 observations through NATS. The reply matches the actual invocation, enrolled owner, full scope and expected broker; malformed, stale, forged or incorrectly correlated replies fail.
+6. P02-T01-AC06: Concurrent terminal launches produce one owning host and one protected assembly. Closing a frontend preserves the host; reused callers never adopt or stop its children. Status does not create resources.
+7. P02-T01-AC07: A failed or unconfigured observation is not reported as command success. Failed startup and owner loss have a bounded, verified retry path without stealing leases or changing unrelated resources.
+8. P02-T01-AC08: The installed launcher is verified on native Linux, native macOS and the approved WSL environment. Synthetic process fixtures and cross-compilation do not replace supported-environment evidence.
+
+**Verification**
+
+1. Capture broker traffic and audit permissions while running normal and unauthorized clients.
+2. Cold-start and restart each platform. Kill NATS and one protected plugin at controlled points.
+3. Verify late subscribers receive a consistent readiness snapshot and updates.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Exercise FAIL-55–FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/go-source-guard/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-host-codec-evidence-review.json, docs/planning/2026-10-09/delivery/evidence/P02/host-config/source-bound-results.json, docs/planning/2026-10-09/delivery/evidence/P02/exact-json-fields/review.json, docs/planning/2026-10-09/delivery/evidence/P02/assembly-read-boundaries/review.json, docs/planning/2026-10-09/delivery/evidence/P02/component-registration-review/proposal.json, docs/planning/2026-10-09/delivery/evidence/P02/root-profile-evidence-review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/actual-docker-identity.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/concurrent-inspection-and-compose-failure.json, docs/planning/2026-10-09/delivery/decisions/P02-local-broker-authentication.md, docs/planning/2026-10-09/delivery/evidence/P02/installed-host-expanded-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-owner-bridge/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-secure-lock-review/review.json, docs/planning/2026-10-09/delivery/evidence/P02/secure-compose-diagnostics/review.json, docs/planning/2026-10-09/delivery/evidence/P02/shared-tls-cleanup-independent/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/shared-tls-cleanup-independent/root-source-check.json, docs/planning/2026-10-09/delivery/evidence/P02/native-tag-admission/review.json, docs/planning/2026-10-09/delivery/evidence/P02/source-surface-tooling/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/source-surface-go-existing/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/source-surface-security/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/foundation-stable-current/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-compose-stable-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/collector-final-current/packaging-review.json, docs/planning/2026-10-09/delivery/evidence/P02/raw-team-cleanup-current/worker/review.json, docs/planning/2026-10-09/delivery/evidence/P02/notes-packaging-current/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/public-raw-fault-diagnostic/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-refresh-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-refresh-current/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-capacity-diagnosis/review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-capacity-recovery/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-installed-cli-failed-four-case/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-cleanup-final-controls/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-cleanup-final-controls/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-baseline-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-compose-collector-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-frontend-budget-repair/worker-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-allocation-counter-diagnosis/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/closed-request-diagnostics/worker-review.json, docs/planning/2026-10-09/delivery/evidence/P02/darwin-identity-probe-source/registration-proposal.json, docs/planning/2026-10-09/delivery/evidence/P02/darwin-identity-probe-source/cleanup-cause-repair/review.json, docs/planning/2026-10-09/delivery/evidence/P02/receipt-creator-proof/independent-closure.json, docs/planning/2026-10-09/delivery/evidence/P02/receipt-prestart-cleanup/root-closure.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-93b0278.json
+
+**Commits:** 93b027830d39b496a2eff756d5836caf5563663a, f5202b265c8ef1128534401a8f0ec0e6dc26bf84, 70ed9e33e69c3c4b09736a4cb8e524044545a668, 8cd3d5e8e1b11a8db96187df890b1ec0affe879a
+
+
+
 <a id="P02-T02"></a>
 
 ### P02-T02: Implement boot, protected-plugin lifecycle, protected internal communication, and deliberate publication of kernel status.
@@ -846,6 +1445,51 @@ A local installation boots deterministically with protected kernel plugins.
 **Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/protected-assembly/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-cold-proof-and-start-validation/review.json, docs/planning/2026-10-09/delivery/evidence/P02/darwin-protected-backend/review.json, docs/planning/2026-10-09/delivery/decisions/P02-local-broker-authentication.md, docs/planning/2026-10-09/delivery/evidence/P02/installed-host-expanded-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-owner-bridge/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/review.json, docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-receipt-independent/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/architecture-matrix-review.json, docs/planning/2026-10-09/delivery/evidence/P02/startup-cleanup-cause/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/source-surface-runtime/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/foundation-stable-current/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/collector-final-current/packaging-review.json, docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/receipt-glue-independent-current/root-archive-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/feature-only-trigger-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-93b0278.json, docs/planning/2026-10-09/delivery/evidence/P02/local-broker-recovery/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/helper-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/start-image-cleanup-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/runtime-fixture-compile-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/approved-local-setup-results-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/normal-installed-controls-execution-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/signed-lifecycle-live-recovery-execution-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/apfs-blank-image-correction-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/approved-account-compose-plugin-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/role-argv-helper-correction-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/installed-cli-cold-recovery-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/descriptor-diagnostic-selection-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/full-default-runtime-execution-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/installed-cli-remaining-execution-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/restricted-helper-installation-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/partial-apfs-recovery-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/fresh-apfs-pair-source-review.json
 
 **Commits:** 93b027830d39b496a2eff756d5836caf5563663a, f5202b265c8ef1128534401a8f0ec0e6dc26bf84, 70ed9e33e69c3c4b09736a4cb8e524044545a668
+
+
+
+#### Historical remote variant for P02-T02 (not current acceptance or governance)
+
+<a id="P02-T02"></a>
+
+### P02-T02: Implement boot, protected-plugin lifecycle, protected internal communication, and deliberate publication of kernel status.
+
+**Status:** in_progress. **Owner:** Codex.
+
+**Dependencies:** P01-GATE, P02-T06.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Implement boot, protected-plugin lifecycle, protected internal communication, and deliberate publication of kernel status.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+
+**Deliverables**
+
+1. Implement boot, protected-plugin lifecycle, protected internal communication, and deliberate publication of kernel status.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P02-T02-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Implement boot, protected-plugin lifecycle, protected internal communication, and deliberate publication of kernel status.
+2. P02-T02-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P02-T02-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P02-T02-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Capture broker traffic and audit permissions while running normal and unauthorized clients.
+2. Cold-start and restart each platform. Kill NATS and one protected plugin at controlled points.
+3. Verify late subscribers receive a consistent readiness snapshot and updates.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Exercise FAIL-55–FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/protected-assembly/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-cold-proof-and-start-validation/review.json, docs/planning/2026-10-09/delivery/evidence/P02/darwin-protected-backend/review.json, docs/planning/2026-10-09/delivery/decisions/P02-local-broker-authentication.md, docs/planning/2026-10-09/delivery/evidence/P02/installed-host-expanded-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-owner-bridge/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/review.json, docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-receipt-independent/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/architecture-matrix-review.json, docs/planning/2026-10-09/delivery/evidence/P02/startup-cleanup-cause/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/source-surface-runtime/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/foundation-stable-current/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/collector-final-current/packaging-review.json, docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/receipt-glue-independent-current/root-archive-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/feature-only-trigger-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-93b0278.json
+
+**Commits:** 93b027830d39b496a2eff756d5836caf5563663a, f5202b265c8ef1128534401a8f0ec0e6dc26bf84, 70ed9e33e69c3c4b09736a4cb8e524044545a668, 8cd3d5e8e1b11a8db96187df890b1ec0affe879a
+
 
 
 <a id="P02-T03"></a>
@@ -891,6 +1535,53 @@ A local installation boots deterministically with protected kernel plugins.
 **Commits:** 93b027830d39b496a2eff756d5836caf5563663a, f5202b265c8ef1128534401a8f0ec0e6dc26bf84, 70ed9e33e69c3c4b09736a4cb8e524044545a668
 
 
+
+#### Historical remote variant for P02-T03 (not current acceptance or governance)
+
+<a id="P02-T03"></a>
+
+### P02-T03: Separate protected internal subjects/accounts from exported information and surrounding application services.
+
+**Status:** in_progress. **Owner:** Codex.
+
+**Dependencies:** P01-GATE, P02-T06.
+
+**Implementation plan**
+
+1. Preserve the existing protected, ordinary and administration account permissions. Add the explicitly enabled HOST account only when both private enrolled credentials and the entire scope match the selected factory.
+2. Give the HOST server only request subscription and scoped reply publication; give its client only request publication and scoped reply subscription. Deny JetStream, account imports/exports, generic inboxes and kernel or business subjects.
+3. Keep request and reply schemas additive; preserve the accepted startup-status schema. Verify required fields, closed properties, ranges and conditional rules with the existing independent SDKs and the bridge consumer.
+4. Run real NATS permission and wrong-broker tests using disposable brokers. Show that ordinary, protected and HOST callers cannot cross their boundaries, including altered scope, credentials or permissions.
+5. Attach current source hashes and broker evidence, update component and pattern records, and retain all previous account assertions and historical evidence.
+
+**Deliverables**
+
+1. Optional factory-bound HOST account and private credential admission
+2. Additive owner-status request/reply contracts and real broker isolation evidence
+
+**Acceptance criteria**
+
+1. P02-T03-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Separate protected internal subjects/accounts from exported information and surrounding application services.
+2. P02-T03-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P02-T03-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P02-T03-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+5. P02-T03-AC05: The optional HOST account admits only the two factory-bound enrolled credentials and exact scoped request/reply permissions. Real broker tests prove denial of protected subjects, business subjects, JetStream and account crossover.
+6. P02-T03-AC06: Every credential-bearing local installed NATS connection verifies the enrolled per-profile TLS server identity before CONNECT authentication. A fake local broker with matching advertised name/version cannot obtain credentials. Exact owned Docker/config/image/port inspection remains a separate prerequisite; system-root discovery, plaintext downgrade and alternate-broker fallback are refused.
+
+**Verification**
+
+1. Capture broker traffic and audit permissions while running normal and unauthorized clients.
+2. Cold-start and restart each platform. Kill NATS and one protected plugin at controlled points.
+3. Verify late subscribers receive a consistent readiness snapshot and updates.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Exercise FAIL-55–FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/root-host-codec-evidence-review.json, docs/planning/2026-10-09/delivery/evidence/P02/host-config/source-bound-results.json, docs/planning/2026-10-09/delivery/evidence/P02/exact-json-fields/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/concurrent-inspection-and-compose-failure.json, docs/planning/2026-10-09/delivery/decisions/P02-local-broker-authentication.md, docs/planning/2026-10-09/delivery/evidence/P02/installed-host-expanded-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-owner-bridge/review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-broker-authentication-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-secure-lock-review/review.json, docs/planning/2026-10-09/delivery/evidence/P02/secure-compose-diagnostics/review.json, docs/planning/2026-10-09/delivery/evidence/P02/shared-tls-cleanup-independent/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/shared-tls-cleanup-independent/root-source-check.json, docs/planning/2026-10-09/delivery/evidence/P02/foundation-stable-current/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-93b0278.json
+
+**Commits:** 93b027830d39b496a2eff756d5836caf5563663a, f5202b265c8ef1128534401a8f0ec0e6dc26bf84, 70ed9e33e69c3c4b09736a4cb8e524044545a668, 8cd3d5e8e1b11a8db96187df890b1ec0affe879a
+
+
+
 <a id="P02-T04"></a>
 
 ### P02-T04: Provide readiness snapshots, bounded startup/shutdown, broker recovery, basic installer/doctor skeleton, and local bootstrap diagnostics.
@@ -930,6 +1621,51 @@ A local installation boots deterministically with protected kernel plugins.
 **Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/local-owner-status/review.json, docs/planning/2026-10-09/delivery/evidence/P02/session-lifecycle/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-session-sync-checks/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-cold-proof-and-start-validation/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-status-deadline/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/actual-docker-identity.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/concurrent-inspection-and-compose-failure.json, docs/planning/2026-10-09/delivery/decisions/P02-local-broker-authentication.md, docs/planning/2026-10-09/delivery/evidence/P02/installed-host-expanded-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-owner-bridge/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/review.json, docs/planning/2026-10-09/delivery/evidence/P02/foundation-stable-current/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-93b0278.json, docs/planning/2026-10-09/delivery/evidence/P02/local-broker-recovery/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-owner-reply-shutdown/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/protected-preinstallation-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/port-caller-history-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/parent-and-cleanup-first-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/cleanup-context-retry-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/signed-release-preparation-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/repaired-controller-compile-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/installation-authentication-required.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/frontend-preinstallation-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/inspector-and-portable-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/broad-native-first-failure-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/broad-native-nats-closeout-refinement.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/stop-context-precedence-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/doctor-focused-repair-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/default-launcher-race-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/nocgo-refusal-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/signed-role-lifecycle-compile-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/installer-finalization-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/candidate-artifact-match-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/nine-member-materializer-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/collector-cohort-controls-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/creator-history-compile-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/startup-owner-compile-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/signed-release-stop-repair-preparation-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/start-image-cleanup-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/runtime-fixture-compile-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/reviewed-setup-inputs.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/extended-cohort-compatibility-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/collector-python314-compatibility-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/signed-release-image-cleanup-preparation-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/doctor-and-sdk265-probe-source-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/candidate-match-image-cleanup-review.json, docs/planning/2026-10-09/delivery/evidence/P02/macos-arm64-beta-scope/readonly-docker-diagnostics-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/approved-local-setup-results-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/normal-installed-controls-execution-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/signed-lifecycle-live-recovery-execution-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/installed-cli-first-execution-failure-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/apfs-blank-image-correction-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/approved-account-compose-plugin-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/role-argv-helper-correction-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/installed-cli-cold-recovery-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/descriptor-diagnostic-selection-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/installed-cli-remaining-execution-review.json
 
 **Commits:** 93b027830d39b496a2eff756d5836caf5563663a, f5202b265c8ef1128534401a8f0ec0e6dc26bf84, 70ed9e33e69c3c4b09736a4cb8e524044545a668
+
+
+
+#### Historical remote variant for P02-T04 (not current acceptance or governance)
+
+<a id="P02-T04"></a>
+
+### P02-T04: Provide readiness snapshots, bounded startup/shutdown, broker recovery, basic installer/doctor skeleton, and local bootstrap diagnostics.
+
+**Status:** in_progress. **Owner:** Codex.
+
+**Dependencies:** P01-GATE, P02-T06.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Provide readiness snapshots, bounded startup/shutdown, broker recovery, basic installer/doctor skeleton, and local bootstrap diagnostics.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+
+**Deliverables**
+
+1. Provide readiness snapshots, bounded startup/shutdown, broker recovery, basic installer/doctor skeleton, and local bootstrap diagnostics.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P02-T04-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Provide readiness snapshots, bounded startup/shutdown, broker recovery, basic installer/doctor skeleton, and local bootstrap diagnostics.
+2. P02-T04-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P02-T04-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P02-T04-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Capture broker traffic and audit permissions while running normal and unauthorized clients.
+2. Cold-start and restart each platform. Kill NATS and one protected plugin at controlled points.
+3. Verify late subscribers receive a consistent readiness snapshot and updates.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Exercise FAIL-55–FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/local-owner-status/review.json, docs/planning/2026-10-09/delivery/evidence/P02/session-lifecycle/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-session-sync-checks/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-cold-proof-and-start-validation/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-status-deadline/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/actual-docker-identity.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/concurrent-inspection-and-compose-failure.json, docs/planning/2026-10-09/delivery/decisions/P02-local-broker-authentication.md, docs/planning/2026-10-09/delivery/evidence/P02/installed-host-expanded-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-owner-bridge/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/review.json, docs/planning/2026-10-09/delivery/evidence/P02/foundation-stable-current/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-93b0278.json
+
+**Commits:** 93b027830d39b496a2eff756d5836caf5563663a, f5202b265c8ef1128534401a8f0ec0e6dc26bf84, 70ed9e33e69c3c4b09736a4cb8e524044545a668, 8cd3d5e8e1b11a8db96187df890b1ec0affe879a
+
 
 
 <a id="P02-T05"></a>
@@ -973,6 +1709,51 @@ A local installation boots deterministically with protected kernel plugins.
 **Commits:** 93b027830d39b496a2eff756d5836caf5563663a, f5202b265c8ef1128534401a8f0ec0e6dc26bf84, 70ed9e33e69c3c4b09736a4cb8e524044545a668
 
 
+
+#### Historical remote variant for P02-T05 (not current acceptance or governance)
+
+<a id="P02-T05"></a>
+
+### P02-T05: Provision the approved local file-backed JetStream profile and team connection profile with explicit storage paths, limits, health and domain settings
+
+**Status:** in_progress. **Owner:** Codex.
+
+**Dependencies:** P01-GATE, P02-T06.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Provision the approved local file-backed JetStream profile and team connection profile with explicit storage paths, limits, health and domain settings. Business state ownership stays in surrounding plugins.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+
+**Deliverables**
+
+1. Provision the approved local file-backed JetStream profile and team connection profile with explicit storage paths, limits, health and domain settings. Business state ownership stays in surrounding plugins.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P02-T05-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Provision the approved local file-backed JetStream profile and team connection profile with explicit storage paths, limits, health and domain settings. Business state ownership stays in surrounding plugins.
+2. P02-T05-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P02-T05-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P02-T05-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Capture broker traffic and audit permissions while running normal and unauthorized clients.
+2. Cold-start and restart each platform. Kill NATS and one protected plugin at controlled points.
+3. Verify late subscribers receive a consistent readiness snapshot and updates.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Exercise FAIL-55–FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/local-sync-policy/results.json, docs/planning/2026-10-09/delivery/evidence/P02/root-session-sync-checks/review.json, docs/planning/2026-10-09/delivery/evidence/P02/foundation-stable-current/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-compose-stable-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/raw-team-cleanup-current/worker/review.json, docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/public-raw-fault-diagnostic/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/feature-only-trigger-review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-refresh-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-refresh-current/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-capacity-diagnosis/review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-capacity-recovery/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-installed-cli-failed-four-case/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-cleanup-final-controls/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-cleanup-final-controls/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-baseline-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-compose-collector-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-allocation-counter-diagnosis/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/third-legacy-network-readonly/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/third-legacy-network-recovery/root-recovery-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-93b0278.json
+
+**Commits:** 93b027830d39b496a2eff756d5836caf5563663a, f5202b265c8ef1128534401a8f0ec0e6dc26bf84, 70ed9e33e69c3c4b09736a4cb8e524044545a668, 8cd3d5e8e1b11a8db96187df890b1ec0affe879a
+
+
+
 <a id="P02-T06"></a>
 
 ### P02-T06: Apply ADD-01 and the component preservation matrix to every changed source file and affected caller
@@ -1011,6 +1792,50 @@ A local installation boots deterministically with protected kernel plugins.
 **Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/P02-T06-acceptance-2740e31.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/approved-local-setup-results-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/apfs-blank-image-correction-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/approved-account-compose-plugin-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/role-argv-helper-correction-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/installed-cli-cold-recovery-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/descriptor-diagnostic-selection-review.json
 
 **Commits:** 2740e31d79c6b63fca54137b191c151afca91be5
+
+
+
+#### Historical remote variant for P02-T06 (not current acceptance or governance)
+
+<a id="P02-T06"></a>
+
+### P02-T06: Apply ADD-01 and the component preservation matrix to every changed source file and affected caller
+
+**Status:** done. **Owner:** Codex.
+
+**Dependencies:** P01-GATE.
+
+**Implementation plan**
+
+1. Review the phase-owned components in the preservation matrix and identify every changed caller, command, route, state record, integration and UI action; also include cross-phase callers affected by this work.
+2. Record retain/wrap/extract/extend/replace decisions with reasons. Map each old assertion and data identity to its target. Capture missing characterization fixtures before refactoring.
+3. Run the available baseline checks and define the candidate, migration/rollback and added-functionality checks. Candidate execution belongs to the implementation and final phase gate, so this preparation does not depend on future code being finished.
+4. Maintain the inventory and behavior ownership throughout the phase. Missing environments stay open. Codex reviews any capability change against the complete user-authorized scope; autonomy does not permit silent scope reduction.
+
+**Deliverables**
+
+1. Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P02-T06-AC01: Every phase-owned component and affected cross-phase caller has a recorded scope, existing behavior and owner; no changed source is unmapped.
+2. P02-T06-AC02: Baseline evidence distinguishes passing, failing, unavailable and historical results. Any gap that prevents a safe planned change remains blocking.
+3. P02-T06-AC03: Reuse and migration decisions name alternatives, preserved IDs/assertions and rollback boundaries; required approval exists before any capability reduction.
+4. P02-T06-AC04: Candidate comparison, added-functionality and migration fixtures are assigned to implementation and phase verification tasks. This preflight does not claim that future candidate tests already passed.
+
+**Verification**
+
+1. Capture broker traffic and audit permissions while running normal and unauthorized clients.
+2. Cold-start and restart each platform. Kill NATS and one protected plugin at controlled points.
+3. Verify late subscribers receive a consistent readiness snapshot and updates.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Exercise FAIL-55–FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/P02-T06-acceptance-2740e31.json
+
+**Commits:** 2740e31d79c6b63fca54137b191c151afca91be5
+
 
 
 <a id="P02-T07"></a>
@@ -1062,6 +1887,61 @@ A local installation boots deterministically with protected kernel plugins.
 **Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-lock-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/inline-config-admission/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-integration-artifact-review.json, docs/planning/2026-10-09/delivery/evidence/P02/inline-config-admission-repair/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-host-codec-evidence-review.json, docs/planning/2026-10-09/delivery/evidence/P02/host-config/source-bound-results.json, docs/planning/2026-10-09/delivery/evidence/P02/exact-json-fields/review.json, docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-real-compose/failed-f06d63f86fee8f94/manifest.json, docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-compose-independent-review/first-attempt.json, docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-real-compose/failed-d6a66f7c70f49aeb/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/actual-docker-identity.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/concurrent-inspection-and-compose-failure.json, docs/planning/2026-10-09/delivery/decisions/P02-local-broker-authentication.md, docs/planning/2026-10-09/delivery/evidence/P02/installed-host-expanded-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-owner-bridge/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/review.json, docs/planning/2026-10-09/delivery/evidence/P02/host-receipt-binding/review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-receipt-draft/review.json, docs/planning/2026-10-09/delivery/evidence/P02/installed-cli-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/installed-cli-current/root-archive-review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-child-exit-guard/affected-review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-child-exit-guard/root-archive-review.json, docs/planning/2026-10-09/delivery/decisions/P02-bootstrap-control-receipt.md, docs/planning/2026-10-09/delivery/evidence/P02/source-surface-launcher/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/foundation-stable-current/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-compose-stable-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/receipt-glue-independent-current/root-archive-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-installed-cli-first-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-refresh-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-refresh-current/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-installed-cli-three-case-history/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-capacity-diagnosis/review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-capacity-recovery/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-installed-cli-failed-four-case/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-cleanup-final-controls/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-cleanup-final-controls/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-baseline-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/failure-case-scope-current/independent-audit.json, docs/planning/2026-10-09/delivery/evidence/P02/native-compose-collector-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-frontend-budget-repair/worker-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-allocation-counter-diagnosis/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/closed-request-diagnostics/worker-review.json, docs/planning/2026-10-09/delivery/evidence/P02/darwin-identity-probe-source/registration-proposal.json, docs/planning/2026-10-09/delivery/evidence/P02/installed-cli-failure-source-controls/review.json, docs/planning/2026-10-09/delivery/evidence/P02/darwin-identity-probe-source/cleanup-cause-repair/review.json, docs/planning/2026-10-09/delivery/evidence/P02/third-legacy-network-readonly/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/installed-cli-failure-source-controls/independent-source-closure.json, docs/planning/2026-10-09/delivery/evidence/P02/terminal-failure-design/independent-design-review.json, docs/planning/2026-10-09/delivery/evidence/P02/third-legacy-network-recovery/root-recovery-review.json, docs/planning/2026-10-09/delivery/evidence/P02/tracker-atomic-render/controls.json, docs/planning/2026-10-09/delivery/evidence/P02/tracker-atomic-render/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/receipt-creator-proof/independent-closure.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-initial-probe/root-component-check.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-initial-probe/independent-source-review.json, docs/planning/2026-10-09/delivery/evidence/P02/initial-owner-probe/affected-review.json, docs/planning/2026-10-09/delivery/evidence/P02/initial-probe-installed-failure/root-failure-review.json, docs/planning/2026-10-09/delivery/evidence/P02/terminal-failure-design/foundation-findings/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/receipt-prestart-cleanup/root-closure.json, docs/planning/2026-10-09/delivery/evidence/P02/retained-broker-probe-diagnosis/root-review.json, docs/planning/2026-10-09/delivery/decisions/P02-history-cleanup-ownership.md, docs/planning/2026-10-09/delivery/evidence/P02/cli-joined-stderr-capture/root-source-review.json, docs/planning/2026-10-09/delivery/evidence/P02/retained-fixture-readonly-qualification/root-readonly-review.json, docs/planning/2026-10-09/delivery/evidence/P02/retained-fixture-readonly-qualification/independent-proposal-review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-joined-stderr-capture/affected/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/retained-fixture-exact-recovery/root-execution-authorization.json, docs/planning/2026-10-09/delivery/evidence/P02/retained-fixture-exact-recovery/root-rm-only-authorization.json, docs/planning/2026-10-09/delivery/evidence/P02/retained-fixture-exact-recovery/rm-only-result/root-result-review.json, docs/planning/2026-10-09/delivery/evidence/P02/current-pending-boundary-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/history-foundation-promotion/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/history-foundation-promotion/current-checks/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/current-pending-boundary-failure/readonly-reconciliation/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-cleanup-evidence-repair/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration-draft/root-findings.json, docs/planning/2026-10-09/delivery/evidence/P02/host-history-policy/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-history-wiring/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration/composed-checks/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/history-running-failure-diagnosis/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/default-request-authority-repair/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-history-handler-followup/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-nonce-completion-window/root-diagnosis.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-history-threecase/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-nonce-completion-window/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/iteration-optimization/batch-source-verification.json, docs/planning/2026-10-09/delivery/evidence/P02/history-actual-run-postnonce/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/current-engine-admission-refusal/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/current-engine-qualification/root-decision.json, docs/planning/2026-10-09/delivery/evidence/P02/current-wsl-selector/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/current-wsl-actual-pending/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/current-wsl-actual-pending/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/selected-host-port-observer-pure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/occupied-history-output-controls/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/selected-host-port-frame-controls/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/action-pins-current.json, docs/planning/2026-10-09/delivery/evidence/P02/midboot-crash-preparation/root-execution-decision.json, docs/planning/2026-10-09/delivery/evidence/P02/midboot-real-child-admission-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/checkpoint-initial-source-review/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/checkpoint-collector-source-finding/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/checkpoint-remaining-platform-source-review/root-reconciliation.json, docs/planning/2026-10-09/delivery/evidence/P02/midboot-detector-final-controls/root-execution-decision.json, docs/planning/2026-10-09/delivery/evidence/P02/checkpoint-host-contract-controls/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/checkpoint-document-tooling-source/root-source-review.json, docs/planning/2026-10-09/delivery/evidence/P02/midboot-real-entry-status-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/midboot-entry-synchronization-controls/root-execution-decision.json, docs/planning/2026-10-09/delivery/evidence/P02/collector-bounded-owned-cleanup/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/midboot-real-proper-subset-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/feature-checkpoint-source-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-93b0278.json, docs/planning/2026-10-09/delivery/evidence/P02/local-cli-common/source-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-cli-common/execution-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/helper-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/protected-preinstallation-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/port-caller-history-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/parent-and-cleanup-first-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/cleanup-context-retry-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/signed-release-preparation-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/repaired-controller-compile-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/installation-authentication-required.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/frontend-preinstallation-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/inspector-and-portable-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/broad-native-first-failure-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/broad-native-nats-closeout-refinement.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/stop-context-precedence-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/doctor-focused-repair-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/default-launcher-race-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/nocgo-refusal-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/signed-role-lifecycle-compile-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/installer-finalization-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/candidate-artifact-match-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/nine-member-materializer-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/collector-cohort-controls-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/creator-history-compile-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/startup-owner-compile-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/signed-release-stop-repair-preparation-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/start-image-cleanup-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/runtime-fixture-compile-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/reviewed-setup-inputs.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/extended-cohort-compatibility-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/collector-python314-compatibility-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/signed-release-image-cleanup-preparation-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/doctor-and-sdk265-probe-source-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/candidate-match-image-cleanup-review.json, docs/planning/2026-10-09/delivery/evidence/P02/macos-arm64-beta-scope/readonly-docker-diagnostics-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/installed-cli-first-execution-failure-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/approved-local-setup-results-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/apfs-blank-image-correction-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/approved-account-compose-plugin-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/role-argv-helper-correction-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/installed-cli-cold-recovery-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/descriptor-diagnostic-selection-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/full-default-runtime-execution-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/installed-cli-remaining-execution-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/restricted-helper-installation-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/partial-apfs-recovery-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/fresh-apfs-pair-source-review.json
 
 **Commits:** 93b027830d39b496a2eff756d5836caf5563663a, f5202b265c8ef1128534401a8f0ec0e6dc26bf84, 70ed9e33e69c3c4b09736a4cb8e524044545a668
+
+
+
+#### Historical remote variant for P02-T07 (not current acceptance or governance)
+
+<a id="P02-T07"></a>
+
+### P02-T07: Implement LOCAL-01 bootstrap with pinned Docker Compose configuration, persistent NATS volumes, explicit project identity, bounded health/readiness checks and one startup owner across concurrent terminals
+
+**Status:** in_progress. **Owner:** Codex.
+
+**Dependencies:** P01-GATE, P02-T06.
+
+**Implementation plan**
+
+1. Load the separately enrolled release authority with LoadInstalledRelease, then bind the private profile, exact broker bytes and four role credential files through LoadBootstrapConfig before any Docker command.
+2. Inspect the selected Docker context, engine, pinned image, project, instance/profile/release labels, published port and actual private configuration. Refuse foreign, ambiguous or incompatible resources without mutation.
+3. Observe an existing runtime read-only. If startup may still be in progress, wait for its OS bootstrap lease and inspect again. Never use PID age or a retained health record as authority to start another runtime.
+4. For cold startup, retain per-role lifetime leases, start the exact Compose configuration, provision and probe the fixed file-backed health stream, start four verified protected processes and wait for a scoped ready snapshot within the startup budget.
+5. Qualify the complete path with a dedicated actual Docker fixture: one isolated project and enrolled port, real signed static role binaries, no fake broker, no Docker settings change, explicit baseline checks, exact owned-ID cleanup and retained data volume.
+6. Prove concurrent callers converge on one owned instance, warm reuse preserves container/process identity and retained persistence, closing a reused session leaves the owner running, and owner death releases child-held leases only after process exit.
+7. Qualify recovery and required failure cases, including bad identity/configuration, occupied port, wrong context, unavailable Docker/broker, partial startup and bounded cleanup. Preserve data and report unavailable services honestly.
+8. Complete native Linux/macOS/WSL boot qualification and the agreed status contract before acceptance. Terminal-specific automatic hooks retain their P06 owner; this P02 bootstrap must provide their callable startup/reuse foundation.
+9. For FAIL-55, run genuine warm ensure/status from another working directory with the same enrolled profile and explicit workspace roots; preserve instance, container, volume and retained record identities.
+10. For FAIL-56, interrupt the actual creator-proven startup owner before readiness using its held process handle. Prove waiting callers remain bounded, exact child and service leases release after exit, and retry converges on one selected instance. Keep the existing after-readiness crash case separate.
+11. For FAIL-57, qualify missing Docker or Compose, unavailable daemon, permission denial and pinned-image pull failure through genuine isolated installed environments. Do not uninstall user tools, alter the shared daemon or delete shared images to manufacture failures. Require actionable safe diagnostics, no retry storm and corrected recovery without data loss.
+12. For FAIL-58, qualify conflicting child selection, an occupied actual engine-host port, a foreign owner and an incompatible running release. An accepted bootstrap receipt can precede failure; require bounded specific ultimate failure, no false readiness, no running shadow stack and exact unrelated-resource preservation.
+13. For FAIL-59, qualify actual partial or unhealthy startup, readiness timeout and failed protected roles. Report the failing service, retain durable data and prove safe compatible recovery or explicit refusal. Running containers or genuine pending status alone do not prove readiness or failure recovery.
+14. During repair, diagnose the smallest failing boundary and rerun only its controls. Serialize actual Docker and timing-sensitive runs; batch stable-candidate evidence review. Keep all original deadlines, phase checks and supported-environment requirements.
+15. For failures after an accepted startup receipt, provide an owner-bound terminal failure report even when NATS has not started. Review the control protocol and persistence boundary before changing it: preserve pending startup deadlines, exact creator/enrollment/release scope, stale/replacement refusal and closed safe diagnostics. A clear selected-host port observation is not a reservation; recheck under the actual startup lease and do not classify generic Docker command failures as occupied ports. Keep WSL and the selected Windows engine host distinct. Qualify both the original waiting frontend and a subsequent status request, including failure, cleanup and corrected retry.
+
+**Deliverables**
+
+1. Implement LOCAL-01 bootstrap with pinned Docker Compose configuration, persistent NATS volumes, explicit project identity, bounded health/readiness checks and one startup owner across concurrent terminals. Reuse an authorized compatible healthy instance without recreating it.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P02-T07-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Implement LOCAL-01 bootstrap with pinned Docker Compose configuration, persistent NATS volumes, explicit project identity, bounded health/readiness checks and one startup owner across concurrent terminals. Reuse an authorized compatible healthy instance without recreating it.
+2. P02-T07-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P02-T07-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P02-T07-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Capture broker traffic and audit permissions while running normal and unauthorized clients.
+2. Cold-start and restart each platform. Kill NATS and one protected plugin at controlled points.
+3. Verify late subscribers receive a consistent readiness snapshot and updates.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Exercise FAIL-55–FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-lock-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/inline-config-admission/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-integration-artifact-review.json, docs/planning/2026-10-09/delivery/evidence/P02/inline-config-admission-repair/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-host-codec-evidence-review.json, docs/planning/2026-10-09/delivery/evidence/P02/host-config/source-bound-results.json, docs/planning/2026-10-09/delivery/evidence/P02/exact-json-fields/review.json, docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-real-compose/failed-f06d63f86fee8f94/manifest.json, docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-compose-independent-review/first-attempt.json, docs/planning/2026-10-09/delivery/evidence/P02/bootstrap-real-compose/failed-d6a66f7c70f49aeb/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-owner-bridge-foundation/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/review.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/actual-docker-identity.json, docs/planning/2026-10-09/delivery/evidence/P02/root-launcher-integration-progress/concurrent-inspection-and-compose-failure.json, docs/planning/2026-10-09/delivery/decisions/P02-local-broker-authentication.md, docs/planning/2026-10-09/delivery/evidence/P02/installed-host-expanded-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/local-owner-bridge/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owned-tls-inspection/review.json, docs/planning/2026-10-09/delivery/evidence/P02/host-receipt-binding/review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-receipt-draft/review.json, docs/planning/2026-10-09/delivery/evidence/P02/installed-cli-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/installed-cli-current/root-archive-review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-child-exit-guard/affected-review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-child-exit-guard/root-archive-review.json, docs/planning/2026-10-09/delivery/decisions/P02-bootstrap-control-receipt.md, docs/planning/2026-10-09/delivery/evidence/P02/source-surface-launcher/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/foundation-stable-current/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-compose-stable-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/receipt-glue-independent-current/root-archive-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-installed-cli-first-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-refresh-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-refresh-current/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-installed-cli-three-case-history/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-capacity-diagnosis/review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-capacity-recovery/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/real-installed-cli-failed-four-case/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-cleanup-final-controls/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-cleanup-final-controls/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-baseline-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/failure-case-scope-current/independent-audit.json, docs/planning/2026-10-09/delivery/evidence/P02/native-compose-collector-current/review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-frontend-budget-repair/worker-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-allocation-counter-diagnosis/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/closed-request-diagnostics/worker-review.json, docs/planning/2026-10-09/delivery/evidence/P02/darwin-identity-probe-source/registration-proposal.json, docs/planning/2026-10-09/delivery/evidence/P02/installed-cli-failure-source-controls/review.json, docs/planning/2026-10-09/delivery/evidence/P02/darwin-identity-probe-source/cleanup-cause-repair/review.json, docs/planning/2026-10-09/delivery/evidence/P02/third-legacy-network-readonly/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/installed-cli-failure-source-controls/independent-source-closure.json, docs/planning/2026-10-09/delivery/evidence/P02/terminal-failure-design/independent-design-review.json, docs/planning/2026-10-09/delivery/evidence/P02/third-legacy-network-recovery/root-recovery-review.json, docs/planning/2026-10-09/delivery/evidence/P02/tracker-atomic-render/controls.json, docs/planning/2026-10-09/delivery/evidence/P02/tracker-atomic-render/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/receipt-creator-proof/independent-closure.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-initial-probe/root-component-check.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-initial-probe/independent-source-review.json, docs/planning/2026-10-09/delivery/evidence/P02/initial-owner-probe/affected-review.json, docs/planning/2026-10-09/delivery/evidence/P02/initial-probe-installed-failure/root-failure-review.json, docs/planning/2026-10-09/delivery/evidence/P02/terminal-failure-design/foundation-findings/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/receipt-prestart-cleanup/root-closure.json, docs/planning/2026-10-09/delivery/evidence/P02/retained-broker-probe-diagnosis/root-review.json, docs/planning/2026-10-09/delivery/decisions/P02-history-cleanup-ownership.md, docs/planning/2026-10-09/delivery/evidence/P02/cli-joined-stderr-capture/root-source-review.json, docs/planning/2026-10-09/delivery/evidence/P02/retained-fixture-readonly-qualification/root-readonly-review.json, docs/planning/2026-10-09/delivery/evidence/P02/retained-fixture-readonly-qualification/independent-proposal-review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-joined-stderr-capture/affected/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/retained-fixture-exact-recovery/root-execution-authorization.json, docs/planning/2026-10-09/delivery/evidence/P02/retained-fixture-exact-recovery/root-rm-only-authorization.json, docs/planning/2026-10-09/delivery/evidence/P02/retained-fixture-exact-recovery/rm-only-result/root-result-review.json, docs/planning/2026-10-09/delivery/evidence/P02/current-pending-boundary-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/history-foundation-promotion/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/history-foundation-promotion/current-checks/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/current-pending-boundary-failure/readonly-reconciliation/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/network-cleanup-evidence-repair/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration-draft/root-findings.json, docs/planning/2026-10-09/delivery/evidence/P02/host-history-policy/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-history-wiring/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/history-owner-integration/composed-checks/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/history-running-failure-diagnosis/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/default-request-authority-repair/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-history-handler-followup/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-nonce-completion-window/root-diagnosis.json, docs/planning/2026-10-09/delivery/evidence/P02/cli-history-threecase/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/owner-nonce-completion-window/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/iteration-optimization/batch-source-verification.json, docs/planning/2026-10-09/delivery/evidence/P02/history-actual-run-postnonce/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/current-engine-admission-refusal/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/current-engine-qualification/root-decision.json, docs/planning/2026-10-09/delivery/evidence/P02/current-wsl-selector/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/current-wsl-actual-pending/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/current-wsl-actual-pending/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/selected-host-port-observer-pure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/occupied-history-output-controls/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/selected-host-port-frame-controls/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/action-pins-current.json, docs/planning/2026-10-09/delivery/evidence/P02/midboot-crash-preparation/root-execution-decision.json, docs/planning/2026-10-09/delivery/evidence/P02/midboot-real-child-admission-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/checkpoint-initial-source-review/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/checkpoint-collector-source-finding/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/checkpoint-remaining-platform-source-review/root-reconciliation.json, docs/planning/2026-10-09/delivery/evidence/P02/midboot-detector-final-controls/root-execution-decision.json, docs/planning/2026-10-09/delivery/evidence/P02/checkpoint-host-contract-controls/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/checkpoint-document-tooling-source/root-source-review.json, docs/planning/2026-10-09/delivery/evidence/P02/midboot-real-entry-status-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/midboot-entry-synchronization-controls/root-execution-decision.json, docs/planning/2026-10-09/delivery/evidence/P02/collector-bounded-owned-cleanup/root-promotion.json, docs/planning/2026-10-09/delivery/evidence/P02/midboot-real-proper-subset-failure/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/feature-checkpoint-source-review/root-review.json, docs/planning/2026-10-09/delivery/evidence/P02/native-ci-preparation/checkpoint-remote-93b0278.json
+
+**Commits:** 93b027830d39b496a2eff756d5836caf5563663a, f5202b265c8ef1128534401a8f0ec0e6dc26bf84, 70ed9e33e69c3c4b09736a4cb8e524044545a668, 8cd3d5e8e1b11a8db96187df890b1ec0affe879a
+
 
 
 <a id="P02-GATE"></a>
@@ -1124,6 +2004,70 @@ A third-party author can build a compatible trusted plugin without changing the 
 - **P03-AC04:** A plugin in each selected language passes the same contract fixtures and interacts with another plugin over NATS.
 - **P03-AC05:** The protected kernel has no replacement option in package management. Trusted native code is accurately documented as unsandboxed.
 - **P03-AC06:** Existing federation plugin lifecycle, command registry, contributions and context each have a documented reuse or justified replacement decision. Existing bundled plugins pass compatibility fixtures before their old runtime path is disabled.
+
+
+#### Historical remote variant for P02-GATE (not current acceptance or governance)
+
+<a id="P02-GATE"></a>
+
+### P02-GATE: Verify and accept P02
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P02-T01, P02-T02, P02-T03, P02-T04, P02-T05, P02-T06, P02-T07.
+
+**Implementation plan**
+
+1. Confirm every phase task and prerequisite is complete; inspect the actual deliverables and limitations rather than relying on a done label.
+2. Run the phase's full acceptance, failure, preservation and rollback checks on the exact candidate and supported environments. Retain per-criterion evidence using gate-record.template.json.
+3. Codex reviews actual deliverables and subagent findings and records the advancement decision. Parallelize bounded subagent work only within this phase. Missing evidence remains blocking; no human approval is required.
+4. Commit all phase changes and evidence to feat/agentmux-platform-rearchitecture, push, and verify the remote commit. Record that commit before the next phase starts. MERGE-01 remains separate.
+
+**Deliverables**
+
+1. Boot and shutdown matrix
+2. Kernel publication contract and permission tests
+3. Bootstrap recovery guide
+4. Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01
+
+**Acceptance criteria**
+
+1. P02-GATE-AC01: macOS, Linux, and WSL installations boot without an LLM or hosted Jev connection.
+2. P02-GATE-AC02: An outside plugin can subscribe only to permitted kernel information and cannot publish commands or writes into the kernel.
+3. P02-GATE-AC03: Bad configuration, occupied ports, unavailable broker, and failed protected plugin produce actionable bounded failures.
+4. P02-GATE-AC04: Surrounding plugin failure does not corrupt boot state. Ordinary runtime communication uses NATS after bootstrap.
+5. P02-GATE-AC05: The existing launcher, environment selection and failure diagnostics remain available while the new boot path is opt-in. Both paths pass their defined startup and shutdown comparisons without sharing ownership of a live task.
+6. P02-GATE-AC06: LOCAL-01 cold launch starts the selected local Compose stack and waits for broker persistence and application readiness. Warm launch reuses the same instance without recreation or lost state. macOS, Linux and WSL fixtures pass without an LLM or Jev.
+7. P02-GATE-AC07: Simultaneous launches and a crashed startup owner converge on one owned instance. Wrong Docker context, conflicting ports, incompatible versions and partial startup produce bounded, specific diagnostics without deleting volumes, starting a shadow stack or attaching to another user.
+8. P02-GATE-AC08: The same versioned status response follows successful start and reuse. It includes instance identity/version, selected profile and endpoint, readiness, persistence health and authorized hub information with freshness. Missing or unimplemented services are labeled unavailable, never healthy.
+9. P02-GATE-AC09: All assigned failure scenarios and component checks have reviewed evidence for the candidate; missing or skipped required checks remain blocking.
+10. P02-GATE-AC10: The required reviewer and advancement decision are recorded, and the phase commit is verified on the current remote feature branch. No merge is performed.
+
+**Verification**
+
+1. Capture broker traffic and audit permissions while running normal and unauthorized clients.
+2. Cold-start and restart each platform. Kill NATS and one protected plugin at controlled points.
+3. Verify late subscribers receive a consistent readiness snapshot and updates.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Exercise FAIL-55–FAIL-59 with real Compose processes and persistent volumes. In P02 use declared status fixtures for later services; repeat against real client and federation implementations in P06/P10/P12.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P02/collector-final-current/packaging-review.json, docs/planning/2026-10-09/delivery/evidence/P02/notes-packaging-current/independent-review.json, docs/planning/2026-10-09/delivery/evidence/P02/raw-team-cleanup-current/worker/review.json, docs/planning/2026-10-09/delivery/evidence/P02/pattern-current-review/root-review.json
+
+**Commits:** not yet recorded
+
+## P03. Plugin framework, nested packages, and inherited context
+
+A third-party author can build a compatible trusted plugin without changing the kernel.
+
+**Epic acceptance criteria**
+
+- **P03-AC01:** Both child package modes install and activate correctly. Removing one parent retains independent children used elsewhere.
+- **P03-AC02:** Two concurrent users cannot overwrite an ambient current-user/current-project value. A child cannot widen its grant or forge logger identity.
+- **P03-AC03:** Dependency cycles, missing versions, partial initialization, and stale handles fail deterministically and clean up resources.
+- **P03-AC04:** A plugin in each selected language passes the same contract fixtures and interacts with another plugin over NATS.
+- **P03-AC05:** The protected kernel has no replacement option in package management. Trusted native code is accurately documented as unsandboxed.
+- **P03-AC06:** Existing federation plugin lifecycle, command registry, contributions and context each have a documented reuse or justified replacement decision. Existing bundled plugins pass compatibility fixtures before their old runtime path is disabled.
+
 
 <a id="P03-T01"></a>
 
@@ -1463,6 +2407,69 @@ Multiple users and projects share a hub with explicit authority and durable owne
 - **P04-AC06:** Deleting or corrupting an optional SQL index or derived KV view is recoverable from retained authoritative records and validated checkpoints. Rebuild preserves authorized results and cursors, detects missing history, and cannot launch work or replay external effects.
 - **P04-AC07:** Task history and reservations survive work-queue acknowledgment and presence expiry. Storage/API permissions prevent unauthorized reads and raw writes. Stale views expose their revision and cannot authorize a claim, approval or reassignment.
 - **P04-AC08:** Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification.
+
+
+#### Historical remote variant for P03-GATE (not current acceptance or governance)
+
+<a id="P03-GATE"></a>
+
+### P03-GATE: Verify and accept P03
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P03-T01, P03-T02, P03-T03, P03-T04, P03-T05, P03-T06, P03-T07.
+
+**Implementation plan**
+
+1. Confirm every phase task and prerequisite is complete; inspect the actual deliverables and limitations rather than relying on a done label.
+2. Run the phase's full acceptance, failure, preservation and rollback checks on the exact candidate and supported environments. Retain per-criterion evidence using gate-record.template.json.
+3. Codex reviews actual deliverables and subagent findings and records the advancement decision. Parallelize bounded subagent work only within this phase. Missing evidence remains blocking; no human approval is required.
+4. Commit all phase changes and evidence to feat/agentmux-platform-rearchitecture, push, and verify the remote commit. Record that commit before the next phase starts. MERGE-01 remains separate.
+
+**Deliverables**
+
+1. Plugin manifest and SDK reference
+2. Conformance matrix and author tutorial
+3. Nested-package/lifecycle test report
+4. Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01
+
+**Acceptance criteria**
+
+1. P03-GATE-AC01: Both child package modes install and activate correctly. Removing one parent retains independent children used elsewhere.
+2. P03-GATE-AC02: Two concurrent users cannot overwrite an ambient current-user/current-project value. A child cannot widen its grant or forge logger identity.
+3. P03-GATE-AC03: Dependency cycles, missing versions, partial initialization, and stale handles fail deterministically and clean up resources.
+4. P03-GATE-AC04: A plugin in each selected language passes the same contract fixtures and interacts with another plugin over NATS.
+5. P03-GATE-AC05: The protected kernel has no replacement option in package management. Trusted native code is accurately documented as unsandboxed.
+6. P03-GATE-AC06: Existing federation plugin lifecycle, command registry, contributions and context each have a documented reuse or justified replacement decision. Existing bundled plugins pass compatibility fixtures before their old runtime path is disabled.
+7. P03-GATE-AC07: All assigned failure scenarios and component checks have reviewed evidence for the candidate; missing or skipped required checks remain blocking.
+8. P03-GATE-AC08: The required reviewer and advancement decision are recorded, and the phase commit is verified on the current remote feature branch. No merge is performed.
+
+**Verification**
+
+1. Run an independent author exercise using only published SDK/docs.
+2. Test lifecycle/resource leaks, dependency failure, configuration precedence, version skew, and upgrades with active operations.
+3. Inspect NATS traces and execute negative tests at remote resource owners.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
+## P04. Identity, projects, durable state, and workspaces
+
+Multiple users and projects share a hub with explicit authority and durable ownership.
+
+**Epic acceptance criteria**
+
+- **P04-AC01:** Cross-user/project/organization negative tests deny unauthorized commands, subscriptions, files, artifacts, and secret resolution.
+- **P04-AC02:** A committed NATS record or qualified same-stream batch preserves the state change, provenance and recoverable outgoing intent. Crashes before or after commit, publication or acknowledgment converge to the recorded operation without a second business effect.
+- **P04-AC03:** Duplicate delivery with the same operation ID and payload hash returns the existing outcome without allocating a second workspace or task. Reusing an operation ID with a different payload is rejected as a conflict.
+- **P04-AC04:** Backup/restore preserves ownership and result provenance. Migration fences the former writer, preserves stable IDs, dirty worktrees and unmerged branches, and verifies imported records before admitting new writes.
+- **P04-AC05:** Node revocation and secret rotation have tested online behavior and explicit offline limits.
+- **P04-AC06:** Deleting or corrupting an optional SQL index or derived KV view is recoverable from retained authoritative records and validated checkpoints. Rebuild preserves authorized results and cursors, detects missing history, and cannot launch work or replay external effects.
+- **P04-AC07:** Task history and reservations survive work-queue acknowledgment and presence expiry. Storage/API permissions prevent unauthorized reads and raw writes. Stale views expose their revision and cannot authorize a claim, approval or reassignment.
+- **P04-AC08:** Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification.
+
 
 <a id="P04-T01"></a>
 
@@ -1816,6 +2823,71 @@ A developer can finish a reviewable software task through durable coordinated wo
 - **P05-AC04:** A crashed or disconnected worker leaves a recoverable known or explicitly unknown attempt. Retry preserves the prior attempt and its effects.
 - **P05-AC05:** Every P05-owned legacy functional group has parity evidence or an explicit replacement and data migration decision. Later client, dashboard, federation, and domain groups have an owned inventory and migration plan, with parity gated in their own phases. Changed artifacts invalidate bound approvals, and migration preserves distinct board, run, hub-work, and shared-board identities.
 - **P05-AC06:** Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification.
+
+
+#### Historical remote variant for P04-GATE (not current acceptance or governance)
+
+<a id="P04-GATE"></a>
+
+### P04-GATE: Verify and accept P04
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P04-T01, P04-T02, P04-T03, P04-T04, P04-T05, P04-T06, P04-T07.
+
+**Implementation plan**
+
+1. Confirm every phase task and prerequisite is complete; inspect the actual deliverables and limitations rather than relying on a done label.
+2. Run the phase's full acceptance, failure, preservation and rollback checks on the exact candidate and supported environments. Retain per-criterion evidence using gate-record.template.json.
+3. Codex reviews actual deliverables and subagent findings and records the advancement decision. Parallelize bounded subagent work only within this phase. Missing evidence remains blocking; no human approval is required.
+4. Commit all phase changes and evidence to feat/agentmux-platform-rearchitecture, push, and verify the remote commit. Record that commit before the next phase starts. MERGE-01 remains separate.
+
+**Deliverables**
+
+1. Threat model and permission matrix
+2. Storage capability and migration contracts
+3. Recovery and isolation reports
+4. Authoritative record, KV and object inventory with retention, checkpoint and projection rebuild evidence
+5. Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01
+
+**Acceptance criteria**
+
+1. P04-GATE-AC01: Cross-user/project/organization negative tests deny unauthorized commands, subscriptions, files, artifacts, and secret resolution.
+2. P04-GATE-AC02: A committed NATS record or qualified same-stream batch preserves the state change, provenance and recoverable outgoing intent. Crashes before or after commit, publication or acknowledgment converge to the recorded operation without a second business effect.
+3. P04-GATE-AC03: Duplicate delivery with the same operation ID and payload hash returns the existing outcome without allocating a second workspace or task. Reusing an operation ID with a different payload is rejected as a conflict.
+4. P04-GATE-AC04: Backup/restore preserves ownership and result provenance. Migration fences the former writer, preserves stable IDs, dirty worktrees and unmerged branches, and verifies imported records before admitting new writes.
+5. P04-GATE-AC05: Node revocation and secret rotation have tested online behavior and explicit offline limits.
+6. P04-GATE-AC06: Deleting or corrupting an optional SQL index or derived KV view is recoverable from retained authoritative records and validated checkpoints. Rebuild preserves authorized results and cursors, detects missing history, and cannot launch work or replay external effects.
+7. P04-GATE-AC07: Task history and reservations survive work-queue acknowledgment and presence expiry. Storage/API permissions prevent unauthorized reads and raw writes. Stale views expose their revision and cannot authorize a claim, approval or reassignment.
+8. P04-GATE-AC08: Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification.
+9. P04-GATE-AC09: All assigned failure scenarios and component checks have reviewed evidence for the candidate; missing or skipped required checks remain blocking.
+10. P04-GATE-AC10: The required reviewer and advancement decision are recorded, and the phase commit is verified on the current remote feature branch. No merge is performed.
+
+**Verification**
+
+1. Run the permission matrix against application owners and real broker accounts. Run an adversarial worker that attempts cross-project file, process, network, and credential access under the supported execution profile.
+2. Inject failures before/after commit and publish acknowledgment, exhaust disk/quota, and restore from backup.
+3. Run concurrency tests against every supported storage provider. Reject a provider that lacks required guarantees.
+4. Run FAIL-42 through FAIL-48, delete projections, corrupt a checkpoint, simulate lagging views and test direct broker APIs. Verify snapshots and retained history form a complete recovery chain.
+5. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
+## P05. Local orchestration and evidence-based completion
+
+A developer can finish a reviewable software task through durable coordinated work.
+
+**Epic acceptance criteria**
+
+- **P05-AC01:** A complete fixture workflow creates a plan, delegates tasks, executes in isolated workspaces, validates the result, and returns reviewable evidence.
+- **P05-AC02:** Two developers working on different or shared projects do not steal each other's claims, sessions, workspaces, or tool credentials.
+- **P05-AC03:** No task becomes accepted from terminal text, process exit, or a worker's self-reported done event alone.
+- **P05-AC04:** A crashed or disconnected worker leaves a recoverable known or explicitly unknown attempt. Retry preserves the prior attempt and its effects.
+- **P05-AC05:** Every P05-owned legacy functional group has parity evidence or an explicit replacement and data migration decision. Later client, dashboard, federation, and domain groups have an owned inventory and migration plan, with parity gated in their own phases. Changed artifacts invalidate bound approvals, and migration preserves distinct board, run, hub-work, and shared-board identities.
+- **P05-AC06:** Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification.
+
 
 <a id="P05-T01"></a>
 
@@ -2237,6 +3309,68 @@ Developers use Agentmux from their preferred supported client.
 - **P06-AC06:** Installing and configuring the Agentmux plugin makes each supported terminal/client launch automatically start or reuse the selected stack and show its instance and authorized hub summary. Actual-host tests qualify startup hooks or a clearly named installed launcher; manual commands cannot stand in for promised automatic launch. Native macOS ARM64 client callbacks reach the selected hub, and concurrent tmux workers/external clients preserve distinct project, hub, session and host identities without cross-session configuration or callbacks.
 - **P06-AC07:** Client startup preserves MCP/JSON-RPC framing, never prints secrets and avoids recursive starts by managed workers. Closing a terminal leaves shared work running; an explicit authorized stop follows the drain policy. Failed prerequisites report recovery steps without silently installing privileged software or changing client settings.
 
+
+#### Historical remote variant for P05-GATE (not current acceptance or governance)
+
+<a id="P05-GATE"></a>
+
+### P05-GATE: Verify and accept P05
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P05-T01, P05-T02, P05-T03, P05-T04, P05-T05, P05-T06, P05-T07, P05-T08, P05-T09.
+
+**Implementation plan**
+
+1. Confirm every phase task and prerequisite is complete; inspect the actual deliverables and limitations rather than relying on a done label.
+2. Run the phase's full acceptance, failure, preservation and rollback checks on the exact candidate and supported environments. Retain per-criterion evidence using gate-record.template.json.
+3. Codex reviews actual deliverables and subagent findings and records the advancement decision. Parallelize bounded subagent work only within this phase. Missing evidence remains blocking; no human approval is required.
+4. Commit all phase changes and evidence to feat/agentmux-platform-rearchitecture, push, and verify the remote commit. Record that commit before the next phase starts. MERGE-01 remains separate.
+
+**Deliverables**
+
+1. End-to-end workflow recording
+2. Completion/ownership invariant report
+3. Legacy parity and migration checklist
+4. Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01
+
+**Acceptance criteria**
+
+1. P05-GATE-AC01: A complete fixture workflow creates a plan, delegates tasks, executes in isolated workspaces, validates the result, and returns reviewable evidence.
+2. P05-GATE-AC02: Two developers working on different or shared projects do not steal each other's claims, sessions, workspaces, or tool credentials.
+3. P05-GATE-AC03: No task becomes accepted from terminal text, process exit, or a worker's self-reported done event alone.
+4. P05-GATE-AC04: A crashed or disconnected worker leaves a recoverable known or explicitly unknown attempt. Retry preserves the prior attempt and its effects.
+5. P05-GATE-AC05: Every P05-owned legacy functional group has parity evidence or an explicit replacement and data migration decision. Later client, dashboard, federation, and domain groups have an owned inventory and migration plan, with parity gated in their own phases. Changed artifacts invalidate bound approvals, and migration preserves distinct board, run, hub-work, and shared-board identities.
+6. P05-GATE-AC06: Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification.
+7. P05-GATE-AC07: All assigned failure scenarios and component checks have reviewed evidence for the candidate; missing or skipped required checks remain blocking.
+8. P05-GATE-AC08: The required reviewer and advancement decision are recorded, and the phase commit is verified on the current remote feature branch. No merge is performed.
+
+**Verification**
+
+1. Run normal, failure, retry, cancellation, resume, parallel-team, cross-repo, and swarm-style scenario suites.
+2. Inject crash windows around work attribution and result publication identified in the repository analysis.
+3. Use real CLI worker smoke tests plus deterministic fake workers for exhaustive state transitions.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
+## P06. Agent-client entry points and portable tooling
+
+Developers use Agentmux from their preferred supported client.
+
+**Epic acceptance criteria**
+
+- **P06-AC01:** Each supported client can submit a task, inspect progress/evidence, participate in required approvals, and retrieve the result.
+- **P06-AC02:** Unsupported event capture, cancellation, or compaction reports an explicit capability limit instead of simulating success. Windows/WSL interop failures and unsupported client/path combinations remain explicit; a Linux fallback or version-only check cannot simulate a supported workflow.
+- **P06-AC03:** Closing the originating client or observer does not duplicate or implicitly terminate durable work.
+- **P06-AC04:** Fresh-user install and uninstall preserve unrelated client settings and secrets. Under WSL-CLIENT-01, Windows retains sole ownership of each Windows-installed AI client and its updates, authentication and configuration; no duplicate Linux installation or credential copying is introduced.
+- **P06-AC05:** All existing supported harness commands, session safeguards, agent definitions, provider setup methods and integration workflows have passing comparisons or an explicitly approved capability change. Retained and added tests cover modal decisions, idle cleanup, credential refresh, WSL paths and external-write uncertainty. Direct Windows and WSL/tmux launches resolve the same installed version before and after a Windows-only update. Stable launchers survive updates without version-specific binary paths; arguments and working directories preserve spaces, quoting, mounted Windows paths and WSL UNC paths.
+- **P06-AC06:** Installing and configuring the Agentmux plugin makes each supported terminal/client launch automatically start or reuse the selected stack and show its instance and authorized hub summary. Actual-host tests qualify startup hooks or a clearly named installed launcher; manual commands cannot stand in for promised automatic launch. Windows-owned client callbacks reach the selected WSL hub, and concurrent tmux workers/external clients preserve distinct project, hub, session and host identities without cross-session configuration or callbacks.
+- **P06-AC07:** Client startup preserves MCP/JSON-RPC framing, never prints secrets and avoids recursive starts by managed workers. Closing a terminal leaves shared work running; an explicit authorized stop follows the drain policy. Failed prerequisites report recovery steps without silently installing privileged software or changing client settings.
+
+
 <a id="P06-T01"></a>
 
 ### P06-T01: Extend current CLI, MCP, provider and workspace tooling
@@ -2282,6 +3416,55 @@ Developers use Agentmux from their preferred supported client.
 **Commits:** not yet recorded
 
 
+
+#### Historical remote variant for P06-T01 (not current acceptance or governance)
+
+<a id="P06-T01"></a>
+
+### P06-T01: Extend current CLI, MCP, provider and workspace tooling
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P05-GATE, P06-T07.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Extend current CLI, MCP, provider and workspace tooling. Preserve command semantics, safe prompt handling, session cleanup boundaries and credential setup; expose new scopes through the existing entry points where compatible.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+6. Qualify REPO-01-C01 in actual supported agent hosts: confirm shared instructions and the branch/merge restriction are delivered, preserve user settings, and retain per-host/version evidence. P00 static review is not a substitute.
+7. Implement durable WSL symlinks or wrappers resolving each Windows-owned AI client. Preserve exact arguments and working directories, including spaces, quoting, mounted Windows paths and WSL UNC paths; do not install a duplicate Linux client.
+
+**Deliverables**
+
+1. Extend current CLI, MCP, provider and workspace tooling. Preserve command semantics, safe prompt handling, session cleanup boundaries and credential setup; expose new scopes through the existing entry points where compatible.
+2. Focused regression evidence and affected compatibility/migration records
+3. WSL-CLIENT-01 direct-Windows/WSL identity and update parity, configuration ownership, argument/path, callback and concurrent-session evidence
+
+**Acceptance criteria**
+
+1. P06-T01-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Extend current CLI, MCP, provider and workspace tooling. Preserve command semantics, safe prompt handling, session cleanup boundaries and credential setup; expose new scopes through the existing entry points where compatible. WSL-CLIENT-01: Implement durable WSL symlinks or wrappers resolving each Windows-owned AI client. Preserve exact arguments and working directories, including spaces, quoting, mounted Windows paths and WSL UNC paths; do not install a duplicate Linux client.
+2. P06-T01-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope. WSL-CLIENT-01 requires actual Windows/WSL workflow evidence; a version-only check, Linux-client substitution or skipped interop case cannot count as success.
+3. P06-T01-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P06-T01-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Execute the same reference workflow on every pinned client version in the support matrix.
+2. Test reconnect, authentication expiry, missing tool, malformed MCP request, and client shutdown.
+3. Review provider commercial integration terms before promising a supported paid distribution.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Run cold, warm and concurrent launches on each advertised client/OS version, including separate WSL sessions and paths with spaces. Capture client-visible status and protocol streams; exercise FAIL-60–FAIL-61.
+6. Execute WSL-CLIENT-01 on each supported Windows-installed client: compare direct/WSL version and installation identity, perform a Windows-only update and repeat, verify Windows auth/config ownership without secret copying, test exact arguments and working directories with spaces and WSL UNC paths, verify selected-hub callbacks, and run concurrent tmux/host sessions. Capture actual failures and recovery; retain native macOS/Linux runtime tests separately.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
+
+
 <a id="P06-T02"></a>
 
 ### P06-T02: Provide stable CLI and MCP interfaces generated from declared command contracts, with discoverable resources and error semantics.
@@ -2321,6 +3504,51 @@ Developers use Agentmux from their preferred supported client.
 **Evidence:** not yet recorded
 
 **Commits:** not yet recorded
+
+
+
+#### Historical remote variant for P06-T02 (not current acceptance or governance)
+
+<a id="P06-T02"></a>
+
+### P06-T02: Provide stable CLI and MCP interfaces generated from declared command contracts, with discoverable resources and error semantics.
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P05-GATE, P06-T07.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Provide stable CLI and MCP interfaces generated from declared command contracts, with discoverable resources and error semantics.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+
+**Deliverables**
+
+1. Provide stable CLI and MCP interfaces generated from declared command contracts, with discoverable resources and error semantics.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P06-T02-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Provide stable CLI and MCP interfaces generated from declared command contracts, with discoverable resources and error semantics.
+2. P06-T02-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P06-T02-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P06-T02-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Execute the same reference workflow on every pinned client version in the support matrix.
+2. Test reconnect, authentication expiry, missing tool, malformed MCP request, and client shutdown.
+3. Review provider commercial integration terms before promising a supported paid distribution.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Run cold, warm and concurrent launches on each advertised client/OS version, including separate WSL sessions and paths with spaces. Capture client-visible status and protocol streams; exercise FAIL-60–FAIL-61.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
 
 
 <a id="P06-T03"></a>
@@ -2371,6 +3599,58 @@ Developers use Agentmux from their preferred supported client.
 **Commits:** not yet recorded
 
 
+
+#### Historical remote variant for P06-T03 (not current acceptance or governance)
+
+<a id="P06-T03"></a>
+
+### P06-T03: Package and test integrations for Claude Code, Codex CLI, Pi, and Claude Desktop using each host's documented capabilities.
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P05-GATE, P06-T07.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Package and test integrations for Claude Code, Codex CLI, Pi, and Claude Desktop using each host's documented capabilities.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+6. Execute supported-client workflows from Windows and WSL/tmux against the same installation, compare version identity, perform a Windows-only update and repeat without editing version-specific paths. Record actual interop limitations and recovery steps.
+7. Create and inspect stable WSL command symlinks for every supported Windows-installed client. Link to a supported Windows entry point or a forwarding launcher; resolve Windows-managed installation paths after updates and detect conflicting existing commands.
+8. Qualify original calibration, team, cross-repository and swarm scenarios with their original provider mix, task bodies, contention and E1–E6 scoring in isolated supported-host environments. Preserve historical failures and unknown metadata; review actual callbacks, results, tests, commits, bounded drain and exact process/session cleanup. Verify Windows-owned configuration and unrelated settings remain preserved; normal authentication/session writes are not by themselves a preservation failure. Combine these results with the required installation, Windows-only update, argument/path and concurrent-session evidence; no smaller scenario or substituted provider qualifies.
+
+**Deliverables**
+
+1. Package and test integrations for Claude Code, Codex CLI, Pi, and Claude Desktop using each host's documented capabilities.
+2. Focused regression evidence and affected compatibility/migration records
+3. WSL-CLIENT-01 direct-Windows/WSL identity and update parity, configuration ownership, argument/path, callback and concurrent-session evidence
+
+**Acceptance criteria**
+
+1. P06-T03-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Package and test integrations for Claude Code, Codex CLI, Pi, and Claude Desktop using each host's documented capabilities. WSL-CLIENT-01: Execute supported-client workflows from Windows and WSL/tmux against the same installation, compare version identity, perform a Windows-only update and repeat without editing version-specific paths. Record actual interop limitations and recovery steps.
+2. P06-T03-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope. WSL-CLIENT-01 requires actual Windows/WSL workflow evidence; a version-only check, Linux-client substitution or skipped interop case cannot count as success.
+3. P06-T03-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P06-T03-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+5. P06-T03-AC05: Actual-host evidence identifies each WSL symlink and resolved Windows installation. A Windows-only update is visible through the unchanged link/launcher; no duplicate Linux client or version-pinned replacement is installed. Conflicting user commands are detected and preserved.
+6. P06-T03-AC06: HAR-21-C02 and HUB-24-C02 have reviewed baseline/target evidence for all four original calibration/team/cross-repository/swarm scenarios and every E1–E6 assertion, preserving provider mix and scenario semantics. Actual supported-host results, artifacts, callbacks, bounded drain, exact cleanup and unrelated configuration preservation are qualified; failed or skipped cases remain blocking. Windows-owned installation/update/authentication/configuration and concurrent-session requirements remain required by P06-T03/P06-T05 and the P06 gate.
+
+**Verification**
+
+1. Execute the same reference workflow on every pinned client version in the support matrix.
+2. Test reconnect, authentication expiry, missing tool, malformed MCP request, and client shutdown.
+3. Review provider commercial integration terms before promising a supported paid distribution.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Run cold, warm and concurrent launches on each advertised client/OS version, including separate WSL sessions and paths with spaces. Capture client-visible status and protocol streams; exercise FAIL-60–FAIL-61.
+6. Execute WSL-CLIENT-01 on each supported Windows-installed client: compare direct/WSL version and installation identity, perform a Windows-only update and repeat, verify Windows auth/config ownership without secret copying, test exact arguments and working directories with spaces and WSL UNC paths, verify selected-hub callbacks, and run concurrent tmux/host sessions. Capture actual failures and recovery; retain native macOS/Linux runtime tests separately.
+
+**Evidence:** docs/planning/2026-10-09/delivery/evidence/P01/provider-readiness/team-74d6-startup-observer-failed-diagnostic-20261013-133431/root-review.json
+
+**Commits:** not yet recorded
+
+
+
 <a id="P06-T04"></a>
 
 ### P06-T04: Distinguish external client sessions submitting work from Agentmux-managed worker sessions
@@ -2413,6 +3693,54 @@ Developers use Agentmux from their preferred supported client.
 **Evidence:** not yet recorded
 
 **Commits:** not yet recorded
+
+
+
+#### Historical remote variant for P06-T04 (not current acceptance or governance)
+
+<a id="P06-T04"></a>
+
+### P06-T04: Distinguish external client sessions submitting work from Agentmux-managed worker sessions
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P05-GATE, P06-T07.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Distinguish external client sessions submitting work from Agentmux-managed worker sessions. Publish coverage for events, controls, resume, hooks, and compaction.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+6. Run concurrent tmux workers and external Windows clients on separate projects/hubs. Verify session and host identity, correct callbacks and no cross-session configuration changes or result attribution.
+
+**Deliverables**
+
+1. Distinguish external client sessions submitting work from Agentmux-managed worker sessions. Publish coverage for events, controls, resume, hooks, and compaction.
+2. Focused regression evidence and affected compatibility/migration records
+3. WSL-CLIENT-01 direct-Windows/WSL identity and update parity, configuration ownership, argument/path, callback and concurrent-session evidence
+
+**Acceptance criteria**
+
+1. P06-T04-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Distinguish external client sessions submitting work from Agentmux-managed worker sessions. Publish coverage for events, controls, resume, hooks, and compaction. WSL-CLIENT-01: Run concurrent tmux workers and external Windows clients on separate projects/hubs. Verify session and host identity, correct callbacks and no cross-session configuration changes or result attribution.
+2. P06-T04-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope. WSL-CLIENT-01 requires actual Windows/WSL workflow evidence; a version-only check, Linux-client substitution or skipped interop case cannot count as success.
+3. P06-T04-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P06-T04-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Execute the same reference workflow on every pinned client version in the support matrix.
+2. Test reconnect, authentication expiry, missing tool, malformed MCP request, and client shutdown.
+3. Review provider commercial integration terms before promising a supported paid distribution.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Run cold, warm and concurrent launches on each advertised client/OS version, including separate WSL sessions and paths with spaces. Capture client-visible status and protocol streams; exercise FAIL-60–FAIL-61.
+6. Execute WSL-CLIENT-01 on each supported Windows-installed client: compare direct/WSL version and installation identity, perform a Windows-only update and repeat, verify Windows auth/config ownership without secret copying, test exact arguments and working directories with spaces and WSL UNC paths, verify selected-hub callbacks, and run concurrent tmux/host sessions. Capture actual failures and recovery; retain native macOS/Linux runtime tests separately.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
 
 
 <a id="P06-T05"></a>
@@ -2461,6 +3789,56 @@ Developers use Agentmux from their preferred supported client.
 **Commits:** not yet recorded
 
 
+
+#### Historical remote variant for P06-T05 (not current acceptance or governance)
+
+<a id="P06-T05"></a>
+
+### P06-T05: Add setup, credential references, diagnostics, install checks, and client-specific documentation without silently replacing user configuration.
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P05-GATE, P06-T07.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Add setup, credential references, diagnostics, install checks, and client-specific documentation without silently replacing user configuration.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+6. Keep authentication and configuration in their Windows-owned locations. Reference them through the Windows client without copying credentials or printing secrets; preserve unrelated settings during install, update and uninstall.
+7. Record per-client Windows-owned auth/config locations and their native lookup or supported link mechanism. Verify Windows-side changes are visible from WSL without copying secrets or manual synchronization; record link permission failures and preserve unrelated files on removal.
+
+**Deliverables**
+
+1. Add setup, credential references, diagnostics, install checks, and client-specific documentation without silently replacing user configuration.
+2. Focused regression evidence and affected compatibility/migration records
+3. WSL-CLIENT-01 direct-Windows/WSL identity and update parity, configuration ownership, argument/path, callback and concurrent-session evidence
+
+**Acceptance criteria**
+
+1. P06-T05-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Add setup, credential references, diagnostics, install checks, and client-specific documentation without silently replacing user configuration. WSL-CLIENT-01: Keep authentication and configuration in their Windows-owned locations. Reference them through the Windows client without copying credentials or printing secrets; preserve unrelated settings during install, update and uninstall.
+2. P06-T05-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope. WSL-CLIENT-01 requires actual Windows/WSL workflow evidence; a version-only check, Linux-client substitution or skipped interop case cannot count as success.
+3. P06-T05-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P06-T05-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+5. P06-T05-AC05: Windows and WSL use the same Windows-owned authentication/configuration files through native Windows lookup or supported links. Actual-host tests demonstrate change visibility without copying credentials or manual synchronization, preserve unrelated files, and record unsupported link mechanisms as unresolved rather than passing.
+
+**Verification**
+
+1. Execute the same reference workflow on every pinned client version in the support matrix.
+2. Test reconnect, authentication expiry, missing tool, malformed MCP request, and client shutdown.
+3. Review provider commercial integration terms before promising a supported paid distribution.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Run cold, warm and concurrent launches on each advertised client/OS version, including separate WSL sessions and paths with spaces. Capture client-visible status and protocol streams; exercise FAIL-60–FAIL-61.
+6. Execute WSL-CLIENT-01 on each supported Windows-installed client: compare direct/WSL version and installation identity, perform a Windows-only update and repeat, verify Windows auth/config ownership without secret copying, test exact arguments and working directories with spaces and WSL UNC paths, verify selected-hub callbacks, and run concurrent tmux/host sessions. Capture actual failures and recovery; retain native macOS/Linux runtime tests separately.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
+
+
 <a id="P06-T06"></a>
 
 ### P06-T06: Inventory and qualify existing Grok/provider authentication methods and any Bedrock compatibility path
@@ -2502,6 +3880,51 @@ Developers use Agentmux from their preferred supported client.
 **Commits:** not yet recorded
 
 
+
+#### Historical remote variant for P06-T06 (not current acceptance or governance)
+
+<a id="P06-T06"></a>
+
+### P06-T06: Inventory and qualify existing Grok/provider authentication methods and any Bedrock compatibility path
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P05-GATE, P06-T07.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Inventory and qualify existing Grok/provider authentication methods and any Bedrock compatibility path. Migrate GitHub and Jira/Confluence workflows as tool plugins with explicit writes and credentials.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+
+**Deliverables**
+
+1. Inventory and qualify existing Grok/provider authentication methods and any Bedrock compatibility path. Migrate GitHub and Jira/Confluence workflows as tool plugins with explicit writes and credentials.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P06-T06-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Inventory and qualify existing Grok/provider authentication methods and any Bedrock compatibility path. Migrate GitHub and Jira/Confluence workflows as tool plugins with explicit writes and credentials.
+2. P06-T06-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P06-T06-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P06-T06-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Execute the same reference workflow on every pinned client version in the support matrix.
+2. Test reconnect, authentication expiry, missing tool, malformed MCP request, and client shutdown.
+3. Review provider commercial integration terms before promising a supported paid distribution.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Run cold, warm and concurrent launches on each advertised client/OS version, including separate WSL sessions and paths with spaces. Capture client-visible status and protocol streams; exercise FAIL-60–FAIL-61.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
+
+
 <a id="P06-T07"></a>
 
 ### P06-T07: Apply ADD-01 and the component preservation matrix to every changed source file and affected caller
@@ -2540,6 +3963,50 @@ Developers use Agentmux from their preferred supported client.
 **Evidence:** not yet recorded
 
 **Commits:** not yet recorded
+
+
+
+#### Historical remote variant for P06-T07 (not current acceptance or governance)
+
+<a id="P06-T07"></a>
+
+### P06-T07: Apply ADD-01 and the component preservation matrix to every changed source file and affected caller
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P05-GATE.
+
+**Implementation plan**
+
+1. Review the phase-owned components in the preservation matrix and identify every changed caller, command, route, state record, integration and UI action; also include cross-phase callers affected by this work.
+2. Record retain/wrap/extract/extend/replace decisions with reasons. Map each old assertion and data identity to its target. Capture missing characterization fixtures before refactoring.
+3. Run the available baseline checks and define the candidate, migration/rollback and added-functionality checks. Candidate execution belongs to the implementation and final phase gate, so this preparation does not depend on future code being finished.
+4. Maintain the inventory and behavior ownership throughout the phase. Missing environments stay open. Codex reviews any capability change against the complete user-authorized scope; autonomy does not permit silent scope reduction.
+
+**Deliverables**
+
+1. Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P06-T07-AC01: Every phase-owned component and affected cross-phase caller has a recorded scope, existing behavior and owner; no changed source is unmapped.
+2. P06-T07-AC02: Baseline evidence distinguishes passing, failing, unavailable and historical results. Any gap that prevents a safe planned change remains blocking.
+3. P06-T07-AC03: Reuse and migration decisions name alternatives, preserved IDs/assertions and rollback boundaries; required approval exists before any capability reduction.
+4. P06-T07-AC04: Candidate comparison, added-functionality and migration fixtures are assigned to implementation and phase verification tasks. This preflight does not claim that future candidate tests already passed.
+
+**Verification**
+
+1. Execute the same reference workflow on every pinned client version in the support matrix.
+2. Test reconnect, authentication expiry, missing tool, malformed MCP request, and client shutdown.
+3. Review provider commercial integration terms before promising a supported paid distribution.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Run cold, warm and concurrent launches on each advertised client/OS version, including separate WSL sessions and paths with spaces. Capture client-visible status and protocol streams; exercise FAIL-60–FAIL-61.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
 
 
 <a id="P06-T08"></a>
@@ -2584,6 +4051,54 @@ Developers use Agentmux from their preferred supported client.
 **Evidence:** not yet recorded
 
 **Commits:** not yet recorded
+
+
+
+#### Historical remote variant for P06-T08 (not current acceptance or governance)
+
+<a id="P06-T08"></a>
+
+### P06-T08: Wire LOCAL-01 ensure-running into each supported terminal/client startup integration
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P05-GATE, P06-T07.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Wire LOCAL-01 ensure-running into each supported terminal/client startup integration. Show one concise status summary with dashboard access; provide structured status for clients, suppress recursive bootstrap in managed workers, and keep protocol stdout free of banners.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+6. Verify Windows client startup and callbacks reach the selected WSL hub across cold, warm and concurrent launches, preserving CLI/MCP framing and authorized instance/hub status.
+
+**Deliverables**
+
+1. Wire LOCAL-01 ensure-running into each supported terminal/client startup integration. Show one concise status summary with dashboard access; provide structured status for clients, suppress recursive bootstrap in managed workers, and keep protocol stdout free of banners.
+2. Focused regression evidence and affected compatibility/migration records
+3. WSL-CLIENT-01 direct-Windows/WSL identity and update parity, configuration ownership, argument/path, callback and concurrent-session evidence
+
+**Acceptance criteria**
+
+1. P06-T08-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Wire LOCAL-01 ensure-running into each supported terminal/client startup integration. Show one concise status summary with dashboard access; provide structured status for clients, suppress recursive bootstrap in managed workers, and keep protocol stdout free of banners. WSL-CLIENT-01: Verify Windows client startup and callbacks reach the selected WSL hub across cold, warm and concurrent launches, preserving CLI/MCP framing and authorized instance/hub status.
+2. P06-T08-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope. WSL-CLIENT-01 requires actual Windows/WSL workflow evidence; a version-only check, Linux-client substitution or skipped interop case cannot count as success.
+3. P06-T08-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P06-T08-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Execute the same reference workflow on every pinned client version in the support matrix.
+2. Test reconnect, authentication expiry, missing tool, malformed MCP request, and client shutdown.
+3. Review provider commercial integration terms before promising a supported paid distribution.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Run cold, warm and concurrent launches on each advertised client/OS version, including separate WSL sessions and paths with spaces. Capture client-visible status and protocol streams; exercise FAIL-60–FAIL-61.
+6. Execute WSL-CLIENT-01 on each supported Windows-installed client: compare direct/WSL version and installation identity, perform a Windows-only update and repeat, verify Windows auth/config ownership without secret copying, test exact arguments and working directories with spaces and WSL UNC paths, verify selected-hub callbacks, and run concurrent tmux/host sessions. Capture actual failures and recovery; retain native macOS/Linux runtime tests separately.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
 
 
 <a id="P06-VIDEO-E1"></a>
@@ -2696,6 +4211,72 @@ Authorized users can understand work across agents, projects, and hubs.
 - **P07-AC05:** Reusable component boundaries and accessibility checks pass for all launch views.
 - **P07-AC06:** All ten existing dashboard views and their actions, terminal streams, saved preferences, editor conflicts, themes and integration panels have reviewed before/after evidence. Existing capabilities remain reachable until their replacements pass; AG-UI and component restructuring do not authorize dropping controls.
 - **P07-AC07:** Terminal and dashboard status agree at the same source revision. Refresh and reconnect preserve explicit stale/unknown states, hide inaccessible hubs and do not start a second stack or grant additional control.
+
+
+#### Historical remote variant for P06-GATE (not current acceptance or governance)
+
+<a id="P06-GATE"></a>
+
+### P06-GATE: Verify and accept P06
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P06-T01, P06-T02, P06-T03, P06-T04, P06-T05, P06-T06, P06-T07, P06-T08, P06-VIDEO-E1.
+
+**Implementation plan**
+
+1. Confirm every phase task and prerequisite is complete; inspect the actual deliverables and limitations rather than relying on a done label.
+2. Run the phase's full acceptance, failure, preservation and rollback checks on the exact candidate and supported environments. Retain per-criterion evidence using gate-record.template.json.
+3. Codex reviews actual deliverables and subagent findings and records the advancement decision. Parallelize bounded subagent work only within this phase. Missing evidence remains blocking; no human approval is required.
+4. Commit all phase changes and evidence to feat/agentmux-platform-rearchitecture, push, and verify the remote commit. Record that commit before the next phase starts. MERGE-01 remains separate.
+5. Review WSL-CLIENT-01 evidence at this phase boundary: all required direct Windows/WSL installation, update, config/auth, path, callback and concurrent-session proofs.
+
+**Deliverables**
+
+1. Actual-host compatibility matrix
+2. CLI/MCP reference and setup guides
+3. Per-client workflow results
+4. Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01
+
+**Acceptance criteria**
+
+1. P06-GATE-AC01: Each supported client can submit a task, inspect progress/evidence, participate in required approvals, and retrieve the result. WSL-CLIENT-01 is included in this phase's evidence review, with no skipped-environment substitution.
+2. P06-GATE-AC02: Unsupported event capture, cancellation, or compaction reports an explicit capability limit instead of simulating success.
+3. P06-GATE-AC03: Closing the originating client or observer does not duplicate or implicitly terminate durable work.
+4. P06-GATE-AC04: Fresh-user install and uninstall preserve unrelated client settings and secrets.
+5. P06-GATE-AC05: All existing supported harness commands, session safeguards, agent definitions, provider setup methods and integration workflows have passing comparisons or an explicitly approved capability change. Retained and added tests cover modal decisions, idle cleanup, credential refresh, WSL paths and external-write uncertainty.
+6. P06-GATE-AC06: Installing and configuring the Agentmux plugin makes each supported terminal/client launch automatically start or reuse the selected stack and show its instance and authorized hub summary. Actual-host tests qualify startup hooks or a clearly named installed launcher; manual commands cannot stand in for promised automatic launch.
+7. P06-GATE-AC07: Client startup preserves MCP/JSON-RPC framing, never prints secrets and avoids recursive starts by managed workers. Closing a terminal leaves shared work running; an explicit authorized stop follows the drain policy. Failed prerequisites report recovery steps without silently installing privileged software or changing client settings.
+8. P06-GATE-AC08: All assigned failure scenarios and component checks have reviewed evidence for the candidate; missing or skipped required checks remain blocking.
+9. P06-GATE-AC09: The required reviewer and advancement decision are recorded, and the phase commit is verified on the current remote feature branch. No merge is performed.
+
+**Verification**
+
+1. Execute the same reference workflow on every pinned client version in the support matrix.
+2. Test reconnect, authentication expiry, missing tool, malformed MCP request, and client shutdown.
+3. Review provider commercial integration terms before promising a supported paid distribution.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Run cold, warm and concurrent launches on each advertised client/OS version, including separate WSL sessions and paths with spaces. Capture client-visible status and protocol streams; exercise FAIL-60–FAIL-61.
+6. Execute WSL-CLIENT-01 on each supported Windows-installed client: compare direct/WSL version and installation identity, perform a Windows-only update and repeat, verify Windows auth/config ownership without secret copying, test exact arguments and working directories with spaces and WSL UNC paths, verify selected-hub callbacks, and run concurrent tmux/host sessions. Capture actual failures and recovery; retain native macOS/Linux runtime tests separately.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
+## P07. Existing dashboard: AG-UI and Atomic Design migration
+
+Authorized users can understand work across agents, projects, and hubs.
+
+**Epic acceptance criteria**
+
+- **P07-AC01:** Refresh, reconnect, duplicate events, delayed events, and history gaps converge to the same authorized view without starting work.
+- **P07-AC02:** An unauthorized user cannot access another project's snapshots, streams, conversation, or artifact by guessing an ID.
+- **P07-AC03:** Every displayed completion or cancellation state distinguishes worker output from accepted/confirmed state.
+- **P07-AC04:** Domain UI contributions use versioned registered components. Core views remain usable when an optional plugin fails.
+- **P07-AC05:** Reusable component boundaries and accessibility checks pass for all launch views.
+- **P07-AC06:** All ten existing dashboard views and their actions, terminal streams, saved preferences, editor conflicts, themes and integration panels have reviewed before/after evidence. Existing capabilities remain reachable until their replacements pass; AG-UI and component restructuring do not authorize dropping controls.
+- **P07-AC07:** Terminal and dashboard status agree at the same source revision. Refresh and reconnect preserve explicit stale/unknown states, hide inaccessible hubs and do not start a second stack or grant additional control.
+
 
 <a id="P07-T01"></a>
 
@@ -3085,6 +4666,69 @@ Plugins request bounded semantic advice with traceable evidence and safe fallbac
 - **P08-AC04:** All calls obey size/time/budget limits and account for failed/uncertain attempts. Replay of stored annotations makes no new paid call.
 - **P08-AC05:** Each enabled definition passes its own labeled holdout criteria and workflow non-regression threshold before promotion.
 - **P08-AC06:** Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification.
+
+
+#### Historical remote variant for P07-GATE (not current acceptance or governance)
+
+<a id="P07-GATE"></a>
+
+### P07-GATE: Verify and accept P07
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P07-T01, P07-T02, P07-T03, P07-T04, P07-T05, P07-T06, P07-T07, P07-T08.
+
+**Implementation plan**
+
+1. Confirm every phase task and prerequisite is complete; inspect the actual deliverables and limitations rather than relying on a done label.
+2. Run the phase's full acceptance, failure, preservation and rollback checks on the exact candidate and supported environments. Retain per-criterion evidence using gate-record.template.json.
+3. Codex reviews actual deliverables and subagent findings and records the advancement decision. Parallelize bounded subagent work only within this phase. Missing evidence remains blocking; no human approval is required.
+4. Commit all phase changes and evidence to feat/agentmux-platform-rearchitecture, push, and verify the remote commit. Record that commit before the next phase starts. MERGE-01 remains separate.
+
+**Deliverables**
+
+1. AG-UI event mapping
+2. UI extension and accessibility reports
+3. Dashboard before/after demonstration
+4. Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01
+
+**Acceptance criteria**
+
+1. P07-GATE-AC01: Refresh, reconnect, duplicate events, delayed events, and history gaps converge to the same authorized view without starting work.
+2. P07-GATE-AC02: An unauthorized user cannot access another project's snapshots, streams, conversation, or artifact by guessing an ID.
+3. P07-GATE-AC03: Every displayed completion or cancellation state distinguishes worker output from accepted/confirmed state.
+4. P07-GATE-AC04: Domain UI contributions use versioned registered components. Core views remain usable when an optional plugin fails.
+5. P07-GATE-AC05: Reusable component boundaries and accessibility checks pass for all launch views.
+6. P07-GATE-AC06: All ten existing dashboard views and their actions, terminal streams, saved preferences, editor conflicts, themes and integration panels have reviewed before/after evidence. Existing capabilities remain reachable until their replacements pass; AG-UI and component restructuring do not authorize dropping controls.
+7. P07-GATE-AC07: Terminal and dashboard status agree at the same source revision. Refresh and reconnect preserve explicit stale/unknown states, hide inaccessible hubs and do not start a second stack or grant additional control.
+8. P07-GATE-AC08: All assigned failure scenarios and component checks have reviewed evidence for the candidate; missing or skipped required checks remain blocking.
+9. P07-GATE-AC09: The required reviewer and advancement decision are recorded, and the phase commit is verified on the current remote feature branch. No merge is performed.
+
+**Verification**
+
+1. Run multi-viewer browser tests, revoked-session tests, stream replay, and network interruptions.
+2. Compare UI snapshots to authoritative records after each failure scenario.
+3. Run component dependency checks, keyboard/screen-reader review, and visual regression tests.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+5. Compare terminal and dashboard status snapshots, versions and timestamps, including absent federation support, no configured hubs, denied scope and stale observations.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
+## P08. Jev decision services and measured efficiency
+
+Plugins request bounded semantic advice with traceable evidence and safe fallback.
+
+**Epic acceptance criteria**
+
+- **P08-AC01:** Boot and core orchestration still work when Jev is disabled or unreachable, using documented fallbacks.
+- **P08-AC02:** Jev cannot grant authority, mutate kernel state, invent tool success, transfer task ownership, or accept a result.
+- **P08-AC03:** Cache keys bind tenant, scope, source/version, definition/model, and policy. Revoked sharing cannot return a cached restricted result.
+- **P08-AC04:** All calls obey size/time/budget limits and account for failed/uncertain attempts. Replay of stored annotations makes no new paid call.
+- **P08-AC05:** Each enabled definition passes its own labeled holdout criteria and workflow non-regression threshold before promotion.
+- **P08-AC06:** Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification.
+
 
 <a id="P08-T01"></a>
 
@@ -3483,6 +5127,67 @@ The same Jev capabilities improve supported clients with host-specific packaging
 - **P09-AC04:** Skills preserve counterevidence and required obligations and cannot override system permissions or invent authority.
 - **P09-AC05:** Live semantic and end-to-end cost gates pass before the corresponding skill is enabled by default.
 - **P09-AC06:** Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification.
+
+
+#### Historical remote variant for P08-GATE (not current acceptance or governance)
+
+<a id="P08-GATE"></a>
+
+### P08-GATE: Verify and accept P08
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P08-T01, P08-T02, P08-T03, P08-T04, P08-T05, P08-T06, P08-VIDEO-E2, P08-VIDEO-E4.
+
+**Implementation plan**
+
+1. Confirm every phase task and prerequisite is complete; inspect the actual deliverables and limitations rather than relying on a done label.
+2. Run the phase's full acceptance, failure, preservation and rollback checks on the exact candidate and supported environments. Retain per-criterion evidence using gate-record.template.json.
+3. Codex reviews actual deliverables and subagent findings and records the advancement decision. Parallelize bounded subagent work only within this phase. Missing evidence remains blocking; no human approval is required.
+4. Commit all phase changes and evidence to feat/agentmux-platform-rearchitecture, push, and verify the remote commit. Record that commit before the next phase starts. MERGE-01 remains separate.
+
+**Deliverables**
+
+1. Decision contracts and policy ledger
+2. Definition-specific scorecards
+3. Cost per accepted outcome and fallback report
+4. Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01
+
+**Acceptance criteria**
+
+1. P08-GATE-AC01: Boot and core orchestration still work when Jev is disabled or unreachable, using documented fallbacks.
+2. P08-GATE-AC02: Jev cannot grant authority, mutate kernel state, invent tool success, transfer task ownership, or accept a result.
+3. P08-GATE-AC03: Cache keys bind tenant, scope, source/version, definition/model, and policy. Revoked sharing cannot return a cached restricted result.
+4. P08-GATE-AC04: All calls obey size/time/budget limits and account for failed/uncertain attempts. Replay of stored annotations makes no new paid call.
+5. P08-GATE-AC05: Each enabled definition passes its own labeled holdout criteria and workflow non-regression threshold before promotion.
+6. P08-GATE-AC06: Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification.
+7. P08-GATE-AC07: All assigned failure scenarios and component checks have reviewed evidence for the candidate; missing or skipped required checks remain blocking.
+8. P08-GATE-AC08: The required reviewer and advancement decision are recorded, and the phase commit is verified on the current remote feature branch. No merge is performed.
+
+**Verification**
+
+1. Run the existing synthetic examples and 44-case policy illustration as historical inputs, then extend with real service and NATS tests.
+2. Evaluate with provider mocks for mechanics, separately with capped live calls for semantic quality after local token configuration and budget approval.
+3. Compare deterministic baseline, Jev tools only, and tools plus skills on equivalent fresh tasks.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
+## P09. Portable Jev plugin and first skill wave
+
+The same Jev capabilities improve supported clients with host-specific packaging.
+
+**Epic acceptance criteria**
+
+- **P09-AC01:** All first-wave skills have a clear trigger, declared input/output, real use case, error/fallback behavior, and evaluation fixtures.
+- **P09-AC02:** Whole-suite near-miss tests show skills do not compete unnecessarily or trigger a broad ask-everything path.
+- **P09-AC03:** Every claimed host capability passes on that actual host. Unsupported hooks/compaction are declared.
+- **P09-AC04:** Skills preserve counterevidence and required obligations and cannot override system permissions or invent authority.
+- **P09-AC05:** Live semantic and end-to-end cost gates pass before the corresponding skill is enabled by default.
+- **P09-AC06:** Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification.
+
 
 <a id="P09-T01"></a>
 
@@ -5952,6 +7657,70 @@ Independent teams share authorized work while retaining their own authority.
 - **P10-AC08:** Migration fixtures retain current hub verbs, five federation plugins, pending outbox/quarantine records, seen IDs, durable consumer positions, shared-board revisions, knowledge search/capture and code pointers. Existing account, credential and ACL installations have an approved migration path.
 - **P10-AC09:** Startup and refreshed summaries distinguish connected, disconnected, stale, unknown and not-configured hubs at the caller scope. A partition cannot appear as healthy federation, expose another tenant or release reserved work; broker reachability alone does not establish usable partner capacity.
 
+
+#### Historical remote variant for P09-GATE (not current acceptance or governance)
+
+<a id="P09-GATE"></a>
+
+### P09-GATE: Verify and accept P09
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P09-T01, P09-T02, P09-T03, P09-T04, P09-T05, P09-T06, P09-JEV-001, P09-JEV-002, P09-JEV-004, P09-JEV-008, P09-JEV-015, P09-JEV-016, P09-JEV-017, P09-JEV-019, P09-JEV-021, P09-JEV-023, P09-JEV-024, P09-JEV-025, P09-JEV-026, P09-JEV-027, P09-JEV-031, P09-JEV-034, P09-JEV-044, P09-JEV-049, P09-JEV-056, P09-JEV-065, P09-JEV-084, P09-VIDEO-01, P09-VIDEO-02, P09-VIDEO-03, P09-VIDEO-08, P09-VIDEO-11, P09-VIDEO-E3, P09-jev-setup, P09-jev-classify, P09-jev-scout, P09-jev-context, P09-jev-triage, P09-jev-review, P09-jev-author, P09-jev-eval, P09-agentmux-jev-prepare-worker.
+
+**Implementation plan**
+
+1. Confirm every phase task and prerequisite is complete; inspect the actual deliverables and limitations rather than relying on a done label.
+2. Run the phase's full acceptance, failure, preservation and rollback checks on the exact candidate and supported environments. Retain per-criterion evidence using gate-record.template.json.
+3. Codex reviews actual deliverables and subagent findings and records the advancement decision. Parallelize bounded subagent work only within this phase. Missing evidence remains blocking; no human approval is required.
+4. Commit all phase changes and evidence to feat/agentmux-platform-rearchitecture, push, and verify the remote commit. Record that commit before the next phase starts. MERGE-01 remains separate.
+
+**Deliverables**
+
+1. Host packages and skill catalog
+2. Paired skill-creator evaluation reports
+3. Cross-host conformance and release holdout
+4. Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01
+
+**Acceptance criteria**
+
+1. P09-GATE-AC01: All first-wave skills have a clear trigger, declared input/output, real use case, error/fallback behavior, and evaluation fixtures.
+2. P09-GATE-AC02: Whole-suite near-miss tests show skills do not compete unnecessarily or trigger a broad ask-everything path.
+3. P09-GATE-AC03: Every claimed host capability passes on that actual host. Unsupported hooks/compaction are declared.
+4. P09-GATE-AC04: Skills preserve counterevidence and required obligations and cannot override system permissions or invent authority.
+5. P09-GATE-AC05: Live semantic and end-to-end cost gates pass before the corresponding skill is enabled by default.
+6. P09-GATE-AC06: Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification.
+7. P09-GATE-AC07: All assigned failure scenarios and component checks have reviewed evidence for the candidate; missing or skipped required checks remain blocking.
+8. P09-GATE-AC08: The required reviewer and advancement decision are recorded, and the phase commit is verified on the current remote feature branch. No merge is performed.
+
+**Verification**
+
+1. Run approximately 20 positive/near-miss trigger prompts per skill and representative task pairs plus shared boundary cases.
+2. Use independent review and separate tuning/validation/release sets.
+3. Measure skill discovery metadata overhead, context cost, accuracy, and accepted outcomes across hosts.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
+## P10. Connected hubs, leaf nodes, and cross-organization work
+
+Independent teams share authorized work while retaining their own authority.
+
+**Epic acceptance criteria**
+
+- **P10-AC01:** Same-organization and cross-organization reference workflows both finish with origin-owned result acceptance.
+- **P10-AC02:** Accepted work stays reserved while disconnected. Missing acceptance acknowledgment remains ambiguous until reconciled, never automatically redispatched.
+- **P10-AC03:** Duplicate offer/result delivery creates one delegation/attempt outcome. Wrong executor, project, repository, or task version is rejected. Stale grants cannot authorize new effects. Authenticated historical results from previously authorized reserved work are retained for reconciliation or quarantine when current policy requires it; grant expiry cannot erase the obligation or its evidence.
+- **P10-AC04:** Unauthorized accounts cannot subscribe to private project subjects or fetch protected artifacts. Transitive hub connectivity grants no access.
+- **P10-AC05:** Reconnect recovers progress/results and durable revocations. A stop request is not reported as execution stopped until confirmed or clearly unknown.
+- **P10-AC06:** A leaf outage and independent local persistence produce the agreed offline behavior without treating broker connectivity as shared ownership.
+- **P10-AC07:** After a partition, mirror lag, retention gap or restoration of an older origin snapshot, hubs reconcile authoritative task and execution records before admitting overlapping work. Replication never grants write authority, and accepted or acceptance-unknown work remains reserved.
+- **P10-AC08:** Migration fixtures retain current hub verbs, five federation plugins, pending outbox/quarantine records, seen IDs, durable consumer positions, shared-board revisions, knowledge search/capture and code pointers. Existing account, credential and ACL installations have an approved migration path.
+- **P10-AC09:** Startup and refreshed summaries distinguish connected, disconnected, stale, unknown and not-configured hubs at the caller scope. A partition cannot appear as healthy federation, expose another tenant or release reserved work; broker reachability alone does not establish usable partner capacity.
+
+
 <a id="P10-T01"></a>
 
 ### P10-T01: Extend current federation capability
@@ -6931,6 +8700,74 @@ Industrial workflows extend Agentmux through the same contracts as other domains
 - **P11-AC05:** A vendor adapter passes with the actual required tool or a clearly labeled simulator. Simulated success is never sold as hardware qualification.
 - **P11-AC06:** Every existing protocol, standalone library, CLI and dashboard integration has individual behavior evidence, including bounds and supported host/target versions. Narrowing the first demonstration does not retire an existing capability.
 
+
+#### Historical remote variant for P10-GATE (not current acceptance or governance)
+
+<a id="P10-GATE"></a>
+
+### P10-GATE: Verify and accept P10
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P10-T01, P10-T02, P10-T03, P10-T04, P10-T05, P10-T06, P10-T07, P10-T08, P10-T09, P10-T10, P10-JEV-010, P10-JEV-032, P10-JEV-043, P10-VIDEO-05, P10-VIDEO-12, P10-agentmux-jev-delegate, P10-agentmux-jev-inspect-hub, P10-agentmux-jev-review-results.
+
+**Implementation plan**
+
+1. Confirm every phase task and prerequisite is complete; inspect the actual deliverables and limitations rather than relying on a done label.
+2. Run the phase's full acceptance, failure, preservation and rollback checks on the exact candidate and supported environments. Retain per-criterion evidence using gate-record.template.json.
+3. Codex reviews actual deliverables and subagent findings and records the advancement decision. Parallelize bounded subagent work only within this phase. Missing evidence remains blocking; no human approval is required.
+4. Commit all phase changes and evidence to feat/agentmux-platform-rearchitecture, push, and verify the remote commit. Record that commit before the next phase starts. MERGE-01 remains separate.
+
+**Deliverables**
+
+1. Federation state-machine and authority tests
+2. Partition/reconciliation matrix
+3. Cross-organization demo with auditable evidence
+4. Independent-domain storage, retention-gap and older-origin recovery reports
+5. Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01
+
+**Acceptance criteria**
+
+1. P10-GATE-AC01: Same-organization and cross-organization reference workflows both finish with origin-owned result acceptance.
+2. P10-GATE-AC02: Accepted work stays reserved while disconnected. Missing acceptance acknowledgment remains ambiguous until reconciled, never automatically redispatched.
+3. P10-GATE-AC03: Duplicate offer/result delivery creates one delegation/attempt outcome. Wrong executor, project, repository, or task version is rejected. Stale grants cannot authorize new effects. Authenticated historical results from previously authorized reserved work are retained for reconciliation or quarantine when current policy requires it; grant expiry cannot erase the obligation or its evidence.
+4. P10-GATE-AC04: Unauthorized accounts cannot subscribe to private project subjects or fetch protected artifacts. Transitive hub connectivity grants no access.
+5. P10-GATE-AC05: Reconnect recovers progress/results and durable revocations. A stop request is not reported as execution stopped until confirmed or clearly unknown.
+6. P10-GATE-AC06: A leaf outage and independent local persistence produce the agreed offline behavior without treating broker connectivity as shared ownership.
+7. P10-GATE-AC07: After a partition, mirror lag, retention gap or restoration of an older origin snapshot, hubs reconcile authoritative task and execution records before admitting overlapping work. Replication never grants write authority, and accepted or acceptance-unknown work remains reserved.
+8. P10-GATE-AC08: Migration fixtures retain current hub verbs, five federation plugins, pending outbox/quarantine records, seen IDs, durable consumer positions, shared-board revisions, knowledge search/capture and code pointers. Existing account, credential and ACL installations have an approved migration path.
+9. P10-GATE-AC09: Startup and refreshed summaries distinguish connected, disconnected, stale, unknown and not-configured hubs at the caller scope. A partition cannot appear as healthy federation, expose another tenant or release reserved work; broker reachability alone does not establish usable partner capacity.
+10. P10-GATE-AC10: All assigned failure scenarios and component checks have reviewed evidence for the candidate; missing or skipped required checks remain blocking.
+11. P10-GATE-AC11: The required reviewer and advancement decision are recorded, and the phase commit is verified on the current remote feature branch. No merge is performed.
+
+**Verification**
+
+1. Run at least three hubs and two independently administered organizations with real accounts/leaf links and isolated stores.
+2. Inject partitions before/after offer acceptance, drop replies, duplicate deliveries, restart hubs, expire/revoke grants, and alter task versions.
+3. Exercise explicit cancel/reassign with a possibly running old worker and document unavoidable external-effect uncertainty.
+4. Snapshot the origin before a remote acceptance, let the receiver accept and continue, restore that older origin snapshot, and require reconciliation before overlapping admission. Verify one reservation and no duplicate execution.
+5. Disconnect beyond configured stream-retention and deduplication horizons using short test limits, then prune, restart, and reconnect. Require gap detection, snapshot/reconciliation or explicit intervention, preserved reservations, and no duplicate effects.
+6. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+7. Exercise FAIL-62 against two real hubs across reconnect, grant change and outage; compare terminal/dashboard snapshots and retained reservations.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
+## P11. Industrial and vendor extension packages
+
+Industrial workflows extend Agentmux through the same contracts as other domains.
+
+**Epic acceptance criteria**
+
+- **P11-AC01:** A selected industrial workflow completes through client, orchestration, tool plugin, evidence, and dashboard without kernel or generic task-model changes.
+- **P11-AC02:** Standalone and nested installation of selected domain children behave as declared.
+- **P11-AC03:** Every migrated existing integration has a parity/deprecation record, tested tool/platform matrix, and explicit missing capability status.
+- **P11-AC04:** Equipment writes require the correct target/action/operation grant and any applicable human approval at the owning tool endpoint.
+- **P11-AC05:** A vendor adapter passes with the actual required tool or a clearly labeled simulator. Simulated success is never sold as hardware qualification.
+- **P11-AC06:** Every existing protocol, standalone library, CLI and dashboard integration has individual behavior evidence, including bounds and supported host/target versions. Narrowing the first demonstration does not retire an existing capability.
+
+
 <a id="P11-T01"></a>
 
 ### P11-T01: Package industrial orchestration guidance, tools, schemas, UI renderers, and skills with explicitly independent or parent-owned children.
@@ -6969,6 +8806,50 @@ Industrial workflows extend Agentmux through the same contracts as other domains
 **Evidence:** not yet recorded
 
 **Commits:** not yet recorded
+
+
+
+#### Historical remote variant for P11-T01 (not current acceptance or governance)
+
+<a id="P11-T01"></a>
+
+### P11-T01: Package industrial orchestration guidance, tools, schemas, UI renderers, and skills with explicitly independent or parent-owned children.
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P10-GATE, P11-T07.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Package industrial orchestration guidance, tools, schemas, UI renderers, and skills with explicitly independent or parent-owned children.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+
+**Deliverables**
+
+1. Package industrial orchestration guidance, tools, schemas, UI renderers, and skills with explicitly independent or parent-owned children.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P11-T01-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Package industrial orchestration guidance, tools, schemas, UI renderers, and skills with explicitly independent or parent-owned children.
+2. P11-T01-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P11-T01-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P11-T01-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Use protocol simulators and recorded fixtures, then controlled hardware/vendor environments for supported claims.
+2. Test wrong device/project/version, timeout, partial writes, lost replies, credential failure, and disconnected grants.
+3. Demonstrate missing Windows-native prerequisites as an actionable unsupported environment, not silent fallback.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
 
 
 <a id="P11-T02"></a>
@@ -7011,6 +8892,50 @@ Industrial workflows extend Agentmux through the same contracts as other domains
 **Commits:** not yet recorded
 
 
+
+#### Historical remote variant for P11-T02 (not current acceptance or governance)
+
+<a id="P11-T02"></a>
+
+### P11-T02: Migrate current Modbus, MQTT, network discovery, PROFINET snapshot/DCP, passive BOOTP, EtherNet/IP/Logix, ADS, EtherCAT diagnostics, CODESYS runtime tooling, PCAP analysis, and existing engineering wrappers to declared capability plugins.
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P10-GATE, P11-T07.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Migrate current Modbus, MQTT, network discovery, PROFINET snapshot/DCP, passive BOOTP, EtherNet/IP/Logix, ADS, EtherCAT diagnostics, CODESYS runtime tooling, PCAP analysis, and existing engineering wrappers to declared capability plugins.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+
+**Deliverables**
+
+1. Migrate current Modbus, MQTT, network discovery, PROFINET snapshot/DCP, passive BOOTP, EtherNet/IP/Logix, ADS, EtherCAT diagnostics, CODESYS runtime tooling, PCAP analysis, and existing engineering wrappers to declared capability plugins.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P11-T02-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Migrate current Modbus, MQTT, network discovery, PROFINET snapshot/DCP, passive BOOTP, EtherNet/IP/Logix, ADS, EtherCAT diagnostics, CODESYS runtime tooling, PCAP analysis, and existing engineering wrappers to declared capability plugins.
+2. P11-T02-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P11-T02-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P11-T02-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Use protocol simulators and recorded fixtures, then controlled hardware/vendor environments for supported claims.
+2. Test wrong device/project/version, timeout, partial writes, lost replies, credential failure, and disconnected grants.
+3. Demonstrate missing Windows-native prerequisites as an actionable unsupported environment, not silent fallback.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
+
+
 <a id="P11-T03"></a>
 
 ### P11-T03: Define CODESYS, Siemens, Rockwell, and related vendor integration slices with actual licensed tool/OS/hardware prerequisites and test environments.
@@ -7049,6 +8974,50 @@ Industrial workflows extend Agentmux through the same contracts as other domains
 **Evidence:** not yet recorded
 
 **Commits:** not yet recorded
+
+
+
+#### Historical remote variant for P11-T03 (not current acceptance or governance)
+
+<a id="P11-T03"></a>
+
+### P11-T03: Define CODESYS, Siemens, Rockwell, and related vendor integration slices with actual licensed tool/OS/hardware prerequisites and test environments.
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P10-GATE, P11-T07.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Define CODESYS, Siemens, Rockwell, and related vendor integration slices with actual licensed tool/OS/hardware prerequisites and test environments.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+
+**Deliverables**
+
+1. Define CODESYS, Siemens, Rockwell, and related vendor integration slices with actual licensed tool/OS/hardware prerequisites and test environments.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P11-T03-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Define CODESYS, Siemens, Rockwell, and related vendor integration slices with actual licensed tool/OS/hardware prerequisites and test environments.
+2. P11-T03-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P11-T03-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P11-T03-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Use protocol simulators and recorded fixtures, then controlled hardware/vendor environments for supported claims.
+2. Test wrong device/project/version, timeout, partial writes, lost replies, credential failure, and disconnected grants.
+3. Demonstrate missing Windows-native prerequisites as an actionable unsupported environment, not silent fallback.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
 
 
 <a id="P11-T04"></a>
@@ -7091,6 +9060,50 @@ Industrial workflows extend Agentmux through the same contracts as other domains
 **Commits:** not yet recorded
 
 
+
+#### Historical remote variant for P11-T04 (not current acceptance or governance)
+
+<a id="P11-T04"></a>
+
+### P11-T04: Add engineering build/migration/evidence skills and Jev definitions for diagnostics and source-preserving comparisons.
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P10-GATE, P11-T07.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Add engineering build/migration/evidence skills and Jev definitions for diagnostics and source-preserving comparisons.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+
+**Deliverables**
+
+1. Add engineering build/migration/evidence skills and Jev definitions for diagnostics and source-preserving comparisons.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P11-T04-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Add engineering build/migration/evidence skills and Jev definitions for diagnostics and source-preserving comparisons.
+2. P11-T04-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P11-T04-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P11-T04-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Use protocol simulators and recorded fixtures, then controlled hardware/vendor environments for supported claims.
+2. Test wrong device/project/version, timeout, partial writes, lost replies, credential failure, and disconnected grants.
+3. Demonstrate missing Windows-native prerequisites as an actionable unsupported environment, not silent fallback.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
+
+
 <a id="P11-T05"></a>
 
 ### P11-T05: Implement read/simulation-first reference workflows and per-action permissions for equipment changes
@@ -7129,6 +9142,50 @@ Industrial workflows extend Agentmux through the same contracts as other domains
 **Evidence:** not yet recorded
 
 **Commits:** not yet recorded
+
+
+
+#### Historical remote variant for P11-T05 (not current acceptance or governance)
+
+<a id="P11-T05"></a>
+
+### P11-T05: Implement read/simulation-first reference workflows and per-action permissions for equipment changes
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P10-GATE, P11-T07.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Implement read/simulation-first reference workflows and per-action permissions for equipment changes. Resolve any Windows-native execution host arrangement explicitly.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+
+**Deliverables**
+
+1. Implement read/simulation-first reference workflows and per-action permissions for equipment changes. Resolve any Windows-native execution host arrangement explicitly.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P11-T05-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Implement read/simulation-first reference workflows and per-action permissions for equipment changes. Resolve any Windows-native execution host arrangement explicitly.
+2. P11-T05-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P11-T05-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P11-T05-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Use protocol simulators and recorded fixtures, then controlled hardware/vendor environments for supported claims.
+2. Test wrong device/project/version, timeout, partial writes, lost replies, credential failure, and disconnected grants.
+3. Demonstrate missing Windows-native prerequisites as an actionable unsupported environment, not silent fallback.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
 
 
 <a id="P11-T06"></a>
@@ -7171,6 +9228,50 @@ Industrial workflows extend Agentmux through the same contracts as other domains
 **Commits:** not yet recorded
 
 
+
+#### Historical remote variant for P11-T06 (not current acceptance or governance)
+
+<a id="P11-T06"></a>
+
+### P11-T06: Inventory existing PCM600/ABB-related privilege hooks as integration requirements, preserving target/action confirmation and audit
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P10-GATE, P11-T07.
+
+**Implementation plan**
+
+1. Inspect the existing source and callers for this exact work item: Inventory existing PCM600/ABB-related privilege hooks as integration requirements, preserving target/action confirmation and audit. Do not infer a complete vendor adapter from the existence of a guard hook.
+2. Record inputs, outputs, authority, failure states and compatibility constraints for this scope. Use the phase's approved contracts; resolve any blocking design decision before changing its implementation.
+3. Implement the scoped work in a reviewable slice behind existing entry points where compatible. Preserve legacy assertions, stable IDs, data relationships and user configuration; record a justified replacement or migration where reuse is insufficient.
+4. Add or reuse focused fixtures for the successful path and the applicable denial, malformed input, retry, cancellation and crash boundaries. Start with the smallest failing test, then run affected integration checks.
+5. Attach the resulting artifacts and source-bound evidence. Update affected pattern and component records. Hand the result to the phase verification task without claiming the whole phase is accepted.
+
+**Deliverables**
+
+1. Inventory existing PCM600/ABB-related privilege hooks as integration requirements, preserving target/action confirmation and audit. Do not infer a complete vendor adapter from the existence of a guard hook.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P11-T06-AC01: The scoped deliverable is implemented or, for a decision/review item, explicitly decided with alternatives and consequences: Inventory existing PCM600/ABB-related privilege hooks as integration requirements, preserving target/action confirmation and audit. Do not infer a complete vendor adapter from the existence of a guard hook.
+2. P11-T06-AC02: Every named capability in the scope has a passing focused check or a recorded, unresolved environment/decision gap. A gap prevents this task being marked done; a smaller successful example cannot stand in for the entire scope.
+3. P11-T06-AC03: Affected existing behavior has a baseline/candidate comparison or an approved behavior-change record; no capability, required assertion or stored identity is silently removed.
+4. P11-T06-AC04: Evidence identifies the candidate commit, actual environment, command and result for each task criterion; secrets and private agent reasoning are excluded. Known limitations, migration and recovery behavior are documented.
+
+**Verification**
+
+1. Use protocol simulators and recorded fixtures, then controlled hardware/vendor environments for supported claims.
+2. Test wrong device/project/version, timeout, partial writes, lost replies, credential failure, and disconnected grants.
+3. Demonstrate missing Windows-native prerequisites as an actionable unsupported environment, not silent fallback.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
+
+
 <a id="P11-T07"></a>
 
 ### P11-T07: Apply ADD-01 and the component preservation matrix to every changed source file and affected caller
@@ -7208,6 +9309,49 @@ Industrial workflows extend Agentmux through the same contracts as other domains
 **Evidence:** not yet recorded
 
 **Commits:** not yet recorded
+
+
+
+#### Historical remote variant for P11-T07 (not current acceptance or governance)
+
+<a id="P11-T07"></a>
+
+### P11-T07: Apply ADD-01 and the component preservation matrix to every changed source file and affected caller
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P10-GATE.
+
+**Implementation plan**
+
+1. Review the phase-owned components in the preservation matrix and identify every changed caller, command, route, state record, integration and UI action; also include cross-phase callers affected by this work.
+2. Record retain/wrap/extract/extend/replace decisions with reasons. Map each old assertion and data identity to its target. Capture missing characterization fixtures before refactoring.
+3. Run the available baseline checks and define the candidate, migration/rollback and added-functionality checks. Candidate execution belongs to the implementation and final phase gate, so this preparation does not depend on future code being finished.
+4. Maintain the inventory and behavior ownership throughout the phase. Missing environments stay open. Codex reviews any capability change against the complete user-authorized scope; autonomy does not permit silent scope reduction.
+
+**Deliverables**
+
+1. Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation.
+2. Focused regression evidence and affected compatibility/migration records
+
+**Acceptance criteria**
+
+1. P11-T07-AC01: Every phase-owned component and affected cross-phase caller has a recorded scope, existing behavior and owner; no changed source is unmapped.
+2. P11-T07-AC02: Baseline evidence distinguishes passing, failing, unavailable and historical results. Any gap that prevents a safe planned change remains blocking.
+3. P11-T07-AC03: Reuse and migration decisions name alternatives, preserved IDs/assertions and rollback boundaries; required approval exists before any capability reduction.
+4. P11-T07-AC04: Candidate comparison, added-functionality and migration fixtures are assigned to implementation and phase verification tasks. This preflight does not claim that future candidate tests already passed.
+
+**Verification**
+
+1. Use protocol simulators and recorded fixtures, then controlled hardware/vendor environments for supported claims.
+2. Test wrong device/project/version, timeout, partial writes, lost replies, credential failure, and disconnected grants.
+3. Demonstrate missing Windows-native prerequisites as an actionable unsupported environment, not silent fallback.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
 
 
 <a id="P11-JEV-068"></a>
@@ -8015,6 +10159,69 @@ Customers can install, operate, recover, and support the complete launch product
 - **P12-AC07:** Every component and behavior check has a reviewed release disposition. Required baseline/candidate comparisons and migration drills pass on the supported matrix; no skipped check, missing component or unapproved feature removal can be hidden by a successful new reference workflow.
 - **P12-AC08:** Fresh-user and upgrade drills pass LOCAL-01 cold/warm/concurrent startup, actionable Docker failures, explicit stop, persistent data recovery and scoped hub status on the supported platform/client matrix. No launch silently upgrades an incompatible live stack, loses durable work or bypasses a required phase gate.
 
+
+#### Historical remote variant for P11-GATE (not current acceptance or governance)
+
+<a id="P11-GATE"></a>
+
+### P11-GATE: Verify and accept P11
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P11-T01, P11-T02, P11-T03, P11-T04, P11-T05, P11-T06, P11-T07, P11-JEV-068, P11-JEV-069, P11-JEV-070, P11-JEV-071, P11-JEV-072, P11-JEV-073, P11-JEV-074, P11-JEV-086, P11-JEV-088, P11-industrial-jev-build, P11-industrial-jev-migration, P11-industrial-jev-evidence.
+
+**Implementation plan**
+
+1. Confirm every phase task and prerequisite is complete; inspect the actual deliverables and limitations rather than relying on a done label.
+2. Run the phase's full acceptance, failure, preservation and rollback checks on the exact candidate and supported environments. Retain per-criterion evidence using gate-record.template.json.
+3. Codex reviews actual deliverables and subagent findings and records the advancement decision. Parallelize bounded subagent work only within this phase. Missing evidence remains blocking; no human approval is required.
+4. Commit all phase changes and evidence to feat/agentmux-platform-rearchitecture, push, and verify the remote commit. Record that commit before the next phase starts. MERGE-01 remains separate.
+
+**Deliverables**
+
+1. Domain package and vendor compatibility matrix
+2. Industrial workflow and permission report
+3. Protocol parity and hardware qualification records
+4. Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01
+
+**Acceptance criteria**
+
+1. P11-GATE-AC01: A selected industrial workflow completes through client, orchestration, tool plugin, evidence, and dashboard without kernel or generic task-model changes.
+2. P11-GATE-AC02: Standalone and nested installation of selected domain children behave as declared.
+3. P11-GATE-AC03: Every migrated existing integration has a parity/deprecation record, tested tool/platform matrix, and explicit missing capability status.
+4. P11-GATE-AC04: Equipment writes require the correct target/action/operation grant and any applicable human approval at the owning tool endpoint.
+5. P11-GATE-AC05: A vendor adapter passes with the actual required tool or a clearly labeled simulator. Simulated success is never sold as hardware qualification.
+6. P11-GATE-AC06: Every existing protocol, standalone library, CLI and dashboard integration has individual behavior evidence, including bounds and supported host/target versions. Narrowing the first demonstration does not retire an existing capability.
+7. P11-GATE-AC07: All assigned failure scenarios and component checks have reviewed evidence for the candidate; missing or skipped required checks remain blocking.
+8. P11-GATE-AC08: The required reviewer and advancement decision are recorded, and the phase commit is verified on the current remote feature branch. No merge is performed.
+
+**Verification**
+
+1. Use protocol simulators and recorded fixtures, then controlled hardware/vendor environments for supported claims.
+2. Test wrong device/project/version, timeout, partial writes, lost replies, credential failure, and disconnected grants.
+3. Demonstrate missing Windows-native prerequisites as an actionable unsupported environment, not silent fallback.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
+## P12. Production hardening and first sellable release
+
+Customers can install, operate, recover, and support the complete launch product.
+
+**Epic acceptance criteria**
+
+- **P12-AC01:** Every launch requirement is linked to passing evidence for the exact release candidate. Critical correctness/security defects are closed.
+- **P12-AC02:** A new developer installs and completes the reference task using only published docs on every supported platform.
+- **P12-AC03:** A team administrator enrolls two organizations, shares a scoped project, delegates work, survives a partition, and restores a backup.
+- **P12-AC04:** The approved capacity/SLO targets and recovery drill pass without losing acknowledged durable records within the tested fault model.
+- **P12-AC05:** Codex reviews release-readiness evidence and records provisional readiness plus all outstanding MERGE-01 requirements. P12 acceptance does not authorize merge or release; final branch acceptance requires every phase and safe bilateral orchestration between independently enrolled, agent-operated real hubs on the exact candidate.
+- **P12-AC06:** The approved NATS storage profile passes record/checkpoint/artifact restore, projection rebuild, retention-gap and migration rollback drills under the declared process/host/disk/quorum failure model. Published RPO/RTO and capacity claims match observed evidence, and no unreviewed SQL authority remains.
+- **P12-AC07:** Every component and behavior check has a reviewed release disposition. Required baseline/candidate comparisons and migration drills pass on the supported matrix; no skipped check, missing component or unapproved feature removal can be hidden by a successful new reference workflow.
+- **P12-AC08:** Fresh-user and upgrade drills pass LOCAL-01 cold/warm/concurrent startup, actionable Docker failures, explicit stop, persistent data recovery and scoped hub status on the supported platform/client matrix. No launch silently upgrades an incompatible live stack, loses durable work or bypasses a required phase gate.
+
+
 <a id="P12-T01"></a>
 
 ### P12-T01: Finish signed/reproducible distributions, dependency locks/SBOM, versioned configuration, upgrade/rollback, package verification, and support diagnostics.
@@ -8506,6 +10713,72 @@ Every remaining research proposal receives a measured implementation decision.
 - **P13-AC03:** Compaction preserves mandatory obligations and active evidence and runs only on supported hosts.
 - **P13-AC04:** No savings claim relies only on shortened context or a provider's confidence score. Outcome quality and total cost meet approved thresholds.
 - **P13-AC05:** Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification.
+
+
+#### Historical remote variant for P12-GATE (not current acceptance or governance)
+
+<a id="P12-GATE"></a>
+
+### P12-GATE: Verify and accept P12
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P12-T01, P12-T02, P12-T03, P12-T04, P12-T05, P12-T06, P12-T07, P12-T08, P12-T09, P12-T10.
+
+**Implementation plan**
+
+1. Confirm every phase task and prerequisite is complete; inspect the actual deliverables and limitations rather than relying on a done label.
+2. Run the phase's full acceptance, failure, preservation and rollback checks on the exact candidate and supported environments. Retain per-criterion evidence using gate-record.template.json.
+3. Codex reviews actual deliverables and subagent findings and records the advancement decision. Parallelize bounded subagent work only within this phase. Missing evidence remains blocking; no human approval is required.
+4. Commit all phase changes and evidence to feat/agentmux-platform-rearchitecture, push, and verify the remote commit. Record that commit before the next phase starts. MERGE-01 remains separate.
+5. Preserve the assertions assigned to this task for AMX-BASE-006 in delivery/evidence/P00/baseline-findings.md. Re-run or port the actual fixtures at the changed authority boundary; preserve explicitly open broader acceptance requirements.
+
+**Deliverables**
+
+1. Release readiness dossier
+2. Pilot and migration acceptance
+3. Signed merge/release decision
+4. Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01
+
+**Acceptance criteria**
+
+1. P12-GATE-AC01: Every launch requirement is linked to passing evidence for the exact release candidate. Critical correctness/security defects are closed.
+2. P12-GATE-AC02: A new developer installs and completes the reference task using only published docs on every supported platform.
+3. P12-GATE-AC03: A team administrator enrolls two organizations, shares a scoped project, delegates work, survives a partition, and restores a backup.
+4. P12-GATE-AC04: The approved capacity/SLO targets and recovery drill pass without losing acknowledged durable records within the tested fault model.
+5. P12-GATE-AC05: Codex reviews release-readiness evidence and records provisional readiness plus all outstanding MERGE-01 requirements. P12 acceptance does not authorize merge or release; final branch acceptance requires every phase and safe bilateral orchestration between independently enrolled, agent-operated real hubs on the exact candidate.
+6. P12-GATE-AC06: The approved NATS storage profile passes record/checkpoint/artifact restore, projection rebuild, retention-gap and migration rollback drills under the declared process/host/disk/quorum failure model. Published RPO/RTO and capacity claims match observed evidence, and no unreviewed SQL authority remains.
+7. P12-GATE-AC07: Every component and behavior check has a reviewed release disposition. Required baseline/candidate comparisons and migration drills pass on the supported matrix; no skipped check, missing component or unapproved feature removal can be hidden by a successful new reference workflow.
+8. P12-GATE-AC08: Fresh-user and upgrade drills pass LOCAL-01 cold/warm/concurrent startup, actionable Docker failures, explicit stop, persistent data recovery and scoped hub status on the supported platform/client matrix. No launch silently upgrades an incompatible live stack, loses durable work or bypasses a required phase gate.
+9. P12-GATE-AC09: All assigned failure scenarios and component checks have reviewed evidence for the candidate; missing or skipped required checks remain blocking.
+10. P12-GATE-AC10: The required reviewer and advancement decision are recorded, and the phase commit is verified on the current remote feature branch. No merge is performed.
+
+**Verification**
+
+1. Run the complete release matrix, independent security review, load/soak tests, upgrade/restore rehearsal, and pilot acceptance.
+2. Compare evidence manifests to the exact candidate digest and invalidate stale results after material changes.
+3. Review support and commercial readiness with accountable owners.
+4. Run qualified storage failure and recovery drills with pinned disk/sync/replication settings, including capacity exhaustion. Verify restored reservations before processing queued commands.
+5. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+6. Repeat FAIL-55–FAIL-62 with the exact packaged release, real federation and each advertised launch integration; record readiness deadlines, versions, volume identity and observed timing.
+7. Review MERGE-01 evidence completeness and remaining required phases. Rehearsals may happen here, but repeat the final run on the exact final branch candidate after all required phases pass.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
+## P13. Remaining Jev catalog and skill expansion
+
+Every remaining research proposal receives a measured implementation decision.
+
+**Epic acceptance criteria**
+
+- **P13-AC01:** All 88 original uses, 14 video additions, four enablers, and 26 skills retain a traceable disposition and owning phase.
+- **P13-AC02:** Each batch passes schema, access, failure, semantic holdout, host-capability, and end-to-end economic gates.
+- **P13-AC03:** Compaction preserves mandatory obligations and active evidence and runs only on supported hosts.
+- **P13-AC04:** No savings claim relies only on shortened context or a provider's confidence score. Outcome quality and total cost meet approved thresholds.
+- **P13-AC05:** Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification.
+
 
 <a id="P13-T01"></a>
 
@@ -13230,6 +15503,65 @@ Untrusted third-party plugins gain a tested containment option.
 - **P14-AC04:** Security review and per-platform tests pass before claiming untrusted-plugin support. Marketplace availability requires this gate or a clearly restricted trusted catalog.
 - **P14-AC05:** Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification.
 
+
+#### Historical remote variant for P13-GATE (not current acceptance or governance)
+
+<a id="P13-GATE"></a>
+
+### P13-GATE: Verify and accept P13
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P13-T01, P13-T02, P13-T03, P13-T04, P13-T05, P13-JEV-003, P13-JEV-005, P13-JEV-006, P13-JEV-007, P13-JEV-009, P13-JEV-011, P13-JEV-012, P13-JEV-013, P13-JEV-014, P13-JEV-018, P13-JEV-020, P13-JEV-022, P13-JEV-028, P13-JEV-029, P13-JEV-030, P13-JEV-033, P13-JEV-035, P13-JEV-036, P13-JEV-037, P13-JEV-038, P13-JEV-039, P13-JEV-040, P13-JEV-041, P13-JEV-042, P13-JEV-045, P13-JEV-046, P13-JEV-047, P13-JEV-048, P13-JEV-050, P13-JEV-051, P13-JEV-052, P13-JEV-053, P13-JEV-054, P13-JEV-055, P13-JEV-057, P13-JEV-058, P13-JEV-059, P13-JEV-060, P13-JEV-061, P13-JEV-062, P13-JEV-063, P13-JEV-064, P13-JEV-066, P13-JEV-067, P13-JEV-075, P13-JEV-076, P13-JEV-077, P13-JEV-078, P13-JEV-079, P13-JEV-080, P13-JEV-081, P13-JEV-082, P13-JEV-083, P13-JEV-085, P13-JEV-087, P13-VIDEO-04, P13-VIDEO-06, P13-VIDEO-07, P13-VIDEO-09, P13-VIDEO-10, P13-VIDEO-13, P13-VIDEO-14, P13-jev-extract, P13-jev-compare, P13-jev-checkpoint, P13-jev-integrate, P13-jev-optimize, P13-agentmux-jev-plan, P13-agentmux-jev-coordinate, P13-agentmux-jev-diagnose-run, P13-agentmux-jev-curate-knowledge, P13-agentmux-jev-review-plugin, P13-agentmux-jev-tune-policies.
+
+**Implementation plan**
+
+1. Confirm every phase task and prerequisite is complete; inspect the actual deliverables and limitations rather than relying on a done label.
+2. Run the phase's full acceptance, failure, preservation and rollback checks on the exact candidate and supported environments. Retain per-criterion evidence using gate-record.template.json.
+3. Codex reviews actual deliverables and subagent findings and records the advancement decision. Parallelize bounded subagent work only within this phase. Missing evidence remains blocking; no human approval is required.
+4. Commit all phase changes and evidence to feat/agentmux-platform-rearchitecture, push, and verify the remote commit. Record that commit before the next phase starts. MERGE-01 remains separate.
+
+**Deliverables**
+
+1. Catalog disposition register
+2. Per-batch holdout and economics
+3. Complete skill-suite release matrix
+4. Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01
+
+**Acceptance criteria**
+
+1. P13-GATE-AC01: All 88 original uses, 14 video additions, four enablers, and 26 skills retain a traceable disposition and owning phase.
+2. P13-GATE-AC02: Each batch passes schema, access, failure, semantic holdout, host-capability, and end-to-end economic gates.
+3. P13-GATE-AC03: Compaction preserves mandatory obligations and active evidence and runs only on supported hosts.
+4. P13-GATE-AC04: No savings claim relies only on shortened context or a provider's confidence score. Outcome quality and total cost meet approved thresholds.
+5. P13-GATE-AC05: Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification.
+6. P13-GATE-AC06: All assigned failure scenarios and component checks have reviewed evidence for the candidate; missing or skipped required checks remain blocking.
+7. P13-GATE-AC07: The required reviewer and advancement decision are recorded, and the phase commit is verified on the current remote feature branch. No merge is performed.
+
+**Verification**
+
+1. Repeat the P08/P09 evaluation protocol per changed definition/skill and representative combined workflows.
+2. Use stored factors for policy-only replay and record when a fresh inference is necessary.
+3. Run regression tests for cache isolation, missing evidence, mandatory messages, provider failure, and decision drift.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
+## P14. Sandboxed plugins and ecosystem expansion
+
+Untrusted third-party plugins gain a tested containment option.
+
+**Epic acceptance criteria**
+
+- **P14-AC01:** Adversarial plugins fail to escape their declared profile or access unauthorized host/team data in the supported threat model.
+- **P14-AC02:** Sandboxed and trusted implementations pass the same language-neutral domain contract tests.
+- **P14-AC03:** Required native/device integrations declare and enforce narrower support or an explicitly trusted execution host.
+- **P14-AC04:** Security review and per-platform tests pass before claiming untrusted-plugin support. Marketplace availability requires this gate or a clearly restricted trusted catalog.
+- **P14-AC05:** Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification.
+
+
 <a id="P14-T01"></a>
 
 ### P14-T01: Choose and threat-model isolated execution profiles, process/container/WASM options, host brokers, and platform limitations against actual plugin needs.
@@ -13472,6 +15804,54 @@ Untrusted third-party plugins gain a tested containment option.
 **Evidence:** not yet recorded
 
 **Commits:** not yet recorded
+
+
+
+#### Historical remote variant for P14-GATE (not current acceptance or governance)
+
+<a id="P14-GATE"></a>
+
+### P14-GATE: Verify and accept P14
+
+**Status:** planned. **Owner:** Codex.
+
+**Dependencies:** P14-T01, P14-T02, P14-T03, P14-T04, P14-T05.
+
+**Implementation plan**
+
+1. Confirm every phase task and prerequisite is complete; inspect the actual deliverables and limitations rather than relying on a done label.
+2. Run the phase's full acceptance, failure, preservation and rollback checks on the exact candidate and supported environments. Retain per-criterion evidence using gate-record.template.json.
+3. Codex reviews actual deliverables and subagent findings and records the advancement decision. Parallelize bounded subagent work only within this phase. Missing evidence remains blocking; no human approval is required.
+4. Commit all phase changes and evidence to feat/agentmux-platform-rearchitecture, push, and verify the remote commit. Record that commit before the next phase starts. MERGE-01 remains separate.
+
+**Deliverables**
+
+1. Sandbox threat model and test report
+2. Profile compatibility matrix
+3. Ecosystem launch decision
+4. Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01
+
+**Acceptance criteria**
+
+1. P14-GATE-AC01: Adversarial plugins fail to escape their declared profile or access unauthorized host/team data in the supported threat model.
+2. P14-GATE-AC02: Sandboxed and trusted implementations pass the same language-neutral domain contract tests.
+3. P14-GATE-AC03: Required native/device integrations declare and enforce narrower support or an explicitly trusted execution host.
+4. P14-GATE-AC04: Security review and per-platform tests pass before claiming untrusted-plugin support. Marketplace availability requires this gate or a clearly restricted trusted catalog.
+5. P14-GATE-AC05: Every affected existing component retains its documented behavior through reused code or a justified replacement. Its baseline and candidate checks, migration checks, and added capability evidence are reviewed before advancement. Missing environments remain open. Codex reviews intended behavior and migration changes against the full user scope; autonomous delivery does not authorize capability removal, reduced scope or weaker verification.
+6. P14-GATE-AC06: All assigned failure scenarios and component checks have reviewed evidence for the candidate; missing or skipped required checks remain blocking.
+7. P14-GATE-AC07: The required reviewer and advancement decision are recorded, and the phase commit is verified on the current remote feature branch. No merge is performed.
+
+**Verification**
+
+1. Run exploit-oriented confinement, resource exhaustion, cross-tenant, lifecycle, dependency, and upgrade tests on each supported profile.
+2. Review residual risk and performance/compatibility effects with independent security expertise.
+3. Re-run representative local, team, federation, UI, and industrial workflows.
+4. Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
+
+**Evidence:** not yet recorded
+
+**Commits:** not yet recorded
+
 
 
 <a id="MERGE-01"></a>

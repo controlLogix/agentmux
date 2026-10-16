@@ -1,0 +1,12 @@
+{
+  "reviewer": "Codex",
+  "sourceCommit": "8978b7ae5ce8aad69d017b774861f19231c26b63",
+  "sourcePinsVerified": 11,
+  "analysisSHA256": "bf1cfaf8708d9a819ad931458a9cf586b072540c2dd0753501b62ab6837d34c1",
+  "finding": "The failed /dev/fd/3 research path is separate from the implemented protected root-owned Darwin startup path. Retain the research failures; they do not justify changing production permissions or fallback paths.",
+  "openRequirements": [
+    "P02-T01-AC08: actual native installed launcher evidence remains required.",
+    "P02-GATE-AC01 and AC06: native macOS installations and selected real Compose cold/warm startup remain required; install fixture success does not close these."
+  ],
+  "qualificationLimit": "Native install fixture controls are historical passing evidence only. Native Docker and installed CLI lifecycle acceptance remain open."
+}

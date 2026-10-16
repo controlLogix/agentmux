@@ -1,0 +1,30 @@
+{
+  "scope": "Test diagnostics only; no survival assertion/retry/deadline changes and no live child/native qualification",
+  "originalPins": [
+    {
+      "path": "platform/runtime/installed_host_linux_test.go",
+      "beforeSHA256": "66cf4af96d29e82bc5e0e4fe10431b106949a6894bf07ce52e5de9870ee7067f"
+    },
+    {
+      "path": "platform/runtime/bootstrap_receipt_linux_test.go",
+      "beforeSHA256": "7e52e67a0f04d8f4422e4ba43b9f6632a70831d2bfd823f17fac602334430f6f"
+    }
+  ],
+  "sourcePins": {
+    "src/platform/runtime/bootstrap_receipt_linux_test.go": "9ca8fcbcfcdaf2525458003d36b2852c249c2c900000f11f0e13a2137c0add11",
+    "src/platform/runtime/installed_host_linux_test.go": "a4dc31c5f48fa2d5ebc18e3dae9d1b6fcec5ee54729e0aea8811156462023df1",
+    "src/platform/runtime/pidfd_survival_diagnostic_controls_linux_test.go": "487c0ada1aeb8ec6637729ddd8799bb804728fda1e64db33c740575549a51ea0",
+    "src/platform/runtime/pidfd_survival_diagnostic_linux_test.go": "eb0196fffbcd7f149aef1542f81727c3026094c328314b44719a0db20a4f83e5"
+  },
+  "namedPass": 10,
+  "fail": 0,
+  "skip": 0,
+  "directExit": 0,
+  "limits": [
+    "Only two standalone formatter/control files compiled, no runtime TestMain/product/integration imports.",
+    "Pure fixed inputs prove exact fact formatting and private error-text exclusion only; no actual pidfd observation.",
+    "Both singlePoll100 calls/originalerror-or-count failure predicates and3000 exit-after-signal checks remain unchanged.",
+    "Actual failure causes remain unknown until diagnostic native execution; no retry behavior added."
+  ],
+  "manifestSHA256": "d37f6dd13a24488cd86c0853e13321dc367858f351b817c84d9efed13d714ec6"
+}

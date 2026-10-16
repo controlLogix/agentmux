@@ -25,7 +25,8 @@ var diagnosticStandardWrappers = []reflect.Type{
 
 func diagnosticReviewedWrapper(failure error) bool {
 	switch failure.(type) {
-	case authorityCauseError, *authorityCauseError,
+	case bootstrapCleanupFailure, *bootstrapCleanupFailure,
+		authorityCauseError, *authorityCauseError,
 		*dockerInspectionFailure, *dockerCommandFailure, kernelStatusStageError, *kernelStatusStageError,
 		bridgeCompletionCause, *bridgeCompletionCause, *StartingElsewhereError,
 		TransportCleanupError, *TransportCleanupError, RuntimeCleanupError, *RuntimeCleanupError,
@@ -120,6 +121,14 @@ func requestDiagnostic(code string) RequestDiagnostic {
 		action, message = "check_enrolled_trust", "Runtime authority was rejected. Check the enrolled identity and server trust; do not bypass authentication."
 	case "owned_cleanup_incomplete":
 		action, message = "wait_for_owned_cleanup", "Owned cleanup is incomplete. Keep the recovery handles and finish cleanup before retrying."
+	case "host_policy_invalid":
+		action, message = "check_enrolled_policy", "The enrolled host policy failed validation. Check its declared selection, private access and fields before retrying."
+	case "host_profile_invalid":
+		action, message = "check_enrolled_profile", "The enrolled profile or bootstrap configuration failed validation. Check the existing profile binding before retrying."
+	case "host_enrollment_invalid":
+		action, message = "check_enrolled_owner", "The enrolled owner or bridge declarations failed validation. Check the existing identity and credential bindings before retrying."
+	case "host_executable_invalid":
+		action, message = "check_installed_runtime", "The installed runtime image failed validation. Check the enrolled executable and protected installation before retrying."
 	case "request_deadline":
 		action, message = "check_status", "The request deadline expired. Check status again; this failure does not establish readiness."
 	default:
@@ -139,8 +148,9 @@ func ValidRequestDiagnostic(value RequestDiagnostic) bool {
 // The original error and concrete cleanup handles remain with the caller.
 func ProjectRequestDiagnostic(failure error) RequestDiagnostic {
 	queue := []error{failure}
-	var refusalCode string
+	var refusalCode, hostCategory string
 	var commandDetail string
+	hostCategoriesConflict := false
 	cleanup, specificAuth, authority, deadline := false, false, false, false
 	derivedAuthority := false
 	canceled := false
@@ -184,13 +194,37 @@ func ProjectRequestDiagnostic(failure error) RequestDiagnostic {
 				}
 				commandDetail = dockerFailureDetail(value)
 			}
+		case bridgeFailure:
+			deadline = deadline || value.contextCause == context.DeadlineExceeded
+		case *bridgeFailure:
+			if value != nil {
+				deadline = deadline || value.contextCause == context.DeadlineExceeded
+			}
+		case *hostPolicyFailure:
+			if value != nil {
+				category := hostPolicyDiagnosticCategory(value.code)
+				if category != "" {
+					if hostCategory != "" && hostCategory != category {
+						hostCategoriesConflict = true
+					}
+					hostCategory = category
+				}
+			}
+		case hostPolicyFailure:
+			category := hostPolicyDiagnosticCategory(value.code)
+			if category != "" {
+				if hostCategory != "" && hostCategory != category {
+					hostCategoriesConflict = true
+				}
+				hostCategory = category
+			}
 		case *dockerRefusalError:
 			if value != nil {
 				refusalCode = value.code
 			}
 		case dockerRefusalError:
 			refusalCode = value.code
-		case *TransportCleanupError, TransportCleanupError, *RuntimeCleanupError, RuntimeCleanupError, runtimeCleanupCause, *runtimeCleanupCause, *LocalPortCleanupError, *deployment.ProbeCleanupError, deployment.ProbeCleanupError, *deployment.RawTransportCleanupError, deployment.RawTransportCleanupError, *protocol.CleanupError:
+		case bootstrapCleanupFailure, *bootstrapCleanupFailure, *TransportCleanupError, TransportCleanupError, *RuntimeCleanupError, RuntimeCleanupError, runtimeCleanupCause, *runtimeCleanupCause, *LocalPortCleanupError, *deployment.ProbeCleanupError, deployment.ProbeCleanupError, *deployment.RawTransportCleanupError, deployment.RawTransportCleanupError, *protocol.CleanupError:
 			cleanup = true
 		}
 		cleanup = cleanup || err == ErrTransportCleanup || err == errRuntimeCleanup || err == errLocalPortCleanup || err == deployment.ErrProbeCleanup || err == deployment.ErrRawTransportCleanup || err == localtls.ErrCleanup || err == protocol.ErrCleanup
@@ -268,6 +302,9 @@ func ProjectRequestDiagnostic(failure error) RequestDiagnostic {
 	}
 	if deadline {
 		return requestDiagnostic("request_deadline")
+	}
+	if hostCategory != "" && !hostCategoriesConflict {
+		return requestDiagnostic(hostCategory)
 	}
 	return requestDiagnostic("request_failed")
 }
