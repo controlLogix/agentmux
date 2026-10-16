@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "Codex",
+  "status": "installed-readonly-diagnostic-passed",
+  "helperDirectory": "/Library/PrivilegedHelperTools/com.agentmux.p02-apfs-diagnostic-20261015-v2",
+  "installerSHA256": "303b35105bff2df3456203ce9aa85fce53486c8fde70e0cec2d9a89104c821d5",
+  "manifestSHA256": "e57ee88fd32b711c1b2edad054e839a8d3cb2eaf296d80d9a4402a4ae1440399",
+  "payloadSHA256": "990842ef3ac242cb4c783a347718a250b5c9ab4c0699e28b65e64b1be06f8bd7",
+  "dispatcherSHA256": "c094f50d47f23dc92dcad30e9818066604714b11189648f055cf49a8407b7c2c",
+  "scope": "Separate versioned helper permits only fixed read-only diagnose/status commands with no arguments. Original helper, one-shot marker, image and captures are unchanged. No block-device opens, subprocesses, root data writes or detach capability in this diagnostic.",
+  "sourceReview": "Main read the generated manifest, actual dispatcher and installer deltas and complete diagnostic entrypoint. Peer independently checked all embedded hashes/sizes and exact-template deltas and reran 28 pure controls under actual isolated system Python3.9. Native root admission, fixed no-argument NOSETENV policy, exclusive publication and exact rollback are retained. Sticky cancellation and the original 15-second boundary deadline prevent late success but cannot interrupt a blocked kernel call; external ownership must be retained until terminal.",
+  "pureControlsPassed": 28,
+  "actualStatus": {"exitCode": 0, "installedBundleVerified": true, "version": "20261015-v2"},
+  "actualDiagnostic": {
+    "command": "/usr/bin/sudo -n /Library/PrivilegedHelperTools/com.agentmux.p02-apfs-diagnostic-20261015-v2/diagnose",
+    "exitCode": 0,
+    "readOnly": true,
+    "recoveryComplete": false,
+    "savedMapsMatch": true,
+    "attemptMapMatchesSaved": true,
+    "probes": [
+      {"stage": "saved_attach", "bytes": 1531, "parsed": true, "sha256": "ab73b1e71f04c6311badf950b5779a94ae395949b4ed45b1b4d57b218013c0c3"},
+      {"stage": "saved_info", "bytes": 4019, "parsed": true, "sha256": "e2133d1603f8a3d06a5d024630ce591894d29f3517f31609c66a432393ec4fd2"},
+      {"stage": "attempt_info", "bytes": 4019, "parsed": true, "sha256": "e2133d1603f8a3d06a5d024630ce591894d29f3517f31609c66a432393ec4fd2"},
+      {"stage": "mount", "opened": true, "identityMatches": true, "nonblocking": true}
+    ],
+    "captureLimit": "These fields are copied from the actual closed tool response. This record is not a separately captured root installation receipt or an individual historical hdiutil wait record."
+  },
+  "strategyReview": {
+    "requirement": "PLAT-01-C05 requires actual ownership-mount and held-private-object admission, not opening block devices.",
+    "replacement": "Protected held /dev directory with nofollow relative device-node metadata, held mount fstatfs/FSID/source/owner/flags, repeated exact mappings and held image/root identities before normal whole-GUID detach.",
+    "limits": "This is protected-namespace metadata evidence, not an identical held-block-device proof or atomic protection against arbitrary concurrent privileged mutation. No failed-open fallback is allowed.",
+    "originalFailureCause": "still unresolved; do not relabel as proven EBUSY"
+  },
+  "rootRecoveryPerformed": false,
+  "phaseGateAccepted": false,
+  "ciRun": false,
+  "mergeAuthorized": false
+}

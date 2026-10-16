@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "captureDirectory": "/Users/ryan/.cache/agentmux-governance/darwin-lifecycle-compile-e4wyxw6k",
+  "recordSHA256": "768f13196452db8950f05d3e0b8cf1db0b60f045ccad6c97eab36956b097cbfa",
+  "sourceSHA256": {
+    "platform/launcher/signed_role_lifecycle_darwin_test.go": "844d8d0b696f5185f60ef1752e8a156eb04561b4238629bf5ae14f35b404aee9",
+    "platform/launcher/startup_session_lifecycle_darwin_test.go": "2cc8600ae1d9a61f14128866555dede8fbe6b584ce096eafe4d70290dd685fab",
+    "platform/launcher/session_cleanup_lifecycle_darwin_test.go": "ff576105379a299a46ec484a135b51cb5cb42335595c571dc183c874af32aedb"
+  },
+  "sourceReview": "Fixture consumes separately pinned signed installed role release, real TLS broker and owned supervisor children. Cached status frames remain explicitly synthetic. Retained transport cleanup failures now stop readiness retries and preserve the exact owner for checked cleanup.",
+  "compileExitCode": 0,
+  "compileElapsedSeconds": 3.565,
+  "raceInstrumented": true,
+  "snapshotSourceFiles": 288,
+  "snapshotStable": true,
+  "checkoutChangedSinceCopy": [],
+  "stdoutBytes": 0,
+  "stderrBytes": 0,
+  "binarySHA256": "f9b2efb28fa4821625f732c247745bf3ae42edcdd3204bb594aa6cf5e74c162c",
+  "binaryBytes": 27198642,
+  "testsExecuted": false,
+  "privilegedInstallation": false,
+  "limitations": [
+    "Compile-only evidence does not prove actual child start, stop, parent cancellation, lease retention or reaping.",
+    "The helper exercises four signed role images, not the separate installed CLI.",
+    "A newly reviewed signed artifact cohort including the production Stop repair is required before installed execution.",
+    "No NATS, Docker or privileged fixture was executed in this compilation window."
+  ],
+  "phaseGateAccepted": false
+}

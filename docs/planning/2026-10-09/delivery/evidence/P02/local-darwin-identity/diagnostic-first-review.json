@@ -1,0 +1,60 @@
+{
+  "kind": "unqualified-native-diagnostic-review",
+  "reviewer": "Codex",
+  "reviewDate": "2026-10-14",
+  "executionPolicy": "DELIVERY-LOCAL-01",
+  "baseCommit": "70ed9e33e69c3c4b09736a4cb8e524044545a668",
+  "candidateIsUncommitted": true,
+  "environment": {
+    "execution": "local",
+    "architecture": "arm64",
+    "productVersion": "26.6",
+    "kernelRelease": "25.6.0",
+    "compilerSDK": 270000
+  },
+  "separation": "A separate diagnostic build tag admits only this candidate tuple. The normal fixture creator still refuses SDK 27. No product process-control API was changed.",
+  "evidenceDirectory": "/Users/ryan/.cache/agentmux-governance/darwin-helper-candidate-g0qo0134",
+  "executionRecord": "execution.json",
+  "exitCode": 1,
+  "sourceStableDuringExecution": true,
+  "observations": [
+    "The native layout control passed: BSD prefix 136 bytes, private suffix 56, combined 192, unique offset 136, suffix version offset 32, selector 18 returned 192 bytes.",
+    "The controls for native TERM and KILL against their own creator-bound children passed.",
+    "Wrong-version refusal and the helper's zero-signal policy control passed. The control did not invoke native signal zero.",
+    "The exec invalidation control failed with candidate_event_read_failed. Its exact native cause remains under investigation; interruption is not assumed.",
+    "The worker reported cooperative child cleanup and the original sole Wait completed. This is not a successful diagnostic run."
+  ],
+  "limits": [
+    "The failure and original output remain retained. No check was weakened or converted into a pass.",
+    "No protected image or signed role-assembly positive control, installed CLI, Docker, Linux or AMD64 qualification is established.",
+    "No privileged installation, CI run or phase acceptance occurred.",
+    "Final source registration and exact-candidate review remain required."
+  ],
+  "followUpClassification": {
+    "evidenceDirectory": "/Users/ryan/.cache/agentmux-governance/darwin-helper-candidate-upfu2k9b",
+    "selection": "^TestCandidateExecInvalidation$",
+    "exitCode": 1,
+    "elapsedSeconds": 2.052,
+    "sourceStableDuringExecution": true,
+    "finding": "A later classify-only run reported candidate_event_read_interrupted, establishing EINTR for that run. The original failure's discarded native cause remains unknown.",
+    "repairDirection": "Retry only EINTR within the existing absolute event deadline. Other native errors remain hard failures. Keep exact child cleanup and the original Wait.",
+    "repairVerificationPending": true
+  },
+  "repairedDiagnostic": {
+    "evidenceDirectory": "/Users/ryan/.cache/agentmux-governance/darwin-helper-candidate-3n0axy8e",
+    "executionRecordSHA256": "f9cd8c694428865d316bf27f06f204e4370c06d3c1fb53d85664d214f0628e41",
+    "stdoutSHA256": "c195a9326cae70833708361aa482b565b6e4b2e06aa89be2fb66e0f4dc82c8c3",
+    "exitCode": 0,
+    "namedTopLevelPasses": 7,
+    "namedSubtestPasses": 2,
+    "failureOrSkipEvents": 0,
+    "stderrBytes": 0,
+    "independentRawEventCountsAndHashesChecked": true,
+    "repair": "Only interrupted event reads retry within the unchanged absolute deadline. Separate controls reject other errors and show the deadline does not reset. The zero-time fixture observation has a three-attempt interruption limit.",
+    "actualInterruptions": "The version-refusal and exec-invalidation exit waits each recorded two interruptions before their exact exit event.",
+    "sourceStabilityScope": "Only the eleven helper files listed in execution.json were pinned. Imported runtime dependencies and the whole checkout were not attested.",
+    "qualification": "Diagnostic controls only. Normal SDK 27 admission remains refused; protected-child and installed-CLI qualification remain open. Later source edits require fresh exact-candidate checks."
+  },
+  "sdk27Enrolled": false,
+  "phaseAccepted": false
+}

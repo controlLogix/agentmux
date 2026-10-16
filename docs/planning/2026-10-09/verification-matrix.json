@@ -566,7 +566,7 @@
     },
     {
       "id": "FAIL-56",
-      "scenario": "Two terminals or WSL sessions start together; startup owner crashes mid-boot",
+      "scenario": "Two native macOS ARM64 terminals start together; startup owner crashes mid-boot",
       "oracle": "One startup owner and one selected instance; waiting callers receive bounded progress or failure. Stale ownership recovery cannot create duplicate stacks or trust an unrelated PID.",
       "phases": [
         "P02",
@@ -648,6 +648,665 @@
       "supersededOracle": "The required replacement and capability-change record is absent, so approval fails. Ryan reviews the impact with Nick before authorizing any reduction.",
       "currentOracle": "The required replacement and capability-change record is absent, so Codex rejects phase acceptance. Codex reviews impact, alternatives and evidence against the full authorized scope; silent capability reduction is not permitted.",
       "reason": "User assigned delivery review to Codex; preservation scope and required evidence remain unchanged."
+    },
+    {
+      "date": "2026-10-15T02:23:21.782Z",
+      "actor": "Codex",
+      "action": "linux-macos-only-scope",
+      "decisionId": "PLATFORM-SCOPE-02",
+      "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+      "previousPlatformFields": [
+        {
+          "path": ".cases.55.scenario",
+          "value": "Two terminals or WSL sessions start together; startup owner crashes mid-boot"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-14",
+      "actor": "Codex",
+      "action": "macos-arm64-beta-scope",
+      "decisionId": "PLATFORM-SCOPE-03",
+      "note": "Ryan approved native macOS ARM64 as the only initial beta host target. Linux and macOS AMD64 qualification are deferred expansion work, not beta blockers or passing results. Preserve source, assertions, historical evidence and all product/security/recovery/preservation gates. No CI until all P00–P14 gates are complete; no merge or release authorization.",
+      "previousCurrentScope": [
+        {
+          "id": "FAIL-01",
+          "scenario": "Broker absent, wrong endpoint, invalid credentials, or stale deployment configuration",
+          "oracle": "Boot reports a specific readiness failure; no hidden fallback channel or hosted-model dependency; retry has bounded noise and does not multiply plugin instances.",
+          "phases": [
+            "P02"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-02",
+          "scenario": "Ordinary plugin publishes to kernel internals or a kernel reply subject",
+          "oracle": "Broker denies it; approved status is readable only at declared scope; service-injection handles do not bypass the boundary. Test exact and wildcard subjects.",
+          "phases": [
+            "P02",
+            "P03"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-03",
+          "scenario": "Child requests a broader storage, secret, NATS or project scope",
+          "oracle": "Grant denied; independent child use gets its own context; simultaneous project operations cannot contaminate logger tags or credentials.",
+          "phases": [
+            "P03",
+            "P04"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-04",
+          "scenario": "Parent stops while an independent child has another consumer",
+          "oracle": "Declared lifecycle policy applies without terminating unrelated work; private children cannot remain orphaned with live authority.",
+          "phases": [
+            "P03"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-05",
+          "scenario": "Unsupported schema or a payload type inconsistent with subject/account/operation",
+          "oracle": "Reject or explicitly quarantine before dispatch. No alternative subject lets a caller evade approval or invoke a different capability.",
+          "phases": [
+            "P01",
+            "P10"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-06",
+          "scenario": "Two workers race for one authorized attempt",
+          "oracle": "One ownership decision is authoritative; losing contender cannot execute; duplicate command IDs return the prior outcome or state.",
+          "phases": [
+            "P01",
+            "P04",
+            "P05"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-07",
+          "scenario": "Crash after input receipt but before durable effect/provenance creation",
+          "oracle": "Redelivery reconstructs one fully attributed execution or none, never an executable unattributed item.",
+          "phases": [
+            "P04",
+            "P10"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-08",
+          "scenario": "Crash after state commit but before publication or acknowledgement",
+          "oracle": "Recovery replays the same committed intent/result with the same identity; the receiver tolerates repeats.",
+          "phases": [
+            "P01",
+            "P04",
+            "P10"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-09",
+          "scenario": "Completion commits but result publication fails",
+          "oracle": "A durable result remains recoverable and publishable; origin does not remain pending indefinitely with no recoverable send record.",
+          "phases": [
+            "P05",
+            "P10"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-10",
+          "scenario": "Remote accepts, then its acceptance reply is lost",
+          "oracle": "Origin records acceptance-unknown and preserves the receiver reservation; no fallback hub runs it merely because an RPC timer expires.",
+          "phases": [
+            "P10"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-11",
+          "scenario": "Receiver disconnects after accepted work starts",
+          "oracle": "It continues only within its grant; origin displays last-confirmed/unknown state; reconnection reconciles the same delegation and resulting effects.",
+          "phases": [
+            "P10"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-12",
+          "scenario": "Origin crashes or restores an older backup while remote work continues",
+          "oracle": "Recovery learns outstanding reservations before scheduling replacements; restored IDs cannot silently create a second incarnation of the same attempt.",
+          "phases": [
+            "P10",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-13",
+          "scenario": "Cancellation request or cancellation acknowledgement is lost",
+          "oracle": "Distinguish requested, observed, stopping, confirmed stopped and unknown as applicable. A cancelled display does not establish that tools stopped.",
+          "phases": [
+            "P05",
+            "P10"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-14",
+          "scenario": "Human explicitly reassigns while the old hub cannot be contacted",
+          "oracle": "Follow the agreed policy for fencing/reconciliation and non-fenceable effects; preserve the risk and decision record. Explicit reassignment is not proof the old executor stopped.",
+          "phases": [
+            "P10"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-15",
+          "scenario": "An offline grant expires or a connected owner revokes it",
+          "oracle": "Enforce the chosen offline scope/freshness contract. Do not promise immediate remote revocation without connectivity; do not infer reservation release from grant expiry.",
+          "phases": [
+            "P10"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-16",
+          "scenario": "Result comes from the wrong hub/node/project/attempt or an older generation",
+          "oracle": "Reject it as a current authoritative update even if the origin task ID exists. Bind selected executor, scope, evidence and version to the delegation. Preserve authenticated historical attempt evidence for reconciliation or quarantine instead of discarding it solely because the grant or task generation changed.",
+          "phases": [
+            "P10"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-17",
+          "scenario": "Same user has multiple nodes; one consumes another node's work",
+          "oracle": "Route by full hub/node/attempt identity; absence from that node's local store does not justify marking valid remote work stale and acknowledged.",
+          "phases": [
+            "P10"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-18",
+          "scenario": "Third organization is reachable through an approved partner",
+          "oracle": "No automatic transitive trust, capability visibility, artifact access or onward delegation. Positive and negative tests use three authorities.",
+          "phases": [
+            "P10"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-19",
+          "scenario": "Partner claims an arbitrary user ID or writes author attribution into payload",
+          "oracle": "Verify the actor through the accepted authentication/delegation contract; reject forged attribution instead of trusting JSON fields or display names.",
+          "phases": [
+            "P04",
+            "P10"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-20",
+          "scenario": "Worker capability/capacity/grant changes between advertisement and dispatch",
+          "oracle": "Revalidate before acceptance/execution; deterministic refusal returns a reason; capacity advertisements are not reservations.",
+          "phases": [
+            "P05",
+            "P10"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-21",
+          "scenario": "Storage full, stream quota reached, poison message, or maximum deliveries reached",
+          "oracle": "Surface durable operational failure, preserve ownership, and route recovery/inspection. A retry limit is not task success or safe task abandonment.",
+          "phases": [
+            "P04",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-22",
+          "scenario": "Stream/object history expires while a peer is disconnected",
+          "oracle": "Detect the gap; use authoritative snapshot/reconciliation or require intervention; never silently invent the missing ownership history.",
+          "phases": [
+            "P10",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-23",
+          "scenario": "Broker loses a majority or a network partition separates replicas",
+          "oracle": "No unsafe second authority; readiness reflects unavailable durable operations; resumed processing handles uncertain publishes and duplicates.",
+          "phases": [
+            "P10",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-24",
+          "scenario": "Wall clock jumps or a machine sleeps across a deadline",
+          "oracle": "Ordering follows declared revisions/causality, not wall-clock comparison alone. Reservation invariants survive clock error.",
+          "phases": [
+            "P05",
+            "P10"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-25",
+          "scenario": "External tool times out after possibly completing a write",
+          "oracle": "Mark unknown outcome; consult tool-specific operation identity/status before retry. No generic model judgement establishes safe replay.",
+          "phases": [
+            "P05",
+            "P11"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-26",
+          "scenario": "Artifact upload incomplete, digest mismatched, replaced, or fetched after access withdrawal",
+          "oracle": "Refuse use or report incomplete evidence; recheck access on retrieval; digest proves content identity, not origin authority or safety.",
+          "phases": [
+            "P04",
+            "P10"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-27",
+          "scenario": "Dashboard reconnects, receives duplicates, misses deltas or has multiple viewers",
+          "oracle": "Scoped snapshot plus cursor/replay repairs state. Viewers never replay commands or trigger duplicate inference; missing events are visibly resynchronized.",
+          "phases": [
+            "P07"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-28",
+          "scenario": "A browser chooses a different project/run/thread ID",
+          "oracle": "Server rejects unauthorized read/write, including snapshots, history, artifacts and subscriptions; UI filtering is not the control.",
+          "phases": [
+            "P07"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-29",
+          "scenario": "Jev/provider unavailable, contradictory, stale or highly confident but wrong",
+          "oracle": "Declared fallback applies; deterministic permissions/ownership remain fixed; results bind source/model/definition revisions and cannot suppress mandatory events.",
+          "phases": [
+            "P08",
+            "P13"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-30",
+          "scenario": "Source is shareable with a hub but forbidden at a hosted model",
+          "oracle": "Reject provider export before inference; derived findings and logs retain applicable source restrictions; delegation is not onward-processing permission.",
+          "phases": [
+            "P08",
+            "P10"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-31",
+          "scenario": "Upgrade changes contracts while older nodes retain accepted work",
+          "oracle": "Negotiate supported versions, preserve IDs and in-flight obligations, drain or reject unsupported transitions without data loss.",
+          "phases": [
+            "P03",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-32",
+          "scenario": "Rollback after a data migration or external side effect",
+          "oracle": "Declare the safe rollback boundary; do not imply old binaries can read new schemas or that reverting a package undoes remote effects.",
+          "phases": [
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-33",
+          "scenario": "Many users/projects exceed declared resource budget",
+          "oracle": "Isolation, fairness, queue bounds and backpressure work; report admitted/queued/rejected work accurately; no tenant can erase another's evidence by filling shared storage.",
+          "phases": [
+            "P05",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-34",
+          "scenario": "Rapid backups have identical timestamps or cleanup races a backup",
+          "oracle": "Every retained backup is uniquely identified and verifiably restorable; retention counts completed backups, not overwritten path names.",
+          "phases": [
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-35",
+          "scenario": "Untrusted task code tries to read another user/project or steal a credential",
+          "oracle": "The P04 execution profile denies access using the selected OS/container/host controls. Worktree separation or a typed context alone cannot pass this test.",
+          "phases": [
+            "P04",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-36",
+          "scenario": "Provider times out after potentially charging a request",
+          "oracle": "Record unknown billing/response state, bounded retry policy and actual attempt counts. Never repeat the observed external tool just to obtain a classification.",
+          "phases": [
+            "P08"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-37",
+          "scenario": "Cached semantic answer survives changed source sharing or grant",
+          "oracle": "Reauthorize source access and invalidate/deny the old result. No cross-tenant or revoked-source cache return.",
+          "phases": [
+            "P08",
+            "P10"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-38",
+          "scenario": "Reduced context omits a mandatory constraint or contradicting source",
+          "oracle": "Fail the evidence-quality gate, preserve source IDs and coverage, expand context or fall back. Savings cannot justify an obligation loss.",
+          "phases": [
+            "P08",
+            "P09",
+            "P13"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-39",
+          "scenario": "A skill triggers on a near miss or a host lacks its hook",
+          "oracle": "Use whole-suite trigger tests and actual-host capability checks. Unsupported automation stays disabled or advisory without false success.",
+          "phases": [
+            "P09",
+            "P13"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-40",
+          "scenario": "Installed package requests protected kernel membership or undeclared replacement",
+          "oracle": "Reject the package contribution and preserve the protected assembly. Administrator approval for ordinary plugins does not create a kernel replacement interface.",
+          "phases": [
+            "P03"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-41",
+          "scenario": "Fresh installation lacks tools, credentials, vendor license or supported filesystem",
+          "oracle": "Doctor identifies the exact missing prerequisite without exposing secrets. Unsupported integrations remain explicit. First-workflow, upgrade, uninstall and restore tests preserve user data.",
+          "phases": [
+            "P06",
+            "P11",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-42",
+          "scenario": "Atomic batch is abandoned, rejected, interrupted or commits with its final acknowledgment lost",
+          "oracle": "The qualified single-stream boundary contains either the complete valid record set or none. Unknown commit is reconciled by durable operation identity; retry cannot create a second transition.",
+          "phases": [
+            "P01",
+            "P04"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-43",
+          "scenario": "A claim or approval reads a lagging KV projection, replica or mixed-revision query",
+          "oracle": "The view exposes freshness and cannot grant authority. Owner revalidates against an authoritative/verified revision, rejects a stale conditional write and retries only after rechecking policy.",
+          "phases": [
+            "P01",
+            "P04",
+            "P07"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-44",
+          "scenario": "A local SQL index or derived KV view is deleted, corrupted or rebuilt from an incompatible checkpoint",
+          "oracle": "Validate checkpoint/schema/cursors, then rebuild identical authorized results from retained history. Detect missing ranges, preserve access scopes, and never replay commands or external effects during rebuild.",
+          "phases": [
+            "P04",
+            "P07",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-45",
+          "scenario": "Queue acknowledgment, presence TTL or retention pruning would remove an active reservation or required recovery history",
+          "oracle": "History and work-distribution policies remain separate. Reject unsafe pruning or require verified checkpoint/archive coverage. A gap blocks unsafe admission and raises explicit reconciliation; it never frees accepted work.",
+          "phases": [
+            "P04",
+            "P10",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-46",
+          "scenario": "Owner crashes after NATS commit but before view update, dispatch or result publication",
+          "oracle": "Recover from committed complete intent using the same operation identity. Catch views up without making them authoritative; retries after the broker dedup window still preserve one business outcome and external-effect uncertainty. Same operation ID with a different payload hash is rejected.",
+          "phases": [
+            "P04",
+            "P05",
+            "P10"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-47",
+          "scenario": "A provider claims atomicity across different streams, KV buckets, object uploads or an external tool",
+          "oracle": "Capability validation rejects the unsupported transaction claim. The approved same-stream record/batch or explicit staged recovery protocol passes fault injection, including orphan artifact cleanup and partial publication.",
+          "phases": [
+            "P01",
+            "P04"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-48",
+          "scenario": "Legacy SQLite and new NATS owners overlap during cutover, or rollback restores a pre-cutover database",
+          "oracle": "Fence the former writer and reconcile stable IDs, reservations and complete provenance at a recorded boundary. After new writes, reverse migration or explicit recovery must complete before old-owner admission.",
+          "phases": [
+            "P04",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-49",
+          "scenario": "An existing source file, command, screen action, plugin behavior or test assertion is omitted from migration",
+          "oracle": "Coverage or review blocks the phase; add a component and behavior check before changing the boundary. A successful new workflow cannot waive omitted existing capability.",
+          "phases": [
+            "P00",
+            "P01",
+            "P03",
+            "P05",
+            "P06",
+            "P07",
+            "P10",
+            "P11",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-50",
+          "scenario": "A new implementation passes its reference workflow but breaks an existing workflow",
+          "oracle": "Baseline and candidate comparisons identify the regression. Keep the working path available and deny cutover until corrected or an explicit capability change is approved.",
+          "phases": [
+            "P05",
+            "P06",
+            "P07",
+            "P10",
+            "P11",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-51",
+          "scenario": "Dashboard migration loses a terminal generation, view action, theme, saved preference or conflict check",
+          "oracle": "The view/action/preference matrix and existing assertions fail. Preserve all ten current views and control semantics through the approved interface migration.",
+          "phases": [
+            "P07"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-52",
+          "scenario": "Federation cutover drops pending outbox, quarantine, seen IDs, consumer position, board revision or enrollment data",
+          "oracle": "Compare full legacy and candidate fixtures before writer transfer; reconcile deliveries and credentials without duplicate execution, message loss or privilege expansion.",
+          "phases": [
+            "P04",
+            "P10",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-53",
+          "scenario": "A rewrite or narrower launch matrix silently removes an existing capability",
+          "oracle": "The required replacement and capability-change record is absent, so Codex rejects phase acceptance. Codex reviews impact, alternatives and evidence against the full authorized scope; silent capability reduction is not permitted.",
+          "phases": [
+            "P00",
+            "P03",
+            "P06",
+            "P07",
+            "P11",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-54",
+          "scenario": "A baseline/candidate result uses stale source, a skipped environment or a mock in place of a supported live system",
+          "oracle": "Invalidate the comparison or mark the claim unverified. Require matching source/environment evidence and the actual supported system before declaring parity.",
+          "phases": [
+            "P01",
+            "P06",
+            "P10",
+            "P11",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-55",
+          "scenario": "Cold launch with no selected instance, then warm launch from another project directory",
+          "oracle": "One owned Compose project reaches actual service and application readiness; the next launch reuses its identity and volumes unchanged. Both display the same scoped status schema.",
+          "phases": [
+            "P02",
+            "P06",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-56",
+          "scenario": "Two native Linux/macOS terminals start together; startup owner crashes mid-boot",
+          "oracle": "One startup owner and one selected instance; waiting callers receive bounded progress or failure. Stale ownership recovery cannot create duplicate stacks or trust an unrelated PID.",
+          "phases": [
+            "P02",
+            "P06",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-57",
+          "scenario": "Docker or Compose absent, daemon unavailable, permission denied or image pull fails",
+          "oracle": "Bounded actionable diagnostics; no false readiness, privileged installation, secret leakage or retry storm. A later corrected launch can recover without losing data.",
+          "phases": [
+            "P02",
+            "P06",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-58",
+          "scenario": "Wrong Docker context, another user instance, occupied endpoint or incompatible running release",
+          "oracle": "Reject ambiguous or unauthorized attachment; identify selected context and safe next action. Do not start a shadow stack, mutate a remote daemon, silently upgrade or delete volumes.",
+          "phases": [
+            "P02",
+            "P06",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-59",
+          "scenario": "Partially started or unhealthy stack; readiness timeout; restart after persistent data was written",
+          "oracle": "Report the failing service and observed readiness state. Compatible owned recovery retains instance identity and durable data; unsafe recovery stops for a deliberate action. Running containers alone never qualify success.",
+          "phases": [
+            "P02",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-60",
+          "scenario": "Client launch has no working startup hook; MCP protocol output and managed worker spawning",
+          "oracle": "Every advertised automatic integration proves its installed launch path on the actual host. Unsupported paths are named. Status is visible without corrupting protocol stdout, printing credentials or recursively bootstrapping workers.",
+          "phases": [
+            "P06",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-61",
+          "scenario": "Terminal closes, plugin is removed, or explicit stop is requested while other sessions have work",
+          "oracle": "Terminal closure does not stop shared work. Uninstall preserves other client settings and durable data. Explicit authorized stop follows drain/reservation policy and later restart preserves acknowledged state.",
+          "phases": [
+            "P06",
+            "P12"
+          ],
+          "status": "not-run"
+        },
+        {
+          "id": "FAIL-62",
+          "scenario": "Connected hub partitions or changes grants; terminal/dashboard status is stale or caller scope is narrower",
+          "oracle": "Display authorized hubs only and distinguish unknown/stale/disconnected from healthy. Match source revisions across views, retain reservations and do not equate broker reachability with permission or capacity.",
+          "phases": [
+            "P07",
+            "P10",
+            "P12"
+          ],
+          "status": "not-run"
+        }
+      ]
     }
-  ]
+  ],
+  "platformScopeDecisionId": "PLATFORM-SCOPE-03"
 }

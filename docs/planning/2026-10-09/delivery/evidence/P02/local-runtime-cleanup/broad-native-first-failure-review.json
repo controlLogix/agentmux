@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "captureDirectory": "/Users/ryan/.cache/agentmux-governance/platform-default-race.i7GC9K",
+  "resultSHA256": "68f5ff1fdd4e1025296b2dd01ee82afea4d9f2b7f6de620ac4e6e5336843d8d4",
+  "exitCode": 1,
+  "originalGoProcessJoined": true,
+  "elapsedSeconds": 187.611365417,
+  "snapshotFiles": 305,
+  "snapshotStable": true,
+  "topLevelPassed": 215,
+  "subtestsPassed": 677,
+  "topLevelExplicitFailures": 5,
+  "topLevelUnfinished": 1,
+  "topLevelNotReached": 153,
+  "testLevelSkips": 0,
+  "observedRaceWarnings": 0,
+  "failedPackages": ["runtime", "launcher"],
+  "failures": [
+    "Darwin unlinked-descriptor research could not execute /dev/fd/3; product fail-closed behavior remains separate.",
+    "Authority-proof fixture tests failed bounded readiness/inspection checks. Fixture self-reexecution race-exit delay is under investigation, not a proven product fix.",
+    "Launcher hit its 180-second package timeout during DoctorInspection malformed case; that unfinished case has no recorded assertion result."
+  ],
+  "resourceCloseout": "Initial child-resource closeout is unconfirmed; a separate captured-source and event-order audit is required. No PID adoption or signals were performed.",
+  "retryPerformed": false,
+  "componentSuitePassed": false,
+  "phaseGateAccepted": false
+}

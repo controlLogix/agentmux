@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "captureDirectory": "/Users/ryan/.cache/agentmux-governance/darwin-docker-caller-controls-z1jeuytn",
+  "resultSHA256": "305737c51d932c7a1af11053d0725575cfa999ec3c408962a95dcc39c715d0e4",
+  "stdoutSHA256": "b0fce94e4e31bc05d570a8ba1a8f28de882ffa2f760fc15bb380e94216a340ac",
+  "originalHandle": "80058",
+  "terminalExitCode": 0,
+  "topLevelPassed": 4,
+  "subtestsPassed": 2,
+  "failures": 0,
+  "skips": 0,
+  "stderrBytes": 0,
+  "raceInstrumented": true,
+  "snapshotFiles": 308,
+  "snapshotStable": true,
+  "checkoutChangesDuringRun": [],
+  "sdkRoot": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk",
+  "sourceSHA256": {
+    "platform/launcher/docker_reads_darwin_test.go": "ad3a826d419532847b7c392557a03185ae8deaa74eff70e655e2013e061daa6f",
+    "platform/launcher/docker_archive_darwin_test.go": "c311e53754d5737996fe55b450fe279cb8b2d3d92c05d538a417770e601c5cb0",
+    "platform/launcher/docker_child_observation_darwin_test.go": "751f4185cb442d3cd44bb319237f50f224517d1748b21a36d7cdcfab0507dbd4"
+  },
+  "mainSourceReview": "Read all three sources. Original assertions are preserved with read-only kqueue exit observation replacing Linux pidfd observation. Observer registration fences current parent, user identity and birth time; rejects exec/error events; cannot signal, adopt or reap. Added distinct-PID checks and bounded original-goroutine cleanup on early archive failure were independently reviewed. Original Linux files remain unchanged.",
+  "limitations": [
+    "Actual driver-owned controlled subprocess cancellation and caller join, not a real Docker engine or protected runtime.",
+    "Focused native tests only; broad launcher and final committed-candidate checks still required."
+  ],
+  "phaseGateAccepted": false
+}

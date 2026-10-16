@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "controlCapture": "/private/tmp/agentmux-apfs-unmasked-controls.kT2EQe",
+  "controlResultSHA256": "bf766b2ac1743c7b89ba87bfd81754162b6575d2bb23b4630925eca8993ec8fe",
+  "controlPID": 29149,
+  "controlExitCode": 0,
+  "controlTestsPassed": 9,
+  "actualUnprivilegedChildren": 2,
+  "actualChildObservations": {
+    "setup": {"blockedSignals": [], "exitCode": -15, "waits": 1, "terms": 1, "kills": 0, "pipesClosed": true},
+    "teardown": {"blockedSignals": [], "exitCode": -15, "waits": 1, "terms": 1, "kills": 0, "pipesClosed": true}
+  },
+  "sourceSHA256": {
+    "setup.py": "c62ad0233cea6e8893c55469bb99f2e3d1a86bc3e3c2184fb75868ac8b36ebe6",
+    "teardown.py": "2df8d27da9d735ecb2fe1d4a93e2dd3f350c08652a5d4ca97af102b287adeaba",
+    "lifecycle_controls.py": "c24e06148912d8662b59fb1797aaeb00f3c9a6e6b257dc454ce795a5c8909968",
+    "inspect/main.go": "b782cfe2efb282278c686ed7de92c5d80b1cab125685f3ef299314a494b58ef3",
+    "README.md": "28c4c51e435bcb8f09a76351610ce1bb8fdaa6e078ff64b69221c0f60e8f48a0"
+  },
+  "mainReview": "Read the setup/teardown programs, shared lifecycle and all controls. Source repairs cover bounded stdout/stderr capture, sticky cancellation and original deadline, late original-Wait completion, distinct unknown-wait retention, checked single-close accounting, and unmasked Popen handoff. Inherited blocked INT/TERM masks refuse before spawn. Independently matched control output hashes and read both actual Python-child observations. Final independent frozen-source review remains separate.",
+  "inspectorBuild": {
+    "captureDirectory": "/Users/ryan/.cache/agentmux-governance/apfs-inspector-sdk265-build-2i75r68o",
+    "resultSHA256": "299f7de01fe020ca26ca34c141e4d2816cad0f35eb2d2955427b2397fd5249b9",
+    "originalPID": 29315,
+    "terminalExitCode": 0,
+    "sdkIntrinsic": 260500,
+    "sourceFiles": 342,
+    "snapshotAndToolPinsStable": true,
+    "binarySHA256": "b624284dfc874453f8ed7390cc11519853bfae7fb10b491f197675837f06e763",
+    "binaryBytes": 4228978,
+    "mainBinaryHashVerified": true,
+    "artifactExecuted": false
+  },
+  "hdiutilExecuted": false,
+  "rootActionsPerformed": false,
+  "limitations": [
+    "Controls substitute hdiutil with fakes or fixed unprivileged Python children; no disk image was created, attached or detached.",
+    "Inspector compilation does not prove real mount-owner flags, ACL isolation or protected-loader behavior.",
+    "A genuinely unconfirmed original wait remains retained, not bounded completion or success.",
+    "Human setup approval, reviewed-byte execution driver and actual joined setup/test/normal-teardown evidence remain required."
+  ],
+  "phaseGateAccepted": false
+}

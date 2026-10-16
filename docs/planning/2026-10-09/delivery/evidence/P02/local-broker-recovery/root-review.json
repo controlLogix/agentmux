@@ -1,0 +1,47 @@
+{
+  "kind": "independent-local-component-review",
+  "reviewer": "Codex",
+  "reviewDate": "2026-10-14",
+  "baseCommit": "70ed9e33e69c3c4b09736a4cb8e524044545a668",
+  "executionPolicy": "DELIVERY-LOCAL-01",
+  "candidateIsUncommitted": true,
+  "environment": "Local native macOS ARM64, Go 1.27.2, NATS Server 2.15.0",
+  "sourceHashes": {
+    "platform/kernel/boot/broker_recovery_test.go": "7bd809e9f3809ae16a2a055d2b3cc9fde27dbfa4b1a0993a803b96d1a95eb6bb",
+    "platform/kernel/protocol/transport.go": "c4d602a3b349405334cb5b5a90367f9ebc5438bcc0edbffa7fd2c06e3efd77d1"
+  },
+  "finding": "The test fixture discarded its broker owner before joining the original Wait. An uncertain shutdown could therefore lose cleanup ownership and allow another broker start.",
+  "reviewedRepair": "The fixture retains both the concrete command and its original completion channel until Wait joins. An uncertain shutdown blocks restart. Signal, kill and unsuccessful-exit failures remain visible. The original one-second shutdown and one-second forced-join bounds are unchanged.",
+  "localEvidenceDirectory": "/tmp/agentmux-broker-recovery-race.bcyszX",
+  "independentArtifactChecks": {
+    "currentSourceHashesMatch": true,
+    "bothRawOutputHashesMatch": true,
+    "namedPassEvents": 2,
+    "failureOrSkipEvents": 0,
+    "bothStderrFilesEmpty": true
+  },
+  "runs": [
+    {
+      "selection": "^TestProtectedRolesTLSBrokerRecoveryPreservesIncarnations$",
+      "race": true,
+      "exitCode": 0,
+      "testSeconds": 1.32,
+      "stdoutSHA256": "8270756edf2306cb965c28ab2c2058608652a9ca74f15045022b10bb0f2be1b8"
+    },
+    {
+      "selection": "^TestProtectedRolesTLSBrokerReconnectExhaustionIsBounded$",
+      "race": true,
+      "exitCode": 0,
+      "testSeconds": 8.27,
+      "stdoutSHA256": "f43d62280b60c5f3456107476826102227fb16e41b46ff6cf3f63ee1e53ac549"
+    }
+  ],
+  "limits": [
+    "Only two anchored tests ran. No Linux, AMD64, installed-CLI, Docker or complete phase acceptance is established.",
+    "The uncertain kill/wait timeout branch was reviewed in source, not exercised by the successful runs.",
+    "The earlier failed fixture lost its broker log. That limitation remains recorded in /tmp/agentmux-broker-recovery.XPsX9R/result.json.",
+    "Private broker artifacts contain disposable credentials and must not be published.",
+    "Final exact-candidate source registration, affected suites and phase review remain required."
+  ],
+  "phaseAccepted": false
+}

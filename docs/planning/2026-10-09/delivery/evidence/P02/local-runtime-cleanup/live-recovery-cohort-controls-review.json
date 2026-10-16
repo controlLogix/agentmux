@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "captureDirectory": "/Users/ryan/.cache/agentmux-governance/collector-live-recovery-compatibility.mnVhRT",
+  "resultSHA256": "794a8b7735b15359940a5a0ecdfe4074838926f4c9212d09dd8638b38fa02723",
+  "pythonVersion": "3.14.8",
+  "originalPID": 24631,
+  "terminalExitCode": 0,
+  "testsPassed": 77,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "sourceSHA256": {
+    "tests/platform/native_go.py": "0adde36546b5660b1b5cfb2e362c20aca2959f6ebcd1cabf348bf99fefc090c4",
+    "tests/platform/native_compose.py": "4e1b64e088f8f9f2b097822049f1c4ebb889640dedfcb3e7713edf829e86f96a",
+    "tests/platform/test_native_cohorts.py": "47aec7e806e531b70d5ebb2db13f4f89f4c5682ba65f89ae8e89bca5e4e659b9"
+  },
+  "addedCohorts": ["darwin-live-role-recovery", "darwin-installed-cli-slow-consumer"],
+  "mainSourceReview": "Reviewed exact three/one named selections and budgets. Live recovery uses only existing signed-lifecycle NATS/output inputs. Slow-consumer uses the existing signed CLI, engine lease and cleanup pipeline. Thirteen explicit cohorts remain opt-in and report omitted cohorts as unqualified. Default selectors, SAFE_FILES and installed-prerequisite guards remain unchanged.",
+  "limitations": [
+    "Pure collector compatibility controls, not execution of live protected or installed scenarios.",
+    "Administrator setup, actual behavioral runs and final frozen committed-candidate verification remain required."
+  ],
+  "phaseGateAccepted": false
+}

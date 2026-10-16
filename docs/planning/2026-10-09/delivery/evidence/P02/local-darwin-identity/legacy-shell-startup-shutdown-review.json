@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "Codex",
+  "status": "legacy-shell-local-prequalification-independently-reviewed",
+  "scope": "P02-AC05 legacy shell startup, selected environment and exact named shutdown in a private namespace.",
+  "firstAttempt": {
+    "runnerSHA256": "b57d638da4bfb514539f3d24543569c57b32761dede13206380a6724040fa80c",
+    "capture": "/private/tmp/amx-ac05.nhq6g0g_",
+    "originalSession": 7801,
+    "exitCode": 1,
+    "reason": "The observer used a session selector where send-keys expected a pane target. That command returned one. Startup, list and live pane checks had passed; exact named shutdown, sidecar absence, log retention and private listener absence passed afterward.",
+    "originalResultRemainsFailed": true
+  },
+  "observerCorrection": {
+    "runnerSHA256": "e0b127931daad382214a07f2ebf148e42a7a091447e7010d939e54127dd517eb",
+    "review": "Bind the exact percent-number pane sidecar to the sole actual live pane and expected workspace. Only this verified pane receives the fixed literal environment command and Enter. Invalid, mismatched, dead, multiple or injected targets refuse.",
+    "pureControlsPassed": 6,
+    "originalControlToolChunk": "62eb97"
+  },
+  "actualRetry": {
+    "capture": "/private/tmp/amx-ac05.ikq7n45_",
+    "originalSession": 96310,
+    "originalTerminalToolChunk": "1f26ca",
+    "resultSHA256": "24149eaea337d1a778087610907de5029fca1bed16ea710a3ff45eb48087f942",
+    "exitCode": 0,
+    "jobs": 7,
+    "allOriginalJobsExitedZero": true,
+    "allOriginalWaitsAndReadersJoined": true,
+    "verifiedPaneID": "%0",
+    "frontendExitedSessionAlive": true,
+    "selectedPaneEnvironmentMatched": true,
+    "exactNamedShutdownPassed": true,
+    "ownedSidecarsAbsent": true,
+    "logRetained": true,
+    "stablePrivateSocketConnectErrno": 61,
+    "privateListenerAbsent": true,
+    "sourceAndSelectedToolsStable": true
+  },
+  "limits": "Private listener absence is not an independent process census. New opt-in installed runtime comparison still needs review against its separate retained actual evidence and final candidate. No nonexistent runtime stop command is claimed.",
+  "independentEvidenceReview": {
+    "artifact": "/private/tmp/agentmux-ac05-shell-independent-review-20261015.json",
+    "sha256": "3ef5336a7c3d1256e8df10a38e362b81e94ef513d6b1d53f57df29ec289a14ff",
+    "review": "Peer independently checked the result, all 14 raw job captures, seven original joined zero exits, stable source maps, exact pane and receipt values and private listener observation. No peer execution occurred."
+  },
+  "liveModelCommandsRun": false,
+  "sharedTmuxSocketUsed": false,
+  "rootActions": false,
+  "cleanCommittedCandidate": false,
+  "ciRun": false,
+  "phaseGateAccepted": false
+}

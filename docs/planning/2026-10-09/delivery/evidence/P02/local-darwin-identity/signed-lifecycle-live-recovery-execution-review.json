@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "sdkRoot": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk",
+  "capture": "/Users/ryan/.cache/agentmux-governance/darwin-roles-next-prepared.l7a8puor",
+  "preparedManifestSHA256": "0ae7263dbc35ab29b6ee1797d545e5905fce7c3d494c75079d7c7d074beac013",
+  "runnerSHA256": "d9a73a8daa1440b4abd07ae9adeb9a3c1f21168837c02cacb37f6202323d21cd",
+  "runnerControlsSHA256": "208aef38ed8ab08e1e8cf01be79bcbccf5f2641f83ed10c25761352203043bc9",
+  "originalToolHandle": 41234,
+  "originalToolTerminalExitCode": 0,
+  "groups": [
+    {
+      "id": "darwin-signed-role-lifecycle",
+      "topLevelPassed": 6,
+      "elapsedSeconds": 14.078651500000001,
+      "terminalSHA256": "22766f3cd382d19d761626f2900d375ee9c24217e07349ac9ded6a70ca52100a",
+      "stdoutSHA256": "07aa58bec46795820faf5d7763208dee1767f9f0c47c530e87e7894f52a63766"
+    },
+    {
+      "id": "darwin-live-role-recovery",
+      "topLevelPassed": 3,
+      "elapsedSeconds": 27.215929875,
+      "terminalSHA256": "898c597973b7b79ed0a70f691c793615903a0e073bd3ff08710669d5ab3f4682",
+      "stdoutSHA256": "62c07212fc0b133d6ba0e7db331b71636fdf5047aa7c3db5c3ccf9cd9eaa6eff"
+    },
+    {
+      "id": "darwin-frontend-receipt",
+      "topLevelPassed": 2,
+      "observedSubtestsPassed": 3,
+      "elapsedSeconds": 3.1766682499999987,
+      "terminalSHA256": "546a093b5cc522fc7c6269fa42712f3f0353b390a813718dbf22ef0ec4407503",
+      "stdoutSHA256": "da62006938c3253e56d696a89461a36b5f46579f5593e9b54ecd93f2291852e4"
+    },
+    {
+      "id": "darwin-creator-history",
+      "topLevelPassed": 2,
+      "elapsedSeconds": 4.147873833999995,
+      "terminalSHA256": "cab1430eaf48d5b5bb0786695dc0e0314cc77f0255b7fe063b98d7142845417a",
+      "stdoutSHA256": "96b8eba47fc1ecf3e2a57a42ba4cae250116f99e4d94145336ba0228c1e8d7bc"
+    }
+  ],
+  "mainReview": "Read the full proposed runner, required FD-cleanup, full-event admission and post-pin repairs, then checked the final post-spawn retention guard and nine passing fault controls. Independent worker reviewed both runner revisions. After terminal completion, main independently hashed and parsed all four raw Go outputs and terminal records: 13 top-level passes plus three receipt subtests, empty stderr, no fail/skip events, no timeout or capture errors, exact before/after pin-record equality, and passing strict event admission. Every original child wait and both capture readers joined before inspection.",
+  "scope": "Actual signed protected role/session lifecycle, live public-message member degradation and whole-group recovery, same-incarnation short broker recovery, reconnect exhaustion, actual frontend receipt children and creator-bound history. Cached L04 session controls remain distinct from actual live recovery; no in-place member replacement is claimed.",
+  "ciExecuted": false,
+  "phaseGateAccepted": false,
+  "cleanCandidateEnrolled": false,
+  "limitations": [
+    "These are frozen dirty-snapshot prequalification results, not clean committed-candidate phase acceptance.",
+    "Real installed Docker CLI scenarios, ownership-mount qualification, final source correspondence and P02 gate review remain separate.",
+    "Opaque subtest parentage remains limited to top-level ownership plus the pinned Go harness and joined process."
+  ]
+}

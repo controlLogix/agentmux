@@ -49,6 +49,142 @@ FOUNDATION_SCOPES = (
     ('runtime-command', './cmd/agentmux-runtime'), ('local-tls', './localtls'),
     ('private-files', './privatefs'), ('runtime', './runtime'),
 )
+# Explicit opt-in cohorts. New owner tests enter only after their names freeze.
+DARWIN_COHORTS = {
+    'darwin-frontend-budget': ('./cmd/agentmux-runtime', '', 180, (
+        'TestFrontendBudgetReservesResponseAndCleanup', 'TestFrontendCleanupNeverExtendsTotal',
+        'TestFrontendStatusUsesOriginalFiveSecondTotal', 'TestFrontendEarlierCancelledCallerDoesNotGainTime')),
+    'darwin-frontend-receipt': ('./cmd/agentmux-runtime', 'agentmux_darwin_install', 180, (
+        'TestOwnedBootstrapProgressChecksActualChildAndCaller',
+        'TestFrontendNearExpiryOwnedReceiptRetainsUnknownFactsAndCleanup')),
+    'darwin-signed-role-lifecycle': ('./launcher', 'agentmux_bootstrap_docker', 900, (
+        'TestSessionLifecycleActualSingleChildExit', 'TestSessionLifecycleActualRetirementAndReusedSeparation',
+        'TestSessionLifecycleActualFailedStopRetainsCleanup', 'TestSessionLifecycleConcurrentCloseAndObservation',
+        'TestRuntimeCleanupRetainsExactSessionLeaseAndHonorsCancellation',
+        'TestRuntimeCleanupExistingReaperReleasesIgnoredError')),
+    'darwin-installed-cli': ('./launcher', 'agentmux_bootstrap_docker', 1200, (
+        'TestInstalledCLIDarwinRealComposeColdWarmAndRefresh', 'TestInstalledCLIDarwinRealComposeConcurrentCold',
+        'TestInstalledCLIDarwinRealComposeAuthenticatedPending', 'TestInstalledCLIDarwinRealComposeAbruptHostRestart',
+        'TestInstalledCLIDarwinRealComposeDifferentWorkingDirectoryReuse',
+        'TestInstalledCLIDarwinRealComposeConflictingChildSelection')),
+    'darwin-installed-cli-port': ('./launcher', 'agentmux_bootstrap_docker', 1200, (
+        'TestInstalledCLIDarwinRealComposeOccupiedSelectedPort',)),
+    'darwin-creator-history': ('./launcher', 'agentmux_darwin_install', 180, (
+        'TestBootstrapHistoryActualCreatorTerminalWhileLeaseHeldAndAfterExit',
+        'TestHostHistoryPolicyActualSealedCreatorAndDrift')),
+    'darwin-startup-owner': ('./launcher', 'agentmux_bootstrap_docker', 1200, (
+        'TestInstalledCLIDarwinRealComposeStartupOwnerDeathBeforeRoles',)),
+    'darwin-runtime-rollback': ('./runtime', 'agentmux_bootstrap_docker,agentmux_darwin_runtime_fixture', 180, (
+        'TestDarwinPartialStartFailureReapsEarlierChild',
+        'TestDarwinCancellationDuringPartialStartupReapsOwnedChildren',
+        'TestDarwinStartValidationRejectsNextImageAndReapsEarlierChildren')),
+    'darwin-normal-self': ('./internal/darwinfixtureidentity',
+        'agentmux_bootstrap_docker,agentmux_darwin_identity_normal_probe', 180, (
+        'TestNormalAdmissionSelfSDK265',)),
+    'darwin-normal-identity': ('./internal/darwinfixtureidentity',
+        'agentmux_bootstrap_docker,agentmux_darwin_identity_protected_normal', 180, (
+        'TestProtectedNormalLoaderAdmission', 'TestProtectedNormalFastCompletion',
+        'TestProtectedNormalWrongDigest', 'TestProtectedNormalInvalidArguments',
+        'TestProtectedNormalReparentedRoles', 'TestProtectedNormalHostRefusals',
+        'TestProtectedNormalRoleRosterRefusals')),
+    'darwin-normal-parent': ('./internal/darwinfixtureidentity',
+        'agentmux_bootstrap_docker,agentmux_darwin_identity_protected_normal,agentmux_darwin_runtime_fixture', 180, (
+        'TestRuntimeNormalParentEOFStopsActualChild',
+        'TestRuntimeNormalParentInheritedLeasesLastUntilOwnedReap')),
+    'darwin-live-role-recovery': ('./launcher', 'agentmux_bootstrap_docker', 900, (
+        'TestSignedDarwinLiveRolesLateSnapshotDegradationAndWholeGroupRecovery',
+        'TestSignedDarwinLiveTLSBrokerRecoveryPreservesOwnedRoles',
+        'TestSignedDarwinLiveTLSBrokerReconnectExhaustionIsBounded')),
+    'darwin-installed-cli-slow-consumer': ('./launcher', 'agentmux_bootstrap_docker', 1200, (
+        'TestInstalledCLIDarwinRealComposeSlowConsumerIsolationAndRecovery',)),
+}
+
+
+def cohort_pattern(names):
+    if not names or len(names) != len(set(names)) or any(not re.fullmatch(r'Test[A-Za-z0-9_]+', n) for n in names):
+        raise ValueError('cohort_names_invalid')
+    return '^(' + '|'.join(re.escape(n) for n in names) + ')$'
+
+
+def validate_cohort_inventory(raw, source, cohort):
+    package, tags, budget, names = DARWIN_COHORTS[cohort]
+    record = json.loads(raw)
+    if (record.get('ImportPath') != MODULE + '/' + package[2:] or record.get('Error')
+            or record.get('Incomplete') or record.get('DepsErrors')):
+        raise ValueError('cohort_inventory_invalid')
+    files = record.get('TestGoFiles', []) + record.get('XTestGoFiles', [])
+    declarations = []
+    for name in files:
+        if not isinstance(name, str) or Path(name).name != name or '\\' in name:
+            raise ValueError('cohort_inventory_path_invalid')
+        declarations.extend(re.findall(r'^func\s+(Test\w+)\s*\(t \*testing\.T\)',
+                            (source / package[2:] / name).read_text(), re.M))
+    if any(declarations.count(n) != 1 for n in names):
+        raise ValueError('cohort_declaration_missing_or_duplicate')
+    return {'package': record['ImportPath'], 'testFiles': files, 'requiredTests': list(names),
+            'tags': tags, 'selector': cohort_pattern(names)}
+
+
+def admit_cohort_events(raw, stderr, code, package, names):
+    events = []
+    try:
+        def pairs(items):
+            value = {}
+            for key, item in items:
+                if key in value: raise ValueError('duplicate_event_field')
+                value[key] = item
+            return value
+        events = [json.loads(line, object_pairs_hook=pairs,
+                            parse_constant=lambda _: (_ for _ in ()).throw(ValueError('nonfinite_event_value')))
+                  for line in raw.splitlines() if line.strip()]
+        if any(not isinstance(e, dict) or e.get('Package') != package or
+               ('Test' in e and not isinstance(e['Test'], str)) for e in events):
+            raise ValueError('cohort_event_invalid')
+        result = admit_required_events(raw, code, package, names)
+        starts = [e for e in events if e.get('Action') == 'start' and not e.get('Test')]
+        actual = {e['Test'] for e in events if e.get('Action') == 'run' and e.get('Test') and '/' not in e['Test']}
+        unexpected = sorted(actual - set(names))
+        race = 'WARNING: DATA RACE' in raw or 'WARNING: DATA RACE' in stderr
+        complete = len(starts) == 1 and events[0] == starts[0] and not any(e.get('Action') == 'bench' for e in events)
+        ended = False
+        active = set()
+        ownership = True
+        for event in events:
+            name, action = event.get('Test'), event.get('Action')
+            if ended or (name and name.split('/')[0] not in names):
+                complete = False
+            if (name and '/' in name and action in ('run', 'pause', 'cont', 'pass', 'fail', 'skip')
+                    and name.split('/', 1)[0] not in active):
+                ownership = False
+            if name and action == 'run':
+                # Go JSON provides no parent identity. T.Run suffixes are
+                # opaque names, including slashes, not a nested ancestry proof.
+                active.add(name)
+            elif name and action in ('pass', 'fail', 'skip'):
+                if '/' not in name and any(child.startswith(name + '/') for child in active):
+                    ownership = False
+                active.discard(name)
+            elif name and action in ('pause', 'cont') and name not in active:
+                ownership = False
+            if not name and action in ('pass', 'fail', 'skip'):
+                if active:
+                    ownership = False
+                ended = True
+    except (ValueError, TypeError, KeyError, IndexError):
+        events = []
+        result = {'status': 'failed', 'malformedOutput': True, 'allRequiredTestsPassed': False}
+        actual = set()
+        unexpected, race, complete = [], False, False
+        ownership = False
+    result.update(unexpectedTopLevelTests=unexpected, missingTopLevelTests=sorted(set(names) - actual),
+                  completePackageStart=complete, topLevelOwnershipAndJoinOrderVerified=ownership, raceWarningObserved=race,
+                  parentageScope='top-level-ownership', nestedParentageVerified=False,
+                  parentageLimits=['Subtest suffixes are opaque; nested T.Run correctness relies on the pinned Go harness and joined successful process, not name-prefix inference.'])
+    if unexpected or race or not complete or not ownership:
+        result['status'] = 'failed'
+    result['namedResults'] = [{k: e[k] for k in ('Test', 'Action', 'Elapsed') if k in e}
+                              for e in events if e.get('Test') and e.get('Action') in ('run', 'pass', 'fail', 'skip')]
+    return result
 # Official go.dev release metadata, checked October 13, 2026.
 GO_SHA256 = {
     'linux-amd64': 'ecbadb99091a3f46e31f5f934b068b1864eafa7995211b39eaddf76996045fe5',
@@ -828,6 +964,11 @@ else:
                         {'Action': 'run', 'Test': name, 'Package': qualified},
                         {'Action': action, 'Test': name, 'Package': qualified})]
                     events.append({'Action': action, 'Package': qualified})
+                if research:
+                    selected_name = command[command.index('-run') + 1][1:-1]
+                    events = [{'Action': 'run', 'Test': selected_name, 'Package': qualified},
+                              {'Action': action, 'Test': selected_name, 'Package': qualified},
+                              {'Action': action, 'Package': qualified}]
                 if DARWIN_CGO0_PRIVATE_PATTERN in command:
                     events = [{'Action': 'run', 'Test': DARWIN_CGO0_PRIVATE_TEST, 'Package': qualified},
                               {'Action': action, 'Test': DARWIN_CGO0_PRIVATE_TEST, 'Package': qualified},
@@ -1213,6 +1354,8 @@ else:
         self.assertEqual(record['runtimeQualification'], 'unqualified')
         self.assertEqual([c[0][-1] for c in calls], [
             '^TestDarwinUnlinkedDescriptorResearch$', '^TestDarwinProductRemainsFailClosed$'])
+        self.assertEqual(calls[0][0][calls[0][0].index('-tags') + 1], 'agentmux_darwin_descriptor_research')
+        self.assertNotIn('-tags', calls[1][0])
         code, record, _, _, _ = self.exercise(host='Darwin', research=True, test_failure=True)
         self.assertEqual(code, 1)
         self.assertFalse(record['unprotectedImageRefusalObserved'])
@@ -1250,6 +1393,15 @@ else:
 
 
 def main(argv=None):
+    # New cohorts reuse the enrolled, clean-candidate path, never tool download
+    # or privileged preparation. Existing foundation/research/install CLI stays intact.
+    arguments = list(sys.argv[1:] if argv is None else argv)
+    if '--darwin-cohort' in arguments or any(a.startswith('--darwin-cohort=') for a in arguments):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('agentmux_cohort_collector', ROOT / 'tests/platform/native_compose.py')
+        collector = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(collector)
+        return collector.main(arguments)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--workspace', type=Path)
     parser.add_argument('--evidence', type=Path)
@@ -1434,7 +1586,7 @@ def main(argv=None):
             if system == 'darwin' and name == 'runtime':
                 command += ['-run', '^TestDarwinProductRemainsFailClosed$']
             if name == 'darwin-descriptor-research':
-                command += ['-run', '^TestDarwinUnlinkedDescriptorResearch$']
+                command += ['-tags', 'agentmux_darwin_descriptor_research', '-run', '^TestDarwinUnlinkedDescriptorResearch$']
             if name == 'darwin-fail-closed-control':
                 command += ['-run', '^TestDarwinProductRemainsFailClosed$']
             if name == 'darwin-cgo0-private-refusal':
@@ -1470,6 +1622,10 @@ def main(argv=None):
                     raise
             item = admit_events(raw.read_text(encoding='utf-8'), code,
                                 'github.com/controlLogix/agentmux/platform/' + package[2:])
+            if args.darwin_research:
+                required = ('TestDarwinUnlinkedDescriptorResearch' if name == 'darwin-descriptor-research'
+                            else 'TestDarwinProductRemainsFailClosed')
+                item = admit_required_events(raw.read_text(encoding='utf-8'), code, MODULE + '/runtime', (required,))
             if name == 'darwin-cgo0-private-refusal':
                 item = admit_required_events(raw.read_text(encoding='utf-8'), code, MODULE + '/privatefs', (DARWIN_CGO0_PRIVATE_TEST,))
                 item['scope'] = 'Native CGO0 platform refusal only; not usable private-store or product qualification'

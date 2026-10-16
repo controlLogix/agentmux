@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "reviewer": "Codex",
+  "sourceBranch": "feat/agentmux-platform-rearchitecture",
+  "humanAuthorization": "User approved the four test releases and two disposable APFS images, then ran the reviewed same-terminal setup command after administrator authentication did not transfer to the agent session.",
+  "releaseInstallations": [
+    {
+      "capture": "/Users/ryan/.cache/agentmux-governance/darwin-installer-root-driver.lyynq7fx",
+      "resultSHA256": "23fd202fc73155f50d01faf30f7dafd373bcd1b6a5837a868c2dc9278465a5a2",
+      "receiptSHA256": "6a73184300b90cd6a72fae654be496de26dba3ae6f334f8880347f8cb28f8f12",
+      "group": "cooperative-identity",
+      "exitCode": 0
+    },
+    {
+      "capture": "/Users/ryan/.cache/agentmux-governance/darwin-nine-root-driver.ccki_w2s",
+      "resultSHA256": "f507227f6bcad285f0b029448a4955b01db16ac6e7766a107bbbeb838632fe6a",
+      "receiptSHA256": "f7b365f3a92190f734509552ea87e5bcdbe327b1e6853e37e50aeebdfeeb8e9f",
+      "group": "signed-release",
+      "exitCode": 0
+    },
+    {
+      "capture": "/Users/ryan/.cache/agentmux-governance/darwin-test-artifact-root-driver.runtime-fixture.wkrq9zqh",
+      "resultSHA256": "3b377232158a8e06fe2fee23184a4aafc3202428e7472d492d5ad3b3dbf07f5d",
+      "receiptSHA256": "6dd15701a45a9e9d78b1c1abf4cda7405ec0ef1b26814ca30e4d9ebb343f8eb2",
+      "group": "runtime-fixture",
+      "exitCode": 0
+    },
+    {
+      "capture": "/Users/ryan/.cache/agentmux-governance/darwin-test-artifact-root-driver.frontend-receipt.qya6nhs0",
+      "resultSHA256": "1ff07a7d476f4a83aad50f55b8c93c84f08315b0f239188a8595b75508a29370",
+      "receiptSHA256": "45533c2a12ac2519d1cf1570f1e2740040fe052e15484a1eda5dfd8fbbee89c7",
+      "group": "frontend-receipt",
+      "exitCode": 0
+    }
+  ],
+  "mainReceiptReview": "All four parent records confirm root completion, no timeout, and zero exit. All four root receipts report success, empty causes and no cleanup failure; stderr is empty. Independent installed-byte, ownership, mode and signature review is assigned to the peer before native execution. Installation alone is not runtime qualification.",
+  "apfsSetup": {
+    "capture": "/Users/ryan/.cache/agentmux-governance/apfs-driver.setup.49cp3e80",
+    "resultSHA256": "170a54bd1cfe20ffc50c88caf8e139cf6758f8dacb2074cd9d1356e01c11a5b8",
+    "stderrSHA256": "a43cb7615a215437460fc407db3719099cca2015b117e316b4e6eca565f5a7d4",
+    "exitCode": 1,
+    "rootCompletionConfirmed": true,
+    "timedOut": false,
+    "stdoutBytes": 0,
+    "retainedRoot": "/private/tmp/agentmux-c05-apfs-20261015-6e8a31d4",
+    "failure": "fixture_operation_failed; retain all fixture resources",
+    "causeInitiallyUnknown": true,
+    "causeKnown": true,
+    "operatorReadOnlyDiagnostic": "hdiutil: create: -format requires -srcfolder or -srcdevice",
+    "diagnosticSource": "User read the exact retained owners-create.stderr through local sudo and supplied its output in this chat. The root program's aggregate traceback alone did not expose this cause.",
+    "correctionReview": "Main checked local hdiutil create -help: blank images use -type UDIF for read/write. -format belongs to source-folder/device creation. Keep the 128 MiB/APFS scope and all ownership rules; preserve the failed nonce and use a fresh fixed directory for a reviewed retry.",
+    "rootPrivateCapturesReadableByAgent": false,
+    "mountQualified": false,
+    "automaticRetryOrCleanupPerformed": false,
+    "nextAction": "Prepare and independently review the minimal blank-image argument correction and fresh nonce. Do not change fixture source during measured tests, reuse the failed directory, or treat this failure as a passing mount result."
+  },
+  "ciExecuted": false,
+  "mergePerformed": false,
+  "phaseGateAccepted": false,
+  "limitations": [
+    "The setup ran on a dirty feature-branch candidate; final committed-candidate correspondence and phase evidence remain required.",
+    "APFS ownership-mount qualification remains open. No inspector, mount tests or teardown ran.",
+    "No setup receipt is a passing protected-loader, process-identity, lifecycle or P02 gate result."
+  ]
+}

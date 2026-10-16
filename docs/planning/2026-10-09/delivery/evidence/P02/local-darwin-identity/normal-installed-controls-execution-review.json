@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "sdkRoot": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk",
+  "capture": "/Users/ryan/.cache/agentmux-governance/darwin-normal-dirty-prequalification-c14jba0x",
+  "resultSHA256": "07d21affe57aed7ca98355d6f715094deeaa7f2df4b3f76bb621cb8810406366",
+  "originalToolHandle": 46046,
+  "originalToolTerminalExitCode": 0,
+  "groups": [
+    {
+      "id": "darwin-normal-identity",
+      "processIDDiagnosticOnly": 96367,
+      "topLevelPassed": 7,
+      "observedSubtestsPassed": 5,
+      "elapsedSeconds": 4.576702042,
+      "stdoutSHA256": "331540ea3e665ce383f53d056db38c6e23d6481b896aed2958f00420eae1dbf9"
+    },
+    {
+      "id": "darwin-normal-parent",
+      "processIDDiagnosticOnly": 96521,
+      "topLevelPassed": 2,
+      "observedSubtestsPassed": 0,
+      "elapsedSeconds": 3.1396857910000007,
+      "stdoutSHA256": "ee0267f984bb8e3462e87a64a793fe0e749fa20a9344e08504f5cb5aac272fb9"
+    },
+    {
+      "id": "darwin-runtime-rollback",
+      "processIDDiagnosticOnly": 96572,
+      "topLevelPassed": 3,
+      "observedSubtestsPassed": 0,
+      "elapsedSeconds": 2.237322333,
+      "stdoutSHA256": "aad36b18716fe039de425ab97b624f4039cb8716ac187a68060cdc91ed497ce6"
+    }
+  ],
+  "mainReview": "Independently hashed the result and all three raw Go JSON outputs, parsed their exact passing names and package completions, and checked empty stderr and no failures or skips. Each group exited zero under race detection. The executor retained the original process handles and reports complete named-event admission and unchanged copied source; checkoutChangedSinceCopy is empty. Normal SDK admission uses the actual installed cooperative/runtime fixtures, not SDK27 diagnostic tags.",
+  "installedReceiptReview": "Peer independently checked all 20 installed members against the four original receipts: hashes, inode/device, size, root ownership, modes, single links, source/envelope pins, descriptor closure and native allocation release. No mismatch was reported. Signed-release signature admission remains separate from these identity/runtime controls.",
+  "raceWarnings": 0,
+  "failures": 0,
+  "skips": 0,
+  "snapshotStable": true,
+  "parentageScope": "top-level-ownership",
+  "nestedParentageVerified": false,
+  "ciExecuted": false,
+  "phaseGateAccepted": false,
+  "cleanCandidateEnrolled": false,
+  "limitations": [
+    "Frozen dirty-snapshot prequalification is not clean committed-candidate phase acceptance.",
+    "Signed lifecycle, live recovery, actual installed Compose scenarios, ownership-mount qualification and remaining P02 gate evidence are separate.",
+    "Opaque subtest suffixes do not prove nested parentage; the evidence relies on the pinned Go harness and joined successful processes."
+  ]
+}

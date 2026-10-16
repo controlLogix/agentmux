@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "installerSourceSHA256": "0d74190d6be9f1eb65b54ba49b87a547641b11fdd8f95073489f31874959708f",
+  "captureDirectory": "/Users/ryan/.cache/agentmux-governance/darwin-installer-finalization.Cttd5H",
+  "unprivilegedResults": {
+    "faultControlsPassed": 11,
+    "schemaControlsPassed": 15,
+    "nativeInterpreterChainAdmissionPassed": true,
+    "allCommandsExitZero": true,
+    "allStderrEmpty": true,
+    "sourceUnchanged": true,
+    "protectedMutation": false
+  },
+  "rawStdoutSHA256": {
+    "fault-controls": "ff03887091cd956926c89f8e4d5b86e64db9d8938fd51f472ebd0b0bbfe3ef34",
+    "self-test": "af692d9f4abe14c4043de81eec2cc964625a2e67695f6a95c6c8b00fa5c04c9c",
+    "native-admission-control": "2998e8b0812adef92ec4aac23d458f6f842d9d50ae42d59f95bdc5e51b680261"
+  },
+  "independentSourceReview": {
+    "reviewer": "Russell",
+    "fixedFiveFileInstallerSourceSuitable": true,
+    "remainingBlockingSourceFindings": [],
+    "requiresCompleteValidReceiptAndZeroExit": true,
+    "executionAuthorizationGrantedByReview": false
+  },
+  "limitations": [
+    "Fault controls use owned disposable descriptors and explicit syscall substitutes, not privileged installation.",
+    "Cancellation racing receipt writes yields nonzero unconfirmed output; it cannot establish successful installation.",
+    "Actual protected installation, loader admission, native identity and installed product lifecycle remain pending."
+  ],
+  "phaseGateAccepted": false
+}

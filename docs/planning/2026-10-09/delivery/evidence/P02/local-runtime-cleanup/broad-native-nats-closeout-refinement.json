@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "priorAssessment": "broad-native-first-failure-review.json",
+  "captureDirectory": "/Users/ryan/.cache/agentmux-governance/platform-default-race.i7GC9K",
+  "reviewer": "Hilbert; reviewed by Codex",
+  "finding": "Captured source and terminal test-event ordering establish that every reached native NATS fixture's original Wait returned before the launcher Doctor panic.",
+  "launcherReachedBrokerCallers": [
+    "TestKernelOperationProofUsesOneActualInspection",
+    "TestKernelOperationProofExpiryActuallyReinspects"
+  ],
+  "launcherCloseoutEvidence": "Their terminal FAIL events follow unconditional registered Kill/Wait/log-close cleanup. The later unfinished Doctor path creates only its controlled inspector, not a broker.",
+  "otherReviewedBrokerOwners": [
+    "deployment local TLS, probe, team basic and team JWT fixtures",
+    "kernel boot integration and broker recovery fixtures",
+    "kernel communication configuration fixtures",
+    "kernel protocol aliases and server-trust fixtures",
+    "localtls native broker fixture"
+  ],
+  "testingSource": {
+    "version": "go1.27.2",
+    "sha256": "27c59df1832eae458ab8d2d4b6a6252bbd1ea2a3001734910d1ce2decff16f81",
+    "contract": "Registered cleanup runs before terminal test reporting."
+  },
+  "limits": [
+    "This establishes Wait-return control flow, not a successful child exit code where fixtures discard the returned error.",
+    "The initial unconfirmed assessment and failed broad-suite result are preserved.",
+    "Doctor mock-process cleanup and unrelated resources are outside this NATS-specific assessment."
+  ],
+  "pidAdoptionOrSignalsPerformedForAudit": false,
+  "suitePassed": false,
+  "phaseGateAccepted": false
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewer": "Codex",
+  "status": "offline-derivatives-and-probe-import-passed-required-runtime-cases-pending",
+  "independentReviewer": "Ohm",
+  "captureRoot": "/Users/ryan/.cache/agentmux-governance",
+  "results": {
+    "oci-readonly-export.p05s6kab": "b34d21331a0eba7fa4d9cb8cb6f05031d6ce99f38c24dedc64cda98aefa2166f",
+    "oci-offline-derivatives.t2p34w7n": "3e1d1548e4a05e83c7015d94ce1878b938ced588dc9dda4bd3600c9635b812a2",
+    "oci-probe-load.fau19zte": "a3c91d10b953f90675c3c637d70d6d13f11fe68a96f12d5860b455d5f84c1e66"
+  },
+  "originalJobsVerified": 27,
+  "originalWaitsAndReadersJoined": true,
+  "allJobsExitZero": true,
+  "rawCaptureHashesVerified": true,
+  "sourceExportSHA256": "e35fe2fb8b2f60bda65c2f1ea4bc11c80861c12700da27cd752044050b05c381",
+  "probe": {
+    "image": "docker.io/library/nats@sha256:d0f2b0baf7de3f610c4baa6299aecdbaa83ae29a85bf40ec35131df4e3c02093",
+    "archiveSHA256": "951c93999f1941b6da1ac7cfa0b7977b5e9ac45f6de1096c2a61770879910fa7",
+    "loadedAndInspected": true,
+    "retainedLocally": true
+  },
+  "reservedMissingCache": {
+    "image": "docker.io/library/nats@sha256:86192eddb95d5b04b30549828350d84e8fd59d4ab93cc4465714db844519c169",
+    "archiveSHA256": "6ada2bcebb90134f679032c284ed2f9c9729832ddd11196e57b2afadb832efa1",
+    "importedInTheseRecords": false,
+    "rule": "Do not import before the required negative case. Verify actual absence at that boundary; absence of an import record is not current engine-state proof."
+  },
+  "derivation": "Both archives retain the original layers and runtime configuration. Each configuration adds only its distinct test-fixture label, producing distinct immutable manifest digests. No mutable tags, registry push or shared-image pruning.",
+  "preservation": "Saved before/after projections match source image, engine identity, version, context, Compose/plugin selection and container list. Independent reviewer checked archive rosters, member hashes, receipts and current input/tool pins without engine calls.",
+  "limits": "This proves offline derivation and probe load/digest resolution. It does not prove NATS execution, actual cache absence, missing-cache runtime recovery, acquisition-failure recovery or P02 acceptance.",
+  "phaseAccepted": false
+}

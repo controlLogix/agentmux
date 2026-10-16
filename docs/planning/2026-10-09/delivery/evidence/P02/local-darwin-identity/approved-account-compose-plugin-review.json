@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "humanAuthorization": "Approve the reversible Compose plugin change",
+  "plugin": "/Users/ryan/.docker/cli-plugins/docker-compose",
+  "receipt": "/Users/ryan/.cache/agentmux-governance/compose-user-plugin-approved.k06wf501/result.json",
+  "receiptSHA256": "bab7086eb724ca295a222b0ee78b9656ece630ad3ad07c2667774b97aa6799b7",
+  "originalSymlinkRetained": "/Users/ryan/.cache/agentmux-governance/compose-user-plugin-approved.k06wf501/original-link",
+  "originalTarget": "/Applications/Docker.app/Contents/Resources/cli-plugins/docker-compose",
+  "newTarget": "/Users/ryan/.cache/agentmux-governance/compose-user-plugin-approved.k06wf501/docker-compose-5.5.1",
+  "newTargetSHA256": "998735c9b6fe68a4f05895e6ea73d71ad06f9fc7046383ad89e47346781b6af5",
+  "observedVersion": "5.5.1",
+  "executionExitCode": 0,
+  "mainReview": "Before mutation main checked the exact account-owned plugin directory and existing bundled-application symlink. Setup held and hashed the already verified 30,532,210-byte tool, copied it to a fresh persistent 0700 cache directory with executable mode 0500, retained the original symlink and plan, and changed only the approved plugin entry. Main rechecked both link targets, receipt hash and plugin version. The setup did not invoke Docker, restart its engine, edit other account configuration or change containers.",
+  "rollback": "Only after confirming the current plugin still matches this exact new target and identity, move it aside and restore the retained original-link. Never overwrite an independently changed plugin.",
+  "limits": "Account-wide Compose commands now select this pinned tool. This environment repair does not prove the other installed-CLI failures resolved, and does not weaken the detached host's environment allowlist.",
+  "phaseGateAccepted": false
+}

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "Codex",
+  "status": "supplemental-component-check-passed-not-installed-host-qualification",
+  "capture": "/private/tmp/amx-compose-probe.55umsg4d",
+  "resultSHA256": "cf71d6bc82538184dc2634e0a63e7b6d9e6c6377f8f6c8a571c2f993a8f02fa8",
+  "originalSession": 29563,
+  "originalTerminalToolChunk": "ee47ca",
+  "runner": "/private/tmp/agentmux-compose-doctor-build.tKXTFB/run-bound.py",
+  "runnerSHA256": "363ff5ae3c04db59551635d9ff782a1be3a1d9cefc6a6fe0c1143629a2b2961a",
+  "runnerControlsOriginalToolChunk": "cb3f57",
+  "runnerControlsPassed": 7,
+  "jobs": 9,
+  "originalWaitsAndReadersJoined": true,
+  "actualExpectedNegativeComposeExitCode": 125,
+  "otherEightExitCodes": 0,
+  "checks": [
+    "Genuine Docker discovers the exact verified Compose 5.5.1 plugin in a fresh private configuration.",
+    "A second fresh private configuration has no plugin and genuine Compose version fails. System fallback directories were absent.",
+    "The actual RunDoctor API reports compose_check_failed and unavailable for that genuine absence; profile and client checks pass.",
+    "A third fresh private configuration with the same verified plugin passes discovery against the same admitted engine identity.",
+    "Unprobed broker, persistence and protected-role checks remain unknown/not_probed, with DiagnosticsPassed false."
+  ],
+  "independentReview": {
+    "artifact": "/private/tmp/agentmux-compose-supplemental-independent-review-20261015.json",
+    "sha256": "b11d8e3d03ea62029666a506d69219a3213cc4ef26bf0dac6665a59c968c70f8",
+    "scope": "Peer checked the bound runner changes only INPUT, all genuine executable/plugin/API-harness/policy hashes, all nine original joined jobs and eighteen raw capture hashes, all three actual Doctor reports and unchanged source maps. No probe or engine query was repeated."
+  },
+  "limitations": [
+    "This uses three separate fresh private configurations, not a durable same-target recovery sequence.",
+    "The executable harness calls the actual exported Go API. It is not an installed frontend doctor command; no such public command is claimed.",
+    "Detached installed hosts deliberately do not inherit DOCKER_CONFIG. This does not prove their missing-Compose startup or persistent-data recovery.",
+    "The stage code remains cause-unconfirmed in production. This fixture's independent absence evidence does not change that contract.",
+    "Actual installed failure scenarios and final unchanged committed candidate qualification remain required."
+  ],
+  "accountConfigurationChanged": false,
+  "engineMutations": false,
+  "rootActions": false,
+  "detachedHostStartupQualified": false,
+  "durableDataRecoveryQualified": false,
+  "ciRun": false,
+  "phaseGateAccepted": false
+}

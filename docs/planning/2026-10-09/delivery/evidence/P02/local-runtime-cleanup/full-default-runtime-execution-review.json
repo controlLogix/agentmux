@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "Codex",
+  "status": "passed-local-prequalification",
+  "capture": "/Users/ryan/.cache/agentmux-governance/runtime-default-owned-adapter.IGFz6D",
+  "resultSHA256": "6cf49137a1781829f4d3372532f0d4d9ce12f08d3896975e22d0ccc7baab015e",
+  "stdoutSHA256": "cbdf08465b892e40c2b7e55ee0645955c7a202cebedf85f1a9ca7ee20adff153",
+  "stderrBytes": 0,
+  "command": "go test -race -failfast -mod=readonly -count=1 -json -timeout=900s -p=1 ./runtime",
+  "environment": {
+    "platform": "native macOS ARM64",
+    "goVersion": "1.27.2",
+    "sdk": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk",
+    "cgoEnabled": true
+  },
+  "actualResult": {
+    "originalSession": 25256,
+    "exitCode": 0,
+    "elapsedSeconds": 2.947272624995094,
+    "topLevelTestsPassed": 34,
+    "subtestsPassed": 65,
+    "failureEvents": 0,
+    "skipEvents": 0,
+    "raceWarningObserved": false,
+    "waitJoined": true,
+    "readersJoined": true,
+    "captureErrors": [],
+    "sourcePinsUnchanged": true,
+    "toolPinsUnchanged": true,
+    "nameFilterUsed": false,
+    "buildTagsUsed": false
+  },
+  "review": "Main independently recomputed the result and raw-output hashes and checked all 99 unique run/pass pairs, successful package completion, unchanged source/tool pins, and joined wait/readers. The default suite includes the product refusal controls. No test-name filter or extra build tag was used.",
+  "researchSelectionReview": "docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/descriptor-diagnostic-selection-review.json",
+  "limits": [
+    "This is frozen dirty-source prequalification, not clean committed-candidate qualification or P02 acceptance.",
+    "The research-only unlinked-descriptor experiment remains failed and unqualified under its explicit diagnostic tag. Its unchanged function and the selection decision are recorded separately.",
+    "Prepared metadata retains the legacy outerCleanupBoundSeconds value of 960. That value is not a guaranteed termination bound: uncertain original waits or readers retain their owners. This run actually reached terminal completion; it does not prove a universal outer bound.",
+    "Successful joined process capture does not independently prove that no descendant exists. Subtest suffixes remain opaque; nested parentage is not independently verified."
+  ],
+  "phaseGateAccepted": false,
+  "ciRun": false,
+  "mergeAuthorized": false
+}

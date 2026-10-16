@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "sourceReviewers": ["Codex", "Russell"],
+  "independentSourceReview": "No narrow blocker: context checks align with StopRole, retain token and ownership checks, and internal startup/lifetime cleanup callers use fresh bounded contexts. This is source review, not child lifecycle execution.",
+  "target": "darwin/arm64",
+  "captureDirectory": "/private/tmp/agentmux-stop-cleanup-race.XcFvWn",
+  "resultSHA256": "de692ed48339267687bd6d2a8f92d179f84557c17d58aa9dce797f6eaf62705c",
+  "stdoutSHA256": "b245e999cc0b38f9ddf7e0bf6d0fb6a891cc9c3ff1d506a45d05cb8551adee0f",
+  "supervisorSHA256": "09ae3736f79a39b3d0989dcb5eba0e1cff033e0f2c1bdb425db36ac3fd2da4de",
+  "regressionTestSHA256": "fde73484e44bdda536572f006511e476fbceede739a61b29926235b855ac3ea8",
+  "repair": "Check the supplied Stop context before token selection and again after acquiring the token. Already canceled contexts cannot randomly select an available token and report successful shutdown. Preserve ownership validation, token restoration and existing bounded cleanup.",
+  "exitCode": 0,
+  "topLevelTestsPassed": 11,
+  "subtestsPassed": 6,
+  "failed": 0,
+  "skipped": 0,
+  "stderrBytes": 0,
+  "snapshotSourceFiles": 288,
+  "snapshotStable": true,
+  "checkoutStable": true,
+  "elapsedSeconds": 2.306275958,
+  "limitations": [
+    "This race-enabled run covers pure Stop context/token precedence and selected prepared/receipt cleanup regressions, not actual child signaling or reaping.",
+    "The historical nine-member signed artifacts predate this production repair and require regeneration before latest-source qualification.",
+    "Actual protected installed lifecycle qualification and final candidate verification remain required."
+  ],
+  "phaseGateAccepted": false
+}

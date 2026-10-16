@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "captureDirectory": "/Users/ryan/.cache/agentmux-governance/darwin-slow-live-compile-rsqhrt6k",
+  "recordFile": "compile-record.json",
+  "recordSHA256": "aeead3fc2002396e5ba0c8a59af366a43d413429f33e8b56467fc12db01f6063",
+  "originalHandle": "25321",
+  "terminalExitCode": 0,
+  "snapshotFiles": 311,
+  "snapshotStable": true,
+  "checkoutChangesDuringRun": [],
+  "compilerSDKMacro": 260500,
+  "explicitCGOEnabled": true,
+  "raceInstrumented": true,
+  "binarySHA256": "ea039cb724562aedac38fb218473a19d82ef56ee6b317a9d85a41c2979ca74e2",
+  "binaryBytes": 27457122,
+  "sourceSHA256": {
+    "platform/launcher/installed_cli_compose_slow_consumer_darwin_test.go": "363d183abb7ee84938fd038114f502702643d63e82a6c4f3f81ab89272a16f4c",
+    "platform/launcher/signed_role_live_fixture_darwin_test.go": "205c1f4eee025c45238e9b595aa1add18b79f818c560e23139f26d417cbfd38b",
+    "platform/launcher/signed_role_live_process_darwin_test.go": "6f9b87931c0b67f29dc446f1fc4ea4ec1bd451a59f61c389acb618082494511f"
+  },
+  "mainReview": "Read all three fixture/test sources, their repairs and independent reviewer findings. Broker capture owners register before acquisition, unstarted commands are never signaled/waited, cleanup failures retain exact accounting owners, empty captures remain valid and read-close attempts are checked. Short actual broker loss and separate old-frame expiry preserve production reconnect settings. Slow-consumer checks use the same installed runtime/broker/persistence and completed error callback streams. Independently matched the compiled binary hash.",
+  "goEnvironmentObservation": {
+    "timing": "postcompile under identical explicit environment",
+    "record": "goenv-postcompile-review.json",
+    "GOENVInput": "off",
+    "GOENVObserved": "",
+    "mainVerification": "Read pinned Go cfg.EnvFile source: GOENV=off disables the environment file and returns an empty path. The initial literal-string comparator failure is retained separately; it does not require a compiler rerun."
+  },
+  "priorUnacceptedAttempt": {
+    "captureDirectory": "/Users/ryan/.cache/agentmux-governance/darwin-slow-live-compile-anllgevn",
+    "originalHandle": "53117",
+    "terminalExitCode": 1,
+    "reason": "Runner sanitization removed explicit CGO_ENABLED and result recording raised KeyError. Its binary is not accepted for the required profile; raw output and failure are retained."
+  },
+  "testsExecuted": false,
+  "rootInstallationPerformed": false,
+  "limitations": [
+    "Compilation and source review only. Actual protected member recovery, broker loss and installed slow-consumer scenarios remain unexecuted.",
+    "Whole-group recovery does not claim selected-member replacement. External subscriber backpressure does not claim internal actor queue-overflow coverage.",
+    "Administrator setup, complete candidate-bound execution and independent gate review remain required."
+  ],
+  "phaseGateAccepted": false
+}

@@ -1,11 +1,18 @@
 # Agentmux phased implementation plan
 
-**Status: phased plan with six baseline governance repairs implemented and verified under Ryan's scoped authorization. Complete P00/P01 and later gates are not yet passed; delivery review is now assigned to Codex; no merge is authorized.**
+**Status, reviewed October 14, 2026: P00 and corrected P01 are complete and accepted by Codex. P02 is in progress: preservation preflight (P02-T06) is complete; six implementation tasks remain in progress and P02-GATE has not passed. P03–P14 and final branch acceptance (MERGE-01) remain planned. No merge or release is authorized.**
+
+P02 code includes the launcher, protected-process lifecycle, NATS account isolation, file-backed JetStream health checks, startup status and diagnostics, and Docker Compose startup/reuse. The latest recorded checkpoint is `70ed9e3`. Required native platform, recovery and full phase qualification remain incomplete; code presence and focused passing checks do not establish phase acceptance. See the [live status board](implementation-status.md) and [latest checkpoint evidence](delivery/evidence/P02/native-ci-preparation/checkpoint-remote-70ed9e3.json).
+
 Prepared October 9, 2026. Branch: `feat/agentmux-platform-rearchitecture`. Baseline: `df46e94570fadf78ef67a75a692dd48b968a10f7`, Agentmux 0.32.0.
 
 **Live delivery tracking:** [Phase and task status](implementation-status.md) · [Detailed implementation tasks](delivery/task-details.md) · [Tracking procedure](delivery/README.md). Ryan selected repository tracking instead of Jira. Task status and evidence are maintained throughout implementation in `delivery/tasks.json`.
 
-**P00 review package:** [Concrete runtime, storage and automatic-startup recommendations](delivery/decisions/README.md), supported by a bounded Go/Python/TypeScript NATS comparison. These recommendations await review; source research and cross-compilation do not qualify a supported host or pass a phase gate.
+**Initial beta target:** [PLATFORM-SCOPE-03](delivery/decisions/PLATFORM-SCOPE-03-macos-arm64-beta.md) limits current host implementation and qualification to native macOS ARM64. Linux and macOS AMD64 are deferred expansion targets, not beta blockers or passing checks. Preserve their code, assertions and historical evidence. All product, security, recovery, persistence and preservation gates remain required.
+
+**Local verification:** [DELIVERY-LOCAL-01](delivery/decisions/DELIVERY-LOCAL-01-local-verification.md) requires local tests, builds and image builds on the current beta target. CI builds and verification are deferred until every P00–P14 gate is complete. Historical CI artifacts remain diagnostic; source review and primitive diagnostics do not replace actual native execution.
+
+**P00 review package:** [Concrete runtime, storage and automatic-startup recommendations](delivery/decisions/README.md), supported by a bounded Go/Python/TypeScript NATS comparison. The P00 decisions are accepted; supported-host execution and implementation qualification remain required in their owning phases. Source research and cross-compilation do not qualify a supported host or pass an implementation phase gate.
 
 This plan combines the original architecture review, repository analysis, accepted interview decisions, NATS and UI architecture brief, both Jev research rounds, the video supplement, and the proposed skill suite. It defines a complete delivery sequence and the evidence needed to advance. The accompanying presentation explains the before/after experience and each phase. The structured [phase definitions](phases.json) and [coverage appendix](coverage.md) retain individual acceptance and opportunity identifiers.
 
@@ -21,7 +28,7 @@ The release story is: a developer starts work in a supported agent client, Agent
 
 ## 2. Confirmed decisions and unresolved choices
 
-Confirmed: minimal protected kernel plugins; no kernel replacement; surrounding subscribers may observe exported kernel status but have no general kernel write path; NATS for every internal component interaction and preferred shared persistence; optional rebuildable SQL views; language-neutral plugin contracts; explicit independent/private nesting; automatically provided scoped context; trusted code first; native macOS/Linux and WSL initially; local and self-hosted teams; same- and cross-organization federation in the first release; origin-owned task acceptance; accepted disconnected work remains reserved; automatic receiving-hub acceptance only within approved rules; agent-client-led interaction; AG-UI/CopilotKit dashboard using Atomic Design; industrial engineering as optional domain packages; phased verification, autonomous Codex delivery review, subagents within one active phase, and no authorized merge.
+Confirmed: minimal protected kernel plugins; no kernel replacement; surrounding subscribers may observe exported kernel status but have no general kernel write path; NATS for every internal component interaction and preferred shared persistence; optional rebuildable SQL views; language-neutral plugin contracts; explicit independent/private nesting; automatically provided scoped context; trusted code first; native macOS ARM64 only for the initial beta; local and self-hosted teams; same- and cross-organization federation in the first release; origin-owned task acceptance; accepted disconnected work remains reserved; automatic receiving-hub acceptance only within approved rules; agent-client-led interaction; AG-UI/CopilotKit dashboard using Atomic Design; industrial engineering as optional domain packages; phased verification, autonomous Codex delivery review, subagents within one active phase, and no authorized merge.
 
 The following decisions must be made explicitly. Recommendations below allow review of a concrete plan without pretending they have been accepted.
 
@@ -35,7 +42,7 @@ The following decisions must be made explicitly. Recommendations below allow rev
 | Identity provider and administration | Simple local identity plus standards-based self-hosted enrollment/SSO, with per-device service credentials and revocation. Select actual protocols/providers. | P04 |
 | Execution trust and host isolation | Trusted installed plugins do not imply mutually trusted users or task code. Select OS/container/dedicated-host execution profiles that isolate project files and credentials before team use. Worktrees alone do not provide containment. | P00 decision, P04 proof |
 | Offline actions and reassignment | Define grant expiry, revocation, new offline assignments, historical result receipt, and the handling of an unreachable old executor. Already accepted work stays reserved. | P00 invariants, P10 design |
-| Supported host/tool versions | Pin OS/architecture/client/provider/tool versions based on actual-host tests, including WSL placement and Desktop connectivity. | P02/P06 |
+| Supported host/tool versions | Pin OS/architecture/client/provider/tool versions based on actual-host tests, including native macOS ARM64 placement and Desktop connectivity. | P02/P06 |
 | Capacity and recovery promises | Adopt proposed profiles in section 8 or replace them before load tests. | P00/P12 |
 | Jev data, billing, and offline policy | Customer-owned secret reference, explicit data destinations, capped usage, no-Jev fallback. A token is not needed for planning. | P08 live evaluation |
 | Industrial launch matrix | Preserve current capabilities through migration; explicitly select the first CODESYS/Siemens/Rockwell workflow and qualified tool versions. | P00/P11 |
@@ -43,6 +50,13 @@ The following decisions must be made explicitly. Recommendations below allow rev
 | Commercial packaging | Self-hosted distribution/support first. Verify dependency and model-provider terms and choose licensing. | P12 release |
 
 Dashboard scope and workflow priorities were asked during preparation. Unanswered questions remain decision gates. They do not block producing this proposal.
+
+### PLATFORM-SCOPE-02: Native Linux/macOS delivery
+
+Ryan authorized native Linux and macOS only on October 14, 2026, retaining AMD64 and ARM64. Windows and WSL are not implementation or acceptance targets. Historical Windows/WSL evidence is retained but cannot qualify native Linux/macOS execution. Security, recovery, persistence, preservation, client configuration ownership and phase gates remain required. See [the scope decision](delivery/decisions/PLATFORM-SCOPE-02-linux-macos-only.md).
+
+<details>
+<summary>Historical WSL-CLIENT-01 decision, superseded by PLATFORM-SCOPE-02</summary>
 
 ### WSL-CLIENT-01: Windows owns Windows-installed AI clients
 
@@ -63,6 +77,9 @@ Acceptance requires evidence for all of the following:
 - Record actual Windows/WSL failures, supported limits and recovery steps. A Linux client substitute or a successful version command is not proof of the requested workflow.
 
 P01 records this environmental contract, actual inventory and current interop observations. P06 implements and qualifies complete client entry points after its predecessors pass; this requirement does not start P06 early. P12 repeats applicable installation/update/recovery checks. Existing client, security, preservation and native runtime acceptance requirements remain in force.
+
+
+</details>
 
 ## 3. Before and after
 
@@ -339,9 +356,9 @@ Each phase below specifies its work, acceptance, verification, evidence, and rol
 ### Work
 
 - Publish language-neutral command/event schemas and compatibility rules with organization, project, task, delegation, attempt, operation, schema version, and trace identifiers.
-- Create reusable contract fixtures and controllable fake workers/providers plus real NATS integration environments for CI. Include WSL-CLIENT-01 environmental contract fixtures and an actual Windows/WSL client inventory; distinguish this preparation from P06 host integration.
+- Create reusable contract fixtures and controllable fake workers/providers plus real NATS integration environments for CI.
 - Specify lifecycle, delivery acknowledgment, idempotency, deadline, cancellation, approval, and unavailable/unknown result semantics.
-- Establish per-phase evidence records, dependency gates, migration fixtures, and security/quality regression jobs. Bind WSL evidence to Windows-owned client identity, version, configuration ownership and explicit interop limits; native Linux evidence cannot stand in for the Windows/WSL path.
+- Establish per-phase evidence records, dependency gates, migration fixtures, and security/quality regression jobs.
 - Build an early two-hub contract spike with separate broker accounts and a leaf link. Exercise lost acceptance acknowledgment and reservation reconciliation before the later production federation phase.
 - Preserve and extend the verified repairs for the six baseline findings. Ryan authorized this bounded repair pass; its source hashes and executed regressions are in [the evidence record](governance-repair-evidence.json). Complete every other P01 criterion before advancing to P02.
 - Build a bounded NATS persistence spike before production storage code: one owning task record, persistent operation identity, conditional competing writes, complete provenance/effect intent, lost acknowledgments and replay. Exercise single-record commits and any required atomic batch inside one stream.
@@ -352,13 +369,13 @@ Each phase below specifies its work, acceptance, verification, evidence, and rol
 - **P01-AC01:** Two independently implemented test clients exchange valid requests and reject incompatible or malformed envelopes.
 - **P01-AC02:** Fixtures cover duplicate, delayed, out-of-order, unauthorized, canceled, timed-out, and replayed messages without conflating execution with delivery.
 - **P01-AC03:** A failing predecessor gate prevents promotion. Waivers cannot bypass accepted ownership or security invariants.
-- **P01-AC04:** CI captures exact versions and logs without recording credentials or private model reasoning. Known baseline blockers are repaired or disproved with evidence, and the required repository governance gate passes before P02 progression. WSL-CLIENT-01 has a recorded placement contract, Windows/WSL client/version inventory and honest current interop observations; P06-specific integration claims remain unaccepted until actual-host qualification.
+- **P01-AC04:** CI captures exact versions and logs without recording credentials or private model reasoning. Known baseline blockers are repaired or disproved with evidence, and the required repository governance gate passes before P02 progression. P06-specific integration claims remain unaccepted until actual native macOS ARM64 host qualification.
 - **P01-AC05:** Two language clients pass the NATS storage fixtures on pinned server/client versions: competing revisions admit one transition, partial atomic batches leave no partial record set, and lost acknowledgments reconcile the same operation. Unsupported cross-stream or external-effect transactions are rejected or handled by an explicit recovery contract.
 - **P01-AC06:** The existing regression assertions are retained or mapped to equivalent assertions. Characterization fixtures capture each affected behavior before refactoring; a deliberately removed assertion, missing component, or unapproved retirement prevents progression.
 
 ### Verification
 
-- Run schema/contract suites in macOS, Linux, and WSL test jobs.
+- Run schema/contract suites in local native macOS ARM64 test jobs.
 - Break one contract fixture and one phase gate deliberately and confirm the pipeline refuses promotion.
 - Exercise a real broker restart and reconnect in the harness.
 - Run FAIL-42, FAIL-43 and FAIL-47 with real JetStream. Record which server/API/SDK capabilities provide each guarantee, including batch behavior and authoritative read freshness.
@@ -386,12 +403,12 @@ Each phase below specifies its work, acceptance, verification, evidence, and rol
 
 ### Acceptance criteria
 
-- **P02-AC01:** macOS, Linux, and WSL installations boot without an LLM or hosted Jev connection.
+- **P02-AC01:** macOS ARM64 installations boot without an LLM or hosted Jev connection.
 - **P02-AC02:** An outside plugin can subscribe only to permitted kernel information and cannot publish commands or writes into the kernel.
 - **P02-AC03:** Bad configuration, occupied ports, unavailable broker, and failed protected plugin produce actionable bounded failures.
 - **P02-AC04:** Surrounding plugin failure does not corrupt boot state. Ordinary runtime communication uses NATS after bootstrap.
 - **P02-AC05:** The existing launcher, environment selection and failure diagnostics remain available while the new boot path is opt-in. Both paths pass their defined startup and shutdown comparisons without sharing ownership of a live task.
-- **P02-AC06:** LOCAL-01 cold launch starts the selected local Compose stack and waits for broker persistence and application readiness. Warm launch reuses the same instance without recreation or lost state. macOS, Linux and WSL fixtures pass without an LLM or Jev.
+- **P02-AC06:** LOCAL-01 cold launch starts the selected local Compose stack and waits for broker persistence and application readiness. Warm launch reuses the same instance without recreation or lost state. macOS ARM64 fixtures pass without an LLM or Jev.
 - **P02-AC07:** Simultaneous launches and a crashed startup owner converge on one owned instance. Wrong Docker context, conflicting ports, incompatible versions and partial startup produce bounded, specific diagnostics without deleting volumes, starting a shadow stack or attaching to another user.
 - **P02-AC08:** The same versioned status response follows successful start and reuse. It includes instance identity/version, selected profile and endpoint, readiness, persistence health and authorized hub information with freshness. Missing or unimplemented services are labeled unavailable, never healthy.
 
@@ -528,34 +545,34 @@ Each phase below specifies its work, acceptance, verification, evidence, and rol
 
 ### Work
 
-- Extend current CLI, MCP, provider and workspace tooling. Preserve command semantics, safe prompt handling, session cleanup boundaries and credential setup; expose new scopes through the existing entry points where compatible. Apply WSL-CLIENT-01: WSL wrappers or symlinks invoke the Windows-owned client installation; preserve argument and working-directory semantics without installing duplicate Linux clients.
+- Extend current CLI, MCP, provider and workspace tooling. Preserve command semantics, safe prompt handling, session cleanup boundaries and credential setup; expose new scopes through the existing entry points where compatible.
 - Provide stable CLI and MCP interfaces generated from declared command contracts, with discoverable resources and error semantics.
-- Package and test integrations for Claude Code, Codex CLI, Pi, and Claude Desktop using each host's documented capabilities. On Windows/WSL, qualify the same Windows installation from direct Windows launch and WSL/tmux entry, including version parity, Windows-only updates and explicit unsupported interop behavior.
-- Distinguish external client sessions submitting work from Agentmux-managed worker sessions. Publish coverage for events, controls, resume, hooks, and compaction. Prove concurrent WSL tmux workers and external Windows clients retain separate project, hub, session and host identity and route callbacks correctly.
-- Add setup, credential references, diagnostics, install checks, and client-specific documentation without silently replacing user configuration. Keep Windows authentication/configuration authoritative. Use durable discovery or stable launchers that survive Windows-only updates; do not copy credentials, pin version-specific executables or silently replace unrelated settings.
+- Package and test integrations for Claude Code, Codex CLI, Pi, and Claude Desktop using each host's documented capabilities. Qualify installed clients on native macOS ARM64, including update behavior and explicit unsupported combinations.
+- Distinguish external client sessions submitting work from Agentmux-managed worker sessions. Publish coverage for events, controls, resume, hooks, and compaction. Prove concurrent native macOS ARM64 tmux workers and external clients retain separate project, hub, session and host identity and route callbacks correctly.
+- Add setup, credential references, diagnostics, install checks, and client-specific documentation without silently replacing user configuration. Keep native client authentication and configuration authoritative. Use stable launchers that survive updates; do not copy credentials, pin version-specific executables or replace unrelated settings.
 - Inventory and qualify existing Grok/provider authentication methods and any Bedrock compatibility path. Migrate GitHub and Jira/Confluence workflows as tool plugins with explicit writes and credentials.
 - Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation.
-- Wire LOCAL-01 ensure-running into each supported terminal/client startup integration. Show one concise status summary with dashboard access; provide structured status for clients, suppress recursive bootstrap in managed workers, and keep protocol stdout free of banners. Route Windows client callbacks and CLI/MCP traffic to the selected WSL hub; verify startup/reuse status, path translation, protocol framing and concurrent launches.
+- Wire LOCAL-01 ensure-running into each supported terminal/client startup integration. Show one concise status summary with dashboard access; provide structured status for clients, suppress recursive bootstrap in managed workers, and keep protocol stdout free of banners. Route native macOS ARM64 client callbacks and CLI/MCP traffic to the selected hub; verify startup/reuse status, path translation, protocol framing and concurrent launches.
 
 ### Acceptance criteria
 
 - **P06-AC01:** Each supported client can submit a task, inspect progress/evidence, participate in required approvals, and retrieve the result.
-- **P06-AC02:** Unsupported event capture, cancellation, or compaction reports an explicit capability limit instead of simulating success. Windows/WSL interop failures and unsupported client/path combinations remain explicit; a Linux fallback or version-only check cannot simulate a supported workflow.
+- **P06-AC02:** Unsupported event capture, cancellation, or compaction reports an explicit capability limit instead of simulating success. Unsupported native client/path combinations remain explicit; a version-only check cannot simulate a supported workflow.
 - **P06-AC03:** Closing the originating client or observer does not duplicate or implicitly terminate durable work.
-- **P06-AC04:** Fresh-user install and uninstall preserve unrelated client settings and secrets. Under WSL-CLIENT-01, Windows retains sole ownership of each Windows-installed AI client and its updates, authentication and configuration; no duplicate Linux installation or credential copying is introduced.
-- **P06-AC05:** All existing supported harness commands, session safeguards, agent definitions, provider setup methods and integration workflows have passing comparisons or an explicitly approved capability change. Retained and added tests cover modal decisions, idle cleanup, credential refresh, WSL paths and external-write uncertainty. Direct Windows and WSL/tmux launches resolve the same installed version before and after a Windows-only update. Stable launchers survive updates without version-specific binary paths; arguments and working directories preserve spaces, quoting, mounted Windows paths and WSL UNC paths.
-- **P06-AC06:** Installing and configuring the Agentmux plugin makes each supported terminal/client launch automatically start or reuse the selected stack and show its instance and authorized hub summary. Actual-host tests qualify startup hooks or a clearly named installed launcher; manual commands cannot stand in for promised automatic launch. Windows-owned client callbacks reach the selected WSL hub, and concurrent tmux workers/external clients preserve distinct project, hub, session and host identities without cross-session configuration or callbacks.
+- **P06-AC04:** Fresh-user install and uninstall preserve unrelated client settings and secrets. Native macOS ARM64 clients retain ownership of their updates, authentication and configuration; no credential copying or duplicate client installation is introduced.
+- **P06-AC05:** All existing supported harness commands, session safeguards, agent definitions, provider setup methods and integration workflows have passing comparisons or an explicitly approved capability change. Retained and added tests cover modal decisions, idle cleanup, credential refresh, native paths and external-write uncertainty. Installed client updates preserve stable launchers, exact arguments and working directories, including spaces and quoting.
+- **P06-AC06:** Installing and configuring the Agentmux plugin makes each supported terminal/client launch automatically start or reuse the selected stack and show its instance and authorized hub summary. Actual-host tests qualify startup hooks or a clearly named installed launcher; manual commands cannot stand in for promised automatic launch. Native macOS ARM64 client callbacks reach the selected hub, and concurrent tmux workers/external clients preserve distinct project, hub, session and host identities without cross-session configuration or callbacks.
 - **P06-AC07:** Client startup preserves MCP/JSON-RPC framing, never prints secrets and avoids recursive starts by managed workers. Closing a terminal leaves shared work running; an explicit authorized stop follows the drain policy. Failed prerequisites report recovery steps without silently installing privileged software or changing client settings.
 
 ### Verification
 
-- Run cold, warm and concurrent launches on each advertised client/OS version, including separate WSL sessions and paths with spaces. Capture client-visible status and protocol streams; exercise FAIL-60–FAIL-61.
+- Run cold, warm and concurrent launches on each advertised client/OS version, including separate native sessions and paths with spaces. Capture client-visible status and protocol streams; exercise FAIL-60–FAIL-61.
 - Execute the same reference workflow on every pinned client version in the support matrix.
 - Test reconnect, authentication expiry, missing tool, malformed MCP request, and client shutdown.
 - Review provider commercial integration terms before promising a supported paid distribution.
 - Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
 
-WSL-CLIENT-01 verification also requires direct Windows/WSL version identity before and after a Windows-only update, exact argument/path behavior, Windows auth/config ownership, selected-hub callbacks and concurrent-session isolation. Retain actual interop failures and recovery steps.
+Native macOS ARM64 verification requires installed-client identity before and after updates, exact argument/path behavior, authentication/configuration ownership, selected-hub callbacks and concurrent-session isolation. Retain actual failures and recovery steps.
 
 **Required evidence:** Actual-host compatibility matrix; CLI/MCP reference and setup guides; Per-client workflow results; Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01.
 
@@ -727,7 +744,7 @@ WSL-CLIENT-01 verification also requires direct Windows/WSL version identity bef
 - Migrate current Modbus, MQTT, network discovery, PROFINET snapshot/DCP, passive BOOTP, EtherNet/IP/Logix, ADS, EtherCAT diagnostics, CODESYS runtime tooling, PCAP analysis, and existing engineering wrappers to declared capability plugins.
 - Define CODESYS, Siemens, Rockwell, and related vendor integration slices with actual licensed tool/OS/hardware prerequisites and test environments.
 - Add engineering build/migration/evidence skills and Jev definitions for diagnostics and source-preserving comparisons.
-- Implement read/simulation-first reference workflows and per-action permissions for equipment changes. Resolve any Windows-native execution host arrangement explicitly.
+- Implement read/simulation-first reference workflows and per-action permissions for equipment changes. Windows-only vendor applications are unsupported in this delivery; retain read/simulation alternatives and explicit capability limits.
 - Inventory existing PCM600/ABB-related privilege hooks as integration requirements, preserving target/action confirmation and audit. Do not infer a complete vendor adapter from the existence of a guard hook.
 - Apply ADD-01 and the component preservation matrix to every changed source file and affected caller. Record reuse, intentional behavior changes, migration needs and the specific added functionality before editing implementation.
 
@@ -744,7 +761,7 @@ WSL-CLIENT-01 verification also requires direct Windows/WSL version identity bef
 
 - Use protocol simulators and recorded fixtures, then controlled hardware/vendor environments for supported claims.
 - Test wrong device/project/version, timeout, partial writes, lost replies, credential failure, and disconnected grants.
-- Demonstrate missing Windows-native prerequisites as an actionable unsupported environment, not silent fallback.
+- Demonstrate unavailable vendor prerequisites, including Windows-only applications, as actionable unsupported capabilities; no silent fallback or inferred equipment authority.
 - Run the component coverage validator, review newly added or changed entry points, and attach the owning component checks to the phase gate. Compare existing and candidate behavior in isolated environments; do not run old and new writers against the same live records.
 
 **Required evidence:** Domain package and vendor compatibility matrix; Industrial workflow and permission report; Protocol parity and hardware qualification records; Component reuse decisions, baseline/candidate results, gain evidence and approved exceptions for ADD-01.
@@ -935,7 +952,7 @@ The frontend declaration and governance configuration must reflect the new web s
 | R05 | Inherited scoped system services and per-operation authority | P03, P04 | Two-language and concurrent-user context conformance. |
 | R06 | NATS for all Agentmux component communication | P01–P12 | Contract transport review and observed broker traffic. |
 | R07 | NATS services used where their guarantees fit | P02, P04, P10, P12 | Declared transient/durable contracts and topology fault tests. |
-| R08 | Native macOS/Linux and Windows via WSL; Windows-owned clients (WSL-CLIENT-01) | P01, P02, P06, P12 | Environment contract and actual client identity/update, auth/config, argument/path, callback and concurrent-session evidence; install, workflow and recovery matrix. |
+| R08 | Native macOS ARM64 initial beta (PLATFORM-SCOPE-03); Linux and macOS AMD64 qualification deferred | P01, P02, P06, P12 | Actual native environment and client identity/update, auth/config, argument/path, callback and concurrent-session evidence; install, workflow and recovery matrix. Historical Windows/WSL evidence is not native qualification. |
 | R09 | Language-neutral contracts | P01, P03 | Independent SDK implementations pass shared fixtures. |
 | R10 | Solo/local and customer-operated team modes | P04, P05, P12 | Same workflow passes in both deployment profiles. |
 | R11 | Concurrent users and multiple concurrent projects | P04, P05, P12 | Isolation, fairness, conflicting edits, quota, and load tests. |

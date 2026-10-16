@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "sourceReviewers": ["Codex", "Russell"],
+  "sourceSHA256": {
+    "platform/launcher/testdata/darwin_release_installer.py": "af4693a4f0683990f8620e6d6df8c6a23251c468b192d7a9180abc863c2b43d6",
+    "platform/launcher/testdata/darwin_release_install_driver.py": "7694aff6f478b2fd295388ff7f5e65a4df2d247cd219c0861d25eef247e34904",
+    "platform/launcher/testdata/darwin_test_artifact_installer.py": "b10f90b9e9e9de6d7f5d4adab51a34acb3f2fae39d9a90d4b22ad7eac64211b0",
+    "platform/launcher/testdata/darwin_test_artifact_install_driver.py": "59e290d36c97eace956da1b3b04f73a1b1b4fa899dc42810c0e5a94eb43b90ae",
+    "platform/launcher/darwin_release_candidate_match_test.go": "dccddfd97d4afb8fbecfeeee21fce754d17da1fd42d5d4a696bf048db8556308"
+  },
+  "auditedBaseSHA256": "0d74190d6be9f1eb65b54ba49b87a547641b11fdd8f95073489f31874959708f",
+  "nineMemberRelease": {
+    "captureDirectory": "/Users/ryan/.cache/agentmux-governance/darwin-nine-final-abf33-envelope._gro776p",
+    "resultSHA256": "684a5544ae726d9f15fec050eba53aac8ca47b1b95fed2d1fd273843aff9ec58",
+    "installationPlanSHA256": "912f9959f549d4a0d61a0c1d7cc343d265e6a7ac115e9d81e8d0b5c407ce3026",
+    "envelopeSHA256": "ca29fc461bd188bad80fef79ed47962b8c0d8099e18c8341729f7b81cdf265d4",
+    "completeLiteralSHA256": "9461f87464faf0ba366ce540ca76bca3995f05bbd59e4580f4a7912f27e9b4fb",
+    "positiveValidations": 2,
+    "negativeValidations": 21,
+    "schemaControls": 7,
+    "faultControls": 11,
+    "sourceHandlesClosedStable": 17
+  },
+  "testArtifacts": {
+    "captureDirectory": "/Users/ryan/.cache/agentmux-governance/darwin-test-artifact-envelopes.krlj3a7g",
+    "resultSHA256": "94fd8e5428fe08babcff01d4d91f26a63ffe3593219bf8947ba957e4d3ed6359",
+    "completeLiteralSHA256": "c2f35e554f0f6d0df0f86d31712c29c41c1827cd4f316791fcdd958b55b91832",
+    "fixedGroups": ["runtime-fixture", "frontend-receipt"],
+    "positiveValidations": 4,
+    "negativeValidations": 29,
+    "faultControls": 11,
+    "sourceHandlesClosedStable": 8
+  },
+  "driverControls": {
+    "captureDirectory": "/Users/ryan/.cache/agentmux-governance/darwin-final-driver-controls.7_spyxtu",
+    "resultSHA256": "9834c6b6b987ebd435a9f7930a03b242ed93d5c62cc75b1a99c34e55c6347946",
+    "fakeProcessControlsPassed": 14,
+    "planOnlyRunsPassed": 2
+  },
+  "mainRawLedgerReview": "All 56 positive/negative validation ledgers had their exact expected code, no mutation, no created resources and empty stderr. Driver controls retain timeout/cancellation failure despite eventual zero exit. Main reviewed complete new composer/driver source; independent local review found no narrow blocker. Existing five-file installer and published command remain unchanged.",
+  "rootExecuted": false,
+  "runtimeExecuted": false,
+  "installationApproval": "pending explicit user approval and local administrator authentication",
+  "limitations": [
+    "These are reviewed setup inputs, not permission to execute or proof of installation.",
+    "Root setup must receive only the reviewed complete literal and verified byte envelope; do not run mutable checkout code as root.",
+    "Complete receipt plus original zero exit, ordinary-user installed admission, normal SDK qualification and actual lifecycle checks remain required."
+  ],
+  "phaseGateAccepted": false
+}

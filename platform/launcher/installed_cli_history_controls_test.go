@@ -1,4 +1,4 @@
-//go:build linux && agentmux_bootstrap_docker
+//go:build (linux || darwin) && agentmux_bootstrap_docker
 
 package launcher
 

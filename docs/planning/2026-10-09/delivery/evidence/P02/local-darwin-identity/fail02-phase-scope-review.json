@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "failureScenario": "FAIL-02",
+  "kind": "Reviewed interpretation of existing phase ownership, not a waiver or global pass",
+  "originalOraclePreserved": "Broker denies it; approved status is readable only at declared scope; service-injection handles do not bypass the boundary. Test exact and wildcard subjects.",
+  "authoritativeSources": [
+    "implementation-plan.md section 4 PluginContext and OperationContext contracts",
+    "implementation-plan.md P03 work: approved NATS clients and declared service handles",
+    "delivery/tasks.json P03-T04, P03-T05, P03-T06 and P03-GATE",
+    "verification-matrix.json FAIL-02 phases P02 and P03",
+    "platform/kernel/protocol/credentials.go Services and Config"
+  ],
+  "p02": {
+    "scope": "Actual broker denies ordinary exact/wildcard internal, reply, request, forged-status, SYS/JS and cross-account operations; permits exported information only at declared scope. Optional HOST enrollment, scoped grants and TLS-before-CONNECT remain P02-T03 requirements.",
+    "boundedEvidence": [
+      "native-kernel-permissions-review.json",
+      "native-security-team-component-review.json",
+      "../local-runtime-cleanup/default-launcher-sdk265-race-review.json"
+    ],
+    "currentServiceSurface": "protocol.Services contains Clock and Logger only. Protected role Config separately carries enrolled credentials and server trust. These are not the future external PluginContext/service-client API, and no injected-broker bypass pass is claimed from their absence.",
+    "status": "Component evidence recorded; final candidate/installed-scope reconciliation still pending"
+  },
+  "p03": {
+    "scope": "Implement and test actual approved NATS and declared service handles, including direct/wrapped clients, child and inherited grants, stale/disposed handles and cross-scope access, against both selected SDKs. Handles must not enlarge grants or bypass the kernel boundary.",
+    "ownerTasks": ["P03-T04", "P03-T05", "P03-T06"],
+    "ownerGateCriteria": ["P03-GATE-AC02", "P03-GATE-AC03", "P03-GATE-AC04", "P03-GATE-AC07"],
+    "status": "planned and required; no P03 implementation authorized by this review"
+  },
+  "mainReview": "Independently read the implementation-plan contract and P03 work, P02-T03 scope and current Services definition. Peer traced exact P03 task/gate ownership. Demanding the future general injection API before P02 would invert the existing P03 dependency; this does not remove any original test requirement.",
+  "globalFailureScenarioPassed": false,
+  "limitations": [
+    "Keep global FAIL-02 incomplete until its required P03 injected-handle slice also passes.",
+    "Before P02 gate review, map exact current candidate tests and installed scope to the P02 slice; do not force a global pass, skip, or handle-bypass assertion.",
+    "If gate tooling cannot represent phased results, add an explicit reviewed per-phase representation before acceptance rather than weakening the oracle.",
+    "No sandbox or same-user hostile-code confinement promise is introduced."
+  ],
+  "phaseGateAccepted": false
+}

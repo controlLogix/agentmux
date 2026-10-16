@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "sourceReviewers": ["Russell", "Codex"],
+  "supervisorSHA256": "abf33ff295800eaf0eebf4ef34ab40e827bde23f8e9a18e9f8b68954ebf06177",
+  "regressionSHA256": "3bb9a8e610c8365d37b7a4f6ee2e827c781f5703d770e6dd89332224932575ec",
+  "repair": "Start retains every consumed executable-close cause in immutable group history. Startup, CleanupError and Stop preserve the safe cleanup category and original causes without retrying consumed descriptors or replacing original context errors.",
+  "captureDirectory": "/Users/ryan/.cache/agentmux-governance/start-image-cleanup-current-green.gB3kNAI3",
+  "resultSHA256": "699d9d40fd7eedd470b80e8f554b6a9a9c243d8ad59099a53b9723d094f181d3",
+  "stdoutSHA256": "74d94f73d495167fb938de828ea40d4bfa68543609333cb949f490939f91135c",
+  "sourceMapSHA256": "5f6f49939b9690807c68ac418c0db9b66014bc5b083a5ddeccf8681590e672c7",
+  "snapshotSourceFiles": 321,
+  "wholeSourceStable": true,
+  "ownedWaitJoined": true,
+  "exitCode": 0,
+  "topLevelTestsPassed": 10,
+  "subtestsPassed": 6,
+  "failed": 0,
+  "skipped": 0,
+  "unfinished": 0,
+  "raceWarnings": 0,
+  "stderrBytes": 0,
+  "historicalFailure": {
+    "supervisorSHA256": "09ae3736f79a39b3d0989dcb5eba0e1cff033e0f2c1bdb425db36ac3fd2da4de",
+    "observation": "The original terminal-only regression reported failure for both close-fault cases and passes for both no-fault controls.",
+    "captureLimit": "No contemporaneous raw files or whole-source maps were retained for the original red run. It is not a hash-verified qualification bundle. The fresh current-green capture does not retroactively qualify it."
+  },
+  "limitations": [
+    "Pure owned-file and context regressions only; actual installed child startup, rollback and cleanup remain unexecuted.",
+    "Previously prepared signed images predate this production repair and require regeneration before latest-source qualification.",
+    "No root installation, Docker or CI was used."
+  ],
+  "phaseGateAccepted": false
+}

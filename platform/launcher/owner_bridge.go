@@ -752,9 +752,19 @@ func (s *OwnerBridgeServer) serveLoop(lifetime, startup context.Context, coldInv
 			reply := ownerBridgeReply{protocol.Version, "host-owner-status-reply", request.RequestID, request.InvocationID, s.config.Kernel.Scope, bridgeTime(time.Now()), observation}
 			raw, e := json.Marshal(reply)
 			if e == nil && len(raw) <= ownerBridgeReplyLimit && ctx.Err() == nil && (failureDeadline.IsZero() || time.Now().Before(failureDeadline)) && validateOwnerBridgeJSON(raw, "host-owner-status-reply", ownerBridgeReplyLimit) == nil {
-				if nc.Publish(s.subjects.ReplyPrefix+request.RequestID[len("request_"):], raw) != nil || nc.FlushWithContext(ctx) != nil {
+				if nc.Publish(s.subjects.ReplyPrefix+request.RequestID[len("request_"):], raw) != nil {
 					cancel()
 					return bridgeError("reply_failed")
+				}
+				flushErr := nc.FlushWithContext(ctx)
+				replyErr := ownerBridgeReplyFlushResult(lifetime, ctx, flushErr, ownerBridgeAuthorityLastError(nc), bootErr)
+				if replyErr != nil {
+					cancel()
+					return replyErr
+				}
+				if flushErr != nil {
+					cancel()
+					return nil
 				}
 				if bootErr != nil {
 					cancel()
@@ -764,6 +774,25 @@ func (s *OwnerBridgeServer) serveLoop(lifetime, startup context.Context, coldInv
 		}
 		cancel()
 	}
+}
+
+// Only direct context cancellation identifies an interrupted flush wait. A
+// closed connection has no causal marker and remains a transport failure even
+// when lifetime cancellation happens concurrently.
+func ownerBridgeReplyFlushResult(lifetime, request context.Context, flushErr, authorityErr, bootErr error) error {
+	if cleanup := bridgeObservationCleanupFailure(errors.Join(flushErr, authorityErr, bootErr)); cleanup != nil {
+		return cleanup
+	}
+	if authorityErr != nil {
+		return errors.Join(authorityErr, bootErr)
+	}
+	if flushErr == nil {
+		return nil
+	}
+	if flushErr == context.Canceled && request.Err() == context.Canceled && lifetime.Err() == context.Canceled {
+		return bootErr
+	}
+	return errors.Join(bridgeError("reply_failed"), bootErr)
 }
 
 func (s *OwnerBridgeServer) observeBridgeRequest(ctx context.Context, request ownerBridgeRequest, coldInvocationID string, session *Session, bootErr error) (StartupStatusObservation, error) {

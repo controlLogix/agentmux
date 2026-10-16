@@ -1,0 +1,33 @@
+{
+  "kind": "independent-local-component-execution-review",
+  "reviewer": "Codex",
+  "reviewDate": "2026-10-14",
+  "executionPolicy": "DELIVERY-LOCAL-01",
+  "baseCommit": "70ed9e33e69c3c4b09736a4cb8e524044545a668",
+  "environment": "Local Darwin ARM64, prepared Go 1.27.2",
+  "originalFailure": {
+    "directory": "/Users/ryan/.cache/agentmux-governance/compose-common-pure.GN5hrC",
+    "result": "Compilation failed before any named test ran. The Darwin installer helper had an unused import and incorrect Stat_t timestamp field names. Those errors were repaired without changing the permission predicate."
+  },
+  "retry": {
+    "directory": "/Users/ryan/.cache/agentmux-governance/compose-common-pure-retry.IhMVeN",
+    "selection": "^TestComposeCLICommon",
+    "race": true,
+    "moduleMode": "readonly",
+    "timeoutSeconds": 60,
+    "exitCode": 0,
+    "topLevelPasses": 4,
+    "subtestPasses": 6,
+    "failureOrSkipEvents": 0,
+    "resultSHA256": "f88ceadd9bc63082d1cd3fef3d2bdec747d736bbc7a3ada180f67a3da59b21e3",
+    "stdoutSHA256": "6ee85083a2431b607dfab672057164b49c9e23749e821cc8edebc57fb70c1aca",
+    "independentRawEventCountsAndHashesChecked": true,
+    "sourceStability": "The worker compared 253 captured platform files before copy, after copy, before launch and after execution. The tests ran from that private snapshot, not an assumed stable future checkout."
+  },
+  "limits": [
+    "The four controls exercise shared output, receipt and diagnostic checks only.",
+    "No Docker, privileged installation, installed-CLI scenario, native Linux, AMD64 or CI execution occurred.",
+    "Final candidate compilation, affected suites and P02 acceptance remain required."
+  ],
+  "phaseAccepted": false
+}

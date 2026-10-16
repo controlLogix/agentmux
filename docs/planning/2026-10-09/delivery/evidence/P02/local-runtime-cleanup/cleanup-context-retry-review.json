@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "captureDirectory": "/private/tmp/agentmux-launcher-cleanup-retry.Ur8RYj",
+  "sourceFiles": 276,
+  "snapshotAndCheckoutStable": true,
+  "launcherTopLevelPassed": 8,
+  "frontendTopLevelPassed": 4,
+  "totalNamedPassEventsIncludingSubtests": 29,
+  "failed": 0,
+  "skipped": 0,
+  "bothCommandsExitZero": true,
+  "bothStderrEmpty": true,
+  "rawStdoutHashesIndependentlyMatched": {
+    "cleanup-stdout.jsonl": "6d73b09ddbcede2fd5681616b3e3b3b4f0486002e17580ac0dfe1b8e6cb6d3ef",
+    "frontend-stdout.jsonl": "19c5f1fdb420a51474dcc006e3a011caa614d646fcb4d53d05b1b1ca34ff5d99"
+  },
+  "priorFailure": "parent-and-cleanup-first-review.json",
+  "repair": "Capture only ctx.Err observed before local cancel, preserving actual cancellation/deadline without manufacturing failure after healthy cleanup.",
+  "limitations": [
+    "Pending ownership controls use actual file leases, not a running protected process group.",
+    "Protected child, installed CLI and full lifecycle qualification remain required."
+  ],
+  "phaseGateAccepted": false
+}

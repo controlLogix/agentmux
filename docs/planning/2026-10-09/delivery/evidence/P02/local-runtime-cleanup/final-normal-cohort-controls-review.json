@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "captureDirectory": "/Users/ryan/.cache/agentmux-governance/collector-final-normal-compatibility.QICPRX",
+  "resultSHA256": "e3f4b6010ca6088a28b60d238df3ac97b83f3eedf88d186824475b99c3d986e2",
+  "sourceSHA256": {
+    "tests/platform/native_go.py": "e96bb91a775e4b077114a78063caca372c5cba9e41c63756f53488631aa6e79e",
+    "tests/platform/native_compose.py": "eab31b75d28b2ff5e4e7017e888aa12a980a6335c8de3a996a3b870fa439db26",
+    "tests/platform/test_native_cohorts.py": "964db9b015e6936cbf4f048447d7950272291a75144b3de318b7121073755f48"
+  },
+  "pythonVersion": "3.14.8",
+  "originalPID": 8401,
+  "exitCode": 0,
+  "testsPassed": 74,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "sourceStable": true,
+  "addedCohorts": ["darwin-normal-self", "darwin-normal-identity", "darwin-normal-parent"],
+  "mainSourceReview": "Checked the exact one/seven/two test inventories and normal-only tags, purpose-specific fixture groups, two identity inputs and three runtime inputs, no artifact inputs for self-admission, and the separate historical SDK27 candidate-parent record. README now documents all eleven opt-in cohorts and explicit SDK26.5 selection.",
+  "independentSourceReview": "Russell reviewed the three pinned sources without edits or execution: no narrow blocker; exact names/tags match source, authorization filtering is purpose-specific, and candidate ABI tags remain absent from normal cohorts.",
+  "limitations": [
+    "Pure collector controls only; not execution of the named native test cohorts.",
+    "No root installation, native child, Docker lifecycle or CI run was performed by this capture.",
+    "Actual prerequisite receipts, fresh current-candidate correspondence and all required cohort executions remain necessary."
+  ],
+  "phaseGateAccepted": false
+}

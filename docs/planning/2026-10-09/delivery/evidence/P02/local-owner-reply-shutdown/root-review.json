@@ -1,0 +1,32 @@
+{
+  "kind": "independent-partial-repair-review",
+  "reviewer": "Codex",
+  "reviewDate": "2026-10-14",
+  "executionPolicy": "DELIVERY-LOCAL-01",
+  "baseCommit": "70ed9e33e69c3c4b09736a4cb8e524044545a668",
+  "sourceHashes": {
+    "platform/launcher/owner_bridge.go": "4012789fe9b429af8b41676dec25e8f35dd5cc0894c550039dbdd68731d024c0",
+    "platform/launcher/owner_bridge_reply_shutdown_test.go": "2b4a1aaaf9ac2fb03e41c1a2ea669f5d2f27d86d86506395008a38e787c4b51b"
+  },
+  "sourceReview": "Read the publication boundary and new helper. Only direct context.Canceled from Flush with both request and lifetime canceled is treated as orderly shutdown. An independently closed connection, wrapped cancellation, expired request, authority failure and actual bootstrap failure remain failures. Joined cleanup causes retain their existing typed owner and safe presentation.",
+  "pureControls": {
+    "directory": "/Users/ryan/.cache/agentmux-governance/owner-bridge-shutdown-controls.qwwwWP",
+    "environment": "Local native Darwin ARM64 with race detection",
+    "selection": "^TestOwnerBridgeReplyFlushShutdown",
+    "topLevelPasses": 2,
+    "subtestPasses": 8,
+    "failureOrSkipEvents": 0
+  },
+  "attemptedIntegration": {
+    "directory": "/Users/ryan/.cache/agentmux-governance/owner-bridge-actual-reuse.hJXhO6",
+    "selection": "^TestOwnerBridgeRunPendingTransitionsToActualReuse$",
+    "namedTestsRun": 0,
+    "result": "The regression is Linux-only. A package exit of zero with no tests is not a pass. Actual Linux execution remains required."
+  },
+  "limits": [
+    "The original socket-close race remains unresolved; this is a partial repair, not its complete closure.",
+    "No integration, installed CLI, native Linux, AMD64, Docker or phase acceptance is established.",
+    "Final affected suites and exact-candidate review remain required. CI was not used."
+  ],
+  "phaseAccepted": false
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "captureDirectory": "/private/tmp/agentmux-runtime-fixture-compile.mS9KtY",
+  "resultSHA256": "ad242a56a13eca82617ffc9d88d14f451738bf0fbccb7b18ea2f98d348613331",
+  "sourceSHA256": {
+    "platform/internal/darwinfixtureidentity/testdata/runtime_fixture/main.go": "9a34a3283dab2a8e23d58b662dac9aaadfcb9fc70561b2e84f6eccb0566cf396",
+    "platform/internal/darwinfixtureidentity/runtime_parent_candidate_darwin_test.go": "9fa19a7c7ad42bd2e7f20dcfcd0012312db760523ef63fef4818e2b7f4e991c1",
+    "platform/runtime/supervisor_rollback_darwin_test.go": "6e60b36a8a7c4d5ba1e7a0e233b6f596facfdf4734843f6f0a9c4dfd6451e6cf"
+  },
+  "sourceReview": "Main read all three complete sources and repaired rollback assertions after independent workspace review. The distinct fixture calls actual ParentLifetime before signaling readiness. Rollback controls require completed readiness, the exact closed-image validation cause, all consumed image slots, exactly-once close calls and closed original descriptors before registered cleanup. Separate candidate controls require actual subprocess EOF and selective inherited-lease retention through owned reap.",
+  "compileJobsPassed": 3,
+  "elapsedSeconds": 8.354967375,
+  "snapshotSourceFiles": 295,
+  "snapshotStable": true,
+  "checkoutStable": true,
+  "soleWaitsCompleted": true,
+  "stdoutBytes": 0,
+  "stderrBytes": 0,
+  "runtimeFixtureSHA256": "831aaf2b284149f83b759c5f80abb1178be7bea01a77a3de352327b5472f4c92",
+  "runtimeFixtureBytes": 7355714,
+  "privateArtifactMode": "0500",
+  "testsExecuted": false,
+  "artifactExecuted": false,
+  "limitations": [
+    "The new fixture is distinct from the preserved original five-file identity fixture, signed product release and receipt child.",
+    "Actual protected installation and explicit external digest authorization remain required before execution.",
+    "Candidate identity compilation does not enroll or qualify the normal SDK tuple.",
+    "Compilation and byte verification do not prove child startup, rollback, parent EOF, lease retention or reaping."
+  ],
+  "phaseGateAccepted": false
+}

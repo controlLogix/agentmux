@@ -1,0 +1,36 @@
+{
+  "kind": "independent-local-component-review",
+  "reviewer": "Codex",
+  "reviewDate": "2026-10-14",
+  "executionPolicy": "DELIVERY-LOCAL-01",
+  "baseCommit": "70ed9e33e69c3c4b09736a4cb8e524044545a668",
+  "candidateIsUncommitted": true,
+  "sourceHashes": {
+    "platform/runtime/supervisor.go": "ca13b737d4d17e5dd647a4776cb53272eb613ceb3d34571db52c9f67d8cc6b56",
+    "platform/runtime/snapshot_darwin.go": "3423b5d7d827258a17512a6f88d9f8a81d379c607083fadd4d1c5cfb12232001",
+    "platform/runtime/prepared_cleanup_causes_test.go": "8deb84eff027bcd7217992422562a05b2949c045d340c879f9383e157ab52f0c",
+    "platform/runtime/prepared_cleanup_causes_darwin_test.go": "6096d1e79e339a19683f4e6d52527526bd58d31ea8aa0eb4e5cda7caa955c565"
+  },
+  "sourceReview": "Read the complete four-file change. Prepared.Close joins every image-close cause and consumes each slot before closing. Prepare preserves root-close and partial-preparation cleanup causes, withholding successful preparation on cleanup failure. Darwin failed image admission and fresh pre-start validation preserve deferred close failures through the existing safe presentation wrapper.",
+  "execution": {
+    "environment": "Local native Darwin ARM64, Go 1.27.2",
+    "directory": "/private/tmp/agentmux-prepared-cleanup.uJSgLP",
+    "selection": "^TestPreparedCleanup",
+    "race": true,
+    "moduleMode": "readonly",
+    "timeoutSeconds": 60,
+    "exitCode": 0,
+    "topLevelPasses": 3,
+    "failureOrSkipEvents": 0,
+    "stdoutSHA256": "4c6ea99d9ee8e305b13ed0ec6160219499581c72726b3f3e89fef744714bf762",
+    "stderrBytes": 0,
+    "snapshot": "The worker compared 257 captured platform files before copying and after execution. The three tests ran against that verified read-only snapshot.",
+    "actualDescriptorControl": "The Darwin test faults descriptors it actually acquired, checks both typed close causes, and confirms later descriptors still close. The other controls check joined cause identity, safe presentation and concurrent repeated-close consumption."
+  },
+  "limits": [
+    "Deferred error paths were reviewed in source; actual close faults were not injected through the full preparation callers.",
+    "Native Linux and AMD64, the full affected lifecycle suites, installed CLI and protected-image qualification remain open.",
+    "No privileged installation, Docker or CI execution occurred. Final exact-candidate registration and review remain required."
+  ],
+  "phaseAccepted": false
+}

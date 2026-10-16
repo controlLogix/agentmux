@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "Codex",
+  "status": "installed-and-status-verified",
+  "userRequest": "Install a root-owned helper that works for the user and agent without repeated password prompts for its fixed operations.",
+  "directory": "/Library/PrivilegedHelperTools/com.agentmux.p02-apfs-20261015-v1",
+  "sudoersFragment": "/private/etc/sudoers.d/agentmux-p02-apfs-20261015",
+  "allowedUser": "ryan",
+  "allowedUID": 501,
+  "operations": ["recover", "status"],
+  "authorityLimit": "Only the current exact-image normal-detach recovery and read-only bundle status, with no arguments. No general Python, shell, disk utility, setup, teardown, arbitrary path, environment override or updater grant.",
+  "package": "/private/tmp/agentmux-p02-recovery-helper-offline.xZirK8/generated-rvv1asxo",
+  "installerSHA256": "65de4ed92896a22d276127239cadfebd8e49cfc26284f927892bd4029e0c2c19",
+  "manifestSHA256": "050ebd41f42125b42495824c031a2b237653e36e300206fae3baf9c813531452",
+  "dispatcherSHA256": "0503cfcfb3561aeef93c52c5569b127a66faf0ed5a9b0b48b696ac5c880d25c6",
+  "payloadSHA256": "d4865b2b3522a4aabd6506206a4783fe023e2745e7dfd60c47c0626d39595a82",
+  "launcherSHA256": "9b1c09bfb1f34e3da9d3a59a104736844856a97ec403e4705a72e27719b5f849",
+  "durableInstallerArchive": "/Users/ryan/.cache/agentmux-governance/privileged-helper-20261015-v1",
+  "durableAdminManagementLauncher": "/Users/ryan/.cache/agentmux-governance/privileged-helper-20261015-v1/manage.py",
+  "archiveVerification": "Main copied only byte-verified generated installer/member/manifest artifacts to a new private user-cache directory. The fixed management launcher hashes the same held installer bytes and supports only administrator-authenticated install or uninstall. No uninstall was executed.",
+  "installation": {
+    "method": "Opened the reviewed ordinary-user Terminal launcher; administrator authentication stayed in that Terminal. The launcher verifies and passes the same held self-contained installer bytes to isolated system Python through sudo.",
+    "helperDirectoryObserved": {"uid": 0, "gid": 0, "mode": "0700"},
+    "policyObserved": {"uid": 0, "gid": 0, "mode": "0440", "links": 1},
+    "passwordReadByAgent": false,
+    "rootInstallationOutputCapturedByAgent": false
+  },
+  "actualAgentVerification": {
+    "command": "/usr/bin/sudo -n /Library/PrivilegedHelperTools/com.agentmux.p02-apfs-20261015-v1/status",
+    "exitCode": 0,
+    "installedBundleVerified": true,
+    "version": "20261015-v1",
+    "payloadSHA256": "d4865b2b3522a4aabd6506206a4783fe023e2745e7dfd60c47c0626d39595a82",
+    "recoveryExecuted": false,
+    "attachmentStatus": "not_inspected",
+    "recoveryComplete": "not_claimed",
+    "extraArgumentCommand": "/usr/bin/sudo -n /Library/PrivilegedHelperTools/com.agentmux.p02-apfs-20261015-v1/status extra",
+    "extraArgumentExitCode": 1,
+    "extraArgumentSafeCause": "sudo_password_required; the password-free rule did not match"
+  },
+  "preinstallEvidence": {
+    "boundaryCapture": "/private/tmp/agentmux-p02-recovery-helper-offline.xZirK8/boundary-checks-nh0pwuxp/result.json",
+    "boundaryResultSHA256": "093b85f1c6d709abc17680fcbaf55977b3a7b6ef75ffb70b58d4eb54d72f19a3",
+    "peerPureControlsPassed": 9,
+    "actualBadArgumentWrapperChecksPassed": 6,
+    "actualFragmentVisudoExitCode": 0,
+    "mainValidatorControlsPassed": 9,
+    "mainNativeInterpreterAdmission": "Actual root-owned interpreter/ancestor native ACL checks passed, with 21 native allocations closed and no cleanup failure. Actual owned APFS staging-directory fsync passed.",
+    "mainBundleVerification": "Recomputed every embedded member hash and size and reconstructed the exact reviewed installer template. Plan-only execution and final held installer validation passed without root actions."
+  },
+  "review": "Main and independent reviewers inspected the fixed wrappers, native admission, held-byte execution, explicit no-argument/NOSETENV rules, one-shot recovery marker, complete proposed-policy validation, exclusive publication, exact two-link rollback, late-cancellation rollback and retained evidence. Sudo command digests were omitted to avoid an unqualified descriptor-execution path; root-owned versioned ACL-protected paths and held dispatcher/payload hashes remain required.",
+  "limits": [
+    "This record proves installation and password-free agent status access, not that recovery ran or ownership-mount qualification passed.",
+    "The root installation receipt remains protected. Its output was not independently captured by the agent; do not fabricate a separate per-validator installation receipt from preinstall tests.",
+    "New privileged operations need a separately reviewed administrator-installed grant. There is no password-free arbitrary update mechanism.",
+    "P02 still needs the actual ownership fixtures, tests, cleanup and clean committed-candidate phase gate."
+  ],
+  "phaseGateAccepted": false,
+  "ciRun": false,
+  "mergeAuthorized": false
+}

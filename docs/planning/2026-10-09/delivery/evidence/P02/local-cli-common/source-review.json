@@ -1,0 +1,30 @@
+{
+  "kind": "independent-source-preservation-review",
+  "reviewer": "Codex",
+  "reviewDate": "2026-10-14",
+  "executionPolicy": "DELIVERY-LOCAL-01",
+  "baseCommit": "70ed9e33e69c3c4b09736a4cb8e524044545a668",
+  "candidateIsUncommitted": true,
+  "sourceHashes": {
+    "platform/launcher/installed_cli_compose_integration_linux_test.go": "a1ad9e4929b1a7e3efc6a1041316e49d27afc6848781ffdbaaf8e75858869d07",
+    "platform/launcher/installed_cli_compose_common_integration_test.go": "adfba9f815164fb16a9a49e9e18a8d36c7d747f697e55eb54e8ae44b3bb049bb"
+  },
+  "baseline": {
+    "linuxFileSHA256": "6d0021d99531507ea5232ff81f1d18477ce1def1a8c228b3069d1d785895073c",
+    "workerCaptureMatchesGitHEAD": true
+  },
+  "review": [
+    "Read the complete extraction diff and shared implementation. The common state holds output buffers and joined terminal observations, not commands, PIDs or process-control authority.",
+    "Independently reran the bounded declaration comparison: all nine original Linux test bodies and seven platform launch, pin, wait and cleanup helper bodies remain byte-identical.",
+    "Both current source hashes independently match the preservation report. Shared receipt binding, output bounds, private capture, TLS/NATS refresh and diagnostic checks retain the original predicates.",
+    "Four new common pure controls cover joined-state refusal, bounded exclusive captures, bound receipt readiness limits and closed joined diagnostics. Execution results belong in a separate record."
+  ],
+  "preservationReport": "/tmp/agentmux-compose-common-preservation.0xEU2p/report.json",
+  "preservationScriptSHA256": "7e489a4b95df4ff62a7d3597f0d1b3b5c81d3e8b5af9cee175daf1ee7f7251b2",
+  "limits": [
+    "The declaration comparison uses the reviewed source layout; it is not a general Go parser or semantic proof.",
+    "This record establishes source preservation only, not compilation, native Linux execution, installed CLI, Compose or phase acceptance.",
+    "New source ownership registration and complete exact-candidate qualification remain required."
+  ],
+  "phaseAccepted": false
+}

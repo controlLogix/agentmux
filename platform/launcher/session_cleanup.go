@@ -16,6 +16,22 @@ import (
 
 var errRuntimeCleanup = errors.New("owner_bridge_runtime_cleanup_failed")
 
+// Historical failures retain causes without granting session cleanup authority.
+type runtimeCleanupCause struct{ cause error }
+
+func (runtimeCleanupCause) Error() string                    { return "owner_bridge_runtime_cleanup_failed" }
+func (e runtimeCleanupCause) Format(state fmt.State, _ rune) { fmt.Fprint(state, e.Error()) }
+func (e runtimeCleanupCause) MarshalJSON() ([]byte, error)   { return json.Marshal(e.Error()) }
+func (e runtimeCleanupCause) Unwrap() error                  { return errors.Join(e.cause, errRuntimeCleanup) }
+
+func runtimeCleanupFailure(owner *sessionCleanupOwner, causes ...error) error {
+	cause := errors.Join(causes...)
+	if owner != nil && owner.session != nil && owner.session.cleanupState.pending() {
+		return &RuntimeCleanupError{owner: owner, cause: cause}
+	}
+	return &runtimeCleanupCause{cause: cause}
+}
+
 // RuntimeCleanupError retains only the exact session and service lease that
 // still need cleanup. Human-readable and JSON output never includes either.
 type RuntimeCleanupError struct {
@@ -28,28 +44,32 @@ func (e RuntimeCleanupError) Format(state fmt.State, _ rune) { fmt.Fprint(state,
 func (e RuntimeCleanupError) MarshalJSON() ([]byte, error)   { return json.Marshal(e.Error()) }
 func (e RuntimeCleanupError) Unwrap() error                  { return errors.Join(e.cause, errRuntimeCleanup) }
 func (e *RuntimeCleanupError) Close(parent context.Context) error {
-	if e == nil || e.owner == nil {
+	if e == nil {
 		return nil
 	}
+	if e.owner == nil || e.owner.session == nil {
+		return runtimeCleanupFailure(nil, e.cause)
+	}
 	if parent == nil {
-		return errors.Join(errRuntimeCleanup, errors.New("runtime_cleanup_context_invalid"))
+		return runtimeCleanupFailure(e.owner, e.cause, errors.New("runtime_cleanup_context_invalid"))
 	}
 	ctx, cancel := context.WithTimeout(parent, e.owner.budget)
 	defer cancel()
 	if err := lockOwnerObservation(ctx, &e.owner.retryMu); err != nil {
-		return errors.Join(errRuntimeCleanup, ctx.Err())
+		return runtimeCleanupFailure(e.owner, e.cause, err, ctx.Err())
 	}
 	defer e.owner.retryMu.Unlock()
 	if err := ctx.Err(); err != nil {
-		return errors.Join(errRuntimeCleanup, err)
+		return runtimeCleanupFailure(e.owner, e.cause, err)
 	}
-	_ = e.owner.session.Close(ctx)
+	cleanupErr := e.owner.session.Close(ctx)
 	if e.owner.session.cleanupState.pending() {
-		return errors.Join(errRuntimeCleanup, ctx.Err())
+		return runtimeCleanupFailure(e.owner, e.cause, cleanupErr, ctx.Err())
 	}
 	e.owner.session.cleanupState.notify()
-	if e.owner.release() != nil {
-		return errRuntimeCleanup
+	releaseErr := e.owner.release()
+	if cleanupErr != nil || releaseErr != nil {
+		return runtimeCleanupFailure(nil, e.cause, cleanupErr, releaseErr)
 	}
 	return nil
 }
@@ -65,8 +85,8 @@ type sessionCleanupOwner struct {
 
 func (o *sessionCleanupOwner) release() error {
 	o.releaseOnce.Do(func() {
-		if o.lease.Close() != nil {
-			o.releaseError = errRuntimeCleanup
+		if err := o.lease.Close(); err != nil {
+			o.releaseError = runtimeCleanupFailure(nil, err)
 		}
 	})
 	return o.releaseError
@@ -85,27 +105,39 @@ func closeOwnedSessionContext(parent context.Context, session *Session, lease *B
 		return cause, false
 	}
 	if budget <= 0 || budget > 20*time.Second {
-		return errors.Join(cause, errRuntimeCleanup), false
+		return runtimeCleanupFailure(nil, cause, errors.New("runtime_cleanup_budget_invalid")), false
 	}
 	if parent == nil {
-		return errors.Join(cause, errRuntimeCleanup), false
+		return runtimeCleanupFailure(nil, cause, errors.New("runtime_cleanup_context_invalid")), false
 	}
 	ctx, cancel := context.WithTimeout(parent, budget)
 	cleanupErr := session.Close(ctx)
+	if contextErr := ctx.Err(); contextErr != nil {
+		cleanupErr = errors.Join(cleanupErr, contextErr)
+	}
 	cancel()
 	state := session.cleanupState
 	if !state.pending() {
 		state.notify()
-		if cleanupErr != nil {
-			return errors.Join(cause, errRuntimeCleanup), false
+		var releaseErr error
+		if state != nil {
+			state.mu.Lock()
+			owner := state.retained
+			state.mu.Unlock()
+			if owner != nil {
+				releaseErr = owner.release()
+			}
+		}
+		if cleanupErr != nil || releaseErr != nil {
+			return runtimeCleanupFailure(nil, cause, cleanupErr, releaseErr), false
 		}
 		return cause, false
 	}
 	if lease == nil || lease.file == nil {
-		return errors.Join(cause, errRuntimeCleanup), false
+		return runtimeCleanupFailure(nil, cause, cleanupErr, errors.New("runtime_cleanup_lease_missing")), false
 	}
 	if _, err := lease.file.Stat(); err != nil {
-		return errors.Join(cause, errRuntimeCleanup), false
+		return runtimeCleanupFailure(nil, cause, cleanupErr, err), false
 	}
 	state.mu.Lock()
 	owner := state.retained
@@ -114,13 +146,16 @@ func closeOwnedSessionContext(parent context.Context, session *Session, lease *B
 		state.retained = owner
 	} else if owner.lease != lease {
 		state.mu.Unlock()
-		return errors.Join(cause, errRuntimeCleanup), false
+		return runtimeCleanupFailure(nil, cause, cleanupErr, errors.New("runtime_cleanup_owner_mismatch")), false
 	}
 	state.mu.Unlock()
 	// The existing reaper can complete between the pending check and transfer.
 	// This direct recheck releases the same lease; it creates no waiter.
 	state.notify()
-	return &RuntimeCleanupError{owner: owner, cause: errors.Join(cause, cleanupErr)}, true
+	if !state.pending() {
+		return runtimeCleanupFailure(nil, cause, cleanupErr, owner.release()), true
+	}
+	return runtimeCleanupFailure(owner, cause, cleanupErr), true
 }
 
 // References are recorded only at actual Session construction and Group

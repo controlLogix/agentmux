@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "captureDirectory": "/private/tmp/agentmux-cleanup-parent-race.zQGuhB",
+  "sourceFiles": 275,
+  "snapshotAndCheckoutStable": true,
+  "overallPassed": false,
+  "launcher": {
+    "exitCode": 1,
+    "topLevelPassed": 6,
+    "topLevelFailed": 1,
+    "failure": "TestSessionCleanupCausesClosedServiceAdmissionRetainsStatCause",
+    "stdoutSHA256": "45301defb804e14d14b220e26ede0592bd1e5fca30d5682ddaae682bd44a0a54",
+    "finding": "The actual canceled cleanup context cause was not retained before local cancel. Repair must capture ctx.Err before cancel and must not manufacture cancellation on successful cleanup."
+  },
+  "runtime": {
+    "exitCode": 0,
+    "topLevelPassed": 6,
+    "includesAllFourDarwinParentControls": true,
+    "stdoutSHA256": "3af06a3e8ebaa141cf894f85313bbfadcaa8130330f57e489fa6ff95e0d8aac2"
+  },
+  "bothStderrEmpty": true,
+  "limitations": [
+    "No actual protected child lifecycle or installed CLI qualification is established.",
+    "The failed run is retained and cannot qualify the later cleanup repair."
+  ],
+  "phaseGateAccepted": false
+}

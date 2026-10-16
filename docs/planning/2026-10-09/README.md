@@ -1,8 +1,10 @@
 # Agentmux implementation review package
 
-Prepared October 9, 2026. Status: phased plan with six authorized baseline repairs verified; no complete phase pass or Nick review is recorded.
+Prepared October 9, 2026. Status reviewed October 14, 2026: P00 and corrected P01 are complete and accepted by Codex. P02 code is present, but six implementation tasks and full phase qualification remain open; its preservation preflight is complete. P03–P14 and MERGE-01 remain planned. No merge or release is authorized. See the [live status board](implementation-status.md) for task counts and the [plan status](implementation-plan.md) for the current code checkpoint. Later descriptions of the original review package retain their historical context; the live tracker records current delivery status and authority.
 
 Start with the revised presentation, then review the full plan and individual gate criteria. STATE-01 records the approved NATS-backed shared-persistence direction, with optional rebuildable SQL views and qualification gates. The original presentation remains preserved as the earlier review version.
+
+The initial beta targets native macOS ARM64 only under [PLATFORM-SCOPE-03](delivery/decisions/PLATFORM-SCOPE-03-macos-arm64-beta.md). Linux and macOS AMD64 qualification are deferred expansion work, not beta blockers or passing checks. Preserve their code, assertions, historical evidence and original visual assets. All product, security, recovery and preservation gates remain required; the structured tasks and gates use this current target.
 
 - [Before/after and phase presentation](agentmux-implementation-review-v3.pptx)
 - [Dashboard and AI terminal concept images](concept-images/README.md)

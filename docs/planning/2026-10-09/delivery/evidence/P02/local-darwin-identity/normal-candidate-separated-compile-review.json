@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "captureDirectory": "/Users/ryan/.cache/agentmux-governance/darwin-sdk-compile-matrix-uid66zp0",
+  "resultFile": "compile-matrix.json",
+  "originalHandle": "68411",
+  "originalHandleTerminalExitCode": 0,
+  "snapshotSourceFiles": 302,
+  "snapshotStable": true,
+  "checkoutChangesDuringRun": [],
+  "normalSDK": {
+    "path": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk",
+    "macroExpansion": ["__MAC_26_5", "260500"],
+    "compiledPackages": ["internal/darwinfixtureidentity", "runtime", "launcher"]
+  },
+  "candidateSDK": {
+    "path": "/Library/Developer/CommandLineTools/SDKs/MacOSX27.0.sdk",
+    "macroExpansion": ["__MAC_27_0", "270000"],
+    "compiledPackages": ["internal/darwinfixtureidentity"]
+  },
+  "mixedModeCompileExitCode": 1,
+  "mixedModeRefusal": "Exclusive mode helpers are unavailable; exact compiler diagnostics retained in the private ledger. No mixed-mode binary was created.",
+  "mainVerification": "Read terminal ledger and independently matched all four compiled binary byte hashes. Checked zero stderr on each successful compile, separate canonical SDK/macro profiles, stable snapshot and no checkout changes. Shared assertions and candidate helper extraction were separately compared with their original source bodies.",
+  "priorPreflightFailure": {
+    "captureDirectory": "/Users/ryan/.cache/agentmux-governance/darwin-sdk-compile-matrix-3bmahaex",
+    "goJobsStarted": 0,
+    "reason": "Macro parsing initially required a literal number instead of resolving the SDK symbolic macro alias. Original failure and raw compiler output retained separately."
+  },
+  "testsExecuted": false,
+  "protectedInstallationPerformed": false,
+  "limitations": [
+    "Compile-only, race-instrumented test binaries; no protected child, runtime rollback, installed CLI or lifecycle behavior was executed.",
+    "SDK27 candidate compilation remains separate historical diagnostic support, not normal SDK qualification.",
+    "Fresh SDK26.5 artifacts, actual protected setup and full normal behavioral qualification remain required."
+  ],
+  "phaseGateAccepted": false
+}

@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "Codex",
+  "sourceSHA256": {
+    "platform/launcher/doctor_test.go": "e6b46977de4c09385e95e01dd2343ff2362f2386f2d4b9b429e7f5de8cb3ccaa",
+    "platform/internal/darwinfixtureidentity/normal_admission_darwin_test.go": "a966630edc412392cdf1f1078b1e4048cce7924028d1959038e76be8efe27ac0"
+  },
+  "doctorReview": "Read the complete diff against the retained failed snapshot. A bounded helper-ready command runs before the Doctor clock, with exact output, exit and joined-capture checks. Separate command/event/error logs are captured before result assertions. Original 150ms sleeps, two-second Doctor budget, 2.2-second bound, four-command assertion and pipe WaitDelay assertion remain unchanged. Product doctor.go is unchanged. Historical failure causation remains unresolved.",
+  "normalProbeReview": "Read the complete self-only probe. It calls unchanged normal native admission and NewCreator, checks the normal admission implementation, exact OS/kernel/ARM64/SDK tuple, actual self identity and native ABI sizes/offsets/return size. It starts no child, opens no protected executable and grants no SDK guard exception.",
+  "observedAlternativeSDK": {
+    "path": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk",
+    "xcrunVersion": "26.5",
+    "headerIntrinsic": 260500,
+    "alreadyPermittedByNormalGuard": true,
+    "selectedForBetaQualification": false
+  },
+  "executionEvidence": "Pending; this record attests source review only, not test results.",
+  "limitations": [
+    "Helper readiness setup is not product cold-start qualification or proof of the historical timing failure's cause.",
+    "A normal self-admission probe cannot establish protected execution, child identity, installed CLI, SDK lifecycle qualification or phase acceptance.",
+    "Existing SDK 27 artifacts and diagnostics remain separately attributed. No guard was widened and no mixed-toolchain qualification is claimed."
+  ],
+  "phaseGateAccepted": false
+}

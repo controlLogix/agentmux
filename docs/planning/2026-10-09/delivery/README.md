@@ -6,6 +6,10 @@ The [P00 decision package](decisions/README.md) contains the current runtime, st
 
 ## Source of truth
 
+The initial beta targets native macOS ARM64 only, under [PLATFORM-SCOPE-03](decisions/PLATFORM-SCOPE-03-macos-arm64-beta.md). Linux and macOS AMD64 qualification are deferred expansion work, not beta blockers or passing checks. Windows/WSL remain outside the current scope. Preserve existing code, assertions and historical evidence. Every task references the current decision; security, preservation, recovery and all product phase gates remain required.
+
+[DELIVERY-LOCAL-01](decisions/DELIVERY-LOCAL-01-local-verification.md) requires local tests, builds and image builds throughout implementation. CI must not build or verify this feature branch until all P00–P14 gates are complete. Keep the same assertions and supported native environments; missing local capacity is not a waiver. Historical CI results remain diagnostic, not current-candidate acceptance.
+
 - `tasks.json` owns task status, scope, dependencies, implementation steps, acceptance criteria, evidence, commit references and append-only change history.
 - [Implementation status](../implementation-status.md) is the generated human-readable board.
 - `phases.json` remains the design contract for phase scope and acceptance. Its `proposed` field is not a second execution-status field.
@@ -34,7 +38,7 @@ Update status when starting work, encountering a blocker, entering verification 
 
 Use one tracker writer at a time in a checkout. Updates replace the JSON file atomically, but independent concurrent edits still require Git conflict review; this delivery tool does not claim distributed task ownership.
 
-For this Windows checkout, run tracker rendering with Windows Python from PowerShell. Direct writes intermittently failed in both Windows and WSL with `OSError: [Errno 22] Invalid argument`. Rendering now stages UTF-8 text beside each output and replaces that output atomically, using the same write procedure as the tracker. A replacement failure preserves the previous file and remains an error; there is no silent retry. This is a documentation write issue, not a runtime test failure. Keep platform tests in their qualified native or WSL environment, and do not rerun tests merely to regenerate the board.
+On native Linux/macOS, run tracker rendering with the prepared Python environment. Rendering stages UTF-8 text beside each output and replaces it atomically. A replacement failure preserves the previous file and remains an error; there is no silent retry. Earlier Windows/WSL `OSError: [Errno 22] Invalid argument` observations remain historical tooling evidence, not supported-platform requirements. Keep platform tests in their qualified native environment, and do not rerun tests merely to regenerate the board.
 
 For `done`, pass `--record <repository-relative evidence JSON>`. That record must contain `taskId`, `sourceCommit` and `acceptanceResults`, with one entry for every task criterion: `criterionId`, `status: passed`, and nonempty `evidence` references. Include actual commands, exit codes, environments, limitations and reviewed outputs. The commit must exist. Phase verification also requires a `gateRecord` based on `gate-record.template.json`, `advancementApproval`, and `remoteCommit`; the tool checks the pushed candidate and phase criterion coverage. Codex must inspect required failure, migration and component evidence and subagent findings. The phase record must name Codex as independentReviewer and advancementApproval.actor, with a dated approved decision. JSON validation cannot prove that test claims are authentic.
 

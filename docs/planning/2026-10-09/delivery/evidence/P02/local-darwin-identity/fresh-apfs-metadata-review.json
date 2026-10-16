@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "Codex",
+  "status": "source-promoted-pure-controls-passed-live-qualification-pending",
+  "candidateDirectory": "/private/tmp/apfs-freshpair-metadata-7c4e92b1.gqWxkf",
+  "reviewedPatchSHA256": "4ebcb746414d02699c70381de9b60428ccb677b84ae445a15a2a80ef1c02d951",
+  "findings": [
+    {
+      "id": "APFS-METADATA-01",
+      "status": "resolved",
+      "file": "teardown.py",
+      "boundary": "Second loop, immediately before each normal detach",
+      "problem": "metadata_control(lib, mountedfd, record['controlIdentity']) omits the required label argument. The identity dictionary is treated as the label and the fixed-label check refuses the operation before detach.",
+      "requiredRepair": "Pass label as the third argument and the expected control identity as the fourth. Add a control that covers this exact call boundary, not only direct helper calls.",
+      "executionImpact": "The defective candidate was not promoted or executed. The corrected call passes label and expected identity separately. A new regression checks and executes all three actual call expressions with substitutes. Independent review confirmed the correction and cross-pins before promotion."
+    }
+  ],
+  "alreadyAddressedInCandidate": [
+    "Control reopening uses O_NONBLOCK before checking regular-file type, preventing a substituted FIFO from blocking that open.",
+    "Root metadata checks distinguish owners-on UID501 from noowners underlying UID0. Ordinary-user inspector checks and product refusal rules are unchanged."
+  ],
+  "workerControlEvidence": {
+    "capture": "/Users/ryan/.cache/agentmux-governance/apfs-freshpair-metadata-pure-controls.lp0kwhn3",
+    "reportedPassed": 14,
+    "limitation": "These helper controls did not cover the incorrect call in the actual teardown loop. They do not establish executable teardown correctness."
+  },
+  "correctedPatchSHA256": "38b4bd6f1e879eee16fa9b1e3614fe3204a8e7de98f5afda6e8538447940cf1d",
+  "promotedSourceSHA256": {
+    "setup.py": "048d6df29627434add12f4ca364ff57b9c84c9b0e60c237f70be199805d3dd1d",
+    "teardown.py": "423bc9dba879e3589f75a4bc01f5f291a79b4bf5c06a489534caadad8b7c76da",
+    "driver.py": "f7712cd78a673aa1b30f7b302b1311fa482b1956850861c927e87da20c24a3fc",
+    "metadata_controls.py": "736259d93d5fed38a6685e67dbf4a3f7242da3a2465c1325e5402cfc9998545d"
+  },
+  "correctedOfflineCapture": "/Users/ryan/.cache/agentmux-governance/apfs-freshpair-metadata-pure-controls.pg21tiil",
+  "actualCheckoutControls": {
+    "passed": 15,
+    "exitCode": 0,
+    "reportedDurationSeconds": 0.113,
+    "lifecycleControlsPassed": 12,
+    "lifecycleExitCode": 0,
+    "lifecycleReportedDurationSeconds": 0.812,
+    "realControlledPythonChildren": 2,
+    "eachChildExitCode": -15,
+    "eachChildWaits": 1,
+    "eachChildTerms": 1,
+    "eachChildKills": 0,
+    "childMasks": [],
+    "childPipesClosed": true,
+    "termJoinSeconds": [0.000543833999999993, 0.0003738750000000235],
+    "rootActions": false,
+    "hdiutilExecuted": false
+  },
+  "freshRootSetupRun": true,
+  "liveSetupOutcome": "The separately installed setup helper exited 1 after creating both images and control files, before a root receipt was present. The nested failure cause is unavailable. See fresh-apfs-setup-helper-review.json; no retry or teardown was performed.",
+  "nativeOwnershipLimit": "The initial shared UID0 rule was an inference. Actual independent read-only root observations now show noowners directory UID0 but control UID99, with fstat/fstatx agreement and absent ACLs. The source correction below checks these separately. The historical nested failure remains unrecorded; no original setup success or exact historical cause is claimed. Product noowners refusal checks remain unchanged.",
+  "uidCorrection": {
+    "patchSHA256": "522c10c5f7a6166b9ef77e4caaaf86196c7a73488c4a25a2942ce66fc0157e52",
+    "review": "Main and an independent reviewer checked the complete narrow correction against actual root diagnostic observations. All existing FIFO, file identity, mode, ACL, caller, mount policy, fchown/fchmod and product ownership checks remain. The obsolete noowners control UID0 case now refuses; directory UID0 and control UID99 are distinct positive requirements.",
+    "currentSourceSHA256": {
+      "setup.py": "fde44ff7e223c7413b1ca76bcaf209cca802f6a44102fa7964d2f294055f9e74",
+      "teardown.py": "2e43a2e1c4c7eb15cf9b8578ddc984b98a3ca6b7fe3b7acade0b7fcf4f10a35d",
+      "driver.py": "736b3f212338850bca05bc96e669adfaf4e06def4a3b98171815f1979c1c1fcd",
+      "metadata_controls.py": "7009ac45715572d711c474f44ce38deb2f38939c2e32762a2f82b0ca04387767"
+    },
+    "actualCheckoutControlsPassed": 15,
+    "actualCheckoutExitCode": 0,
+    "reportedDurationSeconds": 0.124,
+    "installedPayloadChanged": false,
+    "setupReplayed": false,
+    "productPolicyChanged": false
+  },
+  "freshRootTeardownRun": false,
+  "phaseGateAccepted": false,
+  "ciRun": false,
+  "mergeAuthorized": false
+}

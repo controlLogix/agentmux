@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "scope": "Test-helper-only role invocation correction; production runtime and installed artifacts unchanged.",
+  "cause": "Production deliberately sets argv[0] to agentmux- plus the verified role ID. The native fixture previously required argv[0] to equal the executable path; launcher post-proof association repeated that mismatch.",
+  "diffSHA256": "79098a9f2a92f2bfacf2eef0797598dfff884fabd9de5c2916537c09be6ce3b0",
+  "review": "Main read the complete seven-file correction against the failed-run snapshot. Independent reviewers found no alias-fix blocker. The private alias derives only from a verified assembly member ID, actual native executable path/digest/lineage and watches stay independently bound, both expected-image copies retain the alias, and LiteralArgs returns a defensive copy matching admitted argv. Cooperative path-argv mode stays private; exported PinDirectRoles requires exact runtime role aliases. Wrong aliases, native paths and missing/changed/extra argument tails remain refusals.",
+  "liveProofLimit": "Live retains its existing identity/event contract. This correction does not add fresh argv attestation or protection against in-process argv-memory mutation. Initial and post-watch argument checks remain exact; observed re-execution invalidates the watch/version-bound identity.",
+  "capture": "/Users/ryan/.cache/agentmux-governance/darwin-installed-cli-shared-prepared.xgnfz_67",
+  "preparedSHA256": "65eef0bc5bed8ce61fcc49b16b86f6bd1082037eb5d338435f89c4057fe746ae",
+  "originalToolHandle": 43648,
+  "originalToolTerminalExitCode": 0,
+  "groups": [
+    {"id": "darwin-helper-argv-controls", "topLevelPassed": 13, "stdoutSHA256": "a3f41991eaa1c933b6e27e99ad1b6da157976d4bbf4c341af3e317c46f5ea0f2", "elapsedSeconds": 2.833095625},
+    {"id": "darwin-normal-identity", "topLevelPassed": 7, "subtestsPassed": 5, "stdoutSHA256": "862be2ec44a83c6a72d059d7df436d11ce3b26f39b0ab11381cd30dd88764f65", "elapsedSeconds": 2.8022009999999997}
+  ],
+  "mainExecutionReview": "Main independently parsed all named raw passes, recomputed both stdout hashes, checked empty stderr/no fail or skip events, joined original waits/readers and matching before/after pins. Independent peer review checked all 346 snapshot entries and the tool/helper bindings. All checks ran under race detection on SDK26.5.",
+  "actualSignedRoleAliasAdmissionProvenByTheseControls": false,
+  "limitations": ["Actual installed cold admission remains a separate rerun. Cooperative identity tests alone cannot prove the production role alias path. These are frozen dirty-snapshot prequalification results, not a clean committed-candidate gate."],
+  "ciExecuted": false,
+  "phaseGateAccepted": false
+}

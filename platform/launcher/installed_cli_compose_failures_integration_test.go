@@ -133,47 +133,6 @@ func composeFailurePreservation(t *testing.T, f *bootstrapDockerFixture, qualifi
 	return allQualified && (!addedRunning || (qualified != nil && qualified.State == "running"))
 }
 
-// Match only the complete admitted stderr diagnostic, never L04 text or
-// descriptive substrings. Unconfirmed Docker failure is not occupied-port proof.
-func composeFailureActionable(stderr []byte, category string) bool {
-	var out RequestDiagnostic
-	if protocol.DecodeClosedJSON(stderr, &out, 4096) != nil || !ValidRequestDiagnostic(out) {
-		return false
-	}
-	if category == "selection" {
-		return out.Kind == "launcher-diagnostic" && out.Code == "docker_environment_conflict" && out.Action == "use_enrolled_selection"
-	}
-	// No exact occupied-port diagnostic is currently admitted. Keep this
-	// acceptance gap visible until the product has actual cause evidence and
-	// the reviewed public contract and this control are updated together.
-	return false
-}
-
-func TestInstalledCLIFailureDiagnosticMatcherIsClosed(t *testing.T) {
-	good := ProjectRequestDiagnostic(refusal("environment_conflict"))
-	raw, err := json.Marshal(good)
-	if err != nil || !composeFailureActionable(raw, "selection") {
-		t.Fatal("exact admitted selection diagnostic rejected")
-	}
-	for _, mutate := range []func(*RequestDiagnostic){
-		func(v *RequestDiagnostic) { v.Code = "unsupported" },
-		func(v *RequestDiagnostic) { v.Message = "The selected port is unsupported." },
-		func(v *RequestDiagnostic) { v.Action = "selected" },
-		func(v *RequestDiagnostic) { v.Kind = "startup-status-observation" },
-	} {
-		bad := good
-		mutate(&bad)
-		raw, err := json.Marshal(bad)
-		if err != nil || composeFailureActionable(raw, "selection") || composeFailureActionable(raw, "port") {
-			t.Fatal("unapproved or substring diagnostic admitted")
-		}
-	}
-	commandFailure, err := json.Marshal(ProjectRequestDiagnostic(refusal("command_failed")))
-	if err != nil || composeFailureActionable(commandFailure, "port") {
-		t.Fatal("unconfirmed command failure became occupied-port evidence")
-	}
-}
-
 func TestInstalledCLIRealComposeConflictingChildSelection(t *testing.T) {
 	for _, key := range []string{"DOCKER_CONTEXT", "DOCKER_HOST"} {
 		t.Run(key, func(t *testing.T) {
@@ -412,7 +371,13 @@ func TestInstalledCLIRealComposeOccupiedSelectedPort(t *testing.T) {
 	assertHeld()
 	// A partial owned container may be unverifiable; the existing fixture keeps
 	// its data and refuses unsafe cleanup. Do not call that a zero-mutation pass.
-	actionable := composeFailureActionable(x.stderr.Bytes(), "port") || composeFailureActionable(status.stderr.Bytes(), "port")
+	// Both frontends have joined and privately captured their outputs. History
+	// is usable only for the exact original host attempt and failed requests;
+	// it never converts a starting response or successful request into proof.
+	now := time.Now()
+	actionable := composeFailureActionable(x.stderr.Bytes(), "port") || composeFailureActionable(status.stderr.Bytes(), "port") ||
+		(!succeeded && x.joined && x.captured && composeFailureHistoryActionable(raw, x.hostAttempt, now, "port")) ||
+		(!statusSucceeded && status.joined && status.captured && composeFailureHistoryActionable(statusRaw, x.hostAttempt, now, "port"))
 	f.WriteEvidence(t, "occupied-port-result.json", map[string]any{"actualSelectedPortHeld": true, "exactOwnerExited": true, "leasesReleased": true, "unrelatedPreserved": true, "noFalseReadiness": true, "actionablePublicDiagnostic": actionable, "partialOwnedInspectionVerified": inspectErr == nil, "allAddedResourcesQualified": qualifiedLedger, "partialOwnedDataRetained": true})
 	if !qualifiedLedger {
 		t.Fatal("occupied port left unverified partial resources; retained for recovery")

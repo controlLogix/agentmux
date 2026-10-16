@@ -1,0 +1,91 @@
+{
+  "kind": "independent-protected-fixture-preinstallation-review",
+  "reviewer": "Codex",
+  "reviewDate": "2026-10-14",
+  "platformScopeDecisionId": "PLATFORM-SCOPE-03",
+  "executionPolicy": "DELIVERY-LOCAL-01",
+  "baseCommit": "70ed9e33e69c3c4b09736a4cb8e524044545a668",
+  "sourceHashes": {
+    "platform/internal/darwinfixtureidentity/protected_candidate_darwin_test.go": "266204479b4c0290dc615158fb6773e10afe1466fc70c30443f4f4013fa3b1dd",
+    "platform/internal/darwinfixtureidentity/protected_cleanup_controls_darwin_test.go": "d517a475ce3b91ab1429be2fd25befb3f36e7d6db71f8f1699103d037127f01c",
+    "platform/internal/darwinfixtureidentity/testdata/protected_fixture/BUILD-AND-INSTALL-PLAN.md": "86ddda9963bb2187ff42331831de694c7bc44f9401cfc544ff57397db1caaa24",
+    "platform/internal/darwinfixtureidentity/testdata/protected_fixture/main.go": "33d88aac7696eec35256034ef1b1074713bbbda0b6fc0ad6b4d1bcd9d942b43d",
+    "platform/internal/darwinfixtureidentity/testdata/protected_fixture/main_test.go": "97f91d73f15bc91e7f38d2459de3473861f6ea74316627891e8cc96471b226b3"
+  },
+  "sourceReview": "The first fixture could mistake its forced lifetime exit for cooperative cleanup. The revised controls require a fixed cleanup byte followed by EOF, successful role Wait outcomes and an independently bound host exit-status watch reporting zero. All observations and joins share one two-second cleanup deadline with margin before the fifteen-second family lifetime. Missing receipts, nonzero/absent host status and uncertain watches fail closed. These controls do not alter the stable public fixture-helper API.",
+  "retainedEarlierBuild": "protected-build-review.json records the original d011 image. It is retained as build-only diagnostic history and must not be installed for the revised controls.",
+  "execution": {
+    "directory": "/Users/ryan/.cache/agentmux-governance/darwin-protected-repaired-1rcxloqs",
+    "recordSHA256": "6fdbf69b603f890378b3dec677791179db07b2d5c3cb57cf430f4ae07b617016",
+    "steps": [
+      {
+        "name": "fixture-build",
+        "exitCode": 0,
+        "elapsedSeconds": 0.131
+      },
+      {
+        "name": "fixture-pure",
+        "exitCode": 0,
+        "elapsedSeconds": 1.55
+      },
+      {
+        "name": "cleanup-pure",
+        "exitCode": 0,
+        "elapsedSeconds": 2.619
+      },
+      {
+        "name": "protected-compile-only",
+        "exitCode": 0,
+        "elapsedSeconds": 0.613
+      }
+    ],
+    "rawArtifactChecks": [
+      {
+        "name": "fixture-build",
+        "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrBytes": 0,
+        "passes": 0,
+        "failureOrSkipEvents": 0
+      },
+      {
+        "name": "fixture-pure",
+        "stdoutSHA256": "2b7df948d010cfaf0b805dec90d66c292ee8ee69af1f3f20ec2ebc8a14dec8ad",
+        "stderrBytes": 0,
+        "passes": 2,
+        "failureOrSkipEvents": 0
+      },
+      {
+        "name": "cleanup-pure",
+        "stdoutSHA256": "a8f8f6cafba3675fd65cd692738174d2f0ff69e137104e759840d0ede99fc692",
+        "stderrBytes": 0,
+        "passes": 16,
+        "failureOrSkipEvents": 0
+      },
+      {
+        "name": "protected-compile-only",
+        "stdoutSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stderrBytes": 0,
+        "passes": 0,
+        "failureOrSkipEvents": 0
+      }
+    ],
+    "sourceFileCount": 267,
+    "snapshotStable": true,
+    "fixture": {
+      "path": "/Users/ryan/.cache/agentmux-governance/darwin-protected-repaired-1rcxloqs/build/fixture",
+      "digest": "sha256:ab3e8296d4fe5235e5a1c3fbe2abb6727145290641bf0797a159921fde5ac955",
+      "bytes": 4250978,
+      "mode": "0o500",
+      "fileDescription": "Mach-O 64-bit executable arm64"
+    },
+    "independentRawCountsAndHashesChecked": true
+  },
+  "limits": [
+    "The two fixture controls and three cleanup/status control groups passed with 18 named pass events including subtests. The full protected suite only compiled; it was not executed.",
+    "No privileged installation occurred. Actual native host exit-status permission and kernel behavior still require protected process execution.",
+    "The revised image needs an independently reviewed bounded installer and exact fixed-path plan before setup.",
+    "No SDK 27 enrollment, real installed CLI, signed-release loading, Compose or P02 phase acceptance is established."
+  ],
+  "phaseAccepted": false,
+  "sdk27Enrolled": false
+}

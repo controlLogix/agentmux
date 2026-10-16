@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "captureDirectory": "/private/tmp/agentmux-ownership-libc-sdk265-probe",
+  "resultSHA256": "71b466fce837d920aad5a6548f8bc81782e4fdbf130fc12c6dbb56aa0b178ea3",
+  "originalHandle": "66694",
+  "terminalExitCode": 0,
+  "compilePassedPackages": ["privatefs", "runtime"],
+  "selectedTopLevelTestsPassed": 4,
+  "failures": 0,
+  "skips": 0,
+  "raceInstrumented": true,
+  "explicitAbsenceObservations": {"privatefs": 2, "runtime": 2},
+  "sourceFiles": 311,
+  "sourceMapsSHA256": "2e41d420b61724ca4eb337403745f8f11c335f7cbbe7df8d85293756343b4874",
+  "snapshotStable": true,
+  "sdkPinsStable": true,
+  "sourceSHA256": {
+    "platform/internal/darwinownershipfixture/helper_darwin.go": "b3225c6598936e21a8eafb94bce4a430294dacd84c4d6dff9a3b5126fecbf8a3",
+    "platform/privatefs/ownership_mount_darwin_test.go": "8252e4a5090096b8be4d02f25797630b430c16d7ef8b90052ce27567b932773e",
+    "platform/runtime/ownership_mount_darwin_test.go": "ad6cb825f8d45769e6e353339788e1fa86a1ba1821f8812f418e9e3c6b9fad01"
+  },
+  "mainVerification": "Read the tagged native helper and caller replacement. Independent source review confirmed explicit FILESEC_ACL absence only after successful same-descriptor libc calls; no query-error fallback or invented filesec_free return status. Independently matched stdout/stderr byte hashes for all four compile/focused jobs. Nil and consumed descriptor controls refuse. Historical raw-attribute failures remain separate.",
+  "externalMountControlsExecuted": false,
+  "rootActionsPerformed": false,
+  "limitations": [
+    "Explicit ACL-property query and strict manifest controls only, not actual ownership-disabled mount isolation or protected-loader qualification.",
+    "Disposable paired APFS setup, descriptor-bound volume checks and normal detach remain required and separately approved.",
+    "No production admission guard or default runtime path changed."
+  ],
+  "phaseGateAccepted": false
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "Codex",
+  "status": "reviewed-source-promoted-focused-native-checks-passed-real-failure-fixtures-pending",
+  "patchSHA256": "ea1a2c75980f9a2ad52d781eed5db216360bba2437e9764556fa669572525eaa",
+  "source": {
+    "platform/launcher/docker.go": "161070b582db7b123de2fc6f096ecf6232080ca247769ffaa7454d8a6abdc175",
+    "platform/launcher/doctor.go": "4293d85e77373d8b8d56e88243b114bf5b38c4d180103654635cde3e2aff70a4",
+    "platform/launcher/request_diagnostic.go": "2d6b565d26f16113cef3fee7bf05ab364e689288afbd2f0e6182402a05835fa4",
+    "platform/launcher/docker_command_failure.go": "724a27460fdf81a42dfd66b6e06ba5034fa58ad8fbccaa4ecf70fe7063fba12c",
+    "platform/launcher/docker_command_failure_test.go": "cedf19a73eddf76f980beb22de3be3c8ed9b4ab2874067275fd36714991dcae2",
+    "platform/launcher/bootstrap_history.schema.json": "3def29b5c95d76d4a8b6da6658950d5ae4dfaeaa0a5e2a27a4dfd97ba9b1edde"
+  },
+  "review": "Main and Ohm reviewed the complete patch. Original exec/context causes are retained behind safe formatting. Only direct fork/exec PathError, matching selected executable and numeric ENOENT/EACCES/EPERM establish OS client failures. ENOENT retains interpreter ambiguity. Compose, engine, cache and start failures identify fixed operation stages only. Their specific causes remain unconfirmed. No stderr classifier, extra runtime probe, command-policy change or existing test assertion change was added. Cleanup, authentication and caller context take priority. Three history enums add only six closed codes; historical meaning is unchanged.",
+  "focusedNativeChecks": {
+    "selector": "^TestDockerFailure",
+    "package": "./launcher",
+    "originalSession": 25788,
+    "originalTerminalToolChunk": "f93e80",
+    "exitCode": 0,
+    "topLevelTestsPassed": 6,
+    "subtestsPassed": 2,
+    "reportedPackageSeconds": 0.265,
+    "capture": "/private/tmp/agentmux-fail57-focused-independent-20261015",
+    "stdoutSHA256": "b9e1a96db4f5ddc69d1ce336e5841e69e1502f22a08727e8d9feabf1d28966db",
+    "originalCommandSHA256": "43e32f23776ca2990975d7c5d57ecba8ca2f26dd7b13cc170970146f642e8a08",
+    "sourcePinsSHA256": "7cfa8d08ee9285543fe5bbd4b5375379545397a3744bbf8d2da75efc92334e52",
+    "independentAuditSHA256": "88927f48f58a1a784d2b5f2d0c7a74b4832d919ad808b34074c8a77eea0f4c8c",
+    "scope": "Actual ordinary-user OS start failures for absent and non-executable paths, plus pure privacy, priority, command grammar and historical-code controls. These paths are not genuine Docker binaries and do not qualify daemon/plugin failures."
+  },
+  "broaderAffectedRaceCommand": {
+    "selector": "^Test(DockerFailure|Doctor|RequestDiagnostic|DockerOwnedBoundaries|DockerStdioDeadlineCancellationAndNoFallback|DockerParallelReadCancellationJoinsActualChildren|BootstrapHistory)",
+    "package": "./launcher",
+    "originalSession": 74615,
+    "originalTerminalToolChunk": "771c8b",
+    "exitCode": 0,
+    "reportedPackageSeconds": 80.365,
+    "raceEnabled": true,
+    "rawOutputTruncated": true,
+    "exactTestCounts": null,
+    "scope": "Original command completed successfully. Raw output is incomplete, so no exact counts or complete per-test evidence are claimed. No rerun was performed merely to repair logging; final stable-candidate qualification needs full retained captures."
+  },
+  "toolchain": {
+    "go": "1.27.2",
+    "sdk": "MacOSX26.5.sdk",
+    "cgoEnabled": true,
+    "target": "darwin/arm64",
+    "moduleNetworkDisabled": true
+  },
+  "independentAudit": "Peer independently verified all six checkout pins and recovered the complete original focused command output without rerunning it.",
+  "remaining": [
+    "Genuine isolated missing-Compose discovery and corrected recovery.",
+    "Selected transport unavailability and permission failures, distinct from daemon authorization.",
+    "Exact pinned-cache absence and failed acquisition preparation without deleting shared images.",
+    "Installed failure-to-correction recovery with persistent data and foreign-resource preservation.",
+    "Final unchanged candidate, complete captures and phase review."
+  ],
+  "fail57Accepted": false,
+  "sharedEngineCommandsRun": false,
+  "rootActions": false,
+  "ciRun": false,
+  "phaseGateAccepted": false
+}

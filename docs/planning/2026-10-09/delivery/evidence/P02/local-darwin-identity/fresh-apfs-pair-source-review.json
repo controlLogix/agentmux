@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "Codex",
+  "status": "source-promoted-local-controls-passed-execution-disabled",
+  "patchSHA256": "4d12d5d385610b189143c5f2a9b6c8e7bbaecb302c847a725768d7eb8a6aa4fa",
+  "nonce": "20261015-7c4e92b1",
+  "sourceDirectory": "platform/internal/darwinownershipfixture/testdata/apfs_mount",
+  "sourceSHA256": {
+    "setup.py": "bfb64c2dbda76e8fe1dee59abfbdcbc1ef47ba9274cbf0f2d3f8d37eebf680f9",
+    "teardown.py": "c2c79fd47fe2256ac0277960f2ab0df31e4cd5cfc269252d0b1a1d56a25c8c4b",
+    "driver.py": "ef825c70affe91efa6fb9c087c4d9757881261a6021a8a1f88e00f93d7344330",
+    "inspect/main.go": "feaeea51cf732e38026b82f41087765df8ab33a23b87f626294d8171d42c7545",
+    "lifecycle_controls.py": "1e72b949d6c9c6ec51b4484ebdfba6b340752897c064474154159ddefc346c9e",
+    "README.md": "485b119e1dc888a478612360ee9473a47a40e995f90c082792c043245784edfc"
+  },
+  "sourceReview": "Main read the complete six-file patch, checked original hashes before promotion, applied only the hash-pinned reviewed patch, and verified every resulting hash. Independent review found no blocker in the narrow APFS alias comparison, pre-Popen constructor fix, fresh nonce and disabled execution gates. The complete device/mount mapping and existing exact-image authority checks remain. The later pre-detach recovery failure is not treated as fixed by these changes.",
+  "actualCheckoutControls": {
+    "command": "isolated system Python3.9 platform/internal/darwinownershipfixture/testdata/apfs_mount/lifecycle_controls.py -v",
+    "exitCode": 0,
+    "testsPassed": 12,
+    "reportedDurationSeconds": 0.752,
+    "realControlledPythonChildren": 2,
+    "eachChildWaits": 1,
+    "eachChildTerms": 1,
+    "eachChildKills": 0,
+    "childMasks": [],
+    "childExitCode": -15,
+    "childPipesClosed": true,
+    "termJoinSeconds": [0.00036987499999999174, 0.0003680829999999635],
+    "driverFakeControlsPassed": 7,
+    "unboundTeardownRefused": true,
+    "hdiutilExecuted": false,
+    "rootActions": false
+  },
+  "priorOfflineControlCapture": "/Users/ryan/.cache/agentmux-governance/apfs-freshpair-pure-controls.d0soqgaf",
+  "priorOfflineControlResultSHA256": "91bf589c9ec2c94a2dcb59f4c5386bf4b1201f2ecfa78bf4828ea4e96445c52e",
+  "executionGates": {
+    "partialRecoveryConfirmationBound": false,
+    "teardownJoinEvidenceBound": false,
+    "freshRootSetupRun": false,
+    "freshInspectorBuilt": true,
+    "ownershipMountTestsRun": false
+  },
+  "freshInspectorBuild": {
+    "capture": "/Users/ryan/.cache/agentmux-governance/apfs-inspector-sdk265-freshpair.bh2gi0e6",
+    "resultSHA256": "c7000f771a16659bfc50d6eca008b263448e0a9f95fb7589478c4b1b31f3c14a",
+    "originalSession": 33231,
+    "exitCode": 0,
+    "binarySHA256": "1742a651c076b4ea757ef98572b8d50768ad43fd021e40b280186758aa0d814d",
+    "binaryBytes": 4228978,
+    "binaryMode": "0500",
+    "architecture": "native Mach-O ARM64",
+    "sdkIntrinsic": 260500,
+    "wholeSourceFiles": 346,
+    "sourceAndToolPinsUnchanged": true,
+    "allWaitsAndReadersJoined": true,
+    "artifactExecuted": false,
+    "rootActions": false,
+    "mountOperations": false,
+    "mainVerification": "Main independently recomputed the result/artifact hashes, inspected all three original command terminal results, checked unchanged source and SDK/tool maps and confirmed actual SDK26.5 intrinsic admission. Compilation does not qualify the uncreated ownership mounts."
+  },
+  "remainingWork": [
+    "Read-only diagnostic and independently reviewed metadata-based normal partial recovery have now passed; the original failure errno remains unknown. Preserve both historical failure records and one-shot markers.",
+    "Promote the separately reviewed fresh-pair protected-namespace metadata observer implementation before setup. Opening mounted block devices is not required by the product criterion; retain exact-image admission and all native ownership/security checks.",
+    "Bind the actual successful partial recovery confirmation to the fresh setup driver and fixed helper. The new-nonce inspector is already built but unexecuted. Run actual ownership tests, then bind joined evidence before normal teardown."
+  ],
+  "phaseGateAccepted": false,
+  "ciRun": false,
+  "mergeAuthorized": false
+}

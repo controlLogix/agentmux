@@ -5,6 +5,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/json"
+	"errors"
 	"io"
 	"os"
 	"os/exec"
@@ -123,9 +124,9 @@ func (d *Docker) run(ctx context.Context, stdin []byte, args ...string) ([]byte,
 	cmd.Stderr = io.Discard
 	if err := cmd.Run(); err != nil {
 		if ctx.Err() != nil {
-			return nil, refusal("command_timeout_outcome_unknown")
+			return nil, dockerCommandError(d.config.Executable, args, errors.Join(err, ctx.Err()), true)
 		}
-		return nil, refusal("command_failed")
+		return nil, dockerCommandError(d.config.Executable, args, err, false)
 	}
 	if out.exceeded {
 		return nil, refusal("output_limit")

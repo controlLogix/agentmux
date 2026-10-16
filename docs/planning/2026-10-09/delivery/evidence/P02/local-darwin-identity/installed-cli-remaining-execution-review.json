@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "Codex",
+  "status": "passed-split-local-prequalification",
+  "remainingFive": {
+    "capture": "/Users/ryan/.cache/agentmux-governance/darwin-installed-cli-shared-prepared.akrv5nlm",
+    "originalSession": 47653,
+    "topLevelTestsPassed": 5,
+    "subtestsPassed": 2,
+    "stdoutSHA256": "b91aa01136c95f30ab528231297eed27db18a63df8886eea2a1afb17c9b5ab20",
+    "terminalSHA256": "b20b02f813a9a496755523017b7d894291f892d21d5cb93a7d1e46513cadd605"
+  },
+  "retainedFailedPortAttempt": {
+    "capture": "/Users/ryan/.cache/agentmux-governance/darwin-installed-cli-shared-prepared.akrv5nlm",
+    "stdoutSHA256": "2173a15db26469cbf184598b81c5bda8852fa8b309e968fb3927df946df187e8",
+    "terminalSHA256": "8b71f423182acdf5bf36e6f7ec0bbfd62d1c8bb885026c451fa2c3b86a62c4b0",
+    "cause": "The Darwin fixture used SO_ACCEPTCONN, which actual native probing refused with ENOPROTOOPT. It failed before frontend creation. The earlier value-2 hypothesis was disproved and is not evidence.",
+    "followingTestsNotRunInFailedBatch": ["startup-owner", "slow-consumer"]
+  },
+  "portFixtureCorrection": {
+    "path": "platform/launcher/installed_cli_compose_port_darwin_test.go",
+    "sha256": "8da62c40f548f1dc8bf1a7ff33df07faef2cd91e7ee07e5843854572b0a77bbf",
+    "review": "The helper reads supported TCP_CONNECTION_INFO on the live owned RawConn and requires the SDK-defined listening state 1, exact IPv4 loopback address and selected port. No arbitrary nonzero fallback is admitted. The original scenario body is unchanged. The new regression rejects bound-only, wrong-port and closed owners and admits the exact listening endpoint. Main inspected the complete helper and regression; peer independently compared the unchanged scenario body. No product executable changed."
+  },
+  "finalBatch": {
+    "capture": "/Users/ryan/.cache/agentmux-governance/darwin-installed-cli-shared-prepared.mln1tk6n",
+    "preparedSHA256": "61050a87bfce6217f838791a0d45b0cb3556c2717482804264db5305b489f424",
+    "originalSession": 3786,
+    "exitCode": 0,
+    "tests": [
+      {"name": "TestDarwinPortSocketRequiresExactListeningEndpoint", "stdoutSHA256": "1aeab2fec2545829cd29b83548cae4a250c64eef2f111b9e74cfa536ac345c1f", "terminalSHA256": "19e3e7faf584e70745ceab1326ae560a3f306c7591427005625967a64895eae5"},
+      {"name": "TestInstalledCLIDarwinRealComposeOccupiedSelectedPort", "stdoutSHA256": "f76526fa6606932ac2a166e9110cb4be8e10ce7b15a36d25ac926d458a2543b3", "terminalSHA256": "a77893160b8f9b2ac8da4af398269bf89fee6c8f78ec629738e15b242ffd3ddf"},
+      {"name": "TestInstalledCLIDarwinRealComposeStartupOwnerDeathBeforeRoles", "stdoutSHA256": "ab9e5879b472ddd290e43200db47ad858a1b12acb7e4c286190e672554a120d7", "terminalSHA256": "f33f29188817abc817f4f668796cd41b74237f163471a26933929c0bc8e31f67"},
+      {"name": "TestInstalledCLIDarwinRealComposeSlowConsumerIsolationAndRecovery", "stdoutSHA256": "07dfde5b5ed497a2e7149d52c8fc4455ab1ca1170ad84b2c477aeb177ce5f84d", "terminalSHA256": "6f058067293dbe929d64a3191a53fdd24e96984fb535817bcd1502b7a979993a"}
+    ],
+    "mainVerification": "Main independently read all four terminal records and raw JSON event streams, recomputed the displayed hashes, checked complete matching run/pass names, no failed/skipped events, exit zero, joined waits/readers and empty capture errors. Peer independently verified unchanged source/tool/private-input pins and the actual resource cleanup receipts.",
+    "cleanupReview": "All three real fixtures completed normal cleanup: stopped containers and volumes retained, exact empty owned networks removed, unrelated baseline unchanged, no incomplete-cleanup markers. The occupied-port scenario includes recovery after blocker release; it is not a never-created-broker claim.",
+    "accountPluginAfterRecord": "/private/tmp/agentmux-final-three-account-plugin-after.json",
+    "accountPluginAfterSHA256": "2bc82ba536c8b03f75d3dc67ac84ac47a52a6fe71b53046f2a8aae8c7a0b935b"
+  },
+  "coldWarmRefreshEvidence": "docs/planning/2026-10-09/delivery/evidence/P02/local-darwin-identity/installed-cli-cold-recovery-review.json",
+  "limits": [
+    "Nine actual CLI scenarios passed across separate frozen dirty-source runs. These records are not a canonical six-test collector run, clean committed-candidate qualification or phase acceptance.",
+    "Only the port fixture file changed between the cold/remaining-five snapshots and the final batch. Retention of unchanged scenarios is a source-correspondence claim, not fabricated rerun evidence.",
+    "Startup-owner evidence covers death before roles, not partial role spawning. Slow-consumer evidence covers the tested transport recovery, not a general actor-queue guarantee."
+  ],
+  "phaseGateAccepted": false,
+  "ciRun": false,
+  "mergeAuthorized": false
+}

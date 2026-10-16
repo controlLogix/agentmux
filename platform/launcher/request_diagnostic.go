@@ -26,9 +26,11 @@ var diagnosticStandardWrappers = []reflect.Type{
 func diagnosticReviewedWrapper(failure error) bool {
 	switch failure.(type) {
 	case authorityCauseError, *authorityCauseError,
-		*dockerInspectionFailure, kernelStatusStageError, *kernelStatusStageError,
+		*dockerInspectionFailure, *dockerCommandFailure, kernelStatusStageError, *kernelStatusStageError,
 		bridgeCompletionCause, *bridgeCompletionCause, *StartingElsewhereError,
 		TransportCleanupError, *TransportCleanupError, RuntimeCleanupError, *RuntimeCleanupError,
+		runtimeCleanupCause, *runtimeCleanupCause,
+		*LocalPortCleanupError, *bootstrapFailureCause,
 		deployment.ProbeCleanupError, *deployment.ProbeCleanupError,
 		deployment.RawTransportCleanupError, *deployment.RawTransportCleanupError,
 		*protocol.CleanupError:
@@ -96,6 +98,20 @@ func requestDiagnostic(code string) RequestDiagnostic {
 		action, message = "repair_enrolled_configuration", "The Docker configuration does not match enrollment. Repair the explicit local configuration before retrying."
 	case "docker_resource_conflict":
 		action, message = "inspect_selected_resources", "Selected resources do not match the enrolled instance. Inspect the conflict without deleting data or starting another stack."
+	case "selected_host_port_occupied":
+		action, message = "resolve_selected_port_conflict", "The enrolled local port is occupied. Resolve the selected endpoint conflict without stopping unrelated processes, deleting data or starting another stack."
+	case "docker_client_missing":
+		action, message = "restore_enrolled_client", "The OS could not start the selected Docker executable or its required interpreter because it was not found. Restore the enrolled local client; no automatic installation or fallback was attempted."
+	case "docker_client_permission_denied":
+		action, message = "check_selected_client_access", "The OS refused execution of the selected Docker client. Check its local executable and ancestor permissions without changing unrelated paths or bypassing system policy."
+	case "docker_compose_check_failed":
+		action, message = "check_selected_compose_plugin", "The selected Compose version command failed. Verify the qualified plugin in the selected configuration; missing plugin or permission is unconfirmed."
+	case "docker_engine_check_failed":
+		action, message = "check_selected_engine_access", "The selected engine inspection command failed. Check the enrolled local endpoint and service access; daemon shutdown or authorization denial is unconfirmed."
+	case "docker_cache_check_failed":
+		action, message = "check_exact_pinned_cache", "Inspection of the enrolled pinned image failed. Verify that exact reference on the selected engine; missing cache is unconfirmed. Do not pull, retag, prune or delete data to diagnose it."
+	case "docker_compose_start_failed":
+		action, message = "inspect_owned_start_and_pinned_cache", "The no-pull Compose start failed. Inspect partial owned resources and the exact pinned cache before an explicit retry; missing image is unconfirmed. Do not delete data or start another stack."
 	case "docker_command_failed":
 		action, message = "check_selected_local_service", "The selected Docker command failed. Check the selected local service; the specific cause is unconfirmed."
 	case "docker_command_timeout_outcome_unknown":
@@ -124,7 +140,10 @@ func ValidRequestDiagnostic(value RequestDiagnostic) bool {
 func ProjectRequestDiagnostic(failure error) RequestDiagnostic {
 	queue := []error{failure}
 	var refusalCode string
+	var commandDetail string
 	cleanup, specificAuth, authority, deadline := false, false, false, false
+	derivedAuthority := false
+	canceled := false
 	for inspected := 0; len(queue) > 0; inspected++ {
 		if inspected >= 64 {
 			return requestDiagnostic("request_failed")
@@ -134,20 +153,51 @@ func ProjectRequestDiagnostic(failure error) RequestDiagnostic {
 		if err == nil || (reflect.ValueOf(err).Kind() == reflect.Pointer && reflect.ValueOf(err).IsNil()) {
 			continue
 		}
+		// This private wrapper adds an authority sentinel for control flow even
+		// when broker inspection failed before authentication. Diagnose its
+		// retained cause, not that synthetic sentinel. An independently joined
+		// authority or authentication failure still takes precedence below.
+		var bridgeCause error
+		bridgeWrapper := false
 		switch value := err.(type) {
+		case authorityCauseError:
+			bridgeWrapper = value.code == "owner_bridge_authority_rejected"
+			bridgeCause = value.cause
+		case *authorityCauseError:
+			bridgeWrapper = value.code == "owner_bridge_authority_rejected"
+			bridgeCause = value.cause
+		}
+		if bridgeWrapper {
+			derivedAuthority = true
+			if len(queue) >= 63-inspected {
+				return requestDiagnostic("request_failed")
+			}
+			queue = append(queue, bridgeCause)
+			continue
+		}
+		switch value := err.(type) {
+		case *dockerCommandFailure:
+			if value != nil {
+				refusalCode = "command_failed"
+				if value.timedOut {
+					refusalCode = "command_timeout_outcome_unknown"
+				}
+				commandDetail = dockerFailureDetail(value)
+			}
 		case *dockerRefusalError:
 			if value != nil {
 				refusalCode = value.code
 			}
 		case dockerRefusalError:
 			refusalCode = value.code
-		case *TransportCleanupError, TransportCleanupError, *RuntimeCleanupError, RuntimeCleanupError, *deployment.ProbeCleanupError, deployment.ProbeCleanupError, *deployment.RawTransportCleanupError, deployment.RawTransportCleanupError, *protocol.CleanupError:
+		case *TransportCleanupError, TransportCleanupError, *RuntimeCleanupError, RuntimeCleanupError, runtimeCleanupCause, *runtimeCleanupCause, *LocalPortCleanupError, *deployment.ProbeCleanupError, deployment.ProbeCleanupError, *deployment.RawTransportCleanupError, deployment.RawTransportCleanupError, *protocol.CleanupError:
 			cleanup = true
 		}
-		cleanup = cleanup || err == ErrTransportCleanup || err == errRuntimeCleanup || err == deployment.ErrProbeCleanup || err == deployment.ErrRawTransportCleanup || err == localtls.ErrCleanup || err == protocol.ErrCleanup
+		cleanup = cleanup || err == ErrTransportCleanup || err == errRuntimeCleanup || err == errLocalPortCleanup || err == deployment.ErrProbeCleanup || err == deployment.ErrRawTransportCleanup || err == localtls.ErrCleanup || err == protocol.ErrCleanup
 		specificAuth = specificAuth || err == localtls.ErrServerAuthentication || err == localtls.ErrInvalidPolicy || err == nats.ErrAuthorization || err == nats.ErrPermissionViolation || err == nats.ErrAuthExpired || err == nats.ErrAuthRevoked
 		authority = authority || err == errOwnerBridgeAuthority || err == errKernelStatusAuthority
 		deadline = deadline || err == context.DeadlineExceeded || err == localtls.ErrDeadline
+		canceled = canceled || err == context.Canceled
 		if !diagnosticReviewedWrapper(err) {
 			continue
 		}
@@ -171,7 +221,33 @@ func ProjectRequestDiagnostic(failure error) RequestDiagnostic {
 	if specificAuth {
 		return requestDiagnostic("runtime_authority_rejected")
 	}
+	if commandDetail != "" && refusalCode == "command_failed" {
+		if authority {
+			return requestDiagnostic("runtime_authority_rejected")
+		}
+		if deadline {
+			return requestDiagnostic("request_deadline")
+		}
+		if canceled {
+			return requestDiagnostic("request_failed")
+		}
+		return requestDiagnostic(commandDetail)
+	}
+
 	switch refusalCode {
+	case "selected_host_port_occupied":
+		// A selected-port observation cannot outrank joined authentication,
+		// cancellation or deadline evidence. Existing refusal cases stay fixed.
+		if authority {
+			return requestDiagnostic("runtime_authority_rejected")
+		}
+		if deadline {
+			return requestDiagnostic("request_deadline")
+		}
+		if canceled {
+			return requestDiagnostic("request_failed")
+		}
+		return requestDiagnostic("selected_host_port_occupied")
 	case "environment_conflict":
 		return requestDiagnostic("docker_environment_conflict")
 	case "invalid_selection", "nonlocal_endpoint", "endpoint_mismatch", "backend_mismatch":
@@ -187,7 +263,7 @@ func ProjectRequestDiagnostic(failure error) RequestDiagnostic {
 	case "command_timeout_outcome_unknown":
 		return requestDiagnostic("docker_command_timeout_outcome_unknown")
 	}
-	if authority {
+	if authority || derivedAuthority {
 		return requestDiagnostic("runtime_authority_rejected")
 	}
 	if deadline {

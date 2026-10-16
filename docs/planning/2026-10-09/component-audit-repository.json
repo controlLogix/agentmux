@@ -31,7 +31,18 @@
           "requiredEnvironment": "Static instruction review and supported agent sessions",
           "baselineStatus": "not-run",
           "targetStatus": "not-run",
-          "qualificationPhase": "P06"
+          "qualificationPhase": "P06",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -137,7 +148,18 @@
           ],
           "requiredEnvironment": "Node and Git; read-only checker",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -168,7 +190,8 @@
         ".github/workflows/platform-foundation.yml",
         "tests/platform/native_go.py",
         "tests/platform/native_compose.py",
-        ".github/workflows/platform-compose.yml"
+        ".github/workflows/platform-compose.yml",
+        "tests/platform/test_native_cohorts.py"
       ],
       "role": "configuration",
       "baselineGroups": [
@@ -195,7 +218,18 @@
           ],
           "requiredEnvironment": "CI with declared Node, Python and supported OS jobs",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "REPO-03-C02",
@@ -210,7 +244,18 @@
           ],
           "baselineStatus": "not-run",
           "targetStatus": "not-run",
-          "requiredEnvironment": "Current candidate-bound native Linux/macOS/WSL environment and real broker/artifact evidence as applicable; source/unit checks do not imply product boot."
+          "requiredEnvironment": "Current candidate-bound native macOS ARM64 environment and real broker/artifact evidence as applicable; source/unit checks do not imply product boot.",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -245,6 +290,1901 @@
             "requiredEnvironment": "Current candidate-bound native Linux/macOS/WSL environment and real broker/artifact evidence as applicable; source/unit checks do not imply product boot."
           },
           "note": "REPO-03-C02 owns verification tooling; PLAT-03 retains product acceptance. REPO-10-C08 review-server coverage and P01 REPO-03-C01 are unchanged."
+        },
+        {
+          "date": "2026-10-15T02:23:21.782Z",
+          "actor": "Codex",
+          "decisionId": "PLATFORM-SCOPE-02",
+          "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+          "previousPlatformRequirements": {
+            "behaviorChecks": [
+              {
+                "id": "REPO-03-C01",
+                "description": "Deliberately failing an existing assertion blocks the relevant gate; skipped environments cannot count as passes.",
+                "existingTests": [
+                  ".github/workflows/tests.yml",
+                  ".github/workflows/design-patterns.yml"
+                ],
+                "requiredEnvironment": "CI with declared Node, Python and supported OS jobs",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "REPO-03-C02",
+                "qualificationPhase": "P02",
+                "ownerTask": "P02-T01",
+                "description": "Run candidate-bound native Go foundation checks and independently review version/archive pins, real broker commands, closed terminal Go event admission, all source maps and artifact hashes. Keep Darwin research/fail-closed control separate; no skipped/mocked result or foundation-only pass qualifies native product boot, Compose or a phase gate. Preserve existing CI jobs and P01 REPO-03-C01. Also review the native Compose collector, complete SDK status-shape admission, exact engine enrollment and held-descriptor guards. Collector controls and WSL helper proof remain separate from actual supported-environment Compose and installed CLI qualification.",
+                "existingTests": [
+                  "tests/platform/native_go.py",
+                  ".github/workflows/platform-foundation.yml",
+                  "tests/platform/native_compose.py",
+                  ".github/workflows/platform-compose.yml"
+                ],
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run",
+                "requiredEnvironment": "Current candidate-bound native Linux/macOS/WSL environment and real broker/artifact evidence as applicable; source/unit checks do not imply product boot."
+              }
+            ],
+            "enhancements": [
+              "Baseline and candidate comparisons on supported platforms with explicit skip reasons."
+            ],
+            "migrationChecks": [
+              "Preserve test identities, environment requirements and logs across pipeline changes."
+            ],
+            "reusePlan": "Retain existing jobs and assertions; add isolated compatibility and migration jobs without replacing them with narrower tests."
+          }
+        },
+        {
+          "date": "2026-10-15T05:48:27.977Z",
+          "reviewer": "Codex",
+          "scope": "mac-arm-cohort-history-startup-owner-source-review",
+          "platformScopeDecisionId": "PLATFORM-SCOPE-03",
+          "sourceHashes": {
+            "tests/platform/native_go.py": "6872b4d0be4c70fc4c3229b43430d9ed19f6738c87ff71a03fc0661fefb9de36",
+            "tests/platform/native_compose.py": "c17c29eacb19b3a47fb64d58445614871fa338358cadb2b5898fb09c656ca555",
+            "tests/platform/test_native_cohorts.py": "03d998c46c8ec49248c85a44a4f84e5362f75e75f7182b5930e4bfe9e894bd2c",
+            "platform/launcher/bootstrap_history_darwin_test.go": "20d34a8cc59c3128cb01968b02b97f1e84d0355d3e6195245dcd4b627c7866a1",
+            "platform/launcher/host_history_policy_darwin_test.go": "ddcb97b0b1f9b8cfbba851cd9399b852df375b628493acbf54dc6f02b85c76c8",
+            "platform/launcher/installed_cli_compose_startup_owner_darwin_test.go": "5c5da1e44a5f8cd511d78e72ed60cfffd59480ef02dcbbc1262c498d1fc3396e"
+          },
+          "evidence": [
+            "delivery/evidence/P02/local-runtime-cleanup/collector-cohort-controls-review.json",
+            "delivery/evidence/P02/local-darwin-identity/creator-history-compile-review.json",
+            "delivery/evidence/P02/local-darwin-identity/startup-owner-compile-review.json",
+            "delivery/evidence/P02/local-darwin-identity/signed-release-stop-repair-preparation-review.json"
+          ],
+          "previousPlanningSourceHashes": {
+            "component-inventory.json": "199752d4e9f2e6099a4473375607aadb7b0974ce76cb62758953d1843027559d",
+            "component-audit-hub.json": "8adf40efb66e7ced4dd3f43c4474446c6231c7fd72ad6e1d167152d870be477f",
+            "component-audit-repository.json": "0c857bc99c37a9e51dd6e4586a935ac5509462736028ba499acfd0da4f679109"
+          },
+          "note": "Reviewed explicit collector cohort admission, native creator-history and blocked-startup-owner source. Twenty-two pure collector controls passed. Native fixtures compiled only; no protected execution or phase acceptance. SDK-dependent compatibility remains unresolved. Prepared signed artifacts predate the subsequent image-disposal repair and are historical snapshot evidence.",
+          "previousSurfaceRows": [
+            {
+              "path": "tests/platform/native_go.py",
+              "componentIds": [
+                "REPO-03"
+              ],
+              "workingFileSha256": "833d56b88053718f0d9baca802d9150e28f4681f05741a922e591bec04a6a50e",
+              "declarations": [
+                {
+                  "name": "digest",
+                  "line": 61,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "atomic_report",
+                  "line": 65,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "remaining_timeout",
+                  "line": 81,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "OwnedCleanupError",
+                  "line": 93,
+                  "kind": "ClassDef"
+                },
+                {
+                  "name": "__init__",
+                  "line": 95,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "__repr__",
+                  "line": 101,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "_OwnedReap",
+                  "line": 105,
+                  "kind": "ClassDef"
+                },
+                {
+                  "name": "__init__",
+                  "line": 106,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "_stop",
+                  "line": 117,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "stop_until",
+                  "line": 128,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "shutdown",
+                  "line": 158,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "_shutdown_retained_reaps",
+                  "line": 187,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "stop_owned",
+                  "line": 197,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "wait_owned",
+                  "line": 202,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "admit_preparation_workspace",
+                  "line": 216,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "prepare_tools",
+                  "line": 228,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "source_hashes",
+                  "line": 245,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "download",
+                  "line": 255,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "broker_downloader",
+                  "line": 260,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "toolchain",
+                  "line": 267,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_module",
+                  "line": 286,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_package_matrix",
+                  "line": 293,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_install_selection",
+                  "line": 325,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "admit_install_events",
+                  "line": 346,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "admit_required_events",
+                  "line": 352,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_cgo0_private_selection",
+                  "line": 365,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_cgo0_deployment_selection",
+                  "line": 385,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "admit_events",
+                  "line": 405,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "AdmissionTests",
+                  "line": 454,
+                  "kind": "ClassDef"
+                },
+                {
+                  "name": "test_completion_order_requires_run_then_test_end_then_package_end",
+                  "line": 455,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_interrupted_checkpoint_publication_preserves_prior_report",
+                  "line": 468,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_actual_pass",
+                  "line": 478,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_empty_skip_failure_and_malformed_are_not_passes",
+                  "line": 485,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_nonzero_exit_and_package_only_are_not_passes",
+                  "line": 492,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_a_pass_cannot_hide_skip_failure_or_missing_package_end",
+                  "line": 497,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_missing_mismatched_and_incomplete_package_events_fail",
+                  "line": 511,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_module_pins_are_structured_and_replacements_refused",
+                  "line": 520,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_downloader_import_does_not_write_checkout_bytecode",
+                  "line": 529,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "observed",
+                  "line": 531,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_package_matrix_cannot_hide_missing_new_or_incomplete_tests",
+                  "line": 538,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_runtime_command_package_cannot_be_omitted_or_declared_without_tests",
+                  "line": 553,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_local_tls_package_cannot_be_omitted_or_declared_without_tests",
+                  "line": 563,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_private_files_package_cannot_be_omitted_or_declared_without_tests",
+                  "line": 573,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "RunnerTests",
+                  "line": 584,
+                  "kind": "ClassDef"
+                },
+                {
+                  "name": "test_interrupted_owned_wait_stops_and_reaps_before_propagation",
+                  "line": 587,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_interruption_after_reaping_never_signals_saved_identity",
+                  "line": 598,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "interrupted_wait",
+                  "line": 601,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_owned_builtin_timeout_reaps_actual_child",
+                  "line": 614,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_owned_cleanup_timeout_retains_owner_and_retry_resolves",
+                  "line": 628,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_owned_cleanup_interruption_retains_owner",
+                  "line": 651,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_owned_cleanup_stop_failure_never_disappears_after_reap",
+                  "line": 664,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_owned_cleanup_shutdown_reaps_exact_retained_child",
+                  "line": 681,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_hidden_preparation_refuses_populated_workspace_before_writes",
+                  "line": 717,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_preparation_accepts_only_empty_regular_marker",
+                  "line": 729,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "exercise",
+                  "line": 740,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "prepared",
+                  "line": 772,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "query",
+                  "line": 776,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "spawn",
+                  "line": 805,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "timed_wait",
+                  "line": 848,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_synthetic_darwin_metadata_never_uses_process_fake",
+                  "line": 885,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_install_requires_native_host_authorization_and_nonroot_before_effects",
+                  "line": 898,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_install_selection_is_separate_and_never_qualifies_full_boot",
+                  "line": 906,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_install_admission_requires_every_reviewed_top_level_test",
+                  "line": 932,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_install_inventory_refuses_missing_tests_or_cgo",
+                  "line": 944,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_host_scope_cannot_borrow_protected_image_passes",
+                  "line": 959,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_host_selection_failure_or_source_drift_never_qualifies_collection",
+                  "line": 972,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_protected_image_pass_cannot_hide_failed_host_scope",
+                  "line": 980,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_install_inventory_requires_all_host_declarations_exactly_once",
+                  "line": 989,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_install_refuses_malformed_apple_compiler_version_before_tests",
+                  "line": 1003,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_install_and_research_flags_are_mutually_exclusive",
+                  "line": 1012,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_preparation_rejects_combined_install_and_research_markers",
+                  "line": 1016,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_synthetic_normal_runner_records_every_scope_and_isolates_environment",
+                  "line": 1025,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_unsupported_host_refuses_before_tools_or_tests",
+                  "line": 1039,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_normal_native_selection_executes_runtime_command_on_both_hosts",
+                  "line": 1045,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_normal_native_selection_executes_local_tls_on_both_hosts",
+                  "line": 1057,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_darwin_normal_matrix_requires_actual_cgo_compiler_sdk_for_private_files",
+                  "line": 1069,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_darwin_cgo0_refusal_is_exact_separate_and_not_product_qualification",
+                  "line": 1088,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_cgo0_inventory_and_named_events_cannot_hide_missing_or_wrong_test",
+                  "line": 1104,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_darwin_cgo0_deployment_refusal_has_separate_command_and_report",
+                  "line": 1131,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_deployment_refusal_claim_requires_stable_original_and_executed_source",
+                  "line": 1153,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_cgo0_deployment_inventory_rejects_wrong_missing_and_repeated_test",
+                  "line": 1161,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_cgo0_deployment_events_require_exact_actual_named_completion",
+                  "line": 1180,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_setup_failure_retains_failed_report_without_private_error_text",
+                  "line": 1194,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_synthetic_test_failure_and_changed_execution_source_cannot_pass",
+                  "line": 1201,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_research_has_separate_results_and_actual_fail_closed_control",
+                  "line": 1207,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_research_refusal_claim_requires_stable_original_and_executed_source",
+                  "line": 1220,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_darwin_normal_matrix_never_claims_native_protected_boot",
+                  "line": 1227,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_timeout_is_checkpointed_and_exhausted_scopes_are_unexecuted",
+                  "line": 1235,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "main",
+                  "line": 1252,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "checkpoint",
+                  "line": 1309,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "native_query",
+                  "line": 1378,
+                  "kind": "FunctionDef"
+                }
+              ],
+              "httpPathLiterals": [],
+              "reviewStatus": "Targeted CI repair reviewed and promoted. Synthetic local controls passed; native macOS verification and full P02 acceptance remain open."
+            },
+            {
+              "path": "tests/platform/native_compose.py",
+              "componentIds": [
+                "REPO-03"
+              ],
+              "workingFileSha256": "c4182bb87a0a82bd677d8361fa0b4d60d3d3eb8a7ee853ef9b2e2dd6665ac7a4",
+              "declarations": [
+                {
+                  "name": "digest",
+                  "line": 81,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "closed_json",
+                  "line": 85,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "pairs",
+                  "line": 86,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "absolute",
+                  "line": 97,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "read_stable_file",
+                  "line": 101,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "read_pinned",
+                  "line": 119,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "native_host",
+                  "line": 128,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_selection",
+                  "line": 138,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_prerequisites",
+                  "line": 161,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "EngineLease",
+                  "line": 182,
+                  "kind": "ClassDef"
+                },
+                {
+                  "name": "__init__",
+                  "line": 184,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "access_descriptors",
+                  "line": 222,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "access_arguments",
+                  "line": 225,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "mark_started",
+                  "line": 229,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "verified_cleanup",
+                  "line": 237,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "close",
+                  "line": 251,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "source_hashes",
+                  "line": 258,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "load_helpers",
+                  "line": 268,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "sdk_dependencies",
+                  "line": 277,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "load_status_sdk",
+                  "line": 289,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_status_shape",
+                  "line": 310,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_inventory",
+                  "line": 317,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "clean_safe_json",
+                  "line": 339,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "valid_apple_compiler",
+                  "line": 348,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "admit_native_events",
+                  "line": 352,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_fixture_records",
+                  "line": 379,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "timestamp",
+                  "line": 399,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "children",
+                  "line": 445,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "collect_fixture_artifacts",
+                  "line": 463,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "run_command",
+                  "line": 487,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "successful",
+                  "line": 499,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "completion_admitted",
+                  "line": 505,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "verify_files",
+                  "line": 519,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "qualify",
+                  "line": 538,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "invoke",
+                  "line": 593,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "check_held_access",
+                  "line": 634,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "copy_test_logs",
+                  "line": 658,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "main",
+                  "line": 692,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "Controls",
+                  "line": 744,
+                  "kind": "ClassDef"
+                },
+                {
+                  "name": "selection",
+                  "line": 745,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_all_four_targets_and_wrong_actual_host",
+                  "line": 754,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_closed_json_duplicate_and_nonfinite_refused",
+                  "line": 760,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_selection_no_default_remote_floating_or_missing_fields",
+                  "line": 764,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_safe_artifact_rejects_private_bytes_and_nonobjects",
+                  "line": 771,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "prerequisites",
+                  "line": 776,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_prerequisite_contract_rejects_missing_pins_and_auth_inventory",
+                  "line": 783,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_real_selection_file_requires_separate_pin_and_refuses_symlink",
+                  "line": 791,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_expired_budget_never_spawns_child",
+                  "line": 800,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_engine_lease_serializes_and_retains_unknown_cleanup",
+                  "line": 807,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_engine_lease_releases_only_its_verified_marker",
+                  "line": 818,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_engine_marker_substitution_cannot_clear_uncertainty",
+                  "line": 827,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_zero_exit_timeout_is_not_success",
+                  "line": 837,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_source_drift_timeout_interrupted_command_or_missing_cleanup_cannot_qualify",
+                  "line": 840,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_unknown_failure_retains_failed_checkpoint_without_running_process",
+                  "line": 855,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_safe_fixture_collection_never_copies_private_adjacent_files",
+                  "line": 869,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "fixture_records",
+                  "line": 879,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_missing_cleanup_or_failure_evidence_cannot_pass",
+                  "line": 928,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_exact_scope_and_order_admission",
+                  "line": 935,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_review_compiler_requires_numeric_version",
+                  "line": 948,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_review_package_start_required_before_test_and_terminal_events",
+                  "line": 952,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_repaired_artifacts_bind_status_volume_children_and_enrollment",
+                  "line": 960,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_complete_package_lifecycle_refuses_late_start_and_trailing_events",
+                  "line": 973,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_lock_held_descriptors_cover_ancestors_private_directory_and_file",
+                  "line": 982,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_review_lock_access_denial_cannot_qualify",
+                  "line": 996,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_review_warm_status_file_is_allowlisted",
+                  "line": 1004,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_review_minimal_cleanup_without_identity_or_reaping_is_refused",
+                  "line": 1007,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_review_complete_l04_records_required",
+                  "line": 1017,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_review_nested_baseline_port_projection_required",
+                  "line": 1022,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_full_l04_nested_fields_and_port_bindings_are_not_optional",
+                  "line": 1029,
+                  "kind": "FunctionDef"
+                }
+              ],
+              "httpPathLiterals": [],
+              "reviewStatus": "Independent source and component review closed; actual native Compose and installed CLI qualification remain open."
+            }
+          ]
+        },
+        {
+          "date": "2026-10-15T06:06:29.994Z",
+          "reviewer": "Codex",
+          "scope": "mac-arm-reviewed-setup-and-extended-cohort-freeze",
+          "platformScopeDecisionId": "PLATFORM-SCOPE-03",
+          "sourceHashes": {
+            "platform/launcher/testdata/darwin_release_installer.py": "af4693a4f0683990f8620e6d6df8c6a23251c468b192d7a9180abc863c2b43d6",
+            "platform/launcher/testdata/darwin_release_install_driver.py": "7694aff6f478b2fd295388ff7f5e65a4df2d247cd219c0861d25eef247e34904",
+            "platform/launcher/testdata/darwin_test_artifact_installer.py": "b10f90b9e9e9de6d7f5d4adab51a34acb3f2fae39d9a90d4b22ad7eac64211b0",
+            "platform/launcher/testdata/darwin_test_artifact_install_driver.py": "59e290d36c97eace956da1b3b04f73a1b1b4fa899dc42810c0e5a94eb43b90ae",
+            "platform/launcher/darwin_release_candidate_match_test.go": "dccddfd97d4afb8fbecfeeee21fce754d17da1fd42d5d4a696bf048db8556308",
+            "tests/platform/native_go.py": "fd4a373062902c1755a308c774a31415b3d478ec9517d8390b948c1eb4decaa4",
+            "tests/platform/native_compose.py": "3a8115361993738274c7ea453d38750ad97cb71155535e42ae67f0078edf0d29",
+            "tests/platform/test_native_cohorts.py": "cc9b62a601f48fe4e24495829ddc17d37eb5f5f6b9a9fee018118579845b632c",
+            "tests/platform/README.md": "bfc8b24336a09713e9cc2b88d8291b9f30499de11062d6e06f20841b7a92117d"
+          },
+          "evidence": [
+            "delivery/evidence/P02/local-darwin-identity/reviewed-setup-inputs.json",
+            "delivery/evidence/P02/local-runtime-cleanup/extended-cohort-compatibility-review.json",
+            "delivery/evidence/P02/local-runtime-cleanup/collector-python314-compatibility-review.json",
+            "delivery/evidence/P02/local-darwin-identity/signed-release-image-cleanup-preparation-review.json"
+          ],
+          "previousPlanningSourceHashes": {
+            "component-inventory.json": "a79990e32ad8727f81416c98e6b25407b56c59aa7d6d3ae59ec459cab8a5fee9",
+            "component-audit-hub.json": "fa1cb4eb0f73339b47a38e120e33192e80a05626c811959a6414426acf24c653",
+            "component-audit-repository.json": "3f462c63e3e4de4a67db9174af1f3aad6d9fc927b54d3ca155fb5e4e41c690c0"
+          },
+          "note": "Reviewed fixed installation inputs and all eight explicit normal collector cohorts. Sixty-six pure controls passed on repository-pinned native Python 3.14.8. Root setup approval/authentication, actual installed qualification and final candidate checks remain pending. No phase acceptance, privileged execution or CI claim.",
+          "previousSurfaceRows": [
+            {
+              "path": "tests/platform/native_go.py",
+              "componentIds": [
+                "REPO-03"
+              ],
+              "workingFileSha256": "6872b4d0be4c70fc4c3229b43430d9ed19f6738c87ff71a03fc0661fefb9de36",
+              "declarations": [
+                {
+                  "name": "cohort_pattern",
+                  "line": 75,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_cohort_inventory",
+                  "line": 81,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "admit_cohort_events",
+                  "line": 100,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "pairs",
+                  "line": 103,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "digest",
+                  "line": 167,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "atomic_report",
+                  "line": 171,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "remaining_timeout",
+                  "line": 187,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "OwnedCleanupError",
+                  "line": 199,
+                  "kind": "ClassDef"
+                },
+                {
+                  "name": "__init__",
+                  "line": 201,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "__repr__",
+                  "line": 207,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "_OwnedReap",
+                  "line": 211,
+                  "kind": "ClassDef"
+                },
+                {
+                  "name": "__init__",
+                  "line": 212,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "_stop",
+                  "line": 223,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "stop_until",
+                  "line": 234,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "shutdown",
+                  "line": 264,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "_shutdown_retained_reaps",
+                  "line": 293,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "stop_owned",
+                  "line": 303,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "wait_owned",
+                  "line": 308,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "admit_preparation_workspace",
+                  "line": 322,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "prepare_tools",
+                  "line": 334,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "source_hashes",
+                  "line": 351,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "download",
+                  "line": 361,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "broker_downloader",
+                  "line": 366,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "toolchain",
+                  "line": 373,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_module",
+                  "line": 392,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_package_matrix",
+                  "line": 399,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_install_selection",
+                  "line": 431,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "admit_install_events",
+                  "line": 452,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "admit_required_events",
+                  "line": 458,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_cgo0_private_selection",
+                  "line": 471,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_cgo0_deployment_selection",
+                  "line": 491,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "admit_events",
+                  "line": 511,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "AdmissionTests",
+                  "line": 560,
+                  "kind": "ClassDef"
+                },
+                {
+                  "name": "test_completion_order_requires_run_then_test_end_then_package_end",
+                  "line": 561,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_interrupted_checkpoint_publication_preserves_prior_report",
+                  "line": 574,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_actual_pass",
+                  "line": 584,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_empty_skip_failure_and_malformed_are_not_passes",
+                  "line": 591,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_nonzero_exit_and_package_only_are_not_passes",
+                  "line": 598,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_a_pass_cannot_hide_skip_failure_or_missing_package_end",
+                  "line": 603,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_missing_mismatched_and_incomplete_package_events_fail",
+                  "line": 617,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_module_pins_are_structured_and_replacements_refused",
+                  "line": 626,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_downloader_import_does_not_write_checkout_bytecode",
+                  "line": 635,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "observed",
+                  "line": 637,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_package_matrix_cannot_hide_missing_new_or_incomplete_tests",
+                  "line": 644,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_runtime_command_package_cannot_be_omitted_or_declared_without_tests",
+                  "line": 659,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_local_tls_package_cannot_be_omitted_or_declared_without_tests",
+                  "line": 669,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_private_files_package_cannot_be_omitted_or_declared_without_tests",
+                  "line": 679,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "RunnerTests",
+                  "line": 690,
+                  "kind": "ClassDef"
+                },
+                {
+                  "name": "test_interrupted_owned_wait_stops_and_reaps_before_propagation",
+                  "line": 693,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_interruption_after_reaping_never_signals_saved_identity",
+                  "line": 704,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "interrupted_wait",
+                  "line": 707,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_owned_builtin_timeout_reaps_actual_child",
+                  "line": 720,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_owned_cleanup_timeout_retains_owner_and_retry_resolves",
+                  "line": 734,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_owned_cleanup_interruption_retains_owner",
+                  "line": 757,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_owned_cleanup_stop_failure_never_disappears_after_reap",
+                  "line": 770,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_owned_cleanup_shutdown_reaps_exact_retained_child",
+                  "line": 787,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_hidden_preparation_refuses_populated_workspace_before_writes",
+                  "line": 823,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_preparation_accepts_only_empty_regular_marker",
+                  "line": 835,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "exercise",
+                  "line": 846,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "prepared",
+                  "line": 878,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "query",
+                  "line": 882,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "spawn",
+                  "line": 911,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "timed_wait",
+                  "line": 954,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_synthetic_darwin_metadata_never_uses_process_fake",
+                  "line": 991,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_install_requires_native_host_authorization_and_nonroot_before_effects",
+                  "line": 1004,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_install_selection_is_separate_and_never_qualifies_full_boot",
+                  "line": 1012,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_install_admission_requires_every_reviewed_top_level_test",
+                  "line": 1038,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_install_inventory_refuses_missing_tests_or_cgo",
+                  "line": 1050,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_host_scope_cannot_borrow_protected_image_passes",
+                  "line": 1065,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_host_selection_failure_or_source_drift_never_qualifies_collection",
+                  "line": 1078,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_protected_image_pass_cannot_hide_failed_host_scope",
+                  "line": 1086,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_install_inventory_requires_all_host_declarations_exactly_once",
+                  "line": 1095,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_install_refuses_malformed_apple_compiler_version_before_tests",
+                  "line": 1109,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_install_and_research_flags_are_mutually_exclusive",
+                  "line": 1118,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_preparation_rejects_combined_install_and_research_markers",
+                  "line": 1122,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_synthetic_normal_runner_records_every_scope_and_isolates_environment",
+                  "line": 1131,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_unsupported_host_refuses_before_tools_or_tests",
+                  "line": 1145,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_normal_native_selection_executes_runtime_command_on_both_hosts",
+                  "line": 1151,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_normal_native_selection_executes_local_tls_on_both_hosts",
+                  "line": 1163,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_darwin_normal_matrix_requires_actual_cgo_compiler_sdk_for_private_files",
+                  "line": 1175,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_darwin_cgo0_refusal_is_exact_separate_and_not_product_qualification",
+                  "line": 1194,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_cgo0_inventory_and_named_events_cannot_hide_missing_or_wrong_test",
+                  "line": 1210,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_darwin_cgo0_deployment_refusal_has_separate_command_and_report",
+                  "line": 1237,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_deployment_refusal_claim_requires_stable_original_and_executed_source",
+                  "line": 1259,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_cgo0_deployment_inventory_rejects_wrong_missing_and_repeated_test",
+                  "line": 1267,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_cgo0_deployment_events_require_exact_actual_named_completion",
+                  "line": 1286,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_setup_failure_retains_failed_report_without_private_error_text",
+                  "line": 1300,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_synthetic_test_failure_and_changed_execution_source_cannot_pass",
+                  "line": 1307,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_research_has_separate_results_and_actual_fail_closed_control",
+                  "line": 1313,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_research_refusal_claim_requires_stable_original_and_executed_source",
+                  "line": 1326,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_darwin_normal_matrix_never_claims_native_protected_boot",
+                  "line": 1333,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_timeout_is_checkpointed_and_exhausted_scopes_are_unexecuted",
+                  "line": 1341,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "main",
+                  "line": 1358,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "checkpoint",
+                  "line": 1424,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "native_query",
+                  "line": 1493,
+                  "kind": "FunctionDef"
+                }
+              ],
+              "httpPathLiterals": [],
+              "reviewStatus": "Reviewed explicit collector cohort admission, native creator-history and blocked-startup-owner source. Twenty-two pure collector controls passed. Native fixtures compiled only; no protected execution or phase acceptance. SDK-dependent compatibility remains unresolved. Prepared signed artifacts predate the subsequent image-disposal repair and are historical snapshot evidence."
+            },
+            {
+              "path": "tests/platform/native_compose.py",
+              "componentIds": [
+                "REPO-03"
+              ],
+              "workingFileSha256": "c17c29eacb19b3a47fb64d58445614871fa338358cadb2b5898fb09c656ca555",
+              "declarations": [
+                {
+                  "name": "digest",
+                  "line": 81,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "closed_json",
+                  "line": 85,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "pairs",
+                  "line": 86,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "absolute",
+                  "line": 97,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "read_stable_file",
+                  "line": 101,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "read_pinned",
+                  "line": 119,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "cohort_groups",
+                  "line": 128,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "cohort_tuple",
+                  "line": 134,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "json_pin",
+                  "line": 141,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "pinned_reference",
+                  "line": 145,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_cohort_bundle",
+                  "line": 155,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "cohort_environment",
+                  "line": 224,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "collect_cohort_cleanup",
+                  "line": 251,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "run_darwin_cohort",
+                  "line": 281,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "native_host",
+                  "line": 362,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_selection",
+                  "line": 372,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_prerequisites",
+                  "line": 395,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "EngineLease",
+                  "line": 416,
+                  "kind": "ClassDef"
+                },
+                {
+                  "name": "__init__",
+                  "line": 418,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "access_descriptors",
+                  "line": 456,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "access_arguments",
+                  "line": 459,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "mark_started",
+                  "line": 463,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "verified_cleanup",
+                  "line": 471,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "close",
+                  "line": 485,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "source_hashes",
+                  "line": 492,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "load_helpers",
+                  "line": 503,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "sdk_dependencies",
+                  "line": 512,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "load_status_sdk",
+                  "line": 524,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_status_shape",
+                  "line": 545,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_inventory",
+                  "line": 552,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "clean_safe_json",
+                  "line": 574,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "valid_apple_compiler",
+                  "line": 583,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "admit_native_events",
+                  "line": 587,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "validate_fixture_records",
+                  "line": 614,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "timestamp",
+                  "line": 634,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "children",
+                  "line": 680,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "collect_fixture_artifacts",
+                  "line": 698,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "run_command",
+                  "line": 722,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "successful",
+                  "line": 734,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "completion_admitted",
+                  "line": 740,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "verify_files",
+                  "line": 754,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "qualify",
+                  "line": 773,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "invoke",
+                  "line": 835,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "check_held_access",
+                  "line": 879,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "copy_test_logs",
+                  "line": 906,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "main",
+                  "line": 940,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "Controls",
+                  "line": 1000,
+                  "kind": "ClassDef"
+                },
+                {
+                  "name": "selection",
+                  "line": 1001,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_all_four_targets_and_wrong_actual_host",
+                  "line": 1010,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_closed_json_duplicate_and_nonfinite_refused",
+                  "line": 1016,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_selection_no_default_remote_floating_or_missing_fields",
+                  "line": 1020,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_safe_artifact_rejects_private_bytes_and_nonobjects",
+                  "line": 1027,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "prerequisites",
+                  "line": 1032,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_prerequisite_contract_rejects_missing_pins_and_auth_inventory",
+                  "line": 1039,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_real_selection_file_requires_separate_pin_and_refuses_symlink",
+                  "line": 1047,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_expired_budget_never_spawns_child",
+                  "line": 1056,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_engine_lease_serializes_and_retains_unknown_cleanup",
+                  "line": 1063,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_engine_lease_releases_only_its_verified_marker",
+                  "line": 1074,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_engine_marker_substitution_cannot_clear_uncertainty",
+                  "line": 1083,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_zero_exit_timeout_is_not_success",
+                  "line": 1093,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_source_drift_timeout_interrupted_command_or_missing_cleanup_cannot_qualify",
+                  "line": 1096,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_unknown_failure_retains_failed_checkpoint_without_running_process",
+                  "line": 1111,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_safe_fixture_collection_never_copies_private_adjacent_files",
+                  "line": 1125,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "fixture_records",
+                  "line": 1135,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_missing_cleanup_or_failure_evidence_cannot_pass",
+                  "line": 1184,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_exact_scope_and_order_admission",
+                  "line": 1191,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_review_compiler_requires_numeric_version",
+                  "line": 1204,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_review_package_start_required_before_test_and_terminal_events",
+                  "line": 1208,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_repaired_artifacts_bind_status_volume_children_and_enrollment",
+                  "line": 1216,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_complete_package_lifecycle_refuses_late_start_and_trailing_events",
+                  "line": 1229,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_lock_held_descriptors_cover_ancestors_private_directory_and_file",
+                  "line": 1238,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_review_lock_access_denial_cannot_qualify",
+                  "line": 1252,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_review_warm_status_file_is_allowlisted",
+                  "line": 1260,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_review_minimal_cleanup_without_identity_or_reaping_is_refused",
+                  "line": 1263,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_review_complete_l04_records_required",
+                  "line": 1273,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_review_nested_baseline_port_projection_required",
+                  "line": 1278,
+                  "kind": "FunctionDef"
+                },
+                {
+                  "name": "test_full_l04_nested_fields_and_port_bindings_are_not_optional",
+                  "line": 1285,
+                  "kind": "FunctionDef"
+                }
+              ],
+              "httpPathLiterals": [],
+              "reviewStatus": "Reviewed explicit collector cohort admission, native creator-history and blocked-startup-owner source. Twenty-two pure collector controls passed. Native fixtures compiled only; no protected execution or phase acceptance. SDK-dependent compatibility remains unresolved. Prepared signed artifacts predate the subsequent image-disposal repair and are historical snapshot evidence."
+            }
+          ]
+        },
+        {
+          "date": "2026-10-15T07:12:43.997Z",
+          "reviewer": "Codex",
+          "scope": "normal-sdk265-shared-tests-and-final-collector-controls",
+          "sourceHashes": {
+            "platform/internal/darwinfixtureidentity/poll_shared_darwin_test.go": "a9b0e24863408a5d7c89238e4d684950d1db1a42fe9f0248a9abda3a049e8f3e",
+            "platform/internal/darwinfixtureidentity/protected_common_darwin_test.go": "c52274ea24ae24ee1358e7fa0d4109e867e3b8eee55d584810935f4ac0a04399",
+            "platform/internal/darwinfixtureidentity/protected_normal_darwin_test.go": "ff42d60f7aae40b9f78c82b76465142bad7bdaf591a2b948bb37d176c6d0bce2",
+            "platform/internal/darwinfixtureidentity/runtime_parent_normal_darwin_test.go": "cb34edf2b13ada31f4d11c989abb8c05c7f0393de067ceade63f74aa3f5937ae",
+            "tests/platform/native_go.py": "e96bb91a775e4b077114a78063caca372c5cba9e41c63756f53488631aa6e79e",
+            "tests/platform/native_compose.py": "eab31b75d28b2ff5e4e7017e888aa12a980a6335c8de3a996a3b870fa439db26",
+            "tests/platform/test_native_cohorts.py": "964db9b015e6936cbf4f048447d7950272291a75144b3de318b7121073755f48",
+            "tests/platform/README.md": "56f5d72a063eb511266219636420c119d300c6c630be0669d0ba91e62f104400"
+          },
+          "previousPlanningSourceHashes": {
+            "component-inventory.json": "bb815484e706035b0a4d7620bff8f83515964117f96285b4139ccd592a70c634",
+            "component-audit-hub.json": "0c7fb1ac26920b7eb16b65526d7fac7dcd87fe567b8570c1852c52fd16030ad5",
+            "component-audit-repository.json": "7aa9e5d68f2ad150814e598cbc0bfc63825db23fac984fbf389b98729c716aca"
+          },
+          "evidence": [
+            "delivery/evidence/P02/local-darwin-identity/normal-candidate-separated-compile-review.json",
+            "delivery/evidence/P02/local-runtime-cleanup/final-normal-cohort-controls-review.json"
+          ],
+          "note": "Reviewed assertion-preserving shared extraction and normal test counterparts, separate compile profiles and eleven exact opt-in collector cohorts. Seventy-four pure controls passed. Protected execution, newly identified mount/live-process gaps, installed qualification and final committed-candidate verification remain open; no phase acceptance."
+        },
+        {
+          "date": "2026-10-15T07:36:47.137Z",
+          "reviewer": "Codex",
+          "scope": "native-docker-live-and-ownership-fixture-review",
+          "sourceHashes": {
+            "platform/launcher/docker_reads_darwin_test.go": "ad3a826d419532847b7c392557a03185ae8deaa74eff70e655e2013e061daa6f",
+            "platform/launcher/docker_archive_darwin_test.go": "c311e53754d5737996fe55b450fe279cb8b2d3d92c05d538a417770e601c5cb0",
+            "platform/launcher/docker_child_observation_darwin_test.go": "751f4185cb442d3cd44bb319237f50f224517d1748b21a36d7cdcfab0507dbd4",
+            "platform/privatefs/ownership_mount_darwin_test.go": "8252e4a5090096b8be4d02f25797630b430c16d7ef8b90052ce27567b932773e",
+            "platform/internal/darwinownershipfixture/helper_darwin.go": "b3225c6598936e21a8eafb94bce4a430294dacd84c4d6dff9a3b5126fecbf8a3",
+            "platform/launcher/signed_role_live_fixture_darwin_test.go": "205c1f4eee025c45238e9b595aa1add18b79f818c560e23139f26d417cbfd38b",
+            "platform/launcher/signed_role_live_process_darwin_test.go": "6f9b87931c0b67f29dc446f1fc4ea4ec1bd451a59f61c389acb618082494511f",
+            "platform/launcher/installed_cli_compose_slow_consumer_darwin_test.go": "363d183abb7ee84938fd038114f502702643d63e82a6c4f3f81ab89272a16f4c",
+            "platform/runtime/ownership_mount_darwin_test.go": "ad6cb825f8d45769e6e353339788e1fa86a1ba1821f8812f418e9e3c6b9fad01",
+            "tests/platform/native_go.py": "0adde36546b5660b1b5cfb2e362c20aca2959f6ebcd1cabf348bf99fefc090c4",
+            "tests/platform/native_compose.py": "4e1b64e088f8f9f2b097822049f1c4ebb889640dedfcb3e7713edf829e86f96a",
+            "tests/platform/test_native_cohorts.py": "47aec7e806e531b70d5ebb2db13f4f89f4c5682ba65f89ae8e89bca5e4e659b9",
+            "tests/platform/README.md": "f34787ab1248db88fb97d932d7786d204f5cca9e90a8b7a54488bd7c63cee6ec"
+          },
+          "previousPlanningSourceHashes": {
+            "component-inventory.json": "b8a793faa3a5bcdb2c993cc34d48374ca53018d945975ddc4dfd02efbca124a2",
+            "component-audit-hub.json": "865e0bb9b15e95345fb194d3dad2214e52f6999605c01ba88a4a9d5eb0c59ab2",
+            "component-audit-repository.json": "d07d3181d2ca1dbe7bd69746541836e96ff745e33de0a81f32eade54c7625d3f"
+          },
+          "evidence": [
+            "delivery/evidence/P02/local-runtime-cleanup/darwin-docker-caller-controls-review.json",
+            "delivery/evidence/P02/local-runtime-cleanup/native-review-tool-preservation-review.json",
+            "delivery/evidence/P02/local-runtime-cleanup/live-recovery-cohort-controls-review.json",
+            "delivery/evidence/P02/local-darwin-identity/ownership-libc-property-probe-review.json",
+            "delivery/evidence/P02/local-darwin-identity/native-security-team-component-review.json",
+            "delivery/evidence/P02/local-darwin-identity/remaining-native-qualification-audit.json"
+          ],
+          "note": "Reviewed native counterpart and fixture source. Four Docker caller controls, 38 review-tool controls, 22 security top-level/89 subtests, four ACL-property controls and 77 pure collector controls passed within their recorded bounds. Live protected recovery and installed slow-consumer are source-reviewed, not behaviorally executed. Actual noowners mounts, administrator setup, full installed qualification and final candidate/gate review remain pending. No acceptance statuses changed."
+        },
+        {
+          "date": "2026-10-15T08:12:49.928Z",
+          "reviewer": "Codex",
+          "scope": "reviewed-apfs-driver-and-opaque-subtest-collector",
+          "sourceHashes": {
+            "platform/internal/darwinownershipfixture/testdata/apfs_mount/driver.py": "9c8ebee2dca42851e5d63a62986be48fab1da76e41cb0182e9a0c68591203f28",
+            "platform/internal/darwinownershipfixture/testdata/apfs_mount/setup.py": "c62ad0233cea6e8893c55469bb99f2e3d1a86bc3e3c2184fb75868ac8b36ebe6",
+            "platform/internal/darwinownershipfixture/testdata/apfs_mount/teardown.py": "2df8d27da9d735ecb2fe1d4a93e2dd3f350c08652a5d4ca97af102b287adeaba",
+            "platform/internal/darwinownershipfixture/testdata/apfs_mount/lifecycle_controls.py": "c24e06148912d8662b59fb1797aaeb00f3c9a6e6b257dc454ce795a5c8909968",
+            "platform/internal/darwinownershipfixture/testdata/apfs_mount/README.md": "136300a6b6d22510c96144f961390f38cd64f116c10ae59d0d7c1a75d2c38810",
+            "tests/platform/native_go.py": "09da6a3cdcef2d2ab9d9c33cee6c2f950694436bf46040f5ded23f1a57926452",
+            "tests/platform/native_compose.py": "7a1d4ab58d84e53e7e14fe737de90ddd6e3676cd6b7d3bb60c2d99d0164978a4",
+            "tests/platform/test_native_cohorts.py": "dab46e64648546875eb26bdc10183a5227957a4ae44c949d4b4f5ef8afc542c5",
+            "tests/platform/README.md": "e50375643d98c052641f9788f1a7311d341da885ab11fed0c73432f1ae066009"
+          },
+          "previousPlanningSourceHashes": {
+            "component-inventory.json": "f89e1ab98fb7be47da7f7a4e9995b4e2e1df80c9e4c17ab64310950a95701358",
+            "component-audit-hub.json": "e6cfe3de8e70f70a438953444592cf1e4058e93d9692bd3ee57e2325653b3512",
+            "component-audit-repository.json": "61b8da6bcc640142825559ee566b15be9ee0d6d27fbe8b153c72c6e677d2ee03"
+          },
+          "evidence": [
+            "delivery/evidence/P02/local-darwin-identity/apfs-driver-source-controls-review.json",
+            "delivery/evidence/P02/local-darwin-identity/apfs-lifecycle-controls-and-inspector-review.json",
+            "delivery/evidence/P02/local-runtime-cleanup/opaque-subtest-collector-review.json",
+            "delivery/evidence/P02/local-runtime-cleanup/default-launcher-sdk265-race-review.json",
+            "delivery/evidence/P02/local-darwin-identity/native-kernel-permissions-review.json",
+            "delivery/evidence/P02/local-darwin-identity/fail02-phase-scope-review.json"
+          ],
+          "note": "Reviewed frozen APFS helper/driver source and resolved draft keeper/capture/mask findings; nine lifecycle controls (two real unprivileged children), seven driver fakes and plan-only passed. Root/mount setup is not approved or executed; teardown evidence remains unbound. Collector now proves top-level ownership and named joins, explicitly not inferred nested parentage; 80 pure controls passed. Historical admission failure remains unchanged. Final native candidate and installed qualification/gate acceptance remain open."
         }
       ]
     },
@@ -276,15 +2216,53 @@
           "id": "REPO-04-C01",
           "description": "A fresh supported-platform checkout preserves binary digests and executable shell line endings; packaging excludes private runtime files.",
           "existingTests": [],
-          "requiredEnvironment": "Git checkout and release-package inspection on macOS, Linux and WSL",
+          "requiredEnvironment": "Git checkout and release-package inspection on macOS ARM64",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
         "Keep source fixtures, agent definitions and license records versioned; never run text conversion over captures or recovered bytecode."
       ],
-      "limitations": []
+      "limitations": [],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-15T02:23:21.782Z",
+          "actor": "Codex",
+          "decisionId": "PLATFORM-SCOPE-02",
+          "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+          "previousPlatformRequirements": {
+            "behaviorChecks": [
+              {
+                "id": "REPO-04-C01",
+                "description": "A fresh supported-platform checkout preserves binary digests and executable shell line endings; packaging excludes private runtime files.",
+                "existingTests": [],
+                "requiredEnvironment": "Git checkout and release-package inspection on macOS, Linux and WSL",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              }
+            ],
+            "enhancements": [
+              "New plugins and release packaging preserve binary fixtures and exclude private state."
+            ],
+            "migrationChecks": [
+              "Keep source fixtures, agent definitions and license records versioned; never run text conversion over captures or recovered bytecode."
+            ],
+            "reusePlan": "Retain rules and add narrowly scoped entries only when new outputs require them."
+          }
+        }
+      ]
     },
     {
       "id": "REPO-05",
@@ -319,7 +2297,18 @@
           ],
           "requiredEnvironment": "Clean supported host with documented prerequisites",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -363,7 +2352,18 @@
           ],
           "requiredEnvironment": "Supported client/tmux test host; isolated data root",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -410,7 +2410,18 @@
           ],
           "requiredEnvironment": "Isolated hub and NATS environments; pinned clients",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -459,7 +2470,18 @@
           "existingTests": [],
           "requiredEnvironment": "Static review and isolated browser captures",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -494,7 +2516,18 @@
           "existingTests": [],
           "requiredEnvironment": "Vendor documentation review and approved integration environment",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -561,9 +2594,20 @@
             "docs/reviews/src/features/notes-controller.test.mjs",
             "docs/reviews/src/features/notes-format.test.mjs"
           ],
-          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "requiredEnvironment": "Isolated native macOS ARM64 fixtures; generated HTML inspection where supported",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "REPO-10-C02",
@@ -571,9 +2615,20 @@
           "existingTests": [
             "docs/reviews/src/features/local-review.test.mjs"
           ],
-          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "requiredEnvironment": "Isolated native macOS ARM64 fixtures; generated HTML inspection where supported",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "REPO-10-C03",
@@ -581,9 +2636,20 @@
           "existingTests": [
             "docs/reviews/src/features/local-review.test.mjs"
           ],
-          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "requiredEnvironment": "Isolated native macOS ARM64 fixtures; generated HTML inspection where supported",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "REPO-10-C04",
@@ -593,9 +2659,20 @@
             "docs/reviews/src/features/notes-local.test.mjs",
             "docs/reviews/src/features/notes-controller.test.mjs"
           ],
-          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "requiredEnvironment": "Isolated native macOS ARM64 fixtures; generated HTML inspection where supported",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "REPO-10-C05",
@@ -604,9 +2681,20 @@
             "docs/reviews/src/features/packaging.test.mjs",
             "docs/reviews/src/features/notes-format.test.mjs"
           ],
-          "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+          "requiredEnvironment": "Isolated native macOS ARM64 fixtures; generated HTML inspection where supported",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "REPO-10-C06",
@@ -615,10 +2703,21 @@
             ".agents/skills/review-inbox/scripts/inbox.test.mjs",
             ".agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs"
           ],
-          "requiredEnvironment": "Disposable offline Git repositories on Windows and native POSIX; credential-free scanner invocation and shared skill/reference/YAML inspection. No network, models, real reviewer notes or browser needed.",
+          "requiredEnvironment": "Disposable offline Git repositories on native macOS ARM64; credential-free scanner invocation and shared skill/reference/YAML inspection. No network, models, real reviewer notes or browser needed.",
           "baselineStatus": "not-run",
           "targetStatus": "not-run",
-          "qualificationPhase": "P01"
+          "qualificationPhase": "P01",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "REPO-10-C07",
@@ -627,7 +2726,18 @@
           "requiredEnvironment": "Actual supported installed agent hosts and disposable review repositories/workspaces; owned loopback server and supported browser tool. Keep unsupported host/transport behavior explicit.",
           "baselineStatus": "not-run",
           "targetStatus": "not-run",
-          "qualificationPhase": "P06"
+          "qualificationPhase": "P06",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "REPO-10-C08",
@@ -640,7 +2750,18 @@
           "requiredEnvironment": "Native local Node with disposable repositories/worktrees/processes, not product-dashboard or terminal-host acceptance.",
           "baselineStatus": "not-run",
           "targetStatus": "not-run",
-          "qualificationPhase": "P02"
+          "qualificationPhase": "P02",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -650,6 +2771,151 @@
       ],
       "limitations": [
         "Browser rendering and current full check evidence remain open until independently reviewed."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-15T02:23:21.782Z",
+          "actor": "Codex",
+          "decisionId": "PLATFORM-SCOPE-02",
+          "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+          "previousPlatformRequirements": {
+            "behaviorChecks": [
+              {
+                "id": "REPO-10-C01",
+                "description": "Preserve text, version and reviewer identity through standalone import/edit/restore/export, reset identity only on author switch; keep legacy drafts and known reviewer filenames.",
+                "existingTests": [
+                  "docs/reviews/src/features/notes-controller.test.mjs",
+                  "docs/reviews/src/features/notes-format.test.mjs"
+                ],
+                "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "REPO-10-C02",
+                "description": "Use effective Git identity; configure only repo-local name/email; confine writes to assigned notes files and reject stale identity/revision.",
+                "existingTests": [
+                  "docs/reviews/src/features/local-review.test.mjs"
+                ],
+                "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "REPO-10-C03",
+                "description": "Reject foreign Host/Origin/missing token, links escaping notes/repository, malformed/oversized payloads; rejected writes preserve existing data.",
+                "existingTests": [
+                  "docs/reviews/src/features/local-review.test.mjs"
+                ],
+                "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "REPO-10-C04",
+                "description": "Lock competing writers, release locks on process exit, retain pending edits/conflict drafts and warn before delayed/unconfirmed saves; retry temporary failures.",
+                "existingTests": [
+                  "docs/reviews/src/features/notes-lock.test.mjs",
+                  "docs/reviews/src/features/notes-local.test.mjs",
+                  "docs/reviews/src/features/notes-controller.test.mjs"
+                ],
+                "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "REPO-10-C05",
+                "description": "Escape feedback, preserve exact assets/plan, keep stable source-version rules and standalone network restrictions, generate matching HTML/report/version.",
+                "existingTests": [
+                  "docs/reviews/src/features/packaging.test.mjs",
+                  "docs/reviews/src/features/notes-format.test.mjs"
+                ],
+                "requiredEnvironment": "Isolated Windows and native POSIX fixtures; generated HTML inspection where supported",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "REPO-10-C06",
+                "description": "Verify offline review-inbox discovery across local and cached remote refs: valid nonempty notes and configured work paths, duplicate grouping, versions and Git attribution, local drafts, explicit reply receipts and unknown/mixed states. Reject unsafe paths/arguments and malformed input, report bounded/truncated history honestly, and prove repository/config/index/ref preservation. Review shared/Claude entry points and agent metadata for selection, cached-history labeling, untrusted-content handling and separate write authorization.",
+                "existingTests": [
+                  ".agents/skills/review-inbox/scripts/inbox.test.mjs",
+                  ".agents/skills/review-inbox/scripts/inbox-boundaries.test.mjs"
+                ],
+                "requiredEnvironment": "Disposable offline Git repositories on Windows and native POSIX; credential-free scanner invocation and shared skill/reference/YAML inspection. No network, models, real reviewer notes or browser needed.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run",
+                "qualificationPhase": "P01"
+              },
+              {
+                "id": "REPO-10-C07",
+                "description": "Qualify the promised review-inbox opening workflow in each supported installed Claude Code/Codex host: explicit selection, latest selected branch head/version, safe reuse or isolated workspace, documented owned server, verified page/session and browser opening. Preserve dirty/occupied branches, unknown listeners and settings; honor cached/fetch errors and browser denials. Opening never writes notes, records answers, commits, pushes or authorizes implementation without a separate request.",
+                "existingTests": [],
+                "requiredEnvironment": "Actual supported installed agent hosts and disposable review repositories/workspaces; owned loopback server and supported browser tool. Keep unsupported host/transport behavior explicit.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run",
+                "qualificationPhase": "P06"
+              },
+              {
+                "id": "REPO-10-C08",
+                "description": "One authenticated review server slot per repository/worktrees; concurrent open reuse, explicit requested port, unknown/starting/unresponsive owners never falsely inactive; explicit stop/restart drains connected and disconnected note handlers before exact ownership release, preserving notes/drafts/settings/unrelated listeners.",
+                "existingTests": [
+                  "docs/reviews/src/features/review-server.test.mjs",
+                  "docs/reviews/src/features/local-review.test.mjs",
+                  "docs/reviews/src/features/notes-controller.test.mjs"
+                ],
+                "requiredEnvironment": "Native local Node with disposable repositories/worktrees/processes, not product-dashboard or terminal-host acceptance.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run",
+                "qualificationPhase": "P02"
+              }
+            ],
+            "enhancements": [
+              "Preserve reviewer identity across import, restore and export.",
+              "Verify confined writes, failed-save recovery and competing writers without changing product runtime scope.",
+              "Add read-only Git review-inbox discovery and a shared skill for explicit selection and isolated review opening without treating notes, replies or opening as implementation approval."
+            ],
+            "migrationChecks": [
+              "Preserve existing reviewer notes, known filenames and legacy browser drafts.",
+              "Keep pinned P00 source blobs and historical acceptance intact.",
+              "Do not treat review tooling as an Agentmux runtime service or P06 acceptance."
+            ],
+            "reusePlan": "Preserve standalone review and existing notes; qualify the optional repository helper as delivery tooling."
+          }
+        },
+        {
+          "date": "2026-10-15T07:36:47.137Z",
+          "reviewer": "Codex",
+          "scope": "native-docker-live-and-ownership-fixture-review",
+          "sourceHashes": {
+            "platform/launcher/docker_reads_darwin_test.go": "ad3a826d419532847b7c392557a03185ae8deaa74eff70e655e2013e061daa6f",
+            "platform/launcher/docker_archive_darwin_test.go": "c311e53754d5737996fe55b450fe279cb8b2d3d92c05d538a417770e601c5cb0",
+            "platform/launcher/docker_child_observation_darwin_test.go": "751f4185cb442d3cd44bb319237f50f224517d1748b21a36d7cdcfab0507dbd4",
+            "platform/privatefs/ownership_mount_darwin_test.go": "8252e4a5090096b8be4d02f25797630b430c16d7ef8b90052ce27567b932773e",
+            "platform/internal/darwinownershipfixture/helper_darwin.go": "b3225c6598936e21a8eafb94bce4a430294dacd84c4d6dff9a3b5126fecbf8a3",
+            "platform/launcher/signed_role_live_fixture_darwin_test.go": "205c1f4eee025c45238e9b595aa1add18b79f818c560e23139f26d417cbfd38b",
+            "platform/launcher/signed_role_live_process_darwin_test.go": "6f9b87931c0b67f29dc446f1fc4ea4ec1bd451a59f61c389acb618082494511f",
+            "platform/launcher/installed_cli_compose_slow_consumer_darwin_test.go": "363d183abb7ee84938fd038114f502702643d63e82a6c4f3f81ab89272a16f4c",
+            "platform/runtime/ownership_mount_darwin_test.go": "ad6cb825f8d45769e6e353339788e1fa86a1ba1821f8812f418e9e3c6b9fad01",
+            "tests/platform/native_go.py": "0adde36546b5660b1b5cfb2e362c20aca2959f6ebcd1cabf348bf99fefc090c4",
+            "tests/platform/native_compose.py": "4e1b64e088f8f9f2b097822049f1c4ebb889640dedfcb3e7713edf829e86f96a",
+            "tests/platform/test_native_cohorts.py": "47aec7e806e531b70d5ebb2db13f4f89f4c5682ba65f89ae8e89bca5e4e659b9",
+            "tests/platform/README.md": "f34787ab1248db88fb97d932d7786d204f5cca9e90a8b7a54488bd7c63cee6ec"
+          },
+          "previousPlanningSourceHashes": {
+            "component-inventory.json": "b8a793faa3a5bcdb2c993cc34d48374ca53018d945975ddc4dfd02efbca124a2",
+            "component-audit-hub.json": "865e0bb9b15e95345fb194d3dad2214e52f6999605c01ba88a4a9d5eb0c59ab2",
+            "component-audit-repository.json": "d07d3181d2ca1dbe7bd69746541836e96ff745e33de0a81f32eade54c7625d3f"
+          },
+          "evidence": [
+            "delivery/evidence/P02/local-runtime-cleanup/darwin-docker-caller-controls-review.json",
+            "delivery/evidence/P02/local-runtime-cleanup/native-review-tool-preservation-review.json",
+            "delivery/evidence/P02/local-runtime-cleanup/live-recovery-cohort-controls-review.json",
+            "delivery/evidence/P02/local-darwin-identity/ownership-libc-property-probe-review.json",
+            "delivery/evidence/P02/local-darwin-identity/native-security-team-component-review.json",
+            "delivery/evidence/P02/local-darwin-identity/remaining-native-qualification-audit.json"
+          ],
+          "note": "Reviewed native counterpart and fixture source. Four Docker caller controls, 38 review-tool controls, 22 security top-level/89 subtests, four ACL-property controls and 77 pure collector controls passed within their recorded bounds. Live protected recovery and installed slow-consumer are source-reviewed, not behaviorally executed. Actual noowners mounts, administrator setup, full installed qualification and final candidate/gate review remain pending. No acceptance statuses changed."
+        }
       ]
     }
   ],
@@ -871,6 +3137,1922 @@
       "scope": "P02 actual component/source ownership",
       "evidence": "delivery/evidence/P02/component-registration-review/proposal.json",
       "note": "Added actual files and reserved components/checks. Existing baseline records and behavior assertions retained. Qualification is not implied."
+    },
+    {
+      "date": "2026-10-14",
+      "reviewer": "Codex",
+      "scope": "macos-arm64-beta-scope",
+      "decisionId": "PLATFORM-SCOPE-03",
+      "note": "Ryan approved native macOS ARM64 as the only initial beta host target. Linux and macOS AMD64 qualification are deferred expansion work, not beta blockers or passing results. Preserve source, assertions, historical evidence and all product/security/recovery/preservation gates. No CI until all P00–P14 gates are complete; no merge or release authorization.",
+      "previousPlatformScopeDecisionId": "PLATFORM-SCOPE-02",
+      "changes": [
+        {
+          "componentId": "REPO-03",
+          "checkId": "REPO-03-C02",
+          "previousRequiredEnvironment": "Current candidate-bound native Linux/macOS environment and real broker/artifact evidence as applicable; source/unit checks do not imply product boot."
+        },
+        {
+          "componentId": "REPO-04",
+          "checkId": "REPO-04-C01",
+          "previousRequiredEnvironment": "Git checkout and release-package inspection on macOS and Linux"
+        },
+        {
+          "componentId": "REPO-10",
+          "checkId": "REPO-10-C01",
+          "previousRequiredEnvironment": "Isolated native Linux/macOS fixtures; generated HTML inspection where supported"
+        },
+        {
+          "componentId": "REPO-10",
+          "checkId": "REPO-10-C02",
+          "previousRequiredEnvironment": "Isolated native Linux/macOS fixtures; generated HTML inspection where supported"
+        },
+        {
+          "componentId": "REPO-10",
+          "checkId": "REPO-10-C03",
+          "previousRequiredEnvironment": "Isolated native Linux/macOS fixtures; generated HTML inspection where supported"
+        },
+        {
+          "componentId": "REPO-10",
+          "checkId": "REPO-10-C04",
+          "previousRequiredEnvironment": "Isolated native Linux/macOS fixtures; generated HTML inspection where supported"
+        },
+        {
+          "componentId": "REPO-10",
+          "checkId": "REPO-10-C05",
+          "previousRequiredEnvironment": "Isolated native Linux/macOS fixtures; generated HTML inspection where supported"
+        },
+        {
+          "componentId": "REPO-10",
+          "checkId": "REPO-10-C06",
+          "previousRequiredEnvironment": "Disposable offline Git repositories on native Linux/macOS; credential-free scanner invocation and shared skill/reference/YAML inspection. No network, models, real reviewer notes or browser needed."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-15T05:48:27.977Z",
+      "reviewer": "Codex",
+      "scope": "mac-arm-cohort-history-startup-owner-source-review",
+      "platformScopeDecisionId": "PLATFORM-SCOPE-03",
+      "sourceHashes": {
+        "tests/platform/native_go.py": "6872b4d0be4c70fc4c3229b43430d9ed19f6738c87ff71a03fc0661fefb9de36",
+        "tests/platform/native_compose.py": "c17c29eacb19b3a47fb64d58445614871fa338358cadb2b5898fb09c656ca555",
+        "tests/platform/test_native_cohorts.py": "03d998c46c8ec49248c85a44a4f84e5362f75e75f7182b5930e4bfe9e894bd2c",
+        "platform/launcher/bootstrap_history_darwin_test.go": "20d34a8cc59c3128cb01968b02b97f1e84d0355d3e6195245dcd4b627c7866a1",
+        "platform/launcher/host_history_policy_darwin_test.go": "ddcb97b0b1f9b8cfbba851cd9399b852df375b628493acbf54dc6f02b85c76c8",
+        "platform/launcher/installed_cli_compose_startup_owner_darwin_test.go": "5c5da1e44a5f8cd511d78e72ed60cfffd59480ef02dcbbc1262c498d1fc3396e"
+      },
+      "evidence": [
+        "delivery/evidence/P02/local-runtime-cleanup/collector-cohort-controls-review.json",
+        "delivery/evidence/P02/local-darwin-identity/creator-history-compile-review.json",
+        "delivery/evidence/P02/local-darwin-identity/startup-owner-compile-review.json",
+        "delivery/evidence/P02/local-darwin-identity/signed-release-stop-repair-preparation-review.json"
+      ],
+      "previousPlanningSourceHashes": {
+        "component-inventory.json": "199752d4e9f2e6099a4473375607aadb7b0974ce76cb62758953d1843027559d",
+        "component-audit-hub.json": "8adf40efb66e7ced4dd3f43c4474446c6231c7fd72ad6e1d167152d870be477f",
+        "component-audit-repository.json": "0c857bc99c37a9e51dd6e4586a935ac5509462736028ba499acfd0da4f679109"
+      },
+      "note": "Reviewed explicit collector cohort admission, native creator-history and blocked-startup-owner source. Twenty-two pure collector controls passed. Native fixtures compiled only; no protected execution or phase acceptance. SDK-dependent compatibility remains unresolved. Prepared signed artifacts predate the subsequent image-disposal repair and are historical snapshot evidence.",
+      "previousSurfaceRows": [
+        {
+          "path": "tests/platform/native_go.py",
+          "componentIds": [
+            "REPO-03"
+          ],
+          "workingFileSha256": "833d56b88053718f0d9baca802d9150e28f4681f05741a922e591bec04a6a50e",
+          "declarations": [
+            {
+              "name": "digest",
+              "line": 61,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "atomic_report",
+              "line": 65,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "remaining_timeout",
+              "line": 81,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "OwnedCleanupError",
+              "line": 93,
+              "kind": "ClassDef"
+            },
+            {
+              "name": "__init__",
+              "line": 95,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "__repr__",
+              "line": 101,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "_OwnedReap",
+              "line": 105,
+              "kind": "ClassDef"
+            },
+            {
+              "name": "__init__",
+              "line": 106,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "_stop",
+              "line": 117,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "stop_until",
+              "line": 128,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "shutdown",
+              "line": 158,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "_shutdown_retained_reaps",
+              "line": 187,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "stop_owned",
+              "line": 197,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "wait_owned",
+              "line": 202,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "admit_preparation_workspace",
+              "line": 216,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "prepare_tools",
+              "line": 228,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "source_hashes",
+              "line": 245,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "download",
+              "line": 255,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "broker_downloader",
+              "line": 260,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "toolchain",
+              "line": 267,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_module",
+              "line": 286,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_package_matrix",
+              "line": 293,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_install_selection",
+              "line": 325,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "admit_install_events",
+              "line": 346,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "admit_required_events",
+              "line": 352,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_cgo0_private_selection",
+              "line": 365,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_cgo0_deployment_selection",
+              "line": 385,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "admit_events",
+              "line": 405,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "AdmissionTests",
+              "line": 454,
+              "kind": "ClassDef"
+            },
+            {
+              "name": "test_completion_order_requires_run_then_test_end_then_package_end",
+              "line": 455,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_interrupted_checkpoint_publication_preserves_prior_report",
+              "line": 468,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_actual_pass",
+              "line": 478,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_empty_skip_failure_and_malformed_are_not_passes",
+              "line": 485,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_nonzero_exit_and_package_only_are_not_passes",
+              "line": 492,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_a_pass_cannot_hide_skip_failure_or_missing_package_end",
+              "line": 497,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_missing_mismatched_and_incomplete_package_events_fail",
+              "line": 511,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_module_pins_are_structured_and_replacements_refused",
+              "line": 520,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_downloader_import_does_not_write_checkout_bytecode",
+              "line": 529,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "observed",
+              "line": 531,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_package_matrix_cannot_hide_missing_new_or_incomplete_tests",
+              "line": 538,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_runtime_command_package_cannot_be_omitted_or_declared_without_tests",
+              "line": 553,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_local_tls_package_cannot_be_omitted_or_declared_without_tests",
+              "line": 563,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_private_files_package_cannot_be_omitted_or_declared_without_tests",
+              "line": 573,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "RunnerTests",
+              "line": 584,
+              "kind": "ClassDef"
+            },
+            {
+              "name": "test_interrupted_owned_wait_stops_and_reaps_before_propagation",
+              "line": 587,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_interruption_after_reaping_never_signals_saved_identity",
+              "line": 598,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "interrupted_wait",
+              "line": 601,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_owned_builtin_timeout_reaps_actual_child",
+              "line": 614,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_owned_cleanup_timeout_retains_owner_and_retry_resolves",
+              "line": 628,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_owned_cleanup_interruption_retains_owner",
+              "line": 651,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_owned_cleanup_stop_failure_never_disappears_after_reap",
+              "line": 664,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_owned_cleanup_shutdown_reaps_exact_retained_child",
+              "line": 681,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_hidden_preparation_refuses_populated_workspace_before_writes",
+              "line": 717,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_preparation_accepts_only_empty_regular_marker",
+              "line": 729,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "exercise",
+              "line": 740,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "prepared",
+              "line": 772,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "query",
+              "line": 776,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "spawn",
+              "line": 805,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "timed_wait",
+              "line": 848,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_synthetic_darwin_metadata_never_uses_process_fake",
+              "line": 885,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_install_requires_native_host_authorization_and_nonroot_before_effects",
+              "line": 898,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_install_selection_is_separate_and_never_qualifies_full_boot",
+              "line": 906,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_install_admission_requires_every_reviewed_top_level_test",
+              "line": 932,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_install_inventory_refuses_missing_tests_or_cgo",
+              "line": 944,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_host_scope_cannot_borrow_protected_image_passes",
+              "line": 959,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_host_selection_failure_or_source_drift_never_qualifies_collection",
+              "line": 972,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_protected_image_pass_cannot_hide_failed_host_scope",
+              "line": 980,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_install_inventory_requires_all_host_declarations_exactly_once",
+              "line": 989,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_install_refuses_malformed_apple_compiler_version_before_tests",
+              "line": 1003,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_install_and_research_flags_are_mutually_exclusive",
+              "line": 1012,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_preparation_rejects_combined_install_and_research_markers",
+              "line": 1016,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_synthetic_normal_runner_records_every_scope_and_isolates_environment",
+              "line": 1025,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_unsupported_host_refuses_before_tools_or_tests",
+              "line": 1039,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_normal_native_selection_executes_runtime_command_on_both_hosts",
+              "line": 1045,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_normal_native_selection_executes_local_tls_on_both_hosts",
+              "line": 1057,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_darwin_normal_matrix_requires_actual_cgo_compiler_sdk_for_private_files",
+              "line": 1069,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_darwin_cgo0_refusal_is_exact_separate_and_not_product_qualification",
+              "line": 1088,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_cgo0_inventory_and_named_events_cannot_hide_missing_or_wrong_test",
+              "line": 1104,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_darwin_cgo0_deployment_refusal_has_separate_command_and_report",
+              "line": 1131,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_deployment_refusal_claim_requires_stable_original_and_executed_source",
+              "line": 1153,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_cgo0_deployment_inventory_rejects_wrong_missing_and_repeated_test",
+              "line": 1161,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_cgo0_deployment_events_require_exact_actual_named_completion",
+              "line": 1180,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_setup_failure_retains_failed_report_without_private_error_text",
+              "line": 1194,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_synthetic_test_failure_and_changed_execution_source_cannot_pass",
+              "line": 1201,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_research_has_separate_results_and_actual_fail_closed_control",
+              "line": 1207,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_research_refusal_claim_requires_stable_original_and_executed_source",
+              "line": 1220,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_darwin_normal_matrix_never_claims_native_protected_boot",
+              "line": 1227,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_timeout_is_checkpointed_and_exhausted_scopes_are_unexecuted",
+              "line": 1235,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "main",
+              "line": 1252,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "checkpoint",
+              "line": 1309,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "native_query",
+              "line": 1378,
+              "kind": "FunctionDef"
+            }
+          ],
+          "httpPathLiterals": [],
+          "reviewStatus": "Targeted CI repair reviewed and promoted. Synthetic local controls passed; native macOS verification and full P02 acceptance remain open."
+        },
+        {
+          "path": "tests/platform/native_compose.py",
+          "componentIds": [
+            "REPO-03"
+          ],
+          "workingFileSha256": "c4182bb87a0a82bd677d8361fa0b4d60d3d3eb8a7ee853ef9b2e2dd6665ac7a4",
+          "declarations": [
+            {
+              "name": "digest",
+              "line": 81,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "closed_json",
+              "line": 85,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "pairs",
+              "line": 86,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "absolute",
+              "line": 97,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "read_stable_file",
+              "line": 101,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "read_pinned",
+              "line": 119,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "native_host",
+              "line": 128,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_selection",
+              "line": 138,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_prerequisites",
+              "line": 161,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "EngineLease",
+              "line": 182,
+              "kind": "ClassDef"
+            },
+            {
+              "name": "__init__",
+              "line": 184,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "access_descriptors",
+              "line": 222,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "access_arguments",
+              "line": 225,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "mark_started",
+              "line": 229,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "verified_cleanup",
+              "line": 237,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "close",
+              "line": 251,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "source_hashes",
+              "line": 258,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "load_helpers",
+              "line": 268,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "sdk_dependencies",
+              "line": 277,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "load_status_sdk",
+              "line": 289,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_status_shape",
+              "line": 310,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_inventory",
+              "line": 317,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "clean_safe_json",
+              "line": 339,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "valid_apple_compiler",
+              "line": 348,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "admit_native_events",
+              "line": 352,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_fixture_records",
+              "line": 379,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "timestamp",
+              "line": 399,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "children",
+              "line": 445,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "collect_fixture_artifacts",
+              "line": 463,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "run_command",
+              "line": 487,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "successful",
+              "line": 499,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "completion_admitted",
+              "line": 505,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "verify_files",
+              "line": 519,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "qualify",
+              "line": 538,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "invoke",
+              "line": 593,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "check_held_access",
+              "line": 634,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "copy_test_logs",
+              "line": 658,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "main",
+              "line": 692,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "Controls",
+              "line": 744,
+              "kind": "ClassDef"
+            },
+            {
+              "name": "selection",
+              "line": 745,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_all_four_targets_and_wrong_actual_host",
+              "line": 754,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_closed_json_duplicate_and_nonfinite_refused",
+              "line": 760,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_selection_no_default_remote_floating_or_missing_fields",
+              "line": 764,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_safe_artifact_rejects_private_bytes_and_nonobjects",
+              "line": 771,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "prerequisites",
+              "line": 776,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_prerequisite_contract_rejects_missing_pins_and_auth_inventory",
+              "line": 783,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_real_selection_file_requires_separate_pin_and_refuses_symlink",
+              "line": 791,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_expired_budget_never_spawns_child",
+              "line": 800,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_engine_lease_serializes_and_retains_unknown_cleanup",
+              "line": 807,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_engine_lease_releases_only_its_verified_marker",
+              "line": 818,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_engine_marker_substitution_cannot_clear_uncertainty",
+              "line": 827,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_zero_exit_timeout_is_not_success",
+              "line": 837,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_source_drift_timeout_interrupted_command_or_missing_cleanup_cannot_qualify",
+              "line": 840,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_unknown_failure_retains_failed_checkpoint_without_running_process",
+              "line": 855,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_safe_fixture_collection_never_copies_private_adjacent_files",
+              "line": 869,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "fixture_records",
+              "line": 879,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_missing_cleanup_or_failure_evidence_cannot_pass",
+              "line": 928,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_exact_scope_and_order_admission",
+              "line": 935,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_review_compiler_requires_numeric_version",
+              "line": 948,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_review_package_start_required_before_test_and_terminal_events",
+              "line": 952,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_repaired_artifacts_bind_status_volume_children_and_enrollment",
+              "line": 960,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_complete_package_lifecycle_refuses_late_start_and_trailing_events",
+              "line": 973,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_lock_held_descriptors_cover_ancestors_private_directory_and_file",
+              "line": 982,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_review_lock_access_denial_cannot_qualify",
+              "line": 996,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_review_warm_status_file_is_allowlisted",
+              "line": 1004,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_review_minimal_cleanup_without_identity_or_reaping_is_refused",
+              "line": 1007,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_review_complete_l04_records_required",
+              "line": 1017,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_review_nested_baseline_port_projection_required",
+              "line": 1022,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_full_l04_nested_fields_and_port_bindings_are_not_optional",
+              "line": 1029,
+              "kind": "FunctionDef"
+            }
+          ],
+          "httpPathLiterals": [],
+          "reviewStatus": "Independent source and component review closed; actual native Compose and installed CLI qualification remain open."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-15T06:06:29.994Z",
+      "reviewer": "Codex",
+      "scope": "mac-arm-reviewed-setup-and-extended-cohort-freeze",
+      "platformScopeDecisionId": "PLATFORM-SCOPE-03",
+      "sourceHashes": {
+        "platform/launcher/testdata/darwin_release_installer.py": "af4693a4f0683990f8620e6d6df8c6a23251c468b192d7a9180abc863c2b43d6",
+        "platform/launcher/testdata/darwin_release_install_driver.py": "7694aff6f478b2fd295388ff7f5e65a4df2d247cd219c0861d25eef247e34904",
+        "platform/launcher/testdata/darwin_test_artifact_installer.py": "b10f90b9e9e9de6d7f5d4adab51a34acb3f2fae39d9a90d4b22ad7eac64211b0",
+        "platform/launcher/testdata/darwin_test_artifact_install_driver.py": "59e290d36c97eace956da1b3b04f73a1b1b4fa899dc42810c0e5a94eb43b90ae",
+        "platform/launcher/darwin_release_candidate_match_test.go": "dccddfd97d4afb8fbecfeeee21fce754d17da1fd42d5d4a696bf048db8556308",
+        "tests/platform/native_go.py": "fd4a373062902c1755a308c774a31415b3d478ec9517d8390b948c1eb4decaa4",
+        "tests/platform/native_compose.py": "3a8115361993738274c7ea453d38750ad97cb71155535e42ae67f0078edf0d29",
+        "tests/platform/test_native_cohorts.py": "cc9b62a601f48fe4e24495829ddc17d37eb5f5f6b9a9fee018118579845b632c",
+        "tests/platform/README.md": "bfc8b24336a09713e9cc2b88d8291b9f30499de11062d6e06f20841b7a92117d"
+      },
+      "evidence": [
+        "delivery/evidence/P02/local-darwin-identity/reviewed-setup-inputs.json",
+        "delivery/evidence/P02/local-runtime-cleanup/extended-cohort-compatibility-review.json",
+        "delivery/evidence/P02/local-runtime-cleanup/collector-python314-compatibility-review.json",
+        "delivery/evidence/P02/local-darwin-identity/signed-release-image-cleanup-preparation-review.json"
+      ],
+      "previousPlanningSourceHashes": {
+        "component-inventory.json": "a79990e32ad8727f81416c98e6b25407b56c59aa7d6d3ae59ec459cab8a5fee9",
+        "component-audit-hub.json": "fa1cb4eb0f73339b47a38e120e33192e80a05626c811959a6414426acf24c653",
+        "component-audit-repository.json": "3f462c63e3e4de4a67db9174af1f3aad6d9fc927b54d3ca155fb5e4e41c690c0"
+      },
+      "note": "Reviewed fixed installation inputs and all eight explicit normal collector cohorts. Sixty-six pure controls passed on repository-pinned native Python 3.14.8. Root setup approval/authentication, actual installed qualification and final candidate checks remain pending. No phase acceptance, privileged execution or CI claim.",
+      "previousSurfaceRows": [
+        {
+          "path": "tests/platform/native_go.py",
+          "componentIds": [
+            "REPO-03"
+          ],
+          "workingFileSha256": "6872b4d0be4c70fc4c3229b43430d9ed19f6738c87ff71a03fc0661fefb9de36",
+          "declarations": [
+            {
+              "name": "cohort_pattern",
+              "line": 75,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_cohort_inventory",
+              "line": 81,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "admit_cohort_events",
+              "line": 100,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "pairs",
+              "line": 103,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "digest",
+              "line": 167,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "atomic_report",
+              "line": 171,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "remaining_timeout",
+              "line": 187,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "OwnedCleanupError",
+              "line": 199,
+              "kind": "ClassDef"
+            },
+            {
+              "name": "__init__",
+              "line": 201,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "__repr__",
+              "line": 207,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "_OwnedReap",
+              "line": 211,
+              "kind": "ClassDef"
+            },
+            {
+              "name": "__init__",
+              "line": 212,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "_stop",
+              "line": 223,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "stop_until",
+              "line": 234,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "shutdown",
+              "line": 264,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "_shutdown_retained_reaps",
+              "line": 293,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "stop_owned",
+              "line": 303,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "wait_owned",
+              "line": 308,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "admit_preparation_workspace",
+              "line": 322,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "prepare_tools",
+              "line": 334,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "source_hashes",
+              "line": 351,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "download",
+              "line": 361,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "broker_downloader",
+              "line": 366,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "toolchain",
+              "line": 373,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_module",
+              "line": 392,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_package_matrix",
+              "line": 399,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_install_selection",
+              "line": 431,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "admit_install_events",
+              "line": 452,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "admit_required_events",
+              "line": 458,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_cgo0_private_selection",
+              "line": 471,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_cgo0_deployment_selection",
+              "line": 491,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "admit_events",
+              "line": 511,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "AdmissionTests",
+              "line": 560,
+              "kind": "ClassDef"
+            },
+            {
+              "name": "test_completion_order_requires_run_then_test_end_then_package_end",
+              "line": 561,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_interrupted_checkpoint_publication_preserves_prior_report",
+              "line": 574,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_actual_pass",
+              "line": 584,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_empty_skip_failure_and_malformed_are_not_passes",
+              "line": 591,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_nonzero_exit_and_package_only_are_not_passes",
+              "line": 598,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_a_pass_cannot_hide_skip_failure_or_missing_package_end",
+              "line": 603,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_missing_mismatched_and_incomplete_package_events_fail",
+              "line": 617,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_module_pins_are_structured_and_replacements_refused",
+              "line": 626,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_downloader_import_does_not_write_checkout_bytecode",
+              "line": 635,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "observed",
+              "line": 637,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_package_matrix_cannot_hide_missing_new_or_incomplete_tests",
+              "line": 644,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_runtime_command_package_cannot_be_omitted_or_declared_without_tests",
+              "line": 659,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_local_tls_package_cannot_be_omitted_or_declared_without_tests",
+              "line": 669,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_private_files_package_cannot_be_omitted_or_declared_without_tests",
+              "line": 679,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "RunnerTests",
+              "line": 690,
+              "kind": "ClassDef"
+            },
+            {
+              "name": "test_interrupted_owned_wait_stops_and_reaps_before_propagation",
+              "line": 693,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_interruption_after_reaping_never_signals_saved_identity",
+              "line": 704,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "interrupted_wait",
+              "line": 707,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_owned_builtin_timeout_reaps_actual_child",
+              "line": 720,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_owned_cleanup_timeout_retains_owner_and_retry_resolves",
+              "line": 734,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_owned_cleanup_interruption_retains_owner",
+              "line": 757,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_owned_cleanup_stop_failure_never_disappears_after_reap",
+              "line": 770,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_owned_cleanup_shutdown_reaps_exact_retained_child",
+              "line": 787,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_hidden_preparation_refuses_populated_workspace_before_writes",
+              "line": 823,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_preparation_accepts_only_empty_regular_marker",
+              "line": 835,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "exercise",
+              "line": 846,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "prepared",
+              "line": 878,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "query",
+              "line": 882,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "spawn",
+              "line": 911,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "timed_wait",
+              "line": 954,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_synthetic_darwin_metadata_never_uses_process_fake",
+              "line": 991,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_install_requires_native_host_authorization_and_nonroot_before_effects",
+              "line": 1004,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_install_selection_is_separate_and_never_qualifies_full_boot",
+              "line": 1012,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_install_admission_requires_every_reviewed_top_level_test",
+              "line": 1038,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_install_inventory_refuses_missing_tests_or_cgo",
+              "line": 1050,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_host_scope_cannot_borrow_protected_image_passes",
+              "line": 1065,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_host_selection_failure_or_source_drift_never_qualifies_collection",
+              "line": 1078,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_protected_image_pass_cannot_hide_failed_host_scope",
+              "line": 1086,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_install_inventory_requires_all_host_declarations_exactly_once",
+              "line": 1095,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_install_refuses_malformed_apple_compiler_version_before_tests",
+              "line": 1109,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_install_and_research_flags_are_mutually_exclusive",
+              "line": 1118,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_preparation_rejects_combined_install_and_research_markers",
+              "line": 1122,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_synthetic_normal_runner_records_every_scope_and_isolates_environment",
+              "line": 1131,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_unsupported_host_refuses_before_tools_or_tests",
+              "line": 1145,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_normal_native_selection_executes_runtime_command_on_both_hosts",
+              "line": 1151,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_normal_native_selection_executes_local_tls_on_both_hosts",
+              "line": 1163,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_darwin_normal_matrix_requires_actual_cgo_compiler_sdk_for_private_files",
+              "line": 1175,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_darwin_cgo0_refusal_is_exact_separate_and_not_product_qualification",
+              "line": 1194,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_cgo0_inventory_and_named_events_cannot_hide_missing_or_wrong_test",
+              "line": 1210,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_darwin_cgo0_deployment_refusal_has_separate_command_and_report",
+              "line": 1237,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_deployment_refusal_claim_requires_stable_original_and_executed_source",
+              "line": 1259,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_cgo0_deployment_inventory_rejects_wrong_missing_and_repeated_test",
+              "line": 1267,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_cgo0_deployment_events_require_exact_actual_named_completion",
+              "line": 1286,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_setup_failure_retains_failed_report_without_private_error_text",
+              "line": 1300,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_synthetic_test_failure_and_changed_execution_source_cannot_pass",
+              "line": 1307,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_research_has_separate_results_and_actual_fail_closed_control",
+              "line": 1313,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_research_refusal_claim_requires_stable_original_and_executed_source",
+              "line": 1326,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_darwin_normal_matrix_never_claims_native_protected_boot",
+              "line": 1333,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_timeout_is_checkpointed_and_exhausted_scopes_are_unexecuted",
+              "line": 1341,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "main",
+              "line": 1358,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "checkpoint",
+              "line": 1424,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "native_query",
+              "line": 1493,
+              "kind": "FunctionDef"
+            }
+          ],
+          "httpPathLiterals": [],
+          "reviewStatus": "Reviewed explicit collector cohort admission, native creator-history and blocked-startup-owner source. Twenty-two pure collector controls passed. Native fixtures compiled only; no protected execution or phase acceptance. SDK-dependent compatibility remains unresolved. Prepared signed artifacts predate the subsequent image-disposal repair and are historical snapshot evidence."
+        },
+        {
+          "path": "tests/platform/native_compose.py",
+          "componentIds": [
+            "REPO-03"
+          ],
+          "workingFileSha256": "c17c29eacb19b3a47fb64d58445614871fa338358cadb2b5898fb09c656ca555",
+          "declarations": [
+            {
+              "name": "digest",
+              "line": 81,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "closed_json",
+              "line": 85,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "pairs",
+              "line": 86,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "absolute",
+              "line": 97,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "read_stable_file",
+              "line": 101,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "read_pinned",
+              "line": 119,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "cohort_groups",
+              "line": 128,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "cohort_tuple",
+              "line": 134,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "json_pin",
+              "line": 141,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "pinned_reference",
+              "line": 145,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_cohort_bundle",
+              "line": 155,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "cohort_environment",
+              "line": 224,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "collect_cohort_cleanup",
+              "line": 251,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "run_darwin_cohort",
+              "line": 281,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "native_host",
+              "line": 362,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_selection",
+              "line": 372,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_prerequisites",
+              "line": 395,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "EngineLease",
+              "line": 416,
+              "kind": "ClassDef"
+            },
+            {
+              "name": "__init__",
+              "line": 418,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "access_descriptors",
+              "line": 456,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "access_arguments",
+              "line": 459,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "mark_started",
+              "line": 463,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "verified_cleanup",
+              "line": 471,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "close",
+              "line": 485,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "source_hashes",
+              "line": 492,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "load_helpers",
+              "line": 503,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "sdk_dependencies",
+              "line": 512,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "load_status_sdk",
+              "line": 524,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_status_shape",
+              "line": 545,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_inventory",
+              "line": 552,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "clean_safe_json",
+              "line": 574,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "valid_apple_compiler",
+              "line": 583,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "admit_native_events",
+              "line": 587,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "validate_fixture_records",
+              "line": 614,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "timestamp",
+              "line": 634,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "children",
+              "line": 680,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "collect_fixture_artifacts",
+              "line": 698,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "run_command",
+              "line": 722,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "successful",
+              "line": 734,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "completion_admitted",
+              "line": 740,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "verify_files",
+              "line": 754,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "qualify",
+              "line": 773,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "invoke",
+              "line": 835,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "check_held_access",
+              "line": 879,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "copy_test_logs",
+              "line": 906,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "main",
+              "line": 940,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "Controls",
+              "line": 1000,
+              "kind": "ClassDef"
+            },
+            {
+              "name": "selection",
+              "line": 1001,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_all_four_targets_and_wrong_actual_host",
+              "line": 1010,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_closed_json_duplicate_and_nonfinite_refused",
+              "line": 1016,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_selection_no_default_remote_floating_or_missing_fields",
+              "line": 1020,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_safe_artifact_rejects_private_bytes_and_nonobjects",
+              "line": 1027,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "prerequisites",
+              "line": 1032,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_prerequisite_contract_rejects_missing_pins_and_auth_inventory",
+              "line": 1039,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_real_selection_file_requires_separate_pin_and_refuses_symlink",
+              "line": 1047,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_expired_budget_never_spawns_child",
+              "line": 1056,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_engine_lease_serializes_and_retains_unknown_cleanup",
+              "line": 1063,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_engine_lease_releases_only_its_verified_marker",
+              "line": 1074,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_engine_marker_substitution_cannot_clear_uncertainty",
+              "line": 1083,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_zero_exit_timeout_is_not_success",
+              "line": 1093,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_source_drift_timeout_interrupted_command_or_missing_cleanup_cannot_qualify",
+              "line": 1096,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_unknown_failure_retains_failed_checkpoint_without_running_process",
+              "line": 1111,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_safe_fixture_collection_never_copies_private_adjacent_files",
+              "line": 1125,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "fixture_records",
+              "line": 1135,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_missing_cleanup_or_failure_evidence_cannot_pass",
+              "line": 1184,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_exact_scope_and_order_admission",
+              "line": 1191,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_review_compiler_requires_numeric_version",
+              "line": 1204,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_review_package_start_required_before_test_and_terminal_events",
+              "line": 1208,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_repaired_artifacts_bind_status_volume_children_and_enrollment",
+              "line": 1216,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_complete_package_lifecycle_refuses_late_start_and_trailing_events",
+              "line": 1229,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_lock_held_descriptors_cover_ancestors_private_directory_and_file",
+              "line": 1238,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_review_lock_access_denial_cannot_qualify",
+              "line": 1252,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_review_warm_status_file_is_allowlisted",
+              "line": 1260,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_review_minimal_cleanup_without_identity_or_reaping_is_refused",
+              "line": 1263,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_review_complete_l04_records_required",
+              "line": 1273,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_review_nested_baseline_port_projection_required",
+              "line": 1278,
+              "kind": "FunctionDef"
+            },
+            {
+              "name": "test_full_l04_nested_fields_and_port_bindings_are_not_optional",
+              "line": 1285,
+              "kind": "FunctionDef"
+            }
+          ],
+          "httpPathLiterals": [],
+          "reviewStatus": "Reviewed explicit collector cohort admission, native creator-history and blocked-startup-owner source. Twenty-two pure collector controls passed. Native fixtures compiled only; no protected execution or phase acceptance. SDK-dependent compatibility remains unresolved. Prepared signed artifacts predate the subsequent image-disposal repair and are historical snapshot evidence."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-15T06:07:06.524Z",
+      "reviewer": "Codex",
+      "scope": "correct-readme-registration-owner",
+      "path": "tests/platform/README.md",
+      "sourceSHA256": "bfc8b24336a09713e9cc2b88d8291b9f30499de11062d6e06f20841b7a92117d",
+      "note": "Correct an accidental extra REPO-03 file association in the preceding review registration. Preserve the original HUB-26 inventory owner and the prior review event; no verifier or acceptance requirement changes.",
+      "previousPlanningSourceHashes": {
+        "component-inventory.json": "1342519de19a10c050510409e2d3eec7ed1b6db72e7358cedb3a47a99f758c16",
+        "component-audit-hub.json": "094c105d370f97d42ccdbb291df564a361c68579c7b72b1f2bf16444dea00324",
+        "component-audit-repository.json": "c3d2759f17f5221096498680a8ba598faaf740649062fb5c6802b543bc5517e2"
+      }
+    },
+    {
+      "date": "2026-10-15T07:12:43.997Z",
+      "reviewer": "Codex",
+      "scope": "normal-sdk265-shared-tests-and-final-collector-controls",
+      "sourceHashes": {
+        "platform/internal/darwinfixtureidentity/poll_shared_darwin_test.go": "a9b0e24863408a5d7c89238e4d684950d1db1a42fe9f0248a9abda3a049e8f3e",
+        "platform/internal/darwinfixtureidentity/protected_common_darwin_test.go": "c52274ea24ae24ee1358e7fa0d4109e867e3b8eee55d584810935f4ac0a04399",
+        "platform/internal/darwinfixtureidentity/protected_normal_darwin_test.go": "ff42d60f7aae40b9f78c82b76465142bad7bdaf591a2b948bb37d176c6d0bce2",
+        "platform/internal/darwinfixtureidentity/runtime_parent_normal_darwin_test.go": "cb34edf2b13ada31f4d11c989abb8c05c7f0393de067ceade63f74aa3f5937ae",
+        "tests/platform/native_go.py": "e96bb91a775e4b077114a78063caca372c5cba9e41c63756f53488631aa6e79e",
+        "tests/platform/native_compose.py": "eab31b75d28b2ff5e4e7017e888aa12a980a6335c8de3a996a3b870fa439db26",
+        "tests/platform/test_native_cohorts.py": "964db9b015e6936cbf4f048447d7950272291a75144b3de318b7121073755f48",
+        "tests/platform/README.md": "56f5d72a063eb511266219636420c119d300c6c630be0669d0ba91e62f104400"
+      },
+      "previousPlanningSourceHashes": {
+        "component-inventory.json": "bb815484e706035b0a4d7620bff8f83515964117f96285b4139ccd592a70c634",
+        "component-audit-hub.json": "0c7fb1ac26920b7eb16b65526d7fac7dcd87fe567b8570c1852c52fd16030ad5",
+        "component-audit-repository.json": "7aa9e5d68f2ad150814e598cbc0bfc63825db23fac984fbf389b98729c716aca"
+      },
+      "evidence": [
+        "delivery/evidence/P02/local-darwin-identity/normal-candidate-separated-compile-review.json",
+        "delivery/evidence/P02/local-runtime-cleanup/final-normal-cohort-controls-review.json"
+      ],
+      "note": "Reviewed assertion-preserving shared extraction and normal test counterparts, separate compile profiles and eleven exact opt-in collector cohorts. Seventy-four pure controls passed. Protected execution, newly identified mount/live-process gaps, installed qualification and final committed-candidate verification remain open; no phase acceptance."
+    },
+    {
+      "date": "2026-10-15T07:36:47.137Z",
+      "reviewer": "Codex",
+      "scope": "native-docker-live-and-ownership-fixture-review",
+      "sourceHashes": {
+        "platform/launcher/docker_reads_darwin_test.go": "ad3a826d419532847b7c392557a03185ae8deaa74eff70e655e2013e061daa6f",
+        "platform/launcher/docker_archive_darwin_test.go": "c311e53754d5737996fe55b450fe279cb8b2d3d92c05d538a417770e601c5cb0",
+        "platform/launcher/docker_child_observation_darwin_test.go": "751f4185cb442d3cd44bb319237f50f224517d1748b21a36d7cdcfab0507dbd4",
+        "platform/privatefs/ownership_mount_darwin_test.go": "8252e4a5090096b8be4d02f25797630b430c16d7ef8b90052ce27567b932773e",
+        "platform/internal/darwinownershipfixture/helper_darwin.go": "b3225c6598936e21a8eafb94bce4a430294dacd84c4d6dff9a3b5126fecbf8a3",
+        "platform/launcher/signed_role_live_fixture_darwin_test.go": "205c1f4eee025c45238e9b595aa1add18b79f818c560e23139f26d417cbfd38b",
+        "platform/launcher/signed_role_live_process_darwin_test.go": "6f9b87931c0b67f29dc446f1fc4ea4ec1bd451a59f61c389acb618082494511f",
+        "platform/launcher/installed_cli_compose_slow_consumer_darwin_test.go": "363d183abb7ee84938fd038114f502702643d63e82a6c4f3f81ab89272a16f4c",
+        "platform/runtime/ownership_mount_darwin_test.go": "ad6cb825f8d45769e6e353339788e1fa86a1ba1821f8812f418e9e3c6b9fad01",
+        "tests/platform/native_go.py": "0adde36546b5660b1b5cfb2e362c20aca2959f6ebcd1cabf348bf99fefc090c4",
+        "tests/platform/native_compose.py": "4e1b64e088f8f9f2b097822049f1c4ebb889640dedfcb3e7713edf829e86f96a",
+        "tests/platform/test_native_cohorts.py": "47aec7e806e531b70d5ebb2db13f4f89f4c5682ba65f89ae8e89bca5e4e659b9",
+        "tests/platform/README.md": "f34787ab1248db88fb97d932d7786d204f5cca9e90a8b7a54488bd7c63cee6ec"
+      },
+      "previousPlanningSourceHashes": {
+        "component-inventory.json": "b8a793faa3a5bcdb2c993cc34d48374ca53018d945975ddc4dfd02efbca124a2",
+        "component-audit-hub.json": "865e0bb9b15e95345fb194d3dad2214e52f6999605c01ba88a4a9d5eb0c59ab2",
+        "component-audit-repository.json": "d07d3181d2ca1dbe7bd69746541836e96ff745e33de0a81f32eade54c7625d3f"
+      },
+      "evidence": [
+        "delivery/evidence/P02/local-runtime-cleanup/darwin-docker-caller-controls-review.json",
+        "delivery/evidence/P02/local-runtime-cleanup/native-review-tool-preservation-review.json",
+        "delivery/evidence/P02/local-runtime-cleanup/live-recovery-cohort-controls-review.json",
+        "delivery/evidence/P02/local-darwin-identity/ownership-libc-property-probe-review.json",
+        "delivery/evidence/P02/local-darwin-identity/native-security-team-component-review.json",
+        "delivery/evidence/P02/local-darwin-identity/remaining-native-qualification-audit.json"
+      ],
+      "note": "Reviewed native counterpart and fixture source. Four Docker caller controls, 38 review-tool controls, 22 security top-level/89 subtests, four ACL-property controls and 77 pure collector controls passed within their recorded bounds. Live protected recovery and installed slow-consumer are source-reviewed, not behaviorally executed. Actual noowners mounts, administrator setup, full installed qualification and final candidate/gate review remain pending. No acceptance statuses changed."
+    },
+    {
+      "date": "2026-10-15T08:12:49.928Z",
+      "reviewer": "Codex",
+      "scope": "reviewed-apfs-driver-and-opaque-subtest-collector",
+      "sourceHashes": {
+        "platform/internal/darwinownershipfixture/testdata/apfs_mount/driver.py": "9c8ebee2dca42851e5d63a62986be48fab1da76e41cb0182e9a0c68591203f28",
+        "platform/internal/darwinownershipfixture/testdata/apfs_mount/setup.py": "c62ad0233cea6e8893c55469bb99f2e3d1a86bc3e3c2184fb75868ac8b36ebe6",
+        "platform/internal/darwinownershipfixture/testdata/apfs_mount/teardown.py": "2df8d27da9d735ecb2fe1d4a93e2dd3f350c08652a5d4ca97af102b287adeaba",
+        "platform/internal/darwinownershipfixture/testdata/apfs_mount/lifecycle_controls.py": "c24e06148912d8662b59fb1797aaeb00f3c9a6e6b257dc454ce795a5c8909968",
+        "platform/internal/darwinownershipfixture/testdata/apfs_mount/README.md": "136300a6b6d22510c96144f961390f38cd64f116c10ae59d0d7c1a75d2c38810",
+        "tests/platform/native_go.py": "09da6a3cdcef2d2ab9d9c33cee6c2f950694436bf46040f5ded23f1a57926452",
+        "tests/platform/native_compose.py": "7a1d4ab58d84e53e7e14fe737de90ddd6e3676cd6b7d3bb60c2d99d0164978a4",
+        "tests/platform/test_native_cohorts.py": "dab46e64648546875eb26bdc10183a5227957a4ae44c949d4b4f5ef8afc542c5",
+        "tests/platform/README.md": "e50375643d98c052641f9788f1a7311d341da885ab11fed0c73432f1ae066009"
+      },
+      "previousPlanningSourceHashes": {
+        "component-inventory.json": "f89e1ab98fb7be47da7f7a4e9995b4e2e1df80c9e4c17ab64310950a95701358",
+        "component-audit-hub.json": "e6cfe3de8e70f70a438953444592cf1e4058e93d9692bd3ee57e2325653b3512",
+        "component-audit-repository.json": "61b8da6bcc640142825559ee566b15be9ee0d6d27fbe8b153c72c6e677d2ee03"
+      },
+      "evidence": [
+        "delivery/evidence/P02/local-darwin-identity/apfs-driver-source-controls-review.json",
+        "delivery/evidence/P02/local-darwin-identity/apfs-lifecycle-controls-and-inspector-review.json",
+        "delivery/evidence/P02/local-runtime-cleanup/opaque-subtest-collector-review.json",
+        "delivery/evidence/P02/local-runtime-cleanup/default-launcher-sdk265-race-review.json",
+        "delivery/evidence/P02/local-darwin-identity/native-kernel-permissions-review.json",
+        "delivery/evidence/P02/local-darwin-identity/fail02-phase-scope-review.json"
+      ],
+      "note": "Reviewed frozen APFS helper/driver source and resolved draft keeper/capture/mask findings; nine lifecycle controls (two real unprivileged children), seven driver fakes and plan-only passed. Root/mount setup is not approved or executed; teardown evidence remains unbound. Collector now proves top-level ownership and named joins, explicitly not inferred nested parentage; 80 pure controls passed. Historical admission failure remains unchanged. Final native candidate and installed qualification/gate acceptance remain open."
     }
-  ]
+  ],
+  "platformScopeDecisionId": "PLATFORM-SCOPE-03"
 }

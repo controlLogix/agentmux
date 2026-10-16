@@ -19,8 +19,10 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Automatic feature verification stays off. Enable manual verification only after
+  # all local P00-P14 gates are accepted; keep AGENTMUX_ALL_PHASES_COMPLETE unset/false until then.
   enrollment-plan:
-    if: github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' && vars.P02_NATIVE_COMPOSE_ENABLED == 'true'
+    if: (github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' && vars.P02_NATIVE_COMPOSE_ENABLED == 'true') && ((github.ref != 'refs/heads/feat/agentmux-platform-rearchitecture' && github.head_ref != 'feat/agentmux-platform-rearchitecture') || (github.event_name == 'workflow_dispatch' && vars.AGENTMUX_ALL_PHASES_COMPLETE == 'true'))
     runs-on: ubuntu-24.04
     outputs:
       matrix: ${{ steps.plan.outputs.matrix }}
@@ -52,7 +54,7 @@ jobs:
           PY
   native-compose:
     needs: enrollment-plan
-    if: github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' && needs.enrollment-plan.outputs.any == 'true'
+    if: (github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' && needs.enrollment-plan.outputs.any == 'true') && ((github.ref != 'refs/heads/feat/agentmux-platform-rearchitecture' && github.head_ref != 'feat/agentmux-platform-rearchitecture') || (github.event_name == 'workflow_dispatch' && vars.AGENTMUX_ALL_PHASES_COMPLETE == 'true'))
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.enrollment-plan.outputs.matrix) }}

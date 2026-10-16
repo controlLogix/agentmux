@@ -24,6 +24,9 @@ const (
 	DoctorClientMissing       DoctorCode = "client_missing"
 	DoctorClientPermission    DoctorCode = "client_permission_denied"
 	DoctorClientInvalid       DoctorCode = "client_not_regular_executable"
+	DoctorComposeCheckFailed  DoctorCode = "compose_check_failed"
+	DoctorEngineCheckFailed   DoctorCode = "engine_check_failed"
+	DoctorCacheCheckFailed    DoctorCode = "cache_check_failed"
 	DoctorInspectionUnknown   DoctorCode = "inspection_unavailable"
 	DoctorEnvironmentConflict DoctorCode = "environment_conflict"
 	DoctorEndpointConflict    DoctorCode = "endpoint_conflict"
@@ -96,9 +99,32 @@ func doctorInspectionResult(err error, ctx context.Context) DoctorProbeResult {
 	if ctx.Err() != nil {
 		return DoctorProbeResult{DoctorUnavailable, doctorContextCode(ctx)}
 	}
+	switch dockerFailureDetail(err) {
+	case "docker_client_missing":
+		return DoctorProbeResult{DoctorUnavailable, DoctorClientMissing}
+	case "docker_client_permission_denied":
+		return DoctorProbeResult{DoctorFailed, DoctorClientPermission}
+	case "docker_compose_check_failed":
+		return DoctorProbeResult{DoctorUnavailable, DoctorComposeCheckFailed}
+	case "docker_engine_check_failed":
+		return DoctorProbeResult{DoctorUnavailable, DoctorEngineCheckFailed}
+	case "docker_cache_check_failed":
+		return DoctorProbeResult{DoctorUnavailable, DoctorCacheCheckFailed}
+	}
+	code := ""
+	switch actual := dockerInspectedFailure(err).(type) {
+	case *dockerRefusalError:
+		if actual != nil {
+			code = actual.Error()
+		}
+	case dockerRefusalError:
+		code = actual.Error()
+	case *dockerCommandFailure:
+		code = actual.Error()
+	}
 	// These exact safe codes come from the frozen driver. Generic command failure
 	// cannot distinguish a stopped daemon from permissions or a missing subcommand.
-	switch err.Error() {
+	switch code {
 	case "docker_environment_conflict":
 		return DoctorProbeResult{DoctorFailed, DoctorEnvironmentConflict}
 	case "docker_endpoint_mismatch":

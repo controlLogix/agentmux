@@ -1,0 +1,109 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "Independent peer Codex session; main reviewed returned mappings",
+  "target": "darwin/arm64",
+  "kind": "read-only gap audit, not execution evidence",
+  "failureMappings": [
+    {
+      "id": "FAIL-01",
+      "existingBoundaries": [
+        "TestHealthWrongEndpointAuthAndIdentity",
+        "TestObserveWrongAuthDomainIdentityAndUnavailableEndpoint",
+        "TestLocalTLSProbeActualBrokerRefusesWrongTrustBeforeInfrastructureProof",
+        "TestLocalTLSProbeAndObserveDoNotSendCredentialsToPlainINFO",
+        "TestKernelStatusPinnedTLSRejectsAdversaryBeforeCONNECT",
+        "HostConfigPolicyAndEnrolledDigestRefusals",
+        "HostConfigPrivateFileAndCredentialTampering"
+      ],
+      "requiredEvidence": "Fresh native current-candidate component/TLS checks plus installed cold launch and failed-observation command exit. Historical plaintext component APIs alone do not establish current installed TLS behavior."
+    },
+    {
+      "id": "FAIL-57",
+      "existingBoundaries": [
+        "TestDoctorRefusesBeforeAnySubprocessOrProbe",
+        "TestDoctorInspectionFailuresStaySafeAndSpecificOnlyWhenProven",
+        "TestDoctorOneTotalBudgetAndCallerCancellation",
+        "TestDockerOwnedBoundaries",
+        "TestDockerStdioDeadlineCancellationAndNoFallback"
+      ],
+      "requiredEvidence": "Distinguish missing Compose, permission-denied/unavailable daemon and absent pinned cached image from a generic command error; map corrected recovery and unchanged persistent data. Runtime deliberately uses --pull never --no-build, so preparation image acquisition and runtime missing-cache refusal are different boundaries. Do not alter the real daemon destructively merely to simulate errors."
+    },
+    {
+      "id": "FAIL-58",
+      "existingBoundaries": [
+        "TestDockerOwnedBoundaries",
+        "TestOwnedBrokerRefusesUnverifiableState",
+        "TestProfileInvalidDeclarationsBeforeSideEffects",
+        "HostConfigPolicyAndEnrolledDigestRefusals",
+        "TestInstalledCLIDarwinRealComposeConflictingChildSelection",
+        "TestInstalledCLIDarwinRealComposeOccupiedSelectedPort"
+      ],
+      "requiredEvidence": "Fresh boundary tests and installed real-resource ledgers must retain no-shadow/no-upgrade/no-delete/no-other-user-attachment assertions. Controlled incompatible-version/foreign-owner observations are not themselves installed real-engine scenarios."
+    },
+    {
+      "id": "FAIL-59",
+      "existingBoundaries": [
+        "TestHealthPartialProvisionFailureRetainsStream",
+        "TestHealthIncompatibleStreamIsNotChanged",
+        "TestHealthColdRepeatWarmAndRealRestart",
+        "TestObserveInvalidRecordAndConfigurationAreNotRepaired",
+        "TestBootNeverReadyWithMissingProtectedPeer",
+        "TestRealRolesLateSnapshotUpdatesAndPeerLoss",
+        "TestProtectedRolesTLSBrokerRecoveryPreservesIncarnations",
+        "ReconnectExhaustionIsBounded"
+      ],
+      "requiredEvidence": "Pair real actor recovery and actual runtime rollback/parent ownership checks with installed cold/warm/owner-restart persistence. Add integrated actual protected role/broker loss to honest status and same-data recovery; cached synthetic session L04 cannot substitute."
+    }
+  ],
+  "concreteFixtureGaps": [
+    {
+      "criterion": "PLAT-01-C05",
+      "gap": "Actual ownership-disabled native mount refusal with equivalent ownership-enabled APFS controls. Existing flag checks and ordinary-volume ACL tests do not exercise this condition.",
+      "sourceWork": "Subagent assigned explicit externally provisioned manifest/held-descriptor tests. No mount operation approved or performed by this assignment."
+    },
+    {
+      "criteria": ["KERN-02-C01", "KERN-01-C02", "PLAT-02-C01", "P02-T02", "P02-GATE-AC03", "P02-GATE-AC04"],
+      "gap": "Native actual four-process member loss and live broker recovery counterpart; the existing sealed-process integration is Linux-only.",
+      "sourceWork": "Subagent assigned a source-level fixture design before implementation. Existing behavior assertions must be preserved."
+    }
+  ],
+  "additionalRequiredEvidence": [
+    {
+      "criteria": ["P02-T03-AC05", "P02-T03-AC06", "KERN-03-C01", "KERN-03-C02", "KERN-03-C03", "FAIL-02"],
+      "requirement": "Exact and wildcard HOST/KERNEL/APPLICATION/SYS/JS permission and adversary matrix, TLS before credential transmission and real installed scope binding. Protected identity controls alone do not cover this boundary.",
+      "nextEvidence": "Fresh native deployment/localtls/protocol focused component batch, followed by complete candidate baseline and actual installed scope checks."
+    },
+    {
+      "criteria": ["KERN-04-C01", "P02-T04"],
+      "requirement": "Actual bounded stalled-subscriber behavior, gap/reconnect/stale observations and accepted full L04 mapping. Pure cursor tests are not a slow-consumer execution.",
+      "nextEvidence": "Focused pinned-TLS actual-process subscriber test after the native live fixture freezes. Distinguish external subscriber backpressure from internal actor queue overflow."
+    },
+    {
+      "criteria": ["P02-T05", "PLAT-03-C01", "PLAT-03-C03"],
+      "requirement": "Declared TEAM basic/JWT TLS profiles, private credential resolver, scoped snapshots, authentication/domain and protected-subject refusal checks. Local Compose alone is not TEAM qualification.",
+      "nextEvidence": "Four named native TEAM real-TLS tests plus related credential, private-filesystem and owned-socket cleanup checks."
+    },
+    {
+      "criteria": ["PLAT-02-C02"],
+      "requirement": "Actual protected executable, path policy, host replacement refusal and exact owned stop/wait. Old install-tag tests perform internal setup; compilation is insufficient and their sudo path must not be invoked as a substitute for separately reviewed setup.",
+      "nextEvidence": "Explicit mapping of separated normal-fixture controls to every old assertion after actual approved installation."
+    },
+    {
+      "criteria": ["P02-GATE-AC05", "P02-GATE-AC09", "REPO-10-C08"],
+      "requirement": "Native review-server/local-review/notes-controller process, worktree, drain and preservation checks. Not part of platform runtime cohorts.",
+      "currentBoundedEvidence": "../local-runtime-cleanup/native-review-tool-preservation-review.json; 38 working-tree tests passed, final candidate review still required."
+    },
+    {
+      "criteria": ["P02-GATE-AC10"],
+      "requirement": "Independent advancement review and exact phase commit verified on the remote feature branch, without merging.",
+      "status": "pending"
+    }
+  ],
+  "limitations": [
+    "Names identify candidate source boundaries to inspect and execute, not passing results.",
+    "All assigned P02 failure scenarios remain unaccepted until candidate-bound execution evidence and reviewer mapping exist.",
+    "This audit does not require every component denial to become a destructive installed test; verification level must match the actual criterion."
+  ],
+  "phaseGateAccepted": false
+}

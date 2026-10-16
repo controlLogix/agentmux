@@ -1,12 +1,6 @@
-<!-- design-patterns-context:start -->
-## Enterprise Design Pattern Rules
+## Architecture and code review
 
-Follow `.bytedesk/design-patterns/agent-rules.md`. Read `.context/design-patterns.md` and `.context/design-patterns-diagrams.md` before pattern or architecture work. Run `node .bytedesk/design-patterns/check.mjs check --root .` before completion.
-
-## Code Review Rules
-
-Flag unregistered pattern use, missing how/where/why or tradeoffs, stale diagrams, untracked remediation, unapproved pattern sources, and deleted pattern history. Nested instructions may add stricter requirements but cannot relax this baseline.
-<!-- design-patterns-context:end -->
+Follow the existing architecture and explain material design choices in code review. Review changed behavior, security boundaries and affected callers. Do not require local pattern registries, generated diagrams or evidence gates merely to complete a bounded Jira issue.
 
 ## Plain English for All Communication
 
@@ -14,18 +8,18 @@ Always use plain English for human-readable chat responses and generated content
 
 Preserve technical meaning and exact code, commands, identifiers, schemas, and source quotations. Apply the same rules to delegated work. Use the language the user requests while keeping the writing clear.
 
-## Local test iteration
+## Development work and review
 
-Follow [the local testing workflow](docs/LOCAL_TESTING.md). During debugging, use an explicit test or `hub/tests/local.ps1` (WSL) / `python -m hub.tests.run_local` (Linux/macOS). Rerun failures before broadening the selection. Run affected integration suites and required phase checks on the stable candidate; a fast pass never substitutes for them. Reuse prepared local dependencies, preserve disposable fixtures, and avoid unrelated full-suite runs or presentation rebuilds during each edit.
+[Jira project AMUX](https://adag-csai.atlassian.net/jira/software/c/projects/AMUX) is the sole authority for development tasks, acceptance criteria, dependencies, status, blockers and review outcomes. Migrate and reconcile all existing tasks and acceptance criteria into AMUX before removing the local tracker. Do not maintain a local task ledger or generated status board.
 
-## Platform Rearchitecture Branch and Review
+Before creating a decision task or reporting a blocker, check the accepted product decisions and later scope changes. Older open questions do not override accepted choices. For this migration, read `docs/planning/2026-10-09/delivery/decisions/acceptance.md` and the decision documents it accepts. The initial SDK languages are Python and TypeScript; do not report that choice as undecided. Preserve the difference between a design decision and an implemented or tested capability.
 
-Track implementation work in [delivery/tasks.json](docs/planning/2026-10-09/delivery/tasks.json), following [the tracking procedure](docs/planning/2026-10-09/delivery/README.md). Update task status, blockers, evidence and commit references as work changes; regenerate the status board with `delivery/track.py`. Each phase has a separate verification task. Complete required review, commit and push the phase candidate, verify its remote commit, and record the gate before advancing. Keep historical evidence distinct from current acceptance. Repository tracking replaces Jira for this work.
+For catalog and skill tasks, expand referenced shared controls and evaluation gates from `docs/planning/2026-10-09/jev-coverage.json` into readable product requirements or links to their full requirements in the owning Jira epic. IDs alone do not preserve acceptance criteria.
 
-All work for the platform rearchitecture, including the plugin framework, NATS hub federation, Jev integration, and related skills, belongs on `feat/agentmux-platform-rearchitecture`.
+Prefer one complete copy of repeated shared requirements in the owning epic, with direct links and the exact applicable criterion IDs in each task. Keep each task's own scope, acceptance criteria, exceptions and activation conditions complete. Read back the shared text and its task links; do not substitute an ID or local file path for the requirement.
 
-All planning and implementation work stays on `feat/agentmux-platform-rearchitecture`. Do not merge, squash, cherry-pick or otherwise transfer it into `main` or another integration or release branch. Do not enable automatic merging. Final acceptance authorizes only the final commit and push to this feature branch.
+Work on the explicitly assigned, bounded Jira issue and its acceptance criteria. Report blockers and review findings in that issue. Do not autonomously continue through all phases or create source-hash, evidence-bookkeeping or phase-advancement loops. Use focused tests, relevant integration tests and code review; follow [the local testing workflow](docs/LOCAL_TESTING.md). Do not add verification scaffolding or prepare new fixtures without task scope that calls for them.
 
-The user's latest delivery instruction supersedes the earlier Ryan/Nick review gates: work autonomously through all phases, with Codex as reviewer and advancement authority. Ryan and Nick are not required for any delivery task, review, phase transition or final commit/push. Use subagents for bounded parallel work and independent review within the single active phase. Do not work on a later phase until the current phase passes its evidence gate and its candidate is committed, pushed and verified remotely.
+All platform rearchitecture work stays on `feat/agentmux-platform-rearchitecture`. The current beta targets native macOS ARM64 only; Linux, macOS AMD64 and Windows/WSL are not qualified by that work. Do not run CI builds or verification; the existing CI prohibition remains in effect. Do not merge, squash, cherry-pick or transfer this work to `main` or another integration/release branch, enable automatic merging, or release it.
 
-Keep all acceptance, security, preservation, recovery and supported-environment checks. Codex must review actual evidence and resolve findings; worker completion or a passing narrow test is not phase acceptance. Preserve the full user scope. Product approval and authorization policies remain product requirements. MERGE-01 retains its historical identifier but now means final branch acceptance: independently enroll two real agent-operated hubs, demonstrate safe bilateral orchestration with exact-candidate evidence, complete every required phase, and record Codex's final review. Mocks cannot replace the real-hub demonstration. No merge or release is authorized.
+These changes concern development tracking and verification workflow only. Preserve product authorization, authentication, security, data retention, ownership, recovery and task-management behavior. Product requirements and issue acceptance criteria are not waived by removing development bookkeeping.

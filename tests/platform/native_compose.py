@@ -27,6 +27,9 @@ NAMES = ('TestBootstrapRealDockerIdentityPreflight',
          'TestBootstrapRealComposeConcurrentColdWarmAndOwnerRecovery')
 PATTERN = '^(' + '|'.join(NAMES) + ')$'
 PACKAGE = 'github.com/controlLogix/agentmux/platform/launcher'
+DOCKER_COHORTS = ('darwin-installed-cli', 'darwin-installed-cli-port', 'darwin-startup-owner',
+                  'darwin-installed-cli-slow-consumer')
+RUNTIME_FIXTURE_PURPOSE = 'native_runtime_five_member_test_artifact_only'
 BUDGET = 40 * 60
 HEX = re.compile(r'^[a-f0-9]{64}$')
 PRIVATE_MATERIAL = re.compile(rb'-----BEGIN |(?<![A-Za-z0-9_])(?:password|seed|privateKey)\s*[":=]', re.I)
@@ -123,6 +126,260 @@ def read_pinned(path, pin, maximum=32768):
     if hashlib.sha256(raw).hexdigest() != pin:
         raise ValueError('enrollment_bytes_differ_from_separate_pin')
     return closed_json(raw)
+
+
+def cohort_groups(cohort):
+    if cohort in ('darwin-frontend-budget', 'darwin-normal-self'): return ()
+    if cohort in ('darwin-frontend-receipt', 'darwin-creator-history'): return ('frontendReceiptChild',)
+    if cohort in ('darwin-runtime-rollback', 'darwin-normal-parent'): return ('runtimeFixture',)
+    if cohort == 'darwin-normal-identity': return ('cooperativeIdentity',)
+    return ('signedRelease',)
+
+
+def cohort_tuple(report, selected, prereq):
+    return {'sourceCommit': report['sourceCommit'], 'sourceHashes': report['sourceHashes'],
+            'selection': selected, 'goSHA256': prereq['goSHA256'], 'natsSHA256': prereq['natsSHA256'],
+            'compilerSHA256': prereq['compilerSHA256'], 'compilerVersion': report['compilerVersion'],
+            'nativeSDK': report['nativeSDK']}
+
+
+def json_pin(value):
+    return hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+
+
+def pinned_reference(value):
+    if not isinstance(value, dict) or set(value) != {'path', 'sha256'} or not absolute(value['path']):
+        raise ValueError('cohort_reference_invalid')
+    path = Path(value['path'])
+    info = path.lstat()
+    if not stat.S_ISREG(info.st_mode) or info.st_uid != os.geteuid() or info.st_nlink != 1 or stat.S_IMODE(info.st_mode) != 0o600:
+        raise ValueError('cohort_reference_not_private')
+    return read_pinned(path, value['sha256'], 128 * 1024)
+
+
+def validate_cohort_bundle(bundle, cohort, tuple_pin):
+    required = cohort_groups(cohort)
+    if (not isinstance(bundle, dict) or set(bundle) != {'schemaVersion', 'target', 'currentTupleSHA256', 'groups'}
+            or bundle['schemaVersion'] != '2.0.0' or bundle['target'] != 'darwin-arm64'
+            or bundle['currentTupleSHA256'] != tuple_pin or not isinstance(bundle['groups'], dict)
+            or not set(required) <= set(bundle['groups'])
+            or not set(bundle['groups']) <= {'signedRelease', 'frontendReceiptChild', 'cooperativeIdentity', 'runtimeFixture'}):
+        raise ValueError('cohort_bundle_scope_or_tuple_invalid')
+    admitted = {}
+    for name in bundle['groups']:
+        group = bundle['groups'][name]
+        purpose = RUNTIME_FIXTURE_PURPOSE if name == 'runtimeFixture' else name
+        if not isinstance(group, dict) or set(group) != {'purpose', 'plan', 'installationReceipt', 'candidateMatch', 'members', 'policy', 'cliInstallPlan'} or group['purpose'] != purpose:
+            raise ValueError('cohort_group_purpose_invalid')
+        plan = pinned_reference(group['plan'])
+        receipt = pinned_reference(group['installationReceipt'])
+        match = pinned_reference(group['candidateMatch'])
+        # Separate reviewed attestations bind original installer evidence and
+        # current rebuild comparison; neither historical source nor signatures
+        # alone establish current-candidate equivalence.
+        for record, kind in ((receipt, 'installation'), (match, 'candidateMatch')):
+            if (not isinstance(record, dict) or set(record) != {'schemaVersion', 'kind', 'purpose', 'status', 'currentTupleSHA256', 'members', 'evidence'}
+                    or record['schemaVersion'] != '1.0.0' or record['kind'] != kind or record['purpose'] != purpose
+                    or record['status'] != 'passed' or record['currentTupleSHA256'] != tuple_pin
+                    or record['members'] != group['members']):
+                raise ValueError('cohort_artifact_attestation_invalid')
+            pinned_reference(record['evidence'])
+        expected = ({'runtime-fixture', 'bin/boot', 'bin/kernel-lifecycle', 'bin/internal-communication', 'bin/exported-status'} if name == 'runtimeFixture' else
+                    {'fixture', 'bin/boot', 'bin/kernel-lifecycle', 'bin/internal-communication', 'bin/exported-status'} if name == 'cooperativeIdentity' else
+                    {'agentmux-frontend-receipt-fixture'} if name == 'frontendReceiptChild' else
+                    {'release-manifest.json', 'protected-assembly.json', 'release-authorization.json',
+                     'release-authorization.sig', 'bin/boot', 'bin/kernel-lifecycle',
+                     'bin/internal-communication', 'bin/exported-status', 'agentmux-runtime'})
+        if not isinstance(group['members'], dict) or set(group['members']) != expected:
+            raise ValueError('cohort_artifact_member_roster_invalid')
+        directories = set()
+        for relative, member in group['members'].items():
+            if not isinstance(member, dict) or set(member) != {'path', 'sha256', 'bytes'} or not absolute(member['path']) or not HEX.fullmatch(member['sha256'] or '') or type(member['bytes']) is not int or not 0 < member['bytes'] <= 128 * 1024 * 1024:
+                raise ValueError('cohort_artifact_member_invalid')
+            path = Path(member['path'])
+            root = path
+            for _ in Path(relative).parts: root = root.parent
+            if str(root.parent) != '/Library/Application Support/Agentmux/Protected/releases' or not HEX.fullmatch(root.name) or path != root / relative:
+                raise ValueError('cohort_artifact_path_invalid')
+            directories.add(str(root))
+            for ancestor in (root, *root.parents, path.parent):
+                info = ancestor.lstat()
+                if not stat.S_ISDIR(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o022:
+                    raise ValueError('cohort_artifact_ancestor_unsafe')
+            info = path.lstat()
+            if not stat.S_ISREG(info.st_mode) or info.st_uid != 0 or info.st_nlink != 1 or info.st_mode & 0o222:
+                raise ValueError('cohort_artifact_member_unsafe')
+            raw = read_stable_file(path, 128 * 1024 * 1024)
+            if len(raw) != member['bytes'] or hashlib.sha256(raw).hexdigest() != member['sha256']:
+                raise ValueError('cohort_installed_artifact_changed')
+        if len(directories) != 1:
+            raise ValueError('cohort_artifact_mixed_release')
+        if name == 'runtimeFixture' and (plan.get('purpose') != RUNTIME_FIXTURE_PURPOSE
+                or plan.get('releaseDirectory') != next(iter(directories))
+                or len({(member['sha256'], member['bytes']) for member in group['members'].values()}) != 1):
+            raise ValueError('cohort_runtime_fixture_plan_or_image_mismatch')
+        if name == 'signedRelease':
+            policy = pinned_reference(group['policy'])
+            if plan.get('releaseDirectory') != next(iter(directories)) or policy != plan.get('publicTrust'):
+                raise ValueError('cohort_signed_policy_plan_mismatch')
+            cli = pinned_reference(group['cliInstallPlan'])
+            member = group['members']['agentmux-runtime']
+            if cli.get('destination') != member['path'] or cli.get('digest') != 'sha256:' + member['sha256'] or cli.get('bytes') != member['bytes']:
+                raise ValueError('cohort_cli_plan_mismatch')
+        elif group['policy'] is not None or group['cliInstallPlan'] is not None:
+            raise ValueError('receipt_child_cannot_supply_release_policy')
+        admitted[name] = group
+    return admitted
+
+
+def cohort_environment(base, cohort, groups, output, nats_pin):
+    # base is the collector-created whitelist, never ambient os.environ.
+    allowed = {'HOME', 'TMPDIR', 'PATH', 'GOTOOLCHAIN', 'GOENV', 'GOWORK', 'GOFLAGS', 'GOPROXY', 'GOSUMDB',
+               'GOCACHE', 'GOPATH', 'GOMODCACHE', 'CGO_ENABLED', 'CC', 'SDKROOT', 'CGO_CFLAGS', 'CGO_LDFLAGS',
+               'AGENTMUX_TEST_NATS', 'GORACE', 'PYTHONDONTWRITEBYTECODE'}
+    env = {k: v for k, v in base.items() if k in allowed}
+    if cohort in DOCKER_COHORTS:
+        for key in ('DOCKER_CONFIG', 'AMX_BOOTSTRAP_DOCKER_AUTHORIZED', 'AMX_BOOTSTRAP_SELECTION_FILE', 'AMX_BOOTSTRAP_SELECTION_SHA256'):
+            env[key] = base[key]
+    if 'signedRelease' in cohort_groups(cohort):
+        g = groups['signedRelease']
+        for suffix, ref in (('PLAN', g['plan']), ('POLICY', g['policy'])):
+            env['AMX_DARWIN_ROLE_RELEASE_' + suffix] = ref['path']
+            env['AMX_DARWIN_REVIEWED_ROLE_RELEASE_' + suffix] = 'sha256:' + ref['sha256']
+        if cohort in ('darwin-signed-role-lifecycle', 'darwin-live-role-recovery'):
+            env['AMX_DARWIN_LIFECYCLE_NATS_SHA256'] = 'sha256:' + nats_pin
+            env['AGENTMUX_TEST_LIFECYCLE_OUTPUT'] = str(output)
+        else:
+            env['AMX_DARWIN_CLI_INSTALL_PLAN'] = g['cliInstallPlan']['path']
+            env['AMX_DARWIN_CLI_REVIEWED_INSTALL_PLAN'] = 'sha256:' + g['cliInstallPlan']['sha256']
+    if 'frontendReceiptChild' in cohort_groups(cohort):
+        m = groups['frontendReceiptChild']['members']['agentmux-frontend-receipt-fixture']
+        env.update(AMX_DARWIN_FRONTEND_RECEIPT_AUTHORIZED='1', AMX_DARWIN_FRONTEND_RECEIPT_FIXTURE=m['path'],
+                   AMX_DARWIN_FRONTEND_RECEIPT_SHA256='sha256:' + m['sha256'])
+    if 'runtimeFixture' in cohort_groups(cohort):
+        m = groups['runtimeFixture']['members']['runtime-fixture']
+        env.update(AGENTMUX_RUNTIME_FIXTURE_AUTHORIZED='1', AGENTMUX_RUNTIME_FIXTURE_PATH=m['path'],
+                   AGENTMUX_RUNTIME_FIXTURE_DIGEST='sha256:' + m['sha256'])
+    if 'cooperativeIdentity' in cohort_groups(cohort):
+        m = groups['cooperativeIdentity']['members']['fixture']
+        env.update(AGENTMUX_IDENTITY_FIXTURE_PATH=m['path'], AGENTMUX_IDENTITY_FIXTURE_DIGEST='sha256:' + m['sha256'])
+    return env
+
+
+def collect_cohort_cleanup(home):
+    # Do not export arbitrary fixture output or widen the legacy SAFE_FILES.
+    directories = sorted((home / '.cache/agentmux-governance').glob('p02-bootstrap-private-*'))
+    if not directories:
+        raise ValueError('cohort_fixture_cleanup_records_missing')
+    records = []
+    for directory in directories:
+        if directory.is_symlink() or not directory.is_dir() or any((directory / n).exists() for n in FAILURE_FILES):
+            raise ValueError('cohort_fixture_cleanup_unknown')
+        fixture = clean_safe_json(read_stable_file(directory / 'fixture.json', 512 * 1024))
+        cleanup = clean_safe_json(read_stable_file(directory / 'cleanup.json', 512 * 1024))
+        container = cleanup.get('containerId', '')
+        labels = {'agentmux.instance.id': fixture.get('instanceId'), 'agentmux.profile.id': fixture.get('profileId'),
+                  'agentmux.release.digest': fixture.get('releaseDigest'), 'com.docker.compose.project': fixture.get('project')}
+        volume = cleanup.get('volume', {})
+        if (not HEX.fullmatch(container) or cleanup.get('ownedIDs') != {container: True} or cleanup.get('state') != 'stopped'
+                or cleanup.get('volumeRetained') is not True or not timestamp(cleanup.get('at'))
+                or volume.get('Name') != fixture.get('project', '') + '_data' or volume.get('Labels') != labels
+                or not timestamp(volume.get('CreatedAt'))):
+            raise ValueError('cohort_exact_owned_cleanup_invalid')
+        network = clean_safe_json(read_stable_file(directory / 'network-cleanup.json', 512 * 1024))
+        if (network.get('containerId') != container or network.get('networkRemoved') is not True
+                or network.get('emptyBeforeRemoval') is not True or network.get('unrelatedNetworkBaselineUnchanged') is not True
+                or network.get('stoppedContainerRetained') is not True):
+            raise ValueError('cohort_network_cleanup_invalid')
+        records.append({'directory': str(directory), 'files': {n: digest(directory / n) for n in ('fixture.json', 'cleanup.json', 'network-cleanup.json')}})
+    return {'status': 'passed', 'cleanupVerified': True, 'privateRecords': records,
+            'limits': ['Exact fixture cleanup records plus completed test cleanup; no authority to signal or adopt processes.']}
+
+
+def run_darwin_cohort(args, report, helpers, selected, prereq, source, home, env, invoke, executed, post_access=None, deadline=None):
+    cohort = args.darwin_cohort
+    package, tags, budget, names = helpers.DARWIN_COHORTS[cohort]
+    report.update(requestedCohorts=[cohort], omittedCohorts=sorted(set(helpers.DARWIN_COHORTS) - {cohort}),
+                  cohort={'id': cohort, 'testStatus': 'unexecuted', 'artifactValidationStatus': 'failed', 'status': 'failed'},
+                  phaseAccepted=False, separatePrequalification={'runtimeCandidateParent': {
+                      'status': 'unqualified', 'historical': True, 'sdkProfile': 'SDK27-candidate',
+                      'reason': 'Historical candidate-parent diagnostics only; never credited to normal SDK cohorts.',
+                      'tests': ['TestRuntimeCandidateParentEOFStopsActualChild',
+                                'TestRuntimeCandidateParentInheritedLeasesLastUntilOwnedReap']}})
+    item = report['cohort']
+    report['limits'] = ['Explicit native macOS ARM64 named cohort only; not full P02 acceptance.',
+                        'Consumes separately installed prerequisites; never builds an installer, elevates or enables a diagnostic ABI.',
+                        'Historical evidence and omitted cohorts remain separate and unqualified.',
+                        'Event parentage checks prove top-level ownership only; nested T.Run parentage is not inferred from slash-containing names.']
+    tuple_pin = json_pin(cohort_tuple(report, selected, prereq))
+    report['currentTupleSHA256'] = tuple_pin
+    groups = {}
+    bundle = None
+    if args.cohort_prerequisites is not None:
+        bundle = pinned_reference({'path': str(args.cohort_prerequisites), 'sha256': args.cohort_prerequisites_sha256})
+        groups = validate_cohort_bundle(bundle, cohort, tuple_pin)
+    elif cohort_groups(cohort):
+        raise ValueError('cohort_installed_prerequisites_required')
+    item.update(prerequisiteGroups=list(groups), prerequisiteBundleSHA256=args.cohort_prerequisites_sha256,
+                artifactValidationStatus='passed', currentTupleSHA256=tuple_pin)
+    output = args.workspace / 'lifecycle-output'; output.mkdir(mode=0o700)
+    test_env = cohort_environment(env, cohort, groups, output, prereq['natsSHA256'])
+    env.clear(); env.update(test_env)
+    inventory_command = [prereq['goExecutable'], 'list', '-mod=readonly']
+    if tags: inventory_command += ['-tags', tags]
+    raw = successful(invoke(inventory_command + ['-json', package], 'cohort-inventory', 60))
+    item['selectionInventory'] = helpers.validate_cohort_inventory(raw, source / 'platform', cohort)
+    if cohort in DOCKER_COHORTS:
+        private = invoke([prereq['goExecutable'], 'test', '-race', '-mod=readonly', '-count=1', '-timeout=5m', '-json', './privatefs'], 'cohort-privatefs', 360)
+        report['privateFilesystem'] = admit_native_events(private['stdout'].read_text(), private['exitCode'], helpers.MODULE + '/privatefs')
+        if private['timedOut'] or report['privateFilesystem']['status'] != 'passed':
+            raise ValueError('native_private_filesystem_checks_failed')
+    command = [prereq['goExecutable'], 'test', '-race', '-failfast', '-mod=readonly', '-count=1', '-json', '-timeout=' + str(budget) + 's']
+    if tags: command += ['-tags', tags]
+    command += ['-run', helpers.cohort_pattern(names), package]
+    item['command'] = command
+    if deadline is not None and deadline - time.monotonic() <= budget + 30:
+        raise ValueError('cohort_full_package_budget_unavailable_before_effects')
+    # Checkpoint and retain the existing engine owner before any fixture effect.
+    if cohort in DOCKER_COHORTS:
+        args.engine_lease.mark_started(args.candidate_commit)
+    report['effectsMayBeLive'] = True
+    helpers.atomic_report(args.evidence / 'result.json', report)
+    result = invoke(command, 'cohort-tests', budget + 30)
+    for key in ('stdout', 'stderr'): result[key].chmod(0o600)
+    raw, stderr = result['stdout'].read_text(), result['stderr'].read_text()
+    admission = helpers.admit_cohort_events(raw, stderr, result['exitCode'], helpers.MODULE + '/' + package[2:], names)
+    if result['timedOut']: admission['status'] = 'failed'
+    item.update(testStatus=admission['status'], admission=admission, timedOut=result['timedOut'], exitCode=result['exitCode'],
+                rawOutputs={k: {'path': str(result[k]), 'sha256': digest(result[k]), 'bytes': result[k].stat().st_size} for k in ('stdout', 'stderr')})
+    if cohort in DOCKER_COHORTS:
+        report['installedCLI'] = {'status': admission['status'], 'cohort': cohort, 'scope': 'Named tests only; artifact and cleanup admission remain separate.'}
+    helpers.atomic_report(args.evidence / 'result.json', report)
+    if admission['status'] != 'passed':
+        raise ValueError('cohort_tests_failed_no_retry')
+    if cohort in DOCKER_COHORTS:
+        item['cleanup'] = collect_cohort_cleanup(home)
+    else:
+        item['cleanup'] = {'status': 'passed', 'basis': 'All selected tests and registered cleanups completed without failure; no separate process census.'}
+    item['artifactValidationStatus'] = 'failed'
+    if bundle is not None and (pinned_reference({'path': str(args.cohort_prerequisites), 'sha256': args.cohort_prerequisites_sha256}) != bundle
+                               or validate_cohort_bundle(bundle, cohort, tuple_pin) != groups):
+        item['artifactValidationStatus'] = 'failed'
+        raise ValueError('cohort_artifacts_changed')
+    if post_access is not None: post_access('cohort-held-access-after-effects')
+    verify_files(prereq, selected)
+    if (source_hashes() != report['sourceHashes'] or executed != {p.relative_to(source).as_posix(): digest(p) for p in source.rglob('*') if p.is_file()}
+            or read_pinned(args.selection, args.selection_sha256, 16384) != selected
+            or read_pinned(args.prerequisites, args.prerequisites_sha256) != prereq):
+        raise ValueError('cohort_source_or_enrollment_changed')
+    if subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip() != args.candidate_commit or subprocess.check_output(['git', 'status', '--porcelain', '--', 'platform', 'contracts/v1', 'sdk/python', 'tests/platform', '.github/workflows/platform-compose.yml'], cwd=ROOT):
+        raise ValueError('cohort_committed_candidate_changed')
+    if args.engine_lease is not None:
+        args.engine_lease.verified_cleanup()
+    item.update(status='passed', artifactValidationStatus='passed')
+    report.update(status='passed', effectsMayBeLive=False, sourceUnchangedDuringRun=True, executedSourceUnchangedDuringRun=True,
+                  enrollmentUnchangedDuringRun=True, preparedToolsUnchangedDuringRun=True)
+    report['limits'].append('Only the named cohort passed; omitted cohorts and full P02 remain unqualified. Private raw outputs remain in the owned workspace.')
 
 
 def native_host():
@@ -257,6 +514,7 @@ class EngineLease:
 
 def source_hashes():
     paths = [ROOT / 'tests/platform/native_compose.py', ROOT / 'tests/platform/native_go.py', ROOT / '.github/workflows/platform-compose.yml']
+    paths.extend(sorted((ROOT / 'tests/platform').glob('test_native_cohorts*.py')))
     for folder in ('platform', 'contracts/v1', 'sdk/python'):
         for p in (ROOT / folder).rglob('*'):
             if '__pycache__' in p.parts or p.suffix in ('.pyc', '.pyo'): continue
@@ -547,7 +805,10 @@ def qualify(args, report, helpers):
     for key in ('DOCKER_HOST', 'DOCKER_CONTEXT', 'AMX_DOCKER_FIXTURE', 'AMX_BROKER_INSPECT_FIXTURE', 'AMX_OWNER_BRIDGE_DOCKER_FIXTURE', 'AGENTMUX_NATS_SERVER'):
         if os.environ.get(key):
             raise ValueError('ambient_engine_or_inspector_override_refused')
-    if host[0] == 'darwin' and (not args.allow_protected_fixture_install or not prereq['darwinProtectedInstallAuthorized']):
+    cohort = getattr(args, 'darwin_cohort', None)
+    if cohort and host != ('darwin', 'arm64'):
+        raise ValueError('cohort_requires_native_darwin_arm64')
+    if not cohort and host[0] == 'darwin' and (not args.allow_protected_fixture_install or not prereq['darwinProtectedInstallAuthorized']):
         raise ValueError('protected_mac_fixture_install_not_authorized')
     branch = subprocess.check_output(['git', 'branch', '--show-current'], cwd=ROOT, text=True).strip()
     commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
@@ -559,12 +820,16 @@ def qualify(args, report, helpers):
         raise ValueError('candidate_branch_not_authorized')
     if commit != args.candidate_commit or subprocess.check_output(['git', 'status', '--porcelain', '--', 'platform', 'contracts/v1', 'sdk/python', 'tests/platform/native_go.py', 'tests/platform/native_compose.py', '.github/workflows/platform-compose.yml'], cwd=ROOT):
         raise ValueError('candidate_branch_commit_or_source_not_clean')
+    if cohort and subprocess.check_output(['git', 'status', '--porcelain', '--', 'tests/platform'], cwd=ROOT):
+        raise ValueError('cohort_collector_sources_not_clean')
     report['sourceCommit'] = commit
     report['sourceHashes'] = source_hashes()
     report['sdkDependencies'] = sdk_dependencies(ROOT)
     report['pythonVersion'] = sys.version
     verify_files(prereq, selected)
-    args.engine_lease = EngineLease(Path(prereq['qualificationLockDirectory']), selected['docker']['engineId'])
+    docker_cohort = cohort in DOCKER_COHORTS
+    args.engine_lease = (EngineLease(Path(prereq['qualificationLockDirectory']), selected['docker']['engineId'])
+                         if not cohort or docker_cohort else None)
     source = args.workspace / 'source'
     for folder in ('platform', 'contracts/v1', 'sdk/python'):
         shutil.copytree(ROOT / folder, source / folder, ignore=shutil.ignore_patterns('__pycache__', '*.pyc', '*.pyo'))
@@ -588,7 +853,7 @@ def qualify(args, report, helpers):
             raise ValueError('native_apple_compiler_or_sdk_unavailable')
         env.update(SDKROOT=selected['sdkRoot'], AMX_DARWIN_INSTALL_AUTHORIZED='1',
                    CGO_CFLAGS='-isysroot "' + selected['sdkRoot'] + '"', CGO_LDFLAGS='-isysroot "' + selected['sdkRoot'] + '"')
-    deadline = time.monotonic() + BUDGET
+    deadline = time.monotonic() + (helpers.DARWIN_COHORTS[cohort][2] + 600 if cohort else BUDGET)
     calls = 0
     def invoke(command, label, maximum=30, pass_fds=()):
         nonlocal calls
@@ -620,13 +885,16 @@ def qualify(args, report, helpers):
     if host[0] == 'darwin' and not valid_apple_compiler(report['compilerVersion']):
         raise ValueError('actual_apple_compiler_invalid')
     if host[0] == 'darwin':
-        sdk = successful(invoke(['/usr/bin/xcrun', '--show-sdk-path'], 'sdk-path'))
-        version = successful(invoke(['/usr/bin/xcrun', '--show-sdk-version'], 'sdk-version'))
+        sdk = successful(invoke(['/usr/bin/xcrun', '--sdk', selected['sdkRoot'], '--show-sdk-path'], 'sdk-path'))
+        version = successful(invoke(['/usr/bin/xcrun', '--sdk', selected['sdkRoot'], '--show-sdk-version'], 'sdk-version'))
         if sdk != selected['sdkRoot'] or not re.fullmatch(r'[0-9]+(?:\.[0-9]+){1,2}', version):
             raise ValueError('actual_sdk_differs_from_enrollment')
         report['nativeSDK'] = {'path': sdk, 'version': version}
     if successful(invoke([prereq['natsExecutable'], '-v'], 'nats-version')) != 'nats-server: v2.15.0':
         raise ValueError('actual_nats_version_differs')
+    if cohort and not docker_cohort:
+        run_darwin_cohort(args, report, helpers, selected, prereq, source, home, env, invoke, executed, deadline=deadline)
+        return
     gate_source = args.workspace / 'held-private-gate.go'; gate_binary = args.workspace / 'held-private-gate'
     gate_source.write_text(PRIVATE_GATE_SOURCE, encoding='utf-8', newline='\n')
     successful(invoke([go, 'build', '-mod=readonly', '-trimpath', '-o', str(gate_binary), str(gate_source)], 'build-held-private-gate', 180))
@@ -652,6 +920,9 @@ def qualify(args, report, helpers):
     if image.get('Os') != 'linux' or image.get('Architecture') != host[1] or not re.fullmatch(r'sha256:[a-f0-9]{64}', image.get('Id', '')):
         raise ValueError('cached_image_architecture_or_identity_invalid')
     report['engineObserved'] = {'engineId': docker['engineId'], 'imageId': image['Id'], 'architecture': image['Architecture']}
+    if cohort:
+        run_darwin_cohort(args, report, helpers, selected, prereq, source, home, env, invoke, executed, check_held_access, deadline)
+        return
     inventory = successful(invoke([go, 'list', '-mod=readonly', '-tags', 'agentmux_bootstrap_docker', '-json', './launcher'], 'inventory'))
     report['selectionInventory'] = validate_inventory(inventory, source)
     private = invoke([go, 'test', '-race', '-mod=readonly', '-count=1', '-timeout=5m', '-json', './privatefs'], 'privatefs', 360)
@@ -701,14 +972,25 @@ def main(argv=None):
     parser.add_argument('--prerequisites-sha256')
     parser.add_argument('--candidate-commit')
     parser.add_argument('--allow-protected-fixture-install', action='store_true')
+    parser.add_argument('--darwin-cohort', choices=('darwin-frontend-budget', 'darwin-frontend-receipt',
+                        'darwin-signed-role-lifecycle', 'darwin-installed-cli', 'darwin-installed-cli-port',
+                        'darwin-creator-history', 'darwin-startup-owner', 'darwin-runtime-rollback',
+                        'darwin-normal-self', 'darwin-normal-identity', 'darwin-normal-parent',
+                        'darwin-live-role-recovery', 'darwin-installed-cli-slow-consumer'))
+    parser.add_argument('--cohort-prerequisites', type=Path)
+    parser.add_argument('--cohort-prerequisites-sha256')
     args = parser.parse_args(argv)
     if args.self_test:
         result = unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(Controls))
         return 0 if result.wasSuccessful() else 1
+    if bool(args.cohort_prerequisites) != bool(args.cohort_prerequisites_sha256):
+        parser.error('Cohort prerequisites need both an explicit path and separate pin.')
+    if (args.cohort_prerequisites and not args.darwin_cohort) or (args.darwin_cohort and args.allow_protected_fixture_install):
+        parser.error('Cohorts consume separately installed artifacts; installation mode cannot be combined.')
     if any(getattr(args, key) is None for key in ('target', 'workspace', 'evidence', 'selection', 'selection_sha256', 'prerequisites', 'prerequisites_sha256', 'candidate_commit')):
         parser.error('All explicit candidate, enrollment, workspace and evidence arguments are required.')
     for path in (args.workspace, args.evidence):
-        if not absolute(str(path)) or path.resolve() != path or path == ROOT or ROOT in path.parents or any(p == path or p in path.parents or path in p.parents for p in (args.selection, args.prerequisites)):
+        if not absolute(str(path)) or path.resolve() != path or path == ROOT or ROOT in path.parents or any(p == path or p in path.parents or path in p.parents for p in (args.selection, args.prerequisites, args.cohort_prerequisites) if p is not None):
             parser.error('Use canonical disposable directories outside checkout and enrollment files.')
     if args.workspace == args.evidence or args.workspace in args.evidence.parents or args.evidence in args.workspace.parents:
         parser.error('Workspace and evidence directories must be separate.')

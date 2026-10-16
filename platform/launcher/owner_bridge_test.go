@@ -392,6 +392,29 @@ func (f bridgeFixture) controlledDocker(t *testing.T) {
 		t.Fatal("private controlled inspector unavailable")
 	}
 	t.Setenv("AMX_OWNER_BRIDGE_DOCKER_FIXTURE", name)
+	// This inspector re-executes the race-built test binary, not Docker. Remove
+	// only its exit delay; keep race checks and inherited detector options. The
+	// parent detector is already initialized, and protected role/host environments
+	// do not inherit this test-only setting. Setenv restores the environment.
+	t.Setenv("GORACE", strings.TrimSpace(os.Getenv("GORACE")+" atexit_sleep_ms=0"))
+}
+
+func TestOwnerBridgeControlledDockerRaceExitDelayIsScoped(t *testing.T) {
+	const inherited = "history_size=2 exitcode=66"
+	t.Setenv("GORACE", inherited)
+	f := newBridgeFixture(t)
+	t.Run("controlled_inspector", func(t *testing.T) {
+		f.controlledDocker(t)
+		if os.Getenv("AMX_OWNER_BRIDGE_DOCKER_FIXTURE") == "" {
+			t.Fatal("controlled inspector was not selected")
+		}
+		if os.Getenv("GORACE") != inherited+" atexit_sleep_ms=0" {
+			t.Fatal("controlled inspector lost inherited race options or kept its exit delay")
+		}
+	})
+	if os.Getenv("GORACE") != inherited {
+		t.Fatal("controlled inspector leaked its race exit setting")
+	}
 }
 
 func TestOwnerBridgeDelayedOriginalInvocationRefreshesActualFacts(t *testing.T) {

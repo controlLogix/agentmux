@@ -3,6 +3,7 @@ package launcher
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -16,6 +17,10 @@ import (
 func doctorFixture(t *testing.T) (DoctorConfig, string) {
 	t.Helper()
 	driver, _, log := setupDocker(t)
+	// The controlled inspector re-executes this race-built test binary. Remove
+	// only the child's exit delay, preserving inherited race options and checks.
+	// The parent detector is already initialized; Setenv restores its environment.
+	t.Setenv("GORACE", strings.TrimSpace(os.Getenv("GORACE")+" atexit_sleep_ms=0"))
 	return DoctorConfig{Docker: driver.config, ProfileValidated: true}, log
 }
 
@@ -177,11 +182,13 @@ func TestDoctorOneTotalBudgetAndCallerCancellation(t *testing.T) {
 		config, _ := doctorFixture(t)
 		config.Timeout = 1500 * time.Millisecond
 		var first context.Context
+		var persistence context.Context
 		config.Probes.Broker = func(ctx context.Context) DoctorProbeResult {
 			first = ctx
 			return DoctorProbeResult{DoctorPassed, DoctorProbeVerified}
 		}
 		config.Probes.Persistence = func(ctx context.Context) DoctorProbeResult {
+			persistence = ctx
 			if ctx != first {
 				t.Fatal("probe received a fresh independent budget")
 			}
@@ -194,6 +201,23 @@ func TestDoctorOneTotalBudgetAndCallerCancellation(t *testing.T) {
 			return DoctorProbeResult{DoctorPassed, DoctorProbeVerified}
 		}
 		report := RunDoctor(context.Background(), config)
+		inspection := doctorCheck(t, report, "docker")
+		if report.Observation == nil || inspection.Status != DoctorPassed || inspection.Code != DoctorObserved {
+			t.Fatal("controlled inspection did not complete before the cooperative probe control")
+		}
+		if first == nil {
+			t.Fatal("cooperative broker probe was not reached")
+		}
+		if persistence == nil {
+			t.Fatal("cooperative persistence probe was not reached")
+		}
+		broker := doctorCheck(t, report, "broker")
+		if broker.Status != DoctorPassed || broker.Code != DoctorProbeVerified {
+			t.Fatal("the first cooperative probe did not retain its verified result")
+		}
+		if first.Err() != context.DeadlineExceeded || persistence.Err() != context.DeadlineExceeded {
+			t.Fatal("cooperative probes did not exhaust their common deadline")
+		}
 		if called || report.DiagnosticsPassed || doctorCheck(t, report, "persistence").Code != DoctorDeadline {
 			t.Fatal("a late probe result overrode the common deadline")
 		}
@@ -227,31 +251,78 @@ func TestDoctorProbeCodesAreClosedAndDiagnosticsAreNotReadiness(t *testing.T) {
 // a Docker daemon, and its behavior grants no application readiness evidence.
 const doctorTimingHelper = `package main
 import (
+ "encoding/json"
  "fmt"
  "os"
  "os/exec"
  "strings"
  "time"
 )
+func fail(label string) {
+ path:=os.Getenv("AMX_DOCTOR_TIMING_ERRORS")
+ if path!="" {
+  f,err:=os.OpenFile(path,os.O_APPEND|os.O_WRONLY,0600)
+  if err!=nil { fmt.Fprintln(os.Stderr,"helper_error_log_open_failed") } else {
+   text:=label+"\n"
+   n,writeErr:=f.WriteString(text)
+   closeErr:=f.Close()
+   if writeErr!=nil || n!=len(text) { fmt.Fprintln(os.Stderr,"helper_error_log_write_failed") }
+   if closeErr!=nil { fmt.Fprintln(os.Stderr,"helper_error_log_close_failed") }
+  }
+ }
+ fmt.Fprintln(os.Stderr,label)
+ os.Exit(8)
+}
+func appendLog(label,path string,raw []byte) {
+ f,err:=os.OpenFile(path,os.O_APPEND|os.O_WRONLY,0600)
+ if err!=nil { fail("helper_"+label+"_open_failed") }
+ n,writeErr:=f.Write(raw)
+ closeErr:=f.Close()
+ if writeErr!=nil || n!=len(raw) { fail("helper_"+label+"_write_failed") }
+ if closeErr!=nil { fail("helper_"+label+"_close_failed") }
+}
+func event(args []string,phase string,started time.Time) {
+ raw,err:=json.Marshal(struct {
+  Command []string ` + "`json:\"command\"`" + `
+  Phase string ` + "`json:\"phase\"`" + `
+  UnixNano int64 ` + "`json:\"unixNano\"`" + `
+  ElapsedNano int64 ` + "`json:\"elapsedNano\"`" + `
+ }{args,phase,time.Now().UnixNano(),time.Since(started).Nanoseconds()})
+ if err!=nil { fail("helper_event_encode_failed") }
+ appendLog("events",os.Getenv("AMX_DOCTOR_TIMING_EVENTS"),append(raw,'\n'))
+}
+func output(args []string,started time.Time,text string) {
+ if _,err:=fmt.Fprintln(os.Stdout,text);err!=nil { fail("helper_output_write_failed") }
+ event(args,"output_complete",started)
+}
 func main() {
+ // Setup availability only: no logs, sleeps or descendants.
+ if len(os.Args)==2 && os.Args[1]=="helper-ready" {
+  if _,err:=fmt.Fprintln(os.Stdout,"doctor-helper-ready-v1");err!=nil { fmt.Fprintln(os.Stderr,"helper_ready_output_failed");os.Exit(8) }
+  return
+ }
  if len(os.Args)>1 && os.Args[1]=="pipe-holder" {
   time.Sleep(2500*time.Millisecond)
-  _=os.WriteFile(os.Args[2],[]byte("finished"),0600)
+  f,err:=os.OpenFile(os.Args[2],os.O_CREATE|os.O_EXCL|os.O_WRONLY,0600)
+  if err!=nil { fail("helper_holder_marker_open_failed") }
+  n,writeErr:=f.WriteString("finished")
+  closeErr:=f.Close()
+  if writeErr!=nil || n!=len("finished") { fail("helper_holder_marker_write_failed") }
+  if closeErr!=nil { fail("helper_holder_marker_close_failed") }
   return
  }
  args:=os.Args[1:]
  if len(args)<3 || args[0]!="--context" || args[1]!="fixture" { os.Exit(9) }
  args=args[2:]
- log,err:=os.OpenFile(os.Getenv("AMX_DOCTOR_TIMING_LOG"),os.O_CREATE|os.O_APPEND|os.O_WRONLY,0600)
- if err!=nil { os.Exit(8) }
- _,_=fmt.Fprintln(log,strings.Join(args," "))
- _=log.Close()
+ started:=time.Now()
+ event(args,"entry",started)
+ appendLog("commands",os.Getenv("AMX_DOCTOR_TIMING_LOG"),[]byte(strings.Join(args," ")+"\n"))
  mode:=os.Getenv("AMX_DOCTOR_TIMING_MODE")
- if mode=="late" { time.Sleep(150*time.Millisecond) }
+ if mode=="late" { time.Sleep(150*time.Millisecond);event(args,"initial_sleep_complete",started) }
  switch args[0] {
- case "context": fmt.Println("\"unix:///tmp/docker.sock\"")
- case "version": fmt.Println("{\"Client\":\"29.8.0\",\"Server\":\"29.8.0\"}")
- case "info": fmt.Println("{\"ID\":\"fixture-engine\",\"OS\":\"linux\"}")
+ case "context": output(args,started,"\"unix:///tmp/docker.sock\"")
+ case "version": output(args,started,"{\"Client\":\"29.8.0\",\"Server\":\"29.8.0\"}")
+ case "info": output(args,started,"{\"ID\":\"fixture-engine\",\"OS\":\"linux\"}")
  case "compose":
   if len(args)!=3 || args[1]!="version" || args[2]!="--short" { os.Exit(7) }
   if mode=="pipe" {
@@ -259,13 +330,64 @@ func main() {
    child.Stdout=os.Stdout
    if child.Start()!=nil { os.Exit(6) }
    time.Sleep(4*time.Second)
-   _=child.Wait()
-  } else { time.Sleep(3*time.Second) }
-  fmt.Println("5.5.1")
+   event(args,"compose_sleep_complete",started)
+   if child.Wait()!=nil { fail("helper_holder_wait_failed") }
+  } else { time.Sleep(3*time.Second);event(args,"compose_sleep_complete",started) }
+  output(args,started,"5.5.1")
  default: os.Exit(5)
  }
 }
 `
+
+func doctorTimingHelperReady(t *testing.T, helper string) {
+	t.Helper()
+	// This setup check is outside every Doctor measurement. It proves only that
+	// the newly built controlled helper can run, not a product cold-start cause.
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, helper, "helper-ready")
+	cmd.WaitDelay = time.Second
+	var stdout, stderr limitedOutput
+	cmd.Stdout, cmd.Stderr = &stdout, &stderr
+	failure := cmd.Run() // The original command owns the sole Wait and output joins.
+	exitCode := -1
+	if cmd.ProcessState != nil {
+		exitCode = cmd.ProcessState.ExitCode()
+	}
+	t.Logf("Controlled helper setup joined: exitCode=%d contextExpired=%t stdoutBytes=%d stderrBytes=%d stdoutLimit=%t stderrLimit=%t stdout=%q stderr=%q", exitCode, ctx.Err() != nil, stdout.Len(), stderr.Len(), stdout.exceeded, stderr.exceeded, stdout.Bytes(), stderr.Bytes())
+	if failure != nil || ctx.Err() != nil || stdout.exceeded || stderr.exceeded || stdout.String() != "doctor-helper-ready-v1\n" || stderr.Len() != 0 {
+		t.Fatal("bounded controlled helper readiness failed")
+	}
+}
+
+// Capture only fixed synthetic commands and their timing events. All production
+// inspection commands and output-copy operations have joined before this call.
+// Output-completion events may be absent after the intended deadline kill.
+func captureDoctorTimingLogs(t *testing.T, log, events, failures string) {
+	t.Helper()
+	var problems []string
+	for _, item := range []struct{ label, path string }{{"commands", log}, {"events", events}, {"helper_errors", failures}} {
+		file, openErr := os.Open(item.path)
+		if openErr != nil {
+			t.Logf("Controlled helper %s capture: openFailed=true", item.label)
+			problems = append(problems, item.label+" open failed")
+			continue
+		}
+		raw, readErr := io.ReadAll(io.LimitReader(file, 64*1024+1))
+		closeErr := file.Close()
+		// Retain every bounded capture before checking any capture or Doctor result.
+		t.Logf("Controlled helper %s capture: bytes=%d lines=%d readFailed=%t closeFailed=%t raw=%q", item.label, len(raw), strings.Count(string(raw), "\n"), readErr != nil, closeErr != nil, raw)
+		if readErr != nil || closeErr != nil || len(raw) > 64*1024 {
+			problems = append(problems, item.label+" read, close or size failed")
+		}
+		if item.label == "helper_errors" && len(raw) != 0 {
+			problems = append(problems, "helper reported a logging or output failure")
+		}
+	}
+	if len(problems) != 0 {
+		t.Fatal(strings.Join(problems, "; "))
+	}
+}
 
 func TestDoctorLaterReadAndInheritedPipeCleanupShareTotalBudget(t *testing.T) {
 	dir := t.TempDir()
@@ -281,12 +403,20 @@ func TestDoctorLaterReadAndInheritedPipeCleanupShareTotalBudget(t *testing.T) {
 	if output, err := build.CombinedOutput(); err != nil {
 		t.Fatalf("controlled helper build failed: %v (%s)", err, output)
 	}
+	doctorTimingHelperReady(t, helper)
 	for _, mode := range []string{"late", "pipe"} {
 		t.Run(mode, func(t *testing.T) {
 			config, _ := doctorFixture(t)
 			config.Docker.Executable = helper
 			config.Timeout = 2 * time.Second
 			log := filepath.Join(t.TempDir(), "commands")
+			events := filepath.Join(t.TempDir(), "events.jsonl")
+			failures := filepath.Join(t.TempDir(), "helper-errors")
+			for _, path := range []string{log, events, failures} {
+				if os.WriteFile(path, nil, 0600) != nil {
+					t.Fatal("private controlled helper capture initialization failed")
+				}
+			}
 			done := filepath.Join(t.TempDir(), "holder-finished")
 			if mode == "pipe" {
 				// Register before the doctor call so even a failed assertion waits
@@ -306,12 +436,15 @@ func TestDoctorLaterReadAndInheritedPipeCleanupShareTotalBudget(t *testing.T) {
 				})
 			}
 			t.Setenv("AMX_DOCTOR_TIMING_LOG", log)
+			t.Setenv("AMX_DOCTOR_TIMING_EVENTS", events)
+			t.Setenv("AMX_DOCTOR_TIMING_ERRORS", failures)
 			t.Setenv("AMX_DOCTOR_TIMING_DONE", done)
 			t.Setenv("AMX_DOCTOR_TIMING_MODE", mode)
 			begin := time.Now()
 			report := RunDoctor(context.Background(), config)
 			elapsed := time.Since(begin)
 			t.Logf("Doctor call elapsed %s; any bounded fixture teardown follows this measurement.", elapsed)
+			captureDoctorTimingLogs(t, log, events, failures)
 			if elapsed > 2200*time.Millisecond || doctorCheck(t, report, "docker").Code != DoctorDeadline ||
 				report.Observation != nil || report.DiagnosticsPassed {
 				t.Fatal("later observation or inherited pipe exceeded the total diagnostic budget")

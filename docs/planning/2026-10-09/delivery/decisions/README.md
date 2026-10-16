@@ -1,5 +1,7 @@
 # P00 decisions for review
 
+Current delivery target: [PLATFORM-SCOPE-03](PLATFORM-SCOPE-03-macos-arm64-beta.md) sets a macOS ARM64-only initial beta. Other platform qualification is deferred, not passed. [DELIVERY-LOCAL-01](DELIVERY-LOCAL-01-local-verification.md) still prohibits CI builds and verification until all phase gates are complete. The original P00 recommendations and review history below remain preserved.
+
 These are concrete engineering recommendations prepared on October 9, 2026. Ryan's existing requirements remain binding. Proposed implementation choices below are awaiting Codex P00 review; no phase advancement is recorded. Ryan and Nick are not required for delivery review.
 
 | Record | Scope | Task |

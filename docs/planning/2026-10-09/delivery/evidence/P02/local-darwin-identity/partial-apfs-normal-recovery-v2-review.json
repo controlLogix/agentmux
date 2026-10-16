@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "Codex",
+  "status": "normal-recovery-completed-exact-image-absent",
+  "helperDirectory": "/Library/PrivilegedHelperTools/com.agentmux.p02-apfs-recovery-20261015-v2",
+  "installerSHA256": "b424a150af35250133452fc1dcc4727c7dfd7009f4c38f4976636ee4e3cb82f8",
+  "manifestSHA256": "444b7d2b4c470f4994df4bf01e113e262d63e444a6954312a2da29b3fa33a29f",
+  "payloadSHA256": "e44fe3cfcf95a5cd164257bd31e813800ef87d5164fde1cc6f0bd9b13ae974d9",
+  "driverSHA256": "2f950ca33baff9b5aefba6ba31cd7ae9ca45c9297386e94b9fa79c83d44baa95",
+  "closedReviewSHA256": "41be5b879883d5c5499d97b3dfeefe4038f4663dc447e8b13dfd66c1bf11675e",
+  "durableArchive": "/Users/ryan/.cache/agentmux-governance/privileged-helper-recovery-20261015-v2",
+  "authority": "Separately reviewed fixed recover/status grant with no arguments and a new root-exclusive one-shot marker. Original helper and diagnostic grants remain immutable. Only the previously authorized exact test image can be normally detached; no force, deletion, PID adoption, updater, setup or teardown grant exists.",
+  "strategyReview": "Independent review confirmed protected held /dev metadata and held mount fstatfs preserve PLAT-01-C05's required exact-image/mount identity proof without opening block devices. Fixed devfs identity/ACL, stable block-node type/rdev metadata, mount FSID/source/flags, held root/image identities and complete fresh image mappings are rechecked before normal whole-GUID detach. This is not identical held-device evidence or atomic protection against arbitrary privileged mutation. The historical failure errno remains unresolved.",
+  "controls": {
+    "rootStrategyPurePassed": 15,
+    "helperPurePassed": 22,
+    "driverFakePassed": 7,
+    "actualUnprivilegedNativeMetadataPreflightPassed": true,
+    "independentCapsuleAndDriverReviewPassed": true
+  },
+  "actualResult": {
+    "capture": "/Users/ryan/.cache/agentmux-governance/partial-recovery-v2-driver.2lzgamyp",
+    "originalSession": 40070,
+    "originalSudoProcess": 38185,
+    "resultSHA256": "b2cf2c1ba10e897cf5e55f8929c50059a0942045c002ec2b3e9e060ff45b8e27",
+    "invocationSHA256": "df5fd68b1ec0a0f94becaea5b2087ecb2999c0a81109f430525560346f7843e6",
+    "stdoutSHA256": "d3567c424fbbe73d82cad2358ef7e1319809f0a2b81f2285bf42651fbe647a11",
+    "stderrBytes": 0,
+    "exitCode": 0,
+    "elapsedSeconds": 11.197564709000002,
+    "rootCompletionConfirmed": true,
+    "cancelled": false,
+    "timedOut": false,
+    "parentIOFailed": false,
+    "progressOutputFailed": false,
+    "stdinCloseFailed": false,
+    "partialNormalDetachComplete": true,
+    "recoveryVersion": 2,
+    "filesRetained": true,
+    "nonce": "20261015-4d927ca8",
+    "attachSHA256": "ab73b1e71f04c6311badf950b5779a94ae395949b4ed45b1b4d57b218013c0c3",
+    "savedFirstAndPredetachInfoSHA256": "e2133d1603f8a3d06a5d024630ce591894d29f3517f31609c66a432393ec4fd2"
+  },
+  "postRecoveryReadOnlyCheck": {
+    "exactImageAbsent": true,
+    "backingFileRetained": true,
+    "backingDevice": 16777234,
+    "backingInode": 2395887,
+    "backingOwner": 0,
+    "backingGroup": 0,
+    "backingMode": "0600",
+    "backingLinks": 1,
+    "backingBytes": 134217728,
+    "freshInfoSHA256": "a0689f7898a92d6a044a8190b4b01dc409fe49d146708b1f18fc6ead8cfc8b12",
+    "unrelatedImageDetailsOmitted": true
+  },
+  "independentReview": "Peer independently checked the original terminal flags, all receipt and invocation hashes, exact fixed helper argv and all five held review inputs with stable/close-success records. Ordinary stat confirms the original backing file remains and the mountpoint now names its underlying host directory. Main separately performed a fresh successful read-only hdiutil info query and checked that this exact image is absent.",
+  "freshPairConfirmation": {
+    "path": "/Users/ryan/.cache/agentmux-governance/apfs-partial-detach-confirmation-4d927ca8.private.json",
+    "sha256": "a5f1b25b0ebec636abdb629a82f96ffdf3c81cd9238763e0f717e8c22d872de3",
+    "setupDriverBound": false
+  },
+  "limits": [
+    "This completes the new exact-image recovery, not historical per-command completion or the original failure's cause. Original historical wait proof stays absent and descendants unknown.",
+    "The old image and every failure/capture/marker remain preserved. The fresh pair, native ownership tests, normal matched teardown and clean committed-candidate qualification are not passed by this record."
+  ],
+  "phaseGateAccepted": false,
+  "ciRun": false,
+  "mergeAuthorized": false
+}

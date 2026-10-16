@@ -25,8 +25,16 @@ check() {
 # Load the script's functions without running its dispatch. `return` at the top
 # level of a sourced file stops sourcing, which is how the command table at the
 # bottom is skipped.
+# Isolate before sourcing agentmux.sh: sourcing creates its home directories.
+# Evidence is retained; the owned fixture removes only its exact inner home.
+IDLE_TEST_HOME="$(mktemp -d)"
+mkdir -p "$IDLE_TEST_HOME/home" "$IDLE_TEST_HOME/tmp" "$IDLE_TEST_HOME/tmux"
+export HOME="$IDLE_TEST_HOME/home" AGENTMUX_HOME="$IDLE_TEST_HOME/home/.agentmux"
+export TMPDIR="$IDLE_TEST_HOME/tmp/" TMUX_TMPDIR="$IDLE_TEST_HOME/tmux"
+: "${AGENTMUX_IDLE_TEST_PYTHON:?set the reviewed absolute native Python interpreter}"
+case "$AGENTMUX_IDLE_TEST_PYTHON" in /*) ;; *) echo 'native Python path must be absolute' >&2; exit 2 ;; esac
 SRC="$(mktemp)"; FDPASS="$(mktemp)"
-trap 'rm -f "$SRC" "$FDPASS"' EXIT
+trap 'rm -f "$SRC" "$FDPASS"; printf "retained isolated idle home: %s\\n" "$IDLE_TEST_HOME" >&2' EXIT
 tr -d '\r' < agentmux.sh | sed 's/^case "\${1:-}" in$/return 0 \# test harness stops here/' > "$SRC"
 # shellcheck source=/dev/null
 AGENTMUX_IDLE_MINUTES=60 . "$SRC" 2>/dev/null || true
@@ -155,33 +163,12 @@ grep -q 'CLOSE EVERY DESCRIPTOR' agentmux.sh   && ok "the generated watchdog clo
 
 # And behaviourally, which is the part a grep cannot promise: generate the real
 # watchdog, start it holding a lock on a high fd, and ask whether the child kept it.
-FDHOME="$(mktemp -d)"
-RUNDIR="$FDHOME/run"; LOGDIR="$FDHOME/logs"; mkdir -p "$RUNDIR" "$LOGDIR"
-AGENTMUX_IDLE_MINUTES=60 AGENTMUX_REPO="$PWD" start_idle_watchdog >/dev/null 2>&1
-WD="$RUNDIR/.idle-watchdog.sh"
-if [ -f "$WD" ]; then
-  rm -f "$RUNDIR/.idle.pid"
-  probe="$FDHOME/probe.lock"; : > "$probe"
-  ( exec 200>"$probe"
-    AGENTMUX_IDLE_TICK=300 setsid bash "$WD" >/dev/null 2>&1 &
-    printf '%s
-' "$!" > "$FDHOME/pid" )
-  sleep 1
-  wpid="$(cat "$FDHOME/pid" 2>/dev/null || true)"
-  held=unknown
-  if [ -n "$wpid" ] && [ -d "/proc/$wpid/fd" ]; then
-    if ls -l "/proc/$wpid/fd" 2>/dev/null | grep -q 'probe.lock'; then held=yes; else held=no; fi
-  fi
-  [ -n "$wpid" ] && { pkill -P "$wpid" 2>/dev/null; kill "$wpid" 2>/dev/null; }
-  case "$held" in
-    no)  ok "a descriptor held by the spawner does not survive into the watchdog" ;;
-    yes) bad "a descriptor held by the spawner does not survive into the watchdog"              "it is still open in pid $wpid" ;;
-    *)   ok "(no /proc to inspect; the grep above covers the generator)" ;;
-  esac
+if "$AGENTMUX_IDLE_TEST_PYTHON" -I -S dashboard/idle_watchdog_fixture.py fd --execute-reviewed; then
+  ok "the inherited probe is visible in the directly owned positive control"
+  ok "a descriptor held by the spawner does not survive into the watchdog"
 else
-  bad "the watchdog script is generated" "start_idle_watchdog wrote nothing"
+  bad "the owned native descriptor proof completes without a waiver"
 fi
-rm -rf "$FDHOME"
 
 echo '--- the sweep only touches agents THIS home owns ---'
 # THE BUG THIS CAUGHT, and it is the worst one this file has had to hold.
@@ -246,31 +233,11 @@ else
       "a deleted home leaves the watchdog sweeping a shared socket forever"
 fi
 # Behaviourally: generate the real watchdog, delete the home under it, and see it go.
-GHOME="$(mktemp -d)"
-(
-  ROOT="$GHOME"; RUNDIR="$GHOME/run"; LOGDIR="$GHOME/logs"; mkdir -p "$RUNDIR" "$LOGDIR"
-  AGENTMUX_IDLE_MINUTES=60 AGENTMUX_REPO="$PWD" start_idle_watchdog >/dev/null 2>&1
-  rm -f "$RUNDIR/.idle.pid"
-  if [ -f "$RUNDIR/.idle-watchdog.sh" ]; then
-    AGENTMUX_IDLE_TICK=1 setsid bash "$RUNDIR/.idle-watchdog.sh" >/dev/null 2>&1 &
-    wpid=$!
-    sleep 1
-    rm -rf "$GHOME"
-    gone=no
-    for _ in 1 2 3 4 5 6 7 8; do
-      kill -0 "$wpid" 2>/dev/null || { gone=yes; break; }
-      sleep 1
-    done
-    kill "$wpid" 2>/dev/null
-    if [ "$gone" = yes ]; then ok "it exits within a tick of its home being deleted"
-    else bad "it exits when its home is deleted" "still running as pid $wpid after 8s"; fi
-  else
-    bad "the watchdog script is generated" "start_idle_watchdog wrote nothing"
-  fi
-  printf '%s %s\n' "$passed" "$failed" > "$FDPASS"
-)
-read -r passed failed < "$FDPASS"
-rm -rf "$GHOME"
+if "$AGENTMUX_IDLE_TEST_PYTHON" -I -S dashboard/idle_watchdog_fixture.py home --execute-reviewed; then
+  ok "it exits within a tick of its home being deleted"
+else
+  bad "it exits when its home is deleted" "the owned fixture failed; EOF cleanup is not a pass"
+fi
 
 echo '--- a timeout closes an agent the same way a person does ---'
 grep -q 'cmd_kill "\$name"' agentmux.sh \

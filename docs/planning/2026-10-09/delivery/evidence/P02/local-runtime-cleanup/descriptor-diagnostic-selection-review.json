@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "Codex",
+  "decision": "Approve explicit research-only selection; preserve the failed experiment and every product requirement.",
+  "criteriaReviewed": ["P02-T01-AC03", "P02-T01-AC08", "P02-T06-AC02", "P02-T06-AC03", "P02-GATE-AC01", "P02-GATE-AC03", "P02-GATE-AC06", "P02-GATE-AC07", "P02-GATE-AC09"],
+  "reason": "The actual criteria require native installed execution, bounded ownership/recovery, security and preservation; none mandates unlinked-descriptor execution as the implementation strategy. This experiment explicitly says research only, and even success would leave same-UID immutability unproven. Production instead admits separately protected release roots and refuses ordinary staging trees. Moving the unchanged experiment to an explicit diagnostic selection does not qualify that rejected strategy or reduce the native installed-image gate.",
+  "originalFileSHA256": "29823b7772b37e6935c3d4261016dcc05cb9c3ba1a84deff8e69ff1dc6f5b93d",
+  "defaultFile": "platform/runtime/snapshot_darwin_test.go",
+  "defaultFileSHA256": "8651a525b39bfcf368077acc8f3bc551ddcf23a5e90a5d02760632448527c51f",
+  "diagnosticFile": "platform/runtime/snapshot_darwin_descriptor_research_test.go",
+  "diagnosticFileSHA256": "b7585ad37f3b4bc07522ec2ce350492c8a36efe9e8931cee4096e971f5a8f74d",
+  "unchangedFunctionSHA256": {
+    "TestDarwinUnlinkedDescriptorResearch": "85d339f717fa993eb8344ca0a93201dca7a8186599ea1e4ed3e0778f3c3eeff1",
+    "TestMain": "91709d66d360d2dec9ff66732a5033f3cc84a67b6d8f28d7eebd2c9fa162d4c3",
+    "TestDarwinProductRemainsFailClosed": "f00766f29eec18da3925755514794fe7b747abf880bb3b6ad43fb76adbf55c03"
+  },
+  "mainVerification": "Main independently extracted all three complete function bodies from the fresh failed-run snapshot and current files; all bytes and the displayed hashes match. Main read the collector delta: --darwin-research adds agentmux_darwin_descriptor_research only to the experimental command and requires each actual named terminal result. Missing/empty results cannot pass. Default TestMain and product refusal remain active. No product code or assertion changed.",
+  "collectorSHA256": "902be9909633aa2256758f1fd39c6c2c93b0b69108d371b6eead55ddce26b7f7",
+  "controlsCapture": "/Users/ryan/.cache/agentmux-governance/descriptor-research-relocation.ex0S4w",
+  "controlsResultSHA256": "7e0f618ebdc683e1f10c1a261adf324e6a833aee7573e9037b0296dd43de137e",
+  "pureControlsPassed": 81,
+  "researchStatus": "failed; historical and fresh reproduction retained",
+  "failureEvidence": "docs/planning/2026-10-09/delivery/evidence/P02/local-runtime-cleanup/default-descriptor-research-reproduction-review.json",
+  "regressionBaselineChangeRequired": false,
+  "regressionBaselineLimit": "The accepted 105-file pre-platform retention baseline does not include this Go file. Keep that baseline unchanged and check it separately; byte-identical function comparison and component tracking preserve this later-added test.",
+  "fullDefaultRuntimePassedByThisRecord": false,
+  "phaseGateAccepted": false,
+  "limitations": ["A fresh full default-runtime suite with no name filter remains required. Explicit diagnostic execution remains failed/unqualified; do not relabel it as product support or a passing run."]
+}

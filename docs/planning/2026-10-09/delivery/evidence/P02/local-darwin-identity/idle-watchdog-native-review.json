@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "Codex",
+  "status": "native-dirty-checkout-prequalification-passed",
+  "source": {
+    "dashboard/test_idle.sh": "0ab13911b5e6113851e56f0c2125d720481a7486ba8b433bb994536222c0c6c3",
+    "dashboard/idle_watchdog_fixture.py": "6fae75d474456a0ec2682e5316ee73589c77d06f7fff787402661bdba23e8f57",
+    "dashboard/test_idle_watchdog_fixture.py": "365eea7309ed16f7045dd221ea09c8cd74164670cf0ebd8961ebd96e5d4999e9",
+    "dashboard/idle_missing_guard_mutation.py": "5160c1d3508057698850ede352af8ae97f5c6e5c865d3a7a0843d303deb8f3a9",
+    "agentmux.sh": "310d538866f29478ef01bfd77c782dd62ead2a09eb1a244fe890bf96b1b36867"
+  },
+  "replacementReview": "Main read the fixture, controls and changed shell test. Russell independently reviewed original ownership, native ABI declarations, deadline fences, safe progress reporting and the independent tmux invocation record. Four original assertion regions remain unchanged. Replace PID-file adoption, detached watchdog cleanup and the macOS no-proc waiver with retained creator-owned children and actual native vnode identity checks. Production watchdog source is unchanged.",
+  "pureControls": {
+    "originalToolChunk": "67907d",
+    "testsPassed": 16,
+    "exitCode": 0,
+    "scope": "Pure substitutes and source checks, not native ABI qualification."
+  },
+  "nativeDescriptorCheck": {
+    "originalToolChunk": "59f39d",
+    "capture": "/private/var/folders/s9/n8dqy5r13yb7x9qk6xkg967h0000gn/T/agentmux-idle-owned-l6i52eef",
+    "exitCode": 0,
+    "positiveMatchingFDs": [200],
+    "watchdogMatchingFDs": [],
+    "completeStableEnumeration": true,
+    "vnodeFDsCheckedPerProcess": 2,
+    "allOwnersJoined": true
+  },
+  "nativeHomeCheck": {
+    "originalToolChunk": "dd9b7d",
+    "capture": "/private/var/folders/s9/n8dqy5r13yb7x9qk6xkg967h0000gn/T/agentmux-idle-owned-agfuh5sy",
+    "exitCode": 0,
+    "homeExitSeconds": 0.010943667002720758,
+    "originalBudgetSeconds": 8,
+    "allOwnersJoined": true,
+    "cleanupEOFAcceptedAsBehavior": false
+  },
+  "actualMissingGuardMutation": {
+    "originalToolChunk": "76fd20",
+    "capture": "/private/var/folders/s9/n8dqy5r13yb7x9qk6xkg967h0000gn/T/agentmux-idle-owned-dxtr2o9i",
+    "exitCode": 0,
+    "sentinelInvoked": true,
+    "homeOracleRefused": true,
+    "normalZeroExitAndOutputRequired": true,
+    "allOwnersJoined": true,
+    "scope": "Removed exactly the home guard from a private generated script. The unchanged production source was not edited. This qualifies detection of that mutation, not a passing mutated watchdog."
+  },
+  "fullIdleSuite": {
+    "command": "AGENTMUX_IDLE_TEST_PYTHON=/Users/ryan/.cache/agentmux-governance/sdk-python3148-pinned-lh4k5_q6/venv/bin/python /opt/homebrew/bin/bash dashboard/test_idle.sh",
+    "originalToolChunk": "666c55",
+    "exitCode": 0,
+    "reportedAssertionsPassed": 35,
+    "reportedAssertionsFailed": 0,
+    "retainedHome": "/var/folders/s9/n8dqy5r13yb7x9qk6xkg967h0000gn/T/tmp.tkXhAIo0yu",
+    "innerFDCapture": "tmp/agentmux-idle-owned-khm5oi90",
+    "innerHomeCapture": "tmp/agentmux-idle-owned-dij9lgvw"
+  },
+  "nativeTarget": "macos-arm64",
+  "independentEvidenceReview": "Russell independently verified unchanged assertion regions, all four promoted pins, unchanged production files, five native scenario capture sets and the exact single-guard mutation. Outer 35/0 is the original main tool result. Per-owner joins are fixture assertions and aggregate records, not separate wait receipts. Native append-failure fault proof remains separate.",
+  "signalsSentByFixture": false,
+  "realTmuxUsedByWatchdogFixture": false,
+  "actualSentinelAppendFailureMutationExecuted": false,
+  "cleanCommittedCandidate": false,
+  "rootActions": false,
+  "ciRun": false,
+  "phaseGateAccepted": false
+}

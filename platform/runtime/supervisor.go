@@ -50,7 +50,7 @@ type Prepared struct {
 
 // Prepare verifies the external release policy, then checks the digest of each
 // independently staged executable. A Verified path alone never grants execution.
-func Prepare(ctx context.Context, raw []byte, packageDir string, trust assembly.Trust, limits Limits) (*Prepared, error) {
+func Prepare(ctx context.Context, raw []byte, packageDir string, trust assembly.Trust, limits Limits) (prepared *Prepared, failure error) {
 	if ctx == nil {
 		return nil, errors.New("preparation context is required")
 	}
@@ -77,17 +77,25 @@ func Prepare(ctx context.Context, raw []byte, packageDir string, trust assembly.
 	if err != nil {
 		return nil, errors.New("verified package root is unavailable")
 	}
-	defer root.Close()
 	p := &Prepared{}
+	defer func() {
+		if cleanup := root.Close(); cleanup != nil {
+			failure = retainStartupCleanupCause(failure, cleanup)
+		}
+		if failure != nil {
+			prepared = nil
+			if cleanup := p.Close(); cleanup != nil {
+				failure = retainStartupCleanupCause(failure, cleanup)
+			}
+		}
+	}()
 	for i, member := range verified.Members() {
 		entry, err := filepath.Rel(verified.PackageRoot(), member.Path)
 		if err != nil {
-			p.Close()
 			return nil, errors.New("verified member is outside the package")
 		}
 		image, err := prepareExecutable(ctx, root, entry, member.BinaryDigest, limits.MaxBinaryBytes)
 		if err != nil {
-			p.Close()
 			return nil, fmt.Errorf("prepare %s: %w", member.ID, err)
 		}
 		p.images[i] = image
@@ -104,16 +112,17 @@ func (p *Prepared) Close() error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	p.consumed = true
-	var first error
+	var failures []error
 	for i, image := range p.images {
 		if image != nil {
-			if err := image.close(); err != nil && first == nil {
-				first = err
-			}
 			p.images[i] = nil
+			failures = append(failures, image.close())
 		}
 	}
-	return first
+	if cleanup := errors.Join(failures...); cleanup != nil {
+		return retainStartupCleanupCause(nil, cleanup)
+	}
+	return nil
 }
 
 type boundedOutput struct {
@@ -159,6 +168,8 @@ type Group struct {
 	cleanupMu           sync.Mutex
 	contextCleanupError error
 	contextCleanupDone  chan struct{}
+	// Written before publication and retained as history, never as retry authority.
+	imageCleanupError error
 }
 type ProcessStatus struct {
 	Role     string
@@ -309,12 +320,14 @@ func (p *Prepared) Start(ctx context.Context, supplied [4]RoleOptions, deadlines
 			break
 		}
 	}
+	var imageFailures []error
 	for i, image := range p.images {
 		if image != nil {
-			image.close()
 			p.images[i] = nil
+			imageFailures = append(imageFailures, image.close())
 		}
 	}
+	g.imageCleanupError = errors.Join(imageFailures...)
 	p.mu.Unlock()
 	go func() {
 		for _, child := range g.children {
@@ -325,6 +338,7 @@ func (p *Prepared) Start(ctx context.Context, supplied [4]RoleOptions, deadlines
 	if err == nil {
 		err = startCtx.Err()
 	}
+	err = g.withImageCleanupCause(err)
 	if err != nil {
 		cleanupCtx, cleanupCancel := context.WithTimeout(context.Background(), deadlines.StopGrace+deadlines.ReapTimeout)
 		defer cleanupCancel()
@@ -398,7 +412,16 @@ func (g *Group) CleanupError() error {
 	g.cleanupMu.Lock()
 	err := g.contextCleanupError
 	g.cleanupMu.Unlock()
-	return errors.Join(err, g.resourceCleanupError())
+	return g.withImageCleanupCause(errors.Join(err, g.resourceCleanupError()))
+}
+
+// Preserve private disposal causes even when a caller's context has expired.
+// This field is immutable after Start and grants no descriptor or process retry.
+func (g *Group) withImageCleanupCause(failure error) error {
+	if g.imageCleanupError != nil {
+		return retainStartupCleanupCause(failure, g.imageCleanupError)
+	}
+	return failure
 }
 
 func (g *Group) resourceCleanupError() error {
@@ -421,15 +444,21 @@ func (g *Group) Stop(ctx context.Context) error {
 	if ctx == nil {
 		return errors.New("stop context is required")
 	}
+	if err := ctx.Err(); err != nil {
+		return g.withImageCleanupCause(err)
+	}
 	select {
 	case <-g.stopToken:
 		defer func() { g.stopToken <- struct{}{} }()
 	case <-ctx.Done():
-		return ctx.Err()
+		return g.withImageCleanupCause(ctx.Err())
+	}
+	if err := ctx.Err(); err != nil {
+		return g.withImageCleanupCause(err)
 	}
 	select {
 	case <-g.allDone:
-		return g.resourceCleanupError()
+		return g.withImageCleanupCause(g.resourceCleanupError())
 	default:
 	}
 	for _, child := range g.children {
@@ -444,7 +473,7 @@ func (g *Group) Stop(ctx context.Context) error {
 	defer grace.Stop()
 	select {
 	case <-g.allDone:
-		return g.resourceCleanupError()
+		return g.withImageCleanupCause(g.resourceCleanupError())
 	case <-ctx.Done():
 	case <-grace.C:
 	}
@@ -460,10 +489,10 @@ func (g *Group) Stop(ctx context.Context) error {
 	defer reap.Stop()
 	select {
 	case <-g.allDone:
-		return g.resourceCleanupError()
+		return g.withImageCleanupCause(g.resourceCleanupError())
 	case <-ctx.Done():
-		return fmt.Errorf("owned process reaping is incomplete: %w", ctx.Err())
+		return g.withImageCleanupCause(fmt.Errorf("owned process reaping is incomplete: %w", ctx.Err()))
 	case <-reap.C:
-		return errors.New("owned process reaping deadline exceeded")
+		return g.withImageCleanupCause(errors.New("owned process reaping deadline exceeded"))
 	}
 }

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "captureDirectory": "/private/tmp/agentmux-port-caller-history.b5jyrmu0/evidence",
+  "execution": "Four serialized native offline Go race-test commands on an isolated source snapshot",
+  "sourceSnapshotStable": true,
+  "topLevelTestsPassed": 17,
+  "subtestsPassed": 17,
+  "failed": 0,
+  "skipped": 0,
+  "raceReports": 0,
+  "allCommandsExitZero": true,
+  "allStderrEmpty": true,
+  "rawStdoutHashesIndependentlyMatched": {
+    "01-port-and-diagnostic.stdout.jsonl": "c1e93164db1c0dd1b74bc620e556ea3fe57c75a1e49ee13dc689dcccdfccd009",
+    "02-bootstrap-caller-causes.stdout.jsonl": "440aa4cdd16c986ce6dbaefd7d971503213d06870afdd1bf1c66910d52f25384",
+    "03-portable-matcher-history.stdout.jsonl": "c3a178b4a58665845eb27f9d353153dee0d42543223b5a38c95c6ebf2b6e4d4c",
+    "04-runtime-category-prepared.stdout.jsonl": "8f0099a93aea8145a75cebe6ca8ad3ed88e93bc1c8b17df04389996cd9c4c2bb"
+  },
+  "limitations": [
+    "Modeled cleanup boundaries are not claims of actual live OS close failure.",
+    "Subsequent runtimeCleanupCause diagnostic integration and session cleanup revisions are excluded from these passes and require their own execution.",
+    "No protected installation, installed CLI or Docker lifecycle scenario is established by these focused controls."
+  ],
+  "phaseGateAccepted": false
+}

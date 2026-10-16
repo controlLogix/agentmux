@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "Codex",
+  "status": "reviewed-source-promoted-focused-checkout-controls-passed",
+  "source": {
+    "setup.py": "f96072677c2dbcf89dbb4aef6b901538d93f281ee9288fa922e81d813d8c3abc",
+    "teardown.py": "116e87a1abd76ec66c057d108dfab58dc194dd0d593d8c51dbfd20c096229d35",
+    "driver.py": "80002214ec52f6134bbdbb4182f0b8760138fd46941aa7dc309175a49021f12e",
+    "metadata_controls.py": "d39a2f0b50345fc97c0771525b58ebf638ab82090cedb2e54ba4126bdc1b3104"
+  },
+  "review": "Main read the complete combined patch; peer independently compared every existing top-level body with the current UID-only baseline. Existing guards, UID99 control policy and all original MetadataControls remain unchanged. The added bounded serializer uses closed stage literals, known numeric errno, base descriptors, exact tuple causes and cycle/depth/node limits. Report failures preserve original and cleanup causes with nonzero exit.",
+  "compositionCheck": {
+    "originalToolChunk": "ea89ca",
+    "exitCode": 0,
+    "currentBaselineMatchedBeforePromotion": true,
+    "existingGoWalkersUnchanged": true
+  },
+  "checkoutControls": [
+    {
+      "commandSuffix": "metadata_controls.py -v",
+      "originalToolChunk": "c51fc9",
+      "exitCode": 0,
+      "testsPassed": 24,
+      "testsFailed": 0,
+      "reportedTestSeconds": 0.254,
+      "scope": "Pure metadata and failure reporting controls; no native fixture mutation."
+    },
+    {
+      "commandSuffix": "lifecycle_controls.py -v",
+      "originalToolChunk": "91359d",
+      "exitCode": 0,
+      "testsPassed": 12,
+      "testsFailed": 0,
+      "reportedTestSeconds": 0.706,
+      "scope": "Fake lifecycle controls plus two ordinary-user literal child signal checks. Each literal child retained one original wait, one TERM, zero kills and checked pipe closes. No root or hdiutil execution."
+    },
+    {
+      "commandSuffix": "driver.py --self-test",
+      "originalToolChunk": "fc988b",
+      "exitCode": 0,
+      "scenariosPassed": 7,
+      "subprocessesExecuted": false,
+      "unboundTeardownRefused": true
+    }
+  ],
+  "interpreter": "/Users/ryan/.cache/agentmux-governance/sdk-python3148-pinned-lh4k5_q6/venv/bin/python",
+  "interpreterFlags": ["-I", "-S"],
+  "installedRootPayloadChanged": false,
+  "setupReplayed": false,
+  "teardownEvidenceBound": false,
+  "partialRecoveryConfirmationBound": false,
+  "historicalSetupFailureCauseReclassified": false,
+  "ciRun": false,
+  "phaseGateAccepted": false
+}

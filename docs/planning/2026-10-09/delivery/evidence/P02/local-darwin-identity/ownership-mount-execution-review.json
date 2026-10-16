@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "Codex",
+  "status": "native-dirty-checkout-prequalification-passed-clean-candidate-and-normal-teardown-pending",
+  "environment": "Native macOS ARM64, UID501, Go1.27.2, CGO enabled, explicit SDK26.5",
+  "sourceReview": "Main and an independent reviewer checked the full three-file patch. Search-only access is confined to intermediate directory ancestors and the inspector's explicit root metadata descriptor. Final mount/output directories and regular files retain read-only access. Owner, mode, ACL, mount, flags, FSID, identity and checked-close assertions remain. Typed inspector errors expose only a closed stage code. No root permission or product admission rule changed.",
+  "patchSHA256": "80056f3038af30c7489c520aeb65322ab6448f8150a67aec6f0eb60ae2472e75",
+  "sourceSHA256BeforeAndAfter": {
+    "platform/internal/darwinownershipfixture/testdata/apfs_mount/inspect/main.go": "182a6ecf17a9e60af98f32bb7b1a39b1720e4bd83203be17f5da7ea41ef0bf5e",
+    "platform/privatefs/ownership_mount_darwin_test.go": "b6346d5b416b5293c5520d74341359e86c91625a374dd6b67d27dbaba9ee2ae0",
+    "platform/runtime/ownership_mount_darwin_test.go": "d86ba636ea2b5479b011d1a33444ad964d65e65aa36945fa6014d3029ed14139"
+  },
+  "searchControls": {
+    "originalSession": 60369,
+    "exitCode": 0,
+    "test": "TestDarwinOwnershipSearchOnlyAncestorControl",
+    "packages": ["privatefs", "runtime"],
+    "topLevelPasses": 2,
+    "raceEnabled": true,
+    "checks": "Exact root inode, caller UID501 versus descriptor UID0, native ACL and filesystem metadata, close-on-exec, unchanged identity, read-only directory-open EACCES and unchanged readable leaf descriptor flags."
+  },
+  "inspectorBuild": {
+    "capture": "/Users/ryan/.cache/agentmux-governance/apfs-inspector-sdk265-search.kh0vy_yh",
+    "resultSHA256": "e15e8950364534b627891d0df33fa8970f93b41dc1a43031e5c005294b446f0d",
+    "binarySHA256": "374a3d2af29724b3644155f762fabaf25093608fcae3a7d860ddd2f4b93a9cc6",
+    "binaryBytes": 4264866,
+    "binaryMode": "0500",
+    "sdkIntrinsic": 260500,
+    "sourceAndToolPinsStable": true,
+    "allOriginalWaitsAndReadersJoined": true,
+    "extraArgumentRefused": true,
+    "extraArgumentExitCode": 1,
+    "extraArgumentClosedStage": "inspector_native_uid501_required",
+    "positiveToolChunk": "1a874d",
+    "positiveExitCode": 0
+  },
+  "independentAdmission": {
+    "manifest": "/private/tmp/agentmux-c05-inspector-20261015-7c4e92b1/manifest.json",
+    "manifestSHA256": "5ea249b4a799bc118cae259c1cc2ce1719eeb0bf02f2d703b8a2daf37f532632",
+    "proof": "/Users/ryan/.cache/agentmux-governance/apfs-current-pair-admission-7c4e92b1.private.json",
+    "proofSHA256": "b10a8d59d907a08c97b061aef1d46eb47865355b12e570f8ee7a905e65b3f5f4",
+    "review": "Main's held-file/hash comparator and the peer independently matched all seven manifest fields per volume to the read-only root diagnostic and current attachment maps. Distinct devices and FSIDs, exact mountpoints, control and directory inodes, native ACL absence and flags differing only by MNT_IGNORE_OWNERSHIP match. Context-specific root UID observations are not equated with ordinary-user UID501. Original failed setup and absent original root receipt remain unchanged; no receipt was fabricated."
+  },
+  "actualMountTests": {
+    "originalSession": 77302,
+    "exitCode": 0,
+    "raceEnabled": true,
+    "tags": ["agentmux_darwin_ownership_mount"],
+    "testSelection": "^TestDarwinOwnershipMount(Private|Runtime)DescriptorControls$",
+    "packages": ["privatefs", "runtime"],
+    "tests": ["TestDarwinOwnershipMountPrivateDescriptorControls", "TestDarwinOwnershipMountRuntimeDescriptorControls"],
+    "topLevelPasses": 2,
+    "subtestPasses": 4,
+    "subtestLabels": ["owners", "noowners"],
+    "packageReportedSeconds": [1.239, 1.198],
+    "result": "Ownership-enabled descriptors were accepted; ignore-ownership descriptors were rejected by both actual product predicates. Native metadata and ACL checks and descriptor cleanup passed.",
+    "rawEvidence": "Original tool outputs 0ff5c3 and a4b983 were recovered without rerunning tests through the app's retained completed command record. The output is combined command output, not separately proven stdout/stderr captures. This focused execution is not a canonical collector artifact or clean-commit phase acceptance.",
+    "retainedCapture": "/Users/ryan/.cache/agentmux-governance/ownership-mount-tool-evidence.oY92r4",
+    "rawMountOutputSHA256": "0ed1f4f774d203b9f72e566b711d64f2b1467c263fcd036ab7b3099f68e59cf6",
+    "mountCommandRecordSHA256": "52c5fa792c9ce130f91c564e38332ad2846362887511b52d5555b87536fdd31a",
+    "rawSearchOutputSHA256": "923f8409315261fbda7231767229bd224f925fac73987bc985ef388b4cdefe45",
+    "searchCommandRecordSHA256": "f36f2ae15b23c87eaf68738831572eeef81d4e14a63e7e1282318cae73b46550",
+    "wholeSourceFilesBeforeBuildAndAfterTests": 347,
+    "wholeSourceMapsMatch": true,
+    "selectedSDKAndToolPinsStillMatch": true
+  },
+  "retention": "Keep this same approved pair mounted for the final clean committed candidate rerun. No additional images, setup replay, one-shot reset, forced detach or deletion is authorized by this record. Normal exact-image teardown requires the final joined test evidence and a separately reviewed fixed action.",
+  "normalTeardownComplete": false,
+  "phaseGateAccepted": false,
+  "ciRun": false,
+  "mergeAuthorized": false
+}

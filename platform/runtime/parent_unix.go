@@ -85,7 +85,9 @@ func ParentLifetime(parent context.Context) (context.Context, context.CancelFunc
 	var info unix.Stat_t
 	statErr := unix.Fstat(fd, &info)
 	flags, flagErr := unix.FcntlInt(uintptr(fd), unix.F_GETFL, 0)
-	if statErr != nil || flagErr != nil || info.Mode&unix.S_IFMT != unix.S_IFIFO || info.Mode&0077 != 0 || info.Uid != uint32(os.Geteuid()) || flags&unix.O_ACCMODE != unix.O_RDONLY {
+	// Receipt and lifetime descriptors share the platform pipe metadata rules.
+	// Access direction and UID are checked here for this inherited reader.
+	if statErr != nil || flagErr != nil || info.Mode&unix.S_IFMT != unix.S_IFIFO || !bootstrapReceiptPipeMetadataValid(info) || info.Uid != uint32(os.Geteuid()) || flags&unix.O_ACCMODE != unix.O_RDONLY {
 		return nil, nil, errors.New("parent-lifetime descriptor is not a private owned read pipe")
 	}
 	// ExtraFiles converts inherited descriptors to blocking mode. Register this

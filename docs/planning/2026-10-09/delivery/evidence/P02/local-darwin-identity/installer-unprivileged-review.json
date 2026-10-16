@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "scope": "Unprivileged installer schema controls and native interpreter-chain admission only",
+  "installerSourceSHA256": "482804a59f79c176b4c30e9f1a087d8c81766b9c97a40425b6a9fccc6b9a9ff7",
+  "captureDirectory": "/Users/ryan/.cache/agentmux-governance/darwin-installer-controls.fmZ6o0",
+  "results": [
+    {
+      "mode": "--self-test",
+      "exitCode": 0,
+      "controlsPassed": 15,
+      "stdoutSHA256": "01b41704dec025dc29b44085555c52830ff463ddacd7934421533df35d1aa0b2",
+      "stderrBytes": 0
+    },
+    {
+      "mode": "--native-admission-control",
+      "exitCode": 0,
+      "stdoutSHA256": "ddbbb8a3d4a104f8cffc83e32588db9520a66751c0716594d1f0f796ba60baf0",
+      "stderrBytes": 0
+    }
+  ],
+  "independentChecks": {
+    "rawCaptureHashesMatched": true,
+    "currentInstallerHashMatched": true,
+    "sourceUnchangedDuringRuns": true,
+    "noProtectedMutation": true,
+    "allConfirmedDescriptorsClosed": true,
+    "allAllocatedNativeObjectsFreed": true
+  },
+  "limitations": [
+    "No privileged installation or fixture execution occurred.",
+    "Schema controls use a synthetic image header and do not qualify a native executable.",
+    "Cancellation fault-injection coverage remains pending independent review.",
+    "No installed CLI, SDK enrollment or P02 gate acceptance is established by these results."
+  ],
+  "phaseGateAccepted": false
+}

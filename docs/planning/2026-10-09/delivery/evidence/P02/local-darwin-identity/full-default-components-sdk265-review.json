@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "captureDirectory": "/Users/ryan/.cache/agentmux-governance/default-components-reviewed.U3KpuF",
+  "resultSHA256": "a4f26bad8d3f98fc4243d5c682bb6b142c9219d8733df9c7813080093dee47af",
+  "originalHandle": "62253",
+  "terminalExitCode": 0,
+  "allOriginalWaitsJoined": true,
+  "topLevelPassed": 105,
+  "observedSubtestPassTerminals": 287,
+  "failures": 0,
+  "skips": 0,
+  "raceWarnings": 0,
+  "raceInstrumented": true,
+  "extraBuildTags": [],
+  "runFilter": null,
+  "sdkRoot": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk",
+  "sourcePins": 343,
+  "executedSnapshotStable": true,
+  "toolAndSDKEntries": 39801,
+  "toolAndSDKPinsStable": true,
+  "checkoutDelta": [],
+  "packages": [
+    {"package": "kernel/assembly", "tops": 14, "observedSubtests": 51},
+    {"package": "kernel/boot", "tops": 4, "observedSubtests": 0},
+    {"package": "kernel/protocol", "tops": 15, "observedSubtests": 69},
+    {"package": "deployment", "tops": 55, "observedSubtests": 155},
+    {"package": "privatefs", "tops": 3, "observedSubtests": 10},
+    {"package": "cmd/agentmux-runtime", "tops": 14, "observedSubtests": 2}
+  ],
+  "omittedWithPriorFullPackageEvidence": ["kernel/communication: eight tops, package pins unchanged", "localtls: five tops, package pins unchanged"],
+  "inventoryOnlyNotTestPasses": ["kernel/lifecycle", "kernel/status"],
+  "mainVerification": "Matched all six retained stdout/stderr hashes. Independently parsed one-to-one unique observed test runs and passing terminals, totaling 105 top-level tests and 287 structured subtests. All six original processes exited zero and joined. Corrected collector scope is top-level ownership; no nested tree is inferred from slash-containing names.",
+  "historicalFailurePreserved": "default-components-execution.Rbi9z5/result.json remains the original collector-admission failure; the separate corrected readmission diagnostic is not this fresh execution.",
+  "limitations": [
+    "Default native component suites, not tagged protected installation, installed CLI/Compose or real mount isolation.",
+    "Linux-only sealed-process fixtures remain excluded, not passed; their required native counterparts still need actual installed prerequisites.",
+    "Runtime research failures remain retained separately and are not converted into a full runtime package pass.",
+    "Final committed-candidate correspondence, complete installed checks and independent phase review remain required."
+  ],
+  "phaseGateAccepted": false
+}

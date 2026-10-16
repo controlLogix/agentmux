@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "Codex",
+  "status": "retained-artifact-comparison-reviewed-original-batch-failed",
+  "originalSession": 97722,
+  "originalBatchExitCode": 1,
+  "originalBatchPassed": false,
+  "originalFailurePath": "/private/tmp/agentmux-candidate-match-prepared.pPoBGj/adapter-failure-review.json",
+  "originalFailureSHA256": "6577a3f8c9c5a9e7d54b24beae1ed3f84a7bd5b42914053aeb1301090e05bc90",
+  "auditPath": "/private/tmp/agentmux-candidate-postprocess-audit.E2YBGo/postprocess-recovery-result.json",
+  "auditSHA256": "4bf34a33c30d14127e4db4d0e7078a676846d7f39c24305ded37c38c8cde8ae6",
+  "auditHelperSHA256": "f36478f22cb0ca776e153a03eb8c17871392188c47ea2eebfded0764d7d534b8",
+  "retainedResultSHA256": "5d3c468d04b810a622ab818e2e3dc908686aa27880e795bf46f622e5dff6d418",
+  "review": "Main read the complete audit helper and saved result. The audit decodes output fields from the exact Go test and package before extracting the single controlled artifact path. It rechecks the original waits, joined readers, strict raw test admission, source maps, installed release bindings and actual Mach-O ARM64 artifact bytes. The original adapter incorrectly extracted the path from raw JSON text, including its escaped newline. The saved failure is retained and is not changed to a passing batch.",
+  "tests": {
+    "pinControls": ["TestDarwinCandidateMatchPlanCrossBinding", "TestDarwinMatchPreparedReleaseCandidate"],
+    "actualBuildComparison": ["TestDarwinMatchPreparedReleaseCandidate"],
+    "pinsStdoutSHA256": "7cb1187d776d5f2fcada794b8fcd455eb8d95d0cca665c1d7b9edb496b4ec8a2",
+    "matchStdoutSHA256": "ce53d1b092aa01fef02a0646f1de3ccddf2160ce4bfe137ea1154747f495d413",
+    "strictRawAdmissionPassed": true,
+    "originalWaitsAndReadersJoined": true
+  },
+  "matchedArtifacts": {
+    "agentmux-kernel": {"bytes": 6609922, "sha256": "4b88f1e42b7978e9ce570a19f3b5b78ed1902740f4e6f4be1507e2ad6a20ef36"},
+    "agentmux-runtime": {"bytes": 13576450, "sha256": "a4f038fbeab062503d7c3e30b65c5f8ab0ea4fe29a7f9658a5c647155f10522a"}
+  },
+  "limits": [
+    "The comparison uses a frozen dirty source snapshot, not a clean committed phase candidate.",
+    "No build was repeated to repair reporting. The audit executed no subprocess, root command, Docker command or artifact.",
+    "Selected SDK and tool bindings are checked; historical complete SDK contents are not proven.",
+    "A clean committed candidate rerun and the remaining native security and recovery checks are still required."
+  ],
+  "phaseGateAccepted": false,
+  "ciRun": false,
+  "mergeAuthorized": false
+}

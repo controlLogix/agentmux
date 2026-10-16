@@ -151,14 +151,14 @@ func (s *Session) Close(ctx context.Context) error {
 	}
 	if !s.mu.TryLock() {
 		if err := lockOwnerObservation(ctx, &s.mu); err != nil {
-			return bootstrapError("owned_shutdown_incomplete")
+			return bootstrapCloseFailure(nil, err, nil, nil, s)
 		}
 	}
 	defer s.mu.Unlock()
 	defer s.cleanupState.notify()
 	if s.group != nil {
 		if err := s.group.Stop(ctx); err != nil {
-			s.cleanupFailure = bootstrapError("owned_shutdown_incomplete")
+			s.cleanupFailure = bootstrapCloseFailure(s.cleanupFailure, err, nil, nil, s)
 			select {
 			case <-s.group.Done():
 			default:
@@ -166,22 +166,31 @@ func (s *Session) Close(ctx context.Context) error {
 			}
 		}
 		s.retiredGroup = s.group
-		if s.group.CleanupError() != nil {
-			s.cleanupFailure = bootstrapError("owned_cleanup_incomplete")
+		if err := s.group.CleanupError(); err != nil {
+			s.cleanupFailure = bootstrapCloseFailure(s.cleanupFailure, err, nil, nil, s)
 		}
 		s.group = nil
 	}
 	if s.lock != nil {
 		if err := s.lock.Close(); err != nil {
-			return bootstrapError("lease_close_failed")
+			// Close consumed the original Go file. Retain its concrete lease
+			// and actual cause, but grant no raw-FD retry or path-reopen right.
+			s.cleanupFailure = &bootstrapFailureCause{
+				code: "lease_close_failed", cause: errors.Join(s.cleanupFailure, err, errRuntimeCleanup),
+				leases: []*BootstrapLock{s.lock}, session: s,
+			}
+			return s.cleanupFailure
 		}
 		s.lock = nil
 	}
 	if s.cleanupFailure != nil {
 		return s.cleanupFailure
 	}
-	if s.retiredGroup != nil && s.retiredGroup.CleanupError() != nil {
-		return bootstrapError("owned_cleanup_incomplete")
+	if s.retiredGroup != nil {
+		if err := s.retiredGroup.CleanupError(); err != nil {
+			s.cleanupFailure = bootstrapCloseFailure(nil, err, nil, nil, s)
+			return s.cleanupFailure
+		}
 	}
 	return nil
 }
@@ -196,11 +205,15 @@ func (s *Session) CleanupError() error {
 	if s.cleanupFailure != nil {
 		return s.cleanupFailure
 	}
-	if s.group != nil && s.group.CleanupError() != nil {
-		return bootstrapError("owned_cleanup_incomplete")
+	if s.group != nil {
+		if err := s.group.CleanupError(); err != nil {
+			return bootstrapCloseFailure(nil, err, nil, nil, s)
+		}
 	}
-	if s.retiredGroup != nil && s.retiredGroup.CleanupError() != nil {
-		return bootstrapError("owned_cleanup_incomplete")
+	if s.retiredGroup != nil {
+		if err := s.retiredGroup.CleanupError(); err != nil {
+			return bootstrapCloseFailure(nil, err, nil, nil, s)
+		}
 	}
 	return nil
 }
@@ -311,9 +324,17 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 	}
 	prepared, err := protected.Prepare(warm, c.Assembly, c.PackageDirectory, c.ReleaseTrust, protected.Limits{})
 	if err != nil {
-		return nil, bootstrapError("assembly_preparation_failed")
+		return nil, bootstrapRuntimeFailure("assembly_preparation_failed", err, prepared)
 	}
-	defer prepared.Close()
+	// Keep the exact Prepared pointer. Close consumes its own image handles;
+	// neither a returned error nor this defer permits unsafe descriptor retry.
+	defer func() {
+		if cleanup := prepared.Close(); cleanup != nil {
+			// A warm-reuse result or a started owning Session must remain in
+			// the named return for the existing caller's actual cleanup path.
+			failure = bootstrapCloseFailure(failure, cleanup, prepared, nil, result)
+		}
+	}()
 	if operation != nil {
 		if err := operation.enter(ctx, c, declaration, attemptID); err != nil {
 			return nil, err
@@ -395,7 +416,9 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 			defer cancel()
 			if err := session.Close(cleanup); err != nil {
 				result = session
-				failure = bootstrapError("owned_cleanup_incomplete")
+				// Preserve original concrete cleanup owners as well as this
+				// session's failure; projection still prioritizes cleanup.
+				failure = bootstrapCloseFailure(failure, err, nil, nil, session)
 			}
 		}
 	}()
@@ -414,8 +437,8 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 	operationProof = nil
 	var roleLeases []*BootstrapLock
 	defer func() {
-		for _, lease := range roleLeases {
-			lease.Close()
+		if cleanup := closeBootstrapRoleLeases(roleLeases); cleanup != nil {
+			failure = bootstrapCloseFailure(failure, cleanup, nil, nil, result)
 		}
 	}()
 	for i, role := range c.Roles {
@@ -427,6 +450,12 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 		c.Roles[i].LifetimeLease = lease.file
 	}
 	if broker.State != "running" {
+		// Enrollment, engine/resource inspection and actual bootstrap/role
+		// lease acquisition precede this cold-only native endpoint probe.
+		// Both authorized warm-reuse paths return before reaching it.
+		if err := preflightLocalPort(ctx, selection.Backend, port); err != nil {
+			return nil, err
+		}
 		if err := driver.StartOwned(ctx, owner, c.Compose); err != nil {
 			return nil, err
 		}
@@ -454,28 +483,34 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 			<-group.Done()
 			session.mu.Lock()
 			defer session.mu.Unlock()
-			if group.CleanupError() != nil {
-				session.cleanupFailure = bootstrapError("owned_cleanup_incomplete")
+			if cleanup := group.CleanupError(); cleanup != nil {
+				session.cleanupFailure = bootstrapCloseFailure(session.cleanupFailure, cleanup, nil, nil, session)
 			}
 			session.retiredGroup = group
 			session.group = nil
 			defer session.cleanupState.notify()
 			if session.lock != nil {
-				if session.lock.Close() == nil {
+				if cleanup := session.lock.Close(); cleanup == nil {
 					session.lock = nil
 				} else {
-					session.cleanupFailure = bootstrapError("lease_close_failed")
+					session.cleanupFailure = &bootstrapFailureCause{
+						code: "lease_close_failed", cause: errors.Join(session.cleanupFailure, cleanup, errRuntimeCleanup),
+						leases: []*BootstrapLock{session.lock}, session: session,
+					}
 				}
 			}
 		}()
 	}
 	if err != nil {
-		return nil, bootstrapError("protected_start_failed")
+		return nil, bootstrapRuntimeFailure("protected_start_failed", err, prepared)
 	}
-	for _, lease := range roleLeases {
-		lease.Close()
-	}
+	roleCleanup := closeBootstrapRoleLeases(roleLeases)
+	// Each Close attempt consumed that original os.File. Its failure retains
+	// its lease reference through roleCleanup; the defer must not retry it.
 	roleLeases = nil
+	if roleCleanup != nil {
+		return nil, roleCleanup
+	}
 	for {
 		broker, err = inspect(ctx)
 		if err != nil {
@@ -505,8 +540,13 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 				return nil, bootstrapError("protected_process_exited")
 			}
 			if err := session.lock.Close(); err != nil {
+				session.cleanupFailure = &bootstrapFailureCause{
+					code: "lease_close_failed", cause: errors.Join(session.cleanupFailure, err, errRuntimeCleanup),
+					leases: []*BootstrapLock{session.lock}, session: session,
+				}
+				cleanupFailure := session.cleanupFailure
 				session.mu.Unlock()
-				return nil, bootstrapError("lease_close_failed")
+				return nil, cleanupFailure
 			}
 			session.lock = nil
 			session.mu.Unlock()

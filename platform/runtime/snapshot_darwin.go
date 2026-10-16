@@ -43,7 +43,7 @@ func (e *protectedDarwinExecutable) close() error {
 
 // The supervisor calls this immediately before creating each child. Root and
 // the privileged updater remain trusted and must never replace active versions.
-func (e *protectedDarwinExecutable) validateForStart(ctx context.Context) error {
+func (e *protectedDarwinExecutable) validateForStart(ctx context.Context) (failure error) {
 	if len(e.files) == 0 || len(e.files) != len(e.identities) {
 		return errors.New("protected_descriptor_closed")
 	}
@@ -51,7 +51,11 @@ func (e *protectedDarwinExecutable) validateForStart(ctx context.Context) error 
 	if err != nil {
 		return err
 	}
-	defer fresh.close()
+	defer func() {
+		if cleanup := fresh.close(); cleanup != nil {
+			failure = retainStartupCleanupCause(failure, cleanup)
+		}
+	}()
 	if len(fresh.identities) != len(e.identities) {
 		return errors.New("protected_path_changed")
 	}
@@ -91,7 +95,7 @@ func darwinReleaseRoot(path string) bool {
 	return err == nil
 }
 
-func openDarwinProtected(ctx context.Context, path, want string, max int64) (*protectedDarwinExecutable, error) {
+func openDarwinProtected(ctx context.Context, path, want string, max int64) (image *protectedDarwinExecutable, failure error) {
 	if ctx == nil || max < 1 || max > 1024*1024*1024 || !strings.HasPrefix(want, "sha256:") || len(want) != 71 {
 		return nil, errors.New("protected_image_options_invalid")
 	}
@@ -109,7 +113,9 @@ func openDarwinProtected(ctx context.Context, path, want string, max int64) (*pr
 	failed := true
 	defer func() {
 		if failed {
-			e.close()
+			if cleanup := e.close(); cleanup != nil {
+				failure = retainStartupCleanupCause(failure, cleanup)
+			}
 		}
 	}()
 	parent := unix.AT_FDCWD

@@ -52,9 +52,20 @@
             "dashboard/test_sandbox_coordination.py",
             "dashboard/test_agentcli.py"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-01-C02",
@@ -63,9 +74,20 @@
             "dashboard/test_no_inherited_stdin.py",
             "dashboard/test_argguard.sh"
           ],
-          "requiredEnvironment": "Isolated shell/tmux fixtures and native Windows-to-WSL argument tests; actual supported provider versions for launch qualification.",
+          "requiredEnvironment": "Isolated native macOS ARM64 shell/tmux argument fixtures; actual supported provider versions for launch qualification.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -77,6 +99,53 @@
         "No provider or tmux session was launched in this review.",
         "Legacy posture and environment checks reduce mistakes but do not establish multi-user or hostile-code isolation.",
         "CLI feature flags and startup behavior need version-specific qualification."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-15T02:23:21.782Z",
+          "actor": "Codex",
+          "decisionId": "PLATFORM-SCOPE-02",
+          "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+          "previousPlatformRequirements": {
+            "behaviorChecks": [
+              {
+                "id": "HAR-01-C01",
+                "description": "Exercise spawn validation, quoting, same-name races, missing CLI, persona handling, cwd/model/auth selection, posture rejection and a lost launch reply without a second worker.",
+                "existingTests": [
+                  "dashboard/test_launch.sh",
+                  "dashboard/test_argguard.sh",
+                  "dashboard/test_sandbox_coordination.py",
+                  "dashboard/test_agentcli.py"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-01-C02",
+                "description": "Preserve exec stdin isolation, exit status, attach instructions, hub forwarding, help aliases and version/dirty attribution.",
+                "existingTests": [
+                  "dashboard/test_no_inherited_stdin.py",
+                  "dashboard/test_argguard.sh"
+                ],
+                "requiredEnvironment": "Isolated shell/tmux fixtures and native Windows-to-WSL argument tests; actual supported provider versions for launch qualification.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              }
+            ],
+            "enhancements": [
+              "Versioned provider capability declarations and structured launch results distinguish rejected, running and outcome-unknown launches.",
+              "Scope each session to an authenticated user/project and retain logical session identity across transport reconnect.",
+              "Replace implicit unrestricted defaults with an explicit supported execution profile and owner-checked authorization; preserve deliberate authorized execution."
+            ],
+            "migrationChecks": [
+              "Map every existing flag, environment override and exit status before changing CLI parsing.",
+              "Carry existing named-session metadata into an explicit legacy session generation; do not infer a new process from a reused name.",
+              "Keep the old harness callable until the mapped provider operations pass and operator setup guides describe any changed defaults."
+            ],
+            "reusePlan": "Keep the existing launch and validation logic behind execution/client plugin contracts, with the current command entrypoints as compatibility callers. Extract by provider only after matching observable behavior with fixtures."
+          }
+        }
       ]
     },
     {
@@ -116,9 +185,20 @@
             "dashboard/test_argguard.sh",
             "dashboard/test_launch.sh"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-02-C02",
@@ -128,7 +208,18 @@
           ],
           "requiredEnvironment": "Captured prompt fixtures plus isolated tmux clients on each supported provider version; add explicit clear-modals fixtures because the existing modal suite is not complete coverage of this helper.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-02-C03",
@@ -137,9 +228,20 @@
             "dashboard/test_lifecycle.sh",
             "dashboard/test_launch.sh"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -151,6 +253,62 @@
         "Terminal text can change between observation and input.",
         "clear-modals.sh currently has broader authority than unblock; do not treat both as the same safe automatic behavior.",
         "No captured prompt or live-provider suite ran during this review."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-15T02:23:21.782Z",
+          "actor": "Codex",
+          "decisionId": "PLATFORM-SCOPE-02",
+          "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+          "previousPlatformRequirements": {
+            "behaviorChecks": [
+              {
+                "id": "HAR-02-C01",
+                "description": "Preserve literal input, multiline handling, large-paste behavior, key validation, bounded read/ask output and unknown-flag errors.",
+                "existingTests": [
+                  "dashboard/test_modal_guard.sh",
+                  "dashboard/test_argguard.sh",
+                  "dashboard/test_launch.sh"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-02-C02",
+                "description": "Verify unblock refuses trust/account/consent prompts and compare clear-modals behavior using captured prompt fixtures; changed default selection or target generation must not cause an unintended answer.",
+                "existingTests": [
+                  "dashboard/test_modal_guard.sh"
+                ],
+                "requiredEnvironment": "Captured prompt fixtures plus isolated tmux clients on each supported provider version; add explicit clear-modals fixtures because the existing modal suite is not complete coverage of this helper.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-02-C03",
+                "description": "Keep wait timeout/death/quiet outcomes distinct from execution and acceptance, including missing or changed busy markers.",
+                "existingTests": [
+                  "dashboard/test_lifecycle.sh",
+                  "dashboard/test_launch.sh"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              }
+            ],
+            "enhancements": [
+              "Attach session generation, actor, approval scope and delivery identifiers to input operations.",
+              "Use supported client events when available and mark terminal-derived observations as uncertain.",
+              "Separate consent decisions from mechanical update-dismissal policy, with target/version rechecks immediately before input."
+            ],
+            "migrationChecks": [
+              "Preserve tunable send/quiet/read settings with their source and supported range.",
+              "Pending text and partially submitted messages need an explicit reconciliation record before switching delivery paths.",
+              "Document any new consent requirement as a behavior change; source removal or loss of manual key control is not authorized."
+            ],
+            "reusePlan": "Extract terminal capture and input handling as provider-specific operations while keeping existing command names. Retain the separate modal helper entrypoint; require an explicit reviewed policy for each automatic answer before enabling it in a new client."
+          }
+        }
       ]
     },
     {
@@ -189,9 +347,20 @@
             "dashboard/test_lifecycle.sh",
             "dashboard/test_residue.sh"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-03-C02",
@@ -200,9 +369,20 @@
             "dashboard/test_evidence_archive.sh",
             "dashboard/test_lifecycle.sh"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-03-C03",
@@ -213,7 +393,18 @@
           ],
           "requiredEnvironment": "Isolated local POSIX homes with synthetic credentials; actual provider refresh behavior separately qualified.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -225,6 +416,63 @@
         "Existing lifecycle cleanup may perform external ticket transitions; new owner policy must not equate process exit with accepted work.",
         "Same-user filesystem protection is not a product-wide security boundary.",
         "Credential refresh compatibility remains version-dependent and was not tested here."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-15T02:23:21.782Z",
+          "actor": "Codex",
+          "decisionId": "PLATFORM-SCOPE-02",
+          "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+          "previousPlatformRequirements": {
+            "behaviorChecks": [
+              {
+                "id": "HAR-03-C01",
+                "description": "Exercise kill/reap/idle with attached sessions, foreign homes, disappeared homes, failed tmux queries, failed kills and same-name respawn during external close-out.",
+                "existingTests": [
+                  "dashboard/test_idle.sh",
+                  "dashboard/test_lifecycle.sh",
+                  "dashboard/test_residue.sh"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-03-C02",
+                "description": "Re-spawn repeatedly without truncating evidence; verify archive collisions, retention bounds, link handling, credential exclusion and recovery after an archive failure.",
+                "existingTests": [
+                  "dashboard/test_evidence_archive.sh",
+                  "dashboard/test_lifecycle.sh"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-03-C03",
+                "description": "Use synthetic credential files to verify refreshed-token convergence and owner-only permissions without disclosing values, including concurrent cleanup and spawn.",
+                "existingTests": [
+                  "dashboard/test_auth.py",
+                  "dashboard/test_evidence_archive.sh"
+                ],
+                "requiredEnvironment": "Isolated local POSIX homes with synthetic credentials; actual provider refresh behavior separately qualified.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              }
+            ],
+            "enhancements": [
+              "Use explicit session generations and project ownership rather than same-name sidecars as cross-user authority.",
+              "Bind cleanup to task reservations and immutable evidence references; retain logs before process termination where required.",
+              "Move provider secret coordination behind a dedicated scoped secret facility without copying token values into NATS records."
+            ],
+            "migrationChecks": [
+              "Inventory existing logs, archives, config mirrors and stale sidecars before cutover; preserve their generation and retention intent.",
+              "Do not copy inherited idle defaults into connected-hub reservation logic: process idleness does not free accepted remote work.",
+              "Retain credential ownership and refresh continuity across upgrade and rollback."
+            ],
+            "reusePlan": "Reuse the cleanup ordering, generation checks, archive retention and credential-convergence rules as separate execution/evidence/secret-owner operations. Keep the current implementation while new lifetime ownership is verified."
+          }
+        }
       ]
     },
     {
@@ -266,9 +514,20 @@
             "dashboard/test_auth.py",
             "dashboard/check_key_exposure.sh"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-04-C02",
@@ -279,15 +538,37 @@
           ],
           "requiredEnvironment": "Isolated terminal fixtures with synthetic values; add direct enter-key compatibility cases.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-04-C03",
           "description": "Preview and apply a generated permission rule against a temporary user settings fixture, preserving other values and backups; default diagnostic paths perform no live inference.",
           "existingTests": [],
-          "requiredEnvironment": "Offline temporary homes on Windows/WSL/macOS/Linux; any live Grok check is separately authorized and capped.",
+          "requiredEnvironment": "Offline temporary homes on macOS ARM64; any live Grok check is separately authorized and capped.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -299,6 +580,59 @@
         "The legacy key helper overwrites env and prints a key prefix; these behaviors require explicit improvement, not literal duplication.",
         "verify-grok.sh contains dated model/client assumptions and Linux-specific utilities.",
         "No secret file or live account was accessed."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-15T02:23:21.782Z",
+          "actor": "Codex",
+          "decisionId": "PLATFORM-SCOPE-02",
+          "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+          "previousPlatformRequirements": {
+            "behaviorChecks": [
+              {
+                "id": "HAR-04-C01",
+                "description": "Verify v1/v2 settings preservation, provider/method separation, private writes, missing fields, invalid model/endpoint input and configuration selection using synthetic secrets.",
+                "existingTests": [
+                  "dashboard/test_auth.py",
+                  "dashboard/check_key_exposure.sh"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-04-C02",
+                "description": "Verify legacy key-entry migration preserves unrelated env entries and special characters and never exports secret values into logs, process arguments or shared records.",
+                "existingTests": [
+                  "dashboard/test_auth.py",
+                  "dashboard/check_key_exposure.sh"
+                ],
+                "requiredEnvironment": "Isolated terminal fixtures with synthetic values; add direct enter-key compatibility cases.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-04-C03",
+                "description": "Preview and apply a generated permission rule against a temporary user settings fixture, preserving other values and backups; default diagnostic paths perform no live inference.",
+                "existingTests": [],
+                "requiredEnvironment": "Offline temporary homes on Windows/WSL/macOS/Linux; any live Grok check is separately authorized and capped.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              }
+            ],
+            "enhancements": [
+              "Use credential references and typed input rather than shell-sourced secrets; preserve existing env entries during migration.",
+              "Make permission-rule proposals use discovered paths and require operator action for the exact rule.",
+              "Separate offline setup checks from explicitly invoked live provider compatibility checks, with supported-version results."
+            ],
+            "migrationChecks": [
+              "Preserve active provider/method selections, _v1_settings, user profiles and credential references.",
+              "Keep existing secrets in their owner facility; migrate values locally without adding them to ordinary NATS state.",
+              "Do not silently run verify-grok.sh or modify the real user's permission settings during import."
+            ],
+            "reusePlan": "Retain the manifest-driven setup and private-write helpers. Fold the single-purpose key and permission helpers into scoped setup commands with compatibility entrypoints and explicit migration notices."
+          }
+        }
       ]
     },
     {
@@ -322,11 +656,11 @@
         "agentmux.cmd translates drive-letter paths before forwarding arguments to the WSL harness, but currently hardcodes Ubuntu and /home/nick.",
         "link-windows-state.sh supports check/apply/revert, backups and Windows-home discovery. It links reusable state while keeping path-bearing Claude plugin indexes, IDE and shell state local to each OS; it translates paths in local copies."
       ],
-      "reusePlan": "Extend the existing installer and state-sharing procedures, keeping reversible migration and entrypoint compatibility. Retain the command launcher until a portable replacement passes the same quoting and exit-status checks.",
+      "reusePlan": "Extend the native Linux/macOS installer with reversible migration and entrypoint compatibility. Retain legacy Windows/WSL code and its historical assertions without advertising or qualifying that platform.",
       "enhancements": [
-        "Discover or explicitly select the WSL distribution and home; preserve native macOS/Linux operation.",
+        "Qualify native Linux/macOS installation and preserve legacy Windows/WSL source as unsupported historical compatibility code.",
         "Add pinned prerequisites and local/team broker profiles, update/rollback/uninstall and actionable setup diagnostics.",
-        "Preserve existing client settings and separate Windows/WSL path-bearing registries during plugin installation."
+        "Preserve existing native client settings and platform-local plugin registries during installation."
       ],
       "replacementReason": null,
       "behaviorChecks": [
@@ -337,17 +671,42 @@
             "dashboard/test_launch.sh",
             "dashboard/test_lifecycle.sh"
           ],
-          "requiredEnvironment": "Fresh macOS/Linux/WSL fixture homes and a native Windows launcher test; add dedicated installer cases.",
+          "requiredEnvironment": "Fresh native macOS ARM64 fixture homes; dedicated installer cases.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-05-C02",
           "description": "Verify check is read-only and apply/revert restores backups while OS-specific plugin paths remain local; ambiguous Windows-home discovery must require an explicit target.",
           "existingTests": [],
-          "requiredEnvironment": "Synthetic Windows/WSL profiles and plugin indexes; no real credential stores.",
+          "requiredEnvironment": "Offline preservation review of the retained legacy Windows/WSL source and assertions only; no Windows/WSL runtime execution is required.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "platformApplicability": {
+            "decisionId": "PLATFORM-SCOPE-02",
+            "status": "retired-windows-wsl-only",
+            "runtimeQualificationRequired": false,
+            "reason": "Windows/WSL-only execution is outside the user-approved delivery scope; retain the original assertion and evidence without claiming a pass."
+          },
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [],
+            "qualificationRequired": false,
+            "runtimeQualificationRequired": false,
+            "offlinePreservationReviewRequired": true,
+            "note": "Windows/WSL-only execution remains retired under PLATFORM-SCOPE-02 and PLATFORM-SCOPE-03. Preserve source and assertions through offline review; do not port, execute or count this retired runtime check as a beta pass."
+          }
         },
         {
           "id": "HAR-05-C03",
@@ -355,9 +714,23 @@
           "existingTests": [
             "dashboard/test_argguard.sh"
           ],
-          "requiredEnvironment": "Native cmd/PowerShell to a disposable WSL distribution; new launcher-specific fixtures are required.",
+          "requiredEnvironment": "Offline preservation review of the retained legacy Windows/WSL source and assertions only; no Windows/WSL runtime execution is required.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "platformApplicability": {
+            "decisionId": "PLATFORM-SCOPE-02",
+            "status": "retired-windows-wsl-only",
+            "runtimeQualificationRequired": false,
+            "reason": "Windows/WSL-only execution is outside the user-approved delivery scope; retain the original assertion and evidence without claiming a pass."
+          },
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [],
+            "qualificationRequired": false,
+            "runtimeQualificationRequired": false,
+            "offlinePreservationReviewRequired": true,
+            "note": "Windows/WSL-only execution remains retired under PLATFORM-SCOPE-02 and PLATFORM-SCOPE-03. Preserve source and assertions through offline review; do not port, execute or count this retired runtime check as a beta pass."
+          }
         }
       ],
       "migrationChecks": [
@@ -369,6 +742,58 @@
         "Current launcher path and some fallback discovery assumptions are machine-specific.",
         "The installer warns that the Windows entrypoint can lose exit status; the audit did not execute it.",
         "Linking whole client state across OS versions requires explicit support tests."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-15T02:23:21.782Z",
+          "actor": "Codex",
+          "decisionId": "PLATFORM-SCOPE-02",
+          "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+          "previousPlatformRequirements": {
+            "behaviorChecks": [
+              {
+                "id": "HAR-05-C01",
+                "description": "Exercise clean install, paths with spaces, CRLF source, old/missing Bash/Python/Node, foreign npm shims, launchd generation, update and uninstall without overwriting unrelated settings.",
+                "existingTests": [
+                  "dashboard/test_launch.sh",
+                  "dashboard/test_lifecycle.sh"
+                ],
+                "requiredEnvironment": "Fresh macOS/Linux/WSL fixture homes and a native Windows launcher test; add dedicated installer cases.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-05-C02",
+                "description": "Verify check is read-only and apply/revert restores backups while OS-specific plugin paths remain local; ambiguous Windows-home discovery must require an explicit target.",
+                "existingTests": [],
+                "requiredEnvironment": "Synthetic Windows/WSL profiles and plugin indexes; no real credential stores.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-05-C03",
+                "description": "Round-trip spaces, backslashes, quotes, empty/dash-prefixed arguments and subprocess exit status through the Windows entrypoint.",
+                "existingTests": [
+                  "dashboard/test_argguard.sh"
+                ],
+                "requiredEnvironment": "Native cmd/PowerShell to a disposable WSL distribution; new launcher-specific fixtures are required.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              }
+            ],
+            "enhancements": [
+              "Discover or explicitly select the WSL distribution and home; preserve native macOS/Linux operation.",
+              "Add pinned prerequisites and local/team broker profiles, update/rollback/uninstall and actionable setup diagnostics.",
+              "Preserve existing client settings and separate Windows/WSL path-bearing registries during plugin installation."
+            ],
+            "migrationChecks": [
+              "Record installed launcher/service locations, discovered distro/home and state-link targets before changes.",
+              "Version and retain backups; rollback must preserve changes made after installation rather than replacing entire user profiles.",
+              "Keep repository checkout paths and platform-local plugin caches distinct from portable package identity."
+            ],
+            "reusePlan": "Extend the existing installer and state-sharing procedures, keeping reversible migration and entrypoint compatibility. Retain the command launcher until a portable replacement passes the same quoting and exit-status checks."
+          }
+        }
       ]
     },
     {
@@ -408,9 +833,20 @@
             "dashboard/test_runlock.py",
             "dashboard/test_no_inherited_stdin.py"
           ],
-          "requiredEnvironment": "macOS and Linux/WSL subprocess fixtures; add direct shim conformance cases.",
+          "requiredEnvironment": "macOS ARM64 subprocess fixtures; add direct shim conformance cases.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-06-C02",
@@ -419,9 +855,20 @@
             "dashboard/test_testlib.sh",
             "dashboard/test_residue.sh"
           ],
-          "requiredEnvironment": "Isolated macOS and Linux PATH fixtures.",
+          "requiredEnvironment": "Isolated macOS ARM64 PATH fixtures.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -431,6 +878,50 @@
       "limitations": [
         "These are partial utility implementations, not general replacements for GNU tools.",
         "No subprocess compatibility tests ran."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-15T02:23:21.782Z",
+          "actor": "Codex",
+          "decisionId": "PLATFORM-SCOPE-02",
+          "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+          "previousPlatformRequirements": {
+            "behaviorChecks": [
+              {
+                "id": "HAR-06-C01",
+                "description": "Verify inherited descriptor lock lifetime, contention timeout, child exit/signal propagation, timeout escalation and reversed-line output.",
+                "existingTests": [
+                  "dashboard/test_testlib.sh",
+                  "dashboard/test_runlock.py",
+                  "dashboard/test_no_inherited_stdin.py"
+                ],
+                "requiredEnvironment": "macOS and Linux/WSL subprocess fixtures; add direct shim conformance cases.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-06-C02",
+                "description": "Ensure native Linux tools retain priority and fixtures that stub PATH cannot replace the intended shim interpreter.",
+                "existingTests": [
+                  "dashboard/test_testlib.sh",
+                  "dashboard/test_residue.sh"
+                ],
+                "requiredEnvironment": "Isolated macOS and Linux PATH fixtures.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              }
+            ],
+            "enhancements": [
+              "Add explicit parity fixtures for supported helper forms across macOS and GNU environments.",
+              "Report unsupported options clearly and pin platform prerequisites used by packaged execution."
+            ],
+            "migrationChecks": [
+              "Keep existing supported flags and exit statuses; document any consolidation of inline and directory copies.",
+              "Do not advertise full GNU command equivalence."
+            ],
+            "reusePlan": "Retain the portable helpers and their documented limited contracts. Share implementations only after standalone-copy and fixture expectations remain valid."
+          }
+        }
       ]
     },
     {
@@ -468,9 +959,20 @@
             "dashboard/test_boardagents.py",
             "dashboard/test_agentcli.py"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-07-C02",
@@ -480,9 +982,20 @@
             "dashboard/test_boardteams.py",
             "dashboard/test_teamcli.py"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -494,6 +1007,53 @@
         "The current lead selection is alphabetical and can choose an unrelated project persona.",
         "Persona prose does not enforce permission or model diversity.",
         "Parser and roster tests were read as regression references, not run."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-15T02:23:21.782Z",
+          "actor": "Codex",
+          "decisionId": "PLATFORM-SCOPE-02",
+          "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+          "previousPlatformRequirements": {
+            "behaviorChecks": [
+              {
+                "id": "HAR-07-C01",
+                "description": "Import all supported definition fields, duplicate names, malformed/oversized input, unknown keys, symlink/FIFO replacement and stale checksums without silently accepting a different persona.",
+                "existingTests": [
+                  "dashboard/test_agentdefs.py",
+                  "dashboard/test_boardagents.py",
+                  "dashboard/test_agentcli.py"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-07-C02",
+                "description": "Preserve roster caps, bug reviewer preference, deep-dependency behavior, capability tie-breaks and gaps; prevent unrelated bundled personas from becoming a project's lead.",
+                "existingTests": [
+                  "dashboard/test_agentdefs.py",
+                  "dashboard/test_boardteams.py",
+                  "dashboard/test_teamcli.py"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              }
+            ],
+            "enhancements": [
+              "Declare independent and parent-owned package identity while retaining explicit source provenance.",
+              "Use project-approved lead and member selection instead of automatically choosing the first alphabetical lead.",
+              "Keep capability eligibility deterministic before any optional Jev ranking, and distinguish desired tools from enforceable host capabilities."
+            ],
+            "migrationChecks": [
+              "Keep original path/scope/checksum and unsupported-field diagnostics on repeated imports.",
+              "Do not convert advisory tools into a claimed security boundary.",
+              "Preserve approved rosters independently of future definition edits; show when a definition revision changes."
+            ],
+            "reusePlan": "Extract the parser and deterministic roster rules into definition/team plugins. Keep Markdown import and checksums as compatibility features, translating to versioned manifests without losing original source text."
+          }
+        }
       ]
     },
     {
@@ -545,9 +1105,20 @@
             "dashboard/test_boardagents.py",
             "dashboard/test_plugin_skills.py"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-08-C02",
@@ -556,9 +1127,20 @@
             "dashboard/test_boardteams.py",
             "dashboard/test_teamcli.py"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -570,6 +1152,52 @@
         "The definitions contain historical workflow instructions and machine-specific paths that need user review.",
         "Different CLI labels alone do not prove different model behavior.",
         "No persona was launched or installed."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-15T02:23:21.782Z",
+          "actor": "Codex",
+          "decisionId": "PLATFORM-SCOPE-02",
+          "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+          "previousPlatformRequirements": {
+            "behaviorChecks": [
+              {
+                "id": "HAR-08-C01",
+                "description": "Load all fourteen profiles, preserve fields and persona text, report incompatible/missing client capabilities and keep each profile's project scope.",
+                "existingTests": [
+                  "dashboard/test_agentdefs.py",
+                  "dashboard/test_boardagents.py",
+                  "dashboard/test_plugin_skills.py"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-08-C02",
+                "description": "Verify default enrollment does not recruit a scanner or Agora lead into an unrelated project, and edits do not silently alter an approved team.",
+                "existingTests": [
+                  "dashboard/test_boardteams.py",
+                  "dashboard/test_teamcli.py"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              }
+            ],
+            "enhancements": [
+              "Show applicability, host support, permissions and stale machine-specific references before adoption.",
+              "Use package-scoped roles and approved project membership with clear independent-child ownership.",
+              "Keep examples usable while allowing administrators to supply updated paths and bounded execution profiles."
+            ],
+            "migrationChecks": [
+              "Preserve original persona files and checksums; record any transformed path or field as a derived value.",
+              "Map old task aliases and example project names without importing them as live work.",
+              "Require explicit project adoption for profiles that request network or filesystem scanning."
+            ],
+            "reusePlan": "Retain every profile as source-backed configuration. Import them as opt-in project packages or examples with original text and revisions; do not activate every bundled profile for every project."
+          }
+        }
       ]
     },
     {
@@ -608,9 +1236,20 @@
             "dashboard/test_coordination.sh",
             "dashboard/test_sandbox_coordination.py"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-09-C02",
@@ -620,9 +1259,20 @@
             "dashboard/test_argguard.sh",
             "dashboard/test_coordination.sh"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-09-C03",
@@ -631,9 +1281,20 @@
             "dashboard/test_coordination.sh",
             "dashboard/test_courier.py"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -645,6 +1306,63 @@
         "Existing identity and warrants are cooperative safeguards under a shared OS user, not hostile-code isolation.",
         "One local orchestrator limit must become an explicit scoped policy for multiple users/projects.",
         "No concurrency or warrant tests ran."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-15T02:23:21.782Z",
+          "actor": "Codex",
+          "decisionId": "PLATFORM-SCOPE-02",
+          "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+          "previousPlatformRequirements": {
+            "behaviorChecks": [
+              {
+                "id": "HAR-09-C01",
+                "description": "Exercise concurrent claim replacement/release, path/name collisions, stale generation, expiry, force policy and unavailable tmux without losing another actor's claim.",
+                "existingTests": [
+                  "dashboard/test_coordination.sh",
+                  "dashboard/test_sandbox_coordination.py"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-09-C02",
+                "description": "Reject forged actor flags, worker use of orchestrator-only verbs, expired/wrong-pane warrants and a reserved orchestrator name; verify revocation before stop and secret exclusion from ordinary workers.",
+                "existingTests": [
+                  "dashboard/test_warrant.py",
+                  "dashboard/test_argguard.sh",
+                  "dashboard/test_coordination.sh"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-09-C03",
+                "description": "Preserve journal and targeted/broadcast coordination records through repeated import without executing historical announcements.",
+                "existingTests": [
+                  "dashboard/test_coordination.sh",
+                  "dashboard/test_courier.py"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              }
+            ],
+            "enhancements": [
+              "Authenticate user/project/session identities across NATS instead of treating writable environment variables as authority.",
+              "Record claim generations and operation identifiers in durable owner records, preserving resource conflict semantics.",
+              "Separate expiring local presence/leases from accepted or acceptance-unknown remote reservations."
+            ],
+            "migrationChecks": [
+              "Map each active claim to its source resource, holder, generation and project before admission moves to the new owner.",
+              "Import journal timestamps and actor provenance without granting current authority to historical identities.",
+              "Do not carry the test-only identity bypass into production authentication."
+            ],
+            "reusePlan": "Reuse claim conflict rules, identity diagnostics, journal vocabulary and warrant scope as contract fixtures. Move authoritative ownership into scoped domain operations; retain filesystem claims only for the legacy path during a fenced transition."
+          }
+        }
       ]
     },
     {
@@ -686,9 +1404,20 @@
             "dashboard/test_board.py",
             "dashboard/test_boardteams.py"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-10-C02",
@@ -697,9 +1426,20 @@
             "dashboard/test_board.py",
             "dashboard/test_coordination.sh"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-10-C03",
@@ -709,9 +1449,20 @@
             "dashboard/test_dispatch.py",
             "dashboard/test_boardteams.py"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -723,6 +1474,65 @@
         "Current commands depend on dashboard HTTP and local actor conventions.",
         "This mapping includes direct coordination entrypoints; it does not claim every one already has a top-level shell alias.",
         "No board data was imported or changed."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-15T02:23:21.782Z",
+          "actor": "Codex",
+          "decisionId": "PLATFORM-SCOPE-02",
+          "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+          "previousPlatformRequirements": {
+            "behaviorChecks": [
+              {
+                "id": "HAR-10-C01",
+                "description": "Exercise every task/epic/board/team verb and status shorthand, including reason forwarding, actor spoof rejection, unavailable board errors and unsupported fields.",
+                "existingTests": [
+                  "dashboard/test_agentcli.py",
+                  "dashboard/test_teamcli.py",
+                  "dashboard/test_board.py",
+                  "dashboard/test_boardteams.py"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-10-C02",
+                "description": "Import EP/TM/ADR/SP/CAP records with labels, links, criteria, comments, commits, paths, deletion history and assignments twice without lost relationships or duplicate effects.",
+                "existingTests": [
+                  "dashboard/test_board.py",
+                  "dashboard/test_coordination.sh"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-10-C03",
+                "description": "Preserve readiness/WIP/override and approved roster behavior across CLI and new NATS/MCP callers; unknown or stale revisions cannot bypass the owner.",
+                "existingTests": [
+                  "dashboard/test_board.py",
+                  "dashboard/test_dispatch.py",
+                  "dashboard/test_boardteams.py"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              }
+            ],
+            "enhancements": [
+              "Expose one declared command registry to CLI and MCP with discoverable verbs and versioned errors.",
+              "Carry all entity kinds and their relationships into retained owner records and rebuildable views.",
+              "Apply the same readiness, WIP, override and project authorization decisions to every entrypoint."
+            ],
+            "migrationChecks": [
+              "Maintain explicit source identity mappings rather than treating board tasks, run jobs, hub work and shared cards as one ID.",
+              "Freeze/fence legacy writes at cutover; do not make both HTTP-backed and NATS-backed commands authoritative.",
+              "Keep script-visible statuses and diagnostics compatible or document a versioned change before rollout."
+            ],
+            "reusePlan": "Keep command names, output contracts and board validation behavior through a compatibility caller that invokes the new owning plugins over NATS. Reuse existing validation and formatting where appropriate instead of designing a second task model."
+          }
+        }
       ]
     },
     {
@@ -763,9 +1573,20 @@
             "dashboard/test_launch.sh",
             "dashboard/test_courier.py"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-11-C02",
@@ -774,9 +1595,20 @@
             "dashboard/test_dispatch.py",
             "dashboard/test_boardteams.py"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-11-C03",
@@ -786,9 +1618,20 @@
             "dashboard/test_boardteams.py",
             "dashboard/test_teamcli.py"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -800,6 +1643,64 @@
         "Dispatch currently refuses bounded postures and AGENTMUX_NO_BYPASS; the target must remove that limitation through explicit host capabilities.",
         "Worker idleness and attached evidence are not equivalent to acceptance.",
         "No workers, worktrees or pool processes were created."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-15T02:23:21.782Z",
+          "actor": "Codex",
+          "decisionId": "PLATFORM-SCOPE-02",
+          "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+          "previousPlatformRequirements": {
+            "behaviorChecks": [
+              {
+                "id": "HAR-11-C01",
+                "description": "Inject failures before/after spawn, claim, board start, direct send and queued fallback; verify no silent lost task, leaked claim or duplicate worker.",
+                "existingTests": [
+                  "dashboard/test_dispatch.py",
+                  "dashboard/test_launch.sh",
+                  "dashboard/test_courier.py"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-11-C02",
+                "description": "Exercise dry-run, collect-before-refill, disabled pool, live capacity changes, busy member preservation, failed kill, orphan parking and restart recovery.",
+                "existingTests": [
+                  "dashboard/test_dispatch.py",
+                  "dashboard/test_boardteams.py"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-11-C03",
+                "description": "Verify branch/worktree ownership, dirty/conflicted work preservation, member integration and cleanup across multiple repositories.",
+                "existingTests": [
+                  "dashboard/test_dispatch.py",
+                  "dashboard/test_boardteams.py",
+                  "dashboard/test_teamcli.py"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              }
+            ],
+            "enhancements": [
+              "Commit dispatch intent and operation identifiers before external launch, reconciling uncertain replies without a second worker.",
+              "Use scoped execution profiles that permit coordination without requiring unrestricted workers.",
+              "Add fair multi-user/project capacity policy while preserving explicit team membership and branch ownership."
+            ],
+            "migrationChecks": [
+              "Preserve briefs, pool settings/state, approved rosters, worktree locations, branches and unresolved collection outcomes.",
+              "Reconcile every in-flight task and process before switching the dispatch owner.",
+              "Review any change to cleanup-triggered external ticket writes separately from local task rollback."
+            ],
+            "reusePlan": "Extract the proven selection, brief, collection and worktree logic behind task/execution/workspace contracts. Keep the legacy dispatch path isolated until state transitions and failure handling match."
+          }
+        }
       ]
     },
     {
@@ -839,9 +1740,20 @@
             "dashboard/test_runlock.py",
             "dashboard/test_warrant.py"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-12-C02",
@@ -851,9 +1763,20 @@
             "dashboard/test_runcards.py",
             "dashboard/test_run.sh"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-12-C03",
@@ -863,9 +1786,20 @@
             "dashboard/test_lifecycle.sh",
             "dashboard/test_evidence_archive.sh"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -877,6 +1811,65 @@
         "Submission hashes are not fully rechecked at every verdict/completion boundary; file-list completeness and multi-repository binding need stronger checks.",
         "Different agent identities do not prove independent models.",
         "No gate or review test ran."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-15T02:23:21.782Z",
+          "actor": "Codex",
+          "decisionId": "PLATFORM-SCOPE-02",
+          "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+          "previousPlatformRequirements": {
+            "behaviorChecks": [
+              {
+                "id": "HAR-12-C01",
+                "description": "Verify assigned identities, self-review rejection, required rejection reason, resubmission history, three-failure escalation and concurrent assign/submit/verdict/complete transitions.",
+                "existingTests": [
+                  "dashboard/test_run.sh",
+                  "dashboard/test_runlock.py",
+                  "dashboard/test_warrant.py"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-12-C02",
+                "description": "Exercise missing/stale approval, changed evidence, objections and linked open board cards; retain distinct submitted, verified, completed and accepted outcomes.",
+                "existingTests": [
+                  "dashboard/test_runsview.py",
+                  "dashboard/test_runcards.py",
+                  "dashboard/test_run.sh"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-12-C03",
+                "description": "Reject premature/invalid teardown, preserve forced evidence and unrelated sessions, honor keep-agents and retain courier/dashboard service operation.",
+                "existingTests": [
+                  "dashboard/test_run.sh",
+                  "dashboard/test_lifecycle.sh",
+                  "dashboard/test_evidence_archive.sh"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              }
+            ],
+            "enhancements": [
+              "Bind each submission, verdict and approval to immutable repository/commit/artifact identities across repositories.",
+              "Check changed evidence at review and acceptance boundaries, using durable revisions and operation IDs.",
+              "Persist completion intent and reservations so restart/replay cannot fabricate review or repeat teardown effects."
+            ],
+            "migrationChecks": [
+              "Import event sequence, job IDs, submission/verdict attempts, sidecars, approvals and notices with source digests.",
+              "Never infer acceptance from COMPLETE alone or combine a run ID with a board card by title.",
+              "Historical imports and view rebuilds must not trigger notification, merge, teardown or worker launch."
+            ],
+            "reusePlan": "Reuse the event fold, gate decisions, archived review text and teardown scope as the run plugin's starting point. Translate persistence to versioned durable records while retaining original ledgers and readable evidence."
+          }
+        }
       ]
     },
     {
@@ -915,9 +1908,20 @@
             "dashboard/test_courier.py",
             "dashboard/test_inbox_guard.sh"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-13-C02",
@@ -926,9 +1930,20 @@
             "dashboard/test_courier.py",
             "dashboard/test_modal_guard.sh"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-13-C03",
@@ -938,9 +1953,20 @@
             "dashboard/test_inbox_guard.sh",
             "dashboard/test_coordination.sh"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -952,6 +1978,63 @@
         "The source has filesystem and hub delivery paths with different receipt meanings.",
         "Terminal send success does not prove client processing.",
         "No queued message was delivered, cleared or requeued."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-15T02:23:21.782Z",
+          "actor": "Codex",
+          "decisionId": "PLATFORM-SCOPE-02",
+          "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+          "previousPlatformRequirements": {
+            "behaviorChecks": [
+              {
+                "id": "HAR-13-C01",
+                "description": "Verify initial EOF adoption, later outbox creation, rotation/truncation, partial/oversized/malformed lines and symlink/hardlink rejection.",
+                "existingTests": [
+                  "dashboard/test_courier.py",
+                  "dashboard/test_inbox_guard.sh"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-13-C02",
+                "description": "Exercise recipient ordering, backlog limits, exponential retry, virtual inbox delivery, dead-letter requeue and no forced modal or courier error loop.",
+                "existingTests": [
+                  "dashboard/test_courier.py",
+                  "dashboard/test_modal_guard.sh"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-13-C03",
+                "description": "Migrate active cursors, pending rows and dead letters with replay/duplicate fixtures; distinguish clear/read from explicit execution acceptance.",
+                "existingTests": [
+                  "dashboard/test_courier.py",
+                  "dashboard/test_inbox_guard.sh",
+                  "dashboard/test_coordination.sh"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              }
+            ],
+            "enhancements": [
+              "Use durable message IDs and explicit delivered/received/acknowledged/processed/accepted states.",
+              "Expose per-recipient backlog and failure reasons through authorized events without using notifications as prompt input.",
+              "Recover interrupted cutover and unknown delivery outcomes without automatically typing duplicate instructions."
+            ],
+            "migrationChecks": [
+              "Retain original queue files, consumed offsets, pending attempt counts, dead-letter reasons and unresolved inbox entries.",
+              "Assign stable import IDs and a cutover boundary; only one delivery path may act on each logical message.",
+              "Keep legacy and hub receipt semantics distinct until the owner reconciles them."
+            ],
+            "reusePlan": "Reuse parsing, cursor, retry, ordering and virtual-recipient rules as compatibility contracts. Import pending and dead-letter records into the messaging owner's durable channels once, then fence the old courier."
+          }
+        }
       ]
     },
     {
@@ -987,9 +2070,20 @@
             "dashboard/test_notify.py",
             "dashboard/test_no_inherited_stdin.py"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-14-C02",
@@ -998,9 +2092,20 @@
             "dashboard/test_notify.py",
             "dashboard/test_chatter.py"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -1012,6 +2117,51 @@
         "Desktop delivery is platform/session dependent.",
         "Configured external commands can have side effects and require explicit trust.",
         "No notification was sent."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-15T02:23:21.782Z",
+          "actor": "Codex",
+          "decisionId": "PLATFORM-SCOPE-02",
+          "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+          "previousPlatformRequirements": {
+            "behaviorChecks": [
+              {
+                "id": "HAR-14-C01",
+                "description": "Verify shell metacharacters remain data, child stdin cannot consume the caller's input, missing targets are not reported delivered and all configured channels receive bounded payloads.",
+                "existingTests": [
+                  "dashboard/test_notify.py",
+                  "dashboard/test_no_inherited_stdin.py"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-14-C02",
+                "description": "Verify missing desktop/configuration, timeout, command failure and repeated notices preserve useful status and required durable evidence.",
+                "existingTests": [
+                  "dashboard/test_notify.py",
+                  "dashboard/test_chatter.py"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              }
+            ],
+            "enhancements": [
+              "Scope subscriptions and notification preferences by user/project and bind messages to durable notice IDs.",
+              "Add deduplication, acknowledgment and escalation without suppressing mandatory review/failure events.",
+              "Treat externally configured commands as explicit trusted contributions with bounded execution."
+            ],
+            "migrationChecks": [
+              "Import notification preferences and destination identity separately from private command credentials.",
+              "Replay notice state without replaying old external notifications.",
+              "Preserve origin-terminal association when the observer disconnects."
+            ],
+            "reusePlan": "Reuse channel-specific delivery and safe payload handling inside notification plugins. Retain the durable notice owner and originating-session routing rather than implementing notices as terminal keystrokes."
+          }
+        }
       ]
     },
     {
@@ -1050,9 +2200,20 @@
           "existingTests": [
             "dashboard/test_tickets.py"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-15-C02",
@@ -1060,9 +2221,20 @@
           "existingTests": [
             "dashboard/test_tickets.py"
           ],
-          "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+          "requiredEnvironment": "Isolated macOS ARM64 fixtures; pinned NATS server and clients for the target implementation.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-15-C03",
@@ -1073,7 +2245,18 @@
           ],
           "requiredEnvironment": "Mock services and isolated homes first; supported Jira/Confluence deployment versions require separately approved service tests.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -1085,6 +2268,60 @@
         "External side effects cannot be rolled back with a local state change.",
         "The CLI's transition selection is name/regex based and needs deployment-specific compatibility fixtures.",
         "No external service request was made."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-15T02:23:21.782Z",
+          "actor": "Codex",
+          "decisionId": "PLATFORM-SCOPE-02",
+          "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+          "previousPlatformRequirements": {
+            "behaviorChecks": [
+              {
+                "id": "HAR-15-C01",
+                "description": "Preserve Cloud/Server headers, Jira/Confluence payloads, transitions, dry-run output and 401/403/404/timeout diagnostics using mocked HTTP.",
+                "existingTests": [
+                  "dashboard/test_tickets.py"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-15-C02",
+                "description": "Verify log exports enforce path/link/size checks and strip control sequences while preserving useful evidence.",
+                "existingTests": [
+                  "dashboard/test_tickets.py"
+                ],
+                "requiredEnvironment": "Isolated macOS, Linux and WSL fixtures; pinned NATS server and clients for the target implementation.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-15-C03",
+                "description": "Exercise creation/update lost replies and duplicate operations; local rollback or cleanup must not unconditionally replay an external transition.",
+                "existingTests": [
+                  "dashboard/test_tickets.py",
+                  "dashboard/test_lifecycle.sh"
+                ],
+                "requiredEnvironment": "Mock services and isolated homes first; supported Jira/Confluence deployment versions require separately approved service tests.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              }
+            ],
+            "enhancements": [
+              "Bind external mutations to actor, project/space, operation intent and current approval.",
+              "Reconcile lost replies before retrying issue/page creation or workflow changes.",
+              "Separate local task acceptance and process cleanup from remote ticket transitions."
+            ],
+            "migrationChecks": [
+              "Keep external issue/page IDs, selected transition rules, project/space settings and associated agent/run provenance.",
+              "Move credential references separately from configuration; never place tokens in shared history.",
+              "Record unresolved side effects before switching lifecycle hooks to a new tool owner."
+            ],
+            "reusePlan": "Wrap the existing HTTP and payload transformations in explicit Jira/Confluence tool plugins. Keep the script interface for legacy spawn/cleanup callers until their operations migrate to the new owner."
+          }
+        }
       ]
     },
     {
@@ -1121,7 +2358,18 @@
           ],
           "requiredEnvironment": "Offline Python HTTP/stream fixtures; CPython 3.12 for the preserved-bytecode differential subset.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-16-C02",
@@ -1132,7 +2380,18 @@
           ],
           "requiredEnvironment": "Isolated HTTP fixtures; actual Bedrock endpoint/model tests are separately approved.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -1179,7 +2438,18 @@
           ],
           "requiredEnvironment": "Read-only artifact inspection; no bytecode execution required for inventory.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-17-C02",
@@ -1189,7 +2459,18 @@
           ],
           "requiredEnvironment": "Isolated CPython 3.12; no credentials or network.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -1251,7 +2532,18 @@
           ],
           "requiredEnvironment": "Offline Python unittest environment on supported platforms.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-18-C02",
@@ -1261,7 +2553,18 @@
           ],
           "requiredEnvironment": "Offline Python; owner-side acceptance fixture for an impossible or unmet criterion.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -1312,7 +2615,18 @@
           "existingTests": [],
           "requiredEnvironment": "Offline Python fixtures; new extraction tests are required. Historical raw snapshots are not assumed available.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-19-C02",
@@ -1320,7 +2634,18 @@
           "existingTests": [],
           "requiredEnvironment": "Offline fixture directories and a filesystem write audit.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -1370,7 +2695,18 @@
           "existingTests": [],
           "requiredEnvironment": "Offline Python with portable fixture records; add direct correlation regression cases.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-20-C02",
@@ -1380,7 +2716,18 @@
           ],
           "requiredEnvironment": "An isolated copy of a frozen dataset; this script writes derived outputs and is not a read-only command.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -1448,7 +2795,18 @@
           "existingTests": [],
           "requiredEnvironment": "Read-only JSON/Markdown evidence inventory; new validation may run offline.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-21-C02",
@@ -1459,7 +2817,18 @@
           "requiredEnvironment": "Disposable repositories and hub/tmux environments; live agents and paid providers only when separately authorized.",
           "baselineStatus": "not-run",
           "targetStatus": "not-run",
-          "qualificationPhase": "P06"
+          "qualificationPhase": "P06",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -1508,7 +2877,18 @@
           ],
           "requiredEnvironment": "Disposable test homes/services with a separate sentinel operator service.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-22-C02",
@@ -1519,7 +2899,18 @@
           ],
           "requiredEnvironment": "Isolated process/port fixtures; no production dashboard or user state.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -1571,7 +2962,7 @@
       "reusePlan": "Preserve current runtime business rules and unchanged twenty external-plugin assertions. Ship reviewed maintained replacement with explicit provenance, compatibility evidence and original gap history; no personal install/publication.",
       "enhancements": [
         "Additional parser, HTTP, frame and relocation negatives plus independent real dashboard checks.",
-        "P06 owns actual supported-host plugin launch, Windows-native interop and framework integration."
+        "P06 owns actual native Linux/macOS plugin launch and framework integration; Windows interop is outside delivery scope."
       ],
       "replacementReason": null,
       "behaviorChecks": [
@@ -1582,9 +2973,20 @@
             "dashboard/test_plugin_skills.py",
             "plugins/agentmux-orchestration/tests/test_packaging.py"
           ],
-          "requiredEnvironment": "Private Linux/WSL package/runtime fixtures; actual installed-host metadata validator; no inference.",
+          "requiredEnvironment": "Private native macOS ARM64 package/runtime fixtures; actual installed-host metadata validator; no inference.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-23-C02",
@@ -1594,9 +2996,20 @@
             "plugins/agentmux-orchestration/tests/test_hook_mcp.py",
             "tests/contracts/plugin_preservation.py"
           ],
-          "requiredEnvironment": "Disposable HTTP/dashboard/tmux and package fixtures; native Windows hook launch remains P06-unqualified.",
+          "requiredEnvironment": "Disposable native macOS ARM64 HTTP/dashboard/tmux and package fixtures; actual host hook launch remains P06-owned.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         },
         {
           "id": "HAR-23-C03",
@@ -1608,7 +3021,18 @@
           ],
           "requiredEnvironment": "Private real dashboard/SQLite and bounded original provider fixtures; no real-model equivalence claim.",
           "baselineStatus": "not-run",
-          "targetStatus": "not-run"
+          "targetStatus": "not-run",
+          "betaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
         }
       ],
       "migrationChecks": [
@@ -1620,6 +3044,63 @@
         "Initial package processes run on Linux/macOS or explicitly selected WSL; Windows-owned clients remain Windows-owned, native Windows hook launch unqualified.",
         "Host hooks are defense in depth, not authentication, endpoint authorization or universal shell containment.",
         "No model skill-performance eval, authenticated inference, original-source equality or P06 acceptance implied."
+      ],
+      "incrementalReviews": [
+        {
+          "date": "2026-10-15T02:23:21.782Z",
+          "actor": "Codex",
+          "decisionId": "PLATFORM-SCOPE-02",
+          "note": "Ryan authorized native Linux/macOS-only delivery on October 14, 2026. Windows and WSL are outside current implementation and acceptance scope. Preserve historical requirements, evidence and existing code; do not count excluded execution as passing. Linux/macOS AMD64 and ARM64, security, recovery, persistence, preservation and feature-branch gates remain required. Completed phase evidence remains historical under its original scope; no new phase acceptance is implied.",
+          "previousPlatformRequirements": {
+            "behaviorChecks": [
+              {
+                "id": "HAR-23-C01",
+                "description": "Validate nine maintained skill guides and metadata, literal-argument runtime forwarding, explicit binding and relocation with spaces; distinguish new provenance from unavailable original source.",
+                "existingTests": [
+                  "dashboard/test_plugin_skills.py",
+                  "plugins/agentmux-orchestration/tests/test_packaging.py"
+                ],
+                "requiredEnvironment": "Private Linux/WSL package/runtime fixtures; actual installed-host metadata validator; no inference.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-23-C02",
+                "description": "Verify irrelevant hook bypass, approved literal hire, live definition refusals, ambiguous/path/patch/HTTP denials and continued-service read-only roster MCP.",
+                "existingTests": [
+                  "dashboard/test_orchestration_plugin.py",
+                  "plugins/agentmux-orchestration/tests/test_hook_mcp.py",
+                  "tests/contracts/plugin_preservation.py"
+                ],
+                "requiredEnvironment": "Disposable HTTP/dashboard/tmux and package fixtures; native Windows hook launch remains P06-unqualified.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              },
+              {
+                "id": "HAR-23-C03",
+                "description": "Run current definition/team CLI contracts through the relocated launcher against actual disposable dashboard state; map all nine workflows to supported commands and preserve collection/identity/checksum policy.",
+                "existingTests": [
+                  "dashboard/test_agentcli.py",
+                  "dashboard/test_teamcli.py",
+                  "dashboard/test_dispatch.py"
+                ],
+                "requiredEnvironment": "Private real dashboard/SQLite and bounded original provider fixtures; no real-model equivalence claim.",
+                "baselineStatus": "not-run",
+                "targetStatus": "not-run"
+              }
+            ],
+            "enhancements": [
+              "Additional parser, HTTP, frame and relocation negatives plus independent real dashboard checks.",
+              "P06 owns actual supported-host plugin launch, Windows-native interop and framework integration."
+            ],
+            "migrationChecks": [
+              "Require explicit trusted AGENTMUX_REPO; do not infer a sibling runtime or copy credentials.",
+              "Preserve current agent identity, scope, checksum, team approval and guarded collection semantics.",
+              "Retain original-source gap and unknown original prose/metadata; compatibility is not historical byte equality."
+            ],
+            "reusePlan": "Preserve current runtime business rules and unchanged twenty external-plugin assertions. Ship reviewed maintained replacement with explicit provenance, compatibility evidence and original gap history; no personal install/publication."
+          }
+        }
       ]
     }
   ],
@@ -1690,6 +3171,234 @@
       "qualificationPhase": "P06",
       "qualificationTask": "P06-T03",
       "assertionsUnchanged": true
+    },
+    {
+      "date": "2026-10-14",
+      "reviewer": "Codex",
+      "scope": "macos-arm64-beta-scope",
+      "decisionId": "PLATFORM-SCOPE-03",
+      "note": "Ryan approved native macOS ARM64 as the only initial beta host target. Linux and macOS AMD64 qualification are deferred expansion work, not beta blockers or passing results. Preserve source, assertions, historical evidence and all product/security/recovery/preservation gates. No CI until all P00–P14 gates are complete; no merge or release authorization.",
+      "previousPlatformScopeDecisionId": "PLATFORM-SCOPE-02",
+      "changes": [
+        {
+          "componentId": "HAR-01",
+          "checkId": "HAR-01-C01",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-01",
+          "checkId": "HAR-01-C02",
+          "previousRequiredEnvironment": "Isolated native Linux/macOS shell/tmux argument fixtures; actual supported provider versions for launch qualification."
+        },
+        {
+          "componentId": "HAR-02",
+          "checkId": "HAR-02-C01",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-02",
+          "checkId": "HAR-02-C03",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-03",
+          "checkId": "HAR-03-C01",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-03",
+          "checkId": "HAR-03-C02",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-04",
+          "checkId": "HAR-04-C01",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-04",
+          "checkId": "HAR-04-C03",
+          "previousRequiredEnvironment": "Offline temporary homes on macOS/Linux; any live Grok check is separately authorized and capped."
+        },
+        {
+          "componentId": "HAR-05",
+          "checkId": "HAR-05-C01",
+          "previousRequiredEnvironment": "Fresh native Linux/macOS fixture homes; dedicated installer cases."
+        },
+        {
+          "componentId": "HAR-06",
+          "checkId": "HAR-06-C01",
+          "previousRequiredEnvironment": "macOS and Linux subprocess fixtures; add direct shim conformance cases."
+        },
+        {
+          "componentId": "HAR-06",
+          "checkId": "HAR-06-C02",
+          "previousRequiredEnvironment": "Isolated macOS and Linux PATH fixtures."
+        },
+        {
+          "componentId": "HAR-07",
+          "checkId": "HAR-07-C01",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-07",
+          "checkId": "HAR-07-C02",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-08",
+          "checkId": "HAR-08-C01",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-08",
+          "checkId": "HAR-08-C02",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-09",
+          "checkId": "HAR-09-C01",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-09",
+          "checkId": "HAR-09-C02",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-09",
+          "checkId": "HAR-09-C03",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-10",
+          "checkId": "HAR-10-C01",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-10",
+          "checkId": "HAR-10-C02",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-10",
+          "checkId": "HAR-10-C03",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-11",
+          "checkId": "HAR-11-C01",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-11",
+          "checkId": "HAR-11-C02",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-11",
+          "checkId": "HAR-11-C03",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-12",
+          "checkId": "HAR-12-C01",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-12",
+          "checkId": "HAR-12-C02",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-12",
+          "checkId": "HAR-12-C03",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-13",
+          "checkId": "HAR-13-C01",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-13",
+          "checkId": "HAR-13-C02",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-13",
+          "checkId": "HAR-13-C03",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-14",
+          "checkId": "HAR-14-C01",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-14",
+          "checkId": "HAR-14-C02",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-15",
+          "checkId": "HAR-15-C01",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-15",
+          "checkId": "HAR-15-C02",
+          "previousRequiredEnvironment": "Isolated macOS and Linux fixtures; pinned NATS server and clients for the target implementation."
+        },
+        {
+          "componentId": "HAR-23",
+          "checkId": "HAR-23-C01",
+          "previousRequiredEnvironment": "Private Linux package/runtime fixtures; actual installed-host metadata validator; no inference."
+        },
+        {
+          "componentId": "HAR-23",
+          "checkId": "HAR-23-C02",
+          "previousRequiredEnvironment": "Disposable native Linux/macOS HTTP/dashboard/tmux and package fixtures; actual host hook launch remains P06-owned."
+        }
+      ]
+    },
+    {
+      "date": "2026-10-15T03:43:43.284Z",
+      "reviewer": "Codex",
+      "scope": "macos-arm64-beta-retired-check-clarification",
+      "decisionId": "PLATFORM-SCOPE-03",
+      "previous": [
+        {
+          "checkId": "HAR-05-C02",
+          "previousBetaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
+        },
+        {
+          "checkId": "HAR-05-C03",
+          "previousBetaQualification": {
+            "decisionId": "PLATFORM-SCOPE-03",
+            "targets": [
+              {
+                "os": "darwin",
+                "arch": "arm64"
+              }
+            ],
+            "qualificationRequired": true,
+            "note": "Preserve the full behavior assertion. Port required Linux-only fixtures to macOS ARM64; defer other-platform execution without counting it as passed."
+          }
+        }
+      ],
+      "note": "Corrected the beta overlay to honor the existing runtimeQualificationRequired=false fields. No behavior assertions or historical statuses changed."
     }
-  ]
+  ],
+  "platformScopeDecisionId": "PLATFORM-SCOPE-03"
 }

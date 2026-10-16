@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "criterion": "PLAT-01-C05",
+  "status": "native prerequisite research failed; implementation continues",
+  "attempts": [
+    {
+      "captureDirectory": "/private/tmp/agentmux-ownership-acl-sdk265-cache-retry",
+      "originalHandle": "43643",
+      "focusedPID": 21046,
+      "terminalExitCode": 1,
+      "stdoutSHA256": "ef0af3abe2992f621b6a6a45ce2d4a94edd0cd37912e772de679bc243360e80b",
+      "failure": "Native empty-ACL controls failed at the strict no-follow open or cleanup step. Generic error did not identify the exact path component or errno.",
+      "subsequentSourceFix": "Resolve aliases only on the freshly owned temporary test root. External manifest paths remain canonical and component-by-component no-follow. This addresses a reachable macOS temp alias failure, not a proven diagnosis of the generic original error."
+    },
+    {
+      "captureDirectory": "/private/tmp/agentmux-ownership-acl-sdk265-canonical-run",
+      "resultSHA256": "577dee69d520ca67e60aa090d967cc4b5108b614cde2420030e420701d27b1cc",
+      "terminalExitCode": 1,
+      "failure": "Generated runner string had a syntax error; no Go process, snapshot or test started."
+    },
+    {
+      "captureDirectory": "/private/tmp/agentmux-ownership-acl-sdk265-canonical-repaired",
+      "resultSHA256": "a586e2d281f7a54de4f4603c7d77869d21fd50b4a7ca4682374d2ff7185e9919",
+      "originalHandle": "26900",
+      "terminalExitCode": 1,
+      "focusedPrivatefsStdoutSHA256": "4418cc0007ce892c6aad32c31b8593d6034be41bc902df7beda7efe8aff9104c",
+      "compilePassedPackages": ["privatefs", "runtime"],
+      "observed": "native_acl_query errno=0 size=32 common=80000000",
+      "failure": "Privatefs native empty-ACL probe refused a response without the extended-security attribute. Closed-JSON and synthetic returned-attribute controls passed. Runtime focused controls were not executed after the first package failure.",
+      "sourceAndSDKMapsStable": true,
+      "interpretation": "Omitted extended-security data is not proof of ACL absence. Do not relax the parser to count this result as qualification."
+    }
+  ],
+  "nextImplementation": "Use a minimal explicitly tagged fixture-only native fstatx_np/filesec ACL-property query, independently of the production mount-policy conjunction. Preserve allocation cleanup checks and require an explicit absence/empty result before comparing mounted-volume behavior.",
+  "externalMountsProvisioned": false,
+  "rootActionsPerformed": false,
+  "limitations": [
+    "No actual ownership-disabled or equivalent ownership-enabled disposable mount was tested.",
+    "Compilation and parser controls cannot establish native volume-policy qualification.",
+    "Historical failed captures remain unchanged; no automatic retry or phase acceptance is implied."
+  ],
+  "phaseGateAccepted": false
+}

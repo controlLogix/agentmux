@@ -14,8 +14,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Automatic feature verification stays off. Enable manual verification only after
+  # all local P00-P14 gates are accepted; keep AGENTMUX_ALL_PHASES_COMPLETE unset/false until then.
   foundation:
-    if: github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' || github.head_ref == 'feat/agentmux-platform-rearchitecture'
+    if: (github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' || github.head_ref == 'feat/agentmux-platform-rearchitecture') && ((github.ref != 'refs/heads/feat/agentmux-platform-rearchitecture' && github.head_ref != 'feat/agentmux-platform-rearchitecture') || (github.event_name == 'workflow_dispatch' && vars.AGENTMUX_ALL_PHASES_COMPLETE == 'true'))
     strategy:
       fail-fast: false
       matrix:
@@ -56,7 +58,7 @@ jobs:
           retention-days: 30
 
   darwin-research:
-    if: github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' || github.head_ref == 'feat/agentmux-platform-rearchitecture'
+    if: (github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' || github.head_ref == 'feat/agentmux-platform-rearchitecture') && ((github.ref != 'refs/heads/feat/agentmux-platform-rearchitecture' && github.head_ref != 'feat/agentmux-platform-rearchitecture') || (github.event_name == 'workflow_dispatch' && vars.AGENTMUX_ALL_PHASES_COMPLETE == 'true'))
     strategy:
       fail-fast: false
       matrix:
@@ -83,7 +85,7 @@ jobs:
           retention-days: 30
 
   darwin-install:
-    if: github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' || github.head_ref == 'feat/agentmux-platform-rearchitecture'
+    if: (github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' || github.head_ref == 'feat/agentmux-platform-rearchitecture') && ((github.ref != 'refs/heads/feat/agentmux-platform-rearchitecture' && github.head_ref != 'feat/agentmux-platform-rearchitecture') || (github.event_name == 'workflow_dispatch' && vars.AGENTMUX_ALL_PHASES_COMPLETE == 'true'))
     strategy:
       fail-fast: false
       matrix:

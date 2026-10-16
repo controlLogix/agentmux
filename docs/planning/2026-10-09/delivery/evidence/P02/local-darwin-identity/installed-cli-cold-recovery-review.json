@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "sdkRoot": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk",
+  "history": [
+    {
+      "capture": "/Users/ryan/.cache/agentmux-governance/darwin-installed-cli-shared-prepared.eitj9g9u",
+      "result": "First installed-CLI selection failed five tests; the cold history identified the account Compose version mismatch. Original failure retained."
+    },
+    {
+      "capture": "/Users/ryan/.cache/agentmux-governance/darwin-installed-cli-shared-prepared.zztnzjf8",
+      "originalToolHandle": 53776,
+      "exitCode": 1,
+      "elapsedSeconds": 9.2791705,
+      "stdoutSHA256": "96d4f59d4006cfbe1cf224b2cbe362ea7d155d506fd490f17dc68012aeb12b0a",
+      "result": "After the approved Compose repair, the single cold test reached completed startup but the fixture refused the signed role alias. It retained incomplete-bootstrap-cleanup.json. This failure remains unchanged."
+    }
+  ],
+  "retainedFixtureRecovery": {
+    "sixLeaseProbeSHA256": "cd376efbd01ad18a38f4849d779138f3470ec6c81cb36137aa0c234adcf92c65",
+    "identificationSHA256": "521ee94c0ec88cbb84e0392738bc4659a083b94e1eec97038b57491b301fcb4e",
+    "containerID": "e051546b651e56773e0db2b8b49796b560392985e9be9ab22934df5cd2f97f82",
+    "stopReceiptFailureSHA256": "1e9aa2b78b361f3a746dd2ab9df43551d46ad7eaf2e153dcc1e1249980ce4e18",
+    "stopOriginalProcessExitCode": 0,
+    "stopReceiptStatus": "failed: unexpected deprecation warning for --time preceded the exact container ID",
+    "readOnlyEffectConfirmationSHA256": "a22863097a17712eb86d31db7f99d2600957c6f5a220ba0a64d462c02553046b",
+    "review": "Main authorized only the exact created broker stop after all six existing leases were held and engine, immutable ID, image, all four owner labels, config, mount, network and volume identities matched. The unexpected stop receipt remained a failure; no stop retry occurred. Separate read-only confirmation under all six leases observed the same broker exited, full volume metadata unchanged, and the same retained network with zero endpoints. All lock releases and closes succeeded. No PID scan, signal, prune, container/volume deletion or broad network cleanup was used.",
+    "allProcessesAbsentClaimed": false,
+    "containerVolumeNetworkRetained": true
+  },
+  "successfulSingleColdRerun": {
+    "capture": "/Users/ryan/.cache/agentmux-governance/darwin-installed-cli-shared-prepared.y87hvvms",
+    "preparedManifestSHA256": "05942ffee5a5fce6fefdba0b84c495161c47ab0f88aae663513a83808516e8c2",
+    "originalToolHandle": 48979,
+    "originalToolTerminalExitCode": 0,
+    "test": "TestInstalledCLIDarwinRealComposeColdWarmAndRefresh",
+    "terminalSHA256": "782f7a1051063e7b15dd4b06f771f6726dac4076c12a601ebbc7f83d1e11fe37",
+    "stdoutSHA256": "e3b13d9ea903d7a160210bf6e98401b8b45910bd6b93dc87c713d857b53f959f",
+    "review": "Independent raw review verified all 346 frozen source entries, the exact named pass, real signed role aliases and creator-proven host/four-role survival, warm reuse and refresh, complete event admission and matching post-job pins. Normal cleanup recorded stopped broker, retained volume, exact empty new network removal, retained stopped container and unchanged unrelated baseline. No incomplete-cleanup marker appeared. Account plugin link identity, target and verified 5.5.1 bytes remained unchanged.",
+    "waitAndReadersJoined": true,
+    "failures": 0,
+    "skips": 0,
+    "raceWarnings": 0,
+    "incompleteCleanupMarker": false
+  },
+  "remainingCliTestsPassedByThisRecord": false,
+  "cleanCandidateEnrolled": false,
+  "phaseGateAccepted": false,
+  "ciExecuted": false,
+  "mergePerformed": false
+}

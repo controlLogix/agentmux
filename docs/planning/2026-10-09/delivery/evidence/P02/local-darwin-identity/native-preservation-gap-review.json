@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "reviewer": "Codex",
+  "status": "required-native-assertions-mapped-not-yet-executed",
+  "sourcePins": {
+    "platform/runtime/snapshot_darwin_install_test.go": "0165adcb9769541c8c48788754e91638b3ead7a584ede9b9f697add85aa321c9",
+    "platform/runtime/installed_host_darwin_install_test.go": "cdb7e8f50d25628af7d20355a61e7f7d1c070dbc316e8a422ba9062d5ce6cac1"
+  },
+  "requiredTests": {
+    "TestDarwinProtectedInstalledExecutable": [
+      "Admit the exact protected image and revalidate it before actual execution.",
+      "Retain ordinary overwrite, truncate, chmod, unlink, rename, sibling replacement and symlink attempts, plus successful writable controls.",
+      "Retain the conditional ordinary hard-link attempt and independent guaranteed hard-link fixture refusal.",
+      "Execute the existing installed test marker, not a different identity probe.",
+      "Refuse a wrong digest and actual post-admission ancestor ACL, executable ACL, writable mode and wrong owner changes; prove restored positive admission where required.",
+      "Start and reap four actual supervisor children with distinct PIDs, exact markers, clean exits and cleanup.",
+      "After admission, replace the path with identical bytes on a different inode. Revalidation must refuse; Prepared.Start must return protected_path_changed, a nonnil group with no statuses, completed Done and no cleanup error."
+    ],
+    "TestDarwinProtectedPathPolicy": [
+      "Refuse outside-base, short, uppercase and unclean release roots.",
+      "The actual user-owned fallback returns ErrPlatformUnqualified."
+    ],
+    "TestDarwinInstalledHostSurvivesFrontendExit": [
+      "Use the actual runtime-linked frontend and exact embedded host argument/report protocol.",
+      "Retain report-decode-failure, watch-registration-failure and gate-write-failure controls with exact-owned frontend cleanup.",
+      "For handoff, join the frontend, observe the host surviving the existing 100 ms window and observe its exact registered exit within the existing bound. A reported PID never grants signalling authority."
+    ],
+    "TestDarwinInstalledHostReplacementRefusal": [
+      "Valid native admission and actual ordinary rename/write refusal, followed by successful revalidation.",
+      "A separately compiled no-CGO runtime API refuses the same otherwise-valid protected path.",
+      "After admission, same-byte different-inode replacement causes exact installed_host_image_changed, nil child, unconsumed image and retained protected descriptors."
+    ],
+    "TestDarwinInstalledHostOwnedStopAndWait": [
+      "Exercise real PrepareProtectedInstalledHost, StartHost, startup report, exact HostProcess Stop/Wait/Done and repeated cleanup on the same owner."
+    ]
+  },
+  "implementationBoundary": "Replace only test fixture provisioning and mutation seams. Prepare immutable artifacts separately, use fresh protected test versions and preserve assertion bodies and deadlines. A proposed finite-state mutation helper must use exact held descriptors and fixed ordered operations, never generic sudo, caller paths, ACL text, UID selection, commands or PID inputs. No new mutation helper is installed or executed by this review.",
+  "focusedLocalExecution": {
+    "test": "TestDarwinProtectedPathPolicy",
+    "originalSession": 59762,
+    "exitCode": 0,
+    "namedTestPasses": 1,
+    "packagePasses": 1,
+    "packageReportedSeconds": 1.366,
+    "raceEnabled": true,
+    "buildTags": ["agentmux_darwin_install"],
+    "goVersion": "go1.27.2",
+    "explicitSDKRoot": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk",
+    "rootActions": false,
+    "limit": "Focused execution in the dirty checkout, with raw JSON retained in the original tool output. It proves only this named path-policy test, not the other four tests or a frozen clean candidate. A clean candidate rerun remains required."
+  },
+  "limits": [
+    "Passing normal identity controls does not prove these post-admission mutation or HostProcess assertions.",
+    "Existing generic-sudo tagged tests must not be run unchanged under a broader grant.",
+    "During writable-mode, wrong-owner and directory-ACL controls, restoration must not re-bless changed bytes or a replaced path.",
+    "Receipt framing, scope, enrollment, cold-invocation, cancelled-I/O and post-spawn cleanup requirements remain separate parts of PLAT-02-C02."
+  ],
+  "phaseGateAccepted": false,
+  "rootActions": false,
+  "ciRun": false,
+  "mergeAuthorized": false
+}

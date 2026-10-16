@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "kind": "Collector correctness repair and separate retained-output diagnostic",
+  "originalFailure": {
+    "captureDirectory": "/Users/ryan/.cache/agentmux-governance/default-components-execution.Rbi9z5",
+    "resultSHA256": "31c7b95f6233a22e4729d408596180efd9d4f4c9a3a31b41e27383f2b1b2e379",
+    "originalHandle": "17864",
+    "runnerExitCode": 1,
+    "assemblyGoPID": 29780,
+    "assemblyGoExitCode": 0,
+    "observedPassingTopLevels": 14,
+    "observedPassingSubtests": 51,
+    "cause": "Collector inferred that a completed TestContainedPaths/.. name was the parent of the valid sibling TestContainedPaths/../outside. Remaining five jobs were not executed. Original failure is unchanged."
+  },
+  "repair": {
+    "scope": "Subtest suffixes are opaque. Verify active reviewed top-level ownership and complete observed lifecycles; do not invent nested parentage from slash prefixes or unindented JSON output.",
+    "preservedChecks": ["exact required top-level names", "unique starts and terminals", "run before terminal", "top-level owner active", "top cannot finish with active owned tests", "package cannot finish with active tests", "package start/end and scope", "zero process exit", "no failure, skip, malformed output or race"],
+    "reportFields": {"parentageScope": "top-level-ownership", "nestedParentageVerified": false},
+    "sourceSHA256": {
+      "tests/platform/native_go.py": "09da6a3cdcef2d2ab9d9c33cee6c2f950694436bf46040f5ded23f1a57926452",
+      "tests/platform/native_compose.py": "7a1d4ab58d84e53e7e14fe737de90ddd6e3676cd6b7d3bb60c2d99d0164978a4",
+      "tests/platform/test_native_cohorts.py": "dab46e64648546875eb26bdc10183a5227957a4ae44c949d4b4f5ef8afc542c5"
+    },
+    "independentReview": "Peer inspected the pinned Go JSON output behavior and all three frozen files. No new blocker: only unsupported nested-name inference was removed, with explicit limits and preserved strict lifecycle/ownership guards."
+  },
+  "pureCompatibility": {
+    "captureDirectory": "/Users/ryan/.cache/agentmux-governance/collector-top-ownership-final.Ppuy4J",
+    "resultSHA256": "12a4a2f7965141c0c5cebe0e57e5e722cc4b264559bc143e343be61b74225d94",
+    "pythonVersion": "3.14.8",
+    "originalPID": 30300,
+    "exitCode": 0,
+    "testsPassed": 80,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0
+  },
+  "retainedAssemblyDiagnostic": {
+    "file": "assembly-readmission-diagnostic.json",
+    "sha256": "f9a35cb3316daac0ca2a06584162c0568890080f73cd965ec8f4dec60da3fd98",
+    "admittedTopLevels": 14,
+    "admittedSubtests": 51,
+    "originalInputsAndFailureUnchanged": true,
+    "freshGoExecution": false
+  },
+  "limitations": [
+    "Actual nested T.Run semantics rely on the pinned Go harness and joined successful process, not collector reconstruction of a tree.",
+    "The retained-output diagnostic does not replace a fresh full component run or final candidate qualification."
+  ],
+  "phaseGateAccepted": false
+}

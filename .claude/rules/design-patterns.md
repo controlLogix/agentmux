@@ -1,9 +1,9 @@
 ---
-description: Enterprise design-pattern governance for all project files
+description: Architecture and design review
 ---
 
-# Enterprise design-pattern governance
+# Architecture and design review
 
-Follow `.bytedesk/design-patterns/agent-rules.md` for every architecture or design-pattern task. Read `.context/design-patterns.md` and `.context/design-patterns-diagrams.md` before changing an architecture boundary or a registered implementation. Use `/design-patterns:catalog` for approved pattern lookup and `/design-patterns:architecture-map` to refresh diagrams.
+The latest user instruction supersedes the earlier local design-pattern governance requirements. No local pattern registry, generated diagram or evidence gate is required.
 
-When code or documentation uses, names, evaluates, replaces, or retires a Dofactory or Enterprise Integration Patterns pattern, update the registry and its evidence in the same change. Run `node .bytedesk/design-patterns/check.mjs check --root .` before completion.
+Follow the existing architecture, explain material design choices in plain language, and review changed behavior, security boundaries and affected callers.

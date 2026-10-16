@@ -1,0 +1,39 @@
+{
+  "kind": "independent-local-workflow-guard-review",
+  "reviewer": "Codex",
+  "reviewDate": "2026-10-14",
+  "decisionId": "DELIVERY-LOCAL-01",
+  "files": [
+    ".github/workflows/contracts.yml",
+    ".github/workflows/design-patterns.yml",
+    ".github/workflows/platform-compose.yml",
+    ".github/workflows/platform-foundation.yml",
+    ".github/workflows/tests.yml"
+  ],
+  "jobsReviewed": 8,
+  "guard": "Feature-branch push and pull-request jobs are disabled regardless of repository variable value. A manual feature dispatch additionally needs AGENTMUX_ALL_PHASES_COMPLETE=true and the original job conditions. Do not enable or dispatch it before all local P00-P14 gates are accepted.",
+  "repositoryVariableObservation": "Read returned 403. The value is unknown, not assumed absent or false. No repository variable was changed.",
+  "independentLocalChecks": {
+    "truthTableCases": 3456,
+    "automaticFeatureCasesWithTrueVariableRejected": 320,
+    "originalPayloadPreservedExceptJobGuardsAndScopeComments": true,
+    "otherBranchGenericBehaviorPreserved": true,
+    "existingOriginalConditionsPreserved": true,
+    "exitCode": 0
+  },
+  "workerLocalChecks": {
+    "yamlParsing": "passed",
+    "truthTableCases": 10368,
+    "automaticFeatureCasesWithTrueVariableRejected": 576,
+    "diffWhitespace": "passed"
+  },
+  "reviewIteration": "The initial independent payload comparison stopped on the revised explanatory comments. Correcting that comment-only comparison admitted the unchanged matrices, steps, action references, commands, assertions and timeouts. No workflow relaxation was made to pass the check.",
+  "limits": [
+    "No CI was dispatched or used for these checks.",
+    "This review covers workflow source and local guard evaluation, not GitHub execution or P02 runtime acceptance.",
+    "Manual final-verification policy still requires actual completion of every local phase gate; a repository variable is not acceptance evidence.",
+    "Pattern attestation and new source ownership registration remain integration requirements."
+  ],
+  "phaseAccepted": false,
+  "mergeAuthorized": false
+}

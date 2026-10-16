@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "captureDirectory": "/private/tmp/agentmux-launcher-abf33-race.bfFReV",
+  "resultSHA256": "d5563bcbdf9d96afa414afcdbed412f014807c6e63e82b4a97bd7933889c2a9b",
+  "stdoutSHA256": "2ca4318025a6056c9081dcb60e709597095d6463ed6cd783cb1ff185532915d5",
+  "exitCode": 1,
+  "elapsedSeconds": 200.613869583,
+  "timedOut": false,
+  "expectedTopLevelTests": 227,
+  "topLevelTestsPassed": 226,
+  "subtestsPassed": 864,
+  "failedTopLevelTest": "TestDoctorLaterReadAndInheritedPipeCleanupShareTotalBudget",
+  "failedSubtest": "TestDoctorLaterReadAndInheritedPipeCleanupShareTotalBudget/late",
+  "observedFailure": "The helper command-log precondition did not contain exactly four newline-delimited reads. The preceding Doctor deadline/report assertions passed. The raw temporary command log was not included in this capture, so its actual count and per-child timing are not established.",
+  "lateDoctorElapsedSeconds": 1.00288625,
+  "pipeDoctorElapsedSeconds": 2.002625916,
+  "skipped": 0,
+  "unfinished": 0,
+  "expectedTestsNotRun": 0,
+  "raceWarnings": 0,
+  "stderrBytes": 0,
+  "snapshotSourceFiles": 323,
+  "snapshotStable": true,
+  "limitations": [
+    "This full default launcher run failed and remains failed regardless of later focused passes.",
+    "Diagnosis must distinguish the separately built helper from the race-reexecuted inspector; GORACE exit delay is not established as the cause.",
+    "No product deadline, required assertion, installed lifecycle requirement or phase gate has been relaxed."
+  ],
+  "phaseGateAccepted": false
+}

@@ -8,7 +8,10 @@ permissions:
   contents: read
 
 jobs:
+  # Automatic feature verification stays off. Enable manual verification only after
+  # all local P00-P14 gates are accepted; keep AGENTMUX_ALL_PHASES_COMPLETE unset/false until then.
   design-patterns:
+    if: (github.ref != 'refs/heads/feat/agentmux-platform-rearchitecture' && github.head_ref != 'feat/agentmux-platform-rearchitecture') || (github.event_name == 'workflow_dispatch' && vars.AGENTMUX_ALL_PHASES_COMPLETE == 'true')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5

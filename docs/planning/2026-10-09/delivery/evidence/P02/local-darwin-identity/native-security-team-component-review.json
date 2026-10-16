@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "captureDirectory": "/Users/ryan/.cache/agentmux-governance/security-native22-execution.MZjBDg",
+  "resultSHA256": "927109bbc5cca0718934ed4ccd84f8e298a026108e7eb2484720cf2b1f7133bd",
+  "originalHandle": "49781",
+  "terminalExitCode": 0,
+  "topLevelPassed": 22,
+  "subtestsPassed": 89,
+  "failures": 0,
+  "skips": 0,
+  "raceWarnings": 0,
+  "raceInstrumented": true,
+  "sdkRoot": "/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk",
+  "jobs": [
+    {"id": "team4", "package": "deployment", "topLevelTests": 4, "stdoutSHA256": "0822cc2feb07863ed5d4953ab0654a0c6c6f6562228e900bfd768e53e878f737"},
+    {"id": "deployment-auth", "package": "deployment", "topLevelTests": 5, "stdoutSHA256": "3767ec8703151d96b7cc8953da9bc6d0af1639501fc5a010c050690bdf49246c"},
+    {"id": "deployment-tls", "package": "deployment", "topLevelTests": 4, "stdoutSHA256": "9a0a0935a646724e373f36eefca0208805adb05992571f00d4545b2dba39a875"},
+    {"id": "localtls", "package": "localtls", "topLevelTests": 5, "stdoutSHA256": "8bce0a991eaff626acd160a1bda1b994f1dffa8846afebf0a046a75bbbbb9ef8"},
+    {"id": "protocol-actor", "package": "kernel/protocol", "topLevelTests": 4, "stdoutSHA256": "c7e368f551e900df5be9025f1f314a28af018c3f575a80311e3cfa24908511f7"}
+  ],
+  "mainVerification": "Independently counted all passing named terminals in the ledger. Re-read each retained raw Go JSON/stderr file and matched its recorded byte hash; each package has exactly one successful terminal and no fail/skip event. Each job's before/after executed source and tool/SDK maps match. Exact selectors, expected names, command environments, inventory and sole-Wait records remain in the private capture.",
+  "scope": "Focused native TEAM basic/JWT profiles, authentication/grant refusals, TLS adversaries, credential-before-TLS prevention and owned socket/actor transport controls.",
+  "rootActionsPerformed": false,
+  "installedQualification": false,
+  "limitations": [
+    "Component fixtures use real native TLS/NATS but do not establish installed protected assembly, CLI or Compose lifecycle behavior.",
+    "These exact tests do not alone prove the entire HOST/KERNEL/APPLICATION/SYS/JS permission matrix or all P02 failure scenarios.",
+    "Final frozen committed-candidate baseline, installed checks and independent gate review remain required."
+  ],
+  "phaseGateAccepted": false
+}

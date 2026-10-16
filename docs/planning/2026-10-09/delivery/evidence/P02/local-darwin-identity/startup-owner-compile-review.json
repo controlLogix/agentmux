@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewedAt": "2026-10-15",
+  "target": "darwin/arm64",
+  "source": "platform/launcher/installed_cli_compose_startup_owner_darwin_test.go",
+  "sourceSHA256": "5c5da1e44a5f8cd511d78e72ed60cfffd59480ef02dcbbc1262c498d1fc3396e",
+  "captureDirectory": "/Users/ryan/.cache/agentmux-governance/darwin-startup-owner-compile-r5abuln6",
+  "recordSHA256": "a88a046c17ea5de0d3dd0c4cda58c306b39cbf33a5b6e42ce4f5203dc7d8d436",
+  "sourceReview": "Genuine cold protected-runtime startup against a preexisting selected broker and stored health record. An externally held final role lease blocks all role spawning while the actual creator-proven host holds earlier startup leases. Only its retained native proof authorizes failure injection. Original shutdown deadline covers frontend join, host exit and lease release; retry must establish a new owner/attempt and all four ready roles. Failure paths retain the exact gate if host exit is uncertain.",
+  "compileExitCode": 0,
+  "compileElapsedSeconds": 6.097,
+  "raceInstrumented": true,
+  "snapshotSourceFiles": 294,
+  "snapshotStable": true,
+  "checkoutChangedSinceCopy": [],
+  "stdoutBytes": 0,
+  "stderrBytes": 0,
+  "binarySHA256": "a3f2820e414567725551de9445cae1f3d87ce705db2d206c1e4c809075ead495",
+  "binaryBytes": 27218466,
+  "testsExecuted": false,
+  "limitations": [
+    "Compile-only evidence does not establish startup owner death, lease release, retry or persistence preservation on the installed target.",
+    "This is not cold broker creation or owner death after a proper subset of role children has spawned. Separate supervisor rollback controls cover different boundaries.",
+    "Private strong references retain an uncertain gate only for the test-process lifetime; unknown cleanup is failed evidence, never acceptance.",
+    "Actual protected installation, supported SDK admission and complete real Docker execution remain required."
+  ],
+  "phaseGateAccepted": false
+}

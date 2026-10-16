@@ -1,0 +1,62 @@
+{
+  "kind": "independent-local-component-review",
+  "reviewer": "Codex",
+  "reviewDate": "2026-10-14",
+  "baseCommit": "70ed9e33e69c3c4b09736a4cb8e524044545a668",
+  "candidateIsUncommitted": true,
+  "executionPolicy": "DELIVERY-LOCAL-01",
+  "environment": {
+    "os": "darwin",
+    "architecture": "arm64",
+    "macOSVersion": "26.6",
+    "goVersion": "1.27.2",
+    "execution": "local"
+  },
+  "sourceHashes": {
+    "platform/runtime/bootstrap_receipt.go": "cc9f1c865f0447bc5f2e1787f93868c35812527ef4c29c32efd151d64872bb6f",
+    "platform/runtime/bootstrap_receipt_pipe_linux.go": "cb7c8158cc161018a8cde7bcee5c08d49d71c8559ad3fbff933c376c89fdf19d",
+    "platform/runtime/bootstrap_receipt_pipe_darwin.go": "6bb0d054e3646e3273369c3017da17544fdb22b4cece6dee9b6021ca226bd19c",
+    "platform/runtime/bootstrap_receipt_pipe_darwin_test.go": "1d9659955568d5ce3327e7fa55f917e6b03c4d2dda1cef06586b83c7bdab8543"
+  },
+  "before": {
+    "test": "TestBootstrapReceiptWriterDescriptorAndEOF",
+    "exitCode": 1,
+    "stdoutSHA256": "df02389db8eff9674a648f7dc80c2a2fc9cb77a66176e549e64e7a350b4e7220",
+    "finding": "Darwin's actual anonymous FIFO mode is fixed at 0660, so the Linux-only permission predicate refused the factory's owned writer."
+  },
+  "after": {
+    "command": "go test -mod=readonly -race -count=1 -json ./runtime -run ^TestBootstrapReceipt",
+    "exitCode": 0,
+    "elapsedSeconds": 1.121236917,
+    "namedPassEvents": 49,
+    "failureOrSkipEvents": 0,
+    "allStartedTestsCompleted": true,
+    "stdoutSHA256": "051736aa5934841ee667a0248d56b96e20f07746f13dd1f132c5eacfe388b7cc",
+    "stderrSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "executionRecordSHA256": "5648e12f8187af8ed52cb53040ebbc9327fd7306287b2d53996a21afe0be72e0"
+  },
+  "localEvidenceDirectory": "/Users/ryan/.cache/agentmux-governance/p02-native-ci-70ed-diagnosis-ezybkk8g",
+  "localEvidenceFiles": [
+    "receipt-before-execution.json",
+    "receipt-before.jsonl",
+    "receipt-review-fix-execution.json",
+    "receipt-review-fix.jsonl",
+    "receipt-review-fix.stderr"
+  ],
+  "independentReview": {
+    "sourcePinsAndArtifactHashesMatched": true,
+    "linuxPermissionPredicatePreservedExactly": true,
+    "commonUIDWriteOnlyBindingCloexecAndEOFChecksPreserved": true,
+    "darwinPredicate": "Exact anonymous FIFO 0660 with zero device, special-device, link and file-flag metadata; this shape alone grants no startup authority.",
+    "findingClosed": "Actual named FIFO now matches anonymous type/mode 0660. After unlink it also has zero links, while its filesystem device remains distinct. Both real named FIFO states are rejected, alongside synthetic metadata mutations. No process-wide umask change."
+  },
+  "limits": [
+    "The cache directory name retains historical CI-diagnosis provenance; these before/after executions were local native macOS, not CI.",
+    "Forty-nine named events include subtests; this is not forty-nine top-level tests.",
+    "No native Linux or macOS AMD64 execution is claimed.",
+    "Parent launcher, complete installed CLI, Compose, protected full startup and phase acceptance remain open.",
+    "Source inventory, declaration index, full affected suites and final exact-candidate review remain required."
+  ],
+  "phaseAccepted": false,
+  "mergeAuthorized": false
+}

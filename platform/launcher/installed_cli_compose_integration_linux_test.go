@@ -57,11 +57,6 @@ func composeCLIPolicy(t *testing.T, f *bootstrapDockerFixture) (HostPolicySelect
 	return s, r
 }
 
-type composeCLIExit struct {
-	err error
-	at  time.Time
-}
-
 type composeCLIFront struct {
 	cmd             *exec.Cmd
 	stdout, stderr  bytes.Buffer
@@ -208,102 +203,27 @@ func composeCLIWait(t *testing.T, f *bootstrapDockerFixture, x *composeCLIFront,
 	}
 }
 
-type composeCLIReceiptDocument struct {
-	SchemaVersion      string                            `json:"schemaVersion"`
-	Kind               string                            `json:"kind"`
-	RequestDisposition string                            `json:"requestDisposition"`
-	InstanceState      string                            `json:"instanceState"`
-	Receipt            protected.BootstrapControlReceipt `json:"receipt"`
-	DetailsAvailable   bool                              `json:"detailsAvailable"`
-	Message            string                            `json:"message"`
-}
-
-// Save the actual bytes privately before any assertion. The .private suffix
-// excludes this unvalidated output from the public JSON evidence cohort.
-func composeCLICaptureOutput(directory, name string, raw []byte) error {
-	return composeCLICaptureStream(directory, name, "stdout", raw)
-}
-
-func composeCLICaptureStream(directory, name, stream string, raw []byte) error {
-	if len(raw) > 64*1024 || name == "" || filepath.Base(name) != name {
-		return errors.New("cli_output_capture_bounds")
+func (x *composeCLIFront) outputState() *composeCLIOutput {
+	if x == nil {
+		return nil
 	}
-	if stream != "stdout" && stream != "stderr" {
-		return errors.New("cli_output_capture_bounds")
-	}
-	file, err := os.OpenFile(filepath.Join(directory, name+"-"+stream+".private"), os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0600)
-	if err != nil {
-		return errors.New("cli_output_capture_open")
-	}
-	n, writeErr := file.Write(raw)
-	closeErr := file.Close()
-	if writeErr != nil || n != len(raw) || closeErr != nil {
-		return errors.New("cli_output_capture_write")
-	}
-	return nil
+	return &composeCLIOutput{stdout: &x.stdout, stderr: &x.stderr, started: x.started, joined: x.joined, captureName: x.captureName, captured: x.captured}
 }
 
 func (x *composeCLIFront) captureJoined(directory string) error {
-	if x == nil || !x.joined {
-		return errors.New("cli_output_capture_unjoined")
-	}
-	if x.captured {
-		return nil
-	}
-	if err := composeCLICaptureOutput(directory, x.captureName, x.stdout.Bytes()); err != nil {
+	output := x.outputState()
+	if err := output.captureJoined(directory); err != nil {
 		return err
 	}
-	if err := composeCLICaptureStream(directory, x.captureName, "stderr", x.stderr.Bytes()); err != nil {
-		return err
-	}
-	x.captured = true
+	x.captured = output.captured
 	return nil
 }
 
 func composeCLICaptureJoined(t *testing.T, f *bootstrapDockerFixture, x *composeCLIFront) {
 	t.Helper()
-	if x.captureName == "" {
-		x.captureName = "frontend-cleanup-" + bootstrapFixtureRandom(t, 4)
-	}
-	if err := x.captureJoined(f.EvidenceDirectory); err != nil {
-		t.Error(err.Error())
-		return
-	}
-	f.WriteEvidence(t, x.captureName+"-output-capture.json", map[string]any{"privateCapture": true, "frontendWaitJoined": true, "bytes": x.stdout.Len(), "sha256": releaseDigest(x.stdout.Bytes()), "stderrBytes": x.stderr.Len(), "stderrSHA256": releaseDigest(x.stderr.Bytes())})
-}
-
-func composeCLIReceiptCode(raw []byte, allowReceipt bool) (composeCLIReceiptDocument, string) {
-	var out composeCLIReceiptDocument
-	var shape map[string]json.RawMessage
-	if len(raw) > 64*1024 || json.Unmarshal(raw, &shape) != nil || shape == nil {
-		return out, "cli_output_json_invalid"
-	}
-	if !allowReceipt {
-		return out, "cli_authenticated_response_required"
-	}
-	if len(shape) != 7 || protocol.DecodeClosedJSON(raw, &out, 64*1024) != nil {
-		return out, "cli_receipt_shape_invalid"
-	}
-	if out.SchemaVersion != protocol.Version || out.Kind != "bootstrap-progress" {
-		return out, "cli_receipt_version_or_kind_invalid"
-	}
-	if out.RequestDisposition != "accepted" || out.Receipt.Outcome != "accepted" {
-		return out, "cli_receipt_not_accepted"
-	}
-	if out.InstanceState != "unknown" || out.DetailsAvailable {
-		return out, "cli_receipt_readiness_overclaimed"
-	}
-	return out, ""
-}
-
-func composeCLIReceiptBindingCode(binding protected.BootstrapReceiptBinding, scope protocol.Scope, enrollment, attempt, image string, creatorOwned bool) string {
-	if binding.Scope != scope || binding.EnrollmentDigest != enrollment || !ownerBridgeInvocation.MatchString(binding.ColdInvocationID) {
-		return "cli_receipt_enrollment_binding_invalid"
-	}
-	if !creatorOwned || attempt == "" || binding.ColdInvocationID != attempt || binding.RuntimeDigest != image {
-		return "cli_receipt_creator_or_image_binding_invalid"
-	}
-	return ""
+	output := x.outputState()
+	defer func() { x.captureName, x.captured = output.captureName, output.captured }()
+	output.writeCapture(t, f)
 }
 
 func TestComposeCLIReceiptRefusalCodes(t *testing.T) {
@@ -487,94 +407,12 @@ func TestComposeCLIReceiptBindingRefusalCodes(t *testing.T) {
 
 func composeCLIObservation(t *testing.T, f *bootstrapDockerFixture, x *composeCLIFront, r hostPolicyRecord, raw []byte, name string, allowReceipt bool) *StartupStatusObservation {
 	t.Helper()
-	if x == nil || !x.joined || !x.captured {
-		t.Fatal("cli_output_capture_unavailable")
+	attempt := ""
+	owned := x != nil && x.hostFD >= 0
+	if x != nil {
+		attempt = x.hostAttempt
 	}
-	var shape map[string]json.RawMessage
-	if json.Unmarshal(raw, &shape) != nil {
-		t.Fatal("cli_output_json_invalid")
-	}
-	if _, receipt := shape["kind"]; receipt {
-		out, code := composeCLIReceiptCode(raw, allowReceipt)
-		if code != "" {
-			t.Fatal(code)
-		}
-		attempt := ""
-		owned := x != nil && x.hostFD >= 0
-		if x != nil {
-			attempt = x.hostAttempt
-		}
-		if code := composeCLIReceiptBindingCode(out.Receipt.Binding, f.Config.Kernel.Scope, releaseDigest(mustStatusJSON(f.BridgeEnrollment.Owner)), attempt, r.RuntimeExecutable.Digest, owned); code != "" {
-			t.Fatal(code)
-		}
-		f.WriteEvidence(t, name+"-receipt-expected.json", map[string]any{"source": "Actual creating frontend child arguments and held image admission", "coldInvocationId": x.hostAttempt, "runtimeDigest": r.RuntimeExecutable.Digest, "scope": f.Config.Kernel.Scope, "enrollmentDigest": releaseDigest(mustStatusJSON(f.BridgeEnrollment.Owner))})
-		f.WriteEvidence(t, name+".json", out)
-		return nil
-	}
-	var out StartupStatusObservation
-	if protocol.DecodeClosedJSON(raw, &out, 64*1024) != nil || (out.Disposition != "starting" && out.Disposition != "started" && out.Disposition != "reused") || out.Instance.InstanceID == nil || *out.Instance.InstanceID != f.Profile.InstanceID {
-		t.Fatal("actual L04 CLI output rejected")
-	}
-	owner := f.BridgeEnrollment.Owner
-	if out.SchemaVersion != protocol.Version || out.StartupAttemptID == nil || !ownerBridgeInvocation.MatchString(*out.StartupAttemptID) || out.Caller.PrincipalID != owner.PrincipalID || out.Caller.Identity != owner.Identity || !reflect.DeepEqual(out.Caller.Scope, owner.Scope) || out.Instance.ProfileID == nil || *out.Instance.ProfileID != owner.ProfileID || out.SourceRevision == 0 || !kernelStatusID.MatchString(out.ObservationID) {
-		t.Fatal("actual L04 CLI output does not match enrolled owner")
-	}
-	if out.Disposition == "starting" && !bridgeStartingUnknown(out) {
-		t.Fatal("starting CLI observation overclaims readiness")
-	}
-	f.WriteEvidence(t, name+".json", out)
-	return &out
-}
-
-func composeCLIRefresh(t *testing.T, f *bootstrapDockerFixture, startupDeadline time.Time) StartupStatusObservation {
-	t.Helper()
-	client, err := LoadOwnerBridgeClient(f.Config, *f.BridgeEnrollment)
-	if err != nil {
-		t.Fatal("actual authenticated refresh client refused")
-	}
-	ctx, cancel := context.WithDeadline(context.Background(), startupDeadline)
-	defer cancel()
-	for ctx.Err() == nil {
-		request, stop := context.WithTimeout(ctx, 5*time.Second)
-		out, e := client.Request(request, "status", "attempt_"+bootstrapFixtureRandom(t, 16))
-		stop()
-		code := "none"
-		if e != nil {
-			switch e.Error() {
-			case "owner_bridge_connection_unavailable", "owner_bridge_reply_unavailable", "owner_bridge_deadline":
-				code = e.Error()
-			default:
-				code = "closed_unclassified_failure"
-			}
-		}
-		f.WriteEvidence(t, "refresh-attempt-"+bootstrapFixtureRandom(t, 4)+".json", map[string]any{"errorCode": code, "deadlineExpired": ctx.Err() != nil, "disposition": out.Disposition})
-		if e == nil && (out.Disposition == "started" || out.Disposition == "reused") {
-			if out.Instance.RunningVersion == nil || out.Instance.Readiness != "degraded" || out.Work.State != "unavailable" || out.Hubs.InventoryState != "unavailable" {
-				t.Fatal("actual completed status lacks current kernel evidence")
-			}
-			for _, role := range protocol.Roles() {
-				found := false
-				for _, service := range out.Instance.Services {
-					if service.ServiceID == role && service.Readiness == "ready" && service.ObservedAt != nil && service.SourceRevision != nil {
-						found = true
-					}
-				}
-				if !found {
-					t.Fatal("actual completed role lacks current readiness")
-				}
-			}
-			return out
-		}
-		if e != nil && e.Error() != "owner_bridge_connection_unavailable" && e.Error() != "owner_bridge_reply_unavailable" && e.Error() != "owner_bridge_deadline" {
-			t.Fatal("actual refresh authority or runtime failed")
-		}
-		if e == nil && out.Disposition != "starting" {
-			t.Fatal("actual startup failed")
-		}
-		time.Sleep(25 * time.Millisecond)
-	}
-	t.Fatal("actual installed runtime did not complete within startup budget")
-	return StartupStatusObservation{}
+	return composeCLIOutputObservation(t, f, x.outputState(), r, raw, name, allowReceipt, attempt, owned)
 }
 
 func composeCLIPinRoles(t *testing.T, f *bootstrapDockerFixture, x *composeCLIFront) {
@@ -855,18 +693,9 @@ func TestInstalledCLIRealComposeAbruptHostRestart(t *testing.T) {
 
 // Read output sizes only after the sole Wait has joined its copy goroutines.
 func composeCLIJoinedDiagnostic(x *composeCLIFront, result composeCLIExit) map[string]any {
-	code := "failed"
-	if result.err == nil {
-		code = "success"
-	}
-	var exitStatus any = nil
-	var processExit *exec.ExitError
-	if result.err == nil {
-		exitStatus = 0
-	} else if errors.As(result.err, &processExit) {
-		exitStatus = processExit.ExitCode()
-	}
-	return map[string]any{"frontendWaitJoined": true, "entryToExitNanoseconds": result.at.Sub(x.started).Nanoseconds(), "exitOutcome": code, "exitStatus": exitStatus, "stdoutBytes": x.stdout.Len(), "stderrBytes": x.stderr.Len(), "exactHostPinned": x.hostFD >= 0}
+	output := x.outputState()
+	output.terminal = result
+	return output.joinedDiagnostic(x.hostFD >= 0)
 }
 func TestComposeCLIJoinedDiagnosticIsClosed(t *testing.T) {
 	x := &composeCLIFront{started: time.Now(), hostFD: -1}
