@@ -20,13 +20,19 @@
 import { createRequire } from 'node:module';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import {spawnSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
 
 const [baseURL, playwrightDir, brokerPort] = process.argv.slice(2);
 if (!baseURL || !playwrightDir) {
   console.error('usage: test_e2e.mjs <base-url> <playwright-dir> [broker-port]');
   process.exit(2);
 }
-const { firefox } = createRequire(import.meta.url)(playwrightDir);
+const drivers = createRequire(import.meta.url)(playwrightDir);
+const browserName = process.env.AGENTMUX_E2E_BROWSER || 'firefox';
+assert.ok(['firefox', 'chromium'].includes(browserName), 'unsupported test browser');
+const testFilter = process.env.AGENTMUX_E2E_FILTER;
+
 
 let passed = 0, failed = 0;
 const failures = [];
@@ -35,6 +41,7 @@ const failures = [];
 // zero that matched nothing, so a real assertion failure here reached the gate as a
 // suite that broke with no statement of what broke.
 async function test(name, fn) {
+  if (testFilter && !name.includes(testFilter)) return;
   try { await fn(); passed++; console.log('PASS ' + name); }
   catch (err) {
     failed++;
@@ -43,7 +50,10 @@ async function test(name, fn) {
   }
 }
 
-const browser = await firefox.launch({ headless: true });
+const browser = await drivers[browserName].launch({ headless: true,
+  ...(process.env.AGENTMUX_E2E_BROWSER_EXECUTABLE
+    ? {executablePath: process.env.AGENTMUX_E2E_BROWSER_EXECUTABLE} : {}) });
+try {
 const context = await browser.newContext({ viewport: { width: 1400, height: 950 } });
 const page = await context.newPage();
 
@@ -682,6 +692,201 @@ await test('Organization carries Agents and Teams, and both render', async () =>
     () => document.getElementById('viewTeams').childElementCount > 0, null, { timeout: 15000 });
 });
 
+if (process.env.AGENTMUX_E2E_PROFILES === '1') {
+await test('Profiles explicit owner adoption stays separate from the browser preview', async () => {
+  const project = fs.realpathSync(process.env.AGENTMUX_E2E_PROJECT_ROOT);
+  const python = process.env.AGENTMUX_E2E_PYTHON;
+  assert.ok(python && python.startsWith('/'), 'prepared Python path is required');
+  const sourceDirectory = new URL('../.agentmux/agents/', import.meta.url);
+  const names = fs.readdirSync(sourceDirectory).filter(name => name.endsWith('.md')).sort();
+  assert.equal(names.length, 14);
+  const sourceDigests = () => names.map(name => createHash('sha256').update(fs.readFileSync(new URL(name, sourceDirectory))).digest('hex'));
+  const before = sourceDigests();
+  await show('organization');
+  await tab('organization', 'agents');
+  const panel = page.locator('#viewAgents');
+  const preview = panel.locator('.agents-profile-preview');
+  await preview.locator('summary').click();
+  const catalogue = preview.locator('[aria-label="Bundled profile package preview"]');
+  await catalogue.waitFor();
+  assert.equal(await catalogue.locator('.agents-definition').count(), 14);
+  assert.match(await catalogue.textContent(), /explicit local-owner command/);
+  assert.match(await catalogue.textContent(), /Requested permissions do not establish grants/);
+  assert.match(await catalogue.textContent(), /machine-specific path references/);
+  assert.equal(await catalogue.locator('form,button,input').count(), 0);
+  const metadata = await page.evaluate(async () => (await fetch('api/board/profiles')).json());
+  assert.equal(metadata.projectRoot, project);
+  const refused = await page.evaluate(async () => (await fetch('api/board/profiles', {method: 'POST',
+    headers: {'Content-Type': 'application/json'}, body: JSON.stringify({actor: 'dashboard', approved: true})})).status);
+  assert.equal(refused, 405);
+  const initial = await page.evaluate(async () => (await fetch('api/board/agents')).json());
+  assert.equal(initial.agents.some(row => ['scan-dev', 'agora-lead'].includes(row.name)), false);
+  const privateDirectory = project + '/profile-command-private';
+  fs.mkdirSync(privateDirectory, {mode: 0o700});
+  const client = privateDirectory + '/selected-client';
+  const request = privateDirectory + '/request.json';
+  fs.writeFileSync(client, 'metadata-only executable fixture; never executed\n', {mode: 0o700});
+  const selected = metadata.profiles.find(row => row.name === 'scan-dev');
+  fs.writeFileSync(request, JSON.stringify({schemaVersion: '1.0.0', clients: {codex: client}, selections: [{
+    packageId: selected.packageId, name: selected.name, sourceChecksum: selected.sourceChecksum,
+    relationship: 'independent', parentPackage: null,
+    overrides: {paths: {}, execution: {posture: 'read-only', worktree: 'none', maxInstances: 1}}
+  }]}), {mode: 0o600});
+  const command = (verb, extra = []) => {
+    const result = spawnSync(python, [new URL('../taskmgmt/profilecli.py', import.meta.url).pathname,
+      verb, '--project', project, '--request', request, ...extra], {encoding: 'utf8', timeout: 8000});
+    // spawnSync retains and waits for this original command, including its output.
+    assert.equal(result.error, undefined, 'local-owner command could not be joined');
+    assert.equal(result.status, 0, 'local-owner command failed; private output withheld');
+    return JSON.parse(result.stdout);
+  };
+  const observed = command('preview');
+  assert.equal(fs.existsSync(project + '/.agentmux/profile-adoptions/record.json'), false);
+  const saved = command('adopt', ['--approval-checksum', observed.approvalChecksum,
+    '--record-checksum', observed.recordChecksum]);
+  assert.equal(saved.profileCount, 1);
+  const record = project + '/.agentmux/profile-adoptions/record.json';
+  assert.equal(fs.statSync(record).mode & 0o777, 0o600);
+  await panel.locator('.agents-header button').click();
+  const adopted = panel.locator('.agents-list > .agents-definition').filter({has: page.locator('h4', {hasText: /^scan-dev$/})});
+  await adopted.waitFor();
+  assert.match(await adopted.textContent(), /Adopted profile package: example.survey/);
+  assert.match(await adopted.textContent(), /Local owner adoption does not grant team approval/);
+  assert.equal(await adopted.locator('form,button,details').count(), 0);
+  assert.deepEqual(sourceDigests(), before);
+  assert.equal(consoleErrors.filter(line => line.startsWith('pageerror:')).length, 0,
+    'profile preview raised a browser exception');
+});
+}
+
+// Explicit private roots are required because this scenario writes real definitions.
+if (process.env.AGENTMUX_E2E_DEFINITIONS === '1') {
+await test('Agents scoped editor preserves edits, conflicts, cancellation and permissions', async () => {
+  const project = fs.realpathSync(process.env.AGENTMUX_E2E_PROJECT_ROOT);
+  const globalRoot = fs.realpathSync(process.env.AGENTMUX_E2E_GLOBAL_ROOT);
+  await show('organization');
+  await tab('organization', 'agents');
+  const panel = page.locator('#viewAgents');
+  const post = body => page.evaluate(async body => {
+    const response = await fetch('api/board/agentdef', {method: 'POST',
+      headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)});
+    return {status: response.status, data: await response.json()};
+  }, body);
+  for (const scope of ['repo', 'global']) {
+    const name = 'browser-' + scope;
+    const create = panel.locator(':scope > details.agents-editor');
+    await create.locator('summary').click();
+    await create.locator('[name=name]').fill(name);
+    await create.locator('[name=scope]').selectOption(scope);
+    await create.locator('[name=description]').fill('Browser definition');
+    await create.locator('[name=persona]').fill('Private persona\nSecond line');
+    await create.locator('[name=tools]').fill('Read, Grep');
+    await create.locator('[name=tools_deny]').fill('Write');
+    await create.locator('button[type=submit]').click();
+    const card = panel.locator('.agents-definition').filter({has: page.locator('h4', {hasText: name})});
+    await card.waitFor();
+    const detail = await page.evaluate(async name =>
+      (await fetch('api/board/agents?name=' + name)).json(), name);
+    const expected = scope === 'repo' ? project + '/.agentmux/agents/' + name + '.md'
+      : globalRoot + '/agents/' + name + '.md';
+    assert.equal(detail.path, expected);
+    assert.equal(fs.statSync(expected).mode & 0o777, 0o600);
+    assert.match(await card.textContent(), /Requested tools are advisory/);
+    await card.locator('summary').click();
+    await card.locator('[name=persona]').fill('Saved browser edit');
+    await Promise.all([page.waitForResponse(r => r.url().endsWith('/api/board/agents')),
+      card.locator('button[type=submit]').click()]);
+    await page.waitForFunction(() => !document.querySelector('.agents-header button').disabled);
+    await card.locator('summary').click();
+    await card.locator('[name=persona]').waitFor();
+    assert.equal(await card.locator('[name=persona]').inputValue(), 'Saved browser edit');
+    const current = await page.evaluate(async name =>
+      (await fetch('api/board/agents?name=' + name)).json(), name);
+    const updated = await post({...current, persona: 'Concurrent edit', actor: 'legacy-test'});
+    assert.equal(updated.status, 200);
+    await card.locator('[name=persona]').fill('Stale edit');
+    await card.locator('button[type=submit]').click();
+    await card.locator('.agents-editor .stamp').filter({hasText: 'reload before saving'}).waitFor();
+    assert.match(fs.readFileSync(expected, 'utf8'), /Concurrent edit/);
+    assert.doesNotMatch(fs.readFileSync(expected, 'utf8'), /Stale edit/);
+    await Promise.all([page.waitForResponse(r => r.url().endsWith('/api/board/agents')),
+      panel.locator('.agents-header button').click()]);
+    await page.waitForFunction(() => !document.querySelector('.agents-header button').disabled);
+    const remove = card.locator('button.del');
+    page.once('dialog', dialog => dialog.dismiss());
+    await remove.click();
+    assert.ok(fs.existsSync(expected));
+    page.once('dialog', dialog => dialog.accept());
+    await remove.click();
+    await card.waitFor({state: 'detached'});
+    assert.equal(fs.existsSync(expected), false);
+  }
+});
+}
+
+if (process.env.AGENTMUX_E2E_DEFINITIONS === '1') {
+await test('Teams scoped proposal uses a deliberate lead and preserves approved revisions', async () => {
+  const post = (op, body) => page.evaluate(async ([op, body]) => {
+    const response = await fetch('api/board/' + op, {method: 'POST',
+      headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)});
+    return {status: response.status, data: await response.json()};
+  }, [op, body]);
+  for (const name of ['a-first-lead', 'z-chosen-lead']) {
+    const result = await post('agentdef', {name, scope: 'repo', role: 'lead',
+      description: 'Browser lead', cli: 'codex', persona: 'Approved private persona'});
+    assert.equal(result.status, 200, 'lead definition create status ' + result.status);
+  }
+  const epic = await post('create', {kind: 'epic', title: 'Browser team epic', actor: 'legacy-browser'});
+  assert.equal(epic.status, 200, 'epic create status ' + epic.status);
+  const task = await post('create', {kind: 'task', title: 'Browser scoped team', epic: epic.data.id,
+    body: 'Exercise a deliberately selected lead and saved approval revision.',
+    acceptance: ['The approved definition remains fixed after editing its source.'],
+    actor: 'legacy-browser'});
+  assert.equal(task.status, 200, 'task create status ' + task.status);
+  const key = task.data.id;
+  await show('organization');
+  await tab('organization', 'teams');
+  const panel = page.locator('#viewTeams');
+  const card = panel.locator('.teams-card').filter({has: page.locator('h3', {hasText: key})});
+  await card.waitFor();
+  await panel.locator('.teams-actor input').fill('legacy-browser');
+  const lead = card.locator('select.teams-lead');
+  assert.equal(await lead.inputValue(), '');
+  await lead.selectOption('z-chosen-lead');
+  await Promise.all([page.waitForResponse(r => r.url().includes('/api/board/roster?id=' + key)),
+    card.getByRole('button', {name: 'Propose roster', exact: true}).click()]);
+  await page.waitForFunction(() => !document.querySelector('.teams-header button').disabled);
+  const readRoster = () => page.evaluate(async key =>
+    (await fetch('api/board/roster?id=' + key)).json(), key);
+  let roster = await readRoster();
+  assert.equal(roster.members.find(member => member.role === 'lead').agent_name, 'z-chosen-lead');
+  for (const member of roster.members) {
+    await card.getByRole('button', {name: 'Approve ' + member.agent_name, exact: true}).click();
+  }
+  await Promise.all([page.waitForResponse(r => r.url().includes('/api/board/roster?id=' + key)),
+    card.getByRole('button', {name: 'Save roster decision', exact: true}).click()]);
+  await page.waitForFunction(() => !document.querySelector('.teams-header button').disabled);
+  const approved = await readRoster();
+  assert.ok(approved.members.every(member => member.status === 'approved'));
+  const definition = await page.evaluate(async () =>
+    (await fetch('api/board/agents?name=z-chosen-lead')).json());
+  const edited = await post('agentdef', {...definition, persona: 'New unapproved persona'});
+  assert.equal(edited.status, 200);
+  await Promise.all([page.waitForResponse(r => r.url().includes('/api/board/roster?id=' + key)),
+    panel.locator('.teams-header button').click()]);
+  await card.locator('.teams-revision').filter({hasText: 'Definition changed'}).waitFor();
+  roster = await readRoster();
+  const before = approved.members.find(member => member.role === 'lead');
+  const after = roster.members.find(member => member.role === 'lead');
+  assert.equal(after.definitionState, 'changed');
+  for (const field of ['id', 'approved_by', 'approved_at', 'definitionRevision']) {
+    assert.deepEqual(after[field], before[field]);
+  }
+  assert.equal(after.status, 'approved');
+  assert.doesNotMatch(JSON.stringify(roster), /private persona|unapproved persona/);
+});
+}
+
 await test('the GitHub panel shows an account card and never renders a token', async () => {
   await show('github');
   await page.waitForSelector('#viewGithub .gh-account', { timeout: 20000 });
@@ -1082,7 +1287,10 @@ await test('the page logged no errors while all of that happened', () => {
   assert.deepEqual(real, []);
 });
 
-await browser.close();
+if (testFilter && passed + failed === 0) throw new Error('test filter matched no checks');
 console.log(`\npassed ${passed}, failed ${failed}`);
 if (failures.length) console.log('failed: ' + failures.join('; '));
-process.exit(failed ? 1 : 0);
+process.exitCode = failed ? 1 : 0;
+} finally {
+  await browser.close();
+}

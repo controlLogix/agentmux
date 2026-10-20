@@ -50,23 +50,23 @@ func TestInitialLookupNeverStartsOnStatusOrHardFailure(t *testing.T) {
 	}
 }
 
-func TestInstalledLauncherFailedEnsureEmitsEvidenceAndFails(t *testing.T) {
-	for _, disposition := range []string{"failed", "unconfigured", "started", "reused", "starting"} {
-		var output bytes.Buffer
-		observation := launcher.StartupStatusObservation{SchemaVersion: "1.0.0", Disposition: disposition}
-		err := emitObservation(&output, observation, "ensure")
-		wantFailure := disposition == "failed" || disposition == "unconfigured"
-		if (err != nil) != wantFailure {
-			t.Fatal("ensure exit result did not match authentic startup disposition")
+func TestInstalledLauncherFailedObservationEmitsStatusAndFails(t *testing.T) {
+	for _, operation := range []string{"ensure", "status"} {
+		for _, disposition := range []string{"failed", "unconfigured", "started", "reused", "starting"} {
+			t.Run(operation+"/"+disposition, func(t *testing.T) {
+				var output bytes.Buffer
+				observation := launcher.StartupStatusObservation{SchemaVersion: "1.0.0", Disposition: disposition}
+				err := emitObservation(&output, observation, operation)
+				wantFailure := disposition == "failed" || disposition == "unconfigured"
+				if (err != nil) != wantFailure {
+					t.Fatal("command exit result did not match the authenticated observation")
+				}
+				var actual launcher.StartupStatusObservation
+				if json.Unmarshal(output.Bytes(), &actual) != nil || actual.Disposition != disposition {
+					t.Fatal("authenticated status was lost on failure")
+				}
+			})
 		}
-		var actual launcher.StartupStatusObservation
-		if json.Unmarshal(output.Bytes(), &actual) != nil || actual.Disposition != disposition {
-			t.Fatal("startup evidence was lost on failure")
-		}
-	}
-	var output bytes.Buffer
-	if emitObservation(&output, launcher.StartupStatusObservation{Disposition: "failed"}, "status") != nil {
-		t.Fatal("a status query could not report an authentic failed instance")
 	}
 }
 

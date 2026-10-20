@@ -311,7 +311,7 @@ func (h *EnrolledHostPolicy) PrepareHost(ctx context.Context) (*protected.Instal
 	if goruntime.GOOS == "darwin" {
 		image, err := protected.PrepareProtectedInstalledHost(ctx, h.record.RuntimeExecutable.Path, h.record.RuntimeExecutable.Digest, 128*1024*1024)
 		if err != nil {
-			return nil, hostPolicyError("executable_unqualified")
+			return nil, &hostPolicyFailure{code: "executable_unqualified", cause: err}
 		}
 		return image, nil
 	}

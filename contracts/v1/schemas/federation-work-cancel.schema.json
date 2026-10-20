@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-work-cancel",
+  "title": "federation-work-cancel v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "workId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}$"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 65536
+        }
+      },
+      "required": [
+        "workId",
+        "reason"
+      ]
+    },
+    "attribution": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    }
+  },
+  "required": [
+    "resourceRef",
+    "input",
+    "attribution"
+  ]
+}

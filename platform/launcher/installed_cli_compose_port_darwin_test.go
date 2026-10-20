@@ -157,6 +157,9 @@ func darwinPortNoFalseReadiness(t *testing.T, f *bootstrapDockerFixture, x *comp
 	if protocol.DecodeClosedJSON(raw, &out, 64*1024) != nil || out.Disposition == "started" || out.Disposition == "reused" || (out.Disposition == "starting" && !bridgeStartingUnknown(out)) {
 		t.Fatal("occupied port became false current readiness")
 	}
+	if success && (out.Disposition == "failed" || out.Disposition == "unconfigured") {
+		t.Fatal("failed or unconfigured status returned command success")
+	}
 	x.observation(t, f, r, raw, name, false)
 }
 

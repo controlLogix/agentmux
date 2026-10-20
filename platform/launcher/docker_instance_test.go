@@ -33,6 +33,20 @@ func brokerInspectProcess() {
 		os.Exit(3)
 	}
 	args = args[2:]
+	if path := os.Getenv("AMX_BROKER_INSPECT_ARGV_LOG"); path != "" {
+		file, err := os.OpenFile(path, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0600)
+		if err != nil {
+			os.Exit(19)
+		}
+		raw, err := json.Marshal(os.Args)
+		if err != nil {
+			os.Exit(19)
+		}
+		_, writeErr := file.Write(append(raw, '\n'))
+		if closeErr := file.Close(); writeErr != nil || closeErr != nil {
+			os.Exit(19)
+		}
+	}
 	mode := os.Getenv("AMX_BROKER_INSPECT_MODE")
 	f, _ := os.OpenFile(os.Getenv("AMX_BROKER_INSPECT_LOG"), os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0600)
 	_, _ = fmt.Fprintln(f, args[0])

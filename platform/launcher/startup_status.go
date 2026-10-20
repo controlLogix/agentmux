@@ -375,6 +375,16 @@ func (owner *OwnerStatus) mapObservationLocked(input ownerStatusObservation) (St
 		addError("instance", "profile_mismatch", "The runtime observation does not match the enrolled profile.", false)
 		return out, nil
 	}
+	persist := input.status.Persistence
+	recordAt, recordTimeErr := time.Parse(time.RFC3339Nano, persist.RecordObservedAt)
+	if persist.BrokerVerified && persist.ServerName == owner.policy.ServerName && persist.Domain == owner.policy.Domain && persist.ServerVersion == "2.15.0" && persist.Stream == deployment.HealthStream(owner.policy.KernelScope.HubID) && persist.PersistenceEvidence == deployment.PersistenceRecordSeen && persist.RecordSequence > 0 && kernelStatusDigest.MatchString(persist.RecordDigest) && recordTimeErr == nil && !recordAt.After(now) {
+		out.Persistence.Availability = "available"
+		out.Persistence.Backend = statusString("nats_jetstream")
+		out.Persistence.Profile = statusString(p.ProfileID)
+		out.Persistence.ServerID = statusString(persist.ServerName)
+		out.Persistence.DomainID = statusString(persist.Domain)
+		out.Persistence.ObservedAt = statusString(statusTimestamp(input.receivedAt))
+	}
 	k := input.status.Kernel
 	if _, err := protocol.DecodeSnapshot(mustStatusJSON(k), owner.policy.KernelScope, now, 3*time.Second); err != nil {
 		addError("instance", "kernel_observation_invalid", "A current protected runtime observation is unavailable.", true)
@@ -397,24 +407,11 @@ func (owner *OwnerStatus) mapObservationLocked(input ownerStatusObservation) (St
 		}
 		out.Instance.Services = append(out.Instance.Services, service)
 	}
-	persist := input.status.Persistence
 	writeReady := false
-	recordAt, recordTimeErr := time.Parse(time.RFC3339Nano, persist.RecordObservedAt)
-	if persist.BrokerVerified && persist.ServerName == owner.policy.ServerName && persist.Domain == owner.policy.Domain && persist.ServerVersion == "2.15.0" && persist.Stream == deployment.HealthStream(owner.policy.KernelScope.HubID) && persist.PersistenceEvidence == deployment.PersistenceRecordSeen && persist.RecordSequence > 0 && kernelStatusDigest.MatchString(persist.RecordDigest) && recordTimeErr == nil && !recordAt.After(now) {
-		out.Persistence.Availability = "available"
-		out.Persistence.Backend = statusString("nats_jetstream")
-		out.Persistence.Profile = statusString(p.ProfileID)
-		out.Persistence.ServerID = statusString(persist.ServerName)
-		out.Persistence.DomainID = statusString(persist.Domain)
-		out.Persistence.ObservedAt = statusString(statusTimestamp(input.receivedAt))
-		// Receipt freshness belongs to this read. The old record timestamp must
-		// not become a current write, replication or capacity claim.
-		if input.status.Disposition == "started" && input.healthProof != nil {
-			writeReady = qualifyWriteProof(owner.policy, input, &out, now)
-		}
-	}
-	if !writeReady {
-		out.Persistence.Readiness = "unknown"
+	// Write readiness still requires a valid scoped kernel frame and this
+	// session's qualified cold-start proof; a stored record alone is read-only.
+	if input.status.Disposition == "started" && input.healthProof != nil {
+		writeReady = qualifyWriteProof(owner.policy, input, &out, now)
 	}
 	out.Instance.Services = append(out.Instance.Services, unknownStatusService("work", "not_implemented"), unknownStatusService("hub_federation", "not_implemented"))
 	if (input.status.Disposition == "started" || input.status.Disposition == "reused") && (k.KernelReadiness == "ready" || k.KernelReadiness == "degraded") {

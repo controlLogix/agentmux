@@ -26,10 +26,10 @@ function fixture() {
     close() { const path = resolve(root); assert.ok(path.startsWith(resolve(tmpdir()) + sep) && basename(path).startsWith('agentmux-review-server-')); rmSync(path, { recursive: true, force: true }); } };
 }
 
-test('concurrent opens reuse one server and another requested port cannot bypass ownership', async () => {
+test('concurrent opens reuse one server', async () => {
   const h = fixture(); let owner;
   try {
-    const results = await Promise.all([h.start(), h.start(), h.start({ port: 4318 })]);
+    const results = await Promise.all([h.start(), h.start(), h.start()]);
     owner = results.find(item => !item.reused);
     assert.equal(results.filter(item => !item.reused).length, 1);
     assert.equal(new Set(results.map(item => item.url)).size, 1);
@@ -42,6 +42,42 @@ test('concurrent opens reuse one server and another requested port cannot bypass
     await assert.rejects(h.start({ reviewId: 'another', action: 'stop' }), /owns/);
     assert.equal((await fetch(owner.url)).status, 200);
   } finally { await owner?.stop(); h.close(); }
+});
+
+test('an explicit port must match the active server without changing its ownership or settings', async () => {
+  const h = fixture(); let owner;
+  try {
+    owner = await h.start();
+    const port = Number(new URL(owner.url).port);
+    const beforeRecord = readFileSync(h.paths.state, 'utf8');
+    const beforeSettings = readFileSync(h.paths.settings, 'utf8');
+    const reused = await h.start({ port });
+    assert.equal(reused.reused, true);
+    assert.equal(reused.instanceId, owner.instanceId);
+    await assert.rejects(h.start({ port: port === 65535 ? 65534 : port + 1 }), /different port.*Restart it explicitly/);
+    assert.equal(readFileSync(h.paths.state, 'utf8'), beforeRecord);
+    assert.equal(readFileSync(h.paths.settings, 'utf8'), beforeSettings);
+    assert.equal((await fetch(owner.url)).status, 200);
+  } finally { await owner?.stop(); h.close(); }
+});
+
+test('an opener waiting for publication refuses a different explicit port', async () => {
+  const h = fixture(); let owner, unblock, reached;
+  const creating = new Promise(done => { reached = done; });
+  try {
+    const started = h.start({ createReview: async management => {
+      reached();
+      await new Promise(done => { unblock = done; }); return h.createReview(management);
+    } });
+    await Promise.race([creating, started]);
+    // The request begins while the first owner holds the slot without a record.
+    const waiting = h.start({ port: 1 });
+    const refused = assert.rejects(waiting, /different port.*Restart it explicitly/);
+    unblock(); owner = await started;
+    await refused;
+    assert.equal(JSON.parse(readFileSync(h.paths.state)).instanceId, owner.instanceId);
+    assert.equal((await fetch(owner.url)).status, 200);
+  } finally { unblock?.(); await owner?.stop(); h.close(); }
 });
 
 test('manager stop is private, drains requests, removes only its record and retains the port', async () => {

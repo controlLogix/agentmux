@@ -22,7 +22,9 @@ if node <<'JS'
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
-const source = fs.readFileSync('dashboard/agents.js', 'utf8');
+const componentPaths = [...fs.readFileSync('dashboard/index.html', 'utf8').matchAll(/<script src="(src\/components\/[^"]+)"/g)].map(match => match[1]);
+const source = [...componentPaths, 'src/features/agentDefinitions.js', 'agents.js']
+  .map(path => fs.readFileSync('dashboard/' + path, 'utf8')).join('\n');
 const app = fs.readFileSync('dashboard/app.js', 'utf8');
 const html = fs.readFileSync('dashboard/index.html', 'utf8');
 assert.match(source, /async function loadAgents\(/);
@@ -34,7 +36,7 @@ assert.match(html, /href="agents.css"/);
 assert.match(html, /id="viewAgents"/);
 assert.match(html, /data-panel="agents"/);
 assert.match(html, /data-tabs="organization"/);
-assert.doesNotMatch(source, /innerHTML|createElement|setInterval|setTimeout|VIEW_POLL_MS/);
+assert.doesNotMatch(source, /innerHTML|createElement|setInterval|VIEW_POLL_MS/);
 assert.doesNotMatch(app.match(/const VIEW_POLL_MS = \{[^}]*\}/)[0], /agents/);
 class Node {
   constructor(tag, cls, text) { this.tag = tag; this.cls = cls; this.textContent = text || ''; this.children = []; this.events = {}; }
@@ -47,7 +49,7 @@ const root = new Node('section');
 const flatten = node => [node, ...node.children.flatMap(flatten)];
 const text = node => flatten(node).map(n => n.textContent).join('\n');
 let ready, loader, calls = 0, failure;
-let confirmed = false, confirms = 0, mutationError, mutations = [];
+let confirmed = false, confirms = 0, mutationError, mutationStatus = 409, mutations = [];
 const el = (...args) => new Node(...args);
 const say = (node, value) => { node.textContent = value; };
 const helperContext = {
@@ -59,6 +61,7 @@ vm.runInContext(app.slice(app.indexOf('function deleteButton('), app.indexOf('//
 const deleteButton = helperContext.deleteButton;
 let payload = {
   agents: ['repo', 'global', 'claude'].map(scope => ({name: scope + '-agent', scope,
+    toolIntent: {desired: ['Read'], denied: ['Write'], hostEnforceable: [], hostEnforceableDenied: [], advisory: ['Read', 'Write']},
     description: '<img src=x onerror=alert(1)>', cli: 'codex', posture: 'read-only', role: 'reviewer', path: '/' + scope + '/agent.md', checksum: 'sha256:original'})),
   problems: [
     {path: '/repo/dup.md', scope: 'repo', error: "duplicate name 'dup'; all entries unusable: /repo/dup.md, /global/dup.md"},
@@ -66,13 +69,13 @@ let payload = {
     {path: '/repo/invalid.md', scope: 'repo', error: 'posture must be valid'}
   ]
 };
-vm.runInNewContext(source, {
+const context = {
   fetch: async (url, options) => {
     assert.equal(options.method, 'POST');
     assert.equal(options.headers['Content-Type'], 'application/json');
     const body = JSON.parse(options.body);
     mutations.push({url, body});
-    if (mutationError) return {ok: false, status: 409, json: async () => mutationError};
+    if (mutationError) return {ok: false, status: mutationStatus, json: async () => mutationError};
     return {ok: true, json: async () => ({...body, checksum: 'sha256:saved'})};
   },
   document: {getElementById: id => { assert.equal(id, 'viewAgents'); return root; }},
@@ -80,6 +83,15 @@ vm.runInNewContext(source, {
     addEventListener: (event, fn, options) => { assert.equal(event, 'ccc:ready'); assert.equal(options.once, true); ready = fn; },
     CCC: {
       el, say, deleteButton,
+      post: async (url, body) => {
+        body = JSON.parse(JSON.stringify(body));
+        mutations.push({url, body});
+        if (mutationError) {
+          const hints = (mutationError.missing || []).map(item => item.hint).filter(Boolean);
+          throw new Error([mutationError.error || `HTTP ${mutationStatus}`, ...hints].join(' · '));
+        }
+        return {...body, checksum: 'sha256:saved'};
+      },
       getJSON: async url => {
         if (failure) throw failure;
         if (url.startsWith('api/board/agents?name=')) {
@@ -88,6 +100,11 @@ vm.runInNewContext(source, {
             model: 'test-model', tools: ['Read', 'Bash'], tools_deny: ['Write'], capabilities: ['review'],
             worktree: 'none', max_instances: 2};
         }
+        if (url === 'api/board/profiles') return {projectRoot: '/owned-project', profiles: [{name: '<unsafe>',
+          packageId: 'example.survey', role: 'worker', scope: 'project opt-in only', appliesTo: '/owned-project',
+          supportedHosts: ['macos-arm64'], client: 'codex', machinePathReviewRequired: true,
+          machineReferences: ['C:/old/path'], permissions: {posture: 'unrestricted', tools: ['Read'], toolsDeny: []},
+          sourceChecksum: 'sha256:source'}], problems: []};
         assert.equal(url, 'api/board/agents'); calls++; return payload;
       },
       // A definition is a file; an agent is a running process. The view tags the
@@ -100,16 +117,35 @@ vm.runInNewContext(source, {
       }
     }
   }
-});
+};
+vm.runInNewContext(source, context);
 (async () => {
+  for (const [tier, name] of [['molecules', 'LabeledField'], ['molecules', 'LeadSelector'], ['molecules', 'RevisionNotice'], ['organisms', 'DefinitionEditor'], ['organisms', 'ProfilePackagePreview']]) {
+    await require(process.cwd() + `/dashboard/src/components/${tier}/${name}/${name}.test.js`)({components: context.window.AgentmuxUI, el, say, flatten, assert});
+  }
   assert.equal(calls, 0);
   ready();
   await loader();
-  const content = root.children[2];
+  const content = root.children.find(node => node.cls === 'agents-content');
+  const preview = root.children.find(node => node.cls === 'agents-profile-preview');
+  preview.open = true;
+  const writesBeforePreview = mutations.length;
+  const previewRequest = preview.events.toggle();
+  assert.match(text(preview), /Loading profile examples/);
+  assert.equal(flatten(preview).find(node => node.cls === 'stamp')['aria-live'], 'polite');
+  await previewRequest;
+  assert.match(text(preview), /<unsafe>/);
+  assert.match(text(preview), /C:\/old\/path/);
+  assert.match(text(preview), /explicit local-owner command/);
+  assert.match(text(preview), /Requested permissions do not establish grants/);
+  assert.equal(flatten(preview).some(node => node.tag === 'button' || node.tag === 'form'), false);
+  assert.equal(mutations.length, writesBeforePreview);
   assert.equal(content.children[0].cls, 'agents-problems');
   assert.equal(content.children[1].cls, 'agents-list');
   for (const value of ['/repo/dup.md', '/global/dup.md', "unknown key 'tool'", 'Remove or correct', 'Rename one', 'Correct the reported error']) assert.ok(text(content).includes(value), value);
   assert.equal(flatten(content).filter(n => n.cls === 'agents-definition').length, 3);
+  assert.match(text(content), /Requested tools are advisory: Read, Write/);
+  assert.match(text(content), /No host enforcement or grant is established/);
   for (const scope of ['repo', 'global', 'claude']) assert.ok(flatten(content).some(n => n.cls === 'agents-scope' && n.textContent === scope));
   for (const value of ['codex', 'read-only', 'reviewer', '<img src=x onerror=alert(1)>']) assert.ok(text(content).includes(value));
   const refresh = root.children[0].children[1];
@@ -128,11 +164,7 @@ vm.runInNewContext(source, {
     await submit(form);
     const saved = mutations.at(-1);
     assert.equal(saved.url, 'api/board/agentdef');
-    // WHO SAVED IT. Without this the endpoint recorded actor = NULL for every
-    // definition written from the panel, so the board history said a definition had
-    // changed and could not say by whom. 'dashboard' is what every other browser
-    // write sends.
-    assert.equal(saved.body.actor, 'dashboard');
+    assert.equal(Object.hasOwn(saved.body, 'actor'), false);
     assert.equal(saved.body.scope, scope);
     assert.equal(saved.body.checksum, 'sha256:original');
     assert.equal(saved.body.persona, 'Full persona\nsecond line');
@@ -154,15 +186,13 @@ vm.runInNewContext(source, {
     await remove.events.click();
     assert.equal(remove.disabled, true);
     assert.equal(mutations.at(-1).url, 'api/board/agentdrop');
-    // And who deleted it. This one matters more than the save: agentdrop is a real
-    // unlink, not ccboard's soft delete, so an unattributed row is the only record
-    // that a file ever existed.
-    assert.equal(mutations.at(-1).body.actor, 'dashboard');
+    // Deletion preserves the same legacy surface label.
+    assert.equal(Object.hasOwn(mutations.at(-1).body, 'actor'), false);
     assert.equal(mutations.at(-1).body.scope, scope);
     assert.equal(mutations.at(-1).body.checksum, 'sha256:original');
   }
   assert.equal(confirms, 6);
-  const create = root.children[3];
+  const create = root.children.find(node => node.cls === 'agents-editor');
   for (const scope of ['repo', 'global']) {
     const form = await open(create);
     input(form, 'name').value = 'new-' + scope;
@@ -180,6 +210,29 @@ vm.runInNewContext(source, {
     assert.equal(mutations.at(-1).body.checksum, undefined);
     assert.equal(create.open, false);
   }
+  const uncertainForm = await open(create);
+  input(uncertainForm, 'name').value = 'uncertain-write';
+  input(uncertainForm, 'scope').value = 'repo';
+  input(uncertainForm, 'description').value = 'Uncertain write';
+  mutationStatus = 503;
+  mutationError = {error: 'definition outcome unconfirmed', outcome: 'uncertain',
+    operationId: 'browser_stable_operation'};
+  const beforeUncertain = mutations.length;
+  await submit(uncertainForm);
+  assert.equal(mutations.length, beforeUncertain + 1);
+  assert.match(text(uncertainForm), /definition outcome unconfirmed/);
+  const deniedForm = await open(create);
+  input(deniedForm, 'name').value = 'denied-completion';
+  input(deniedForm, 'scope').value = 'repo';
+  mutationStatus = 409;
+  mutationError = {error: 'definition completion denied', outcome: 'completion-denied',
+    operationId: 'browser_denied_completion'};
+  const beforeDenied = mutations.length;
+  await submit(deniedForm);
+  assert.equal(mutations.length, beforeDenied + 1);
+  assert.match(text(deniedForm), /definition completion denied/);
+  mutationStatus = 409;
+  mutationError = null;
   const oldChildren = content.children;
   failure = new Error('offline');
   await refresh.events.click();

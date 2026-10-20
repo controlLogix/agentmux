@@ -1,0 +1,348 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:application-client-key",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "peerControlCommands": {
+      "$ref": "urn:agentmux:contract:1:application-peer-control-commands"
+    },
+    "purpose": {
+      "const": "agentmux-application-client-key-v1"
+    },
+    "seed": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9+/]{43}=$"
+    },
+    "hubId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "profileId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "authorityId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "instanceId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "callerRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "transportRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "grantRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "replyIssuerRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "policyRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "scope": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+    },
+    "replyIssuerPublicKey": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{43}$"
+    },
+    "releaseDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "workspaceRef": {
+      "anyOf": [
+        {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "integrationEffectQuery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "grantRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "originalOperationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "originalPayloadDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "replyIssuerRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "replyIssuerPublicKey": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        },
+        "transportRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        }
+      },
+      "required": [
+        "subject",
+        "grantRef",
+        "originalOperationId",
+        "originalPayloadDigest",
+        "replyIssuerRef",
+        "replyIssuerPublicKey",
+        "transportRef"
+      ]
+    },
+    "integrationEffectCommands": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contracts": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "integration-intent",
+              "integration-effect-query",
+              "integration-attempt-start",
+              "integration-attempt-complete",
+              "integration-effect-reconcile"
+            ]
+          }
+        },
+        "replyIssuerRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "replyIssuerPublicKey": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        },
+        "transportRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        }
+      },
+      "required": [
+        "contracts",
+        "replyIssuerRef",
+        "replyIssuerPublicKey",
+        "transportRef"
+      ]
+    },
+    "legacyAliasResolve": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "grantRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "replyIssuerRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "replyIssuerPublicKey": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        },
+        "transportRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        }
+      },
+      "required": [
+        "subject",
+        "grantRef",
+        "replyIssuerRef",
+        "replyIssuerPublicKey",
+        "transportRef"
+      ]
+    },
+    "localBrowserSessionOpen": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "grantRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "replyIssuerRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "replyIssuerPublicKey": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        },
+        "transportRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        }
+      },
+      "required": [
+        "subject",
+        "grantRef",
+        "replyIssuerRef",
+        "replyIssuerPublicKey",
+        "transportRef"
+      ]
+    },
+    "oidcTerminalSession": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "replyIssuerRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "replyIssuerPublicKey": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        },
+        "transportRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "grantRefs": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "oidc-terminal-session-open": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "oidc-terminal-session-status": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "oidc-terminal-session-close": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            }
+          },
+          "required": [
+            "oidc-terminal-session-open",
+            "oidc-terminal-session-status",
+            "oidc-terminal-session-close"
+          ]
+        }
+      },
+      "required": [
+        "subject",
+        "grantRefs",
+        "replyIssuerRef",
+        "replyIssuerPublicKey",
+        "transportRef"
+      ]
+    },
+    "authoritySwitchRecovery": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "grantRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "replyIssuerRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "replyIssuerPublicKey": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        },
+        "transportRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "switchId": {
+          "type": "string",
+          "pattern": "^switch_[0-9a-f]{64}$"
+        },
+        "source": {
+          "$ref": "urn:agentmux:contract:1:authority-switch#/$defs/source"
+        },
+        "streamIdentity": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "created": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+            },
+            "minimumSequence": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+            }
+          },
+          "required": [
+            "created",
+            "minimumSequence"
+          ]
+        },
+        "serviceIdentityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "serviceInstanceId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        }
+      },
+      "required": [
+        "subject",
+        "grantRef",
+        "replyIssuerRef",
+        "replyIssuerPublicKey",
+        "transportRef",
+        "switchId",
+        "source",
+        "streamIdentity",
+        "serviceIdentityRef",
+        "serviceInstanceId"
+      ]
+    },
+    "messageCommands": {
+      "$ref": "urn:agentmux:contract:1:application-message-commands"
+    },
+    "knowledgeCommands": {
+      "$ref": "urn:agentmux:contract:1:application-knowledge-commands"
+    },
+    "federationPolicyCommands": {
+      "$ref": "urn:agentmux:contract:1:application-federation-policy-commands"
+    },
+    "codeCommands": {
+      "$ref": "urn:agentmux:contract:1:application-code-commands"
+    },
+    "workCommands": {
+      "$ref": "urn:agentmux:contract:1:application-work-commands"
+    }
+  },
+  "required": [
+    "purpose",
+    "seed",
+    "hubId",
+    "profileId",
+    "authorityId",
+    "instanceId",
+    "callerRef",
+    "transportRef",
+    "grantRef",
+    "replyIssuerRef",
+    "policyRef",
+    "scope",
+    "replyIssuerPublicKey",
+    "releaseDigest",
+    "workspaceRef"
+  ]
+}

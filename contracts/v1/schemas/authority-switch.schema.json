@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:authority-switch",
+  "title": "Agentmux authority-switch command v1",
+  "description": "Record a monotonic legacy-to-owner authority barrier or request a bound pre-cutover recovery permit. This contract never activates a target writer or proves reverse migration.",
+  "$defs": {
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sourceRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "applicationVersion": {"type": "string", "minLength": 1, "maxLength": 256},
+        "comparisonDigest": {"$ref": "urn:agentmux:contract:1:common#/$defs/digest"},
+        "fenceId": {"type": "string", "pattern": "^f[0-9a-f]{32}$"},
+        "fenceGeneration": {"type": "integer", "minimum": 1, "maximum": 9007199254740991}
+      },
+      "required": ["sourceRef", "applicationVersion", "comparisonDigest", "fenceId", "fenceGeneration"]
+    },
+    "base": {
+      "type": "object",
+      "properties": {
+        "switchId": {"type": "string", "pattern": "^switch_[0-9a-f]{64}$"},
+        "source": {"$ref": "#/$defs/source"}
+      },
+      "required": ["switchId", "source"]
+    }
+  },
+  "oneOf": [
+    {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action": {"const": "record-source-fence"},
+            "switchId": true,
+            "source": true
+          },
+          "required": ["action", "switchId", "source"]
+        }
+      ]
+    },
+    {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action": {"const": "open-target-admission"},
+            "switchId": true,
+            "source": true
+          },
+          "required": ["action", "switchId", "source"]
+        }
+      ]
+    },
+    {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action": {"const": "fence-target"},
+            "switchId": true,
+            "source": true
+          },
+          "required": ["action", "switchId", "source"]
+        }
+      ]
+    },
+    {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action": {"const": "verify-reverse-migration"},
+            "switchId": true,
+            "source": true,
+            "reverseEvidence": {"type": "object"}
+          },
+          "required": ["action", "switchId", "source", "reverseEvidence"]
+        }
+      ]
+    },
+    {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action": {"const": "request-recovery"},
+            "switchId": true,
+            "source": true
+          },
+          "required": ["action", "switchId", "source"]
+        }
+      ]
+    }
+  ]
+}

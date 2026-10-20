@@ -374,16 +374,26 @@ def dispatch_case(specs, cfg=None, override=None, task=None, dry_run=False):
          patch.object(dispatch, "live_agents", return_value={}), \
          patch.object(agentdefs, "load_all", return_value=(specs, [])) as load, \
          patch.object(agentdefs, "choose_roster", wraps=agentdefs.choose_roster) as choose, \
+         patch.object(dispatch.definition_team.TeamPlugin, "propose_legacy", autospec=True,
+                      side_effect=dispatch.definition_team.TeamPlugin.propose_legacy) as proposal, \
          patch.object(dispatch, "agentmux", side_effect=fake_agentmux), \
          patch.object(dispatch, "set_status", return_value={}), \
          patch.object(dispatch, "foreign_board", return_value=""), \
-         patch.object(dispatch, "board", return_value={}):
+         patch.object(dispatch, "board", return_value={"members": [
+             {"agent_name": value.name, "role": "lead", "status": "approved",
+              "definitionRevision": dict(name=value.name, scope=value.scope,
+                  path=value.path, checksum=value.checksum, projectRoot=str(dispatch.REPO.resolve()),
+                  snapshotDigest=dispatch.definition_team.snapshot_digest(value)), "definitionState": "current"}
+             for value in specs.values() if value.role == "lead"]}):
         result = dispatch.dispatch_one(cli=override, dry_run=dry_run)
+        ok("dispatch uses the legacy team plugin proposal boundary", proposal.call_count == 1)
         ok("definitions are loaded for the dispatch repository",
            load.call_args.args == (dispatch.REPO,))
         ok("roster selection receives the full task and CLI override",
            choose.call_args.args == (task, specs, cfg or {})
-           and choose.call_args.kwargs == {"cli_override": override})
+           and choose.call_args.kwargs == {"cli_override": override,
+               "approved_lead": next((s for s in specs.values() if s.role == "lead"), None),
+               "dependencies": None})
     return result, calls
 
 result, calls = dispatch_case({spec.name: spec})

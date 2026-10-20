@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:conversation-ledger-import",
+  "title": "Conversation archive import",
+  "description": "Preserve one complete encrypted conversation bundle for reconciliation. bundleDigest identifies the canonical plaintext bundle; artifactRef.digest identifies its encrypted bytes. This command grants no delivery or writer transfer.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "archiveId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "sourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "captureDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "bundleDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "artifactRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/artifact"
+    }
+  },
+  "required": [
+    "archiveId",
+    "sourceRef",
+    "captureDigest",
+    "bundleDigest",
+    "artifactRef"
+  ]
+}

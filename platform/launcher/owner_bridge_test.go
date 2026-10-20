@@ -16,6 +16,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -312,6 +313,18 @@ func bridgeDockerProcess(name string) {
 	args = args[2:]
 	id := strings.Repeat("a", 64)
 	fault := os.Getenv("AMX_OWNER_BRIDGE_DOCKER_FAULT")
+	recoveryState := os.Getenv("AMX_OWNER_BRIDGE_RECOVERY_STATE")
+	state := "running"
+	if recoveryState != "" {
+		current, err := os.ReadFile(recoveryState)
+		if err != nil {
+			os.Exit(3)
+		}
+		state = string(current)
+		if state == "replaced" {
+			id = strings.Repeat("b", 64)
+		}
+	}
 	labels := map[string]string{"agentmux.profile.id": p.ProfileID, "agentmux.instance.id": p.InstanceID, "agentmux.release.digest": p.ReleaseFingerprint, "com.docker.compose.project": p.ComposeProject}
 	emit := func(v any) { json.NewEncoder(os.Stdout).Encode(v) }
 	switch args[0] {
@@ -339,7 +352,9 @@ func bridgeDockerProcess(name string) {
 		}
 		fmt.Println(p.Docker.ComposeVersion)
 	case "ps":
-		fmt.Println(id)
+		if state != "absent" {
+			fmt.Println(id)
+		}
 	case "image":
 		if fault == "image" {
 			emit("sha256:" + strings.Repeat("f", 64))
@@ -349,6 +364,19 @@ func bridgeDockerProcess(name string) {
 	case "volume":
 		emit(labels)
 	case "container":
+		if len(args) > 1 && args[1] == "start" {
+			if recoveryState == "" || state != "stopped" || len(args) != 3 || args[2] != id {
+				os.Exit(3)
+			}
+			if err := os.WriteFile(recoveryState+".started", []byte(id), 0600); err != nil {
+				os.Exit(3)
+			}
+			if err := os.WriteFile(recoveryState, []byte("running"), 0600); err != nil {
+				os.Exit(3)
+			}
+			fmt.Println(id)
+			return
+		}
 		u, _ := url.Parse(p.NATSEndpoint)
 		_, port, _ := net.SplitHostPort(u.Host)
 		a := brokerInspection{ID: id, Image: "sha256:" + strings.Repeat("e", 64)}
@@ -358,6 +386,9 @@ func bridgeDockerProcess(name string) {
 		a.Config.Labels["com.docker.compose.oneoff"] = "False"
 		a.State.Status = "running"
 		a.State.Running = true
+		if state == "stopped" {
+			a.State.Status, a.State.Running = "exited", false
+		}
 		a.HostConfig.PortBindings = map[string][]brokerPort{"4222/tcp": {{HostIP: "127.0.0.1", HostPort: port}}}
 		a.NetworkSettings.Ports = a.HostConfig.PortBindings
 		if fault == "port" {
@@ -632,7 +663,7 @@ func TestOwnerBridgeDelayedSubscriptionRepeatsExactRequest(t *testing.T) {
 	}
 }
 
-func (f bridgeFixture) startBroker(t *testing.T) {
+func (f bridgeFixture) startBroker(t *testing.T, changes ...func(map[string]any)) func() {
 	t.Helper()
 	f.controlledDocker(t)
 	binary := os.Getenv("AGENTMUX_TEST_NATS")
@@ -665,6 +696,9 @@ func (f bridgeFixture) startBroker(t *testing.T) {
 	// proof that an actual Docker container is running this native broker.
 	block := config["tls"].(map[string]any)
 	block["cert_file"], block["key_file"] = certPath, keyPath
+	for _, change := range changes {
+		change(config)
+	}
 	var configBytes bytes.Buffer
 	encoder := json.NewEncoder(&configBytes)
 	encoder.SetEscapeHTML(false)
@@ -681,7 +715,9 @@ func (f bridgeFixture) startBroker(t *testing.T) {
 	if cmd.Start() != nil {
 		t.Fatal("fixture broker start failed")
 	}
-	t.Cleanup(func() { cmd.Process.Kill(); cmd.Wait(); log.Close() })
+	var stopped sync.Once
+	stop := func() { stopped.Do(func() { cmd.Process.Kill(); cmd.Wait(); log.Close() }) }
+	t.Cleanup(stop)
 	deadline := time.Now().Add(3 * time.Second)
 	for {
 		dialer, err := f.config.Kernel.TLS.NewDialer(context.Background(), 50*time.Millisecond)
@@ -692,7 +728,7 @@ func (f bridgeFixture) startBroker(t *testing.T) {
 		dialer.Close()
 		if err == nil {
 			nc.Close()
-			return
+			return stop
 		}
 		if time.Now().After(deadline) {
 			t.Fatal("fixture broker unavailable")
@@ -702,26 +738,53 @@ func (f bridgeFixture) startBroker(t *testing.T) {
 }
 
 func (f bridgeFixture) rawTLSClient(t *testing.T, role string, extra ...nats.Option) (*nats.Conn, error) {
+	return f.rawTLSClientContext(t, context.Background(), role, extra...)
+}
+
+func (f bridgeFixture) rawTLSClientContext(t *testing.T, parent context.Context, role string, extra ...nats.Option) (*nats.Conn, error) {
 	t.Helper()
 	password := f.config.OwnerBridge.ClientPassword
 	if role == deployment.OwnerBridgeServerUser {
 		password = f.config.OwnerBridge.ServerPassword
 	}
-	ctx, cancel := context.WithCancel(context.Background())
-	t.Cleanup(cancel)
+	return f.rawTLSIdentity(t, parent, role, password, extra...)
+}
+
+func (f bridgeFixture) rawTLSIdentity(t *testing.T, parent context.Context, user, password string, extra ...nats.Option) (*nats.Conn, error) {
+	t.Helper()
+	ctx, cancel := context.WithCancel(parent)
 	dialer, err := f.config.Kernel.TLS.NewDialer(ctx, time.Second)
 	if err != nil {
-		return nil, err
-	}
-	options := []nats.Option{nats.UserInfo(role, password), nats.TLSHandshakeFirst(), nats.SetCustomDialer(dialer), nats.NoReconnect(), nats.IgnoreDiscoveredServers(), nats.Timeout(time.Second)}
-	options = append(options, extra...)
-	nc, err := nats.Connect(f.config.Kernel.Endpoint, options...)
-	if err != nil {
-		dialer.Close()
 		cancel()
 		return nil, err
 	}
-	t.Cleanup(func() { dialer.Close(); nc.Close() })
+	callbacksDone := make(chan struct{})
+	options := []nats.Option{nats.UserInfo(user, password), nats.TLSHandshakeFirst(), nats.SetCustomDialer(dialer), nats.NoReconnect(), nats.IgnoreDiscoveredServers(), nats.Timeout(time.Second), nats.ErrorHandler(ownerBridgeAsyncErrorHandler), nats.ClosedHandler(func(*nats.Conn) { close(callbacksDone) })}
+	options = append(options, extra...)
+	nc, err := nats.Connect(f.config.Kernel.Endpoint, options...)
+	closeExact := func() {
+		if nc != nil {
+			nc.Close()
+		}
+		if dialer.Close() != nil {
+			// Keep the exact dialer in this cleanup closure. A later retry cannot
+			// erase the original failure or turn this test into a passing result.
+			t.Error("actual scoped TLS client owned cleanup incomplete")
+		}
+		cancel()
+		if nc != nil {
+			select {
+			case <-callbacksDone:
+			case <-time.After(time.Second):
+				t.Error("actual scoped TLS client callbacks did not join")
+			}
+		}
+	}
+	t.Cleanup(closeExact)
+	if err != nil {
+		closeExact()
+		return nil, err
+	}
 	return nc, nil
 }
 
@@ -1094,6 +1157,13 @@ func TestOwnerBridgeActualNATSConnectedIdentity(t *testing.T) {
 func TestOwnerBridgeActualNATSPrincipalIsolation(t *testing.T) {
 	f := newBridgeFixture(t)
 	f.startBroker(t)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	ownerBridgePrincipalIsolation(t, f, ctx)
+}
+
+func ownerBridgePrincipalIsolation(t *testing.T, f bridgeFixture, ctx context.Context) {
+	t.Helper()
 	subjects, err := deployment.OwnerBridgeSubjects(f.config.Kernel.Scope)
 	if err != nil {
 		t.Fatal("actual HOST subject contract unavailable")
@@ -1110,11 +1180,11 @@ func TestOwnerBridgeActualNATSPrincipalIsolation(t *testing.T) {
 	}
 	nonce := strings.Repeat("a", 32)
 	t.Run("legitimate-request-reply", func(t *testing.T) {
-		server, err := f.rawTLSClient(t, deployment.OwnerBridgeServerUser)
+		server, err := f.rawTLSClientContext(t, ctx, deployment.OwnerBridgeServerUser)
 		if err != nil {
 			t.Fatal("actual HOST server authentication failed")
 		}
-		client, err := f.rawTLSClient(t, deployment.OwnerBridgeClientUser)
+		client, err := f.rawTLSClientContext(t, ctx, deployment.OwnerBridgeClientUser)
 		if err != nil {
 			t.Fatal("actual HOST client authentication failed")
 		}
@@ -1174,7 +1244,7 @@ func TestOwnerBridgeActualNATSPrincipalIsolation(t *testing.T) {
 				for _, target := range direction.cases {
 					t.Run(direction.name+"-"+target.name, func(t *testing.T) {
 						faults := make(chan error, 1)
-						nc, err := f.rawTLSClient(t, role, nats.ErrorHandler(func(_ *nats.Conn, _ *nats.Subscription, err error) {
+						nc, err := f.rawTLSClientContext(t, ctx, role, nats.ErrorHandler(func(_ *nats.Conn, _ *nats.Subscription, err error) {
 							select {
 							case faults <- err:
 							default:
@@ -1216,23 +1286,12 @@ func TestOwnerBridgeActualNATSPrincipalIsolation(t *testing.T) {
 			accounts[user] = password
 		}
 		accounts[deployment.HealthUser] = f.config.Health.Password
-		connect := func(user, password string) (*nats.Conn, error) {
-			dialer, err := f.config.Kernel.TLS.NewDialer(context.Background(), time.Second)
-			if err != nil {
-				t.Fatal("actual pinned transport unavailable")
-			}
-			nc, err := nats.Connect(f.config.Kernel.Endpoint, nats.UserInfo(user, password), nats.TLSHandshakeFirst(), nats.SetCustomDialer(dialer), nats.NoReconnect(), nats.IgnoreDiscoveredServers(), nats.Timeout(time.Second))
-			t.Cleanup(func() {
-				dialer.Close()
-				if nc != nil {
-					nc.Close()
-				}
-			})
-			return nc, err
+		connect := func(t *testing.T, user, password string) (*nats.Conn, error) {
+			return f.rawTLSIdentity(t, ctx, user, password)
 		}
 		for user, password := range accounts {
 			t.Run(user, func(t *testing.T) {
-				if _, err := connect(user, password); err != nil {
+				if _, err := connect(t, user, password); err != nil {
 					t.Fatal("legitimate other-account credential was not verified")
 				}
 				for _, role := range []string{deployment.OwnerBridgeClientUser, deployment.OwnerBridgeServerUser} {
@@ -1240,14 +1299,17 @@ func TestOwnerBridgeActualNATSPrincipalIsolation(t *testing.T) {
 					if role == deployment.OwnerBridgeServerUser {
 						own = f.config.OwnerBridge.ServerPassword
 					}
-					if nc, err := connect(role, password); nc != nil || !errors.Is(err, nats.ErrAuthorization) {
+					if nc, err := connect(t, role, password); nc != nil || !errors.Is(err, nats.ErrAuthorization) {
 						t.Fatal("other-account password authenticated a HOST principal")
 					}
-					if nc, err := connect(user, own); nc != nil || !errors.Is(err, nats.ErrAuthorization) {
+					if nc, err := connect(t, user, own); nc != nil || !errors.Is(err, nats.ErrAuthorization) {
 						t.Fatal("HOST password authenticated another account")
 					}
 				}
 			})
 		}
 	})
+	if ctx.Err() != nil {
+		t.Fatal("actual principal isolation matrix exceeded its shared deadline")
+	}
 }

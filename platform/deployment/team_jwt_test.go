@@ -111,20 +111,47 @@ func (r jwtWorkerResolver) Resolve(ctx context.Context, reference TeamCredential
 }
 
 type jwtWorkerFixture struct {
-	policy    TeamConnectionPolicy
-	tls       *tls.Config
-	account   nkeys.KeyPair
-	user      nkeys.KeyPair
-	token     string
-	seed      []byte
-	publisher *nats.Conn
+	policy         TeamConnectionPolicy
+	tls            *tls.Config
+	account        nkeys.KeyPair
+	user           nkeys.KeyPair
+	token          string
+	seed           []byte
+	publisher      *nats.Conn
+	handshakeFirst bool
 }
 
 func jwtWorkerConnect(f *jwtWorkerFixture, token string, key nkeys.KeyPair, handler nats.ErrHandler) (*nats.Conn, error) {
-	return nats.Connect(f.policy.Endpoint, nats.Secure(f.tls.Clone()), nats.UserJWT(func() (string, error) { return token, nil }, key.Sign), nats.Timeout(250*time.Millisecond), nats.NoReconnect(), nats.IgnoreDiscoveredServers(), nats.ErrorHandler(handler))
+	options := []nats.Option{nats.Secure(f.tls.Clone()), nats.UserJWT(func() (string, error) { return token, nil }, key.Sign), nats.Timeout(250 * time.Millisecond), nats.NoReconnect(), nats.IgnoreDiscoveredServers(), nats.ErrorHandler(handler)}
+	if f.handshakeFirst {
+		options = append(options, nats.TLSHandshakeFirst())
+	}
+	return nats.Connect(f.policy.Endpoint, options...)
 }
 
 func newJWTWorkerFixture(t *testing.T) *jwtWorkerFixture {
+	t.Helper()
+	return newJWTWorkerFixtureTLSMode(t, false)
+}
+
+func newJWTWorkerFixtureTLSMode(t *testing.T, handshakeFirst bool) *jwtWorkerFixture {
+	return newJWTWorkerFixtureScenario(t, handshakeFirst, false)
+}
+
+func newJWTWorkerStorageFixture(t *testing.T) *jwtWorkerFixture {
+	return newJWTWorkerFixtureScenario(t, true, true)
+}
+
+func jwtWorkerStreamLimits(storage bool) (bytes, streams int) {
+	if storage {
+		// Three 2 MiB storage owners, four 512 KiB other owners, and two
+		// 1 MiB buckets. This changes only the disposable storage test account.
+		return 3*2*1048576 + 4*524288 + 2*1048576, 9
+	}
+	return 4 * 1024 * 1024, 4
+}
+
+func newJWTWorkerFixtureScenario(t *testing.T, handshakeFirst, storage bool) *jwtWorkerFixture {
 	t.Helper()
 	binary := os.Getenv("AGENTMUX_TEST_NATS")
 	if binary == "" {
@@ -135,7 +162,7 @@ func newJWTWorkerFixture(t *testing.T) *jwtWorkerFixture {
 		t.Fatal("private fixture directory unavailable")
 	}
 	roots, tlsConfig := jwtWorkerTLS(t, directory)
-	f := &jwtWorkerFixture{tls: tlsConfig}
+	f := &jwtWorkerFixture{tls: tlsConfig, handshakeFirst: handshakeFirst}
 	f.policy = TeamConnectionPolicy{TLSServerName: "localhost", TLSRootsPEM: roots, ExpectedServerName: "jwt_fixture_server", ExpectedDomain: "jwt_fixture_domain", ExpectedServerVersion: "2.15.0", Timeout: 2 * time.Second, ObserveDomain: true,
 		CredentialRef: TeamCredentialReference{ID: "jwt_fixture_reference", AuthKind: TeamJWT},
 		Scope:         TeamScope{OrganizationID: "jwt_fixture_org", ProjectID: "jwt_fixture_project", Kernel: protocol.Scope{HubID: "jwt_fixture_hub", InstanceID: "jwt_fixture_instance", ProfileID: "jwt_fixture_profile", AssemblyDigest: "sha256:" + strings.Repeat("a", 64), ReleaseManifestDigest: "sha256:" + strings.Repeat("b", 64), ReleaseVersion: "1.0.0"}}}
@@ -148,7 +175,8 @@ func newJWTWorkerFixture(t *testing.T) *jwtWorkerFixture {
 	accountFields := func(js bool) map[string]any {
 		limits := map[string]any{"subs": -1, "data": -1, "payload": -1, "imports": -1, "exports": -1, "wildcards": true, "conn": -1, "leaf": -1}
 		if js {
-			limits["mem_storage"], limits["disk_storage"], limits["streams"], limits["consumer"] = 1024*1024, 4*1024*1024, 4, 4
+			bytes, streams := jwtWorkerStreamLimits(storage)
+			limits["mem_storage"], limits["disk_storage"], limits["streams"], limits["consumer"] = 1024*1024, bytes, streams, 4
 		}
 		return map[string]any{"limits": limits}
 	}
@@ -170,9 +198,16 @@ func newJWTWorkerFixture(t *testing.T) *jwtWorkerFixture {
 	address := listener.Addr().String()
 	listener.Close()
 	f.policy.Endpoint = "tls://" + address
+	serverBytes := 8 * 1024 * 1024
+	if storage {
+		serverBytes, _ = jwtWorkerStreamLimits(true)
+	}
 	config := map[string]any{"listen": address, "server_name": f.policy.ExpectedServerName, "operator": opToken, "system_account": systemPublic, "resolver": "MEMORY", "resolver_preload": preload,
-		"jetstream": map[string]any{"store_dir": filepath.Join(directory, "store"), "domain": f.policy.ExpectedDomain, "max_memory_store": 1024 * 1024, "max_file_store": 8 * 1024 * 1024, "sync_interval": "always"},
+		"jetstream": map[string]any{"store_dir": filepath.Join(directory, "store"), "domain": f.policy.ExpectedDomain, "max_memory_store": 1024 * 1024, "max_file_store": serverBytes, "sync_interval": "always"},
 		"tls":       map[string]any{"cert_file": filepath.Join(directory, "server.pem"), "key_file": filepath.Join(directory, "server-key.pem"), "timeout": 1}}
+	if handshakeFirst {
+		config["tls"].(map[string]any)["handshake_first"] = true
+	}
 	raw, err := json.Marshal(config)
 	if err != nil {
 		t.Fatal("fixture configuration encoding failed")

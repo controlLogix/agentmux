@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:integration-provider-observation",
+  "title": "Agentmux integration-provider-observation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "format": {
+      "const": "amx-integration-observation-v1"
+    },
+    "originalOperationId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "originalPayloadDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "attemptOperationId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "kind": {
+      "enum": [
+        "acknowledged",
+        "uncertain",
+        "not-dispatched",
+        "read-only"
+      ]
+    },
+    "observedAt": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+    },
+    "identity": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "issueKey": {
+              "type": "string",
+              "pattern": "^[A-Z][A-Z0-9_]*-[0-9]+$",
+              "maxLength": 300
+            }
+          },
+          "required": [
+            "issueKey"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "issueKey": {
+              "type": "string",
+              "pattern": "^[A-Z][A-Z0-9_]*-[0-9]+$",
+              "maxLength": 300
+            },
+            "commentId": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,29}$"
+            }
+          },
+          "required": [
+            "issueKey",
+            "commentId"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "issueKey": {
+              "type": "string",
+              "pattern": "^[A-Z][A-Z0-9_]*-[0-9]+$",
+              "maxLength": 300
+            },
+            "transitionId": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,29}$"
+            }
+          },
+          "required": [
+            "issueKey",
+            "transitionId"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "spaceKey": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_~.-]+$",
+              "maxLength": 300
+            },
+            "pageId": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{0,29}$"
+            },
+            "version": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "spaceKey",
+            "pageId",
+            "version"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "repository": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9-]{0,38}/[A-Za-z0-9_][A-Za-z0-9._-]{0,99}$"
+            }
+          },
+          "required": [
+            "repository"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "repository": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9-]{0,38}/[A-Za-z0-9_][A-Za-z0-9._-]{0,99}$"
+            },
+            "issueNumber": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "repository",
+            "issueNumber"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "presence": {
+              "enum": [
+                "present",
+                "absent",
+                "unavailable"
+              ]
+            },
+            "resourceId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300,
+              "pattern": "^[^\\u0000-\\u001f\\u007f-\\u009f]+$"
+            }
+          },
+          "required": [
+            "presence",
+            "resourceId"
+          ]
+        }
+      ]
+    },
+    "retryAllowed": {
+      "const": false
+    }
+  },
+  "required": [
+    "format",
+    "originalOperationId",
+    "originalPayloadDigest",
+    "attemptOperationId",
+    "kind",
+    "observedAt",
+    "identity",
+    "retryAllowed"
+  ],
+  "description": "Owner-generated observation, at most 4096 encoded bytes. Not an accepted command payload or independent authority. A read-only observation never authorizes retry or proves that an earlier write stopped."
+}

@@ -1,0 +1,400 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:capability-service-response",
+  "title": "Signed capability service response v1",
+  "description": "Closed transport framing. Runtime verifies current enrollment, exact bindings and at most five-second validity. The request cap is 96 KiB with at most 64 KiB decoded envelope; response cap is 64 KiB. These limits do not change owner-record limits.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "algorithm": {
+      "const": "Ed25519"
+    },
+    "canonicalization": {
+      "const": "RFC8785-JCS-UTF8"
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "purpose": {
+          "const": "agentmux-capability-service-response-v1"
+        },
+        "requestId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "profileId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "hubId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "authorityId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "serviceId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "requestContractId": {
+          "enum": [
+            "capability-storage-read",
+            "capability-storage-write",
+            "capability-artifact-read",
+            "capability-secret-use",
+            "capability-workspace-read",
+            "capability-process-start",
+            "capability-process-cancel",
+            "capability-policy-evaluate",
+            "capability-decision-request",
+            "capability-outcome-query"
+          ]
+        },
+        "replyContractId": {
+          "enum": [
+            "capability-content-reply",
+            "capability-decision-request-reply",
+            "capability-outcome-query-reply",
+            "capability-policy-evaluate-reply",
+            "capability-process-cancel-reply",
+            "capability-process-start-reply",
+            "capability-secret-use-reply",
+            "capability-storage-write-reply"
+          ]
+        },
+        "operationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "resourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "scope": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+        },
+        "replySubject": {
+          "type": "string",
+          "pattern": "^_INBOX\\.[A-Za-z0-9_-]{16,128}(?:\\.[A-Za-z0-9_-]{1,128})?$",
+          "maxLength": 264
+        },
+        "issuedAt": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+        },
+        "validUntil": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+        },
+        "signingKeyRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "serviceIdentityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "serviceInstanceId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "requestDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "envelopeDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "authorityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "payload": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "purpose",
+        "requestId",
+        "profileId",
+        "hubId",
+        "authorityId",
+        "serviceId",
+        "requestContractId",
+        "replyContractId",
+        "operationId",
+        "owner",
+        "resourceRef",
+        "scope",
+        "replySubject",
+        "issuedAt",
+        "validUntil",
+        "signingKeyRef",
+        "serviceIdentityRef",
+        "serviceInstanceId",
+        "requestDigest",
+        "envelopeDigest",
+        "authorityRef",
+        "payload"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "requestContractId": {
+                "const": "capability-storage-read"
+              }
+            },
+            "required": [
+              "requestContractId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "serviceId": {
+                "const": "storage-owner"
+              },
+              "replyContractId": {
+                "const": "capability-content-reply"
+              },
+              "payload": {
+                "$ref": "urn:agentmux:contract:1:capability-content-reply"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "requestContractId": {
+                "const": "capability-storage-write"
+              }
+            },
+            "required": [
+              "requestContractId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "serviceId": {
+                "const": "storage-owner"
+              },
+              "replyContractId": {
+                "const": "capability-storage-write-reply"
+              },
+              "payload": {
+                "$ref": "urn:agentmux:contract:1:capability-storage-write-reply"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "requestContractId": {
+                "const": "capability-artifact-read"
+              }
+            },
+            "required": [
+              "requestContractId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "serviceId": {
+                "const": "artifact-owner"
+              },
+              "replyContractId": {
+                "const": "capability-content-reply"
+              },
+              "payload": {
+                "$ref": "urn:agentmux:contract:1:capability-content-reply"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "requestContractId": {
+                "const": "capability-secret-use"
+              }
+            },
+            "required": [
+              "requestContractId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "serviceId": {
+                "const": "secret-owner"
+              },
+              "replyContractId": {
+                "const": "capability-secret-use-reply"
+              },
+              "payload": {
+                "$ref": "urn:agentmux:contract:1:capability-secret-use-reply"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "requestContractId": {
+                "const": "capability-workspace-read"
+              }
+            },
+            "required": [
+              "requestContractId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "serviceId": {
+                "const": "workspace-owner"
+              },
+              "replyContractId": {
+                "const": "capability-content-reply"
+              },
+              "payload": {
+                "$ref": "urn:agentmux:contract:1:capability-content-reply"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "requestContractId": {
+                "const": "capability-process-start"
+              }
+            },
+            "required": [
+              "requestContractId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "serviceId": {
+                "const": "process-owner"
+              },
+              "replyContractId": {
+                "const": "capability-process-start-reply"
+              },
+              "payload": {
+                "$ref": "urn:agentmux:contract:1:capability-process-start-reply"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "requestContractId": {
+                "const": "capability-process-cancel"
+              }
+            },
+            "required": [
+              "requestContractId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "serviceId": {
+                "const": "process-owner"
+              },
+              "replyContractId": {
+                "const": "capability-process-cancel-reply"
+              },
+              "payload": {
+                "$ref": "urn:agentmux:contract:1:capability-process-cancel-reply"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "requestContractId": {
+                "const": "capability-policy-evaluate"
+              }
+            },
+            "required": [
+              "requestContractId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "serviceId": {
+                "const": "policy-owner"
+              },
+              "replyContractId": {
+                "const": "capability-policy-evaluate-reply"
+              },
+              "payload": {
+                "$ref": "urn:agentmux:contract:1:capability-policy-evaluate-reply"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "requestContractId": {
+                "const": "capability-decision-request"
+              }
+            },
+            "required": [
+              "requestContractId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "serviceId": {
+                "const": "decision-owner"
+              },
+              "replyContractId": {
+                "const": "capability-decision-request-reply"
+              },
+              "payload": {
+                "$ref": "urn:agentmux:contract:1:capability-decision-request-reply"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "requestContractId": {
+                "const": "capability-outcome-query"
+              }
+            },
+            "required": [
+              "requestContractId"
+            ]
+          },
+          "then": {
+            "properties": {
+              "serviceId": {
+                "const": "outcome-owner"
+              },
+              "replyContractId": {
+                "const": "capability-outcome-query-reply"
+              },
+              "payload": {
+                "$ref": "urn:agentmux:contract:1:capability-outcome-query-reply"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{86}$"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "algorithm",
+    "canonicalization",
+    "claims",
+    "signature"
+  ]
+}

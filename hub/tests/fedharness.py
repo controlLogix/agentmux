@@ -113,7 +113,10 @@ class Circle:
             sh(CIRCLE_SH, "server-conf", conf, str(port), os.path.join(self.tmp, "js"), env=self.env)
             self.proc = subprocess.Popen([NATS, "-c", conf], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             self.url, self.ca = f"nats://127.0.0.1:{port}", ""
-            wait(lambda: socket.create_connection(("127.0.0.1", port), 1), 10)
+            def broker_ready():
+                with socket.create_connection(("127.0.0.1", port), 1):
+                    return True
+            wait(broker_ready, 10)
             self.provision()
 
     def creds(self, peer):
@@ -227,6 +230,8 @@ class Person:
             self.proc.wait(timeout=15)
         except subprocess.TimeoutExpired:
             self.proc.kill()
+            # Keep the original owner until the forced exit is reaped too.
+            self.proc.wait(timeout=10)
 
 
 def shared_repo(tmp, name="falcon"):

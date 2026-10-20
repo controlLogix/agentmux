@@ -1,0 +1,261 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "scope": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+    },
+    "resourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "localName": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "repositoryId": {
+          "type": "string",
+          "pattern": "^r[0-9a-f]{12}$"
+        },
+        "normalizedRemote": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384
+        }
+      },
+      "required": [
+        "localName",
+        "repositoryId",
+        "normalizedRemote"
+      ]
+    },
+    "localPeer": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]{1,32}$"
+    },
+    "localNode": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]{1,32}$"
+    },
+    "accountPublicKey": {
+      "type": "string",
+      "pattern": "^A[A-Z2-7]{55}$"
+    },
+    "connection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "endpoint": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384
+        },
+        "serverName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384
+        },
+        "rootsPEM": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384
+        },
+        "leafCertificateSHA256": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "endpoint",
+        "serverName",
+        "rootsPEM",
+        "leafCertificateSHA256"
+      ]
+    },
+    "receiver": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "identityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "transportRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "credentials": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 16384
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^sha256:[a-f0-9]{64}$"
+            },
+            "userPublicKey": {
+              "type": "string",
+              "pattern": "^U[A-Z2-7]{55}$"
+            }
+          },
+          "required": [
+            "path",
+            "sha256",
+            "userPublicKey"
+          ]
+        }
+      },
+      "required": [
+        "identityRef",
+        "transportRef",
+        "credentials"
+      ]
+    },
+    "peer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "peerId": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]{1,32}$"
+        },
+        "identityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "transportRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "grantRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "userPublicKey": {
+          "type": "string",
+          "pattern": "^U[A-Z2-7]{55}$"
+        },
+        "credentialJWT": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384
+        },
+        "nodeId": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]{1,32}$"
+        }
+      },
+      "required": [
+        "peerId",
+        "identityRef",
+        "transportRef",
+        "grantRef",
+        "userPublicKey",
+        "credentialJWT",
+        "nodeId"
+      ]
+    },
+    "publisher": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "identityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "transportRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "credentials": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 16384
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^sha256:[a-f0-9]{64}$"
+            },
+            "userPublicKey": {
+              "type": "string",
+              "pattern": "^U[A-Z2-7]{55}$"
+            }
+          },
+          "required": [
+            "path",
+            "sha256",
+            "userPublicKey"
+          ]
+        },
+        "grantRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        }
+      },
+      "required": [
+        "identityRef",
+        "transportRef",
+        "credentials",
+        "grantRef"
+      ]
+    },
+    "routeId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "operators": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "identityRef": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "transportRef": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "grants": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "federation-peer-revoke": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+              },
+              "federation-peer-revoke-outcome": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+              }
+            },
+            "required": [
+              "federation-peer-revoke",
+              "federation-peer-revoke-outcome"
+            ]
+          }
+        },
+        "required": [
+          "identityRef",
+          "transportRef",
+          "grants"
+        ]
+      }
+    }
+  },
+  "required": [
+    "scope",
+    "resourceRef",
+    "repository",
+    "localPeer",
+    "localNode",
+    "accountPublicKey",
+    "connection",
+    "receiver",
+    "peer",
+    "routeId"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:peer-control-route",
+  "title": "Protected peer control route"
+}

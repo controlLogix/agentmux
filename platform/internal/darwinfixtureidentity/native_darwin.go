@@ -86,20 +86,37 @@ static int amx_candidates(uint32_t uid, int *pids, size_t capacity, size_t *coun
  return 0;
 }
 
-static int amx_observe(int pid, struct amx_identity *out) {
- if (!amx_info || pid <= 0) return EINVAL;
+// Only live-host role admission uses current PPID enumeration. Each result
+// still requires immutable creation-parent identity and complete admission.
+static int amx_child_candidates(int32_t parent_pid, int *pids, size_t capacity, size_t *count) {
+ if (!amx_list || parent_pid <= 0 || capacity != 4096) return EINVAL;
+ size_t bytes = capacity * sizeof(*pids);
+ memset(pids, 0, bytes);
+ int n = amx_list(PROC_PPID_ONLY, (uint32_t)parent_pid, pids, (int)bytes);
+ if (n < 0 || (size_t)n >= bytes || (size_t)n % sizeof(*pids) != 0) return EPROTO;
+ *count = (size_t)n / sizeof(*pids);
+ for (size_t i = 0; i < *count; i++) {
+  if (pids[i] <= 0) return EPROTO;
+ }
+ return 0;
+}
+
+enum { AMX_IDENTITY_READ_OK, AMX_IDENTITY_QUERY_REFUSED, AMX_IDENTITY_LAYOUT_REFUSED };
+static int amx_read_identity(int pid, struct amx_identity *out, int *native_errno) {
+ *native_errno = 0;
+ if (!amx_info || pid <= 0) return AMX_IDENTITY_QUERY_REFUSED;
  struct amx_combined value;
  memset(&value, 0, sizeof(value));
  // Selector 18 and this exact layout belong to the pinned private ABI above.
+ errno = 0;
  int n = amx_info(pid, 18, 0, &value, sizeof(value));
- if (n != sizeof(value)) return n < 0 ? errno : EPROTO;
- if (value.bsd.pbi_pid != pid || value.unique.unique == 0 || value.unique.version == 0 ||
-     value.bsd.pbi_status == 0 || value.bsd.pbi_status == 5) return ESRCH;
- out->pid = pid; out->ppid = value.bsd.pbi_ppid;
+ if (n <= 0) { *native_errno = errno; return AMX_IDENTITY_QUERY_REFUSED; }
+ if (n != sizeof(value)) return AMX_IDENTITY_LAYOUT_REFUSED;
+ out->pid = value.bsd.pbi_pid; out->ppid = value.bsd.pbi_ppid;
  out->uid = value.bsd.pbi_uid; out->ruid = value.bsd.pbi_ruid;
  out->status = value.bsd.pbi_status; out->version = value.unique.version;
  out->unique = value.unique.unique; out->parent_unique = value.unique.parent_unique;
- return 0;
+ return AMX_IDENTITY_READ_OK;
 }
 // This diagnostic records compiler layout and one exact own-process query.
 // It does not enroll an SDK or construct process authority.
@@ -135,8 +152,9 @@ static int amx_image_path(int pid, int32_t version, char *out, size_t size) {
  if (!amx_path || size < PROC_PIDPATHINFO_MAXSIZE) return EINVAL;
  audit_token_t target = amx_identifier(pid, version);
  memset(out, 0, size);
+ errno = 0;
  int n = amx_path(&target, out, (uint32_t)size);
- if (n <= 0 || n >= size || !memchr(out, 0, size)) return n <= 0 ? errno : EPROTO;
+ if (n <= 0 || n >= size || !memchr(out, 0, size)) return n <= 0 ? (errno ? errno : EIO) : EPROTO;
  return 0;
 }
 static int amx_send(int pid, int32_t version, int signal_number) {
@@ -148,16 +166,23 @@ static void amx_wipe(void *buffer, size_t size) {
  volatile unsigned char *bytes = (volatile unsigned char *)buffer;
  while (size--) *bytes++ = 0;
 }
-static int amx_arguments(int pid, void **result, size_t *length) {
+enum { AMX_ARGUMENTS_READ_OK, AMX_ARGUMENTS_ALLOCATION_REFUSED, AMX_ARGUMENTS_QUERY_REFUSED, AMX_ARGUMENTS_LAYOUT_REFUSED };
+static int amx_arguments(int pid, void **result, size_t *length, int *native_errno) {
+ *native_errno = 0;
  int mib[3] = {CTL_KERN, KERN_PROCARGS2, pid};
  size_t size = 256 * 1024;
+ errno = 0;
  void *buffer = calloc(1, size);
- if (!buffer) return ENOMEM;
- if (sysctl(mib, 3, buffer, &size, NULL, 0) || size < sizeof(int) || size > 256 * 1024) {
-  int e = errno ? errno : EPROTO;
-  amx_wipe(buffer, 256 * 1024); free(buffer); return e;
+ if (!buffer) { *native_errno = errno; return AMX_ARGUMENTS_ALLOCATION_REFUSED; }
+ errno = 0;
+ if (sysctl(mib, 3, buffer, &size, NULL, 0)) {
+  *native_errno = errno;
+  amx_wipe(buffer, 256 * 1024); free(buffer); return AMX_ARGUMENTS_QUERY_REFUSED;
  }
- *result = buffer; *length = size; return 0;
+ if (size < sizeof(int) || size > 256 * 1024) {
+  amx_wipe(buffer, 256 * 1024); free(buffer); return AMX_ARGUMENTS_LAYOUT_REFUSED;
+ }
+ *result = buffer; *length = size; return AMX_ARGUMENTS_READ_OK;
 }
 static void amx_free_arguments(void *buffer) {
  if (buffer) { amx_wipe(buffer, 256 * 1024); free(buffer); }
@@ -231,18 +256,95 @@ func nativeSelfLayout() nativeLayoutEvidence {
 }
 
 func observe(pid int) (identity, error) {
-	var raw C.struct_amx_identity
-	if C.amx_observe(C.int(pid), &raw) != 0 {
-		return identity{}, errors.New("native_identity_unavailable")
+	id, err := readNativeIdentity(pid)
+	if err != nil {
+		return identity{}, err
 	}
-	return identity{int32(raw.pid), int32(raw.ppid), int32(raw.version), uint32(raw.uid),
-		uint32(raw.ruid), uint32(raw.status), uint64(raw.unique), uint64(raw.parent_unique)}, nil
+	if err := liveIdentityStatus(id); err != nil {
+		return identity{}, err
+	}
+	return id, nil
+}
+
+func readNativeIdentity(pid int) (identity, error) {
+	var raw C.struct_amx_identity
+	var nativeErrno C.int
+	code := C.amx_read_identity(C.int(pid), &raw, &nativeErrno)
+	id := identity{int32(raw.pid), int32(raw.ppid), int32(raw.version), uint32(raw.uid),
+		uint32(raw.ruid), uint32(raw.status), uint64(raw.unique), uint64(raw.parent_unique)}
+	return nativeIdentityResult(pid, int(code), int(nativeErrno), id)
+}
+
+const (
+	nativeIdentityReadOK        = int(C.AMX_IDENTITY_READ_OK)
+	nativeIdentityQueryRefused  = int(C.AMX_IDENTITY_QUERY_REFUSED)
+	nativeIdentityLayoutRefused = int(C.AMX_IDENTITY_LAYOUT_REFUSED)
+)
+
+func nativeIdentityResult(pid, code, nativeErrno int, id identity) (identity, error) {
+	if code == nativeIdentityQueryRefused {
+		var cause error
+		if nativeErrno != 0 {
+			cause = unix.Errno(nativeErrno)
+		}
+		return identity{}, failed("fixture_native_query_refused", cause)
+	}
+	if code != nativeIdentityReadOK {
+		return identity{}, failed("fixture_native_layout_refused", nil)
+	}
+	if pid <= 0 || id.PID != int32(pid) || id.Unique == 0 || id.Version == 0 {
+		return identity{}, failed("fixture_native_identity_refused", nil)
+	}
+	return id, nil
+}
+
+// This applies only to the first identity read of an unadmitted census entry.
+// Omission grants no identity, lineage, exit, join or process-owner authority.
+// Unknown errors are never unwrapped to decide whether an entry is absent.
+func nativeIdentityQueryAbsent(cause error) bool {
+	known, ok := cause.(*failure)
+	if !ok || known == nil || known.stage != "fixture_native_query_refused" {
+		return false
+	}
+	errno, ok := known.cause.(unix.Errno)
+	return ok && errno == unix.ESRCH
+}
+
+func liveIdentityStatus(id identity) error {
+	if id.Status == 0 {
+		return failed("fixture_native_status_refused", nil)
+	}
+	if id.Status == 5 {
+		return failed("fixture_native_process_exited", nil)
+	}
+	return nil
+}
+
+// A successfully read identity must prove unrelated creation lineage before
+// an exited process can be excluded. Observed unknown lineage still refuses.
+func candidateBelongsToAnchor(id identity, uid uint32, parentUnique uint64) (bool, error) {
+	if id.PID <= 0 || id.Unique == 0 || id.Version == 0 || id.ParentUnique == 0 || parentUnique == 0 {
+		return false, failed("fixture_candidate_lineage_refused", nil)
+	}
+	if id.Status == 0 {
+		return false, failed("fixture_native_status_refused", nil)
+	}
+	if id.ParentUnique != parentUnique {
+		return false, nil
+	}
+	if id.UID != uid || id.RealUID != uid {
+		return false, failed("fixture_candidate_credentials_refused", nil)
+	}
+	if err := liveIdentityStatus(id); err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 func nativePath(id identity) (string, error) {
 	var raw [4096]byte
-	if C.amx_image_path(C.int(id.PID), C.int32_t(id.Version), (*C.char)(unsafe.Pointer(&raw[0])), C.size_t(len(raw))) != 0 {
-		return "", errors.New("version_bound_image_path_unavailable")
+	if code := C.amx_image_path(C.int(id.PID), C.int32_t(id.Version), (*C.char)(unsafe.Pointer(&raw[0])), C.size_t(len(raw))); code != 0 {
+		return "", failed("version_bound_image_path_unavailable", unix.Errno(code))
 	}
 	end := bytes.IndexByte(raw[:], 0)
 	if end <= 0 {
@@ -254,13 +356,39 @@ func nativePath(id identity) (string, error) {
 func nativeArguments(id identity) ([]string, error) {
 	var pointer unsafe.Pointer
 	var size C.size_t
-	if C.amx_arguments(C.int(id.PID), &pointer, &size) != 0 {
-		return nil, errors.New("native_arguments_unavailable")
+	var nativeErrno C.int
+	code := C.amx_arguments(C.int(id.PID), &pointer, &size, &nativeErrno)
+	if err := nativeArgumentReadError(int(code), int(nativeErrno)); err != nil {
+		return nil, err
 	}
 	defer C.amx_free_arguments(pointer)
 	raw := C.GoBytes(pointer, C.int(size))
 	defer clear(raw)
 	return parseNativeArguments(raw)
+}
+
+const (
+	nativeArgumentsReadOK            = int(C.AMX_ARGUMENTS_READ_OK)
+	nativeArgumentsAllocationRefused = int(C.AMX_ARGUMENTS_ALLOCATION_REFUSED)
+	nativeArgumentsQueryRefused      = int(C.AMX_ARGUMENTS_QUERY_REFUSED)
+	nativeArgumentsLayoutRefused     = int(C.AMX_ARGUMENTS_LAYOUT_REFUSED)
+)
+
+func nativeArgumentReadError(code, nativeErrno int) error {
+	var cause error
+	if nativeErrno != 0 {
+		cause = unix.Errno(nativeErrno)
+	}
+	switch code {
+	case nativeArgumentsReadOK:
+		return nil
+	case nativeArgumentsAllocationRefused:
+		return failed("fixture_arguments_allocation_refused", cause)
+	case nativeArgumentsQueryRefused:
+		return failed("fixture_arguments_query_refused", cause)
+	default:
+		return failed("fixture_arguments_layout_refused", nil)
+	}
 }
 
 func identitySignal(id identity, signal int) error {
@@ -271,30 +399,59 @@ func identitySignal(id identity, signal int) error {
 	return nil
 }
 
+func nativeChildPIDs(parentPID int32) ([]int32, error) {
+	var pids [4096]C.int
+	defer clear(pids[:])
+	var count C.size_t
+	if C.amx_child_candidates(C.int32_t(parentPID), &pids[0], C.size_t(len(pids)), &count) != 0 {
+		return nil, failed("fixture_candidate_enumeration_refused", nil)
+	}
+	children := make([]int32, int(count))
+	for i, pid := range pids[:int(count)] {
+		children[i] = int32(pid)
+	}
+	return children, nil
+}
+
 // nativeCandidates reads minimal identities before core inspects arguments or paths.
 func nativeCandidates(uid uint32, creationParentUnique uint64, admission admissionCheck) ([]identity, error) {
 	if creationParentUnique == 0 {
-		return nil, errors.New("native_candidate_parent_invalid")
+		return nil, failed("fixture_candidate_parent_invalid", nil)
 	}
 	if admission == nil {
-		return nil, errors.New("native_candidate_admission_invalid")
+		return nil, failed("fixture_candidate_admission_invalid", nil)
 	}
 	if err := admission.check(); err != nil {
-		return nil, err
+		return nil, failed("fixture_candidate_admission_refused", err)
 	}
 	var pids [4096]C.int
 	defer clear(pids[:])
 	var count C.size_t
 	if C.amx_candidates(C.uint32_t(uid), &pids[0], C.size_t(len(pids)), &count) != 0 {
-		return nil, errors.New("native_candidates_unavailable")
+		return nil, failed("fixture_candidate_enumeration_refused", nil)
 	}
+	listed := make([]int32, int(count))
+	for i, pid := range pids[:int(count)] {
+		listed[i] = int32(pid)
+	}
+	return scanNativeCandidateIdentities(listed, uid, creationParentUnique, readNativeIdentity)
+}
+
+func scanNativeCandidateIdentities(pids []int32, uid uint32, creationParentUnique uint64, read func(int) (identity, error)) ([]identity, error) {
 	candidates := make([]identity, 0)
-	for _, pid := range pids[:int(count)] {
-		id, err := observe(int(pid))
+	for _, pid := range pids {
+		id, err := read(int(pid))
 		if err != nil {
-			return nil, errors.New("native_candidate_identity_unavailable")
+			if nativeIdentityQueryAbsent(err) {
+				continue
+			}
+			return nil, failed("fixture_candidate_identity_refused", err)
 		}
-		if id.UID == uid && id.RealUID == uid && id.ParentUnique == creationParentUnique {
+		include, err := candidateBelongsToAnchor(id, uid, creationParentUnique)
+		if err != nil {
+			return nil, failed("fixture_candidate_identity_refused", err)
+		}
+		if include {
 			candidates = append(candidates, id)
 		}
 	}

@@ -486,9 +486,10 @@ test('every view script registers itself without throwing', () => {
   // exist: the real page had iiot.js, mqtt.js and netscan.js BELOW app.js, where the
   // event has already fired, and four IIOT panels silently never rendered. A fixture
   // that invents its own load order cannot catch a load-order bug.
-  const order = [...html.matchAll(/<script src="([a-z_/.]+\.js)"><\/script>/g)]
+  const order = [...html.matchAll(/<script src="([A-Za-z0-9_/.+-]+\.js)"><\/script>/g)]
     .map(m => m[1]).filter(name => !name.startsWith('vendor/'));
   const scripts = order.filter(name => name !== 'app.js');
+  const subscribers = scripts.filter(name => fs.readFileSync('dashboard/' + name, 'utf8').includes("'ccc:ready'"));
   let dispatched = false;
   for (const name of order) {
     if (name === 'app.js') {
@@ -500,7 +501,7 @@ test('every view script registers itself without throwing', () => {
     vm.runInContext(fs.readFileSync('dashboard/' + name, 'utf8'), ctx, {filename: name});
   }
   assert.ok(dispatched, 'app.js is in the load order');
-  assert.equal(ready.length >= scripts.length, true,
+  assert.equal(ready.length >= subscribers.length, true,
                `only ${ready.length} scripts subscribed to ccc:ready`);
 
   assert.deepEqual(registered.panels.sort(), [
@@ -566,7 +567,7 @@ test('a script that fails to load is reported instead of leaving a blank panel',
 test('every script that waits for ccc:ready is loaded before app.js', () => {
   // app.js dispatches the event synchronously on its last line. Anything loaded
   // after it subscribes to an event that has already fired.
-  const order = [...html.matchAll(/<script src="([a-z_/.]+\.js)"><\/script>/g)].map(m => m[1]);
+  const order = [...html.matchAll(/<script src="([A-Za-z0-9_/.+-]+\.js)"><\/script>/g)].map(m => m[1]);
   const appAt = order.indexOf('app.js');
   assert.ok(appAt > 0, 'app.js is loaded');
   for (const name of order) {

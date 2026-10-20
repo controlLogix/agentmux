@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:configuration-change-subscribe",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "eventContractId": {
+      "const": "configuration-change"
+    },
+    "filter": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "schemaRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        }
+      },
+      "required": [
+        "owner",
+        "schemaRef"
+      ]
+    },
+    "filterDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "cursor": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sourceDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "streamCreated": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+        },
+        "sequence": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+        }
+      },
+      "required": [
+        "sourceDigest",
+        "streamCreated",
+        "sequence"
+      ]
+    }
+  },
+  "required": [
+    "resourceRef",
+    "eventContractId",
+    "filter",
+    "filterDigest",
+    "cursor"
+  ]
+}

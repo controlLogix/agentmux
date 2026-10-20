@@ -1,5 +1,7 @@
 # Using the harness
 
+For the opt-in macOS ARM64 platform runtime, see [installation](PLATFORM_INSTALLATION.md) and [local startup diagnostics and recovery](BOOTSTRAP_RECOVERY.md). The board commands below use the existing harness.
+
 One page, start to finish: put work on the board, give it to agents, watch it, and
 get it back. Everything here was executed against a live board while it was written,
 and the scenario sweeps that prove each section are named at the end.

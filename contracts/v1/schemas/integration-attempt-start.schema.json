@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:integration-attempt-start",
+  "title": "Agentmux integration-attempt-start v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "effectRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "originalOperationId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "originalPayloadDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "attemptOperationId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    }
+  },
+  "required": [
+    "effectRef",
+    "originalOperationId",
+    "originalPayloadDigest",
+    "attemptOperationId"
+  ],
+  "description": "The receiving owner binds the original intent and current attempt. No caller outcome, credential, receipt or retry permission is accepted."
+}

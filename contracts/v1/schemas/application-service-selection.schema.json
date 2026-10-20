@@ -1,0 +1,4121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:application-service-selection",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "peerControl": {
+      "$ref": "urn:agentmux:contract:1:peer-control-selection"
+    },
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "hostPolicy": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "ownerUid": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    },
+    "workspaces": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4096,
+        "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+      }
+    },
+    "kernelScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "hubId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "instanceId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "profileId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "assemblyDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "releaseManifestDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "releaseVersion": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/version"
+        }
+      },
+      "required": [
+        "hubId",
+        "instanceId",
+        "profileId",
+        "assemblyDigest",
+        "releaseManifestDigest",
+        "releaseVersion"
+      ]
+    },
+    "authorityId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "organizationId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "authoritySwitch": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "custodyDirectory": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "binding": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "switchId": {
+                  "type": "string",
+                  "pattern": "^switch_[0-9a-f]{64}$"
+                },
+                "source": {
+                  "$ref": "urn:agentmux:contract:1:authority-switch#/$defs/source"
+                },
+                "receiver": {
+                  "$ref": "#/$defs/storageReceiver"
+                },
+                "ledger": {
+                  "$ref": "#/$defs/storageLedger"
+                }
+              },
+              "required": [
+                "switchId",
+                "source",
+                "receiver",
+                "ledger"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "custodyDirectory",
+        "binding"
+      ]
+    },
+    "oidcBrowser": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "issuer": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "audience": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "keyId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "publicKey": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        },
+        "maxTokenSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 900
+        },
+        "authorizationEndpoint": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "deviceAuthorizationEndpoint": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "tokenEndpoint": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        },
+        "rootsPEM": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384
+        }
+      },
+      "required": [
+        "issuer",
+        "audience",
+        "keyId",
+        "publicKey",
+        "maxTokenSeconds",
+        "authorizationEndpoint",
+        "deviceAuthorizationEndpoint",
+        "tokenEndpoint"
+      ]
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "credentials": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+            },
+            "sha256": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            },
+            "accountPublicKey": {
+              "type": "string",
+              "pattern": "^A[A-Z2-7]{55}$"
+            },
+            "userPublicKey": {
+              "type": "string",
+              "pattern": "^U[A-Z2-7]{55}$"
+            },
+            "replyPrefix": {
+              "type": "string",
+              "pattern": "^_INBOX\\.[A-Za-z0-9_-]{16,64}$"
+            }
+          },
+          "required": [
+            "path",
+            "sha256",
+            "accountPublicKey",
+            "userPublicKey",
+            "replyPrefix"
+          ]
+        },
+        "issuer": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "keyFile": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                },
+                "sha256": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                }
+              },
+              "required": [
+                "path",
+                "sha256"
+              ]
+            },
+            "issuerRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "publicKey": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{43}$"
+            }
+          },
+          "required": [
+            "keyFile",
+            "issuerRef",
+            "publicKey"
+          ]
+        },
+        "ledger": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "entityId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "scope": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+            },
+            "stream": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            },
+            "streamIdentity": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "created": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+                },
+                "minimumSequence": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+                }
+              },
+              "required": [
+                "created",
+                "minimumSequence"
+              ]
+            },
+            "retention": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "maxBytes": {
+                  "type": "integer",
+                  "minimum": 131073,
+                  "maximum": 107374182400
+                },
+                "reserveBytes": {
+                  "type": "integer",
+                  "minimum": 131072,
+                  "maximum": 107374182399
+                },
+                "replicas": {
+                  "enum": [
+                    1,
+                    3
+                  ]
+                }
+              },
+              "required": [
+                "maxBytes",
+                "reserveBytes",
+                "replicas"
+              ]
+            },
+            "history": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                },
+                "maxRecords": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1000000
+                },
+                "maxBytes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1099511627776
+                }
+              },
+              "required": [
+                "path",
+                "maxRecords",
+                "maxBytes"
+              ]
+            },
+            "checkpoint": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                },
+                "commitRef": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                }
+              },
+              "required": [
+                "path",
+                "commitRef"
+              ]
+            }
+          },
+          "required": [
+            "entityId",
+            "scope",
+            "stream",
+            "streamIdentity",
+            "retention",
+            "history",
+            "checkpoint"
+          ]
+        },
+        "backup": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "backupDirectory": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+            },
+            "inventoryDirectory": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+            },
+            "keyDirectory": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+            },
+            "destinationId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "keyId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            }
+          },
+          "required": [
+            "backupDirectory",
+            "inventoryDirectory",
+            "keyDirectory",
+            "destinationId",
+            "keyId"
+          ]
+        },
+        "connection": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "endpoint": {
+              "type": "string",
+              "pattern": "^tls://127\\.0\\.0\\.1:[1-9][0-9]{0,4}$"
+            },
+            "serverName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 253
+            },
+            "rootsPEM": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 16384
+            },
+            "leafCertificateSHA256": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            },
+            "jetstreamDomain": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "endpoint",
+            "serverName",
+            "rootsPEM",
+            "leafCertificateSHA256",
+            "jetstreamDomain"
+          ]
+        }
+      },
+      "required": [
+        "credentials",
+        "issuer",
+        "ledger",
+        "backup",
+        "connection"
+      ]
+    },
+    "definitions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "credentials": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+            },
+            "sha256": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            },
+            "accountPublicKey": {
+              "type": "string",
+              "pattern": "^A[A-Z2-7]{55}$"
+            },
+            "userPublicKey": {
+              "type": "string",
+              "pattern": "^U[A-Z2-7]{55}$"
+            },
+            "replyPrefix": {
+              "type": "string",
+              "pattern": "^_INBOX\\.[A-Za-z0-9_-]{16,64}$"
+            }
+          },
+          "required": [
+            "path",
+            "sha256",
+            "accountPublicKey",
+            "userPublicKey",
+            "replyPrefix"
+          ]
+        },
+        "issuer": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "keyFile": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                },
+                "sha256": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                }
+              },
+              "required": [
+                "path",
+                "sha256"
+              ]
+            },
+            "issuerRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "publicKey": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{43}$"
+            }
+          },
+          "required": [
+            "keyFile",
+            "issuerRef",
+            "publicKey"
+          ]
+        },
+        "ledger": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "entityId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "scope": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+            },
+            "stream": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            },
+            "streamIdentity": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "created": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+                },
+                "minimumSequence": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+                }
+              },
+              "required": [
+                "created",
+                "minimumSequence"
+              ]
+            },
+            "retention": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "maxBytes": {
+                  "type": "integer",
+                  "minimum": 131073,
+                  "maximum": 107374182400
+                },
+                "reserveBytes": {
+                  "type": "integer",
+                  "minimum": 131072,
+                  "maximum": 107374182399
+                },
+                "replicas": {
+                  "enum": [
+                    1,
+                    3
+                  ]
+                }
+              },
+              "required": [
+                "maxBytes",
+                "reserveBytes",
+                "replicas"
+              ]
+            },
+            "history": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                },
+                "maxRecords": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1000000
+                },
+                "maxBytes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1099511627776
+                }
+              },
+              "required": [
+                "path",
+                "maxRecords",
+                "maxBytes"
+              ]
+            },
+            "checkpoint": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                },
+                "commitRef": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                }
+              },
+              "required": [
+                "path",
+                "commitRef"
+              ]
+            }
+          },
+          "required": [
+            "entityId",
+            "scope",
+            "stream",
+            "streamIdentity",
+            "retention",
+            "history",
+            "checkpoint"
+          ]
+        },
+        "directories": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "projectRoot": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+            },
+            "home": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+            },
+            "globalRoot": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+            }
+          },
+          "required": [
+            "projectRoot",
+            "home",
+            "globalRoot"
+          ]
+        },
+        "artifacts": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "bucket": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            },
+            "storeRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "maxBytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 67108864
+            }
+          },
+          "required": [
+            "bucket",
+            "storeRef",
+            "maxBytes"
+          ]
+        },
+        "connection": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "endpoint": {
+              "type": "string",
+              "pattern": "^tls://127\\.0\\.0\\.1:[1-9][0-9]{0,4}$"
+            },
+            "serverName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 253
+            },
+            "rootsPEM": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 16384
+            },
+            "leafCertificateSHA256": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            },
+            "jetstreamDomain": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "endpoint",
+            "serverName",
+            "rootsPEM",
+            "leafCertificateSHA256",
+            "jetstreamDomain"
+          ]
+        }
+      },
+      "required": [
+        "credentials",
+        "issuer",
+        "ledger",
+        "directories",
+        "artifacts",
+        "connection"
+      ]
+    },
+    "integration": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "credentials": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                },
+                "sha256": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                },
+                "accountPublicKey": {
+                  "type": "string",
+                  "pattern": "^A[A-Z2-7]{55}$"
+                },
+                "userPublicKey": {
+                  "type": "string",
+                  "pattern": "^U[A-Z2-7]{55}$"
+                },
+                "replyPrefix": {
+                  "type": "string",
+                  "pattern": "^_INBOX\\.[A-Za-z0-9_-]{16,64}$"
+                }
+              },
+              "required": [
+                "path",
+                "sha256",
+                "accountPublicKey",
+                "userPublicKey",
+                "replyPrefix"
+              ]
+            },
+            "issuer": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "keyFile": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                    },
+                    "sha256": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "sha256"
+                  ]
+                },
+                "issuerRef": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                },
+                "publicKey": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{43}$"
+                }
+              },
+              "required": [
+                "keyFile",
+                "issuerRef",
+                "publicKey"
+              ]
+            },
+            "ledger": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "entityId": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                },
+                "scope": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+                },
+                "stream": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                },
+                "streamIdentity": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "created": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+                    },
+                    "minimumSequence": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+                    }
+                  },
+                  "required": [
+                    "created",
+                    "minimumSequence"
+                  ]
+                },
+                "retention": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "maxBytes": {
+                      "type": "integer",
+                      "minimum": 131073,
+                      "maximum": 107374182400
+                    },
+                    "reserveBytes": {
+                      "type": "integer",
+                      "minimum": 131072,
+                      "maximum": 107374182399
+                    },
+                    "replicas": {
+                      "enum": [
+                        1,
+                        3
+                      ]
+                    }
+                  },
+                  "required": [
+                    "maxBytes",
+                    "reserveBytes",
+                    "replicas"
+                  ]
+                },
+                "history": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                    },
+                    "maxRecords": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 1000000
+                    },
+                    "maxBytes": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 1099511627776
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "maxRecords",
+                    "maxBytes"
+                  ]
+                },
+                "checkpoint": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                    },
+                    "commitRef": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "commitRef"
+                  ]
+                }
+              },
+              "required": [
+                "entityId",
+                "scope",
+                "stream",
+                "streamIdentity",
+                "retention",
+                "history",
+                "checkpoint"
+              ]
+            },
+            "artifacts": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "bucket": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                },
+                "storeRef": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                },
+                "maxBytes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 67108864
+                }
+              },
+              "required": [
+                "bucket",
+                "storeRef",
+                "maxBytes"
+              ]
+            },
+            "connection": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "endpoint": {
+                  "type": "string",
+                  "pattern": "^tls://127\\.0\\.0\\.1:[1-9][0-9]{0,4}$"
+                },
+                "serverName": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 253
+                },
+                "rootsPEM": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 16384
+                },
+                "leafCertificateSHA256": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                },
+                "jetstreamDomain": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "endpoint",
+                "serverName",
+                "rootsPEM",
+                "leafCertificateSHA256",
+                "jetstreamDomain"
+              ]
+            },
+            "provider": {
+              "enum": [
+                "github",
+                "jira",
+                "confluence"
+              ]
+            },
+            "credentialRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "originalOperationId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "credentialEnrollment": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                    },
+                    "sha256": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "sha256"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "routing": {
+              "anyOf": [
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "resourceDirectory": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                    },
+                    "inventoryDirectory": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                    },
+                    "credentialDirectory": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                    },
+                    "backupKeyDirectory": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                    },
+                    "backupKeyId": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                    },
+                    "backupDestinationId": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                    }
+                  },
+                  "required": [
+                    "resourceDirectory",
+                    "inventoryDirectory",
+                    "credentialDirectory",
+                    "backupKeyDirectory",
+                    "backupKeyId",
+                    "backupDestinationId"
+                  ]
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "credentials",
+            "issuer",
+            "ledger",
+            "artifacts",
+            "connection",
+            "provider",
+            "credentialRef",
+            "originalOperationId",
+            "credentialEnrollment"
+          ],
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "provider": {
+                    "enum": [
+                      "jira",
+                      "confluence"
+                    ]
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "credentialEnrollment": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "path": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 4096,
+                        "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                      },
+                      "sha256": {
+                        "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                      }
+                    },
+                    "required": [
+                      "path",
+                      "sha256"
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "credentials": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+            },
+            "sha256": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            },
+            "accountPublicKey": {
+              "type": "string",
+              "pattern": "^A[A-Z2-7]{55}$"
+            },
+            "userPublicKey": {
+              "type": "string",
+              "pattern": "^U[A-Z2-7]{55}$"
+            },
+            "replyPrefix": {
+              "type": "string",
+              "pattern": "^_INBOX\\.[A-Za-z0-9_-]{16,64}$"
+            }
+          },
+          "required": [
+            "path",
+            "sha256",
+            "accountPublicKey",
+            "userPublicKey",
+            "replyPrefix"
+          ]
+        },
+        "issuer": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "keyFile": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                },
+                "sha256": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                }
+              },
+              "required": [
+                "path",
+                "sha256"
+              ]
+            },
+            "issuerRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "publicKey": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{43}$"
+            }
+          },
+          "required": [
+            "keyFile",
+            "issuerRef",
+            "publicKey"
+          ]
+        },
+        "ledger": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "entityId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "scope": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+            },
+            "stream": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            },
+            "streamIdentity": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "created": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+                },
+                "minimumSequence": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+                }
+              },
+              "required": [
+                "created",
+                "minimumSequence"
+              ]
+            },
+            "retention": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "maxBytes": {
+                  "type": "integer",
+                  "minimum": 131073,
+                  "maximum": 107374182400
+                },
+                "reserveBytes": {
+                  "type": "integer",
+                  "minimum": 131072,
+                  "maximum": 107374182399
+                },
+                "replicas": {
+                  "enum": [
+                    1,
+                    3
+                  ]
+                }
+              },
+              "required": [
+                "maxBytes",
+                "reserveBytes",
+                "replicas"
+              ]
+            },
+            "history": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                },
+                "maxRecords": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1000000
+                },
+                "maxBytes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1099511627776
+                }
+              },
+              "required": [
+                "path",
+                "maxRecords",
+                "maxBytes"
+              ]
+            },
+            "checkpoint": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                },
+                "commitRef": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                }
+              },
+              "required": [
+                "path",
+                "commitRef"
+              ]
+            }
+          },
+          "required": [
+            "entityId",
+            "scope",
+            "stream",
+            "streamIdentity",
+            "retention",
+            "history",
+            "checkpoint"
+          ]
+        },
+        "backup": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "backupDirectory": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+            },
+            "inventoryDirectory": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+            },
+            "keyDirectory": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+            },
+            "destinationId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "keyId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            }
+          },
+          "required": [
+            "backupDirectory",
+            "inventoryDirectory",
+            "keyDirectory",
+            "destinationId",
+            "keyId"
+          ]
+        },
+        "connection": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "endpoint": {
+              "type": "string",
+              "pattern": "^tls://127\\.0\\.0\\.1:[1-9][0-9]{0,4}$"
+            },
+            "serverName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 253
+            },
+            "rootsPEM": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 16384
+            },
+            "leafCertificateSHA256": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            },
+            "jetstreamDomain": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "endpoint",
+            "serverName",
+            "rootsPEM",
+            "leafCertificateSHA256",
+            "jetstreamDomain"
+          ]
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "schemaRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "schemaResources": {
+          "type": "object",
+          "minProperties": 1,
+          "maxProperties": 64,
+          "propertyNames": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024
+          },
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "path": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096,
+                "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+              },
+              "sha256": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+              }
+            },
+            "required": [
+              "path",
+              "sha256"
+            ]
+          }
+        },
+        "requesterReplyPrefix": {
+          "type": "string",
+          "pattern": "^_INBOX\\.[A-Za-z0-9_-]{16,64}$",
+          "not": {
+            "pattern": "[\u0000-\u001f\u007f-\u009f\u2028\u2029]"
+          }
+        },
+        "producer": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "identityRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "transportRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "grantRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "keyFile": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                },
+                "sha256": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                }
+              },
+              "required": [
+                "path",
+                "sha256"
+              ]
+            },
+            "publicKey": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{43}$"
+            }
+          },
+          "required": [
+            "identityRef",
+            "transportRef",
+            "grantRef",
+            "keyFile",
+            "publicKey"
+          ]
+        }
+      },
+      "required": [
+        "credentials",
+        "issuer",
+        "ledger",
+        "backup",
+        "connection",
+        "owner",
+        "schemaRef",
+        "schemaResources",
+        "requesterReplyPrefix",
+        "producer"
+      ]
+    },
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "credentials": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+            },
+            "sha256": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            },
+            "accountPublicKey": {
+              "type": "string",
+              "pattern": "^A[A-Z2-7]{55}$"
+            },
+            "userPublicKey": {
+              "type": "string",
+              "pattern": "^U[A-Z2-7]{55}$"
+            },
+            "replyPrefix": {
+              "type": "string",
+              "pattern": "^_INBOX\\.[A-Za-z0-9_-]{16,64}$"
+            }
+          },
+          "required": [
+            "path",
+            "sha256",
+            "accountPublicKey",
+            "userPublicKey",
+            "replyPrefix"
+          ]
+        },
+        "issuer": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "keyFile": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                },
+                "sha256": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                }
+              },
+              "required": [
+                "path",
+                "sha256"
+              ]
+            },
+            "issuerRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "publicKey": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{43}$"
+            }
+          },
+          "required": [
+            "keyFile",
+            "issuerRef",
+            "publicKey"
+          ]
+        },
+        "ledger": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "entityId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "scope": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+            },
+            "stream": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            },
+            "streamIdentity": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "created": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+                },
+                "minimumSequence": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+                }
+              },
+              "required": [
+                "created",
+                "minimumSequence"
+              ]
+            },
+            "retention": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "maxBytes": {
+                  "type": "integer",
+                  "minimum": 131073,
+                  "maximum": 107374182400
+                },
+                "reserveBytes": {
+                  "type": "integer",
+                  "minimum": 131072,
+                  "maximum": 107374182399
+                },
+                "replicas": {
+                  "enum": [
+                    1,
+                    3
+                  ]
+                }
+              },
+              "required": [
+                "maxBytes",
+                "reserveBytes",
+                "replicas"
+              ]
+            },
+            "history": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                },
+                "maxRecords": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1000000
+                },
+                "maxBytes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1099511627776
+                }
+              },
+              "required": [
+                "path",
+                "maxRecords",
+                "maxBytes"
+              ]
+            },
+            "checkpoint": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                },
+                "commitRef": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                }
+              },
+              "required": [
+                "path",
+                "commitRef"
+              ]
+            }
+          },
+          "required": [
+            "entityId",
+            "scope",
+            "stream",
+            "streamIdentity",
+            "retention",
+            "history",
+            "checkpoint"
+          ]
+        },
+        "backup": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "backupDirectory": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+            },
+            "inventoryDirectory": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+            },
+            "keyDirectory": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+            },
+            "destinationId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "keyId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            }
+          },
+          "required": [
+            "backupDirectory",
+            "inventoryDirectory",
+            "keyDirectory",
+            "destinationId",
+            "keyId"
+          ]
+        },
+        "connection": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "endpoint": {
+              "type": "string",
+              "pattern": "^tls://127\\.0\\.0\\.1:[1-9][0-9]{0,4}$"
+            },
+            "serverName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 253
+            },
+            "rootsPEM": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 16384
+            },
+            "leafCertificateSHA256": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            },
+            "jetstreamDomain": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "endpoint",
+            "serverName",
+            "rootsPEM",
+            "leafCertificateSHA256",
+            "jetstreamDomain"
+          ]
+        },
+        "serviceIdentityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "serviceInstanceId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "requesterReplyPrefix": {
+          "type": "string",
+          "pattern": "^_INBOX\\.[A-Za-z0-9_-]{16,64}$",
+          "not": {
+            "pattern": "[\u0000-\u001f\u007f-\u009f\u2028\u2029]"
+          }
+        },
+        "artifacts": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "bucket": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$",
+              "not": {
+                "pattern": "[^A-Za-z0-9_-]"
+              }
+            },
+            "storeRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "maxBytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 67108864
+            },
+            "reader": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "transportRef": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                },
+                "grantRef": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                },
+                "approvalsByOperation": {
+                  "type": "object",
+                  "maxProperties": 1024,
+                  "propertyNames": {
+                    "type": "string",
+                    "pattern": "^artifact_backup_[a-f0-9]{64}$",
+                    "not": {
+                      "pattern": "[^a-z0-9_]"
+                    }
+                  },
+                  "additionalProperties": {
+                    "type": "array",
+                    "maxItems": 32,
+                    "uniqueItems": true,
+                    "items": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                    }
+                  }
+                }
+              },
+              "required": [
+                "transportRef",
+                "grantRef"
+              ]
+            }
+          },
+          "required": [
+            "bucket",
+            "storeRef",
+            "maxBytes",
+            "reader"
+          ]
+        }
+      },
+      "required": [
+        "credentials",
+        "issuer",
+        "ledger",
+        "backup",
+        "connection",
+        "serviceIdentityRef",
+        "serviceInstanceId",
+        "requesterReplyPrefix"
+      ]
+    },
+    "dashboard": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scope": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+        },
+        "resourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "databasePath": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+        }
+      },
+      "required": [
+        "scope",
+        "resourceRef",
+        "databasePath"
+      ]
+    },
+    "orchestration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "credentials": {
+          "$ref": "#/properties/definitions/properties/credentials"
+        },
+        "issuer": {
+          "$ref": "#/properties/definitions/properties/issuer"
+        },
+        "ledger": {
+          "$ref": "#/properties/definitions/properties/ledger"
+        },
+        "connection": {
+          "$ref": "#/properties/definitions/properties/connection"
+        },
+        "serviceIdentityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "scope": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+        },
+        "resourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "repository": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "orchestratorAgent": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]{1,64}$"
+        },
+        "environmentRef": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            }
+          ]
+        },
+        "phaseAuthority": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "transportRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "keyFile": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                },
+                "sha256": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                }
+              },
+              "required": [
+                "path",
+                "sha256"
+              ]
+            },
+            "publicKey": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{43}$"
+            },
+            "grants": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "orchestration-dispatch": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                },
+                "orchestration-complete": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                }
+              },
+              "required": [
+                "orchestration-dispatch",
+                "orchestration-complete"
+              ]
+            }
+          },
+          "required": [
+            "transportRef",
+            "keyFile",
+            "publicKey",
+            "grants"
+          ]
+        }
+      },
+      "required": [
+        "credentials",
+        "issuer",
+        "ledger",
+        "connection",
+        "serviceIdentityRef",
+        "scope",
+        "resourceRef",
+        "repository",
+        "orchestratorAgent",
+        "environmentRef",
+        "phaseAuthority"
+      ]
+    },
+    "policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "connection": {
+          "$ref": "#/$defs/storageConnection"
+        },
+        "credentials": {
+          "$ref": "#/$defs/storageCredentials"
+        },
+        "issuer": {
+          "$ref": "#/$defs/storageIssuer"
+        },
+        "ledger": {
+          "$ref": "#/$defs/storageLedger"
+        },
+        "backup": {
+          "$ref": "#/$defs/storageBackup"
+        },
+        "serviceIdentityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "requestSigningKeyRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "policyRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "pluginIdentityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "serviceInstanceId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "instanceId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        }
+      },
+      "required": [
+        "connection",
+        "credentials",
+        "issuer",
+        "ledger",
+        "backup",
+        "serviceIdentityRef",
+        "requestSigningKeyRef",
+        "policyRef",
+        "pluginIdentityRef",
+        "serviceInstanceId",
+        "instanceId"
+      ]
+    },
+    "storage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scope": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+        },
+        "receivers": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "storage": {
+              "$ref": "#/$defs/storageReceiver"
+            },
+            "outcome": {
+              "$ref": "#/$defs/storageReceiver"
+            }
+          },
+          "required": [
+            "storage",
+            "outcome"
+          ]
+        },
+        "privateStorage": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "publisher": {
+              "$ref": "#/$defs/storagePublisher"
+            },
+            "ledger": {
+              "$ref": "#/$defs/storageLedger"
+            },
+            "backup": {
+              "$ref": "#/$defs/storageBackup"
+            },
+            "pluginIdentityRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "instanceId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "packageId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "bindingDigest": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            }
+          },
+          "required": [
+            "publisher",
+            "ledger",
+            "backup",
+            "pluginIdentityRef",
+            "instanceId",
+            "packageId",
+            "bindingDigest"
+          ]
+        },
+        "messages": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "database": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                    },
+                    "applicationId": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 2147483647
+                    },
+                    "userVersion": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 2147483647
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "applicationId",
+                    "userVersion"
+                  ]
+                },
+                "policy": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                    },
+                    "sha256": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "sha256"
+                  ]
+                }
+              },
+              "required": [
+                "database",
+                "policy"
+              ]
+            },
+            "repository": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "localName": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 256
+                    },
+                    "repositoryId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 13,
+                      "pattern": "^r[a-f0-9]{12}$"
+                    },
+                    "normalizedRemote": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096
+                    }
+                  },
+                  "required": [
+                    "localName",
+                    "repositoryId",
+                    "normalizedRemote"
+                  ]
+                }
+              ]
+            },
+            "localPeer": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]{1,32}$"
+            },
+            "localNode": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]{1,32}$"
+            },
+            "channels": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 64,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "resourceRef": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  },
+                  "peer": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9_]{1,32}$"
+                  },
+                  "actors": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 64,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "identityRef": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                        },
+                        "transportRef": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                        },
+                        "caller": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 256
+                        }
+                      },
+                      "required": [
+                        "identityRef",
+                        "transportRef",
+                        "caller"
+                      ]
+                    }
+                  },
+                  "pluginIdentityRef": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  },
+                  "instanceId": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                  },
+                  "initialSource": {
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "kind": {
+                            "enum": [
+                              "message",
+                              "publication"
+                            ]
+                          },
+                          "id": {
+                            "type": "string",
+                            "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "id"
+                        ]
+                      }
+                    ]
+                  },
+                  "legacyActors": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 64,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "identityRef": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                        },
+                        "transportRef": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                        },
+                        "caller": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 256
+                        },
+                        "grants": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "minProperties": 1,
+                          "properties": {
+                            "federation-message-send": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-message-deliver": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-message-approve": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-message-inspect": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-message-outcome": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "identityRef",
+                        "transportRef",
+                        "caller",
+                        "grants"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "resourceRef",
+                  "peer",
+                  "actors",
+                  "pluginIdentityRef",
+                  "instanceId",
+                  "initialSource"
+                ]
+              }
+            }
+          },
+          "required": [
+            "source",
+            "repository",
+            "localPeer",
+            "localNode",
+            "channels"
+          ]
+        },
+        "board": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "resourceRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "repository": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "localName": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "repositoryId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 13,
+                  "pattern": "^r[a-f0-9]{12}$"
+                },
+                "normalizedRemote": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                },
+                "counterPrefix": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 64,
+                  "pattern": "^[A-Z0-9_-]{1,64}$"
+                }
+              },
+              "required": [
+                "localName",
+                "repositoryId",
+                "normalizedRemote",
+                "counterPrefix"
+              ]
+            },
+            "cardKey": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 96,
+              "pattern": "^[A-Z0-9_-]{1,96}$"
+            },
+            "kvStreamIdentity": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "created": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+                },
+                "minimumSequence": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+                }
+              },
+              "required": [
+                "created",
+                "minimumSequence"
+              ]
+            },
+            "cardPublisher": {
+              "$ref": "#/$defs/storageBoardPublisher"
+            },
+            "allocationPublisher": {
+              "$ref": "#/$defs/storageBoardPublisher"
+            },
+            "phaseAuthority": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "serviceIdentityRef": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                },
+                "transportRef": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                },
+                "keyFile": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                    },
+                    "sha256": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "sha256"
+                  ]
+                },
+                "publicKey": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{43}$"
+                },
+                "cardGrants": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "federation-board-dispatch": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                    },
+                    "federation-board-complete": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                    }
+                  },
+                  "required": [
+                    "federation-board-dispatch",
+                    "federation-board-complete"
+                  ]
+                },
+                "allocationGrants": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "federation-board-dispatch": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                    },
+                    "federation-board-complete": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                    }
+                  },
+                  "required": [
+                    "federation-board-dispatch",
+                    "federation-board-complete"
+                  ]
+                }
+              },
+              "required": [
+                "serviceIdentityRef",
+                "transportRef",
+                "keyFile",
+                "publicKey",
+                "cardGrants",
+                "allocationGrants"
+              ]
+            },
+            "actors": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 64,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "identityRef": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  },
+                  "transportRef": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  },
+                  "address": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1024
+                  }
+                },
+                "required": [
+                  "identityRef",
+                  "transportRef",
+                  "address"
+                ]
+              }
+            },
+            "localPeer": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "auditMirror": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "database": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                    },
+                    "applicationId": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 2147483647
+                    },
+                    "userVersion": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 2147483647
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "applicationId",
+                    "userVersion"
+                  ]
+                },
+                "policy": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                    },
+                    "sha256": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "sha256"
+                  ]
+                }
+              },
+              "required": [
+                "database",
+                "policy"
+              ]
+            }
+          },
+          "required": [
+            "resourceRef",
+            "repository",
+            "cardKey",
+            "kvStreamIdentity",
+            "cardPublisher",
+            "allocationPublisher",
+            "phaseAuthority",
+            "actors",
+            "localPeer",
+            "auditMirror"
+          ]
+        },
+        "knowledge": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "database": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                    },
+                    "applicationId": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 2147483647
+                    },
+                    "userVersion": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 2147483647
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "applicationId",
+                    "userVersion"
+                  ]
+                },
+                "policy": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                    },
+                    "sha256": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "sha256"
+                  ]
+                }
+              },
+              "required": [
+                "database",
+                "policy"
+              ]
+            },
+            "repository": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "localName": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "repositoryId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 13,
+                  "pattern": "^r[a-f0-9]{12}$"
+                },
+                "normalizedRemote": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                }
+              },
+              "required": [
+                "localName",
+                "repositoryId",
+                "normalizedRemote"
+              ]
+            },
+            "localPeer": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]{1,32}$"
+            },
+            "localNode": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]{1,32}$"
+            },
+            "channels": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 64,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "resourceRef": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  },
+                  "actors": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 64,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "identityRef": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                        },
+                        "transportRef": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                        },
+                        "caller": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 256
+                        }
+                      },
+                      "required": [
+                        "identityRef",
+                        "transportRef",
+                        "caller"
+                      ]
+                    }
+                  },
+                  "pluginIdentityRef": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  },
+                  "instanceId": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                  },
+                  "initialSource": {
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "kind": {
+                            "enum": [
+                              "knowledge"
+                            ]
+                          },
+                          "id": {
+                            "type": "string",
+                            "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "id"
+                        ]
+                      }
+                    ]
+                  },
+                  "legacyActors": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 64,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "identityRef": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                        },
+                        "transportRef": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                        },
+                        "caller": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 256
+                        },
+                        "grants": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "minProperties": 1,
+                          "properties": {
+                            "federation-knowledge-share": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-knowledge-index": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-knowledge-capture": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-knowledge-withdraw": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-knowledge-read": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-knowledge-inspect": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-knowledge-outcome": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-knowledge-approve": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "identityRef",
+                        "transportRef",
+                        "caller",
+                        "grants"
+                      ]
+                    }
+                  },
+                  "messageSources": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 64,
+                    "items": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                    }
+                  },
+                  "workSources": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 64,
+                    "items": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                    }
+                  }
+                },
+                "required": [
+                  "resourceRef",
+                  "actors",
+                  "pluginIdentityRef",
+                  "instanceId",
+                  "initialSource"
+                ]
+              }
+            }
+          },
+          "required": [
+            "source",
+            "repository",
+            "localPeer",
+            "localNode",
+            "channels"
+          ]
+        },
+        "code": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "database": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                    },
+                    "applicationId": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 2147483647
+                    },
+                    "userVersion": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 2147483647
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "applicationId",
+                    "userVersion"
+                  ]
+                },
+                "policy": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                    },
+                    "sha256": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "sha256"
+                  ]
+                }
+              },
+              "required": [
+                "database",
+                "policy"
+              ]
+            },
+            "repository": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "localName": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "repositoryId": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 13,
+                  "pattern": "^r[a-f0-9]{12}$"
+                },
+                "normalizedRemote": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                }
+              },
+              "required": [
+                "localName",
+                "repositoryId",
+                "normalizedRemote"
+              ]
+            },
+            "localPeer": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]{1,32}$"
+            },
+            "localNode": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]{1,32}$"
+            },
+            "channels": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 64,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "resourceRef": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  },
+                  "actors": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 64,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "identityRef": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                        },
+                        "transportRef": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                        },
+                        "caller": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 256
+                        }
+                      },
+                      "required": [
+                        "identityRef",
+                        "transportRef",
+                        "caller"
+                      ]
+                    }
+                  },
+                  "pluginIdentityRef": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  },
+                  "instanceId": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                  },
+                  "initialSource": {
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "kind": {
+                            "enum": [
+                              "code"
+                            ]
+                          },
+                          "id": {
+                            "type": "string",
+                            "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "id"
+                        ]
+                      }
+                    ]
+                  },
+                  "legacyActors": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 64,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "identityRef": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                        },
+                        "transportRef": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                        },
+                        "caller": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 256
+                        },
+                        "grants": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "minProperties": 1,
+                          "properties": {
+                            "federation-code-publish": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-code-index": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-code-read": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-code-inspect": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-code-outcome": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-code-approve": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-code-fetched": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "identityRef",
+                        "transportRef",
+                        "caller",
+                        "grants"
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "resourceRef",
+                  "actors",
+                  "pluginIdentityRef",
+                  "instanceId",
+                  "initialSource"
+                ]
+              }
+            }
+          },
+          "required": [
+            "source",
+            "repository",
+            "localPeer",
+            "localNode",
+            "channels"
+          ]
+        },
+        "work": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "source": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "database": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                    },
+                    "applicationId": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 2147483647
+                    },
+                    "userVersion": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 2147483647
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "applicationId",
+                    "userVersion"
+                  ]
+                },
+                "policy": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "path": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096,
+                      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                    },
+                    "sha256": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                    }
+                  },
+                  "required": [
+                    "path",
+                    "sha256"
+                  ]
+                }
+              },
+              "required": [
+                "database"
+              ]
+            },
+            "repository": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "localName": {
+                      "type": "string",
+                      "pattern": "^[a-z0-9_]{1,32}$"
+                    }
+                  },
+                  "required": [
+                    "localName"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "localName": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 256
+                    },
+                    "repositoryId": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 13,
+                      "pattern": "^r[a-f0-9]{12}$"
+                    },
+                    "normalizedRemote": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 4096
+                    }
+                  },
+                  "required": [
+                    "localName",
+                    "repositoryId",
+                    "normalizedRemote"
+                  ]
+                }
+              ]
+            },
+            "localPeer": {
+              "anyOf": [
+                {
+                  "type": "null"
+                },
+                {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                }
+              ]
+            },
+            "localNode": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]{1,32}$"
+            },
+            "channels": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 64,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "resourceRef": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  },
+                  "actors": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 64,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "identityRef": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                        },
+                        "transportRef": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                        },
+                        "caller": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 256
+                        }
+                      },
+                      "required": [
+                        "identityRef",
+                        "transportRef",
+                        "caller"
+                      ]
+                    }
+                  },
+                  "pluginIdentityRef": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  },
+                  "instanceId": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                  },
+                  "initialSource": {
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "kind": {
+                            "enum": [
+                              "work"
+                            ]
+                          },
+                          "id": {
+                            "type": "string",
+                            "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                          }
+                        },
+                        "required": [
+                          "kind",
+                          "id"
+                        ]
+                      }
+                    ]
+                  },
+                  "legacyActors": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 64,
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "identityRef": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                        },
+                        "transportRef": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                        },
+                        "caller": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 256
+                        },
+                        "grants": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "minProperties": 1,
+                          "properties": {
+                            "federation-work-ingest": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-claim-envelope": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-grant-envelope": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-result-envelope": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-stage-result": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-revoke": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-return-leases": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-sweep-leases": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-ingest-legacy": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-result-legacy": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-cancel": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-approve": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-approve-privileged": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-create": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-offer": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-claim": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-heartbeat": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-release": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-claim-path": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-read": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-inspect": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-outcome": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-register": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-state": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            },
+                            "federation-work-sweep-global": {
+                              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                            }
+                          }
+                        }
+                      },
+                      "required": [
+                        "identityRef",
+                        "transportRef",
+                        "caller",
+                        "grants"
+                      ]
+                    }
+                  },
+                  "repository": {
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "localName": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9_]{1,32}$"
+                          }
+                        },
+                        "required": [
+                          "localName"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "localName": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 256
+                          },
+                          "repositoryId": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 13,
+                            "pattern": "^r[a-f0-9]{12}$"
+                          },
+                          "normalizedRemote": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                          }
+                        },
+                        "required": [
+                          "localName",
+                          "repositoryId",
+                          "normalizedRemote"
+                        ]
+                      }
+                    ]
+                  },
+                  "scope": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+                  },
+                  "firstWorker": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "caller": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      },
+                      "generation": {
+                        "type": "integer",
+                        "const": 1
+                      },
+                      "spawnOperationId": {
+                        "type": "string",
+                        "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                      }
+                    },
+                    "required": [
+                      "caller",
+                      "generation",
+                      "spawnOperationId"
+                    ]
+                  }
+                },
+                "required": [
+                  "resourceRef",
+                  "actors",
+                  "pluginIdentityRef",
+                  "instanceId",
+                  "initialSource"
+                ],
+                "dependentRequired": {
+                  "repository": [
+                    "scope"
+                  ],
+                  "scope": [
+                    "repository"
+                  ]
+                }
+              }
+            }
+          },
+          "required": [
+            "source",
+            "repository",
+            "localPeer",
+            "localNode",
+            "channels"
+          ],
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "source": {
+                    "required": [
+                      "policy"
+                    ]
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "localPeer": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                  },
+                  "repository": {
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "localName": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 256
+                          },
+                          "repositoryId": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 13,
+                            "pattern": "^r[a-f0-9]{12}$"
+                          },
+                          "normalizedRemote": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 4096
+                          }
+                        },
+                        "required": [
+                          "localName",
+                          "repositoryId",
+                          "normalizedRemote"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              "else": {
+                "properties": {
+                  "localPeer": {
+                    "type": "null"
+                  },
+                  "repository": {
+                    "anyOf": [
+                      {
+                        "type": "null"
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "localName": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9_]{1,32}$"
+                          }
+                        },
+                        "required": [
+                          "localName"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "scope",
+        "receivers"
+      ],
+      "anyOf": [
+        {
+          "required": [
+            "privateStorage"
+          ]
+        },
+        {
+          "required": [
+            "board"
+          ]
+        },
+        {
+          "required": [
+            "messages"
+          ]
+        },
+        {
+          "required": [
+            "knowledge"
+          ]
+        },
+        {
+          "required": [
+            "code"
+          ]
+        },
+        {
+          "required": [
+            "work"
+          ]
+        }
+      ]
+    },
+    "workspace": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "receiver": {
+          "$ref": "#/$defs/storageReceiver"
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "database": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                },
+                "applicationId": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 2147483647
+                },
+                "userVersion": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 2147483647
+                }
+              },
+              "required": [
+                "path",
+                "applicationId",
+                "userVersion"
+              ]
+            },
+            "policy": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096,
+                  "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+                },
+                "sha256": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                }
+              },
+              "required": [
+                "path",
+                "sha256"
+              ]
+            }
+          },
+          "required": [
+            "database",
+            "policy"
+          ]
+        },
+        "repository": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "localName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "repositoryId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 13,
+              "pattern": "^r[a-f0-9]{12}$"
+            },
+            "normalizedRemote": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            }
+          },
+          "required": [
+            "localName",
+            "repositoryId",
+            "normalizedRemote"
+          ]
+        },
+        "checkoutPath": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "localPeer": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "resourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        }
+      },
+      "required": [
+        "receiver",
+        "source",
+        "repository",
+        "checkoutPath",
+        "localPeer",
+        "resourceRef"
+      ]
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "receiver": {
+          "$ref": "#/$defs/storageReceiver"
+        },
+        "resourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        }
+      },
+      "required": [
+        "receiver",
+        "resourceRef"
+      ]
+    },
+    "federationPolicy": {
+      "$ref": "urn:agentmux:contract:1:federation-policy-service-selection"
+    },
+    "coreWorkTransport": {
+      "$ref": "urn:agentmux:contract:1:core-work-transport-selection"
+    },
+    "ordinarySecret": {
+      "$ref": "urn:agentmux:contract:1:ordinary-secret-selection"
+    },
+    "process": {
+      "$ref": "urn:agentmux:contract:1:process-selection"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "hostPolicy",
+    "ownerUid",
+    "workspaces",
+    "kernelScope",
+    "authorityId",
+    "organizationId",
+    "authoritySwitch",
+    "identity",
+    "definitions"
+  ],
+  "$defs": {
+    "storageConnection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "endpoint": {
+          "type": "string",
+          "pattern": "^tls://127\\.0\\.0\\.1:[1-9][0-9]{0,4}$"
+        },
+        "serverName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 253
+        },
+        "rootsPEM": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384
+        },
+        "leafCertificateSHA256": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "jetstreamDomain": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "endpoint",
+        "serverName",
+        "rootsPEM",
+        "leafCertificateSHA256",
+        "jetstreamDomain"
+      ]
+    },
+    "storageCredentials": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "sha256": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "accountPublicKey": {
+          "type": "string",
+          "pattern": "^A[A-Z2-7]{55}$"
+        },
+        "userPublicKey": {
+          "type": "string",
+          "pattern": "^U[A-Z2-7]{55}$"
+        },
+        "replyPrefix": {
+          "type": "string",
+          "pattern": "^_INBOX\\.[A-Za-z0-9_-]{16,64}$"
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "accountPublicKey",
+        "userPublicKey",
+        "replyPrefix"
+      ]
+    },
+    "storageIssuer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "keyFile": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+            },
+            "sha256": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            }
+          },
+          "required": [
+            "path",
+            "sha256"
+          ]
+        },
+        "issuerRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "publicKey": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        }
+      },
+      "required": [
+        "keyFile",
+        "issuerRef",
+        "publicKey"
+      ]
+    },
+    "storageLedger": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entityId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "scope": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+        },
+        "stream": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}$"
+        },
+        "streamIdentity": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "created": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+            },
+            "minimumSequence": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+            }
+          },
+          "required": [
+            "created",
+            "minimumSequence"
+          ]
+        },
+        "retention": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "maxBytes": {
+              "type": "integer",
+              "minimum": 131073,
+              "maximum": 107374182400
+            },
+            "reserveBytes": {
+              "type": "integer",
+              "minimum": 131072,
+              "maximum": 107374182399
+            },
+            "replicas": {
+              "enum": [
+                1,
+                3
+              ]
+            }
+          },
+          "required": [
+            "maxBytes",
+            "reserveBytes",
+            "replicas"
+          ]
+        },
+        "history": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+            },
+            "maxRecords": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000000
+            },
+            "maxBytes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1099511627776
+            }
+          },
+          "required": [
+            "path",
+            "maxRecords",
+            "maxBytes"
+          ]
+        },
+        "checkpoint": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+            },
+            "commitRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            }
+          },
+          "required": [
+            "path",
+            "commitRef"
+          ]
+        }
+      },
+      "required": [
+        "entityId",
+        "scope",
+        "stream",
+        "streamIdentity",
+        "retention",
+        "history",
+        "checkpoint"
+      ]
+    },
+    "storageBackup": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "backupDirectory": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "inventoryDirectory": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "keyDirectory": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "destinationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "keyId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        }
+      },
+      "required": [
+        "backupDirectory",
+        "inventoryDirectory",
+        "keyDirectory",
+        "destinationId",
+        "keyId"
+      ]
+    },
+    "storagePublisher": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "connection": {
+          "$ref": "#/$defs/storageConnection"
+        },
+        "credentials": {
+          "$ref": "#/$defs/storageCredentials"
+        }
+      },
+      "required": [
+        "connection",
+        "credentials"
+      ]
+    },
+    "storageReceiver": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "connection": {
+          "$ref": "#/$defs/storageConnection"
+        },
+        "credentials": {
+          "$ref": "#/$defs/storageCredentials"
+        },
+        "issuer": {
+          "$ref": "#/$defs/storageIssuer"
+        },
+        "serviceIdentityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "serviceInstanceId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "requestSigningKeyRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        }
+      },
+      "required": [
+        "connection",
+        "credentials",
+        "issuer",
+        "serviceIdentityRef",
+        "serviceInstanceId",
+        "requestSigningKeyRef"
+      ]
+    },
+    "storageBoardPublisher": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "connection": {
+          "$ref": "#/$defs/storageConnection"
+        },
+        "credentials": {
+          "$ref": "#/$defs/storageCredentials"
+        },
+        "ledger": {
+          "$ref": "#/$defs/storageLedger"
+        },
+        "backup": {
+          "$ref": "#/$defs/storageBackup"
+        }
+      },
+      "required": [
+        "connection",
+        "credentials",
+        "ledger",
+        "backup"
+      ]
+    }
+  }
+}

@@ -13,7 +13,9 @@ import (
 	"time"
 
 	"github.com/controlLogix/agentmux/platform/deployment"
+	"github.com/controlLogix/agentmux/platform/kernel/protocol"
 	"github.com/controlLogix/agentmux/platform/localtls"
+	protected "github.com/controlLogix/agentmux/platform/runtime"
 )
 
 func TestRequestDiagnosticActualDockerAdmission(t *testing.T) {
@@ -281,5 +283,29 @@ func TestRequestDiagnosticRuntimeCleanupCauseUnknownAncestryIsNotInvoked(t *test
 	var absent *runtimeCleanupCause
 	if ProjectRequestDiagnostic(absent) != requestDiagnostic("request_failed") {
 		t.Fatal("absent historical cleanup acquired a category")
+	}
+}
+
+func TestRequestDiagnosticRetainsRecoveryCleanupPriority(t *testing.T) {
+	cleanup := &protected.RecoveryCleanupError{Prepared: &protected.Prepared{}}
+	for _, failure := range []error{cleanup, errors.Join(cleanup, localtls.ErrServerAuthentication), errors.Join(cleanup, context.DeadlineExceeded)} {
+		if ProjectRequestDiagnostic(failure) != requestDiagnostic("owned_cleanup_incomplete") {
+			t.Fatal("exact recovery cleanup owner lost diagnostic priority")
+		}
+		if !errors.Is(failure, protected.ErrStartupCleanup) {
+			t.Fatal("recovery cleanup cause was lost")
+		}
+		var owner *protected.RecoveryCleanupError
+		if !errors.As(failure, &owner) || owner != cleanup {
+			t.Fatal("recovery cleanup ownership was replaced")
+		}
+	}
+}
+
+func TestRequestDiagnosticLifecycleAuthorityFailures(t *testing.T) {
+	for _, failure := range []error{protocol.ErrBrokerAuthentication, protocol.ErrBrokerAuthorization, protocol.ErrServerAuthentication} {
+		if ProjectRequestDiagnostic(errors.Join(context.DeadlineExceeded, failure)) != requestDiagnostic("runtime_authority_rejected") {
+			t.Fatal("lifecycle authority failure was hidden by a request deadline")
+		}
 	}
 }

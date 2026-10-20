@@ -1,0 +1,220 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:approved-execution-profile",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "profileRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "profileId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "scope": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+    },
+    "image": {
+      "type": "string",
+      "maxLength": 512,
+      "pattern": "^[a-z0-9][a-z0-9._:/-]*@sha256:[a-f0-9]{64}$"
+    },
+    "platform": {
+      "const": "linux/arm64"
+    },
+    "recipe": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "python-script-v1"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512,
+          "pattern": "^[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*$"
+        },
+        "sha256": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        }
+      },
+      "required": [
+        "kind",
+        "path",
+        "sha256"
+      ]
+    },
+    "workspaceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "workerIdentityRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "consumerRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "credentialRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "network": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profileRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "mode": {
+          "enum": [
+            "none",
+            "scoped-egress"
+          ]
+        },
+        "destinationRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "maxItems": 8,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "profileRef",
+        "mode",
+        "destinationRefs"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "none"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "destinationRefs": {
+                "maxItems": 0
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "destinationRefs": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "maxSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3600
+        },
+        "offlineSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 3600
+        },
+        "cpuMillis": {
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 8000
+        },
+        "memoryBytes": {
+          "type": "integer",
+          "minimum": 33554432,
+          "maximum": 8589934592
+        },
+        "pids": {
+          "type": "integer",
+          "minimum": 8,
+          "maximum": 256
+        }
+      },
+      "required": [
+        "maxSeconds",
+        "offlineSeconds",
+        "cpuMillis",
+        "memoryBytes",
+        "pids"
+      ]
+    },
+    "isolation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "homeMounted": {
+          "const": false
+        },
+        "dockerSocketMounted": {
+          "const": false
+        },
+        "hostPID": {
+          "const": false
+        },
+        "privileged": {
+          "const": false
+        },
+        "readOnlyRootFilesystem": {
+          "const": true
+        },
+        "dropAllCapabilities": {
+          "const": true
+        },
+        "noNewPrivileges": {
+          "const": true
+        },
+        "workerUID": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65534
+        }
+      },
+      "required": [
+        "homeMounted",
+        "dockerSocketMounted",
+        "hostPID",
+        "privileged",
+        "readOnlyRootFilesystem",
+        "dropAllCapabilities",
+        "noNewPrivileges",
+        "workerUID"
+      ]
+    },
+    "workingDirectory": {
+      "const": "/workspace"
+    },
+    "outputPolicy": {
+      "const": "discard"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "profileRef",
+    "profileId",
+    "scope",
+    "image",
+    "platform",
+    "recipe",
+    "workspaceRef",
+    "workerIdentityRef",
+    "consumerRef",
+    "credentialRef",
+    "network",
+    "limits",
+    "isolation",
+    "workingDirectory",
+    "outputPolicy"
+  ]
+}

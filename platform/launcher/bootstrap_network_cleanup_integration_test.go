@@ -41,6 +41,13 @@ type bootstrapNetworkProvenance struct {
 	endpointID  string
 }
 
+type bootstrapNetworkRestart struct {
+	original    *bootstrapNetworkProvenance
+	stopped     bootstrapNetworkObservation
+	attachments map[string]bootstrapNetworkAttachment
+	expiresAt   time.Time
+}
+
 func bootstrapNetworkError() error { return errors.New("fixture_network_admission_failed") }
 
 type bootstrapNetworkReadFailure struct {
@@ -298,10 +305,86 @@ func validBootstrapStoppedNetwork(pin *bootstrapNetworkProvenance, baseline map[
 	return validBootstrapCounterTransition(pin.network, current, pin.containerID)
 }
 
+func validBootstrapRunningNetwork(pin *bootstrapNetworkProvenance, baseline map[string]bootstrapNetworkObservation, owner OwnershipPreflight, containerID string, current bootstrapNetworkObservation, attachments map[string]bootstrapNetworkAttachment) bool {
+	return pin != nil && validBootstrapNetworkCreation(baseline, owner, containerID, current, attachments) &&
+		sameBootstrapNetworkIdentity(pin.network, current) && validBootstrapCounterTransition(pin.network, current, pin.containerID) &&
+		pin.containerID == containerID && pin.endpointID == attachments[current.Name].EndpointID
+}
+
+// Only an exact test-owned stop under the bootstrap lease can authorize this
+// one endpoint replacement. Network identity and allocation totals stay fixed.
+func validBootstrapRestartedNetwork(restart *bootstrapNetworkRestart, pin *bootstrapNetworkProvenance, baseline map[string]bootstrapNetworkObservation, owner OwnershipPreflight, containerID string, current bootstrapNetworkObservation, attachments map[string]bootstrapNetworkAttachment, now time.Time) bool {
+	if restart == nil || pin == nil || restart.original != pin || !now.Before(restart.expiresAt) || containerID != pin.containerID ||
+		!validBootstrapStoppedNetwork(pin, baseline, owner, containerID, "stopped", restart.stopped, restart.attachments) ||
+		len(restart.stopped.Endpoints) != 0 || restart.attachments[pin.network.Name].EndpointID != "" ||
+		!validBootstrapNetworkCreation(baseline, owner, containerID, current, attachments) ||
+		!sameBootstrapNetworkIdentity(pin.network, current) || !validBootstrapCounterTransition(pin.network, current, containerID) {
+		return false
+	}
+	return attachments[current.Name].EndpointID != pin.endpointID
+}
+
+func (f *bootstrapDockerFixture) stopBrokerForRecovery(ctx context.Context, containerID string) (failure error) {
+	if ctx == nil || ctx.Err() != nil || !fullID.MatchString(containerID) {
+		return bootstrapNetworkError()
+	}
+	deadline, ok := ctx.Deadline()
+	if !ok {
+		return bootstrapNetworkError()
+	}
+	lease, err := AcquireBootstrapLock(ctx, f.Profile.ProfileDirectory, f.Profile.InstanceID, f.Profile.Docker.EngineID)
+	if err != nil {
+		return err
+	}
+	defer func() { failure = errors.Join(failure, lease.Close()) }()
+	current, err := f.ObserveBroker(ctx)
+	if err != nil || current.State != "running" || current.ContainerID != containerID {
+		return errors.Join(bootstrapNetworkError(), err)
+	}
+	f.mu.Lock()
+	pin := f.networkProvenance
+	available := pin != nil && pin.containerID == containerID && f.networkRestart == nil && !f.networkRemoved
+	f.mu.Unlock()
+	if !available {
+		return bootstrapNetworkError()
+	}
+	owner := f.Owner
+	owner.LockHeld = true
+	if err := f.Driver.StopOwned(ctx, owner, containerID); err != nil {
+		return err
+	}
+	stopped, err := f.ObserveBroker(ctx)
+	if err != nil || stopped.State != "stopped" || stopped.ContainerID != containerID {
+		return errors.Join(bootstrapNetworkError(), err)
+	}
+	network, err := f.networkByID(ctx, pin.network.ID)
+	if err != nil {
+		return err
+	}
+	attachments, err := f.networkAttachments(ctx, containerID)
+	if err != nil {
+		return err
+	}
+	if ctx.Err() != nil || !validBootstrapStoppedNetwork(pin, f.networkBaseline, f.Owner, containerID, stopped.State, network, attachments) ||
+		len(network.Endpoints) != 0 || attachments[pin.network.Name].EndpointID != "" {
+		return bootstrapNetworkError()
+	}
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.networkProvenance != pin || f.networkRestart != nil || f.networkRemoved {
+		return bootstrapNetworkError()
+	}
+	// Arm only after the stopped network and released allocation are observed,
+	// before releasing the lease that lets the actual owner restart its broker.
+	f.networkRestart = &bootstrapNetworkRestart{pin, network, attachments, deadline}
+	return nil
+}
+
 func (f *bootstrapDockerFixture) observeCreatedNetwork(ctx context.Context, broker OwnedBroker) error {
 	f.mu.Lock()
 	removed := f.networkRemoved
 	pin := f.networkProvenance
+	restart := f.networkRestart
 	f.mu.Unlock()
 	if removed {
 		return nil
@@ -325,7 +408,25 @@ func (f *bootstrapDockerFixture) observeCreatedNetwork(ctx context.Context, brok
 		return bootstrapNetworkError()
 	}
 	if pin != nil {
-		if !sameBootstrapNetworkIdentity(pin.network, network) || !validBootstrapCounterTransition(pin.network, network, pin.containerID) || pin.containerID != broker.ContainerID || pin.endpointID != attachment.EndpointID {
+		if restart != nil {
+			if !validBootstrapRestartedNetwork(restart, pin, f.networkBaseline, f.Owner, broker.ContainerID, network, attachments, time.Now()) {
+				return bootstrapNetworkError()
+			}
+			f.mu.Lock()
+			if f.networkProvenance != pin || f.networkRestart != restart || f.networkRemoved {
+				f.mu.Unlock()
+				return bootstrapNetworkError()
+			}
+			f.networkProvenance = &bootstrapNetworkProvenance{network, broker.ContainerID, attachment.EndpointID}
+			f.networkRestart = nil
+			f.mu.Unlock()
+			return f.writeNetworkEvidence("network-owned-restart.json", map[string]any{
+				"networkId": network.ID, "containerId": broker.ContainerID,
+				"previousEndpointId": pin.endpointID, "currentEndpointId": attachment.EndpointID,
+				"stoppedEndpointReleased": true, "sameImmutableNetwork": true, "sameAllocationTotals": true,
+			})
+		}
+		if !validBootstrapRunningNetwork(pin, f.networkBaseline, f.Owner, broker.ContainerID, network, attachments) {
 			return bootstrapNetworkError()
 		}
 		return nil
@@ -439,7 +540,7 @@ func (f *bootstrapDockerFixture) cleanupCreatedNetwork(ctx context.Context, cont
 	f.networkRemoved = true
 	f.mu.Unlock()
 	stage = "complete"
-	return f.writeNetworkEvidence("network-cleanup.json", map[string]any{"networkId": pin.network.ID, "containerId": containerID, "forcedStoppedEndpointDetach": true, "beforeDetach": beforeDetach, "afterDetach": afterDetach, "exactRemovedId": string(bytes.TrimSpace(removed)), "baselineNetworkCount": len(f.networkBaseline), "afterRemovalNetworkCount": len(baseline), "emptyBeforeRemoval": true, "networkRemoved": true, "unrelatedNetworkBaselineUnchanged": true, "stoppedContainerRetained": true})
+	return f.writeNetworkEvidence("network-cleanup.json", map[string]any{"networkId": pin.network.ID, "containerId": containerID, "forcedStoppedEndpointDetach": true, "beforeDetach": beforeDetach, "afterDetach": afterDetach, "exactRemovedId": string(bytes.TrimSpace(removed)), "baselineNetworkCount": len(f.networkBaseline), "afterRemovalNetworkCount": len(baseline), "emptyBeforeRemoval": true, "networkRemoved": true, "unrelatedNetworkBaselineUnchanged": true, "stoppedContainerRetainedUntilFixtureCleanup": true})
 }
 
 func validBootstrapNetworkRemovalOutput(id string, raw []byte) bool {
@@ -902,6 +1003,88 @@ func TestBootstrapNetworkCounterOneEndpointRelease(t *testing.T) {
 		t.Fatal("foreign complete baseline normalized allocation counters")
 	}
 }
+
+func TestBootstrapNetworkOwnedRestartTransition(t *testing.T) {
+	for _, name := range []string{"owned_restart", "missing_authorization", "expired", "different_pin", "missing_stop", "unreleased_counter", "double_release", "wrong_restore", "unknown_drift", "same_endpoint", "other_container", "other_network", "other_owner", "extra_endpoint", "extra_attachment", "endpoint_disagrees"} {
+		t.Run(name, func(t *testing.T) {
+			baseline, owner, cid, _, _ := bootstrapNetworkPolicyFixture()
+			original := bootstrapCounterDecode(t, bootstrapCounterFields())
+			pin := &bootstrapNetworkProvenance{original, cid, original.Endpoints[cid]}
+			stoppedFields := bootstrapCounterFields()
+			stoppedFields["Containers"] = map[string]any{}
+			stoppedCounters := bootstrapCounterValues(stoppedFields)
+			stoppedCounters["IPsInUse"], stoppedCounters["DynamicIPsAvailable"] = 3, 253
+			runningFields := bootstrapCounterFields()
+			freshEndpoint := strings.Repeat("f", 64)
+			runningFields["Containers"].(map[string]any)[cid].(map[string]any)["EndpointID"] = freshEndpoint
+			switch name {
+			case "unreleased_counter":
+				stoppedCounters["IPsInUse"], stoppedCounters["DynamicIPsAvailable"] = 4, 252
+			case "double_release":
+				stoppedCounters["IPsInUse"], stoppedCounters["DynamicIPsAvailable"] = 2, 254
+			case "wrong_restore":
+				bootstrapCounterValues(runningFields)["IPsInUse"] = 5
+				bootstrapCounterValues(runningFields)["DynamicIPsAvailable"] = 251
+			case "unknown_drift":
+				runningFields["Status"].(map[string]any)["unknownStatus"] = "changed"
+			}
+			stopped := bootstrapCounterDecode(t, stoppedFields)
+			running := bootstrapCounterDecode(t, runningFields)
+			cleared := map[string]bootstrapNetworkAttachment{original.Name: {original.ID, ""}}
+			attachments := map[string]bootstrapNetworkAttachment{running.Name: {running.ID, freshEndpoint}}
+			now := time.Now()
+			restart := &bootstrapNetworkRestart{pin, stopped, cleared, now.Add(time.Second)}
+			switch name {
+			case "missing_authorization":
+				restart = nil
+			case "expired":
+				restart.expiresAt = now
+			case "different_pin":
+				copied := *pin
+				restart.original = &copied
+			case "missing_stop":
+				restart.stopped = bootstrapNetworkObservation{}
+			case "same_endpoint":
+				running.Endpoints[cid] = pin.endpointID
+				attachments[running.Name] = bootstrapNetworkAttachment{running.ID, pin.endpointID}
+			case "other_container":
+				cid = strings.Repeat("1", 64)
+			case "other_network":
+				running.ID = strings.Repeat("2", 64)
+				attachments[running.Name] = bootstrapNetworkAttachment{running.ID, freshEndpoint}
+			case "other_owner":
+				owner.InstanceID = "other_instance"
+			case "extra_endpoint":
+				running.Endpoints[strings.Repeat("1", 64)] = strings.Repeat("2", 64)
+			case "extra_attachment":
+				attachments["other_network"] = bootstrapNetworkAttachment{strings.Repeat("1", 64), strings.Repeat("2", 64)}
+			case "endpoint_disagrees":
+				attachments[running.Name] = bootstrapNetworkAttachment{running.ID, strings.Repeat("1", 64)}
+			}
+			accepted := validBootstrapRestartedNetwork(restart, pin, baseline, owner, cid, running, attachments, now)
+			if name != "owned_restart" {
+				if accepted {
+					t.Fatal("unverified network restart transition admitted")
+				}
+				return
+			}
+			if !accepted {
+				t.Fatal("exact owned stop and replacement endpoint rejected")
+			}
+			if validBootstrapRunningNetwork(pin, baseline, owner, cid, running, attachments) {
+				t.Fatal("fresh endpoint admitted without the explicit restart transition")
+			}
+			current := &bootstrapNetworkProvenance{running, cid, freshEndpoint}
+			if !validBootstrapRunningNetwork(current, baseline, owner, cid, running, attachments) {
+				t.Fatal("admitted replacement endpoint did not become the exact current pin")
+			}
+			if validBootstrapRestartedNetwork(restart, current, baseline, owner, cid, running, attachments, now) {
+				t.Fatal("consumed restart transition could authorize another endpoint")
+			}
+		})
+	}
+}
+
 func TestBootstrapNetworkCounterMalformedAndAmbiguous(t *testing.T) {
 	for _, name := range []string{"fraction", "negative", "exponent", "string", "null", "missing", "overflow", "wrong_total", "status_subnet", "duplicate_static", "overlap_static", "noncanonical_static", "endpoint_foreign", "endpoint_prefix", "endpoint_absent", "unknown_address_family"} {
 		t.Run(name, func(t *testing.T) {

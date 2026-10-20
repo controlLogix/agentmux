@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "receiptRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "outcome": {
+      "enum": [
+        "pending",
+        "stopped",
+        "rejected",
+        "uncertain"
+      ]
+    }
+  },
+  "required": [
+    "receiptRef",
+    "outcome"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:capability-process-cancel-reply",
+  "title": "capability-process-cancel-reply v1"
+}

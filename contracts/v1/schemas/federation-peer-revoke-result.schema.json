@@ -1,0 +1,36 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "operationId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "payloadDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "eventId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "eventDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "outcome": {
+      "enum": [
+        "uncertain",
+        "published"
+      ]
+    }
+  },
+  "required": [
+    "operationId",
+    "payloadDigest",
+    "eventId",
+    "eventDigest",
+    "outcome"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-peer-revoke-result",
+  "title": "federation-peer-revoke-result v1"
+}

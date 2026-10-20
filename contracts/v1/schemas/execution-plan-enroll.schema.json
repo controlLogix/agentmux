@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:execution-plan-enroll",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "plan": {
+      "$ref": "urn:agentmux:contract:1:approved-execution-plan"
+    },
+    "previousRef": {
+      "anyOf": [
+        {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "plan",
+    "previousRef"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:dashboard-command",
+  "title": "Agentmux dashboard-command v1",
+  "description": "One exact local dashboard mutation. The canonical request body stays private to the local owner and is bound by digest.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": { "$ref": "urn:agentmux:contract:1:common#/$defs/reference" },
+    "requestId": { "$ref": "urn:agentmux:contract:1:common#/$defs/identifier" },
+    "target": {
+      "type": "string",
+      "pattern": "^/api/(?:board/[a-z]{1,16}|runs/[0-9a-f]{6}/review)$",
+      "maxLength": 128
+    },
+    "action": {
+      "enum": [
+        "create", "update", "status", "move", "delete", "acceptance", "label",
+        "dep", "evidence", "commit", "touch", "comment", "link", "triage",
+        "state", "config", "override", "recruit", "approve", "retire", "hire",
+        "plcstate", "bootapp", "chatsend", "run-review"
+      ]
+    },
+    "bodyDigest": { "$ref": "urn:agentmux:contract:1:common#/$defs/digest" }
+  },
+  "required": ["resourceRef", "requestId", "target", "action", "bodyDigest"]
+}

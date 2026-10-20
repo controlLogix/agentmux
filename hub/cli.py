@@ -9,8 +9,13 @@ text form, which ends with the exact next command), and scripts (--json).
 """
 from __future__ import annotations
 
+from contextvars import ContextVar
+selected_connection = ContextVar("selected_core_connection", default=None)
+
 import json
 import os
+import re
+import secrets
 import socket
 import subprocess
 import sys
@@ -21,9 +26,10 @@ sys.path.insert(0, REPO)
 from agentmux_windows import validate_callback
 ROOT = os.environ.get("AGENTMUX_HOME") or os.path.expanduser("~/.agentmux")
 SOCK = os.path.join(ROOT, "hub", "hub.sock")
+ENROLLED_STARTUP_SECONDS = 30
 
 USAGE = """usage: agentmux hub <verb> [args]
-  daemon     start | stop | status | ping | token (where your TCP token file is)
+  daemon     start [--selection ABSOLUTE_PATH]... | stop | status | ping | token (where your TCP token file is)
   stream     subscribe [--events [--since SEQ]]   one JSON line per new message / claimable change / event
   agent      whoami | inbox [--ack] | ack <id>... | claim [<work_id>] | heartbeat
              done|fail|return|block <work_id> [--result TEXT]
@@ -40,7 +46,12 @@ USAGE = """usage: agentmux hub <verb> [args]
   federation fed help | fed setup | fed status | fed peers | fed share|unshare|trust | fed kill [--revoke] | fed resume
              fed quarantine | fed approve|deny <id> | fed audit | fed <plugin> <verb> ...   (docs/FEDERATION.md)
              mcp          stdio MCP server exposing the agent and federation verbs (for claude/codex)
+  startup    [--selection ABSOLUTE_PATH] [--managed-worker] [--output human|json]
+  dashboard  --selection ABSOLUTE_PATH
+  enrolled   mcp --enrolled --selection ABSOLUTE_PATH [--managed-worker]
   global     --json   --as SESSION (operator only; testing)
+  recovery   work mutations accept --operation-id ID; retry with the same ID and arguments
+             qualified calls generate an ID before sending and retain it on transport retry
 addresses: agent:<repo>-<role>-<agent>  role:<repo>/<role>  role:*/<role>  role:group:<g>/<role>
            role:team:<repo>/<team>/<role>  team:<repo>/<team>  virtual:operator
            peer:<peer>[/<repo>/<role>[/<agent>]]   (another person's hub, via federation)"""
@@ -65,8 +76,16 @@ def connect(timeout):
         s = socket.create_connection((host or "127.0.0.1", int(port)), timeout=timeout)
         return s, True
     s = socket.socket(socket.AF_UNIX)
-    s.settimeout(timeout)
-    s.connect(SOCK)
+    try:
+        s.settimeout(timeout)
+        s.connect(SOCK)
+    except BaseException as error:
+        try:
+            s.close()
+        except BaseException as cleanup_error:
+            # Preserve the original failure and the consumed close failure.
+            raise error from cleanup_error
+        raise
     return s, False
 
 
@@ -89,27 +108,79 @@ def call(verb, args=None, as_=None, timeout=30):
         validate_callback(os.environ, verb)
     except ValueError as exc:
         raise Fail(str(exc))
-    req = {"verb": verb, "args": args or {}}
+    deadline = time.monotonic() + timeout
+    arguments = dict(args or {})
+    operation_id = None
+    qualified = False
+    work_mutation = verb in ('work_add', 'claim', 'heartbeat', 'release', 'work_cancel', 'claim_path', 'fed_work_add')
+    lifecycle_mutation = verb in ('spawn', 'adopt', 'kill')
+    if verb in ('fed_code_share', 'fed_code_fetch') or work_mutation or lifecycle_mutation:
+        family = 'lifecycle' if lifecycle_mutation else ('work' if work_mutation else 'code')
+        operation_id = arguments.pop('operation_id', None)
+        if operation_id is not None and (type(operation_id) is not str
+                or re.fullmatch(r'[A-Za-z0-9_-]{1,128}', operation_id) is None):
+            raise Fail(f'invalid {family} operation ID')
+        discovery = 'ping' if lifecycle_mutation or work_mutation and verb != 'fed_work_add' else 'fed_verbs'
+        registry = call(discovery, as_=as_, timeout=min(10, max(.001, deadline - time.monotonic())))
+        qualified = (type(registry.get('result')) is dict and registry['result'].get('lifecycleOperationIds' if lifecycle_mutation else 'workOperationIds') is True
+            if discovery == 'ping' else
+            any(row.get('verb') == verb and row.get('operationIds') is True
+                for row in registry.get('result', []) if isinstance(row, dict)))
+        if operation_id is not None and not qualified:
+            raise Fail(f'this Hub does not support {family} operation recovery IDs')
+        if qualified and operation_id is None:
+            operation_id = family + '_' + secrets.token_hex(24)
+    req = {'verb': verb, 'args': arguments}
     if as_:
-        req["as"] = as_
-    try:
-        s, tcp = connect(timeout)
-    except (FileNotFoundError, ConnectionRefusedError, OSError) as e:
-        raise Fail(f"agentmux hub: the hub is not reachable ({e.__class__.__name__}; agentmux hub start)")
-    if tcp:
-        req["token"] = tcp_token()
-    s.sendall((json.dumps(req) + "\n").encode())
-    buf = b""
-    while not buf.endswith(b"\n"):
-        chunk = s.recv(65536)
-        if not chunk:
-            break
-        buf += chunk
-    s.close()
-    resp = json.loads(buf or b"{}")
-    if not resp.get("ok"):
-        raise Fail(f"agentmux hub {verb}: {resp.get('error', 'no response')}")
-    return resp
+        req['as'] = as_
+    if operation_id is not None:
+        req['operationId'] = operation_id
+    # Freeze one intent before any mutation exchange. Only the transport token
+    # may be refreshed; it is excluded from the Hub's authenticated intent.
+    packet = json.dumps(req)
+    for attempt in range(2 if qualified else 1):
+        s = None
+        try:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise TimeoutError()
+            selected = selected_connection.get()
+            if selected is not None:
+                resp = selected.exchange(json.loads(packet), remaining)
+            else:
+                s, tcp = connect(remaining)
+                outgoing = json.loads(packet)
+                if tcp:
+                    outgoing['token'] = tcp_token()
+                s.sendall((json.dumps(outgoing) + '\n').encode())
+                buf = b''
+                while not buf.endswith(b'\n'):
+                    remaining = deadline - time.monotonic()
+                    if remaining <= 0:
+                        raise TimeoutError()
+                    s.settimeout(remaining)
+                    chunk = s.recv(65536)
+                    if not chunk:
+                        raise EOFError()
+                    buf += chunk
+                resp = json.loads(buf)
+            if not isinstance(resp, dict):
+                raise ValueError('invalid Hub response')
+        except ValueError:
+            recovery = f'; recover with --operation-id {operation_id}' if operation_id else ''
+            raise Fail(f'agentmux hub: invalid response{recovery}') from None
+        except (OSError, EOFError) as exc:
+            if qualified and attempt == 0 and time.monotonic() < deadline:
+                continue
+            recovery = f'; recover with --operation-id {operation_id}' if operation_id else ''
+            raise Fail(f'agentmux hub: response unavailable ({type(exc).__name__}){recovery}') from None
+        finally:
+            if s is not None:
+                s.close()
+        if not resp.get('ok'):
+            recovery = f'; operation ID {operation_id}' if operation_id else ''
+            raise Fail(f"agentmux hub {verb}: {resp.get('error', 'no response')}{recovery}")
+        return resp
 
 
 def opt(argv, name, default=None, multi=False, flag=False):
@@ -188,23 +259,68 @@ def python():
     return venv if os.path.exists(venv) else sys.executable
 
 
-def start():
+def _stop_enrolled_child(process):
+    """Stop and reap the exact enrolled child before reporting startup failure."""
+    if process.poll() is None:
+        process.terminate()
+        try:
+            process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait()
+    else:
+        process.wait()
+
+
+def start(selections=()):
     try:
         validate_callback(os.environ, "start")
     except ValueError as exc:
         raise Fail(str(exc))
+    running = False
     try:
         call("ping", timeout=3)
-        print("hub already running")
-        return
+        running = True
     except Fail:
         pass
+    if running:
+        if selections:
+            raise Fail("an existing hub must be stopped before enrolled startup")
+        print("hub already running")
+        return
     os.makedirs(os.path.join(ROOT, "hub"), exist_ok=True)
-    logf = open(os.path.join(ROOT, "hub", "hub.log"), "a")
-    subprocess.Popen([python(), os.path.join(REPO, "hub", "server.py")], stdout=logf, stderr=logf,
-                     stdin=subprocess.DEVNULL, start_new_session=True, cwd=ROOT)
+    startup_deadline = time.monotonic() + ENROLLED_STARTUP_SECONDS if selections else None
+    command = ([python(), os.path.join(REPO, "hub", "server.py")] if not selections else
+               [python(), os.path.join(REPO, "hub", "enrolled_hub_bootstrap.py"),
+                '--startup-deadline', repr(startup_deadline),
+                *(value for path in selections for value in ('--selection', path))])
+    with open(os.path.join(ROOT, "hub", "hub.log"), "a") as logf:
+        process = subprocess.Popen(command, stdout=logf, stderr=logf,
+                                   stdin=subprocess.DEVNULL, start_new_session=True, cwd=ROOT)
+    if selections:
+        try:
+            while time.monotonic() < startup_deadline:
+                if process.poll() is not None:
+                    raise Fail("hub did not come up; see " + os.path.join(ROOT, "hub", "hub.log"))
+                remaining = startup_deadline - time.monotonic()
+                try:
+                    call("ping", timeout=min(2, max(0.001, remaining)))
+                    if process.poll() is not None:
+                        raise Fail("hub did not come up; see " + os.path.join(ROOT, "hub", "hub.log"))
+                    print(f"hub started ({SOCK})")
+                    return
+                except Fail:
+                    time.sleep(min(0.2, max(0, startup_deadline - time.monotonic())))
+        except BaseException:
+            _stop_enrolled_child(process)
+            raise
+        _stop_enrolled_child(process)
+        raise Fail("hub did not come up; see " + os.path.join(ROOT, "hub", "hub.log"))
     for _ in range(50):
         time.sleep(0.2)
+        if process.poll() is not None:
+            process.wait()
+            raise Fail("hub did not come up; see " + os.path.join(ROOT, "hub", "hub.log"))
         try:
             call("ping", timeout=2)
             print(f"hub started ({SOCK})")
@@ -214,12 +330,37 @@ def start():
     raise Fail("hub did not come up; see " + os.path.join(ROOT, "hub", "hub.log"))
 
 
-def main(argv):
+def main(argv, *, registered_context=None):
+    if argv and argv[0] == 'selected':
+        arguments = list(argv[1:])
+        repository = opt(arguments, '--repository-root')
+        profile = opt(arguments, '--profile-id')
+        if not repository or not arguments or arguments[0] != '--' or len(arguments) < 2:
+            raise Fail('Use selected --repository-root PATH [--profile-id ID] -- COMMAND.')
+        from hub.client_launch_repository import core_handoff
+        try:
+            return core_handoff(repository, arguments[1:], profile_id=profile)
+        except Exception:
+            raise Fail('Selected core Hub setup is required.') from None
+    if registered_context is not None:
+        from hub.profile_context import RegisteredProfileContext
+        if (type(registered_context) is not RegisteredProfileContext or not argv
+                or argv[0] not in ('startup', 'mcp', 'dashboard') or '--selection' not in argv):
+            raise Fail('Registered profile context requires an explicit installed startup selection.')
     as_ = opt(argv, "--as")
     js = opt(argv, "--json", flag=True)
     if not argv or argv[0] in ("-h", "--help", "help"):
         print(USAGE); return
     verb, rest = argv[0], argv[1:]
+    work_operation_id = (opt(rest, '--operation-id') if verb in
+        ('claim', 'done', 'fail', 'return', 'block', 'heartbeat', 'spawn', 'adopt', 'kill') or
+        verb == 'work' and rest[:1] in (['add'], ['cancel']) else None)
+
+    def work_args(arguments=None):
+        result = dict(arguments or {})
+        if work_operation_id is not None:
+            result['operation_id'] = work_operation_id
+        return result
     try:
         validate_callback(os.environ, verb)
     except ValueError as exc:
@@ -235,10 +376,40 @@ def main(argv):
         return fed_main(rest, as_, js)
     if verb == "mcp":
         sys.path.insert(0, REPO)
+        if rest:
+            from hub.client_launch_entrypoint import EnrolledSession, OptionsError, parse_options
+            try:
+                options = parse_options(rest, mcp=True)
+                if as_ is not None or js:
+                    raise OptionsError("Enrolled MCP does not accept legacy output or identity overrides.")
+            except OptionsError as exc:
+                raise Fail(str(exc)) from None
+            return EnrolledSession(options, registered_context=registered_context).serve_mcp()
         from hub.fed import mcp
         return mcp.main()
+    if verb == "startup":
+        from hub.client_launch_entrypoint import EnrolledSession, OptionsError, parse_options
+        try:
+            options = parse_options(rest)
+            if as_ is not None or js:
+                raise OptionsError("Use explicit startup output options without identity overrides.")
+        except OptionsError as exc:
+            raise Fail(str(exc)) from None
+        return EnrolledSession(options, registered_context=registered_context).report()
+    if verb == "dashboard":
+        from hub.client_launch_entrypoint import EnrolledSession, OptionsError, parse_options
+        try:
+            options = parse_options(rest)
+            if (options.managed_worker or options.output != 'human' or as_ is not None or js):
+                raise OptionsError('Dashboard sign-in accepts only an explicit enrolled selection.')
+        except OptionsError as exc:
+            raise Fail(str(exc)) from None
+        return EnrolledSession(options, registered_context=registered_context).open_dashboard()
     if verb == "start":
-        return start()
+        selections = tuple(opt(rest, "--selection", multi=True))
+        if rest:
+            raise Fail("hub start accepts only repeated --selection paths")
+        return start(selections)
     if verb == "stop":
         call("shutdown"); print("hub stopping"); return
     if verb == "status" and opt(rest, "--bridge", flag=True):
@@ -293,7 +464,7 @@ def main(argv):
         r = call("ack", {"ids": rest}, as_=as_)
         return out(r, f"acked {len(r['result']['acked'])}")
     if verb == "claim":
-        r = call("claim", {"work_id": rest[0] if rest else None}, as_=as_)
+        r = call("claim", work_args({"work_id": rest[0] if rest else None}), as_=as_)
         c = r["result"].get("claimed")
         if not c:
             return out(r, "Nothing claimable for you right now" + (f" ({r['result']['reason']})" if r['result'].get('reason') else "")
@@ -305,10 +476,10 @@ def main(argv):
             raise Fail(f"{verb} needs a work id")
         result = opt(rest, "--result")
         outcome = {"fail": "failed", "return": "returned", "block": "blocked"}.get(verb, "done")
-        r = call("release", {"work_id": rest[0], "outcome": outcome, "result": result}, as_=as_)
+        r = call("release", work_args({"work_id": rest[0], "outcome": outcome, "result": result}), as_=as_)
         return out(r, f"{rest[0]} -> {r['result']['state']}")
     if verb == "heartbeat":
-        return out(call("heartbeat", as_=as_))
+        return out(call("heartbeat", work_args(), as_=as_))
     if verb == "post":
         to = opt(rest, "--to"); kind = opt(rest, "--kind", "note"); ref = opt(rest, "--ref")
         idem = opt(rest, "--idem")
@@ -335,10 +506,13 @@ def main(argv):
                  "federate": opt(rest, "--federate", flag=True)}
             if not a["to"] or not a["title"]:
                 raise Fail("work add needs --to and --title")
-            r = call("work_add", a, as_=as_)
+            r = call("work_add", work_args(a), as_=as_)
             return out(r, f"created {r['result']['id']} -> {r['result']['target']}")
         if sub == "cancel":
-            r = call("work_cancel", {"work_id": rest[0], "reason": opt(rest, "--reason")}, as_=as_)
+            reason = opt(rest, '--reason')
+            if len(rest) != 1:
+                raise Fail('work cancel needs a work id')
+            r = call("work_cancel", work_args({"work_id": rest[0], "reason": reason}), as_=as_)
             return out(r, f"cancelled: {', '.join(r['result']['cancelled']) or 'nothing open'}")
         if sub == "show":
             r = call("work_show", {"work_id": rest[0]}, as_=as_)
@@ -369,17 +543,20 @@ def main(argv):
         cwd = opt(rest, "--cwd"); acc = opt(rest, "--accept-normalized", flag=True)
         if len(rest) != 3:
             raise Fail("usage: agentmux hub spawn <repo> <role> <agent> [--cli C]")
-        r = call("spawn", {"repo": rest[0], "role": rest[1], "agent": rest[2], "cli": cli, "model": model,
-                           "teams": teams, "cwd": cwd, "accept_normalized": acc}, as_=as_, timeout=180)
+        r = call("spawn", work_args({"repo": rest[0], "role": rest[1], "agent": rest[2], "cli": cli, "model": model,
+                           "teams": teams, "cwd": cwd, "accept_normalized": acc}), as_=as_, timeout=180)
+        if r['result'].get('outcome') == 'not-started':
+            return out(r, f"{r['result']['session']} did not start: the original caller deadline expired. "
+                f"Operation {r['result']['operationId']} remains not started.")
         return out(r, f"spawned {r['result']['session']} ({r['result']['handle']}) in {r['result']['cwd']}")
     if verb == "kill":
-        return out(call("kill", {"session": rest[0]}, as_=as_))
+        return out(call("kill", work_args({"session": rest[0]}), as_=as_))
     if verb == "adopt":
         cli = opt(rest, "--cli"); acc = opt(rest, "--accept-normalized", flag=True)
         if len(rest) != 4:
             raise Fail("usage: agentmux hub adopt <legacy-session> <repo> <role> <agent> [--cli C]")
-        r = call("adopt", {"legacy": rest[0], "repo": rest[1], "role": rest[2], "agent": rest[3], "cli": cli,
-                           "accept_normalized": acc}, as_=as_)
+        r = call("adopt", work_args({"legacy": rest[0], "repo": rest[1], "role": rest[2], "agent": rest[3], "cli": cli,
+                           "accept_normalized": acc}), as_=as_)
         return out(r, f"adopted {r['result']['legacy']} as {r['result']['session']} ({r['result']['cli']}, "
                       f"{r['result']['handle']}); both names now reach it")
     if verb == "retire-courier":
@@ -518,7 +695,11 @@ def fed_main(rest, as_, js):
 
 if __name__ == "__main__":
     try:
-        main(sys.argv[1:])
+        completed = main(sys.argv[1:])
+        if completed is not None:
+            from hub.client_launch_entrypoint import EnrolledSession
+            if isinstance(completed, EnrolledSession):
+                sys.exit(completed.exit_code())
     except Fail as e:
         print(e, file=sys.stderr)
         sys.exit(1)

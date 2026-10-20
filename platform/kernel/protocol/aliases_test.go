@@ -97,7 +97,10 @@ func TestExactCredentialNamesAndEnvironmentReload(t *testing.T) {
 		t.Fatal("private fixture directory unavailable")
 	}
 	path := filepath.Join(dir, "credentials.json")
+	f := serverTrustTestMaterial(t)
 	c := validCredentials()
+	c.NATSURL = f.record.Endpoint
+	t.Setenv("AGENTMUX_NATS_SERVER_TRUST_FILE", writeTrustRecord(t, f.record))
 	raw := mustJSON(c)
 	for key, value := range map[string]string{"AGENTMUX_KERNEL_ROLE": c.Role, "AGENTMUX_KERNEL_API_MAJOR": "1", "AGENTMUX_NATS_CREDS_FILE": path, "AGENTMUX_INSTANCE_ID": c.Scope.InstanceID, "AGENTMUX_PROFILE_ID": c.Scope.ProfileID, "AGENTMUX_NATS_URL": c.NATSURL} {
 		t.Setenv(key, value)

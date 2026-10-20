@@ -189,3 +189,5 @@ export function validatePayload(envelope:any,registryPath=resolve(process.env.AG
   if(envelope.contractId==='operation-outcome' && p.operationId!==envelope.correlationId)fail('invalid_payload_context');
   return true;
 }
+
+export {NativeChild, NativeChildBootstrap, loadNativeBootstrap} from './native-child.js';

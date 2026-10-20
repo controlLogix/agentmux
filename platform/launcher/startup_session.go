@@ -77,20 +77,6 @@ func (s *Session) OwnerObservationContext(ctx context.Context, owner *OwnerStatu
 		proof := *s.healthProof
 		input.healthProof = &proof
 	}
-	cleanupFailed := s.cleanupFailure != nil
-	ownedExited := s.retiredGroup != nil
-	if s.group != nil {
-		for _, child := range s.group.Status() {
-			if child.Exited {
-				ownedExited = true
-			}
-		}
-		select {
-		case <-s.group.Done():
-			ownedExited = true
-		default:
-		}
-	}
 	s.mu.Unlock()
 	if ctx.Err() != nil {
 		return StartupStatusObservation{}, observationContextError(ctx)
@@ -99,28 +85,126 @@ func (s *Session) OwnerObservationContext(ctx context.Context, owner *OwnerStatu
 	if ctx.Err() != nil {
 		return StartupStatusObservation{}, observationContextError(ctx)
 	}
-	if err != nil || out.Instance.InstanceID == nil || (!cleanupFailed && !ownedExited) {
+	if err != nil {
 		return out, err
 	}
-	// Known owned-process facts override a still-fresh cached ready frame. A
-	// reused session owns no group and cannot infer another owner's shutdown.
-	code, message := "owned_runtime_exited", "An owned protected process has exited."
-	if cleanupFailed {
-		code, message = "owned_cleanup_incomplete", "Cleanup of the owned runtime is incomplete."
+	if err := s.recheckOwnedKernelObservation(ctx, input.status.Kernel, &out); err != nil {
+		return StartupStatusObservation{}, err
 	}
-	out.Disposition = "failed"
-	out.Instance.Readiness = "not_ready"
-	out.Instance.RunningVersion = nil
-	for i := range out.Instance.Services {
-		for _, role := range protocol.Roles() {
-			if out.Instance.Services[i].ServiceID == role {
-				out.Instance.Services[i] = unknownStatusService(role, "probe_failed")
-			}
-		}
-	}
-	out.Errors = append(out.Errors, StartupStatusError{Component: "instance", Code: code, Message: message, Retryable: true})
 	if ctx.Err() != nil {
 		return StartupStatusObservation{}, observationContextError(ctx)
 	}
 	return out, nil
+}
+
+// Only the Session's retained Group supplies these facts. Historical generations
+// never enter this observation, and process identifiers never enter L04 output.
+type ownedProcessObservation struct {
+	exitedRoles   []string
+	terminal      bool
+	cleanupFailed bool
+}
+
+// The caller holds Session.mu while choosing the actual current owned group.
+func (s *Session) ownedProcessObservationLocked() ownedProcessObservation {
+	observed := ownedProcessObservation{cleanupFailed: s.cleanupFailure != nil}
+	group := s.group
+	if group == nil {
+		group = s.retiredGroup
+		observed.terminal = group != nil
+	}
+	if group == nil {
+		return observed
+	}
+	for _, child := range group.Status() {
+		if child.Exited {
+			for _, role := range protocol.Roles() {
+				if child.Role == role {
+					observed.exitedRoles = append(observed.exitedRoles, role)
+				}
+			}
+		}
+	}
+	select {
+	case <-group.Done():
+		observed.terminal = true
+	default:
+	}
+	return observed
+}
+
+func applyOwnedProcessObservation(out *StartupStatusObservation, observed ownedProcessObservation) {
+	if out == nil || out.Instance.InstanceID == nil || (!observed.cleanupFailed && !observed.terminal && len(observed.exitedRoles) == 0) {
+		return
+	}
+	out.Disposition = "failed"
+	out.Instance.Readiness = "not_ready"
+	out.Persistence.Readiness = "unknown"
+	if observed.terminal {
+		out.Instance.RunningVersion = nil
+	}
+	for _, role := range protocol.Roles() {
+		exited := false
+		for _, failed := range observed.exitedRoles {
+			exited = exited || role == failed
+		}
+		if !exited {
+			continue
+		}
+		found := false
+		for i, service := range out.Instance.Services {
+			if service.ServiceID == role {
+				out.Instance.Services[i] = unknownStatusService(role, "probe_failed")
+				found = true
+			}
+		}
+		if !found {
+			out.Instance.Services = append(out.Instance.Services, unknownStatusService(role, "probe_failed"))
+		}
+		out.Errors = append(out.Errors, StartupStatusError{Component: "instance", Code: "owned_role_exited", Message: "The owned protected role " + role + " has exited.", Retryable: true})
+	}
+	code, message := "owned_runtime_exited", "An owned protected process has exited."
+	if observed.cleanupFailed {
+		code, message = "owned_cleanup_incomplete", "Cleanup of the owned runtime is incomplete."
+	}
+	out.Errors = append(out.Errors, StartupStatusError{Component: "instance", Code: code, Message: message, Retryable: true})
+}
+
+// The last generation check follows mapping so recovery during owner validation
+// cannot turn a previous member incarnation into current readiness.
+func (s *Session) recheckOwnedKernelObservation(ctx context.Context, snapshot protocol.Snapshot, out *StartupStatusObservation) error {
+	if err := lockOwnerObservation(ctx, &s.mu); err != nil {
+		return err
+	}
+	roles, current := s.currentKernelRoles(snapshot)
+	owned := s.ownedProcessObservationLocked()
+	s.mu.Unlock()
+	filterCurrentKernelRoles(out, roles, current)
+	applyOwnedProcessObservation(out, owned)
+	return nil
+}
+
+func filterCurrentKernelRoles(out *StartupStatusObservation, roles map[string]bool, current bool) {
+	if current {
+		return
+	}
+	out.Disposition = "failed"
+	out.Instance.Readiness = "not_ready"
+	out.Persistence.Readiness = "unknown"
+	verified := false
+	for i, service := range out.Instance.Services {
+		for _, role := range protocol.Roles() {
+			if service.ServiceID == role {
+				if roles[role] {
+					verified = true
+				} else {
+					out.Instance.Services[i] = unknownStatusService(role, "unknown")
+				}
+			}
+		}
+	}
+	if !verified {
+		out.Instance.RunningVersion = nil
+	}
+	out.Errors = append(out.Errors, StartupStatusError{Component: "instance", Code: "kernel_observation_unavailable", Message: "A current protected member observation is unavailable.", Retryable: true})
 }

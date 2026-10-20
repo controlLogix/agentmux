@@ -1,0 +1,408 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "effectRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "credentialRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "action": {
+      "enum": [
+        "github-repo-create",
+        "github-issue-create",
+        "jira-create",
+        "jira-comment",
+        "jira-transition",
+        "confluence-create",
+        "confluence-update"
+      ]
+    },
+    "target": {
+      "type": "object"
+    },
+    "contentRef": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "allOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/artifact"
+            },
+            {
+              "properties": {
+                "bytes": {
+                  "minimum": 1,
+                  "maximum": 60000
+                },
+                "mediaType": {
+                  "const": "application/vnd.agentmux.integration-content+json"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "effectRef",
+    "credentialRef",
+    "action",
+    "target",
+    "contentRef"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "const": "github-repo-create"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "target": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "owner": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9-]{0,38}$"
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300,
+                "pattern": "^[A-Za-z0-9_][A-Za-z0-9._-]{0,99}$"
+              },
+              "visibility": {
+                "enum": [
+                  "private",
+                  "public",
+                  "internal"
+                ]
+              }
+            },
+            "required": [
+              "owner",
+              "name",
+              "visibility"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "const": "github-issue-create"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "target": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "repository": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9-]{0,38}/[A-Za-z0-9_][A-Za-z0-9._-]{0,99}$"
+              }
+            },
+            "required": [
+              "repository"
+            ]
+          },
+          "contentRef": {
+            "allOf": [
+              {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/artifact"
+              },
+              {
+                "properties": {
+                  "bytes": {
+                    "minimum": 1,
+                    "maximum": 60000
+                  },
+                  "mediaType": {
+                    "const": "application/vnd.agentmux.integration-content+json"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "const": "jira-create"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "target": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "projectKey": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300,
+                "pattern": "^[A-Z][A-Z0-9_]*$"
+              },
+              "issueType": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100,
+                "pattern": "^[^\\x00-\\x1f\\x7f-\\x9f]+$"
+              }
+            },
+            "required": [
+              "projectKey",
+              "issueType"
+            ]
+          },
+          "contentRef": {
+            "allOf": [
+              {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/artifact"
+              },
+              {
+                "properties": {
+                  "bytes": {
+                    "minimum": 1,
+                    "maximum": 60000
+                  },
+                  "mediaType": {
+                    "const": "application/vnd.agentmux.integration-content+json"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "const": "jira-comment"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "target": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "issueKey": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300,
+                "pattern": "^[A-Z][A-Z0-9_]*-[0-9]+$"
+              }
+            },
+            "required": [
+              "issueKey"
+            ]
+          },
+          "contentRef": {
+            "allOf": [
+              {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/artifact"
+              },
+              {
+                "properties": {
+                  "bytes": {
+                    "minimum": 1,
+                    "maximum": 60000
+                  },
+                  "mediaType": {
+                    "const": "application/vnd.agentmux.integration-content+json"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "const": "jira-transition"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "target": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "issueKey": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300,
+                "pattern": "^[A-Z][A-Z0-9_]*-[0-9]+$"
+              },
+              "transitionId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300,
+                "pattern": "^[1-9][0-9]{0,29}$"
+              }
+            },
+            "required": [
+              "issueKey",
+              "transitionId"
+            ]
+          },
+          "contentRef": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "const": "confluence-create"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "target": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "spaceKey": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300,
+                "pattern": "^[A-Za-z0-9_~.-]+$"
+              },
+              "parentId": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 300,
+                    "pattern": "^[1-9][0-9]{0,29}$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "spaceKey",
+              "parentId"
+            ]
+          },
+          "contentRef": {
+            "allOf": [
+              {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/artifact"
+              },
+              {
+                "properties": {
+                  "bytes": {
+                    "minimum": 1,
+                    "maximum": 60000
+                  },
+                  "mediaType": {
+                    "const": "application/vnd.agentmux.integration-content+json"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "const": "confluence-update"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "target": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "spaceKey": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300,
+                "pattern": "^[A-Za-z0-9_~.-]+$"
+              },
+              "pageId": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 300,
+                "pattern": "^[1-9][0-9]{0,29}$"
+              },
+              "expectedVersion": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 9007199254740990
+              }
+            },
+            "required": [
+              "spaceKey",
+              "pageId",
+              "expectedVersion"
+            ]
+          },
+          "contentRef": {
+            "allOf": [
+              {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/artifact"
+              },
+              {
+                "properties": {
+                  "bytes": {
+                    "minimum": 1,
+                    "maximum": 60000
+                  },
+                  "mediaType": {
+                    "const": "application/vnd.agentmux.integration-content+json"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:integration-intent",
+  "title": "integration-intent v1"
+}

@@ -170,9 +170,9 @@ func sessionLifecycleFixture(t *testing.T) (*Session, *OwnerStatus, *protected.G
 	return &Session{Status: input.status, group: group, startupAttemptID: input.attemptID, observedAt: input.receivedAt}, owner, group
 }
 
-func sessionLifecycleFailed(t *testing.T, out StartupStatusObservation, code string) {
+func sessionLifecycleFailed(t *testing.T, out StartupStatusObservation, code string, exitedRoles ...string) {
 	t.Helper()
-	if out.Disposition != "failed" || out.Instance.Readiness != "not_ready" || out.Instance.RunningVersion != nil {
+	if out.Disposition != "failed" || out.Instance.Readiness != "not_ready" {
 		t.Fatal("known owned lifecycle fact did not override cached success")
 	}
 	found := false
@@ -184,8 +184,11 @@ func sessionLifecycleFailed(t *testing.T, out StartupStatusObservation, code str
 	if !found {
 		t.Fatal("known owned lifecycle error was lost")
 	}
+	if len(exitedRoles) == 4 && out.Instance.RunningVersion != nil {
+		t.Fatal("completed group retained a current running version")
+	}
 	for _, service := range out.Instance.Services {
-		for _, role := range protocol.Roles() {
+		for _, role := range exitedRoles {
 			if service.ServiceID == role && (service.Availability != "unavailable" || service.Readiness != "unknown" || service.UnavailableReason == nil || *service.UnavailableReason != "probe_failed" || service.ObservedAt != nil || service.SourceRevision != nil) {
 				t.Fatal("exited owned role retained ready claims or invalid contract reason")
 			}
@@ -240,7 +243,14 @@ func TestSessionLifecycleActualSingleChildExit(t *testing.T) {
 	if err != nil {
 		t.Fatal("local owner observation unavailable")
 	}
-	sessionLifecycleFailed(t, out, "owned_runtime_exited")
+	sessionLifecycleFailed(t, out, "owned_runtime_exited", "internal-communication")
+	for _, service := range out.Instance.Services {
+		for _, role := range protocol.Roles() {
+			if role != "internal-communication" && service.ServiceID == role && service.Readiness != "ready" {
+				t.Fatal("one exited role erased a fresh independently observed sibling")
+			}
+		}
+	}
 	writeSessionLifecycleOutput(t, "single-child-exit", out)
 }
 
@@ -268,7 +278,7 @@ func TestSessionLifecycleActualRetirementAndReusedSeparation(t *testing.T) {
 	if err != nil {
 		t.Fatal("retired owner observation unavailable")
 	}
-	sessionLifecycleFailed(t, out, "owned_runtime_exited")
+	sessionLifecycleFailed(t, out, "owned_runtime_exited", "boot", "kernel-lifecycle", "internal-communication", "exported-status")
 	writeSessionLifecycleOutput(t, "whole-group-retirement", out)
 	// A warm cached observation without any owned group cannot infer the other
 	// owner's shutdown. Its unchanged snapshot is still subject to freshness.
@@ -342,7 +352,7 @@ func TestSessionLifecycleConcurrentCloseAndObservation(t *testing.T) {
 			t.Fatal("concurrent snapshot produced mixed lifecycle disposition")
 		}
 		if out.Disposition == "failed" {
-			sessionLifecycleFailed(t, out, "owned_runtime_exited")
+			sessionLifecycleFailed(t, out, "owned_runtime_exited", "boot", "kernel-lifecycle", "internal-communication", "exported-status")
 		}
 	}
 	select {
@@ -354,6 +364,6 @@ func TestSessionLifecycleConcurrentCloseAndObservation(t *testing.T) {
 	if err != nil {
 		t.Fatal("post-close observation failed")
 	}
-	sessionLifecycleFailed(t, out, "owned_runtime_exited")
+	sessionLifecycleFailed(t, out, "owned_runtime_exited", "boot", "kernel-lifecycle", "internal-communication", "exported-status")
 	writeSessionLifecycleOutput(t, "post-concurrent-close", out)
 }

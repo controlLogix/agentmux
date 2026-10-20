@@ -1,0 +1,31 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "authorityId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "record": {
+      "$ref": "urn:agentmux:contract:1:identity-native-instance"
+    },
+    "previousRef": {
+      "anyOf": [
+        {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "authorityId",
+    "record",
+    "previousRef"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:identity-native-instance-set",
+  "title": "Set enrolled native instance authority",
+  "description": "The identity owner authenticates and authorizes the signed operation, checks expectedVersion and current authority, and commits the resulting state and audit together. Shape validation does not authorize a change."
+}

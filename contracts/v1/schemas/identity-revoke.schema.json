@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "authorityId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "targetRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    }
+  },
+  "required": [
+    "authorityId",
+    "targetRef"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:identity-revoke",
+  "title": "identity-revoke payload v1",
+  "description": "The identity owner authenticates and authorizes the signed operation, checks expectedVersion and current authority, and commits the resulting state and audit together. Shape validation does not authorize a change."
+}

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:orchestration-outcome-query",
+  "title": "Agentmux orchestration-outcome-query v1",
+  "description": "Read the retained outcome of one exact orchestration command without dispatching it.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": { "$ref": "urn:agentmux:contract:1:common#/$defs/reference" },
+    "originalOperationId": { "$ref": "urn:agentmux:contract:1:common#/$defs/identifier" },
+    "originalPayloadDigest": { "$ref": "urn:agentmux:contract:1:common#/$defs/digest" }
+  },
+  "required": ["resourceRef", "originalOperationId", "originalPayloadDigest"]
+}

@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-work-grant-envelope",
+  "title": "federation-work-grant-envelope v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "envelope": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "v": {
+              "const": 3
+            },
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            },
+            "type": {
+              "const": "work_grant"
+            },
+            "from": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]{1,32}$"
+            },
+            "node": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]{1,32}$"
+            },
+            "rid": {
+              "type": "string",
+              "pattern": "^r[0-9a-f]{12}$"
+            },
+            "to": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]{1,32}$"
+            },
+            "at": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "origin_id": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                },
+                "origin_node": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9_]{1,32}$"
+                },
+                "offer_id": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                },
+                "offer_digest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "execution_id": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                },
+                "executor_peer": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9_]{1,32}$"
+                },
+                "executor_node": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9_]{1,32}$"
+                },
+                "selected": {
+                  "type": "boolean"
+                },
+                "grant_id": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "origin_id",
+                "origin_node",
+                "offer_id",
+                "offer_digest",
+                "execution_id",
+                "executor_peer",
+                "executor_node",
+                "selected",
+                "grant_id"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "id",
+            "type",
+            "from",
+            "node",
+            "rid",
+            "to",
+            "at",
+            "data"
+          ]
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "localNode": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]{1,32}$"
+        }
+      },
+      "required": [
+        "envelope",
+        "subject",
+        "localNode"
+      ]
+    },
+    "attribution": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    }
+  },
+  "required": [
+    "resourceRef",
+    "input",
+    "attribution"
+  ]
+}

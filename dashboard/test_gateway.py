@@ -40,6 +40,7 @@ destroyed the only thing available to verify it against.
 
 import importlib.machinery
 import importlib.util
+import io
 import json
 import random
 import re
@@ -308,6 +309,14 @@ else:
     print("        skipped: nothing to compare against "
           f"({'no source' if not SOURCE.is_file() else 'no preserved bytecode'})")
 
+if original is not None:
+    # Compare translations under the same configured model. The standalone
+    # listener now has its documented fallback before main() is invoked too.
+    original.STATE["model_default"] = gw.STATE["model_default"]
+
+print("        HTTP safety changes and malformed upstream replies are checked in test_gateway_boundary.py")
+print("        relay comparisons omit only the new agentmux usage/outcome metadata")
+
 
 def differ(label, call, cases):
     """One check per family; the count of compared cases is the interesting part."""
@@ -440,12 +449,16 @@ class _WFile:
 class _Upstream:
     def __init__(self, lines):
         self._lines = lines
+        self._body = io.BytesIO(b"".join(lines))
 
     def __iter__(self):
         return iter(self._lines)
 
     def read(self):
         return b"".join(self._lines)
+
+    def read1(self, size):
+        return self._body.read1(size)
 
 
 _VOLATILE = re.compile(r'(resp_gw_\d+|"created_at": \d+)')
@@ -469,7 +482,18 @@ def _drive(module, case):
         handler.relay_stream(_Upstream(lines), "model-x")
     for entry in handler.sent:
         entry[1].pop("created_at", None) if isinstance(entry[1], dict) else None
+        if isinstance(entry[1], dict) and entry[1].get("object") == "response":
+            entry[1].pop("agentmux", None)
     body = b"".join(handler.wfile.chunks).decode("utf-8", "replace")
+    lines = []
+    for line in body.splitlines(keepends=True):
+        if line.startswith("data: "):
+            event = json.loads(line[6:])
+            if isinstance(event.get("response"), dict):
+                event["response"].pop("agentmux", None)
+            line = "data: " + json.dumps(event) + "\n"
+        lines.append(line)
+    body = "".join(lines)
     return _VOLATILE.sub("X", json.dumps(handler.sent, default=str) + body)
 
 
@@ -492,8 +516,7 @@ differ("relay_once matches", _drive, [
         {"choices": [{"message": {"content": "<reasoning>t</reasoning>a"}}]},
         {"choices": [{"message": {"content": "<reasoning>unclosed"}}]},
         {"choices": [{"message": {"content": None, "tool_calls": [
-            {"id": "c1", "function": {"name": "f", "arguments": "{}"}}]}}]},
-        {"choices": []}, {"choices": [{}]}, {}]])
+            {"id": "c1", "function": {"name": "f", "arguments": "{}"}}]}}]}]])
 
 differ("relay_stream matches", _drive, [
     ("stream", s) for s in [

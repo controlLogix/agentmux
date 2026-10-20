@@ -5,8 +5,8 @@ any pane starts, because parallel work against an unwritten API diverges and the
 divergence is only discovered at integration, which is the most expensive moment to
 find it.
 
-Change it by editing this file and saying so on the board — never by a pane deciding
-locally that a different shape is better.
+Changes follow the owning Jira issue and its accepted product decisions. This file
+describes the compatibility contract; it is not a separate approval authority.
 
 Architecture: https://claude.ai/artifact/TDiV2FDxYyzs9kdeTtdn4P
 
@@ -16,6 +16,7 @@ If you read this file before an entry below, re-read the section it names.
 
 | When | What changed | Why |
 | --- | --- | --- |
+| 2026-10-16 | **C1/C3/C4/C7/C8**: explicit project lead proposals, saved roster definitions, revision warnings and additive migration. | [AMUX-41](https://adag-csai.atlassian.net/browse/AMUX-41) preserves imported definitions and approved teams while adding project selection. |
 | 2026-09-23 | **C5**: the pane-name suffix is the ROLE, not the agent name. **C1**: `name` allows hyphens (`^[a-z][a-z0-9-]{0,63}$`); `description` cap raised 280 → 2048. | The original banned hyphens in names so the suffix could carry one, but four of the five definitions that must load unchanged are hyphenated, and `hr-recruiter`'s description is 320 characters. The two acceptance criteria contradicted each other. Found by the TM-040 worker, which blocked the card rather than guessing. |
 
 ---
@@ -74,12 +75,26 @@ class AgentSpec:
     max_instances: int              # 1..8
     checksum: str                   # "sha256:<hex>" of raw file bytes -- drives 409 on stale write
 
-def load_all(repo_root=None) -> tuple[dict[str, AgentSpec], list[dict]]:
+def load_all(repo_root=None, *, home=None, global_root=None) -> tuple[dict[str, AgentSpec], list[dict]]:
     """Never raises. problems: [{"path", "scope", "error"}]."""
 
-def resolve(name, repo_root=None) -> AgentSpec | None
-def choose_roster(task, specs, cfg, cli_override=None) -> list[AgentSpec]   # lead first
+def resolve(name, repo_root=None, *, home=None, global_root=None) -> AgentSpec | None
+def choose_roster(task, specs, cfg, cli_override=None, *, dependencies=None,
+                  approved_lead=None) -> list[AgentSpec]   # lead first
 ```
+
+The definition domain adapter in `taskmgmt/definition_team.py` wraps this parser.
+`DefinitionPlugin` requires explicit project, home and global roots. Its versioned
+manifests retain every `AgentSpec` field, exact original source bytes, path, scope
+and source checksum from the same checked read. Package identity and optional parent
+package identity are explicit; they do not authorize a definition. Import diagnostics
+remain available, including unsupported keys. Legacy callers retain their process
+root defaults through `load_all`.
+
+`toolIntent` reports requested and denied tool names separately from names a host can
+enforce. With no host support supplied, all named tool restrictions are advisory.
+Host support does not grant permission. Existing `tools` and `tools_deny` fields stay
+unchanged; CLI arguments alone are not proof of an effective security boundary.
 
 ### Search order
 
@@ -181,6 +196,34 @@ critical-path file for stages 2, 5 and 6. `dispatch.py` imports it.
 spec whose `cli` resolves identically to today (`cli_override or cfg["dispatchCli"] or
 "codex"`). That is what makes the first wave shippable with zero behaviour change.
 
+**Project lead selection:** discovered lead definitions never win by alphabetical
+order. `approved_lead` supplies the selected definition to the pure rule function.
+The legacy board proposes a deliberate `lead` name through recruitment, then uses the
+existing approval action. With no explicit name, recruitment keeps its approved lead
+snapshot when available, otherwise the existing built-in compatibility lead. That
+fallback carries a visible gap; it does not approve a discovered persona. A different
+lead or changed lead revision cannot replace a hired lead until it has been stopped
+and retired. A legacy hired lead without a saved definition also requires retirement
+before replacement.
+
+The team domain adapter has a stricter boundary: without an approved project lead
+reference, it returns no members and an approval-required gap. It admits only explicit
+project definition revision references before running the existing deterministic
+rules. References bind both the source checksum and all resolved definition fields,
+so changes to CLI/model/auth defaults cannot silently reuse an old approval. This
+eligibility step does not depend on Jev ranking.
+
+The existing board and dispatcher run through `TeamPlugin.propose_legacy`, which
+returns the existing list-compatible `Roster` and gaps unchanged. Recruitment and
+dispatch, including reconstruction of a saved compatibility lead, use this production
+boundary. It may propose discovered workers; it does not mark them approved. The
+board keeps its existing approval policy and saved-definition transaction. This
+legacy path is separate from `TeamPlugin.propose` and its strict approved-revision
+inputs. Remove it only after those legacy consumers have migrated to a scoped
+project approval service and the preserved proposal and dispatch checks pass. Do
+not silently replace legacy discovery with approval or relax the strict method to
+accommodate legacy callers.
+
 **Stage-2 contract:** selection remains pure and deterministic, returns the lead
 first, and recruits available definitions using existing card fields. A `Roster`
 is list-compatible (dispatch can continue taking `[0]`) and carries a `gaps` list.
@@ -231,7 +274,7 @@ under `/api/board/<op>`.
 | `roster` | GET | `?id=TM-042` |
 | `agentdef` | POST | the full definition + `checksum` of the version being replaced |
 | `agentdrop` | POST | `{scope, name}` |
-| `recruit` | POST | `{id, actor}` |
+| `recruit` | POST | `{id, actor, lead?}` — a deliberate lead proposal |
 | `approve` | POST | `{id, actor, members: [...]}` |
 | `hire` | POST | `{id, name}` — **and nothing else**, see C8 |
 
@@ -246,7 +289,7 @@ agentdef SCOPE NAME [--description TEXT] [--cli CLI] [--model MODEL]
          [--persona TEXT] [--checksum CHECKSUM] [--json]
 agentdrop SCOPE NAME [--checksum CHECKSUM] [--json]
 roster KEY [--json]
-recruit KEY [--agent ACTOR] [--json]
+recruit KEY [--lead NAME] [--agent ACTOR] [--json]
 approve KEY --member NAME [--member NAME ...] [--agent ACTOR] [--json]
 hire KEY --name NAME [--json]
 ```
@@ -265,6 +308,11 @@ subcommands; they do not require an `agentmux agent` shell wrapper.
 
 The team commands map directly to their four board ops. `roster` URL-encodes `id`;
 `recruit` and `approve` send the resolved pane/orchestrator identity as `actor`.
+`recruit --lead NAME` deliberately proposes an available lead definition; the Teams
+view offers the same choice with an empty default, followed by the existing approval
+step. Omitting it preserves the existing compatibility path, never selects the first
+discovered lead. These legacy actor labels are attribution, not authenticated HTTP
+user identity.
 Repeat `--member` for each approved definition name. `hire` sends only `id` and
 `name`: no cli, cwd, model, argv, or actor overrides are exposed. All four default
 to a readable roster; `--json` preserves the API payload. Every refusal goes
@@ -363,6 +411,33 @@ Keyed on `entity_key` alone, matching every other `board_*` child table
 (`ccboard.py:193-216`) — that is how a new record type inherits labels, comments, history
 and evidence for free. Goes in `NEW_TABLES`; `migrate()` (`:256`) picks it up unchanged.
 
+AMUX-41 adds one table without rewriting existing roster rows:
+
+```sql
+CREATE TABLE IF NOT EXISTS board_roster_definitions (
+    roster_id INTEGER PRIMARY KEY REFERENCES board_roster(id) ON DELETE CASCADE,
+    project_root TEXT NOT NULL,
+    spec_json TEXT NOT NULL);
+```
+
+Recruitment saves the exact resolved definition, including its persona, with schema
+version `1.0.0` and the canonical project root. Approval retains this snapshot;
+definition edits never refresh it. Re-proposal removes snapshots belonging to replaced
+non-hired rows and keeps hired rows and their snapshots. Snapshot JSON is private and
+never appears in roster list responses.
+
+Public rows expose `definitionRevision` with name, scope, path, source checksum,
+project root and a digest of all saved fields. `definitionState` reports `current`,
+`changed`, `unavailable`, `builtin` or `approval_required`. Teams and human CLI output
+explain changed or unavailable sources while retaining the saved revision. Dispatch
+uses only an approved lead with the same project and full resolved revision; changed
+or unavailable imported leads require deliberate recruitment and approval again.
+
+Existing rows keep their IDs, approvers, timestamps and history. Migration does not
+invent an old definition snapshot. A row without one cannot be hired: recruit and
+approve again before hiring. A hired legacy row must first follow the existing stop
+and retire flow. Do not repair this by copying the current file into an old approval.
+
 Every transition goes through `_record()` (`:383`) so approval lands in `board_history`.
 
 `tasks.worktree` / `tasks.branch` (`ccboard.py:240`) stay scalar and keep naming **the lead
@@ -418,8 +493,11 @@ claims and `die` if absent. Add a GC pass pruning dirs with no live pane.
 ### The hire bound
 
 `POST /api/board/hire` takes `{id, name}` and **nothing else**. No argv, cwd, cli, model
-or flags ever cross the wire; the server re-resolves the definition from disk. A body
-carrying those fields has them **ignored, and a test asserts it**.
+or flags ever cross the wire; the server uses the exact saved definition attached to
+the approved roster row. Later file or default-setting edits cannot replace that
+persona, CLI, model, auth method, posture or tool intent. A body carrying launch
+fields has them **ignored, and a test asserts it**. Missing or invalid saved definitions
+fail with guidance to recruit and approve again.
 
 Four more bounds: the name must have an `approved` roster row for that card (else 409);
 both `dispatchEnabled` and `dashboardMayHire` must be on (else 403); a

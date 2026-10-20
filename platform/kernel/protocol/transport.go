@@ -22,6 +22,9 @@ type SubjectSet struct {
 	Update   string
 }
 
+var ErrBrokerAuthentication = errors.New("kernel_broker_authentication_failed")
+var ErrServerAuthentication = errors.New("kernel_server_authentication_failed")
+
 func (s SubjectSet) valid(hub string) bool {
 	prefix := "amx.v1.h." + hub + ".kernel."
 	if len(s.Commands) != 4 || len(s.Events) != 4 || s.Snapshot != prefix+"status.snapshot" || s.Update != prefix+"status.update" {
@@ -73,17 +76,21 @@ type Decision struct {
 }
 
 type Actor struct {
-	config      Config
-	role        string
-	conn        *nats.Conn
-	tlsDialer   *localtls.Dialer
-	messages    chan *nats.Msg
-	fault       chan struct{}
-	connected   atomic.Bool
-	incarnation string
-	revision    uint64
-	peers       map[string]*peer
-	subjects    SubjectSet
+	config           Config
+	role             string
+	conn             *nats.Conn
+	tlsDialer        *localtls.Dialer
+	messages         chan *nats.Msg
+	fault            chan struct{}
+	connected        atomic.Bool
+	incarnation      string
+	revision         uint64
+	peers            map[string]*peer
+	subjects         SubjectSet
+	lifecycleMessage func(*nats.Msg, time.Time) (bool, error)
+	lifecycleTick    func(time.Time) error
+	observationOnly  bool
+	authorityFailure atomic.Uint32
 }
 
 func Open(ctx context.Context, config Config, role string, s SubjectSet) (*Actor, error) {
@@ -104,7 +111,8 @@ func Open(ctx context.Context, config Config, role string, s SubjectSet) (*Actor
 	}
 	a := &Actor{config: c, role: role, messages: make(chan *nats.Msg, 128), fault: make(chan struct{}, 1), incarnation: hex.EncodeToString(nonce[:]), peers: map[string]*peer{}, subjects: s.copy()}
 	a.connected.Store(true)
-	options := []nats.Option{nats.UserInfo(c.Credentials.Username, c.Credentials.Password), nats.Timeout(time.Second), nats.MaxReconnects(10), nats.ReconnectWait(200 * time.Millisecond), nats.ReconnectBufSize(0), nats.IgnoreDiscoveredServers(), nats.DisconnectErrHandler(func(_ *nats.Conn, _ error) { a.connected.Store(false) }), nats.ReconnectHandler(func(_ *nats.Conn) { a.connected.Store(true) }), nats.ErrorHandler(func(_ *nats.Conn, _ *nats.Subscription, _ error) {
+	options := []nats.Option{nats.UserInfo(c.Credentials.Username, c.Credentials.Password), nats.Timeout(time.Second), nats.MaxReconnects(10), nats.ReconnectWait(200 * time.Millisecond), nats.ReconnectBufSize(0), nats.IgnoreDiscoveredServers(), nats.DisconnectErrHandler(func(_ *nats.Conn, failure error) { a.recordAuthorityFailure(failure); a.connected.Store(false) }), nats.ClosedHandler(func(conn *nats.Conn) { a.recordAuthorityFailure(conn.LastError()) }), nats.ReconnectHandler(func(_ *nats.Conn) { a.connected.Store(true) }), nats.ErrorHandler(func(_ *nats.Conn, _ *nats.Subscription, failure error) {
+		a.recordAuthorityFailure(failure)
 		select {
 		case a.fault <- struct{}{}:
 		default:
@@ -120,13 +128,18 @@ func Open(ctx context.Context, config Config, role string, s SubjectSet) (*Actor
 	}
 	conn, err := nats.Connect(c.Credentials.NATSURL, options...)
 	if err != nil {
-		if localtls.IsAuthorityError(err) {
-			return a.openFailure(errors.New("kernel_server_authentication_failed"))
+		if authority := authorityFailureCode(closedAuthorityFailure(err)); authority != nil {
+			return a.openFailure(authority)
 		}
 		return a.openFailure(errors.New("kernel_broker_unavailable"))
 	}
 	a.conn = conn
-	fail := func() (*Actor, error) { return a.openFailure(errors.New("kernel_subscription_unavailable")) }
+	fail := func() (*Actor, error) {
+		if authority := a.authorityError(); authority != nil {
+			return a.openFailure(authority)
+		}
+		return a.openFailure(errors.New("kernel_subscription_unavailable"))
+	}
 	forward := func(msg *nats.Msg) {
 		if len(msg.Data) > MaxPayload {
 			msg = &nats.Msg{Subject: msg.Subject, Reply: msg.Reply}
@@ -237,7 +250,7 @@ func (a *Actor) accept(msg *nats.Msg, now time.Time) bool {
 	if err != nil {
 		return false
 	}
-	if role == a.role && e.Incarnation != a.incarnation {
+	if role == a.role && !a.observationOnly && e.Incarnation != a.incarnation {
 		return false
 	}
 	p, ok := a.peers[role]
@@ -326,6 +339,11 @@ func (a *Actor) Serve(ctx context.Context, evaluate func(View) Decision, export 
 	lastEmit := time.Time{}
 	publish := func() error {
 		now := a.config.Services.Clock.Now()
+		if a.lifecycleTick != nil {
+			if err := a.lifecycleTick(now); err != nil {
+				return err
+			}
+		}
 		lastEmit = now
 		return a.emit(ctx, evaluate(a.view(now)), now, export)
 	}
@@ -340,10 +358,22 @@ func (a *Actor) Serve(ctx context.Context, evaluate func(View) Decision, export 
 		case <-ctx.Done():
 			return nil
 		case <-a.fault:
+			if authority := a.authorityError(); authority != nil {
+				return authority
+			}
 			return errors.New("kernel_broker_permission_or_delivery_failed")
 		case msg := <-a.messages:
 			now := a.config.Services.Clock.Now()
 			if msg.Subject == a.subjects.Commands[a.role] {
+				if a.lifecycleMessage != nil {
+					handled, err := a.lifecycleMessage(msg, now)
+					if err != nil {
+						return err
+					}
+					if handled {
+						continue
+					}
+				}
 				if msg.Reply == "" {
 					if _, err := DecodeCommand(msg.Data, a.Scope(), a.role); err == nil && now.Sub(lastEmit) >= a.config.Interval {
 						if err := publish(); err != nil {
@@ -359,6 +389,9 @@ func (a *Actor) Serve(ctx context.Context, evaluate func(View) Decision, export 
 			}
 		case <-ticker.C:
 			if a.conn.IsClosed() {
+				if authority := a.authorityError(); authority != nil {
+					return authority
+				}
 				return errors.New("kernel_broker_unavailable")
 			}
 			if err := publish(); err != nil {

@@ -22,6 +22,7 @@ except subprocess.TimeoutExpired:
         proc.wait(timeout=5)
     except subprocess.TimeoutExpired:
         proc.kill()
+        proc.wait()
     sys.exit(124)
 except KeyboardInterrupt:
     proc.send_signal(signal.SIGINT)

@@ -14,7 +14,7 @@
     refresh.disabled = true;
     notice.replaceChildren(api.el('p', '', `Moving ${key}…`));
     try {
-      const reply = await api.post('api/board/status', {id: key, status: destination, actor: 'dashboard'});
+      const reply = await api.post('api/board/status', {id: key, status: destination});
       notice.replaceChildren(api.el('p', '', reply.bypassed
         ? `Gate bypassed: ${reply.bypassed.reason || 'override'}`
         : `${key} moved to ${destination.replace('_', ' ')}.`));

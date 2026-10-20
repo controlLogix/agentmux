@@ -69,6 +69,7 @@ type Session struct {
 	startupAttemptID string
 	observedAt       time.Time
 	healthProof      *completedHealthProbe
+	supervision      *lifecycleSupervision
 }
 
 // Only the owning bootstrap can retain a successful scoped write probe. A warm
@@ -156,6 +157,11 @@ func (s *Session) Close(ctx context.Context) error {
 	}
 	defer s.mu.Unlock()
 	defer s.cleanupState.notify()
+	if s.supervision != nil {
+		if err := s.supervision.close(ctx); err != nil {
+			s.cleanupFailure = bootstrapCloseFailure(s.cleanupFailure, err, nil, nil, s)
+		}
+	}
 	if s.group != nil {
 		if err := s.group.Stop(ctx); err != nil {
 			s.cleanupFailure = bootstrapCloseFailure(s.cleanupFailure, err, nil, nil, s)
@@ -501,7 +507,7 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 	}
 	session.healthProof = &completedHealthProbe{result: probe, scope: c.Kernel.Scope, endpoint: c.Health.Endpoint, completedAt: time.Now().UTC()}
 	boundaryStage = "protected_start"
-	group, err := prepared.Start(lifetime, c.Roles, c.Deadlines)
+	group, err := prepared.StartRecoverable(lifetime, c.Roles, c.Deadlines, protected.RecoveryPolicy{MaxAttemptsPerRole: 2, Timeout: c.Deadlines.StartTimeout})
 	session.group = group
 	session.cleanupState.recordGroup(group)
 	if group != nil {
@@ -537,6 +543,14 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 	if roleCleanup != nil {
 		return nil, roleCleanup
 	}
+	brokerRecovery, err := newBrokerRecovery(c, declaration, broker)
+	if err != nil {
+		return nil, err
+	}
+	session.supervision = startLifecycleSupervision(lifetime, c, declaration, group, func(recoveryContext context.Context) error {
+		_, err := brokerRecovery.recover(recoveryContext)
+		return err
+	})
 	for {
 		boundaryStage = "readiness_inspection"
 		broker, err = inspect(ctx)
@@ -548,6 +562,9 @@ func bootstrapForOperation(ctx, lifetime context.Context, c BootstrapConfig, att
 		}
 		boundaryStage = "readiness_observation"
 		ready, err := observe(ctx)
+		if err == nil && !session.currentKernelSnapshot(ready.Status.Kernel) {
+			err = bootstrapError("existing_runtime_not_ready")
+		}
 		if err == nil {
 			boundaryStage = "readiness_finalize"
 			session.mu.Lock()

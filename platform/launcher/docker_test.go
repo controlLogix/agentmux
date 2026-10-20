@@ -18,12 +18,23 @@ func TestMain(m *testing.M) {
 		os.Exit(m.Run())
 	}
 	args := os.Args[1:]
-	if len(args) < 3 || args[0] != "--context" || args[1] != "fixture" {
+	if len(args) < 3 {
+		os.Exit(9)
+	}
+	literalEndpoint := args[0] == "--host" && args[1] == "unix:///tmp/docker.sock"
+	if !literalEndpoint && (args[0] != "--context" || args[1] != "fixture") {
 		os.Exit(9)
 	}
 	args = args[2:]
+	if literalEndpoint != (args[0] == "image") {
+		os.Exit(9)
+	}
 	f, _ := os.OpenFile(os.Getenv("AMX_DOCKER_LOG"), os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0600)
-	_, _ = fmt.Fprintln(f, strings.Join(args, " "))
+	line := strings.Join(args, " ")
+	if literalEndpoint {
+		line = "literal-endpoint " + line
+	}
+	_, _ = fmt.Fprintln(f, line)
 	_ = f.Close()
 	mode := os.Getenv("AMX_DOCKER_MODE")
 	if mode == "error" {
@@ -35,6 +46,39 @@ func TestMain(m *testing.M) {
 		os.Exit(0)
 	}
 	switch args[0] {
+	case "image":
+		if len(args) != 5 {
+			os.Exit(9)
+		}
+		switch args[1] {
+		case "pull":
+			if args[2] != "--platform" || args[3] != "linux/arm64" || !pinnedBrokerImage(args[4]) {
+				os.Exit(9)
+			}
+			fmt.Fprintln(os.Stdout, "synthetic-private-pull-output")
+			fmt.Fprintln(os.Stderr, "synthetic-private-pull-error")
+			if mode == "pull-failed" {
+				os.Exit(4)
+			}
+			if mode == "pull-wait" {
+				time.Sleep(5 * time.Second)
+			}
+		case "inspect":
+			if !pinnedBrokerImage(args[2]) || args[3] != "--format" || args[4] != preparedBrokerImageFormat {
+				os.Exit(9)
+			}
+			architecture := "arm64"
+			if mode == "image-architecture" {
+				architecture = "amd64"
+			}
+			digest := strings.TrimPrefix(args[2], "docker.io/library/nats@")
+			if mode == "image-digest" {
+				digest = "sha256:" + strings.Repeat("f", 64)
+			}
+			_ = json.NewEncoder(os.Stdout).Encode(map[string]any{"ID": "sha256:" + strings.Repeat("a", 64), "RepoDigests": []string{"nats@" + digest}, "OS": "linux", "Architecture": architecture})
+		default:
+			os.Exit(9)
+		}
 	case "context":
 		if mode == "endpoint" {
 			fmt.Println(`"tcp://remote:2375"`)

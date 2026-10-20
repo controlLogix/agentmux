@@ -44,23 +44,34 @@ class Messages(Plugin):
     async def send(self, ctx, caller, to, kind, body, ref=None, code=None, work_id=None):
         if kind not in KINDS:
             raise HubError(f"federated kind must be one of {', '.join(KINDS)}")
+        if ctx.commands is not None:
+            result = await ctx.commands.send(caller, to, kind, body, ref, code, work_id)
+            if kind == 'handoff':
+                peer, repo, _, _ = parse_peer_address(to)
+                rid = ctx.directory.resolve_repo(peer, repo) if repo else None
+                repo = ctx.directory.local_of(rid) if rid else None
+                await ctx.events.handoff_sent({'repo': repo, 'to': to, 'body': body, 'ref': ref,
+                    'code': code, 'by': caller})
+            return result
         peer, repo, role, agent = parse_peer_address(to)
         if peer == ctx.me:
             raise HubError("that is you; use a local address")
-        sender = ctx.sender_of(caller)
-        rid = ctx.resolve_repo(peer, repo) if repo else None
-        repo = ctx.policy.local_of(rid) if rid else None
+        sender = ctx.directory.sender_of(caller)
+        rid = ctx.directory.resolve_repo(peer, repo) if repo else None
+        repo = ctx.directory.local_of(rid) if rid else None
         target = {"rid": rid, "role": role, "agent": agent} if repo else None
         data = {"kind": kind, "body": body, "ref": ref, "sender": {k: v for k, v in sender.items() if k != "repo"},
                 "target": target, "code": code, "work_id": work_id}
         env = envelope.make("handoff" if kind == "handoff" else "message", ctx.me, ctx.node, rid, peer, data)
-        await ctx.publish(env, envelope.subject("msg", ctx.me, peer), repo, peer)
+        await ctx.publisher.publish(env, envelope.subject("msg", ctx.me, peer), repo, peer)
         if kind == "handoff":
-            await ctx.local_event("handoff_sent", {"repo": repo, "to": to, "body": body, "ref": ref, "code": code,
+            await ctx.events.handoff_sent({"repo": repo, "to": to, "body": body, "ref": ref, "code": code,
                                                    "by": caller})
         return {"id": env["id"], "to": to, "kind": kind, "queued": True}
 
     async def on_envelope(self, ctx, env, dec):
+        if ctx.commands is not None:
+            return await ctx.commands.receive(env, dec)
         d = env["data"]
         frm = env["from"]
         t = d.get("target")
@@ -70,9 +81,9 @@ class Messages(Plugin):
                 return "not_shared"
             if t.get("agent"):
                 sess = names.session_name(local, t["role"], t["agent"])
-                ag = await ctx.db(ctx.store.agent, sess)
+                ag = await ctx.directory.agent(sess)
                 if not ag or ag["state"] == "dead":
-                    if not ctx.fcfg.get("primary", True):
+                    if not ctx.settings.primary:
                         return "not_hosted"         # another node of ours may host it
                     target = "virtual:operator"
                     d = {**d, "body": f"(for {sess}, which is not live here)\n{d.get('body', '')}"}
@@ -81,7 +92,7 @@ class Messages(Plugin):
             else:
                 target = f"role:{local}/{t['role']}"
         else:
-            if not ctx.fcfg.get("primary", True):
+            if not ctx.settings.primary:
                 return "not_hosted"
             target = "virtual:operator"
         kind = "handoff" if env["type"] == "handoff" else (d.get("kind") if d.get("kind") in KINDS else "note")
@@ -89,15 +100,23 @@ class Messages(Plugin):
         body = guard.wrap(d.get("body") or "", frm, dec.trust, dec.untrusted)
         if d.get("code"):
             body += f"\n(code attached: agentmux hub fed code fetch {d['code']})"
-        sender = ctx.address_of(frm, d.get("sender") or {})
+        sender = ctx.directory.address_of(frm, d.get("sender") or {})
         body += f"\n(reply: agentmux hub post --to {sender} --kind reply \"...\")"
         meta = {"fed": {"peer": frm, "trust": dec.trust, "env": env["id"], "untrusted": dec.untrusted}}
         try:
-            await ctx.db(ctx.store.post, sender, target, kind, body, d.get("ref"), None, f"fed:{env['id']}", meta=meta)
+            posted = await ctx.messages.post(sender, target, kind, body, d.get("ref"), env["id"], meta,
+                                             incoming=env, decision=dec,
+                                             require_primary=target == "virtual:operator")
+            if isinstance(posted, str):
+                return posted
+            if posted is None:
+                return "not_hosted"
         except HubError as e:
             # No live holder of that role here: the operator gets it rather than nobody.
-            await ctx.db(ctx.store.post, sender, "virtual:operator", kind, f"(for {target}: {e})\n{body}",
-                         d.get("ref"), None, f"fed:{env['id']}", meta=meta)
+            posted = await ctx.messages.post(sender, "virtual:operator", kind, f"(for {target}: {e})\n{body}",
+                                             d.get("ref"), env["id"], meta, incoming=env, decision=dec)
+            if isinstance(posted, str):
+                return posted
             return "to_operator"
         return "delivered"
 

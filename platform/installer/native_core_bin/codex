@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+: "${AGENTMUX_NATIVE_CORE_CODEX:?selected native provider required}"
+exec "$AGENTMUX_NATIVE_CORE_CODEX" "$@"

@@ -2,6 +2,7 @@
 """Offline C1/C3 regressions; no live board writes or third-party imports."""
 import hashlib
 import json
+from contextlib import closing
 import os
 from pathlib import Path
 import shutil
@@ -14,6 +15,7 @@ import warnings
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "taskmgmt"))
 import agentdefs as ad
+import definition_team as dt
 
 
 class AgentDefinitions(unittest.TestCase):
@@ -162,7 +164,7 @@ class AgentDefinitions(unittest.TestCase):
         self.assertIn("200", problems[0]["error"])
 
     def test_board_auth_model_defaults_and_resolve(self):
-        with sqlite3.connect(self.root / "cc.db") as db:
+        with closing(sqlite3.connect(self.root / "cc.db")) as db, db:
             db.execute("CREATE TABLE board_config (name TEXT, value TEXT)")
             db.execute("INSERT INTO board_config VALUES ('dispatchCli', '\"claude\"')")
         methods = json.loads(ad.MANIFEST.read_text())["methods"]
@@ -211,7 +213,7 @@ class AgentDefinitions(unittest.TestCase):
         self.assertEqual(problems, [])
         with warnings.catch_warnings(record=True) as caught:
             warnings.simplefilter("always")
-            roster = ad.choose_roster({}, specs, {})
+            roster = ad.choose_roster({}, specs, {}, approved_lead=specs["worker"])
         self.assertEqual(roster[0], specs["worker"])
         self.assertIn("degrade", str(caught[0].message))
 
@@ -262,13 +264,15 @@ class AgentDefinitions(unittest.TestCase):
         specs = self.load()[0]
         task = {"labels": ["inventory", "filesystem"]}
 
-        roster = ad.choose_roster(task, specs, {"teamMaxWorkers": 1})
+        roster = ad.choose_roster(task, specs, {"teamMaxWorkers": 1},
+                                  approved_lead=specs["catalog-lead"])
         self.assertEqual(roster[0].name, "catalog-lead")
         self.assertEqual([s.name for s in roster[1:]], ["zebra-scanner"],
                          "the worker matching the card lost to the alphabet")
         # Still deterministic, and still independent of how the specs are ordered.
         self.assertEqual(roster, ad.choose_roster(
-            task, dict(reversed(list(specs.items()))), {"teamMaxWorkers": 1}))
+            task, dict(reversed(list(specs.items()))), {"teamMaxWorkers": 1},
+            approved_lead=specs["catalog-lead"]))
         # With nothing to match on, alphabetical order is still the answer.
         plain = ad.choose_roster({}, specs, {"teamMaxWorkers": 1})
         self.assertEqual([s.name for s in plain[1:]], ["aardvark"])
@@ -293,6 +297,86 @@ class AgentDefinitions(unittest.TestCase):
         fallback = ad.choose_roster(task, {}, {"dispatchCli": "claude"}, dependencies=dependencies)
         self.assertEqual([(s.name, s.cli) for s in fallback], [("lead", "claude")])
         self.assertTrue(fallback.gaps)
+
+    def test_import_manifest_preserves_exact_bytes_roots_and_package_provenance(self):
+        raw = b"---\r\nname: worker\r\ndescription: Exact\r\nunknown: retained\r\n---\r\nBody\r\n"
+        path = self.write(raw=raw)
+        plugin = dt.DefinitionPlugin(self.repo, home=self.home, global_root=self.root)
+        with patch.dict(os.environ, {"HOME": "/unused", "AGENTMUX_HOME": "/unused"}):
+            manifests, problems = plugin.import_all(package_name="project-definitions",
+                                                   parent_package="project")
+        self.assertEqual(len(manifests), 1)
+        manifest = manifests[0]
+        self.assertEqual(manifest.source, raw)
+        self.assertEqual(manifest.spec.path, str(path))
+        self.assertEqual(manifest.spec.checksum, "sha256:" + hashlib.sha256(raw).hexdigest())
+        self.assertEqual((manifest.schema_version, manifest.parent_package), ("1.0.0", "project"))
+        self.assertIn("unknown", problems[0]["error"])
+        self.write(scope=1, raw=b"invalid")
+        self.assertEqual(plugin.import_all(package_name="project")[0], ())
+
+    def test_fifo_replacement_after_regular_file_check_is_refused(self):
+        path = self.write()
+        original_open = ad.os.open
+        def replace_with_fifo(value, flags, *args, **kwargs):
+            if Path(value) == path:
+                path.unlink()
+                os.mkfifo(path)
+            return original_open(value, flags, *args, **kwargs)
+        with patch.object(ad.os, "open", side_effect=replace_with_fifo):
+            specs, problems = self.load()
+        self.assertEqual(specs, {})
+        self.assertIn("regular file", problems[0]["error"])
+
+    def test_legacy_team_adapter_keeps_result_gaps_and_selection_arguments(self):
+        specs = self.roster_specs()
+        task = {"type": "bug", "labels": ["backend", "missing"], "blockedBy": ["A"]}
+        dependencies = {"A": ["B"], "B": ["C"]}
+        expected = ad.choose_roster(task, specs, {"teamMaxWorkers": 2}, "claude",
+                                    dependencies=dependencies)
+        with patch.object(ad, "choose_roster", return_value=expected) as select:
+            actual = dt.TeamPlugin().propose_legacy(task, specs, {"teamMaxWorkers": 2},
+                                                    "claude", dependencies=dependencies)
+        self.assertIs(actual, expected)
+        self.assertEqual(actual.gaps, expected.gaps)
+        select.assert_called_once_with(task, specs, {"teamMaxWorkers": 2}, cli_override="claude",
+                                       dependencies=dependencies, approved_lead=None)
+        self.assertFalse(dt.TeamPlugin().propose(task, specs, {}, lead=None, members=()).approved_lead)
+
+    def test_project_lead_eligibility_and_immutable_revision(self):
+        self.write("aardvark", 3, extra="role: lead\n")
+        self.write("project-lead", extra="role: lead\n")
+        specs = self.roster_specs()
+        fallback = ad.choose_roster({}, specs, {})
+        self.assertEqual(fallback[0].name, "lead")
+        self.assertIn("Lead: no project-approved definition; using compatibility fallback", fallback.gaps)
+        plugin = dt.TeamPlugin()
+        self.assertFalse(plugin.propose({}, specs, {}, lead=None, members=()).approved_lead)
+        lead = dt.DefinitionRevision.of(specs["project-lead"])
+        worker = dt.DefinitionRevision.of(specs["backend"])
+        proposal = plugin.propose({"labels": ["backend", "frontend"]}, specs, {},
+                                  lead=lead, members=(worker,))
+        self.assertEqual([s.name for s in proposal.members], ["project-lead", "backend"])
+        self.assertIn("Capability frontend: no definition provides it", proposal.gaps)
+        changed_defaults = dict(specs, **{"project-lead": ad.replace(specs["project-lead"],
+                                                                   model="new-default")})
+        self.assertEqual(proposal.revision_changes(changed_defaults), (("project-lead", "changed"),))
+        self.assertEqual(changed_defaults["project-lead"].checksum, specs["project-lead"].checksum)
+        with self.assertRaisesRegex(ValueError, "changed"):
+            plugin.propose({}, changed_defaults, {}, lead=lead, members=(worker,))
+        saved = dt.dump_spec(proposal.members[0])
+        self.assertEqual(dt.load_spec(saved), proposal.members[0])
+        self.write("project-lead", extra="role: lead\n", body="New persona")
+        current = self.load()[0]
+        self.assertEqual(proposal.revision_changes(current), (("project-lead", "changed"),))
+        self.assertNotEqual(proposal.members[0].persona, current["project-lead"].persona)
+        with self.assertRaisesRegex(ValueError, "changed"):
+            plugin.propose({}, current, {}, lead=lead, members=(worker,))
+        intent = dt.tool_intent(ad.replace(specs["backend"], tools=("Read", "Bash")),
+                                host_tools=("Read",))
+        self.assertEqual(intent["hostEnforceable"], ("Read",))
+        self.assertEqual(intent["advisory"], ("Bash",))
+        self.assertEqual(dt.tool_intent(ad.replace(specs["backend"], tools=("Read",)))["hostEnforceable"], ())
 
     def test_existing_claude_definitions_unchanged(self):
         # Portable CI uses representative names; on the dispatched machine, copy

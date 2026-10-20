@@ -9,19 +9,448 @@ import (
 	"path/filepath"
 	"reflect"
 	"strings"
+	"sync/atomic"
 	"syscall"
 	"testing"
 	"time"
 
 	"github.com/controlLogix/agentmux/platform/deployment"
 	"github.com/controlLogix/agentmux/platform/internal/darwinfixtureidentity"
+	"github.com/controlLogix/agentmux/platform/kernel/communication"
 	"github.com/controlLogix/agentmux/platform/kernel/protocol"
+	"github.com/nats-io/nats.go"
 )
 
+// Only validated public observations enter this failure summary. The observer
+// uses this test's existing protected credential and never publishes controls.
+type darwinRecoveryObservation struct {
+	CapturedAt   string                       `json:"capturedAt"`
+	Owner        *StartupStatusObservation    `json:"lastValidatedOwnerReply"`
+	OwnerCode    string                       `json:"lastOwnerDiagnostic"`
+	Kernel       *protocol.Snapshot           `json:"lastValidatedKernelSnapshot"`
+	KernelCode   string                       `json:"lastKernelDiagnostic"`
+	Inventory    *protocol.LifecycleInventory `json:"lastValidatedLifecycleInventory"`
+	Results      []protocol.LifecycleResult   `json:"lastValidatedLifecycleResults"`
+	Events       map[string]protocol.Event    `json:"lastValidatedRoleEvents"`
+	ObserverCode string                       `json:"observerDiagnostic"`
+	drain        func()
+}
+
+func darwinScenarioLifecycleObservation(t *testing.T, f *bootstrapDockerFixture, ctx context.Context, observation *darwinRecoveryObservation) {
+	t.Helper()
+	dialer, err := f.Config.Kernel.TLS.NewDialer(ctx, time.Second)
+	if err != nil {
+		t.Fatal("recovery diagnostic enrolled TLS observer refused")
+	}
+	owned := &darwinSlowConsumerConnection{dialer: dialer, callbacksDone: make(chan struct{})}
+	t.Cleanup(func() {
+		if owned.close() != nil {
+			f.RetainForRecovery(t)
+			t.Error("recovery diagnostic exact observer cleanup failed")
+		}
+	})
+	faults := make(chan error, 16)
+	var overflow atomic.Bool
+	owned.connection, err = nats.Connect(f.Config.Kernel.Endpoint,
+		nats.UserInfo("kernel-lifecycle", f.Config.brokerUsers["kernel-lifecycle"]),
+		nats.TLSHandshakeFirst(), nats.SetCustomDialer(dialer), nats.IgnoreDiscoveredServers(),
+		nats.Timeout(time.Second), nats.MaxReconnects(120), nats.ReconnectWait(200*time.Millisecond), nats.ReconnectBufSize(0),
+		nats.ClosedHandler(func(*nats.Conn) { close(owned.callbacksDone) }),
+		nats.ErrorHandler(func(_ *nats.Conn, _ *nats.Subscription, failure error) {
+			select {
+			case faults <- failure:
+			default:
+				overflow.Store(true)
+			}
+		}))
+	if err != nil || owned.connection == nil || owned.connection.ConnectedServerName() != f.Config.Health.ServerName || owned.connection.ConnectedServerVersion() != f.Config.Health.ServerVersion {
+		t.Fatal("recovery diagnostic protected observer authentication refused")
+	}
+	wire, err := communication.Subjects(f.Config.Kernel.Scope.HubID)
+	if err != nil {
+		t.Fatal("recovery diagnostic protected subjects refused")
+	}
+	type received struct {
+		message *nats.Msg
+		at      time.Time
+	}
+	frames := make(chan received, 256)
+	subjects := []string{wire.Commands["kernel-lifecycle"]}
+	for _, role := range protocol.Roles() {
+		subjects = append(subjects, wire.Events[role])
+	}
+	for _, subject := range subjects {
+		sub, err := owned.connection.Subscribe(subject, func(message *nats.Msg) {
+			if len(message.Data) > protocol.MaxPayload {
+				overflow.Store(true)
+				return
+			}
+			select {
+			case frames <- received{message, time.Now()}:
+			default:
+				overflow.Store(true)
+			}
+		})
+		if err != nil || sub.SetPendingLimits(128, 128*protocol.MaxPayload) != nil {
+			t.Fatal("recovery diagnostic protected subscription refused")
+		}
+		t.Cleanup(func() {
+			if sub.IsValid() && sub.Unsubscribe() != nil {
+				t.Error("recovery diagnostic subscription cleanup failed")
+			}
+		})
+	}
+	if owned.connection.FlushWithContext(ctx) != nil {
+		t.Fatal("recovery diagnostic protected subscription did not flush")
+	}
+	observation.Events = map[string]protocol.Event{}
+	observation.drain = func() {
+		for count := 0; count < cap(frames) && len(frames) > 0; count++ {
+			frame := <-frames
+			if frame.message.Reply != "" || len(frame.message.Header) != 0 {
+				continue
+			}
+			if frame.message.Subject == wire.Commands["kernel-lifecycle"] {
+				if value, err := protocol.DecodeLifecycleInventory(frame.message.Data, f.Config.Kernel.Scope, frame.at); err == nil {
+					observation.Inventory = &value
+				} else if value, err := protocol.DecodeLifecycleResult(frame.message.Data, f.Config.Kernel.Scope, frame.at); err == nil {
+					if len(observation.Results) == 8 {
+						observation.Results = observation.Results[1:]
+					}
+					observation.Results = append(observation.Results, value)
+				}
+				continue
+			}
+			for _, role := range protocol.Roles() {
+				if frame.message.Subject == wire.Events[role] {
+					if value, err := protocol.DecodeEvent(frame.message.Data, f.Config.Kernel.Scope, role, frame.at, 3*time.Second); err == nil {
+						observation.Events[role] = value
+					}
+				}
+			}
+		}
+		for count := 0; count < cap(faults) && len(faults) > 0; count++ {
+			observation.ObserverCode = ProjectRequestDiagnostic(<-faults).Code
+		}
+		if overflow.Load() {
+			observation.ObserverCode = "bounded_observer_overflow"
+		}
+	}
+}
+
 const (
-	darwinScenarioEnsureBudget  = 10 * time.Second
-	darwinScenarioRefusalBudget = 5 * time.Second
+	darwinScenarioEnsureBudget   = 10 * time.Second
+	darwinScenarioRefusalBudget  = 5 * time.Second
+	darwinScenarioRecoveryBudget = 30 * time.Second
 )
+
+// Recovery may truthfully report failed members while replacement is in flight.
+// Only a fresh authenticated owner reply and genuine current kernel snapshot
+// complete this wait. All retries share the caller's original deadline.
+func darwinScenarioRecovered(t *testing.T, f *bootstrapDockerFixture, ctx context.Context, after time.Time, observed ...*darwinRecoveryObservation) protocol.Snapshot {
+	t.Helper()
+	observation := &darwinRecoveryObservation{}
+	if len(observed) == 1 {
+		observation = observed[0]
+	}
+	succeeded := false
+	defer func() {
+		if observation.drain != nil {
+			observation.drain()
+		}
+		if !succeeded {
+			observation.CapturedAt = time.Now().UTC().Format(time.RFC3339Nano)
+			f.WriteEvidence(t, "darwin-recovery-last-observation.json", observation)
+		}
+	}()
+	client, err := LoadOwnerBridgeClient(f.Config, *f.BridgeEnrollment)
+	if err != nil {
+		t.Fatal("authenticated recovery observer refused")
+	}
+	for ctx.Err() == nil {
+		if observation.drain != nil {
+			observation.drain()
+		}
+		invocation := "attempt_" + bootstrapFixtureRandom(t, 16)
+		request, cancel := context.WithTimeout(ctx, 5*time.Second)
+		out, requestErr := client.Request(request, "status", invocation)
+		cancel()
+		if requestErr != nil {
+			observation.OwnerCode = ProjectRequestDiagnostic(requestErr).Code
+			switch requestErr.Error() {
+			case "owner_bridge_connection_unavailable", "owner_bridge_reply_unavailable", "owner_bridge_deadline":
+			default:
+				f.RetainForRecovery(t)
+				t.Fatal("recovery status failed authentication or owned cleanup")
+			}
+		} else {
+			if !bridgeObservationBound(out, *f.BridgeEnrollment, invocation, time.Now()) {
+				t.Fatal("recovery reply lost its current owner, scope or invocation")
+			}
+			observation.Owner, observation.OwnerCode = &out, "validated"
+			ready := out.Instance.RunningVersion != nil && (out.Disposition == "started" || out.Disposition == "reused")
+			for _, role := range protocol.Roles() {
+				found := false
+				for _, service := range out.Instance.Services {
+					if service.ServiceID == role && service.Readiness == "ready" && service.ObservedAt != nil && service.SourceRevision != nil {
+						found = true
+					}
+				}
+				ready = ready && found
+			}
+			{
+				probe, cancel := context.WithTimeout(ctx, 5*time.Second)
+				kernel, kernelErr := ObserveKernel(probe, f.Config.Kernel)
+				cancel()
+				observation.KernelCode = ProjectRequestDiagnostic(kernelErr).Code
+				if kernelErr == nil {
+					observation.Kernel, observation.KernelCode = &kernel, "validated"
+				}
+				if ProjectRequestDiagnostic(kernelErr).Code == "owned_cleanup_incomplete" {
+					f.RetainForRecovery(t)
+					t.Fatal("recovery observer owned cleanup is incomplete")
+				}
+				at, _ := time.Parse(time.RFC3339Nano, kernel.ObservedAt)
+				if ready && kernelErr == nil && kernel.KernelReadiness == "ready" && !at.Before(after) {
+					succeeded = true
+					return kernel
+				}
+				if IsKernelStatusAuthorityError(kernelErr) {
+					f.RetainForRecovery(t)
+					t.Fatal("recovered kernel server authority rejected")
+				}
+			}
+		}
+		timer := time.NewTimer(25 * time.Millisecond)
+		select {
+		case <-ctx.Done():
+			timer.Stop()
+		case <-timer.C:
+		}
+	}
+	f.RetainForRecovery(t)
+	t.Fatal("actual owned runtime did not recover within the one shared deadline")
+	return protocol.Snapshot{}
+}
+
+// Keep the original roster, including any exited member, with its existing
+// cleanup owner. Fresh creator-derived descendants have their own cleanup that
+// first joins the exact host shutdown, then joins and closes those new proofs.
+func darwinScenarioRecoveryRoster(t *testing.T, f *bootstrapDockerFixture, x *composeDarwinCLIFront, ctx context.Context) []*darwinfixtureidentity.Proof {
+	t.Helper()
+	var proofs []*darwinfixtureidentity.Proof
+	t.Cleanup(func() {
+		cleanup, cancel := context.WithTimeout(context.Background(), f.Config.Deadlines.StopGrace+f.Config.Deadlines.ReapTimeout)
+		defer cancel()
+		if state := x.lifetime.host.Live(); state == nil {
+			if x.lifetime.host.Signal(syscall.SIGTERM) != nil {
+				f.RetainForRecovery(t)
+				t.Error("exact recovery host stop refused")
+				return
+			}
+		} else if !errors.Is(state, darwinfixtureidentity.ErrExited) {
+			f.RetainForRecovery(t)
+			t.Error("exact recovery host identity unavailable")
+			return
+		}
+		if x.lifetime.host.WaitExit(cleanup) != nil {
+			f.RetainForRecovery(t)
+			t.Error("exact recovery host shutdown did not join")
+			return
+		}
+		for _, proof := range proofs {
+			if proof.WaitExit(cleanup) != nil {
+				f.RetainForRecovery(t)
+				t.Error("fresh exact recovery descendant exit did not join")
+				continue
+			}
+			if proof.Close() != nil {
+				f.RetainForRecovery(t)
+				t.Error("fresh descendant proof did not close")
+			}
+		}
+	})
+	args := map[string][]string{}
+	for _, option := range f.Config.Roles {
+		args[option.ID] = append([]string(nil), option.Args...)
+	}
+	var err error
+	proofs, err = x.lifetime.pinRoster(ctx, f, args)
+	if err != nil || len(proofs) != 4 {
+		f.RetainForRecovery(t)
+		t.Fatal("fresh signed creator-derived role roster refused")
+	}
+	for _, proof := range proofs {
+		if proof.Live() != nil {
+			f.RetainForRecovery(t)
+			t.Fatal("fresh exact recovered descendant is not live")
+		}
+	}
+	return proofs
+}
+
+func darwinScenarioRecoveryPreserved(t *testing.T, f *bootstrapDockerFixture, before darwinScenarioStoredState, ctx context.Context) {
+	t.Helper()
+	broker, brokerErr := f.ObserveBroker(ctx)
+	volume, volumeErr := f.volume(ctx)
+	record, recordErr := deployment.Observe(ctx, deployment.ObserveOptions{ProbeOptions: f.Config.Health, ReadExistingRecord: true})
+	if brokerErr != nil || volumeErr != nil || recordErr != nil || ctx.Err() != nil || broker.State != "running" || broker.ContainerID != before.broker.ContainerID || !reflect.DeepEqual(volume, before.volume) || record.RecordSequence != before.sequence || record.RecordDigest != "sha256:"+before.record {
+		diagnostic := func(failure error) string {
+			if failure == nil {
+				return "none"
+			}
+			var refused *dockerRefusalError
+			if errors.As(failure, &refused) && refused != nil {
+				return refused.Error()
+			}
+			if code := bootstrapFixtureFailureCode(failure); code != "unclassified_private_error" {
+				return code
+			}
+			switch failure.Error() {
+			case "fixture_network_admission_failed":
+				return "fixture_network_admission_failed"
+			case "fixture_network_inventory_failed":
+				return "fixture_network_inventory_failed"
+			}
+			return ProjectRequestDiagnostic(failure).Code
+		}
+		f.WriteEvidence(t, "darwin-recovery-preservation-observation.json", map[string]any{
+			"observedAt":                time.Now().UTC().Format(time.RFC3339Nano),
+			"brokerInspectionSucceeded": brokerErr == nil, "volumeInspectionSucceeded": volumeErr == nil,
+			"recordObservationSucceeded": recordErr == nil, "contextExpired": ctx.Err() != nil,
+			"deadlineExceeded":      ctx.Err() == context.DeadlineExceeded,
+			"brokerDiagnostic":      diagnostic(brokerErr),
+			"brokerInspectionStage": bootstrapFixtureFailureStage(brokerErr),
+			"brokerFailedRead":      bootstrapFailedReadFromError(brokerErr),
+			"brokerNetworkStage":    bootstrapNetworkReadStage(brokerErr),
+			"volumeDiagnostic":      diagnostic(volumeErr),
+			"recordDiagnostic":      diagnostic(recordErr),
+			"brokerState":           broker.State, "containerIdentityPreserved": broker.ContainerID == before.broker.ContainerID,
+			"volumeNamePreserved":             volume.Name == before.volume.Name,
+			"volumeCreationTimePreserved":     volume.CreatedAt == before.volume.CreatedAt,
+			"volumeLabelsPreserved":           reflect.DeepEqual(volume.Labels, before.volume.Labels),
+			"wholeVolumeObservationPreserved": reflect.DeepEqual(volume, before.volume),
+			"recordObservationCode":           record.Code, "recordEvidence": record.PersistenceEvidence,
+			"originalSequence": before.sequence, "observedLatestSequence": record.RecordSequence,
+			"sequencePreserved":    record.RecordSequence == before.sequence,
+			"originalRecordDigest": "sha256:" + before.record, "observedLatestRecordDigest": record.RecordDigest,
+			"recordDigestPreserved": record.RecordDigest == "sha256:"+before.record,
+		})
+		f.RetainForRecovery(t)
+		t.Fatal("recovery preservation was not verified; inspect the closed preservation observation")
+	}
+}
+
+func TestInstalledCLIDarwinRealComposeOwnedMemberRecovery(t *testing.T) {
+	f, s, r := composeDarwinCLIEnrolledFixture(t)
+	x := darwinScenarioCold(t, f, s, r, "darwin-member-recovery-cold")
+	probe, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	before, err := ObserveKernel(probe, f.Config.Kernel)
+	cancel()
+	if err != nil || before.KernelReadiness != "ready" {
+		t.Fatal("original genuine kernel snapshot unavailable")
+	}
+	stored := darwinScenarioStored(t, f)
+	var selected *darwinfixtureidentity.Proof
+	for _, proof := range x.lifetime.roles {
+		args := proof.LiteralArgs()
+		if len(args) > 0 && args[0] == "agentmux-internal-communication" {
+			selected = proof
+		}
+	}
+	if selected == nil {
+		t.Fatal("exact creator-derived member proof unavailable")
+	}
+	injected := time.Now()
+	ctx, cancel := context.WithDeadline(context.Background(), injected.Add(darwinScenarioRecoveryBudget))
+	defer cancel()
+	if selected.Signal(syscall.SIGKILL) != nil || selected.WaitExit(ctx) != nil {
+		f.RetainForRecovery(t)
+		t.Fatal("exact selected member kill or exit proof failed")
+	}
+	after := darwinScenarioRecovered(t, f, ctx, injected)
+	if x.lifetime.host.Live() != nil || !errors.Is(selected.Live(), darwinfixtureidentity.ErrExited) {
+		t.Fatal("member recovery replaced its exact host or lost the exited member proof")
+	}
+	for _, proof := range x.lifetime.roles {
+		if proof != selected && proof.Live() != nil {
+			t.Fatal("member recovery replaced an unrelated protected sibling")
+		}
+	}
+	darwinScenarioRecoveryRoster(t, f, x, ctx)
+	if after.Incarnation != before.Incarnation || after.Revision <= before.Revision {
+		t.Fatal("single-member recovery replaced the status actor or replayed its snapshot")
+	}
+	for _, old := range before.Members {
+		matched := false
+		for _, current := range after.Members {
+			if current.Role == old.Role {
+				matched = true
+				if old.Role == "internal-communication" {
+					if current.Incarnation == old.Incarnation {
+						t.Fatal("recovered member reused its old incarnation")
+					}
+				} else if current.Incarnation != old.Incarnation {
+					t.Fatal("member recovery changed a surviving sibling incarnation")
+				}
+			}
+		}
+		if !matched {
+			t.Fatal("recovery snapshot omitted a protected role")
+		}
+	}
+	darwinScenarioRecoveryPreserved(t, f, stored, ctx)
+	recoveryElapsed := time.Since(injected)
+	f.AssertBaselineUnchanged(t)
+	f.WriteEvidence(t, "darwin-owned-member-recovery.json", map[string]any{"sameCreatorHost": true, "onlySelectedMemberReplaced": true, "newObservedMemberIncarnation": true, "sameBrokerVolumeAndRecord": true, "sharedBudgetNanoseconds": int64(darwinScenarioRecoveryBudget), "recoveryElapsedNanoseconds": recoveryElapsed.Nanoseconds()})
+}
+
+func TestInstalledCLIDarwinRealComposeOwnedBrokerRecovery(t *testing.T) {
+	f, s, r := composeDarwinCLIEnrolledFixture(t)
+	x := darwinScenarioCold(t, f, s, r, "darwin-broker-recovery-cold")
+	stored := darwinScenarioStored(t, f)
+	injected := time.Now()
+	ctx, cancel := context.WithDeadline(context.Background(), injected.Add(darwinScenarioRecoveryBudget))
+	defer cancel()
+	observation := &darwinRecoveryObservation{}
+	darwinScenarioLifecycleObservation(t, f, ctx, observation)
+	if f.stopBrokerForRecovery(ctx, stored.broker.ContainerID) != nil {
+		f.RetainForRecovery(t)
+		t.Fatal("exact selected broker stop or lease cleanup failed")
+	}
+	darwinScenarioRecovered(t, f, ctx, injected, observation)
+	if x.lifetime.host.Live() != nil {
+		f.RetainForRecovery(t)
+		t.Fatal("broker recovery replaced the creating host")
+	}
+	darwinScenarioRecoveryRoster(t, f, x, ctx)
+	darwinScenarioRecoveryPreserved(t, f, stored, ctx)
+	recoveryElapsed := time.Since(injected)
+	f.AssertBaselineUnchanged(t)
+	f.WriteEvidence(t, "darwin-owned-broker-recovery.json", map[string]any{"sameCreatorHost": true, "sameRestartedContainer": true, "sameVolumeAndOriginalRecord": true, "freshAuthenticatedReadiness": true, "sharedBudgetNanoseconds": int64(darwinScenarioRecoveryBudget), "recoveryElapsedNanoseconds": recoveryElapsed.Nanoseconds()})
+}
+
+func TestInstalledCLIDarwinRealComposeHOSTPrincipalIsolation(t *testing.T) {
+	f, selection, record := composeDarwinCLIEnrolledFixture(t)
+	original := darwinScenarioCold(t, f, selection, record, "darwin-host-permissions-cold")
+	stored := darwinScenarioStored(t, f)
+	ctx, cancel := context.WithTimeout(context.Background(), 45*time.Second)
+	defer cancel()
+	if !t.Run("existing-principal-matrix", func(t *testing.T) {
+		matrix, finish := context.WithTimeout(ctx, 30*time.Second)
+		defer finish()
+		// Use the actual selected Compose broker and installed protected roles.
+		// No controlled Docker process or alternate broker is installed here.
+		ownerBridgePrincipalIsolation(t, bridgeFixture{config: f.Config, users: f.Config.brokerUsers}, matrix)
+	}) {
+		f.RetainForRecovery(t)
+		t.Fatal("actual installed HOST permission matrix failed")
+	}
+	darwinScenarioRecovered(t, f, ctx, time.Now())
+	original.lifetime.assertUnchanged(t, f)
+	darwinScenarioRecoveryPreserved(t, f, stored, ctx)
+	f.AssertBaselineUnchanged(t)
+}
 
 // Setup consumes the separately installed CLI and signed role prerequisites.
 // These scenarios never stage an installation or request elevation. All process
@@ -83,14 +512,48 @@ func darwinScenarioReady(t *testing.T, f *bootstrapDockerFixture, x *composeDarw
 // it to the separately retained creator proof's cold attempt.
 func darwinScenarioRefresh(t *testing.T, f *bootstrapDockerFixture, startupDeadline time.Time) (StartupStatusObservation, string) {
 	t.Helper()
+	type attemptDiagnostic struct {
+		ErrorCode             string `json:"errorCode"`
+		DeadlineExpired       bool   `json:"deadlineExpired"`
+		Disposition           string `json:"disposition"`
+		RequestedInvocationID string `json:"requestedInvocationId"`
+	}
+	summary := struct {
+		Attempts        int                `json:"attemptCount"`
+		FirstFailure    *attemptDiagnostic `json:"firstFailure"`
+		LastFailure     *attemptDiagnostic `json:"lastFailure"`
+		LastObservation *attemptDiagnostic `json:"lastObservation"`
+		Completed       bool               `json:"completed"`
+		DeadlineExpired bool               `json:"deadlineExpired"`
+	}{}
+	name := "darwin-refresh-summary-before-request.json"
+	defer func() {
+		summary.DeadlineExpired = !time.Now().Before(startupDeadline)
+		f.WriteEvidence(t, name, summary)
+	}()
+	recordFailure := func(code string) {
+		failure := attemptDiagnostic{ErrorCode: code}
+		if summary.LastObservation != nil {
+			failure = *summary.LastObservation
+			failure.ErrorCode = code
+		}
+		if summary.FirstFailure == nil {
+			summary.FirstFailure = &failure
+		}
+		summary.LastFailure = &failure
+	}
 	client, err := LoadOwnerBridgeClient(f.Config, *f.BridgeEnrollment)
 	if err != nil {
+		recordFailure("refresh_client_admission_refused")
 		t.Fatal("actual authenticated refresh client refused")
 	}
 	ctx, cancel := context.WithDeadline(context.Background(), startupDeadline)
 	defer cancel()
 	for ctx.Err() == nil {
 		invocation := "attempt_" + bootstrapFixtureRandom(t, 16)
+		if summary.Attempts == 0 {
+			name = "darwin-refresh-summary-" + invocation + ".json"
+		}
 		request, stop := context.WithTimeout(ctx, 5*time.Second)
 		out, requestErr := client.Request(request, "status", invocation)
 		stop()
@@ -103,20 +566,24 @@ func darwinScenarioRefresh(t *testing.T, f *bootstrapDockerFixture, startupDeadl
 				code = "closed_unclassified_failure"
 			}
 		}
-		f.WriteEvidence(t, "darwin-refresh-attempt-"+bootstrapFixtureRandom(t, 4)+".json", map[string]any{
-			"errorCode": code, "deadlineExpired": ctx.Err() != nil, "disposition": out.Disposition,
-			"requestedInvocationId": invocation,
-		})
+		summary.Attempts++
+		summary.LastObservation = &attemptDiagnostic{ErrorCode: code, DeadlineExpired: ctx.Err() != nil,
+			Disposition: out.Disposition, RequestedInvocationID: invocation}
+		if requestErr != nil {
+			recordFailure(code)
+		}
 		// Request already checks the authenticated envelope's request nonce,
 		// invocation, scope and freshness. Recheck the observation contract here
 		// against the invocation actually supplied, including starting semantics.
 		if requestErr == nil && !bridgeObservationBound(out, *f.BridgeEnrollment, invocation, time.Now()) {
+			recordFailure("refresh_owner_or_request_correlation_invalid")
 			t.Fatal("actual refreshed observation lost owner or request correlation")
 		}
 		if requestErr == nil && (out.Disposition == "started" || out.Disposition == "reused") {
 			if out.StartupAttemptID == nil || *out.StartupAttemptID != invocation ||
 				out.Instance.RunningVersion == nil || out.Instance.Readiness != "degraded" ||
 				out.Work.State != "unavailable" || out.Hubs.InventoryState != "unavailable" {
+				recordFailure("refresh_completed_observation_invalid")
 				t.Fatal("actual completed status lacks request correlation or current kernel evidence")
 			}
 			for _, role := range protocol.Roles() {
@@ -127,15 +594,18 @@ func darwinScenarioRefresh(t *testing.T, f *bootstrapDockerFixture, startupDeadl
 					}
 				}
 				if !found {
+					recordFailure("refresh_role_readiness_missing")
 					t.Fatal("actual completed role lacks current readiness")
 				}
 			}
+			summary.Completed = true
 			return out, invocation
 		}
 		if requestErr != nil && code == "closed_unclassified_failure" {
 			t.Fatal("actual refresh authority or runtime failed")
 		}
 		if requestErr == nil && out.Disposition != "starting" {
+			recordFailure("refresh_runtime_failed")
 			t.Fatal("actual startup failed")
 		}
 		time.Sleep(25 * time.Millisecond)
@@ -247,15 +717,9 @@ func TestInstalledCLIDarwinRealComposeConcurrentCold(t *testing.T) {
 		deadline = other
 	}
 	ctx, cancel = context.WithDeadline(context.Background(), deadline)
-	// Discover each actual direct host before polling its sole joined wait.
-	// A fast frontend need not have a full proof; its completion cannot be
-	// inferred from failed pinning. Retained anchors survive joining here.
+	// Join each original frontend before inspecting its surviving direct host.
+	// The retained native exit watch and creation-parent identity survive reaping.
 	for ctx.Err() == nil {
-		for _, x := range []*composeDarwinCLIFront{a, b} {
-			poll, stop := context.WithTimeout(ctx, 10*time.Millisecond)
-			x.pinHost(poll)
-			stop()
-		}
 		aFinished, bFinished := a.finished(ctx), b.finished(ctx)
 		if (a.lifetime != nil && b.lifetime != nil) || (aFinished && bFinished) {
 			break
@@ -353,6 +817,46 @@ func TestInstalledCLIDarwinRealComposeAbruptHostRestart(t *testing.T) {
 	if err != nil || beforeKernel.KernelReadiness != "ready" {
 		t.Fatal("original genuine kernel incarnation unavailable")
 	}
+	// Keep an ordinary permitted consumer connected to the unchanged broker
+	// while the actual kernel processes exit and a new assembly starts.
+	consumerCtx, finishConsumer := context.WithTimeout(context.Background(), f.Config.Deadlines.StopGrace+f.Config.Deadlines.ReapTimeout+f.Config.StartupTimeout+10*time.Second)
+	defer finishConsumer()
+	ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
+	consumer := darwinSlowConsumerConnect(t, f, consumerCtx, make(chan darwinSlowConsumerFault, 16))
+	wire, err := communication.Subjects(f.Config.Kernel.Scope.HubID)
+	if err != nil {
+		t.Fatal("restart consumer scoped subjects unavailable")
+	}
+	subscriptions := make([]*nats.Subscription, 0, 2)
+	for _, subject := range []string{wire.Snapshot, wire.Update} {
+		sub, err := consumer.connection.SubscribeSync(subject)
+		if err != nil {
+			t.Fatal("restart consumer permitted subscription refused")
+		}
+		subscriptions = append(subscriptions, sub)
+		t.Cleanup(func() {
+			if sub.IsValid() && sub.Unsubscribe() != nil {
+				t.Error("restart consumer subscription cleanup failed")
+			}
+		})
+		if sub.SetPendingLimits(256, 256*protocol.MaxPayload) != nil {
+			t.Fatal("restart consumer bounded subscription refused")
+		}
+	}
+	if consumer.connection.FlushWithContext(ctx) != nil {
+		t.Fatal("restart consumer subscriptions did not flush")
+	}
+	initial, err := subscriptions[0].NextMsgWithContext(ctx)
+	initialReceived := time.Now()
+	cancel()
+	cursor := protocol.SnapshotCursor{}
+	if err != nil || initial == nil {
+		t.Fatal("restart consumer initial snapshot unavailable")
+	}
+	initialSnapshot, gap, err := cursor.Accept(initial.Data, f.Config.Kernel.Scope, initialReceived, 3*time.Second)
+	if err != nil || gap || initialSnapshot.Incarnation != beforeKernel.Incarnation {
+		t.Fatal("restart consumer initial snapshot or cursor refused")
+	}
 	stored := darwinScenarioStored(t, f)
 	f.AssertBaselineUnchanged(t)
 	killedAt := time.Now()
@@ -408,6 +912,40 @@ func TestInstalledCLIDarwinRealComposeAbruptHostRestart(t *testing.T) {
 	cancel()
 	if err != nil || afterKernel.KernelReadiness != "ready" || afterKernel.Incarnation == beforeKernel.Incarnation {
 		t.Fatal("actual restart did not establish a new genuine kernel incarnation")
+	}
+	ctx, cancel = context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	for index, subscription := range subscriptions {
+		observed := false
+		for ctx.Err() == nil {
+			message, err := subscription.NextMsgWithContext(ctx)
+			if err != nil || message == nil {
+				break
+			}
+			current, decodeErr := protocol.DecodeSnapshot(message.Data, f.Config.Kernel.Scope, time.Now(), 3*time.Second)
+			if decodeErr != nil || current.Incarnation != afterKernel.Incarnation || current.KernelReadiness != "ready" {
+				continue
+			}
+			if index == 0 {
+				if _, gap, err := cursor.Accept(message.Data, f.Config.Kernel.Scope, time.Now(), 3*time.Second); err != nil || !gap {
+					t.Fatal("ordinary consumer did not resynchronize to the actual new kernel incarnation")
+				}
+			}
+			observed = true
+			break
+		}
+		if !observed {
+			t.Fatal("ordinary consumer lost fresh snapshot or update publication across actual kernel restart")
+		}
+	}
+	// Use the original receipt time so freshness alone cannot reject the old
+	// wire frame; the cursor must remember that its incarnation was retired.
+	if _, _, err := cursor.Accept(initial.Data, f.Config.Kernel.Scope, initialReceived, 3*time.Second); err == nil || err.Error() != "kernel_snapshot_incarnation_invalid" {
+		t.Fatal("ordinary consumer accepted a replay from the retired actual kernel incarnation")
+	}
+	if !darwinSlowConsumerCheckFaults(t, consumer) || consumer.close() != nil || !darwinSlowConsumerCheckFaults(t, consumer) {
+		f.RetainForRecovery(t)
+		t.Fatal("restart consumer transport or owned cleanup failed")
 	}
 	stored.assertPreserved(t, f, "darwin-abrupt-recovery-ledger.json")
 	f.WriteEvidence(t, "darwin-abrupt-recovery-preservation.json", map[string]any{

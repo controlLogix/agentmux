@@ -200,6 +200,13 @@ func TestServerTrustEnvironmentMandatoryForTLSWithoutCredentialSchemaChange(t *t
 	if _, err := LoadEnvironment(); err == nil {
 		t.Fatal("plain role silently ignored its TLS trust reference")
 	}
+	t.Setenv("AGENTMUX_NATS_SERVER_TRUST_FILE", "")
+	if _, err := LoadEnvironment(); err == nil {
+		t.Fatal("installed role accepted plaintext without enrolled trust")
+	}
+	if _, err := (Config{Credentials: credentials}).prepared("boot"); err != nil {
+		t.Fatal("historical direct plaintext helper changed")
+	}
 }
 
 func TestRealActorUsesPinnedTLSFirstAndReconnectsOnlyToEnrolledEndpoint(t *testing.T) {

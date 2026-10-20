@@ -1,58 +1,552 @@
 {
-  "task-inspect": {
+  "authority-switch": {
+    "destinationServiceId": "authority-switch-owner",
     "kind": "command",
-    "destinationServiceId": "task-owner",
     "payload": {
+      "action": "record-source-fence",
+      "source": {
+        "applicationVersion": "legacy-v1",
+        "comparisonDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "fenceGeneration": 1,
+        "fenceId": "fbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "sourceRef": {
+          "id": "legacy-source",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        }
+      },
+      "switchId": "switch_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  "authority-switch-recovery-response": {
+    "algorithm": "Ed25519",
+    "canonicalization": "RFC8785-JCS-UTF8",
+    "claims": {
+      "authorityId": "authority-one",
+      "authorityRef": {
+        "id": "authority-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "decision": "pre-cutover-abort",
+      "grantRef": {
+        "id": "grant",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "hubId": "hub-one",
+      "issuedAt": "2026-10-09T12:00:02.000000Z",
+      "operation": {
+        "approvalRefs": [],
+        "attemptId": null,
+        "caller": {
+          "authenticatedIdentityRef": {
+            "id": "human",
+            "ownerHubId": "hub-one",
+            "revision": 1
+          },
+          "kind": "human",
+          "principalId": "user-one"
+        },
+        "cancellationRef": {
+          "id": "cancel_318ed034c049f2b2fff6707e93ab2164",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "causationId": "recover_source_one",
+        "deadline": "2026-10-09T12:00:30Z",
+        "delegationRef": null,
+        "effectiveActorRef": {
+          "id": "human",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "expectedVersion": 1,
+        "grantRef": {
+          "id": "grant",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "operationId": "recover_source_one",
+        "payloadDigest": "sha256:25491db97e565a8558f4578469bd8a4a3d601b3b04b75323ad818c5e212a2054",
+        "runId": null,
+        "schemaVersion": "1.0.0",
+        "scope": {
+          "organizationId": "org-one",
+          "projectId": null,
+          "workspaceId": null
+        },
+        "taskId": null,
+        "traceId": "trace-878c6b1af255575b7670265faa693a19cd9f792bb533dfc30e2e410714a6325c"
+      },
+      "payloadDigest": "sha256:25491db97e565a8558f4578469bd8a4a3d601b3b04b75323ad818c5e212a2054",
+      "profileId": "profile-one",
+      "purpose": "agentmux-authority-switch-recovery-response-v1",
+      "recordDigest": "sha256:82b7d1738c0fd2992cbf6c9d3b1c81fdcb9b8c49ea798b3b20a05d397257075f",
+      "replySubject": "_INBOX.abcdefghijklmnop.reply",
+      "requestDigest": "sha256:318ed034c049f2b2fff6707e93ab21641bff4a6426c4a6d79cb6b4398d9f5009",
+      "serviceId": "authority-switch-owner",
+      "serviceIdentityRef": {
+        "id": "switch-service",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "serviceInstanceId": "switch-instance",
+      "signingKeyRef": {
+        "id": "switch-issuer",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "source": {
+        "applicationVersion": "legacy-v1",
+        "comparisonDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "fenceGeneration": 1,
+        "fenceId": "fbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "sourceRef": {
+          "id": "legacy-source",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        }
+      },
+      "stream": {
+        "created": "2026-10-16T00:00:00.000000Z",
+        "minimumSequence": 2
+      },
+      "switchRef": {
+        "id": "switch_d0f54af6c3dd66fc3c5d26fd0c8d49b680e895c2e718d976c257cc2844fd138b",
+        "ownerHubId": "hub-one",
+        "revision": 2
+      },
+      "validUntil": "2026-10-09T12:00:30.000000Z"
+    },
+    "schemaVersion": "1.0.0",
+    "signature": "RQwW7JwEYCtvZ9Md9jZ7-8Pe--YZtq9Ewg0pq1qxzWibxCm-qySYI-UW5IZT3nx8nZ7ZPwcZHFfwWTVzMoAjAg"
+  },
+  "cancellation-request": {
+    "destinationServiceId": "task-owner",
+    "kind": "command",
+    "payload": {
+      "attemptId": "attempt-one",
+      "delegationId": "delegation-one",
+      "reason": "Fixture cancellation",
       "taskId": "task-one"
     }
   },
-  "task-reserve": {
+  "capability-artifact-read": {
+    "destinationServiceId": "artifact-owner",
     "kind": "command",
-    "destinationServiceId": "task-owner",
     "payload": {
-      "taskId": "task-one",
-      "delegationId": "delegation-one",
-      "attemptId": "attempt-one",
-      "executorHubId": "hub-executor",
-      "grantRef": {
-        "id": "execution-grant",
-        "ownerHubId": "hub-origin",
-        "revision": 1
+      "input": {
+        "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
       },
-      "repositoryRevision": "commit-a",
-      "assignmentEpoch": 1
+      "resourceRef": {
+        "id": "resource-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
     }
   },
-  "delegation-offer": {
-    "kind": "command",
-    "destinationServiceId": "delegation-owner",
+  "capability-content-reply": {
+    "destinationServiceId": "requesting-client",
+    "kind": "reply",
     "payload": {
-      "taskId": "task-one",
-      "delegationId": "delegation-one",
-      "attemptId": "attempt-one",
-      "originHubId": "hub-origin",
-      "executorHubId": "hub-executor",
-      "assignmentEpoch": 1,
-      "grantRef": {
-        "id": "execution-grant",
-        "ownerHubId": "hub-origin",
+      "data": "b2s=",
+      "resourceRef": {
+        "id": "resource-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "capability-decision-request": {
+    "destinationServiceId": "decision-owner",
+    "kind": "command",
+    "payload": {
+      "input": {
+        "proposalRef": {
+          "id": "resource-one",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        }
+      },
+      "resourceRef": {
+        "id": "resource-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "capability-decision-request-reply": {
+    "destinationServiceId": "requesting-client",
+    "kind": "reply",
+    "payload": {
+      "outcome": "pending",
+      "receiptRef": {
+        "id": "resource-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "capability-outcome-query": {
+    "destinationServiceId": "outcome-owner",
+    "kind": "command",
+    "payload": {
+      "input": {
+        "contractId": "capability-storage-write",
+        "operationId": "operation-one",
+        "payloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "resourceRef": {
+        "id": "resource-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "capability-outcome-query-reply": {
+    "destinationServiceId": "requesting-client",
+    "kind": "reply",
+    "payload": {
+      "operationId": "operation-one",
+      "outcome": "absent",
+      "payloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "recordRef": null
+    }
+  },
+  "capability-policy-evaluate": {
+    "destinationServiceId": "policy-owner",
+    "kind": "command",
+    "payload": {
+      "input": {
+        "action": "read",
+        "resourceClass": "workspace",
+        "resourceId": "resource-one"
+      },
+      "resourceRef": {
+        "id": "resource-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "capability-policy-evaluate-reply": {
+    "destinationServiceId": "requesting-client",
+    "kind": "reply",
+    "payload": {
+      "outcome": "allow",
+      "receiptRef": {
+        "id": "resource-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "capability-process-cancel": {
+    "destinationServiceId": "process-owner",
+    "kind": "command",
+    "payload": {
+      "input": {
+        "runRef": {
+          "id": "resource-one",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        }
+      },
+      "resourceRef": {
+        "id": "resource-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "capability-process-cancel-reply": {
+    "destinationServiceId": "requesting-client",
+    "kind": "reply",
+    "payload": {
+      "outcome": "pending",
+      "receiptRef": {
+        "id": "resource-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "capability-process-start": {
+    "destinationServiceId": "process-owner",
+    "kind": "command",
+    "payload": {
+      "input": {
+        "planRef": {
+          "id": "resource-one",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        }
+      },
+      "resourceRef": {
+        "id": "resource-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "capability-process-start-reply": {
+    "destinationServiceId": "requesting-client",
+    "kind": "reply",
+    "payload": {
+      "outcome": "accepted",
+      "receiptRef": {
+        "id": "resource-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "capability-secret-use": {
+    "destinationServiceId": "secret-owner",
+    "kind": "command",
+    "payload": {
+      "input": {
+        "consumerRef": {
+          "id": "resource-one",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "purposeRef": {
+          "id": "resource-one",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        }
+      },
+      "resourceRef": {
+        "id": "resource-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "capability-secret-use-reply": {
+    "destinationServiceId": "requesting-client",
+    "kind": "reply",
+    "payload": {
+      "outcome": "accepted",
+      "receiptRef": {
+        "id": "resource-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "capability-storage-read": {
+    "destinationServiceId": "storage-owner",
+    "kind": "command",
+    "payload": {
+      "input": {},
+      "resourceRef": {
+        "id": "resource-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "capability-storage-write": {
+    "destinationServiceId": "storage-owner",
+    "kind": "command",
+    "payload": {
+      "input": {
+        "value": {
+          "status": "pending"
+        }
+      },
+      "resourceRef": {
+        "id": "resource-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "capability-storage-write-reply": {
+    "destinationServiceId": "requesting-client",
+    "kind": "reply",
+    "payload": {
+      "outcome": "applied",
+      "receiptRef": {
+        "id": "resource-one",
+        "ownerHubId": "hub-one",
         "revision": 1
       },
-      "repositoryRevision": "commit-a",
-      "taskInputRef": {
-        "id": "input-one",
-        "ownerHubId": "hub-origin",
+      "resourceRef": {
+        "id": "task-one",
+        "ownerHubId": "hub-one",
+        "revision": 2
+      }
+    }
+  },
+  "capability-workspace-read": {
+    "destinationServiceId": "workspace-owner",
+    "kind": "command",
+    "payload": {
+      "input": {
+        "relativePath": "src/main.py"
+      },
+      "resourceRef": {
+        "id": "resource-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "dashboard-command": {
+    "destinationServiceId": "dashboard-owner",
+    "kind": "command",
+    "payload": {
+      "action": "config",
+      "bodyDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "requestId": "dashboard-operation",
+      "resourceRef": {
+        "id": "dashboard-one",
+        "ownerHubId": "hub-one",
         "revision": 1
       },
-      "acceptBefore": "2026-10-09T12:04:00Z"
+      "target": "/api/board/config"
+    }
+  },
+  "dashboard-dispatch": {
+    "destinationServiceId": "dashboard-owner",
+    "kind": "command",
+    "payload": {
+      "action": "config",
+      "bodyDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "claimRef": {
+        "id": "dashboard-claim",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "journalRef": {
+        "id": "dashboard-journal",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "originalOperationId": "dashboard-operation",
+      "originalPayloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "resourceRef": {
+        "id": "dashboard-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "target": "/api/board/config"
+    }
+  },
+  "dashboard-effect-complete": {
+    "destinationServiceId": "dashboard-owner",
+    "kind": "command",
+    "payload": {
+      "action": "config",
+      "bodyDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "claimRef": {
+        "id": "dashboard-claim",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "journalRef": {
+        "id": "dashboard-journal",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "observationId": "dashboard-observation",
+      "originalOperationId": "dashboard-operation",
+      "originalPayloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "outcome": "applied",
+      "resourceRef": {
+        "id": "dashboard-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "target": "/api/board/config"
+    }
+  },
+  "dashboard-outcome-query": {
+    "destinationServiceId": "dashboard-owner",
+    "kind": "command",
+    "payload": {
+      "action": "config",
+      "bodyDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "originalOperationId": "dashboard-operation",
+      "originalPayloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "resourceRef": {
+        "id": "dashboard-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "target": "/api/board/config"
+    }
+  },
+  "definition-drop": {
+    "destinationServiceId": "definition-owner",
+    "kind": "command",
+    "payload": {
+      "definitionId": "definition-one",
+      "expectedChecksum": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "name": "worker-one",
+      "scope": "repo"
+    }
+  },
+  "definition-effect-complete": {
+    "destinationServiceId": "definition-owner",
+    "kind": "command",
+    "payload": {
+      "attemptOperationId": "attempt-operation",
+      "definitionId": "definition-one",
+      "effectId": "effect-one",
+      "name": "worker-one",
+      "originalOperationId": "original-operation",
+      "originalPayloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "scope": "repo"
+    }
+  },
+  "definition-effect-query": {
+    "destinationServiceId": "definition-owner",
+    "kind": "command",
+    "payload": {
+      "definitionId": "definition-one",
+      "effectId": "effect-one",
+      "name": "worker-one",
+      "originalOperationId": "original-operation",
+      "originalPayloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "scope": "repo"
+    }
+  },
+  "definition-effect-retry": {
+    "destinationServiceId": "definition-owner",
+    "kind": "command",
+    "payload": {
+      "attemptOperationId": "attempt-operation",
+      "definitionId": "definition-one",
+      "effectId": "effect-one",
+      "name": "worker-one",
+      "originalOperationId": "original-operation",
+      "originalPayloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "scope": "repo"
+    }
+  },
+  "definition-save": {
+    "destinationServiceId": "definition-owner",
+    "kind": "command",
+    "payload": {
+      "definition": {
+        "description": "Review assigned changes",
+        "persona": "Explain findings."
+      },
+      "definitionId": "definition-one",
+      "expectedChecksum": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "name": "worker-one",
+      "scope": "repo"
     }
   },
   "delegation-decision": {
-    "kind": "event",
     "destinationServiceId": "task-owner",
+    "kind": "event",
     "payload": {
-      "taskId": "task-one",
-      "delegationId": "delegation-one",
       "attemptId": "attempt-one",
       "decision": "accepted_reserved",
       "decisionRecordRef": {
@@ -60,168 +554,1225 @@
         "ownerHubId": "hub-origin",
         "revision": 1
       },
-      "reason": null
+      "delegationId": "delegation-one",
+      "reason": null,
+      "taskId": "task-one"
     }
   },
-  "execution-report": {
-    "kind": "event",
-    "destinationServiceId": "task-owner",
+  "delegation-offer": {
+    "destinationServiceId": "delegation-owner",
+    "kind": "command",
     "payload": {
-      "taskId": "task-one",
-      "delegationId": "delegation-one",
+      "acceptBefore": "2026-10-09T12:04:00Z",
+      "assignmentEpoch": 1,
       "attemptId": "attempt-one",
-      "reportId": "report-one",
+      "delegationId": "delegation-one",
       "executorHubId": "hub-executor",
+      "grantRef": {
+        "id": "execution-grant",
+        "ownerHubId": "hub-origin",
+        "revision": 1
+      },
+      "originHubId": "hub-origin",
       "repositoryRevision": "commit-a",
-      "status": "completion_reported",
-      "artifacts": [],
-      "reportRecordRef": {
-        "id": "report-record-one",
+      "taskId": "task-one",
+      "taskInputRef": {
+        "id": "input-one",
         "ownerHubId": "hub-origin",
         "revision": 1
       }
     }
   },
-  "cancellation-request": {
-    "kind": "command",
-    "destinationServiceId": "task-owner",
+  "delivery-receipt": {
+    "destinationServiceId": "delivery-owner",
+    "kind": "event",
     "payload": {
-      "taskId": "task-one",
+      "deliveryAttempt": 1,
+      "deliveryId": "delivery-one",
+      "originalMessageId": "msg-original",
+      "receivedAt": "2026-10-09T12:00:02Z",
+      "status": "received"
+    }
+  },
+  "execution-report": {
+    "destinationServiceId": "task-owner",
+    "kind": "event",
+    "payload": {
+      "artifacts": [],
       "attemptId": "attempt-one",
       "delegationId": "delegation-one",
-      "reason": "Fixture cancellation"
+      "executorHubId": "hub-executor",
+      "reportId": "report-one",
+      "reportRecordRef": {
+        "id": "report-record-one",
+        "ownerHubId": "hub-origin",
+        "revision": 1
+      },
+      "repositoryRevision": "commit-a",
+      "status": "completion_reported",
+      "taskId": "task-one"
     }
   },
-  "delivery-receipt": {
-    "kind": "event",
-    "destinationServiceId": "delivery-owner",
+  "federation-board-command": {
+    "destinationServiceId": "storage-owner",
+    "kind": "command",
     "payload": {
-      "originalMessageId": "msg-original",
-      "deliveryId": "delivery-one",
-      "deliveryAttempt": 1,
-      "status": "received",
-      "receivedAt": "2026-10-09T12:00:02Z"
+      "attribution": "operator",
+      "input": {
+        "command": "move",
+        "key": "SH-1",
+        "status": "doing"
+      },
+      "resourceRef": {
+        "id": "board-one",
+        "ownerHubId": "hub-one",
+        "revision": 7
+      }
     }
   },
-  "plugin-lifecycle": {
-    "kind": "event",
-    "destinationServiceId": "lifecycle-owner",
+  "federation-board-complete": {
+    "destinationServiceId": "storage-owner",
+    "kind": "command",
     "payload": {
-      "instanceId": "plugin-one",
-      "generation": 1,
-      "status": "ready",
-      "observedAt": "2026-10-09T12:00:02Z",
-      "reason": null
+      "candidateDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "claimRef": {
+        "id": "board-claim-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "journalRef": {
+        "id": "board-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "observationId": "observation-one",
+      "originalOperationId": "original-one",
+      "originalPayloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "resourceRef": {
+        "id": "board-one",
+        "ownerHubId": "hub-one",
+        "revision": 7
+      }
+    }
+  },
+  "federation-board-dispatch": {
+    "destinationServiceId": "storage-owner",
+    "kind": "command",
+    "payload": {
+      "candidateDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "claimRef": {
+        "id": "board-claim-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "journalRef": {
+        "id": "board-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "originalOperationId": "original-one",
+      "originalPayloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "resourceRef": {
+        "id": "board-one",
+        "ownerHubId": "hub-one",
+        "revision": 7
+      }
+    }
+  },
+  "federation-knowledge-approve": {
+    "destinationServiceId": "storage-owner",
+    "kind": "command",
+    "payload": {
+      "attribution": "operator",
+      "input": {
+        "envelope": {
+          "at": "2026-10-09T12:00:00Z",
+          "data": {
+            "author": "operator",
+            "body": "Original finding",
+            "ref": null,
+            "source": "explicit",
+            "tags": [],
+            "title": "Finding"
+          },
+          "from": "alice",
+          "id": "01K6ZZZZZZZZZZZZZZZZZZZZZZ",
+          "node": "remote",
+          "rid": "r000000000000",
+          "to": "*",
+          "type": "knowledge",
+          "v": 2
+        },
+        "localNode": "mac",
+        "privileged": false,
+        "quarantineId": "Q-one",
+        "subject": "am.know.alice.r000000000000"
+      },
+      "resourceRef": {
+        "id": "knowledge-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "federation-knowledge-capture": {
+    "destinationServiceId": "storage-owner",
+    "kind": "command",
+    "payload": {
+      "attribution": "federation",
+      "input": {
+        "source": {
+          "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "id": "work-one",
+          "kind": "work-released"
+        }
+      },
+      "resourceRef": {
+        "id": "knowledge-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "federation-knowledge-index": {
+    "destinationServiceId": "storage-owner",
+    "kind": "command",
+    "payload": {
+      "attribution": "federation",
+      "input": {
+        "envelope": {
+          "at": "2026-10-09T12:00:00Z",
+          "data": {
+            "author": "operator",
+            "body": "Original finding",
+            "ref": null,
+            "source": "explicit",
+            "tags": [],
+            "title": "Finding"
+          },
+          "from": "alice",
+          "id": "01K6ZZZZZZZZZZZZZZZZZZZZZZ",
+          "node": "remote",
+          "rid": "r000000000000",
+          "to": "*",
+          "type": "knowledge",
+          "v": 2
+        },
+        "localNode": "mac",
+        "subject": "am.know.alice.r000000000000"
+      },
+      "resourceRef": {
+        "id": "knowledge-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "federation-knowledge-inspect": {
+    "destinationServiceId": "storage-owner",
+    "kind": "command",
+    "payload": {
+      "input": {},
+      "resourceRef": {
+        "id": "knowledge-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "federation-knowledge-outcome": {
+    "destinationServiceId": "storage-owner",
+    "kind": "command",
+    "payload": {
+      "input": {
+        "contractId": "federation-knowledge-share",
+        "operationId": "original",
+        "payloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "resourceRef": {
+        "id": "knowledge-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "federation-knowledge-read": {
+    "destinationServiceId": "storage-owner",
+    "kind": "command",
+    "payload": {
+      "input": {
+        "command": "search",
+        "limit": 10,
+        "query": "finding"
+      },
+      "resourceRef": {
+        "id": "knowledge-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "federation-knowledge-reply": {
+    "destinationServiceId": "requesting-client",
+    "kind": "reply",
+    "payload": {
+      "claims": {
+        "authorityId": "authority-one",
+        "authorityRef": {
+          "id": "authority-one",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "hubId": "hub-one",
+        "issuedAt": "2026-10-09T12:00:00Z",
+        "operationId": "message-one",
+        "payloadDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "profileId": "profile-one",
+        "purpose": "agentmux-legacy-knowledge-response-v1",
+        "replySubject": "_INBOX.message_reply_000001",
+        "requestContractId": "federation-knowledge-share",
+        "requestDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "resourceRef": {
+          "id": "knowledge-one",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "result": {
+          "resourceRef": {
+            "id": "messages-one",
+            "ownerHubId": "hub-one",
+            "revision": 1
+          }
+        },
+        "serviceIdentityRef": {
+          "id": "storage-service",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "serviceInstanceId": "storage-one",
+        "signingKeyRef": {
+          "id": "storage-issuer",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "validUntil": "2026-10-09T12:00:04Z"
+      },
+      "schemaVersion": "1.0.0",
+      "signature": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    }
+  },
+  "federation-knowledge-share": {
+    "destinationServiceId": "storage-owner",
+    "kind": "command",
+    "payload": {
+      "attribution": "operator",
+      "input": {
+        "envelope": {
+          "at": "2026-10-09T12:00:00Z",
+          "data": {
+            "author": "operator",
+            "body": "Original finding",
+            "ref": null,
+            "source": "explicit",
+            "tags": [],
+            "title": "Finding"
+          },
+          "from": "nick",
+          "id": "01K6ZZZZZZZZZZZZZZZZZZZZZZ",
+          "node": "mac",
+          "rid": "r000000000000",
+          "to": "*",
+          "type": "knowledge",
+          "v": 2
+        }
+      },
+      "resourceRef": {
+        "id": "knowledge-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "federation-knowledge-withdraw": {
+    "destinationServiceId": "storage-owner",
+    "kind": "command",
+    "payload": {
+      "attribution": "federation",
+      "input": {
+        "peer": "alice"
+      },
+      "resourceRef": {
+        "id": "knowledge-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "federation-message-approve": {
+    "destinationServiceId": "storage-owner",
+    "kind": "command",
+    "payload": {
+      "attribution": "operator",
+      "input": {
+        "envelope": {
+          "at": "2026-10-09T12:00:00Z",
+          "data": {
+            "body": "hello",
+            "kind": "note",
+            "sender": {
+              "operator": true
+            },
+            "target": null
+          },
+          "from": "alice",
+          "id": "01K6ZZZZZZZZZZZZZZZZZZZZZZ",
+          "node": "other",
+          "rid": null,
+          "to": "nick",
+          "type": "message"
+        },
+        "localNode": "mac",
+        "privileged": false,
+        "quarantineId": "quarantine-one",
+        "subject": "am.msg.alice.nick"
+      },
+      "resourceRef": {
+        "id": "messages-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "federation-message-deliver": {
+    "destinationServiceId": "storage-owner",
+    "kind": "command",
+    "payload": {
+      "attribution": "federation",
+      "input": {
+        "envelope": {
+          "at": "2026-10-09T12:00:00Z",
+          "data": {
+            "body": "hello",
+            "kind": "note",
+            "sender": {
+              "operator": true
+            },
+            "target": null
+          },
+          "from": "alice",
+          "id": "01K6ZZZZZZZZZZZZZZZZZZZZZZ",
+          "node": "other",
+          "rid": null,
+          "to": "nick",
+          "type": "message"
+        },
+        "localNode": "mac",
+        "subject": "am.msg.alice.nick"
+      },
+      "resourceRef": {
+        "id": "messages-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "federation-message-finding": {
+    "destinationServiceId": "storage-owner",
+    "kind": "command",
+    "payload": {
+      "attribution": "federation",
+      "input": {
+        "envelope": {
+          "at": "2026-10-09T12:00:00Z",
+          "data": {
+            "author": "operator",
+            "body": "Original finding",
+            "ref": null,
+            "source": "explicit",
+            "tags": [],
+            "title": "Finding"
+          },
+          "from": "alice",
+          "id": "01K6ZZZZZZZZZZZZZZZZZZZZZZ",
+          "node": "remote",
+          "rid": "r000000000000",
+          "to": "*",
+          "type": "knowledge",
+          "v": 2
+        },
+        "localNode": "mac",
+        "recipient": "falcon-worker-one"
+      },
+      "resourceRef": {
+        "id": "messages-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "federation-message-inspect": {
+    "destinationServiceId": "storage-owner",
+    "kind": "command",
+    "payload": {
+      "input": {},
+      "resourceRef": {
+        "id": "messages-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "federation-message-outcome": {
+    "destinationServiceId": "storage-owner",
+    "kind": "command",
+    "payload": {
+      "input": {
+        "contractId": "federation-message-send",
+        "operationId": "message-one",
+        "payloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "resourceRef": {
+        "id": "messages-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "federation-message-reply": {
+    "destinationServiceId": "requesting-client",
+    "kind": "reply",
+    "payload": {
+      "claims": {
+        "authorityId": "authority-one",
+        "authorityRef": {
+          "id": "authority-one",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "hubId": "hub-one",
+        "issuedAt": "2026-10-09T12:00:00Z",
+        "operationId": "message-one",
+        "payloadDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "profileId": "profile-one",
+        "purpose": "agentmux-legacy-message-response-v1",
+        "replySubject": "_INBOX.message_reply_000001",
+        "requestContractId": "federation-message-inspect",
+        "requestDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "resourceRef": {
+          "id": "messages-one",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "result": {
+          "resourceRef": {
+            "id": "messages-one",
+            "ownerHubId": "hub-one",
+            "revision": 1
+          }
+        },
+        "serviceIdentityRef": {
+          "id": "storage-service",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "serviceInstanceId": "storage-one",
+        "signingKeyRef": {
+          "id": "storage-issuer",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "validUntil": "2026-10-09T12:00:04Z"
+      },
+      "schemaVersion": "1.0.0",
+      "signature": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+    }
+  },
+  "federation-message-send": {
+    "destinationServiceId": "storage-owner",
+    "kind": "command",
+    "payload": {
+      "attribution": "operator",
+      "input": {
+        "envelope": {
+          "at": "2026-10-09T12:00:00Z",
+          "data": {
+            "body": "hello",
+            "kind": "note",
+            "sender": {
+              "operator": true
+            },
+            "target": null
+          },
+          "from": "alice",
+          "id": "01K6ZZZZZZZZZZZZZZZZZZZZZZ",
+          "node": "other",
+          "rid": null,
+          "to": "nick",
+          "type": "message"
+        },
+        "localNode": "mac",
+        "subject": "am.msg.alice.nick"
+      },
+      "resourceRef": {
+        "id": "messages-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "identity-approval-set": {
+    "destinationServiceId": "identity-owner",
+    "kind": "command",
+    "payload": {
+      "authorityId": "authority-one",
+      "previousRef": null,
+      "record": {
+        "approverGrantRef": {
+          "id": "approve-grant",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "approverRef": {
+          "id": "human",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "audience": {
+          "hubId": "hub-one",
+          "serviceId": "task-owner"
+        },
+        "decision": "approved",
+        "expectedVersion": 1,
+        "expiresAt": "2026-10-09T12:10:00Z",
+        "grantRef": {
+          "id": "grant",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "issuedAt": "2026-10-09T12:00:00Z",
+        "operationId": "operation-one",
+        "payloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "ref": {
+          "id": "approval",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "status": "active"
+      }
+    }
+  },
+  "identity-enroll": {
+    "destinationServiceId": "identity-owner",
+    "kind": "command",
+    "payload": {
+      "authorityId": "authority-one",
+      "identity": {
+        "externalIdentity": null,
+        "kind": "human",
+        "principalId": "new-user",
+        "ref": {
+          "id": "new-human",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "status": "active"
+      },
+      "issuers": [],
+      "transports": [
+        {
+          "proof": "iIGpG3hhwOCHsGdlwPmF6n4EVsOomLW7mkac1GiN5sw7r83Dx_Q7_7pEQ0DQ9TleatiEeSN4iUr4pwu-QD5lDQ",
+          "record": {
+            "expiresAt": "2026-10-09T12:10:00Z",
+            "identityRef": {
+              "id": "new-human",
+              "ownerHubId": "hub-one",
+              "revision": 1
+            },
+            "issuedAt": "2026-10-09T12:00:00Z",
+            "issuerRef": {
+              "id": "issuer",
+              "ownerHubId": "hub-one",
+              "revision": 1
+            },
+            "method": "nats-credential-mapping",
+            "publicKey": "A6EHv_POEL4dcN0Y50vAmWfk1jCbpQ1fHdyGZBJVMbg",
+            "ref": {
+              "id": "new-transport",
+              "ownerHubId": "hub-one",
+              "revision": 1
+            },
+            "status": "active"
+          }
+        }
+      ]
+    }
+  },
+  "identity-external-account-link": {
+    "destinationServiceId": "identity-owner",
+    "kind": "command",
+    "payload": {
+      "authorityId": "authority-one",
+      "externalIdentity": {
+        "issuer": "https://identity.example/realms/team",
+        "subject": "keycloak-user-184"
+      },
+      "identityRef": {
+        "id": "human",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "identity-grant-set": {
+    "destinationServiceId": "identity-owner",
+    "kind": "command",
+    "payload": {
+      "authorityId": "authority-one",
+      "previousRef": null,
+      "record": {
+        "actorRef": {
+          "id": "human",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "callerRef": {
+          "id": "human",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "contractId": "task-inspect",
+        "decision": "allowed",
+        "definitionTarget": null,
+        "delegationRef": null,
+        "expiresAt": "2026-10-09T12:10:00Z",
+        "issuedAt": "2026-10-09T12:00:00Z",
+        "ref": {
+          "id": "grant",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "resourceId": "task-one",
+        "scope": {
+          "organizationId": "org-one",
+          "projectId": "project-one",
+          "workspaceId": null
+        },
+        "status": "active"
+      }
+    }
+  },
+  "identity-legacy-alias-set": {
+    "destinationServiceId": "identity-owner",
+    "kind": "command",
+    "payload": {
+      "authorityId": "authority-one",
+      "previousRef": null,
+      "record": {
+        "alias": "old-w1",
+        "canonicalSession": "alpha-worker-w1",
+        "identityRef": {
+          "id": "human",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "instanceOwner": null,
+        "ref": {
+          "id": "legacy-alias-one",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "registrationGeneration": 1,
+        "scope": {
+          "organizationId": "org-one",
+          "projectId": "project-one",
+          "workspaceId": null
+        },
+        "sourceHubId": "hub-one",
+        "status": "active"
+      }
+    }
+  },
+  "identity-membership-set": {
+    "destinationServiceId": "identity-owner",
+    "kind": "command",
+    "payload": {
+      "authorityId": "authority-one",
+      "previousRef": null,
+      "record": {
+        "identityRef": {
+          "id": "human",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "ref": {
+          "id": "member",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "scope": {
+          "organizationId": "org-one",
+          "projectId": "project-one",
+          "workspaceId": null
+        },
+        "status": "active"
+      }
+    }
+  },
+  "identity-native-instance-set": {
+    "destinationServiceId": "identity-owner",
+    "kind": "command",
+    "payload": {
+      "authorityId": "authority-one",
+      "previousRef": null,
+      "record": {
+        "configurationChecksum": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "facts": {
+          "configurationRevision": 1,
+          "domainBindings": [
+            {
+              "action": "inspect",
+              "contractId": "task-inspect",
+              "id": "inspect-binding",
+              "resourceClass": "task",
+              "resourceIds": [
+                "task-one"
+              ]
+            }
+          ],
+          "grant": {
+            "actions": [
+              "inspect"
+            ],
+            "expiresAt": "2026-10-09T12:10:00Z",
+            "grantId": "native-grant",
+            "issuedAt": "2026-10-09T12:00:00Z",
+            "issuerHubId": "hub-one",
+            "parentGrantRef": null,
+            "policyRef": {
+              "id": "native-policy",
+              "ownerHubId": "hub-one",
+              "revision": 1
+            },
+            "resourceIds": [
+              "task-one"
+            ],
+            "revision": 1,
+            "scope": {
+              "organizationId": "org-one",
+              "projectId": null,
+              "workspaceId": null
+            },
+            "subjectInstanceId": "plugin-one"
+          },
+          "parentAccess": [],
+          "parentGrant": null,
+          "policy": {
+            "decisions": [
+              {
+                "access": {
+                  "action": "inspect",
+                  "resourceClass": "task",
+                  "resourceId": "task-one"
+                },
+                "outcome": "allow"
+              }
+            ],
+            "expiresAt": "2026-10-09T12:10:00Z",
+            "issuedAt": "2026-10-09T12:00:00Z",
+            "reference": {
+              "id": "native-policy",
+              "ownerHubId": "hub-one",
+              "revision": 1
+            },
+            "scope": {
+              "organizationId": "org-one",
+              "projectId": null,
+              "workspaceId": null
+            },
+            "subjectInstanceId": "plugin-one"
+          },
+          "scopeRef": {
+            "id": "native-scope",
+            "ownerHubId": "hub-one",
+            "revision": 1
+          },
+          "secretReferences": []
+        },
+        "hostIdentityRef": {
+          "id": "host",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "identityRef": {
+          "id": "plugin",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "manifestDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "owner": {
+          "epoch": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+          "generation": 1,
+          "instanceId": "plugin-one",
+          "pin": {
+            "manifestChecksum": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "packageChecksum": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "packageId": "test-plugin",
+            "provenanceChecksum": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "version": "1.0.0"
+          }
+        },
+        "parentOwner": null,
+        "ref": {
+          "id": "native-instance",
+          "ownerHubId": "hub-one",
+          "revision": 1
+        },
+        "relationship": "independent",
+        "status": "active"
+      }
+    }
+  },
+  "identity-revoke": {
+    "destinationServiceId": "identity-owner",
+    "kind": "command",
+    "payload": {
+      "authorityId": "authority-one",
+      "targetRef": {
+        "id": "transport",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "integration-attempt-complete": {
+    "destinationServiceId": "integration-owner",
+    "kind": "command",
+    "payload": {
+      "attemptOperationId": "attempt-one",
+      "effectRef": {
+        "id": "effect-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "originalOperationId": "original-one",
+      "originalPayloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  "integration-attempt-start": {
+    "destinationServiceId": "integration-owner",
+    "kind": "command",
+    "payload": {
+      "attemptOperationId": "attempt-one",
+      "effectRef": {
+        "id": "effect-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "originalOperationId": "original-one",
+      "originalPayloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  "integration-effect-query": {
+    "destinationServiceId": "integration-owner",
+    "kind": "command",
+    "payload": {
+      "effectRef": {
+        "id": "effect-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "originalOperationId": "original-one",
+      "originalPayloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  "integration-effect-reconcile": {
+    "destinationServiceId": "integration-owner",
+    "kind": "command",
+    "payload": {
+      "attemptOperationId": "attempt-one",
+      "effectRef": {
+        "id": "effect-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "originalOperationId": "original-one",
+      "originalPayloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  "integration-effect-reply": {
+    "destinationServiceId": "requesting-client",
+    "kind": "reply",
+    "payload": {
+      "attemptOperationId": "attempt-one",
+      "operationId": "query-one",
+      "originalOperationId": "original-one",
+      "originalPayloadDigest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "phase": "dispatch-claimed",
+      "sequence": 2
+    }
+  },
+  "integration-intent": {
+    "destinationServiceId": "integration-owner",
+    "kind": "command",
+    "payload": {
+      "action": "jira-transition",
+      "contentRef": null,
+      "credentialRef": {
+        "id": "credential-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "effectRef": {
+        "id": "effect-one",
+        "ownerHubId": "hub-one",
+        "revision": 0
+      },
+      "target": {
+        "issueKey": "AMUX-66",
+        "transitionId": "31"
+      }
+    }
+  },
+  "oidc-terminal-session-close": {
+    "destinationServiceId": "identity-owner",
+    "kind": "command",
+    "payload": {
+      "sessionId": "oidc_session_bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  },
+  "oidc-terminal-session-open": {
+    "destinationServiceId": "identity-owner",
+    "kind": "command",
+    "payload": {}
+  },
+  "oidc-terminal-session-status": {
+    "destinationServiceId": "identity-owner",
+    "kind": "command",
+    "payload": {
+      "attemptId": "oidc_attempt_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
     }
   },
   "operation-outcome": {
-    "kind": "reply",
     "destinationServiceId": "requesting-client",
+    "kind": "reply",
     "payload": {
       "operationId": "op-one",
       "outcome": "committed",
+      "reason": null,
       "recordRef": {
         "id": "record-one",
         "ownerHubId": "hub-origin",
         "revision": 1
       },
-      "reason": null,
       "retryable": false
     }
   },
-  "status-query": {
+  "orchestration-command": {
+    "destinationServiceId": "orchestration-owner",
     "kind": "command",
-    "destinationServiceId": "status-owner",
     "payload": {
-      "includeHubs": true
+      "environmentRef": null,
+      "input": {
+        "command": "run-complete",
+        "runId": "abcdef"
+      },
+      "resourceRef": {
+        "id": "orchestration-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "orchestration-complete": {
+    "destinationServiceId": "orchestration-owner",
+    "kind": "command",
+    "payload": {
+      "candidateDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "claimRef": {
+        "id": "orchestration-claim",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "journalRef": {
+        "id": "orchestration-journal",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "observationId": "orchestration-observation",
+      "originalOperationId": "orchestration-operation",
+      "originalPayloadDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "resourceRef": {
+        "id": "orchestration-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "orchestration-dispatch": {
+    "destinationServiceId": "orchestration-owner",
+    "kind": "command",
+    "payload": {
+      "candidateDigest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "claimRef": {
+        "id": "orchestration-claim",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "journalRef": {
+        "id": "orchestration-journal",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      },
+      "originalOperationId": "orchestration-operation",
+      "originalPayloadDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "resourceRef": {
+        "id": "orchestration-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "orchestration-outcome-query": {
+    "destinationServiceId": "orchestration-owner",
+    "kind": "command",
+    "payload": {
+      "originalOperationId": "orchestration-operation",
+      "originalPayloadDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "resourceRef": {
+        "id": "orchestration-one",
+        "ownerHubId": "hub-one",
+        "revision": 1
+      }
+    }
+  },
+  "plugin-lifecycle": {
+    "destinationServiceId": "lifecycle-owner",
+    "kind": "event",
+    "payload": {
+      "generation": 1,
+      "instanceId": "plugin-one",
+      "observedAt": "2026-10-09T12:00:02Z",
+      "reason": null,
+      "status": "ready"
     }
   },
   "startup-status-observation": {
-    "kind": "reply",
     "destinationServiceId": "reply-consumer",
+    "kind": "reply",
     "payload": {
-      "schemaVersion": "1.0.0",
-      "observationId": "observation_started",
-      "observedAt": "2026-10-13T12:00:00Z",
-      "sourceRevision": 1,
-      "startupAttemptId": "attempt_1",
-      "disposition": "started",
       "caller": {
-        "principalId": "fixture_user",
-        "kind": "human",
         "authenticatedIdentityRef": {
           "id": "identity_1",
           "ownerHubId": "fixture_hub",
           "revision": 1
         },
+        "kind": "human",
+        "principalId": "fixture_user",
         "scope": {
           "organizationId": "fixture_org",
           "projectId": "fixture_project",
           "workspaceId": null
         }
       },
+      "disposition": "started",
       "errors": [],
+      "hubs": {
+        "entries": [],
+        "inventoryState": "known"
+      },
       "instance": {
-        "instanceId": "fixture_instance",
-        "displayName": "Fixture instance",
-        "profileId": "fixture_profile",
-        "installedVersion": "1.0.0",
-        "runningVersion": "1.0.0",
-        "mode": "local",
         "composeProject": "fixture_compose",
         "contextDisplayName": "Approved local fixture",
         "contextFingerprint": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "endpoint": "nats://127.0.0.1:4222",
         "dashboard": "http://127.0.0.1:8787/",
+        "displayName": "Fixture instance",
+        "endpoint": "nats://127.0.0.1:4222",
+        "installedVersion": "1.0.0",
+        "instanceId": "fixture_instance",
+        "mode": "local",
+        "profileId": "fixture_profile",
         "readiness": "ready",
+        "runningVersion": "1.0.0",
         "services": [
           {
-            "serviceId": "kernel",
             "availability": "available",
-            "unavailableReason": null,
-            "readiness": "ready",
             "observedAt": "2026-10-13T12:00:00Z",
-            "sourceRevision": 1
+            "readiness": "ready",
+            "serviceId": "kernel",
+            "sourceRevision": 1,
+            "unavailableReason": null
           },
           {
-            "serviceId": "federation",
             "availability": "unavailable",
-            "unavailableReason": "not_implemented",
-            "readiness": "unknown",
             "observedAt": null,
-            "sourceRevision": null
+            "readiness": "unknown",
+            "serviceId": "federation",
+            "sourceRevision": null,
+            "unavailableReason": "not_implemented"
           }
         ]
       },
+      "observationId": "observation_started",
+      "observedAt": "2026-10-13T12:00:00Z",
       "persistence": {
         "availability": "available",
         "backend": "jetstream",
-        "profile": "local_durable",
-        "serverId": "fixture_server",
         "domainId": "fixture_domain",
+        "observedAt": "2026-10-13T12:00:00Z",
+        "profile": "local_durable",
         "readiness": "ready",
-        "storagePressure": {
-          "state": "known",
-          "percentUsed": 0
-        },
         "replicationHealth": {
-          "state": "healthy",
-          "replicas": 1
+          "replicas": 1,
+          "state": "healthy"
         },
-        "observedAt": "2026-10-13T12:00:00Z"
+        "serverId": "fixture_server",
+        "storagePressure": {
+          "percentUsed": 0,
+          "state": "known"
+        }
       },
+      "schemaVersion": "1.0.0",
+      "sourceRevision": 1,
+      "startupAttemptId": "attempt_1",
       "work": {
-        "state": "known",
         "active": 0,
+        "observedAt": "2026-10-13T12:00:00Z",
         "projects": 0,
         "reserved": 0,
         "sourceCursor": 0,
-        "observedAt": "2026-10-13T12:00:00Z"
-      },
-      "hubs": {
-        "inventoryState": "known",
-        "entries": []
+        "state": "known"
       }
+    }
+  },
+  "status-query": {
+    "destinationServiceId": "status-owner",
+    "kind": "command",
+    "payload": {
+      "includeHubs": true
+    }
+  },
+  "task-inspect": {
+    "destinationServiceId": "task-owner",
+    "kind": "command",
+    "payload": {
+      "taskId": "task-one"
+    }
+  },
+  "task-reserve": {
+    "destinationServiceId": "task-owner",
+    "kind": "command",
+    "payload": {
+      "assignmentEpoch": 1,
+      "attemptId": "attempt-one",
+      "delegationId": "delegation-one",
+      "executorHubId": "hub-executor",
+      "grantRef": {
+        "id": "execution-grant",
+        "ownerHubId": "hub-origin",
+        "revision": 1
+      },
+      "repositoryRevision": "commit-a",
+      "taskId": "task-one"
     }
   }
 }

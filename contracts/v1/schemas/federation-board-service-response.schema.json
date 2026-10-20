@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-board-service-response",
+  "title": "Legacy board service response",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "purpose": {
+          "const": "agentmux-legacy-board-response-v1"
+        },
+        "hubId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "profileId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "authorityId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "scope": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+        },
+        "replySubject": {
+          "type": "string",
+          "pattern": "^_INBOX\\.[A-Za-z0-9_-]{16,128}(?:\\.[A-Za-z0-9_-]{1,128})?$"
+        },
+        "issuedAt": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+        },
+        "validUntil": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+        },
+        "serviceIdentityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "serviceInstanceId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "signingKeyRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "requestDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "operationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "payloadDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "resourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "receiptRef": {
+          "oneOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "result": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string"
+                },
+                "rid": {
+                  "type": "string"
+                },
+                "rev": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+                },
+                "attempts": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 3
+                }
+              },
+              "required": [
+                "key",
+                "rid",
+                "rev"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "purpose",
+        "hubId",
+        "profileId",
+        "authorityId",
+        "scope",
+        "replySubject",
+        "issuedAt",
+        "validUntil",
+        "serviceIdentityRef",
+        "serviceInstanceId",
+        "signingKeyRef",
+        "requestDigest",
+        "operationId",
+        "payloadDigest",
+        "resourceRef",
+        "receiptRef",
+        "result"
+      ]
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{86}$"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "claims",
+    "signature"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:authority-switch-recovery-permit",
+  "title": "Agentmux verified legacy recovery permit v1",
+  "description": "An opaque in-process permit minted only after a current signed authority decision. Serialized fields are audit data and cannot grant recovery by themselves.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "format": {"const": "amx-authority-switch-recovery-permit-v1"},
+    "decision": {"const": "pre-cutover-abort"},
+    "switchRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+    "recordDigest": {"$ref": "urn:agentmux:contract:1:common#/$defs/digest"},
+    "source": {"$ref": "urn:agentmux:contract:1:authority-switch#/$defs/source"},
+    "stream": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "created": {"$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"},
+        "minimumSequence": {"type": "integer", "minimum": 1, "maximum": 9007199254740991}
+      },
+      "required": ["created", "minimumSequence"]
+    },
+    "authorityRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+    "validUntil": {"$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"}
+  },
+  "required": ["format", "decision", "switchRef", "recordDigest", "source", "stream", "authorityRef", "validUntil"]
+}

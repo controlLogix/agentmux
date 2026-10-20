@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:dashboard-outcome-query",
+  "title": "Agentmux dashboard-outcome-query v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": { "$ref": "urn:agentmux:contract:1:common#/$defs/reference" },
+    "originalOperationId": { "$ref": "urn:agentmux:contract:1:common#/$defs/identifier" },
+    "originalPayloadDigest": { "$ref": "urn:agentmux:contract:1:common#/$defs/digest" },
+    "target": { "$ref": "urn:agentmux:contract:1:dashboard-command#/properties/target" },
+    "action": { "$ref": "urn:agentmux:contract:1:dashboard-command#/properties/action" },
+    "bodyDigest": { "$ref": "urn:agentmux:contract:1:common#/$defs/digest" }
+  },
+  "required": ["resourceRef", "originalOperationId", "originalPayloadDigest", "target", "action", "bodyDigest"]
+}

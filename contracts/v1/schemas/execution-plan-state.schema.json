@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:execution-plan-state",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "format": {
+      "const": "agentmux-approved-execution-plan-v1"
+    },
+    "status": {
+      "enum": [
+        "approved",
+        "revoked"
+      ]
+    },
+    "plan": {
+      "$ref": "urn:agentmux:contract:1:approved-execution-plan"
+    }
+  },
+  "required": [
+    "format",
+    "status",
+    "plan"
+  ]
+}

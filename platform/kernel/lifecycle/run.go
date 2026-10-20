@@ -1,4 +1,5 @@
-// Package lifecycle publishes protected peer observations; direct process controls remain with the supervisor.
+// Package lifecycle coordinates protected sibling recovery through NATS.
+// The supervisor retains exact process handles and validates every operation.
 package lifecycle
 
 import (
@@ -11,11 +12,11 @@ func Run(ctx context.Context, c protocol.Config, subjects protocol.SubjectSet) e
 	if err != nil {
 		return err
 	}
-	return actor.Serve(ctx, func(v protocol.View) protocol.Decision {
+	return actor.ServeLifecycle(ctx, func(v protocol.View) protocol.Decision {
 		codes := []string{}
 		if !v.AllReadyExcept("kernel-lifecycle") {
 			codes = append(codes, "peer_unavailable")
 		}
 		return protocol.Decision{State: "ready", ErrorCodes: codes, Members: v.Members}
-	}, nil)
+	})
 }

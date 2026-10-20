@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:operation-context",
+  "title": "Agentmux operation-context v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "operationId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+    },
+    "payloadDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "expectedVersion": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "caller": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "principalId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+        },
+        "kind": {
+          "enum": [
+            "human",
+            "device",
+            "service",
+            "plugin"
+          ]
+        },
+        "authenticatedIdentityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        }
+      },
+      "required": [
+        "principalId",
+        "kind",
+        "authenticatedIdentityRef"
+      ]
+    },
+    "effectiveActorRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "scope": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+    },
+    "taskId": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "runId": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "attemptId": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "delegationRef": {
+      "anyOf": [
+        {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "grantRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "approvalRefs": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "traceId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+    },
+    "causationId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+    },
+    "deadline": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+    },
+    "cancellationRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "operationId",
+    "payloadDigest",
+    "expectedVersion",
+    "caller",
+    "effectiveActorRef",
+    "scope",
+    "taskId",
+    "runId",
+    "attemptId",
+    "delegationRef",
+    "grantRef",
+    "approvalRefs",
+    "traceId",
+    "causationId",
+    "deadline",
+    "cancellationRef"
+  ],
+  "description": " Executable P01 contract. Runtime enrollment, authorization and durable ownership remain separate obligations."
+}

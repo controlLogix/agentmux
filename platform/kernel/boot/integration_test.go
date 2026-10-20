@@ -10,6 +10,7 @@ import (
 	"github.com/controlLogix/agentmux/platform/kernel/lifecycle"
 	"github.com/controlLogix/agentmux/platform/kernel/protocol"
 	"github.com/controlLogix/agentmux/platform/kernel/status"
+	"github.com/controlLogix/agentmux/platform/localtls"
 	"github.com/nats-io/nats.go"
 	"net"
 	"os"
@@ -22,6 +23,7 @@ import (
 )
 
 type fixture struct {
+	trust   *localtls.ClientTrust
 	url     string
 	secrets communication.Credentials
 	scope   protocol.Scope
@@ -76,7 +78,7 @@ func setup(t *testing.T) fixture {
 		if err == nil {
 			conn.Close()
 			s, _ := communication.Subjects("fixture_hub")
-			return fixture{url, secrets, protocol.Scope{HubID: "fixture_hub", InstanceID: "fixture_instance", ProfileID: "fixture_profile", AssemblyDigest: "sha256:" + strings.Repeat("a", 64), ReleaseManifestDigest: "sha256:" + strings.Repeat("b", 64), ReleaseVersion: "1.0.0"}, protocol.SubjectSet{Commands: s.Commands, Events: s.Events, Snapshot: s.Snapshot, Update: s.Update}}
+			return fixture{nil, url, secrets, protocol.Scope{HubID: "fixture_hub", InstanceID: "fixture_instance", ProfileID: "fixture_profile", AssemblyDigest: "sha256:" + strings.Repeat("a", 64), ReleaseManifestDigest: "sha256:" + strings.Repeat("b", 64), ReleaseVersion: "1.0.0"}, protocol.SubjectSet{Commands: s.Commands, Events: s.Events, Snapshot: s.Snapshot, Update: s.Update}}
 		}
 		time.Sleep(10 * time.Millisecond)
 	}
@@ -85,7 +87,20 @@ func setup(t *testing.T) fixture {
 }
 func (f fixture) client(t *testing.T, role string) *nats.Conn {
 	t.Helper()
-	conn, err := nats.Connect(f.url, nats.UserInfo(role, f.secrets[role]), nats.NoReconnect(), nats.Timeout(time.Second))
+	options := []nats.Option{nats.UserInfo(role, f.secrets[role]), nats.NoReconnect(), nats.IgnoreDiscoveredServers(), nats.Timeout(time.Second)}
+	if f.trust != nil {
+		dialer, err := f.trust.NewDialer(context.Background(), time.Second)
+		if err != nil {
+			t.Fatal("fixture TLS transport unavailable")
+		}
+		t.Cleanup(func() {
+			if dialer.Close() != nil {
+				t.Error("fixture TLS cleanup failed")
+			}
+		})
+		options = append(options, nats.TLSHandshakeFirst(), nats.SetCustomDialer(dialer))
+	}
+	conn, err := nats.Connect(f.url, options...)
 	if err != nil {
 		t.Fatal("fixture connection failed")
 	}
@@ -96,7 +111,7 @@ func (f fixture) start(t *testing.T, role string) context.CancelFunc {
 	t.Helper()
 	ctx, cancel := context.WithCancel(context.Background())
 	done := make(chan error, 1)
-	c := protocol.Config{Credentials: protocol.Credentials{SchemaVersion: protocol.Version, Role: role, Username: role, Password: f.secrets[role], NATSURL: f.url, Scope: f.scope}, Interval: 40 * time.Millisecond, StaleAfter: 160 * time.Millisecond}
+	c := protocol.Config{Credentials: protocol.Credentials{SchemaVersion: protocol.Version, Role: role, Username: role, Password: f.secrets[role], NATSURL: f.url, Scope: f.scope}, ServerTrust: f.trust, Interval: 40 * time.Millisecond, StaleAfter: 160 * time.Millisecond}
 	go func() {
 		var err error
 		switch role {

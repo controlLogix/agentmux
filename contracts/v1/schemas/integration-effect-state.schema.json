@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:integration-effect-state",
+  "title": "Agentmux integration-effect-state v1",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "format": {
+          "const": "amx-integration-effect-v1"
+        },
+        "originalOperationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "originalPayloadDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "phase": {
+          "const": "intent-committed"
+        },
+        "intent": {
+          "$ref": "urn:agentmux:contract:1:integration-intent"
+        }
+      },
+      "required": [
+        "format",
+        "originalOperationId",
+        "originalPayloadDigest",
+        "phase",
+        "intent"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "format": {
+          "const": "amx-integration-effect-v1"
+        },
+        "originalOperationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "originalPayloadDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "phase": {
+          "const": "dispatch-claimed"
+        },
+        "intent": {
+          "$ref": "urn:agentmux:contract:1:integration-intent"
+        },
+        "attempt": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "operationId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "payloadDigest": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            },
+            "claimRecordId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "claimSequence": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "operationId",
+            "payloadDigest",
+            "claimRecordId",
+            "claimSequence"
+          ]
+        },
+        "observation": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "format",
+        "originalOperationId",
+        "originalPayloadDigest",
+        "phase",
+        "intent",
+        "attempt",
+        "observation"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "format": {
+          "const": "amx-integration-effect-v1"
+        },
+        "originalOperationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "originalPayloadDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "phase": {
+          "enum": [
+            "applied",
+            "not-dispatched",
+            "reconciliation-required"
+          ]
+        },
+        "intent": {
+          "$ref": "urn:agentmux:contract:1:integration-intent"
+        },
+        "attempt": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "operationId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "payloadDigest": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            },
+            "claimRecordId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "claimSequence": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "operationId",
+            "payloadDigest",
+            "claimRecordId",
+            "claimSequence"
+          ]
+        },
+        "observation": {
+          "$ref": "urn:agentmux:contract:1:integration-provider-observation"
+        }
+      },
+      "required": [
+        "format",
+        "originalOperationId",
+        "originalPayloadDigest",
+        "phase",
+        "intent",
+        "attempt",
+        "observation"
+      ]
+    }
+  ],
+  "description": "The receiver validates immutable original intent and every lifecycle record against retained history. Complete owner records are limited to 65536 encoded bytes; observations to 4096. Phase is not a caller assertion."
+}

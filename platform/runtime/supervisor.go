@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"sort"
 	"strings"
 	"sync"
 	"syscall"
@@ -42,10 +41,12 @@ type executable interface {
 }
 
 type Prepared struct {
-	mu       sync.Mutex
-	consumed bool
-	images   [4]executable
-	roles    [4]string
+	mu              sync.Mutex
+	consumed        bool
+	images          [4]executable
+	roles           [4]string
+	release         assembly.Trust
+	recoveryCleanup [4]error
 }
 
 // Prepare verifies the external release policy, then checks the digest of each
@@ -77,7 +78,7 @@ func Prepare(ctx context.Context, raw []byte, packageDir string, trust assembly.
 	if err != nil {
 		return nil, errors.New("verified package root is unavailable")
 	}
-	p := &Prepared{}
+	p := &Prepared{release: verified.Release()}
 	defer func() {
 		if cleanup := root.Close(); cleanup != nil {
 			failure = retainStartupCleanupCause(failure, cleanup)
@@ -114,6 +115,10 @@ func (p *Prepared) Close() error {
 	p.consumed = true
 	var failures []error
 	for i, image := range p.images {
+		if p.recoveryCleanup[i] != nil {
+			failures = append(failures, p.recoveryCleanup[i])
+			continue
+		}
 		if image != nil {
 			p.images[i] = nil
 			failures = append(failures, image.close())
@@ -161,6 +166,8 @@ type owned struct {
 	cleanupError error
 }
 type Group struct {
+	childrenMu          sync.RWMutex
+	recovery            *memberRecovery
 	children            []*owned
 	deadlines           Deadlines
 	allDone             chan struct{}
@@ -172,10 +179,12 @@ type Group struct {
 	imageCleanupError error
 }
 type ProcessStatus struct {
-	Role     string
-	PID      int
-	Exited   bool
-	ExitCode int
+	Role            string
+	PID             int
+	Exited          bool
+	ExitCode        int
+	Generation      uint64
+	RecoveryEnabled bool
 }
 
 var envKeys = map[string]bool{"AGENTMUX_NATS_URL": true, "AGENTMUX_NATS_CREDS_FILE": true, "AGENTMUX_NATS_SERVER_TRUST_FILE": true, "AGENTMUX_INSTANCE_ID": true, "AGENTMUX_PROFILE_ID": true}
@@ -195,35 +204,47 @@ func options(roles [4]string, supplied [4]RoleOptions) (map[string]RoleOptions, 
 		if _, exists := result[option.ID]; exists {
 			return nil, errors.New("launch role is repeated")
 		}
-		if len(option.Args) > 64 {
-			return nil, errors.New("too many literal arguments")
-		}
-		args := append([]string(nil), option.Args...)
-		size := 0
-		for _, arg := range args {
-			size += len(arg)
-			if strings.ContainsRune(arg, 0) || size > 64*1024 {
-				return nil, errors.New("literal arguments exceed their safe bounds")
-			}
-		}
-		env := map[string]string{}
-		for key, value := range option.Env {
-			if !envKeys[key] || strings.ContainsRune(value, 0) || len(value) > 4096 {
-				return nil, errors.New("launch environment contains an unapproved key or value")
-			}
-			env[key] = value
-		}
-		if err := validateLifetimeLease(option.LifetimeLease); err != nil {
+		checked, err := copyRoleOptions(option)
+		if err != nil {
 			return nil, err
 		}
-		result[option.ID] = RoleOptions{ID: option.ID, Args: args, Env: env, LifetimeLease: option.LifetimeLease}
+		result[option.ID] = checked
 	}
 	return result, nil
+}
+
+func copyRoleOptions(option RoleOptions) (RoleOptions, error) {
+	if len(option.Args) > 64 {
+		return RoleOptions{}, errors.New("too many literal arguments")
+	}
+	args := append([]string(nil), option.Args...)
+	size := 0
+	for _, arg := range args {
+		size += len(arg)
+		if strings.ContainsRune(arg, 0) || size > 64*1024 {
+			return RoleOptions{}, errors.New("literal arguments exceed their safe bounds")
+		}
+	}
+	env := map[string]string{}
+	for key, value := range option.Env {
+		if !envKeys[key] || strings.ContainsRune(value, 0) || len(value) > 4096 {
+			return RoleOptions{}, errors.New("launch environment contains an unapproved key or value")
+		}
+		env[key] = value
+	}
+	if err := validateLifetimeLease(option.LifetimeLease); err != nil {
+		return RoleOptions{}, err
+	}
+	return RoleOptions{ID: option.ID, Args: args, Env: env, LifetimeLease: option.LifetimeLease}, nil
 }
 
 // Start launches four independent children from prepared descriptors. The parent
 // context owns this bounded initial lifecycle; detaching a healthy runtime is later work.
 func (p *Prepared) Start(ctx context.Context, supplied [4]RoleOptions, deadlines Deadlines) (*Group, error) {
+	return p.start(ctx, supplied, deadlines, nil)
+}
+
+func (p *Prepared) start(ctx context.Context, supplied [4]RoleOptions, deadlines Deadlines, recovery *memberRecovery) (*Group, error) {
 	if p == nil {
 		return nil, errors.New("prepared assembly is required")
 	}
@@ -244,7 +265,14 @@ func (p *Prepared) Start(ctx context.Context, supplied [4]RoleOptions, deadlines
 		return nil, err
 	}
 	p.consumed = true
-	g := &Group{deadlines: deadlines, allDone: make(chan struct{}), stopToken: make(chan struct{}, 1)}
+	if recovery != nil {
+		for role, option := range selected {
+			recovery.generations[role] = 1
+			recovery.enabled[role] = true
+			recovery.options[role] = option
+		}
+	}
+	g := &Group{recovery: recovery, deadlines: deadlines, allDone: make(chan struct{}), stopToken: make(chan struct{}, 1)}
 	g.stopToken <- struct{}{}
 	startCtx, cancel := context.WithTimeout(ctx, deadlines.StartTimeout)
 	defer cancel()
@@ -252,71 +280,12 @@ func (p *Prepared) Start(ctx context.Context, supplied [4]RoleOptions, deadlines
 		if err = startCtx.Err(); err != nil {
 			break
 		}
-		option := selected[role]
-		cmd := p.images[i].command(option.Args)
-		cmd.Args[0] = "agentmux-" + role
-		cmd.Dir = "/"
-		cmd.Env = []string{"AGENTMUX_KERNEL_ROLE=" + role, "AGENTMUX_KERNEL_API_MAJOR=1"}
-		parentReader, parentWriter, leaseCopy, lifetimeErr := prepareChildLifetime(option.LifetimeLease)
-		if lifetimeErr != nil {
-			err = lifetimeErr
-			break
+		child, startErr := spawnOwned(startCtx, role, p.images[i], selected[role], deadlines)
+		if child != nil {
+			g.children = append(g.children, child)
 		}
-		parentFD := 3 + len(cmd.ExtraFiles)
-		cmd.ExtraFiles = append(cmd.ExtraFiles, parentReader)
-		cmd.Env = append(cmd.Env, fmt.Sprintf("AGENTMUX_KERNEL_PARENT_FD=%d", parentFD))
-		if leaseCopy != nil {
-			leaseFD := 3 + len(cmd.ExtraFiles)
-			cmd.ExtraFiles = append(cmd.ExtraFiles, leaseCopy)
-			cmd.Env = append(cmd.Env, fmt.Sprintf("AGENTMUX_KERNEL_LEASE_FD=%d", leaseFD))
-		}
-		keys := make([]string, 0, len(option.Env))
-		for key := range option.Env {
-			keys = append(keys, key)
-		}
-		sort.Strings(keys)
-		for _, key := range keys {
-			cmd.Env = append(cmd.Env, key+"="+option.Env[key])
-		}
-		child := &owned{role: role, cmd: cmd, done: make(chan struct{}), exitCode: -1, parentWriter: parentWriter}
-		cmd.Stdout = &child.output
-		cmd.Stderr = &child.output
-		// Bound exec.Cmd's output-copy wait if a trusted role violates the no-descendant contract.
-		cmd.WaitDelay = deadlines.ReapTimeout
-		if err = startCtx.Err(); err != nil {
-			err = errors.Join(err, closeChildStartFiles(parentReader, parentWriter, leaseCopy))
-			break
-		}
-		// Protected path backends must recheck their held installation immediately
-		// before spawning. Sealed descriptor backends need no path revalidation.
-		if validator, ok := p.images[i].(interface{ validateForStart(context.Context) error }); ok {
-			if err = validator.validateForStart(startCtx); err != nil {
-				err = errors.Join(err, closeChildStartFiles(parentReader, parentWriter, leaseCopy))
-				break
-			}
-		}
-		if err = cmd.Start(); err != nil {
-			err = errors.Join(err, closeChildStartFiles(parentReader, parentWriter, leaseCopy))
-			break
-		}
-		// The child owns its inherited copies. Only the private writer stays here.
-		copyCleanupErr := closeChildStartFiles(parentReader, leaseCopy)
-		g.children = append(g.children, child)
-		go func(c *owned) {
-			e := c.cmd.Wait()
-			writerCleanupErr := closeChildStartFiles(c.parentWriter)
-			e = errors.Join(e, writerCleanupErr)
-			c.mu.Lock()
-			c.cleanupError = writerCleanupErr
-			c.waitError = e
-			if c.cmd.ProcessState != nil {
-				c.exitCode = c.cmd.ProcessState.ExitCode()
-			}
-			c.mu.Unlock()
-			close(c.done)
-		}(child)
-		if copyCleanupErr != nil {
-			err = copyCleanupErr
+		if startErr != nil {
+			err = startErr
 			break
 		}
 	}
@@ -329,12 +298,8 @@ func (p *Prepared) Start(ctx context.Context, supplied [4]RoleOptions, deadlines
 	}
 	g.imageCleanupError = errors.Join(imageFailures...)
 	p.mu.Unlock()
-	go func() {
-		for _, child := range g.children {
-			<-child.done
-		}
-		close(g.allDone)
-	}()
+	g.watchChildren()
+
 	if err == nil {
 		err = startCtx.Err()
 	}
@@ -366,6 +331,8 @@ func (p *Prepared) Start(ctx context.Context, supplied [4]RoleOptions, deadlines
 }
 
 func (g *Group) Status() []ProcessStatus {
+	g.childrenMu.RLock()
+	defer g.childrenMu.RUnlock()
 	result := make([]ProcessStatus, 0, len(g.children))
 	for _, child := range g.children {
 		exited := false
@@ -377,14 +344,14 @@ func (g *Group) Status() []ProcessStatus {
 		child.mu.Lock()
 		code := child.exitCode
 		child.mu.Unlock()
-		result = append(result, ProcessStatus{Role: child.role, PID: child.cmd.Process.Pid, Exited: exited, ExitCode: code})
+		result = append(result, ProcessStatus{Role: child.role, PID: child.cmd.Process.Pid, Exited: exited, ExitCode: code, Generation: g.generationLocked(child.role), RecoveryEnabled: g.recoveryEnabledLocked(child.role)})
 	}
 	return result
 }
 
 // Output returns only a bounded copy of protected-role diagnostics, never an unbounded pipe.
 func (g *Group) Output(role string) ([]byte, bool) {
-	for _, child := range g.children {
+	for _, child := range g.currentChildren() {
 		if child.role == role {
 			return child.output.copy()
 		}
@@ -426,7 +393,7 @@ func (g *Group) withImageCleanupCause(failure error) error {
 
 func (g *Group) resourceCleanupError() error {
 	var result error
-	for _, child := range g.children {
+	for _, child := range g.allChildren() {
 		child.mu.Lock()
 		err := child.cleanupError
 		child.mu.Unlock()
@@ -447,6 +414,12 @@ func (g *Group) Stop(ctx context.Context) error {
 	if err := ctx.Err(); err != nil {
 		return g.withImageCleanupCause(err)
 	}
+	if g.recovery != nil {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, g.deadlines.StopGrace+g.deadlines.ReapTimeout)
+		defer cancel()
+	}
+	g.closeRecoveryAdmission()
 	select {
 	case <-g.stopToken:
 		defer func() { g.stopToken <- struct{}{} }()
@@ -461,7 +434,10 @@ func (g *Group) Stop(ctx context.Context) error {
 		return g.withImageCleanupCause(g.resourceCleanupError())
 	default:
 	}
-	for _, child := range g.children {
+	if g.recovery != nil {
+		return g.stopRecoverable(ctx)
+	}
+	for _, child := range g.currentChildren() {
 		select {
 		case <-child.done:
 			continue
@@ -477,7 +453,7 @@ func (g *Group) Stop(ctx context.Context) error {
 	case <-ctx.Done():
 	case <-grace.C:
 	}
-	for _, child := range g.children {
+	for _, child := range g.currentChildren() {
 		select {
 		case <-child.done:
 			continue

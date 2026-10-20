@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:task-artifact-backup-read",
+  "title": "Task artifact backup read",
+  "description": "Read one artifact in a verified retained task-history prefix for backup under explicit current service authority. sourceRevision is the prefix watermark; no execution, upload or deletion permission is granted.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "taskId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "artifactRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/artifact"
+    },
+    "sourceRevision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    }
+  },
+  "required": [
+    "taskId",
+    "artifactRef",
+    "sourceRevision"
+  ]
+}

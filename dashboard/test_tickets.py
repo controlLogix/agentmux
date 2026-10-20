@@ -2,17 +2,18 @@
 """Verify the Ticket Reviewer: HTTP guards, the not-configured path, and the
 request shaping in taskmgmt/atlassian.py.
 
-    python3 dashboard/test_tickets.py     # needs the dashboard running on 8787
+    python3 dashboard/test_tickets.py --offline
+    AGENTMUX_BASE_URL=<isolated dashboard URL> python3 dashboard/test_tickets.py
 
-NO LIVE JIRA CALL IS MADE. There are no credentials on this machine and writing to
-someone's real issue tracker is not something a test should do. So:
+Use an isolated dashboard with no Atlassian configuration for the HTTP checks.
+The test never chooses the operator's dashboard by default. With --offline only
+the payload and private-file checks run:
 
   - over HTTP, the guards and the not-configured (409) path are asserted;
   - the actual request shaping is asserted through atlassian.py's dry_run, which
     returns the request it WOULD send instead of sending it.
 
-That dry_run path is also the FIRST execution of atlassian.py: it was written in an
-earlier session and never run, so until now nothing had proved it even imports.
+Live Jira account qualification is separate from this fixture.
 """
 
 import importlib.util
@@ -24,9 +25,19 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 import os  # noqa: E402
-# The gate runs a private dashboard and exports its URL (run_tests.sh, TM-223);
-# run by hand, this still talks to the operator's dashboard on 8787.
-BASE = os.environ.get("AGENTMUX_BASE_URL", "http://127.0.0.1:8787")
+OFFLINE = sys.argv[1:] == ["--offline"]
+BASE = os.environ.get("AGENTMUX_BASE_URL")
+if sys.argv[1:] and not OFFLINE:
+    raise SystemExit("Use --offline or select an isolated dashboard with AGENTMUX_BASE_URL.")
+if not OFFLINE:
+    from urllib.parse import urlsplit
+    target = urlsplit(BASE or "")
+    home = os.environ.get("AGENTMUX_HOME")
+    if (target.scheme != "http" or target.hostname != "127.0.0.1"
+            or not target.port or target.port == 8787 or target.username is not None
+            or target.path not in ("", "/") or target.query or target.fragment
+            or not home or os.path.lexists(Path(home) / "atlassian.json")):
+        raise SystemExit("HTTP checks require a selected loopback fixture port and AGENTMUX_HOME without Atlassian configuration.")
 passed = failed = 0
 
 
@@ -80,7 +91,7 @@ def http_status(path):
 
 # ───────────────────────── atlassian.py request shaping ─────────────────────────
 
-print("--- atlassian.py loads at all (first ever execution) ---")
+print("--- atlassian.py imports ---")
 spec = importlib.util.spec_from_file_location(
     "atl", REPO / "taskmgmt" / "atlassian.py")
 atl = importlib.util.module_from_spec(spec)
@@ -168,6 +179,10 @@ except Exception as err:
 import shutil                                                    # noqa: E402
 shutil.rmtree(tmp, ignore_errors=True)
 
+if OFFLINE:
+    print(f"Offline payload/configuration checks: passed {passed}, failed {failed}. HTTP checks not run.")
+    sys.exit(1 if failed else 0)
+
 # ────────────────────────────── the HTTP surface ──────────────────────────────
 
 print("--- /api/tickets is honest when Jira is not configured ---")
@@ -175,8 +190,7 @@ code, data = get("api/tickets")
 check("GET /api/tickets", 200, code)
 configured = bool(data.get("configured"))
 if configured:
-    print("        Jira IS configured on this machine; skipping not-configured checks")
-    check("issues is a list", True, isinstance(data.get("issues"), list))
+    raise SystemExit("Refusing ticket mutation tests: the selected dashboard has Atlassian configuration.")
 else:
     check("configured is false, not an empty list", False, configured)
     check("it says why", True, bool(data.get("reason")))
@@ -211,12 +225,9 @@ for label, path, body in [
 
 print("--- and only then reports Jira is unavailable ---")
 code, payload = post("api/tickets/comment", {"key": "CCC-1", "text": "valid"})
-if configured:
-    print(f"        Jira configured; got {code} (a live call was attempted)")
-else:
-    check("valid input, no config -> 409", 409, code)
-    check("409 names the missing config", True, bool((payload or {}).get("error")))
-    check("409 carries the setup commands", True, bool((payload or {}).get("setup")))
+check("valid input, no config -> 409", 409, code)
+check("409 names the missing config", True, bool((payload or {}).get("error")))
+check("409 carries the setup commands", True, bool((payload or {}).get("setup")))
 
 check("transitions needs a valid key -> 400", 400, http_status("api/tickets/transitions?key=x"))
 check("transitions with no key -> 400", 400, http_status("api/tickets/transitions"))

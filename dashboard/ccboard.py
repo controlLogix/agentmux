@@ -160,6 +160,10 @@ DISPATCH_KEYS = ("dispatchEnabled", "dispatchWip", "dispatchPoll",
 # knowing which names carry it.
 ORCHESTRATOR_KEYS = ("orchestratorEnabled", "orchestratorAgent", "orchestratorScope",
                      "orchestratorNotify", "orchestratorNotifyCommand")
+# Enrolled orchestration reads this separate closed policy collection. The legacy
+# scalar keys above remain visible during migration, but they are presentation and
+# compatibility settings; they never select a user, project, resource or environment.
+ORCHESTRATOR_POLICIES = "orchestratorPolicies"
 # An agent NAME, which may be empty - the definition is resolved from disk, and an
 # empty value means "use the default".
 CONFIG_NAMES = {"orchestratorAgent"}
@@ -247,6 +251,9 @@ NEW_TABLES = (
         status TEXT NOT NULL DEFAULT 'proposed', member_name TEXT,
         worktree TEXT, branch TEXT, proposed_by TEXT, approved_by TEXT,
         approved_at TEXT, at TEXT NOT NULL, updated_at TEXT)""",
+    """CREATE TABLE IF NOT EXISTS board_roster_definitions (
+        roster_id INTEGER PRIMARY KEY REFERENCES board_roster(id) ON DELETE CASCADE,
+        project_root TEXT NOT NULL, spec_json TEXT NOT NULL)""",
     "CREATE UNIQUE INDEX IF NOT EXISTS board_roster_slot ON board_roster(entity_key, agent_name)",
     "CREATE INDEX IF NOT EXISTS board_roster_entity ON board_roster(entity_key, position)",
     """CREATE TABLE IF NOT EXISTS board_comments (
@@ -540,6 +547,83 @@ def set_config(db, name, value, actor=None):
                (name, json.dumps(value)))
     _record(db, None, "config", actor, None, {"name": name, "value": value})
     return {name: value}
+
+
+def _orchestration_ref(value):
+    return (isinstance(value, dict) and set(value) == {"id", "ownerHubId", "revision"}
+            and all(isinstance(value[key], str) and re.fullmatch(r"[a-z][a-z0-9_-]{0,95}", value[key])
+                    for key in ("id", "ownerHubId"))
+            and isinstance(value["revision"], int) and not isinstance(value["revision"], bool)
+            and 0 <= value["revision"] <= 9_007_199_254_740_991)
+
+
+def _orchestration_policy(value):
+    """Validate behavior selected for one enrolled project policy resource."""
+    fields = {"resourceRef", "scope", "environmentRef", "enabled", "agent",
+              "workScope", "notify", "notifyCommand"}
+    if not isinstance(value, dict) or set(value) != fields:
+        raise Invalid("invalid scoped orchestration policy")
+    scope = value["scope"]
+    if (not isinstance(scope, dict)
+            or set(scope) != {"organizationId", "projectId", "workspaceId"}
+            or not all(isinstance(scope[key], str)
+                       and re.fullmatch(r"[a-z][a-z0-9_-]{0,95}", scope[key])
+                       for key in ("organizationId", "projectId"))
+            or scope["workspaceId"] is not None
+            and (not isinstance(scope["workspaceId"], str)
+                 or not re.fullmatch(r"[a-z][a-z0-9_-]{0,95}", scope["workspaceId"]))
+            or not _orchestration_ref(value["resourceRef"])
+            or value["environmentRef"] is not None
+            and not _orchestration_ref(value["environmentRef"])
+            or value["environmentRef"] is not None
+            and value["environmentRef"]["ownerHubId"] != value["resourceRef"]["ownerHubId"]
+            or type(value["enabled"]) is not bool or type(value["notify"]) is not bool):
+        raise Invalid("invalid scoped orchestration policy")
+    agent = text(value["agent"], "agent", 64, required=False, pattern=NAME_RE) or ""
+    work_scope = text(value["workScope"], "workScope", 16, required=True,
+                      choices=("goal", "epic", "queue"))
+    notify_command = text(value["notifyCommand"], "notifyCommand", 500) or ""
+    return {**value, "scope": dict(scope), "resourceRef": dict(value["resourceRef"]),
+            "environmentRef": (None if value["environmentRef"] is None
+                               else dict(value["environmentRef"])),
+            "agent": agent, "workScope": work_scope, "notifyCommand": notify_command}
+
+
+def orchestration_policies(db):
+    """Return explicit enrolled policies; legacy global scalars never become authority."""
+    row = db.execute("SELECT value FROM board_config WHERE name=?",
+                     (ORCHESTRATOR_POLICIES,)).fetchone()
+    if row is None:
+        return []
+    try:
+        values = json.loads(row["value"])
+        if not isinstance(values, list) or len(values) > 64:
+            raise ValueError()
+        policies = [_orchestration_policy(value) for value in values]
+        keys = [(json.dumps(item["scope"], sort_keys=True),
+                 json.dumps(item["environmentRef"], sort_keys=True)) for item in policies]
+        if len(keys) != len(set(keys)):
+            raise ValueError()
+        return policies
+    except (ValueError, TypeError, Invalid):
+        raise Invalid("invalid retained scoped orchestration policy") from None
+
+
+def set_orchestration_policies(db, values, actor):
+    """Replace the explicit policy set after the enrolled owner authorizes the write."""
+    if not isinstance(values, list) or len(values) > 64 or not actor:
+        raise Invalid("invalid scoped orchestration policy")
+    policies = [_orchestration_policy(value) for value in values]
+    keys = [(json.dumps(item["scope"], sort_keys=True),
+             json.dumps(item["environmentRef"], sort_keys=True)) for item in policies]
+    if len(keys) != len(set(keys)):
+        raise Invalid("duplicate scoped orchestration policy")
+    db.execute("INSERT INTO board_config (name,value) VALUES (?,?)"
+               " ON CONFLICT(name) DO UPDATE SET value=excluded.value",
+               (ORCHESTRATOR_POLICIES, json.dumps(policies, separators=(",", ":"))))
+    _record(db, None, "config", actor, None,
+            {"name": ORCHESTRATOR_POLICIES, "count": len(policies)})
+    return policies
 
 
 STATE_NAMES = ("activeEpic", "activeSprint", "override")

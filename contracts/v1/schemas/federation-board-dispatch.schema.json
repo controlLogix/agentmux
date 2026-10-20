@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-board-dispatch",
+  "title": "Agentmux federation-board-dispatch v1",
+  "description": "Fresh owner-service operation that claims one dispatch for the exact retained original and frozen candidate. The receiving owner validates current authority and full retained journal history.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "journalRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "claimRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "originalOperationId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "originalPayloadDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "candidateDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    }
+  },
+  "required": [
+    "resourceRef",
+    "journalRef",
+    "claimRef",
+    "originalOperationId",
+    "originalPayloadDigest",
+    "candidateDigest"
+  ]
+}

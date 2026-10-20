@@ -81,13 +81,23 @@ func snapshotRoleArguments(args map[string][]string) (map[string][]string, error
 
 // PinDirectRoles admits exactly the four verified assembly roles. Each proof
 // retains the shared prepared images until the last unique proof closes.
-func (p *Proof) PinDirectRoles(ctx context.Context, input Assembly, args map[string][]string) ([]*Proof, error) {
-	return p.pinDirectRoles(ctx, input, args, true)
+func (p *Proof) PinDirectRoles(ctx context.Context, input Assembly, args map[string][]string, inspection ...*InspectionSelection) ([]*Proof, error) {
+	if len(inspection) == 0 {
+		return p.pinDirectRoles(ctx, input, args, true)
+	}
+	if len(inspection) != 1 || inspection[0] == nil {
+		return nil, failed("fixture_inspection_selection_invalid", nil)
+	}
+	return p.pinDirectRolesWithInspections(ctx, input, args, true, inspection[0])
 }
 
 // Cooperative test executables use their image path as argv[0]. That private
 // mode never broadens the exported runtime-role invocation contract.
-func (p *Proof) pinDirectRoles(ctx context.Context, input Assembly, args map[string][]string, runtimeRoleArguments bool) (proofs []*Proof, result error) {
+func (p *Proof) pinDirectRoles(ctx context.Context, input Assembly, args map[string][]string, runtimeRoleArguments bool, extra ...expectedImage) (proofs []*Proof, result error) {
+	return p.pinDirectRolesWithInspections(ctx, input, args, runtimeRoleArguments, nil, extra...)
+}
+
+func (p *Proof) pinDirectRolesWithInspections(ctx context.Context, input Assembly, args map[string][]string, runtimeRoleArguments bool, inspection *InspectionSelection, extra ...expectedImage) (proofs []*Proof, result error) {
 	if ctx == nil {
 		return nil, failed("fixture_context_invalid", nil)
 	}
@@ -116,6 +126,10 @@ func (p *Proof) pinDirectRoles(ctx context.Context, input Assembly, args map[str
 			item.argv0 = "agentmux-" + member.ID
 		}
 		expected = append(expected, item)
+	}
+	expected = append(expected, extra...)
+	if inspection != nil {
+		return p.pinDirectChildren(ctx, expected, inspection)
 	}
 	return p.pinDirectChildren(ctx, expected)
 }

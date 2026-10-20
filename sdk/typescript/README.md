@@ -35,3 +35,32 @@ Exact dependency versions and integrity hashes are in `package-lock.json`. Parse
 ## Registered domain payloads
 
 Complete-envelope verification also checks the trusted `contracts/v1/registry.json`: known contract/version, message kind, destination, closed payload shape and task/attempt/delegation correlation. The CLI `validatePayload` operation accepts an `envelope` and performs these structural checks without signature verification. It does not resolve grants or authorize execution. Production owners still check current authority and durable operation history.
+
+
+## Native child connections
+
+`loadNativeBootstrap(path, schemaDir?)` reads the Go host's private bootstrap and
+snapshots its configuration, optional context, CA and credentials. Use the path
+supplied through `AGENTMUX_PLUGIN_BOOTSTRAP`. The new child path requires separate
+DNS and leaf pins for lifecycle and context, a selected loopback TLS endpoint,
+and TLS 1.3 before broker INFO or credentials. It has no unpinned fallback,
+reconnect or server discovery. Existing lifecycle frame shapes remain unchanged.
+
+Create `new NativeChild(bootstrap)` and await `connect()`. It authenticates the NATS
+nonce, subscribes and flushes, then reports `registered`. Await `nextControl()`;
+prepare must match the bootstrap, while stop must bind the same owner and
+checksums with a fresh command ID and valid deadline. Call `report('ready')` after
+application preparation and `report('stopped')` after cleanup. `failed` is also
+supported. Always await `close()` to join the original sockets and pending reads.
+
+`bootstrap.context` is frozen, and `bootstrap.configuration` returns a copy.
+Display profile values grant no authority. The optional `contextConnection`
+provides `publish(subject, bytes)` and `receive(subject)` for only the exact
+bootstrap subjects. Business-envelope admission and operation handles remain the
+host's responsibility. This is a bounded NATS core client; it has no wildcard
+subscriptions or JetStream API.
+
+The Python controlled socket suite in `sdk/python/tests/test_native_child.py`
+executes the built TypeScript client against the same TLS peer. Its README lists
+the prepared Node and build paths required by that test. No new dependency is
+needed, and these tests do not qualify an installed candidate or live broker.

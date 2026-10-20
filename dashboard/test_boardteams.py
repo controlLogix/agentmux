@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Roster contract through an isolated store and port-0 HTTP server."""
 import json
+from contextlib import closing
 import os
 from pathlib import Path
 import sys
@@ -125,6 +126,45 @@ class TeamsHTTP(unittest.TestCase):
         self.assertEqual(approved[0], 200)
         self.assertEqual(self.write("approve", members=["new-reviewer"]), approved)
 
+    def test_changing_hired_lead_requires_retirement_before_new_proposal(self):
+        self.prepare_hire()
+        directory = BASE / ".agentmux/agents"
+        path = directory / "new-lead.md"
+        path.write_text("---\nname: new-lead\ndescription: New lead\nrole: lead\n---\nNew persona")
+        self.addCleanup(path.unlink)
+        with ccstore.connection() as db:
+            db.execute("UPDATE board_roster SET status='hired',member_name='current-lead' "
+                       "WHERE entity_key=? AND role='lead'", (self.key,))
+        before = self.read()
+        events = self.events()
+        status, refusal = self.write("recruit", lead="new-lead")
+        self.assertEqual(status, 409)
+        self.assertIn("retire the hired lead", refusal["error"])
+        self.assertEqual(self.read(), before)
+        self.assertEqual(self.events(), events)
+        current_path = directory / "lead.md"
+        raw = current_path.read_bytes()
+        current_path.write_bytes(raw + b"\nChanged hired persona")
+        self.assertEqual(self.write("recruit", lead="lead")[0], 409)
+        current_path.write_bytes(raw)
+        self.assertEqual(self.read(), before)
+        self.assertEqual(self.events(), events)
+        with ccstore.connection() as db:
+            db.execute("DELETE FROM board_roster_definitions WHERE roster_id=?",
+                       (before[1]["members"][0]["id"],))
+        missing_snapshot = self.read()
+        self.assertEqual(self.write("recruit")[0], 409)
+        self.assertEqual(self.read(), missing_snapshot)
+        self.assertEqual(self.events(), events)
+        with patch.object(boardteams.dispatch, "live_agents", return_value=set()):
+            self.assertEqual(self.write("retire", members=["lead"])[0], 200)
+        status, proposal = self.write("recruit", lead="new-lead")
+        self.assertEqual(status, 200)
+        self.assertEqual([(r["agent_name"], r["role"]) for r in proposal["members"]], [("new-lead", "lead")])
+        approved = self.write("approve", members=["new-lead"])
+        self.assertEqual(approved[0], 200)
+        self.assertEqual(approved[1]["members"][0]["status"], "approved")
+
     def test_invalid_approval_is_atomic(self):
         self.write("recruit")
         before, events = self.read(), self.events()
@@ -173,7 +213,12 @@ class TeamsHTTP(unittest.TestCase):
         self.mock.stop()
         with ccstore.connection() as db:
             self.assertTrue(ccboard.config(db)["teamRequireApproval"])
-        status, payload = self.write("recruit")
+        original = boardteams.definition_team.TeamPlugin.propose_legacy
+        with patch.object(boardteams.definition_team.TeamPlugin, "propose_legacy",
+                          autospec=True, side_effect=original) as proposal:
+            status, payload = self.write("recruit")
+        proposal.assert_called_once()
+        self.assertIsNone(proposal.call_args.kwargs["lead"])
         self.assertEqual(status, 200)
         self.assertEqual(payload["count"], 1)
         self.assertEqual(payload["members"][0]["role"], "lead")
@@ -226,11 +271,61 @@ class TeamsHTTP(unittest.TestCase):
         self.assertEqual([r["agent_name"] for r in deep["members"]], ["lead", "senior-backend"])
         # Diagnostics describe the saved proposal, even if definitions change.
         (directory / "senior-backend.md").write_text("invalid")
-        self.assertEqual(self.read(), (200, deep))
+        refreshed = self.read()[1]
+        self.assertEqual(refreshed["gaps"], deep["gaps"])
+        self.assertEqual(refreshed["members"][1]["definitionState"], "unavailable")
+
+    def test_profile_adoption_is_opt_in_and_preserves_approved_roster_snapshot(self):
+        from definition_service import DefinitionScope, DefinitionService
+        import profile_packages as packages
+        from profile_owner import admit_project
+        self.mock.stop()
+        status, baseline = self.write("recruit")
+        self.assertEqual(status, 200)
+        self.assertFalse(packages.NAMES & {row["agent_name"] for row in baseline["members"]})
+        project = Path.cwd().resolve()
+        service = DefinitionService(DefinitionScope(project, project, project / ".agentmux", "test-project"))
+        client = project / "selected-profile-client"
+        client.write_bytes(b"executable snapshot only; never executed\n")
+        client.chmod(0o700)
+        self.addCleanup(client.unlink)
+        private = project / ".agentmux/profile-adoptions"
+        self.addCleanup(lambda: __import__("shutil").rmtree(private, ignore_errors=True))
+        catalog, _ = packages.catalogue()
+        selections = [{"packageId": "example.survey", "name": "scan-dev", "relationship": "independent",
+                       "parentPackage": None, "sourceChecksum": catalog["scan-dev"].spec.checksum,
+                       "overrides": {"paths": {}, "execution": {
+                           "posture": "read-only", "worktree": "none", "maxInstances": 1}}}]
+        clients = {"codex": str(client)}
+        with admit_project(project) as owner:
+            preview, _ = packages.preview(project, selections, clients, owner=owner)
+            service.adopt_profiles(owner, selections, clients, preview["approvalChecksum"], preview["recordChecksum"])
+        with ccstore.connection() as db:
+            ccboard.set_label(db, self.key, "inventory", True, actor="suite")
+        status, proposal = self.write("recruit")
+        self.assertEqual(status, 200)
+        self.assertIn("scan-dev", [row["agent_name"] for row in proposal["members"]])
+        status, approved = self.write("approve", members=[row["agent_name"] for row in proposal["members"]])
+        self.assertEqual(status, 200)
+        with ccstore.connection() as db:
+            before = [tuple(row) for row in db.execute("SELECT d.* FROM board_roster_definitions d "
+                "JOIN board_roster r ON r.id=d.roster_id WHERE r.entity_key=? ORDER BY d.roster_id", (self.key,))]
+        events = self.events()
+        # Removing future eligibility is not permission to rewrite old approval.
+        with admit_project(project) as owner:
+            preview, _ = packages.preview(project, [], clients, owner=owner)
+            service.adopt_profiles(owner, [], clients, preview["approvalChecksum"], preview["recordChecksum"])
+        refreshed = self.read()[1]
+        for old, now in zip(approved["members"], refreshed["members"]):
+            self.assertTrue(all(old[key] == now[key] for key in
+                ("id", "agent_name", "status", "approved_by", "approved_at", "definitionRevision")))
+        with ccstore.connection() as db:
+            after = [tuple(row) for row in db.execute("SELECT d.* FROM board_roster_definitions d "
+                "JOIN board_roster r ON r.id=d.roster_id WHERE r.entity_key=? ORDER BY d.roster_id", (self.key,))]
+        self.assertTrue(before == after, "stored persona snapshot changed")
+        self.assertEqual(self.events(), events)
 
     def prepare_hire(self):
-        self.write("recruit")
-        self.write("approve", members=["lead"])
         with ccstore.connection() as db:
             ccboard.set_config(db, "dashboardMayHire", True)
             ccboard.set_config(db, "dispatchEnabled", True)
@@ -242,6 +337,9 @@ class TeamsHTTP(unittest.TestCase):
                               "role: lead\nposture: unrestricted\nmodel: disk-model\n"
                               "---\nDisk persona\n")
         self.addCleanup(definition.unlink)
+        self.mock.stop()
+        self.write("recruit", lead="lead")
+        self.write("approve", members=["lead"])
         repo = patch.object(boardteams.dispatch, "REPO", BASE)
         repo.start()
         self.addCleanup(repo.stop)
@@ -278,6 +376,57 @@ class TeamsHTTP(unittest.TestCase):
                          ["dashboard"])
         self.assertEqual(self.call("hire", {"id": self.key, "name": "lead"})[0], 409)
         spawn.assert_called_once()
+
+    def test_approved_snapshot_survives_definition_edits_and_is_not_listed(self):
+        spawn = self.prepare_hire()
+        before = self.read()[1]["members"][0]
+        path = BASE / ".agentmux/agents/lead.md"
+        path.write_text("---\nname: lead\ndescription: Changed\nrole: lead\ncli: claude\n"
+                        "---\nDifferent persona\n")
+        current = self.read()[1]["members"][0]
+        self.assertEqual(current["definitionState"], "changed")
+        for key in ("id", "approved_by", "approved_at", "definitionRevision"):
+            self.assertEqual(current[key], before[key])
+        self.assertNotIn("persona", json.dumps(current))
+        def spawned(*args):
+            self.assertEqual(Path(args[args.index("--persona-file") + 1]).read_text(), "Disk persona")
+            self.assertEqual(args[args.index("--cli") + 1], "codex")
+            return 0, "", ""
+        spawn.side_effect = spawned
+        self.assertEqual(self.call("hire", {"id": self.key, "name": "lead"})[0], 200)
+        spawn.assert_called_once()
+
+    def test_legacy_row_without_snapshot_refuses_hire_without_rewriting_approval(self):
+        spawn = self.prepare_hire()
+        before = self.read()[1]["members"][0]
+        with ccstore.connection() as db:
+            db.execute("DELETE FROM board_roster_definitions WHERE roster_id=?", (before["id"],))
+        status, refused = self.call("hire", {"id": self.key, "name": "lead"})
+        self.assertEqual(status, 409)
+        self.assertIn("recruit and approve", refused["missing"][0]["hint"])
+        spawn.assert_not_called()
+        after = self.read()[1]["members"][0]
+        for key in ("id", "approved_by", "approved_at", "status"):
+            self.assertEqual(after[key], before[key])
+
+    def test_additive_old_schema_upgrade_does_not_invent_snapshot(self):
+        import sqlite3
+        with closing(sqlite3.connect(":memory:")) as db, db:
+            db.row_factory = sqlite3.Row
+            # Copy the actual old base schema, then remove only the new table.
+            source = ccstore.connection()
+            with source as original:
+                schema = original.execute("SELECT sql FROM sqlite_master WHERE name='board_roster'").fetchone()[0]
+            db.execute(schema)
+            db.execute("INSERT INTO board_roster(id,entity_key,agent_name,role,position,status,"
+                       "approved_by,approved_at,at) VALUES(7,'TM-1','lead','lead',0,'approved','original','then','then')")
+            statement = next(s for s in ccboard.NEW_TABLES if "CREATE TABLE IF NOT EXISTS board_roster_definitions" in s)
+            db.execute(statement)
+            db.execute(statement)
+            row = db.execute("SELECT * FROM board_roster").fetchone()
+            self.assertEqual((row["id"], row["approved_by"], row["approved_at"]), (7, "original", "then"))
+            self.assertIsNone(boardteams._saved_spec(db, row))
+            self.assertEqual(db.execute("SELECT count(*) FROM board_roster_definitions").fetchone()[0], 0)
 
     def test_team_require_approval_off_actually_turns_approval_off(self):
         """A setting that was wired to nothing.
@@ -448,14 +597,12 @@ class TeamsHTTP(unittest.TestCase):
         spawn.return_value = (0, "", "")
         self.assertEqual(self.call("hire", {"id": self.key, "name": "lead"})[0], 200)
 
-    def test_hire_posture_ceiling_and_missing_definition(self):
+    def test_hire_posture_ceiling_uses_saved_definition_even_if_import_invalid(self):
         spawn = self.prepare_hire()
         path = BASE / ".agentmux/agents/lead.md"
         original = path.read_text()
         path.write_text("invalid definition")
-        self.assertEqual(self.call("hire", {"id": self.key, "name": "lead"})[0], 409)
-        spawn.assert_not_called()
-        path.write_text(original)
+        self.assertEqual(self.read()[1]["members"][0]["definitionState"], "unavailable")
         with patch.dict(os.environ, {"AGENTMUX_NO_BYPASS": "1"}):
             self.assertEqual(self.call("hire", {"id": self.key, "name": "lead"})[0], 200)
         args = spawn.call_args.args

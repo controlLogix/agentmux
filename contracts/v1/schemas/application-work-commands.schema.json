@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:application-work-commands",
+  "title": "application-work-commands v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "transportRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "replyIssuerRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "serviceIdentityRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "resourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "authenticatedCaller": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "replyIssuerPublicKey": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{43}$"
+    },
+    "serviceInstanceId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "localPeer": {
+      "anyOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-z0-9_]{1,32}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "localNode": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]{1,32}$"
+    },
+    "repository": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "localName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 32
+            },
+            "repositoryId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^r[0-9a-f]{12}$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "localName",
+            "repositoryId"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "grantRefs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "federation-work-create": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-offer": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-claim": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-heartbeat": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-release": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-cancel": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-claim-path": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-stage-result": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-revoke": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-return-leases": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-sweep-leases": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-ingest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-claim-envelope": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-grant-envelope": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-result-envelope": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-approve": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-approve-privileged": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-ingest-legacy": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-result-legacy": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-read": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-inspect": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-outcome": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-register": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-state": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-work-sweep-global": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        }
+      },
+      "required": [],
+      "minProperties": 1
+    }
+  },
+  "required": [
+    "transportRef",
+    "replyIssuerRef",
+    "serviceIdentityRef",
+    "resourceRef",
+    "authenticatedCaller",
+    "subject",
+    "replyIssuerPublicKey",
+    "serviceInstanceId",
+    "localPeer",
+    "localNode",
+    "repository",
+    "grantRefs"
+  ]
+}

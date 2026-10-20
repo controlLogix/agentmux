@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:application-code-commands",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "transportRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "replyIssuerRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "serviceIdentityRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "resourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "authenticatedCaller": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "replyIssuerPublicKey": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{43}$"
+    },
+    "serviceInstanceId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "localPeer": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]{1,32}$"
+    },
+    "localNode": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]{1,32}$"
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "localName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 32
+        },
+        "repositoryId": {
+          "type": "string",
+          "pattern": "^r[0-9a-f]{12}$"
+        }
+      },
+      "required": [
+        "localName",
+        "repositoryId"
+      ]
+    },
+    "grantRefs": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "federation-code-publish": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-code-index": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-code-approve": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-code-fetched": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-code-read": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-code-inspect": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "federation-code-outcome": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        }
+      }
+    }
+  },
+  "required": [
+    "transportRef",
+    "replyIssuerRef",
+    "serviceIdentityRef",
+    "resourceRef",
+    "authenticatedCaller",
+    "subject",
+    "replyIssuerPublicKey",
+    "serviceInstanceId",
+    "localPeer",
+    "localNode",
+    "repository",
+    "grantRefs"
+  ],
+  "title": "Protected code command enrollment v1"
+}

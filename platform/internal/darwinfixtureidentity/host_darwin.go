@@ -4,8 +4,12 @@ package darwinfixtureidentity
 
 import (
 	"context"
+	"path/filepath"
 	"reflect"
 	"regexp"
+	"strings"
+
+	protected "github.com/controlLogix/agentmux/platform/runtime"
 )
 
 // ExpectedHost admits only the installed host's fixed invocation grammar.
@@ -13,24 +17,63 @@ import (
 type ExpectedHost struct {
 	Path, Digest, PolicyPath string
 	WorkspaceRoots           []string
+	Application              *ExpectedApplication
+}
+
+type ExpectedApplication struct {
+	AttestorPath, AttestorSHA256                 string
+	InstallationID, ServicesPath, ServicesSHA256 string
+}
+
+func applicationArguments(application *ExpectedApplication) ([]string, error) {
+	if application == nil {
+		return nil, nil
+	}
+	pathValid := func(path string) bool {
+		return filepath.IsAbs(path) && filepath.Clean(path) == path && len(path) <= 4096 && strings.IndexFunc(path, func(r rune) bool { return r < 32 || r == 127 }) < 0
+	}
+	digest := regexp.MustCompile(`^sha256:[0-9a-f]{64}$`)
+	if !pathValid(application.AttestorPath) || !pathValid(application.ServicesPath) || !digest.MatchString(application.AttestorSHA256) || !digest.MatchString(application.ServicesSHA256) || !protected.ValidClientInstallationID(application.InstallationID) {
+		return nil, failed("fixture_application_expectation_invalid", nil)
+	}
+	return []string{"--application-attestor-selection", application.AttestorPath, "--application-attestor-selection-sha256", application.AttestorSHA256,
+		"--application-services-installation", application.InstallationID, "--application-services-selection", application.ServicesPath, "--application-services-selection-sha256", application.ServicesSHA256}, nil
 }
 
 var attemptShape = regexp.MustCompile(`^attempt_[0-9a-f]{32}$`)
 
 func (p *Proof) PinDirectHost(ctx context.Context, host ExpectedHost) (*Proof, error) {
+	return p.pinDirectHost(ctx, host, false)
+}
+
+// PinDirectHostAfterExit observes a direct frontend only after its native exit.
+// A complete empty roster returns NoSurvivingHost; any surviving child must
+// satisfy the same exact host admission as PinDirectHost.
+func (p *Proof) PinDirectHostAfterExit(ctx context.Context, host ExpectedHost) (*Proof, error) {
+	if ctx == nil {
+		return nil, failed("fixture_context_invalid", nil)
+	}
+	if _, bounded := ctx.Deadline(); !bounded {
+		return nil, failed("fixture_child_exec_deadline_required", nil)
+	}
+	return p.pinDirectHost(ctx, host, true)
+}
+
+func (p *Proof) pinDirectHost(ctx context.Context, host ExpectedHost, allowEmptyExited bool) (*Proof, error) {
 	snapshot := host
 	snapshot.WorkspaceRoots = append([]string(nil), host.WorkspaceRoots...)
+	if host.Application != nil {
+		copyApplication := *host.Application
+		snapshot.Application = &copyApplication
+	}
+	if _, err := applicationArguments(snapshot.Application); err != nil {
+		return nil, err
+	}
 	if snapshot.PolicyPath == "" || len(snapshot.WorkspaceRoots) == 0 || len(snapshot.WorkspaceRoots) > 16 {
 		return nil, failed("fixture_host_expectation_invalid", nil)
 	}
-	proofs, err := p.pinDirectChildren(ctx, []expectedImage{{Path: host.Path, Digest: host.Digest, host: &snapshot}})
-	if err != nil {
-		if len(proofs) > 0 {
-			return proofs[0], err
-		}
-		return nil, err
-	}
-	return proofs[0], nil
+	proofs, err := p.pinDirectChildrenWithPolicy(ctx, []expectedImage{{Path: host.Path, Digest: host.Digest, host: &snapshot}}, true, allowEmptyExited, false)
+	return singleChildResult(proofs, err)
 }
 func matchesArguments(item expectedImage, path string, args []string) bool {
 	if path != item.Path {
@@ -40,7 +83,8 @@ func matchesArguments(item expectedImage, path string, args []string) bool {
 		return reflect.DeepEqual(args, item.literalArguments())
 	}
 	h := item.host
-	if len(args) != 6+2*len(h.WorkspaceRoots) || args[0] != h.Path || args[1] != "host" || args[2] != "--host-policy" || args[3] != h.PolicyPath || args[4] != "--invocation-id" || !attemptShape.MatchString(args[5]) {
+	application, err := applicationArguments(h.Application)
+	if err != nil || len(args) != 6+2*len(h.WorkspaceRoots)+len(application) || args[0] != h.Path || args[1] != "host" || args[2] != "--host-policy" || args[3] != h.PolicyPath || args[4] != "--invocation-id" || !attemptShape.MatchString(args[5]) {
 		return false
 	}
 	for i, root := range h.WorkspaceRoots {
@@ -48,7 +92,7 @@ func matchesArguments(item expectedImage, path string, args []string) bool {
 			return false
 		}
 	}
-	return true
+	return reflect.DeepEqual(args[6+2*len(h.WorkspaceRoots):], append([]string{}, application...))
 }
 
 // literalArguments keeps the admitted executable path separate from argv[0].

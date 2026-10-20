@@ -1,0 +1,253 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:owner-record",
+  "title": "Agentmux owner-record v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "recordId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+    },
+    "entityId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+    },
+    "entityKind": {
+      "enum": [
+        "task",
+        "delegation",
+        "attempt",
+        "effect",
+        "approval",
+        "project",
+        "plugin-instance",
+        "plugin-storage",
+        "identity-authority",
+        "definition-catalog",
+        "configuration"
+      ]
+    },
+    "ownerHubId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+    },
+    "ownerDomain": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+    },
+    "entityVersion": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "previousRevision": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "operation": {
+      "$ref": "urn:agentmux:contract:1:operation-context"
+    },
+    "recordedAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+    },
+    "outcome": {
+      "enum": [
+        "committed",
+        "rejected"
+      ]
+    },
+    "state": {
+      "type": "object"
+    },
+    "effects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "effectId": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+          },
+          "contractId": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+          },
+          "payloadDigest": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+          },
+          "grantRef": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "recovery": {
+            "enum": [
+              "idempotent-retry",
+              "query-before-retry",
+              "human-reconciliation"
+            ]
+          },
+          "payload": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "effectId",
+          "contractId",
+          "payloadDigest",
+          "grantRef",
+          "recovery",
+          "payload"
+        ]
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:agentmux:contract:1:common#/$defs/artifact"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "repository": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "repositoryId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+            },
+            "revision": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096
+            },
+            "treeDigest": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            }
+          },
+          "required": [
+            "repositoryId",
+            "revision",
+            "treeDigest"
+          ]
+        }
+      ]
+    },
+    "authorizationDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "operationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "decision": {
+          "enum": [
+            "allowed",
+            "denied",
+            "review-required"
+          ]
+        },
+        "reason": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "actorRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "contractId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        }
+      },
+      "required": [
+        "operationId",
+        "decision",
+        "reason",
+        "actorRef",
+        "contractId"
+      ]
+    },
+    "definitionEffectReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "definitionId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "originalOperationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "effectId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "attemptOperationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "originalPayloadDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "definitionVersion": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+        },
+        "status": {
+          "enum": [
+            "retry-authorized",
+            "applied",
+            "reconciliation-required",
+            "superseded"
+          ]
+        },
+        "observedAt": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "definitionId",
+        "originalOperationId",
+        "effectId",
+        "attemptOperationId",
+        "originalPayloadDigest",
+        "definitionVersion",
+        "status",
+        "observedAt"
+      ],
+      "description": "Owner-held attempt observation, at most 4 KiB encoded. Never supplied by a command caller. Exact original intent and attempt must be verified by the definition owner; matching file bytes alone cannot establish application."
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "recordId",
+    "entityId",
+    "entityKind",
+    "ownerHubId",
+    "ownerDomain",
+    "entityVersion",
+    "previousRevision",
+    "operation",
+    "recordedAt",
+    "outcome",
+    "state",
+    "effects",
+    "artifacts",
+    "repository"
+  ],
+  "description": " Executable P01 contract. Runtime enrollment, authorization and durable ownership remain separate obligations."
+}

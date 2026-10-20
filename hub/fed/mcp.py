@@ -7,20 +7,50 @@ federation verb that is not operator-only, generated from the hub's own registry
 identifies the caller by process ancestry exactly as for `agentmux hub ...`; nothing
 here asserts an identity.
 
+An explicitly enrolled startup result exposes only startup status until an
+authenticated application connection is supplied. It never uses the hub socket.
+
 Protocol: JSON-RPC 2.0, newline-delimited, MCP 2025-06-18 (initialize, tools/list,
 tools/call, ping).
 """
 from __future__ import annotations
 
 import json
+import math
 import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from hub import cli  # noqa: E402
+from hub.client_launch_session import ApplicationSessionFailure  # noqa: E402
 
 PROTOCOL = "2025-06-18"
 SKIP = {"fed_verbs", "fed_panel"}
+MAX_FRAME_CHARS = 1024 * 1024
+
+
+class ProtocolError(Exception):
+    def __init__(self, code, message):
+        self.code = code
+        self.message = message
+
+
+def valid_id(value):
+    return type(value) in (str, int) or (type(value) is float and math.isfinite(value))
+
+
+def validate_request(msg):
+    if (not isinstance(msg, dict) or msg.get("jsonrpc") != "2.0"
+            or not isinstance(msg.get("method"), str)
+            or ("id" in msg and not valid_id(msg["id"]))):
+        raise ProtocolError(-32600, "invalid request")
+    params = msg.get("params", {})
+    if not isinstance(params, dict):
+        raise ProtocolError(-32602, "invalid params")
+    if msg["method"] == "tools/call":
+        if (not isinstance(params.get("name"), str) or not params["name"]
+                or not isinstance(params.get("arguments", {}), dict)):
+            raise ProtocolError(-32602, "invalid tool params")
 
 
 def S(props=None, required=()):
@@ -73,8 +103,108 @@ def tools():
     return {**CORE, **fed_tools()}
 
 
-def handle(msg, cache):
-    mid, method, params = msg.get("id"), msg.get("method"), msg.get("params") or {}
+def handle(msg, cache, *, startup_result=None, application_session=None):
+    validate_request(msg)
+    # Notifications never invoke request methods or mutate hub state.
+    if "id" not in msg:
+        return None
+    method, params = msg["method"], msg.get("params", {})
+    if startup_result is not None:
+        # The caller retains startup/cleanup ownership. Infrastructure status
+        # does not authorize application traffic over the legacy transport.
+        if method == "initialize":
+            return {"protocolVersion": PROTOCOL, "capabilities": {"tools": {"listChanged": False}},
+                    "serverInfo": {"name": "agentmux", "version": "1"},
+                    "instructions": "Agentmux startup status is available. Application access is unavailable "
+                                    "until the selected hub connection is authenticated."}
+        if method == "tools/list":
+            available = [{"name": "agentmux_startup_status",
+                               "description": "Read this client's startup status. This does not start services.",
+                               "inputSchema": {**S(), "additionalProperties": False}}]
+            if (application_session is not None
+                    and getattr(application_session, "oidc_terminal_enabled", lambda: False)() is True):
+                available.extend([
+                    {"name": "agentmux_oidc_terminal_start",
+                     "description": "Start sign-in for this enrolled terminal and return the provider's short code and page.",
+                     "inputSchema": {**S(), "additionalProperties": False}},
+                    {"name": "agentmux_oidc_terminal_status",
+                     "description": "Check one terminal sign-in attempt.",
+                     "inputSchema": {**S({"attemptId": {"type": "string",
+                        "pattern": "^oidc_attempt_[a-f0-9]{32}$"}}, ("attemptId",)),
+                        "additionalProperties": False}},
+                    {"name": "agentmux_oidc_terminal_logout",
+                     "description": "Close this terminal's current signed-in session.",
+                     "inputSchema": {**S({"sessionId": {"type": "string",
+                        "pattern": "^oidc_session_[a-f0-9]{32}$"}}, ("sessionId",)),
+                        "additionalProperties": False}}])
+            if application_session is not None and application_session.query_enabled() is True:
+                available.append({"name": "agentmux_integration_effect_query",
+                    "description": "Read the enrolled integration effect's retained outcome. This does not dispatch an effect.",
+                    "inputSchema": {**S({
+                        "operationId": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{0,95}$"},
+                        "expectedVersion": {"type": "integer", "minimum": 0, "maximum": 9007199254740991}},
+                        ("operationId", "expectedVersion")), "additionalProperties": False}})
+            return {"tools": available}
+        if method == "tools/call":
+            if params["name"] in ("agentmux_oidc_terminal_start",
+                                  "agentmux_oidc_terminal_status",
+                                  "agentmux_oidc_terminal_logout"):
+                arguments = params.get("arguments", {})
+                if (application_session is None
+                        or getattr(application_session, "oidc_terminal_enabled", lambda: False)() is not True):
+                    return {"content": [{"type": "text", "text": "Terminal sign-in is unavailable."}],
+                            "isError": True}
+                try:
+                    if params["name"] == "agentmux_oidc_terminal_start":
+                        if arguments:
+                            raise ValueError()
+                        result = application_session.oidc_terminal_start()
+                    elif params["name"] == "agentmux_oidc_terminal_status":
+                        if set(arguments) != {"attemptId"}:
+                            raise ValueError()
+                        result = application_session.oidc_terminal_status(arguments["attemptId"])
+                    else:
+                        if set(arguments) != {"sessionId"}:
+                            raise ValueError()
+                        result = application_session.oidc_terminal_logout(arguments["sessionId"])
+                except ApplicationSessionFailure:
+                    return {"content": [{"type": "text", "text":
+                        "Terminal sign-in outcome is unconfirmed. Retry the same status or check startup status."}],
+                        "isError": True}
+                except ValueError:
+                    raise ProtocolError(-32602, "invalid terminal sign-in arguments") from None
+                except Exception:
+                    return {"content": [{"type": "text", "text":
+                        "Terminal sign-in outcome is unconfirmed. Retry the same status or check startup status."}],
+                        "isError": True}
+                return {"content": [{"type": "text", "text": json.dumps(result)}],
+                        "structuredContent": result, "isError": False}
+            if params["name"] == "agentmux_integration_effect_query":
+                from hub.client_launch_session import validate_query_arguments
+                arguments = params.get("arguments", {})
+                try:
+                    validate_query_arguments(arguments)
+                except ValueError:
+                    raise ProtocolError(-32602, "invalid integration query arguments") from None
+                if application_session is None or application_session.query_enabled() is not True:
+                    return {"content": [{"type": "text", "text": "Integration query is unavailable."}], "isError": True}
+                try:
+                    receipt = application_session.query_effect(arguments)
+                except Exception:
+                    return {"content": [{"type": "text", "text":
+                        "Integration query outcome is unconfirmed. Check the same operation."}], "isError": True}
+                return {"content": [{"type": "text", "text": json.dumps(receipt)}],
+                        "structuredContent": receipt, "isError": False}
+            if params["name"] != "agentmux_startup_status":
+                return {"content": [{"type": "text", "text": "Application access is unavailable."}],
+                        "isError": True}
+            if params.get("arguments", {}):
+                raise ProtocolError(-32602, "startup status takes no arguments")
+            if application_session is not None:
+                startup_result.public['applicationBinding'] = application_session.status()
+            from hub.client_launch_coordinator import human_summary
+            return {"content": [{"type": "text", "text": human_summary(startup_result)}],
+                    "structuredContent": startup_result.public, "isError": False}
     if method == "initialize":
         return {"protocolVersion": PROTOCOL, "capabilities": {"tools": {"listChanged": False}},
                 "serverInfo": {"name": "agentmux", "version": "1"},
@@ -92,7 +222,7 @@ def handle(msg, cache):
             cache.update(tools())
         name, args = params.get("name"), dict(params.get("arguments") or {})
         if name not in cache:
-            return {"content": [{"type": "text", "text": f"unknown tool {name}"}], "isError": True}
+            return {"content": [{"type": "text", "text": "unknown tool"}], "isError": True}
         _d, verb, _s, fix = cache[name]
         if fix:
             args = fix(args)
@@ -101,35 +231,67 @@ def handle(msg, cache):
             r = cli.call(verb, args, timeout=90)
             return {"content": [{"type": "text", "text": json.dumps(r["result"], indent=1, default=str)}],
                     "isError": False}
-        except cli.Fail as e:
-            return {"content": [{"type": "text", "text": str(e)}], "isError": True}
-    if mid is None:
-        return None                                   # a notification (e.g. notifications/initialized)
-    raise LookupError(method)
+        except cli.Fail:
+            return {"content": [{"type": "text", "text": "Hub request failed. Check the selected hub status."}],
+                    "isError": True}
+    raise ProtocolError(-32601, "method not found")
 
 
-def main(stdin=sys.stdin, stdout=sys.stdout):
+def error_response(mid, code, message):
+    return {"jsonrpc": "2.0", "id": mid, "error": {"code": code, "message": message}}
+
+
+def reject_constant(value):
+    raise ValueError("non-JSON number")
+
+
+def main(stdin=sys.stdin, stdout=sys.stdout, *, startup_result=None, application_session=None):
+    """Serve requests while the caller retains the startup result and cleanup."""
     cache = {}
-    for line in stdin:
-        line = line.strip()
-        if not line:
-            continue
+    while True:
         try:
-            msg = json.loads(line)
-        except ValueError:
-            out = {"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "parse error"}}
+            line = stdin.readline(MAX_FRAME_CHARS + 1)
+        except UnicodeError:
+            stdout.write(json.dumps(error_response(None, -32700, "parse error")) + "\n")
+            stdout.flush()
+            # Decoder state is uncertain. Do not dispatch a partial request.
+            return
+        if not line:
+            return
+        oversized = len(line) > MAX_FRAME_CHARS
+        if oversized:
+            out = error_response(None, -32600, "request too large")
+        elif not line.strip():
+            continue
         else:
             try:
-                res = handle(msg, cache)
-                if msg.get("id") is None:
-                    continue
-                out = {"jsonrpc": "2.0", "id": msg["id"], "result": res}
-            except LookupError as e:
-                out = {"jsonrpc": "2.0", "id": msg.get("id"), "error": {"code": -32601, "message": f"no method {e}"}}
-            except Exception as e:  # noqa: BLE001 - a tool failure must not kill the server
-                out = {"jsonrpc": "2.0", "id": msg.get("id"), "error": {"code": -32603, "message": str(e)}}
+                msg = json.loads(line, parse_constant=reject_constant)
+            except (ValueError, RecursionError):
+                out = error_response(None, -32700, "parse error")
+            else:
+                mid = msg.get("id") if isinstance(msg, dict) else None
+                if not valid_id(mid):
+                    mid = None
+                notification = (isinstance(msg, dict) and msg.get("jsonrpc") == "2.0"
+                                and isinstance(msg.get("method"), str) and "id" not in msg)
+                try:
+                    res = handle(msg, cache, startup_result=startup_result, application_session=application_session)
+                    if notification:
+                        continue
+                    out = {"jsonrpc": "2.0", "id": mid, "result": res}
+                except ProtocolError as exc:
+                    if notification:
+                        continue
+                    out = error_response(mid, exc.code, exc.message)
+                except Exception:  # noqa: BLE001 - private failure details stay off the wire
+                    if notification:
+                        continue
+                    out = error_response(mid, -32603, "internal error")
         stdout.write(json.dumps(out) + "\n")
         stdout.flush()
+        if oversized:
+            # Close instead of draining an unbounded frame from an untrusted writer.
+            return
 
 
 if __name__ == "__main__":

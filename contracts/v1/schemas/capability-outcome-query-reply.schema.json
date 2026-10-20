@@ -1,0 +1,131 @@
+{
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "operationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "payloadDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "recordRef": {
+          "type": "null"
+        },
+        "outcome": {
+          "const": "absent"
+        }
+      },
+      "required": [
+        "operationId",
+        "payloadDigest",
+        "recordRef",
+        "outcome"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "operationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "payloadDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "recordRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "outcome": {
+          "enum": [
+            "committed",
+            "rejected"
+          ]
+        }
+      },
+      "required": [
+        "operationId",
+        "payloadDigest",
+        "recordRef",
+        "outcome"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "operationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "payloadDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "recordRef": {
+          "type": "null"
+        },
+        "outcome": {
+          "const": "absent"
+        },
+        "contractId": {
+          "const": "capability-storage-write"
+        },
+        "resourceRef": {
+          "type": "null"
+        }
+      },
+      "required": [
+        "operationId",
+        "payloadDigest",
+        "recordRef",
+        "outcome",
+        "contractId",
+        "resourceRef"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "operationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "payloadDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "recordRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "outcome": {
+          "enum": [
+            "committed",
+            "rejected"
+          ]
+        },
+        "contractId": {
+          "const": "capability-storage-write"
+        },
+        "resourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        }
+      },
+      "required": [
+        "operationId",
+        "payloadDigest",
+        "recordRef",
+        "outcome",
+        "contractId",
+        "resourceRef"
+      ]
+    }
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:capability-outcome-query-reply",
+  "title": "capability-outcome-query-reply v1",
+  "required": [
+    "operationId",
+    "payloadDigest",
+    "recordRef",
+    "outcome"
+  ]
+}

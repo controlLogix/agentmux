@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:identity-legacy-alias",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "ref": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "status": {
+      "enum": ["active", "revoked"]
+    },
+    "identityRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "sourceHubId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "scope": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+    },
+    "instanceOwner": {
+      "anyOf": [
+        {"$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"},
+        {"type": "null"}
+      ]
+    },
+    "registrationGeneration": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "canonicalSession": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]{1,32}-[a-z0-9_]{1,24}-[a-z0-9_]{1,32}$"
+    },
+    "alias": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255,
+      "pattern": "^[^\\u0000-\\u001f\\u007f]+$"
+    }
+  },
+  "required": [
+    "ref", "status", "identityRef", "sourceHubId", "scope", "instanceOwner",
+    "registrationGeneration", "canonicalSession", "alias"
+  ],
+  "title": "Non-authoritative legacy identity alias",
+  "description": "Migration provenance only. Resolution also requires a current active identity, exact membership, optional native instance owner, and a matching live Hub registration generation. This record never grants authority."
+}

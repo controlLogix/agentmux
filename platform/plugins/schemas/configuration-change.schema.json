@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:configuration-change",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "configurationRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "owner": {
+      "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+    },
+    "schemaRef": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "configurationChecksum": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    }
+  },
+  "required": [
+    "configurationRef",
+    "owner",
+    "schemaRef",
+    "configurationChecksum"
+  ]
+}

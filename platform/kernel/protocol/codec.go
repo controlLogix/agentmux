@@ -98,6 +98,15 @@ func StrictJSON(data []byte, out any) error {
 // keys remain open where the destination type declares a map. This helper does
 // not validate required fields, authorization or the values of decoded fields.
 func DecodeClosedJSON(data []byte, out any, maxBytes int) error {
+	return decodeJSON(data, out, maxBytes, false)
+}
+
+// Protected frames require every field, including empty observations for unknown peers.
+func decodeFrameJSON(data []byte, out any) error {
+	return decodeJSON(data, out, MaxPayload, true)
+}
+
+func decodeJSON(data []byte, out any, maxBytes int, required bool) error {
 	target := reflect.TypeOf(out)
 	if maxBytes <= 0 || maxBytes > 64*1024 || len(data) == 0 || len(data) > maxBytes || !utf8.Valid(data) || target == nil || target.Kind() != reflect.Pointer || reflect.ValueOf(out).IsNil() {
 		return errors.New("kernel_payload_invalid")
@@ -115,6 +124,9 @@ func DecodeClosedJSON(data []byte, out any, maxBytes int) error {
 		t, err := d.Token()
 		if err != nil {
 			return err
+		}
+		if required && t == nil {
+			return errors.New("kernel_payload_invalid")
 		}
 		if delimiter, ok := t.(json.Delim); ok {
 			switch delimiter {
@@ -173,6 +185,9 @@ func DecodeClosedJSON(data []byte, out any, maxBytes int) error {
 					if err := walk(depth+1, childType); err != nil {
 						return err
 					}
+				}
+				if required && destination != nil && destination.Kind() == reflect.Struct && len(seen) != len(fields) {
+					return errors.New("kernel_payload_invalid")
 				}
 				end, err := d.Token()
 				if err != nil || end != json.Delim('}') {
@@ -272,7 +287,7 @@ func membersValid(members []Member) bool {
 
 func DecodeEvent(data []byte, scope Scope, role string, now time.Time, stale time.Duration) (Event, error) {
 	var e Event
-	if err := StrictJSON(data, &e); err != nil {
+	if err := decodeFrameJSON(data, &e); err != nil {
 		return e, err
 	}
 	if e.SchemaVersion != Version || e.Kind != "kernel-role-observation" || e.Scope != scope || !scope.valid() || e.Role != role || !validRole(role) || !incarnation.MatchString(e.Incarnation) || e.Revision == 0 || e.Revision > MaxRevision || !fresh(e.ObservedAt, now, stale) || !state(e.State) || !errorsValid(e.ErrorCodes) || !membersValid(e.Members) {
@@ -285,7 +300,7 @@ func DecodeEvent(data []byte, scope Scope, role string, now time.Time, stale tim
 }
 func DecodeCommand(data []byte, scope Scope, role string) (Command, error) {
 	var c Command
-	if err := StrictJSON(data, &c); err != nil {
+	if err := decodeFrameJSON(data, &c); err != nil {
 		return c, err
 	}
 	if c.SchemaVersion != Version || c.Kind != "kernel-observation-command" || c.Scope != scope || !scope.valid() || c.Destination != role || !validRole(role) || c.Action != "announce" {
@@ -295,7 +310,7 @@ func DecodeCommand(data []byte, scope Scope, role string) (Command, error) {
 }
 func DecodeSnapshot(data []byte, scope Scope, now time.Time, stale time.Duration) (Snapshot, error) {
 	var s Snapshot
-	if err := StrictJSON(data, &s); err != nil {
+	if err := decodeFrameJSON(data, &s); err != nil {
 		return s, err
 	}
 	until, err := time.Parse(time.RFC3339Nano, s.ValidUntil)

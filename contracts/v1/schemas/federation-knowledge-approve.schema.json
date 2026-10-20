@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-knowledge-approve",
+  "title": "federation-knowledge-approve v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "envelope": {
+          "type": "object"
+        },
+        "subject": {
+          "type": "string",
+          "pattern": "^am\\.know\\.[a-z0-9_]{1,32}\\.r[a-f0-9]{12}$"
+        },
+        "localNode": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]{1,32}$"
+        },
+        "quarantineId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "privileged": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "envelope",
+        "subject",
+        "localNode",
+        "quarantineId",
+        "privileged"
+      ]
+    },
+    "attribution": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    }
+  },
+  "required": [
+    "resourceRef",
+    "input",
+    "attribution"
+  ]
+}

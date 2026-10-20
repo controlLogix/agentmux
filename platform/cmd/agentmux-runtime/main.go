@@ -25,8 +25,10 @@ func (w *workspaces) String() string     { return "explicit workspace roots" }
 func (w *workspaces) Set(s string) error { *w = append(*w, s); return nil }
 
 type options struct {
-	operation, policy, invocation string
-	roots                         workspaces
+	operation, policy, invocation, client   string
+	applicationSelection, applicationDigest string
+	services                                applicationServicesOptions
+	roots                                   workspaces
 }
 
 const (
@@ -38,8 +40,10 @@ const (
 
 func frontendTotalContext(parent context.Context, operation string, entered time.Time) (context.Context, context.CancelFunc) {
 	limit := frontendEnsureLimit
-	if operation == "status" {
+	if operation == "status" || operation == "doctor" {
 		limit = frontendStatusLimit
+	} else if operation == "prepare" {
+		limit = launcher.BrokerImagePreparationLimit
 	}
 	return context.WithDeadline(parent, entered.Add(limit))
 }
@@ -64,7 +68,8 @@ func emitObservation(output io.Writer, observation launcher.StartupStatusObserva
 	if err := json.NewEncoder(output).Encode(observation); err != nil {
 		return errors.New("output_failed")
 	}
-	if operation == "ensure" && observation.Disposition != "started" && observation.Disposition != "reused" && observation.Disposition != "starting" {
+	if observation.Disposition == "failed" || observation.Disposition == "unconfigured" ||
+		(operation == "ensure" && observation.Disposition != "started" && observation.Disposition != "reused" && observation.Disposition != "starting") {
 		return errors.New("startup_failed")
 	}
 	return nil
@@ -72,17 +77,43 @@ func emitObservation(output io.Writer, observation launcher.StartupStatusObserva
 
 func parse(args []string) (options, error) {
 	var o options
-	if len(args) == 0 || (args[0] != "ensure" && args[0] != "status" && args[0] != "host") {
+	if len(args) == 0 || (args[0] != "ensure" && args[0] != "status" && args[0] != "host" && args[0] != "doctor" && args[0] != "prepare") {
 		return o, errors.New("command_invalid")
 	}
 	o.operation = args[0]
 	f := flag.NewFlagSet("agentmux-runtime", flag.ContinueOnError)
 	f.SetOutput(io.Discard)
+	f.StringVar(&o.client, "client", "", "Selected client diagnostics; doctor only")
 	f.StringVar(&o.policy, "host-policy", "", "Private installed host policy")
 	f.StringVar(&o.invocation, "invocation-id", "", "Actual launch invocation")
+	applicationPath := singleApplicationFlag{value: &o.applicationSelection}
+	applicationDigest := singleApplicationFlag{value: &o.applicationDigest}
+	f.Var(&applicationPath, "application-attestor-selection", "Explicit private application attestor selection; ensure or host only")
+	f.Var(&applicationDigest, "application-attestor-selection-sha256", "Independent application attestor selection digest")
+	serviceInstallation := singleApplicationFlag{value: &o.services.installationID}
+	servicePath := singleApplicationFlag{value: &o.services.path}
+	serviceDigest := singleApplicationFlag{value: &o.services.digest}
+	f.Var(&serviceInstallation, "application-services-installation", "Explicit protected application service package; ensure or host only")
+	f.Var(&servicePath, "application-services-selection", "Explicit private application service selection")
+	f.Var(&serviceDigest, "application-services-selection-sha256", "Independent application service selection digest")
 	f.Var(&o.roots, "workspace", "Explicit workspace root")
 	if f.Parse(args[1:]) != nil || f.NArg() != 0 || o.policy == "" || len(o.roots) == 0 || len(o.roots) > 16 || (o.operation != "host" && o.invocation != "") || (o.operation == "host" && !regexp.MustCompile(`^attempt_[0-9a-f]{32}$`).MatchString(o.invocation)) {
 		return options{}, errors.New("arguments_invalid")
+	}
+	clientSelected := false
+	f.Visit(func(selected *flag.Flag) {
+		if selected.Name == "client" {
+			clientSelected = true
+		}
+	})
+	if clientSelected && (o.operation != "doctor" || !launcher.ValidClientDoctorID(o.client)) {
+		return options{}, errors.New("arguments_invalid")
+	}
+	if err := validateApplicationFlags(o, applicationPath.present, applicationDigest.present); err != nil {
+		return options{}, err
+	}
+	if err := validateApplicationServiceFlags(o, serviceInstallation.present, servicePath.present, serviceDigest.present); err != nil {
+		return options{}, err
 	}
 	return o, nil
 }
@@ -90,6 +121,26 @@ func parse(args []string) (options, error) {
 func run(ctx context.Context, args []string, output io.Writer) (failure error) {
 	if ctx == nil || ctx.Err() != nil {
 		return errors.New("request_context_invalid")
+	}
+	if len(args) > 0 && (args[0] == "prepare-owner-profile" || args[0] == "recover-owner-profile") {
+		return runOwnerProfilePreparation(ctx, args, output)
+	}
+	if len(args) > 0 && args[0] == "provision-integration-effect" {
+		return runIntegrationOperator(ctx, args, os.Stdin, output)
+	}
+	if len(args) > 0 && args[0] == "register-central-profile" {
+		return runCentralProfileRegistration(ctx, args, output)
+	}
+	if len(args) > 0 && args[0] == "profile-core" {
+		return runProfileCore(ctx, args)
+	}
+	if len(args) > 0 && args[0] == "profile-client" {
+		return runProfileClient(ctx, args)
+	}
+	if len(args) > 0 && (args[0] == "mcp" || args[0] == "startup" || args[0] == "dashboard" || args[0] == "client-setup" || args[0] == "claude-hook-setup" || args[0] == "launch-claude-desktop" || args[0] == "claude-code-hook") {
+		// Client admission has a bounded check. A long-lived MCP session uses
+		// the existing Python lifetime after direct process replacement.
+		return runInstalledClient(ctx, args)
 	}
 	// The frontend budget includes argument and policy admission. The owning
 	// host has its separately enrolled startup and signal lifetime.
@@ -100,16 +151,29 @@ func run(ctx context.Context, args []string, output io.Writer) (failure error) {
 	if err != nil {
 		return err
 	}
-	if o.operation == "status" {
+	if o.operation == "status" || o.operation == "doctor" || o.operation == "prepare" {
 		cancelFrontend()
-		frontend, cancelFrontend = frontendTotalContext(ctx, "status", entered)
+		frontend, cancelFrontend = frontendTotalContext(ctx, o.operation, entered)
 		defer cancelFrontend()
 	}
 	h, err := launcher.LoadEnrolledHostPolicy(launcher.HostPolicySelection{Path: o.policy, OwnerUID: uint32(os.Geteuid()), WorkspaceRoots: append([]string(nil), o.roots...)})
 	if err != nil {
 		return err
 	}
+	if o.operation == "doctor" {
+		return runDoctorWithClient(frontend, h, o.client, output)
+	}
+	if o.operation == "prepare" {
+		return prepareBrokerImage(frontend, h, output)
+	}
 	if o.operation == "host" {
+		if o.applicationSelection != "" {
+			selection, err := h.ReadApplicationAttestorHostSelection(ctx, o.applicationSelection, o.applicationDigest)
+			if err != nil {
+				return err
+			}
+			return runApplicationHost(ctx, h, o, selection)
+		}
 		server, budget, err := h.BridgeServerForInvocation(o.invocation)
 		if err != nil {
 			return err
@@ -150,6 +214,11 @@ func run(ctx context.Context, args []string, output io.Writer) (failure error) {
 	defer func() { failure = errors.Join(failure, image.Close()) }()
 	selection := h.Invocation()
 	selection.InvocationID = invocation.ID()
+	selection.ApplicationAttestorSelectionPath = o.applicationSelection
+	selection.ApplicationAttestorSelectionSHA256 = o.applicationDigest
+	selection.ApplicationServicesInstallationID = o.services.installationID
+	selection.ApplicationServicesSelectionPath = o.services.path
+	selection.ApplicationServicesSelectionSHA256 = o.services.digest
 	binding, err := h.BootstrapReceiptBinding(invocation.ID())
 	if err != nil {
 		return err
@@ -258,16 +327,80 @@ func emitBootstrapProgress(output io.Writer, receipt protected.BootstrapControlR
 	return nil
 }
 func main() {
-	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	if len(os.Args) > 1 && os.Args[1] == "profile-core" {
+		if err := runProfileClientCommandWith(context.Background(), os.Args[1:], os.Stderr, runProfileCore); err != nil {
+			os.Exit(1)
+		}
+		return
+	}
+	if len(os.Args) > 1 && os.Args[1] == "profile-client" {
+		if err := runProfileClientCommand(context.Background(), os.Args[1:], os.Stderr); err != nil {
+			os.Exit(1)
+		}
+		return
+	}
+	if len(os.Args) > 1 && (os.Args[1] == "mcp" || os.Args[1] == "startup" || os.Args[1] == "dashboard" || os.Args[1] == "client-setup" || os.Args[1] == "claude-hook-setup" || os.Args[1] == "launch-claude-desktop" || os.Args[1] == "claude-code-hook") {
+		// Keep normal process signals through exec. Infrastructure cancellation
+		// handlers must not consume a signal just before the Python replacement.
+		if err := runInstalledClientCommand(context.Background(), os.Args[1:], os.Stderr); err != nil {
+			os.Exit(1)
+		}
+		return
+	}
+	preparation := len(os.Args) > 1 && os.Args[1] == "prepare"
+	registration := len(os.Args) > 1 && os.Args[1] == "register-central-profile"
+	ownerPreparation := len(os.Args) > 1 && (os.Args[1] == "prepare-owner-profile" || os.Args[1] == "recover-owner-profile")
+	signals := []os.Signal{syscall.SIGINT, syscall.SIGTERM}
+	if preparation || registration || ownerPreparation {
+		// These explicit foreground owners must finish owned work when their terminal closes.
+		// The shared host and ordinary frontend keep their existing lifetime.
+		signals = append(signals, syscall.SIGHUP)
+	}
+	ctx, cancel := signal.NotifyContext(context.Background(), signals...)
 	defer cancel()
+	if preparation {
+		var stop context.CancelFunc
+		ctx, stop = context.WithTimeout(ctx, launcher.BrokerImagePreparationLimit)
+		defer stop()
+	}
+	if registration {
+		var stop context.CancelFunc
+		ctx, stop = context.WithTimeout(ctx, centralProfileRegistrationLimit)
+		defer stop()
+	}
+	if ownerPreparation {
+		var stop context.CancelFunc
+		ctx, stop = context.WithTimeout(ctx, ownerPreparationCommandLimit)
+		defer stop()
+	}
 	if err := run(ctx, os.Args[1:], os.Stdout); err != nil {
 		// This fixed diagnostic is separate from authenticated L04 output. Its
 		// static fields never include underlying error text or private objects.
-		_ = emitRequestDiagnostic(os.Stderr, err)
+		if preparation {
+			_ = writePreparationJSON(ctx, os.Stderr, launcher.ProjectRequestDiagnostic(err))
+		} else if ownerPreparation {
+			_ = writeOwnerProfilePreparationDiagnostic(ctx, os.Stderr, err)
+		} else if registration {
+			_ = writeCentralProfileRegistrationDiagnostic(ctx, os.Stderr, err)
+		} else {
+			_ = emitRequestDiagnostic(os.Stderr, err)
+		}
 		os.Exit(1)
 	}
 }
 
 func emitRequestDiagnostic(output io.Writer, failure error) error {
+	if diagnostic, ok := centralProfileRegistrationDiagnostic(failure); ok {
+		return json.NewEncoder(output).Encode(diagnostic)
+	}
+	if diagnostic, ok := profileClientDiagnostic(failure); ok {
+		return json.NewEncoder(output).Encode(diagnostic)
+	}
+	if failure == errDoctorChecksIncomplete {
+		return json.NewEncoder(output).Encode(launcher.RequestDiagnostic{
+			SchemaVersion: "1.0.0", Kind: "launcher-diagnostic", Code: "doctor_checks_incomplete", Action: "read_doctor_checks",
+			Message: "Some diagnostic checks failed or remain unknown. Read the individual checks; this report does not establish application readiness.",
+		})
+	}
 	return json.NewEncoder(output).Encode(launcher.ProjectRequestDiagnostic(failure))
 }

@@ -1,0 +1,351 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "scope": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+    },
+    "profile": {
+      "$ref": "urn:agentmux:contract:1:approved-execution-profile"
+    },
+    "executorRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "enrollmentIdentityRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "pluginIdentityRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "instanceId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "packageId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "plans": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entityId": {
+          "$ref": "urn:agentmux:contract:1:application-service-selection#/$defs/storageLedger/properties/entityId"
+        },
+        "scope": {
+          "$ref": "urn:agentmux:contract:1:application-service-selection#/$defs/storageLedger/properties/scope"
+        },
+        "stream": {
+          "$ref": "urn:agentmux:contract:1:application-service-selection#/$defs/storageLedger/properties/stream"
+        },
+        "streamIdentity": {
+          "$ref": "urn:agentmux:contract:1:application-service-selection#/$defs/storageLedger/properties/streamIdentity"
+        },
+        "retention": {
+          "$ref": "urn:agentmux:contract:1:application-service-selection#/$defs/storageLedger/properties/retention"
+        },
+        "history": {
+          "$ref": "urn:agentmux:contract:1:application-service-selection#/$defs/storageLedger/properties/history"
+        }
+      },
+      "required": [
+        "entityId",
+        "scope",
+        "stream",
+        "streamIdentity",
+        "retention",
+        "history"
+      ]
+    },
+    "credentialsLedger": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "entityId": {
+          "$ref": "urn:agentmux:contract:1:application-service-selection#/$defs/storageLedger/properties/entityId"
+        },
+        "scope": {
+          "$ref": "urn:agentmux:contract:1:application-service-selection#/$defs/storageLedger/properties/scope"
+        },
+        "stream": {
+          "$ref": "urn:agentmux:contract:1:application-service-selection#/$defs/storageLedger/properties/stream"
+        },
+        "streamIdentity": {
+          "$ref": "urn:agentmux:contract:1:application-service-selection#/$defs/storageLedger/properties/streamIdentity"
+        },
+        "retention": {
+          "$ref": "urn:agentmux:contract:1:application-service-selection#/$defs/storageLedger/properties/retention"
+        },
+        "history": {
+          "$ref": "urn:agentmux:contract:1:application-service-selection#/$defs/storageLedger/properties/history"
+        }
+      },
+      "required": [
+        "entityId",
+        "scope",
+        "stream",
+        "streamIdentity",
+        "retention",
+        "history"
+      ]
+    },
+    "state": {
+      "$ref": "urn:agentmux:contract:1:application-service-selection#/$defs/storagePublisher"
+    },
+    "receivers": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "process": {
+          "$ref": "urn:agentmux:contract:1:application-service-selection#/$defs/storageReceiver"
+        },
+        "outcome": {
+          "$ref": "urn:agentmux:contract:1:application-service-selection#/$defs/storageReceiver"
+        }
+      },
+      "required": [
+        "process",
+        "outcome"
+      ]
+    },
+    "signer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "transportRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "publicKey": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        },
+        "keyFile": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/[^\\u0000-\\u001f\\u007f]*$",
+              "maxLength": 4096
+            },
+            "sha256": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            }
+          },
+          "required": [
+            "path",
+            "sha256"
+          ]
+        },
+        "ownerIdentityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "inspectionGrantRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "taskReadGrantRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "taskApprovalRefs": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          }
+        },
+        "grants": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "task-credential-prepare": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "task-credential-deliver": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "task-credential-observe": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "task-credential-retire": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "identity-application-account-resolve": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "execution-run-record": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "execution-run-observe": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            }
+          },
+          "required": [
+            "task-credential-prepare",
+            "task-credential-deliver",
+            "task-credential-observe",
+            "task-credential-retire",
+            "identity-application-account-resolve",
+            "execution-run-record",
+            "execution-run-observe"
+          ]
+        },
+        "accountPayload": {
+          "$ref": "urn:agentmux:contract:1:identity-application-account-resolve"
+        }
+      },
+      "required": [
+        "transportRef",
+        "publicKey",
+        "keyFile",
+        "ownerIdentityRef",
+        "inspectionGrantRef",
+        "taskReadGrantRef",
+        "taskApprovalRefs",
+        "grants",
+        "accountPayload"
+      ]
+    },
+    "custodyRoot": {
+      "type": "string",
+      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$",
+      "maxLength": 4096
+    },
+    "accountCustodyRoot": {
+      "type": "string",
+      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$",
+      "maxLength": 4096
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+        },
+        "stream": {
+          "type": "string",
+          "pattern": "^AMX_PROCESS_[A-Z0-9_-]{1,64}$"
+        },
+        "inventoryRoot": {
+          "type": "string",
+          "pattern": "^/[^\\u0000-\\u001f\\u007f]*$",
+          "maxLength": 4096
+        },
+        "retention": {
+          "$ref": "urn:agentmux:contract:1:application-service-selection#/$defs/storageLedger/properties/retention"
+        }
+      },
+      "required": [
+        "namespace",
+        "stream",
+        "inventoryRoot",
+        "retention"
+      ]
+    },
+    "docker": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "executable": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "context": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "endpoint": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "engine_id": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "server_version": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "config_directory": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "image_id": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        }
+      },
+      "required": [
+        "executable",
+        "context",
+        "endpoint",
+        "engine_id",
+        "server_version",
+        "config_directory",
+        "image_id"
+      ]
+    },
+    "networkDestinations": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "reference": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "host": {
+            "type": "string",
+            "maxLength": 253
+          },
+          "address": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "port": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65535
+          },
+          "path": {
+            "type": "string",
+            "maxLength": 1024
+          },
+          "rootsPEM": {
+            "type": "string",
+            "maxLength": 16384
+          }
+        },
+        "required": [
+          "reference",
+          "host",
+          "address",
+          "port",
+          "path",
+          "rootsPEM"
+        ]
+      }
+    }
+  },
+  "required": [
+    "scope",
+    "profile",
+    "executorRef",
+    "enrollmentIdentityRef",
+    "pluginIdentityRef",
+    "instanceId",
+    "packageId",
+    "plans",
+    "credentialsLedger",
+    "state",
+    "receivers",
+    "signer",
+    "custodyRoot",
+    "accountCustodyRoot",
+    "run",
+    "docker",
+    "networkDestinations"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:process-selection",
+  "title": "Selected approved Process execution v1"
+}

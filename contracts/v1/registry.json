@@ -66,6 +66,822 @@
       "kind": "command",
       "payloadSchema": "status-query",
       "destinationServiceId": "status-owner"
+    },
+    "definition-save": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "definition-save",
+      "destinationServiceId": "definition-owner"
+    },
+    "definition-drop": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "definition-drop",
+      "destinationServiceId": "definition-owner"
+    },
+    "identity-enroll": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "identity-enroll",
+      "destinationServiceId": "identity-owner"
+    },
+    "identity-application-account-set": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "identity-application-account-set",
+      "destinationServiceId": "identity-owner"
+    },
+    "identity-application-account-resolve": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "identity-application-account-resolve",
+      "destinationServiceId": "identity-owner"
+    },
+    "identity-ordinary-secret-set": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "identity-ordinary-secret-set",
+      "destinationServiceId": "identity-owner"
+    },
+    "identity-ordinary-secret-resolve": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "identity-ordinary-secret-resolve",
+      "destinationServiceId": "identity-owner"
+    },
+    "identity-external-account-link": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "identity-external-account-link",
+      "destinationServiceId": "identity-owner"
+    },
+    "identity-revoke": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "identity-revoke",
+      "destinationServiceId": "identity-owner"
+    },
+    "identity-membership-set": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "identity-membership-set",
+      "destinationServiceId": "identity-owner"
+    },
+    "identity-legacy-alias-set": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "identity-legacy-alias-set",
+      "destinationServiceId": "identity-owner"
+    },
+    "identity-legacy-alias-resolve": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "identity-legacy-alias-resolve",
+      "destinationServiceId": "identity-owner"
+    },
+    "local-browser-session-open": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "local-browser-session-open",
+      "destinationServiceId": "identity-owner"
+    },
+    "identity-grant-set": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "identity-grant-set",
+      "destinationServiceId": "identity-owner"
+    },
+    "identity-approval-set": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "identity-approval-set",
+      "destinationServiceId": "identity-owner"
+    },
+    "capability-storage-read": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "capability-storage-read",
+      "destinationServiceId": "storage-owner"
+    },
+    "capability-storage-write": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "capability-storage-write",
+      "destinationServiceId": "storage-owner"
+    },
+    "capability-artifact-read": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "capability-artifact-read",
+      "destinationServiceId": "artifact-owner"
+    },
+    "capability-secret-use": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "capability-secret-use",
+      "destinationServiceId": "secret-owner"
+    },
+    "capability-workspace-read": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "capability-workspace-read",
+      "destinationServiceId": "workspace-owner"
+    },
+    "capability-process-start": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "capability-process-start",
+      "destinationServiceId": "process-owner"
+    },
+    "capability-process-cancel": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "capability-process-cancel",
+      "destinationServiceId": "process-owner"
+    },
+    "capability-policy-evaluate": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "capability-policy-evaluate",
+      "destinationServiceId": "policy-owner"
+    },
+    "capability-decision-request": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "capability-decision-request",
+      "destinationServiceId": "decision-owner"
+    },
+    "capability-outcome-query": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "capability-outcome-query",
+      "destinationServiceId": "outcome-owner"
+    },
+    "capability-content-reply": {
+      "major": 1,
+      "kind": "reply",
+      "payloadSchema": "capability-content-reply",
+      "destinationServiceId": null
+    },
+    "capability-storage-write-reply": {
+      "major": 1,
+      "kind": "reply",
+      "payloadSchema": "capability-storage-write-reply",
+      "destinationServiceId": null
+    },
+    "capability-secret-use-reply": {
+      "major": 1,
+      "kind": "reply",
+      "payloadSchema": "capability-secret-use-reply",
+      "destinationServiceId": null
+    },
+    "capability-process-start-reply": {
+      "major": 1,
+      "kind": "reply",
+      "payloadSchema": "capability-process-start-reply",
+      "destinationServiceId": null
+    },
+    "capability-process-cancel-reply": {
+      "major": 1,
+      "kind": "reply",
+      "payloadSchema": "capability-process-cancel-reply",
+      "destinationServiceId": null
+    },
+    "capability-policy-evaluate-reply": {
+      "major": 1,
+      "kind": "reply",
+      "payloadSchema": "capability-policy-evaluate-reply",
+      "destinationServiceId": null
+    },
+    "capability-decision-request-reply": {
+      "major": 1,
+      "kind": "reply",
+      "payloadSchema": "capability-decision-request-reply",
+      "destinationServiceId": null
+    },
+    "capability-outcome-query-reply": {
+      "major": 1,
+      "kind": "reply",
+      "payloadSchema": "capability-outcome-query-reply",
+      "destinationServiceId": null
+    },
+    "identity-native-instance-set": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "identity-native-instance-set",
+      "destinationServiceId": "identity-owner"
+    },
+    "definition-effect-query": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "definition-effect-query",
+      "destinationServiceId": "definition-owner"
+    },
+    "definition-effect-complete": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "definition-effect-complete",
+      "destinationServiceId": "definition-owner"
+    },
+    "definition-effect-retry": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "definition-effect-retry",
+      "destinationServiceId": "definition-owner"
+    },
+    "integration-intent": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "integration-intent",
+      "destinationServiceId": "integration-owner"
+    },
+    "integration-effect-query": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "integration-effect-query",
+      "destinationServiceId": "integration-owner"
+    },
+    "integration-attempt-start": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "integration-attempt-start",
+      "destinationServiceId": "integration-owner"
+    },
+    "integration-attempt-complete": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "integration-attempt-complete",
+      "destinationServiceId": "integration-owner"
+    },
+    "integration-effect-reconcile": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "integration-effect-reconcile",
+      "destinationServiceId": "integration-owner"
+    },
+    "integration-effect-reply": {
+      "major": 1,
+      "kind": "reply",
+      "payloadSchema": "integration-effect-reply",
+      "destinationServiceId": null
+    },
+    "configuration-read": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "configuration-read",
+      "destinationServiceId": "configuration-owner"
+    },
+    "configuration-set": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "configuration-set",
+      "destinationServiceId": "configuration-owner"
+    },
+    "configuration-watch-close": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "configuration-watch-close",
+      "destinationServiceId": "configuration-owner"
+    },
+    "configuration-watch-close-response": {
+      "major": 1,
+      "kind": "reply",
+      "payloadSchema": "configuration-watch-close-response",
+      "destinationServiceId": null
+    },
+    "configuration-watch": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "configuration-watch",
+      "destinationServiceId": "configuration-owner"
+    },
+    "configuration-change": {
+      "major": 1,
+      "kind": "event",
+      "payloadSchema": "configuration-change",
+      "destinationServiceId": "configuration-owner"
+    },
+    "configuration-change-subscribe": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "configuration-change-subscribe",
+      "destinationServiceId": "configuration-owner"
+    },
+    "configuration-change-subscribe-reply": {
+      "major": 1,
+      "kind": "reply",
+      "payloadSchema": "configuration-change-subscribe-reply",
+      "destinationServiceId": null
+    },
+    "federation-message-reply": {
+      "major": 1,
+      "kind": "reply",
+      "payloadSchema": "federation-message-reply",
+      "destinationServiceId": null
+    },
+    "federation-message-send": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-message-send",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-message-deliver": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-message-deliver",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-message-approve": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-message-approve",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-message-inspect": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-message-inspect",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-message-outcome": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-message-outcome",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-board-command": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-board-command",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-board-dispatch": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-board-dispatch",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-board-complete": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-board-complete",
+      "destinationServiceId": "storage-owner"
+    },
+    "dashboard-command": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "dashboard-command",
+      "destinationServiceId": "dashboard-owner"
+    },
+    "dashboard-dispatch": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "dashboard-dispatch",
+      "destinationServiceId": "dashboard-owner"
+    },
+    "dashboard-effect-complete": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "dashboard-effect-complete",
+      "destinationServiceId": "dashboard-owner"
+    },
+    "dashboard-outcome-query": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "dashboard-outcome-query",
+      "destinationServiceId": "dashboard-owner"
+    },
+    "orchestration-command": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "orchestration-command",
+      "destinationServiceId": "orchestration-owner"
+    },
+    "orchestration-dispatch": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "orchestration-dispatch",
+      "destinationServiceId": "orchestration-owner"
+    },
+    "orchestration-complete": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "orchestration-complete",
+      "destinationServiceId": "orchestration-owner"
+    },
+    "orchestration-outcome-query": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "orchestration-outcome-query",
+      "destinationServiceId": "orchestration-owner"
+    },
+    "task-reply": {
+      "major": 1,
+      "kind": "reply",
+      "payloadSchema": "task-reply",
+      "destinationServiceId": null
+    },
+    "task-import": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "task-import",
+      "destinationServiceId": "task-owner"
+    },
+    "authority-switch": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "authority-switch",
+      "destinationServiceId": "authority-switch-owner"
+    },
+    "authority-switch-recovery-response": {
+      "major": 1,
+      "kind": "reply",
+      "payloadSchema": "authority-switch-recovery-response",
+      "destinationServiceId": null
+    },
+    "task-artifact-backup-read": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "task-artifact-backup-read",
+      "destinationServiceId": "task-owner"
+    },
+    "federation-ledger-import": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-ledger-import",
+      "destinationServiceId": "federation-ledger-owner"
+    },
+    "conversation-ledger-import": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "conversation-ledger-import",
+      "destinationServiceId": "conversation-ledger-owner"
+    },
+    "oidc-terminal-session-open": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "oidc-terminal-session-open",
+      "destinationServiceId": "identity-owner"
+    },
+    "oidc-terminal-session-status": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "oidc-terminal-session-status",
+      "destinationServiceId": "identity-owner"
+    },
+    "oidc-terminal-session-close": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "oidc-terminal-session-close",
+      "destinationServiceId": "identity-owner"
+    },
+    "federation-knowledge-share": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-knowledge-share",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-knowledge-index": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-knowledge-index",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-knowledge-capture": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-knowledge-capture",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-knowledge-withdraw": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-knowledge-withdraw",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-knowledge-read": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-knowledge-read",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-knowledge-inspect": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-knowledge-inspect",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-peer-revoke": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-peer-revoke",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-policy-project": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-policy-project",
+      "destinationServiceId": "configuration-owner"
+    },
+    "federation-peer-revoke-outcome": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-peer-revoke-outcome",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-knowledge-outcome": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-knowledge-outcome",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-knowledge-reply": {
+      "major": 1,
+      "kind": "reply",
+      "payloadSchema": "federation-knowledge-reply",
+      "destinationServiceId": null
+    },
+    "federation-message-finding": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-message-finding",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-code-publish": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-code-publish",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-code-index": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-code-index",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-code-approve": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-code-approve",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-code-fetched": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-code-fetched",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-code-read": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-code-read",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-code-inspect": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-code-inspect",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-code-outcome": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-code-outcome",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-code-reply": {
+      "major": 1,
+      "kind": "reply",
+      "payloadSchema": "federation-code-reply",
+      "destinationServiceId": null
+    },
+    "federation-knowledge-approve": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-knowledge-approve",
+      "destinationServiceId": "storage-owner"
+    },
+    "ordinary-secret-dispatch": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "ordinary-secret-dispatch",
+      "destinationServiceId": "secret-owner"
+    },
+    "ordinary-secret-complete": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "ordinary-secret-complete",
+      "destinationServiceId": "secret-owner"
+    },
+    "federation-work-approve-privileged": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-approve-privileged",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-approve": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-approve",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-cancel": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-cancel",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-claim-envelope": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-claim-envelope",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-claim-path": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-claim-path",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-claim": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-claim",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-create": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-create",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-grant-envelope": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-grant-envelope",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-heartbeat": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-heartbeat",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-ingest-legacy": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-ingest-legacy",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-ingest": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-ingest",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-inspect": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-inspect",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-offer": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-offer",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-outcome": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-outcome",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-read": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-read",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-release": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-release",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-reply": {
+      "major": 1,
+      "kind": "reply",
+      "payloadSchema": "federation-work-reply",
+      "destinationServiceId": null
+    },
+    "federation-work-result-envelope": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-result-envelope",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-result-legacy": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-result-legacy",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-return-leases": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-return-leases",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-revoke": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-revoke",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-stage-result": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-stage-result",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-sweep-leases": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-sweep-leases",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-register": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-register",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-state": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-state",
+      "destinationServiceId": "storage-owner"
+    },
+    "federation-work-sweep-global": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "federation-work-sweep-global",
+      "destinationServiceId": "storage-owner"
+    },
+    "execution-plan-enroll": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "execution-plan-enroll",
+      "destinationServiceId": "process-owner"
+    },
+    "execution-plan-read": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "execution-plan-read",
+      "destinationServiceId": "process-owner"
+    },
+    "execution-plan-revoke": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "execution-plan-revoke",
+      "destinationServiceId": "process-owner"
+    },
+    "task-credential-prepare": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "task-credential-prepare",
+      "destinationServiceId": "process-owner"
+    },
+    "task-credential-deliver": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "task-credential-deliver",
+      "destinationServiceId": "process-owner"
+    },
+    "task-credential-observe": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "task-credential-observe",
+      "destinationServiceId": "process-owner"
+    },
+    "task-credential-retire": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "task-credential-retire",
+      "destinationServiceId": "process-owner"
+    },
+    "execution-run-record": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "execution-run-record",
+      "destinationServiceId": "process-owner"
+    },
+    "execution-run-observe": {
+      "major": 1,
+      "kind": "command",
+      "payloadSchema": "execution-run-observe",
+      "destinationServiceId": "process-owner"
     }
   }
 }

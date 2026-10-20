@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:local-browser-session-open",
+  "title": "Open one enrolled local browser session",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "challenge": {"type": "string", "pattern": "^[0-9A-HJKMNP-TV-Z]{4}(?:-[0-9A-HJKMNP-TV-Z]{4}){4}$"},
+    "origin": {"type": "string", "pattern": "^http://(?:127\\.0\\.0\\.1|localhost):[1-9][0-9]{0,4}$", "maxLength": 40}
+  },
+  "required": ["challenge", "origin"]
+}

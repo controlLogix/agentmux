@@ -74,16 +74,20 @@ func newCreator(admission admissionCheck) (*Creator, error) {
 // Args excludes argv[0]. Only verified runtime roles use a fixed role alias.
 // Native executable paths remain independently bound to Path.
 type expectedImage struct {
-	assembly     *assemblyOwner
-	host         *ExpectedHost
-	Path, Digest string
-	argv0        string
-	Args         []string
+	inspection     *InspectionSelection
+	assembly       *assemblyOwner
+	host           *ExpectedHost
+	Path, Digest   string
+	argv0          string
+	Args           []string
+	stableFrontend bool
+	clientImage    *clientImageOwner
 }
 type Launch struct {
 	Path, Digest string
 	Args, Env    []string
 	Dir          string
+	Stdin        *os.File
 	ExtraFiles   []*os.File
 }
 
@@ -134,7 +138,9 @@ type ownedState struct {
 	creator             *Creator
 	cmd                 *exec.Cmd
 	expected            expectedImage
-	image               *protected.InstalledHostImage
+	image               io.Closer
+	stableFrontend      bool
+	client              *installedClientExpectation
 	proof               *Proof
 	started             time.Time
 	done                chan struct{}
@@ -150,6 +156,27 @@ type ownedState struct {
 // proves only that original command outcome. Call Pin explicitly when host
 // lineage authority is required; a fast exit can prevent full proof admission.
 func (c *Creator) StartProtected(ctx context.Context, launch Launch) (*Owned, error) {
+	return c.startProtected(ctx, launch, false)
+}
+
+// StartStableFrontend admits only the fixed entrypoint. Host descendants still
+// require a separate ExpectedHost bound to the enrolled release and policy.
+func (c *Creator) StartStableFrontend(ctx context.Context, launch Launch) (*Owned, error) {
+	return c.startProtected(ctx, launch, true)
+}
+
+func prepareLaunchImage(ctx context.Context, launch Launch, stable bool) (io.Closer, error) {
+	if stable {
+		return protected.PrepareProtectedInstalledFrontend(ctx, launch.Path, launch.Digest, 128*1024*1024)
+	}
+	return protected.PrepareProtectedInstalledHost(ctx, launch.Path, launch.Digest, 128*1024*1024)
+}
+
+func (c *Creator) startProtected(ctx context.Context, launch Launch, stable bool) (*Owned, error) {
+	return c.startProtectedClient(ctx, launch, stable, nil)
+}
+
+func (c *Creator) startProtectedClient(ctx context.Context, launch Launch, stable bool, client *installedClientExpectation) (*Owned, error) {
 	if c == nil || c.admission == nil {
 		return nil, failed("fixture_creator_invalid", nil)
 	}
@@ -168,24 +195,37 @@ func (c *Creator) StartProtected(ctx context.Context, launch Launch) (*Owned, er
 			return nil, failed("fixture_loader_environment_refused", nil)
 		}
 	}
-	image, err := protected.PrepareProtectedInstalledHost(ctx, launch.Path, launch.Digest, 128*1024*1024)
+	image, err := prepareLaunchImage(ctx, launch, stable)
 	if err != nil {
 		return nil, failed("fixture_protected_image_refused", err)
 	}
-	x := &Owned{ownedState: &ownedState{creator: c, image: image, expected: expectedImage{Path: launch.Path, Digest: launch.Digest, Args: append([]string(nil), launch.Args...)}, done: make(chan struct{})}}
+	x := &Owned{ownedState: &ownedState{creator: c, image: image, stableFrontend: stable, client: client, expected: expectedImage{Path: launch.Path, Digest: launch.Digest, Args: append([]string(nil), launch.Args...)}, done: make(chan struct{})}}
 	x.cmd = exec.Command(launch.Path, launch.Args...)
 	x.cmd.Env = append([]string{}, launch.Env...)
 	x.cmd.Dir = launch.Dir
+	if launch.Stdin != nil {
+		x.cmd.Stdin = launch.Stdin
+	}
 	x.cmd.ExtraFiles = append([]*os.File(nil), launch.ExtraFiles...)
 	x.cmd.Stdout = &x.out
 	x.cmd.Stderr = &x.errout
 	x.cmd.WaitDelay = time.Second
-	fresh, err := protected.PrepareProtectedInstalledHost(ctx, launch.Path, launch.Digest, 128*1024*1024)
+	fresh, err := prepareLaunchImage(ctx, launch, stable)
 	if err != nil {
 		return nil, errors.Join(failed("fixture_prestart_image_refused", err), safeClose(image, "fixture_image_close_failed"))
 	}
 	if err = safeClose(fresh, "fixture_prestart_image_close_failed"); err != nil {
 		return nil, errors.Join(err, safeClose(image, "fixture_image_close_failed"))
+	}
+	if stable {
+		if err := image.(*protected.InstalledFrontendImage).Recheck(ctx); err != nil {
+			return nil, errors.Join(failed("fixture_prestart_image_changed", err), safeClose(image, "fixture_image_close_failed"))
+		}
+	}
+	if client != nil {
+		if err := client.admission.Recheck(ctx); err != nil {
+			return nil, errors.Join(failed("fixture_client_prestart_changed", err), safeClose(image, "fixture_image_close_failed"))
+		}
 	}
 	if err = x.cmd.Start(); err != nil {
 		return nil, errors.Join(failed("fixture_start_failed", err), safeClose(image, "fixture_image_close_failed"))
@@ -199,6 +239,9 @@ func (c *Creator) StartProtected(ctx context.Context, launch Launch) (*Owned, er
 		return x, nil
 	}
 	x.cleanupIdentity = &child
+	if client != nil {
+		client.original = child
+	}
 	// Bind minimal cleanup authority while the original child is unreaped,
 	// then attempt full image, argv and watch admission. Neither authority
 	// accepts a PID from its caller.
@@ -261,6 +304,9 @@ func (x *Owned) Join(ctx context.Context) (Completion, error) {
 	}
 }
 func safeClose(c io.Closer, stage string) error {
+	if c == nil {
+		return nil
+	}
 	if err := c.Close(); err != nil {
 		return &failure{stage: stage, cause: err, retained: c}
 	}
@@ -277,10 +323,11 @@ func sameIdentity(a, b identity) bool {
 // exact process event watch. Its zero value grants no authority.
 type Proof struct{ *proofState }
 type proofState struct {
+	auxiliary  []any
 	admission  admissionCheck
 	assembly   *assemblyOwner
 	watchOwned bool
-	image      *protected.InstalledHostImage
+	image      io.Closer
 	cleanup    error
 
 	mu                    sync.Mutex
@@ -311,8 +358,13 @@ func (x *Owned) Pin(ctx context.Context) (*Proof, error) {
 	if err := ctx.Err(); err != nil {
 		return nil, failed("fixture_pin_cancelled", err)
 	}
+	if x.client != nil {
+		if err := x.awaitInstalledClient(ctx); err != nil {
+			return nil, err
+		}
+	}
 	before, err := observe(x.cmd.Process.Pid)
-	if err != nil || before.ParentPID != x.creator.self.PID || before.ParentUnique != x.creator.self.Unique || before.UID != x.creator.self.UID || before.RealUID != x.creator.self.RealUID {
+	if err != nil || x.cleanupIdentity == nil || !sameIdentity(*x.cleanupIdentity, before) || before.ParentPID != x.creator.self.PID || before.ParentUnique != x.creator.self.Unique || before.UID != x.creator.self.UID || before.RealUID != x.creator.self.RealUID {
 		return nil, failed("fixture_child_lineage_refused", err)
 	}
 	path, err := nativePath(before)
@@ -329,11 +381,8 @@ func (x *Owned) Pin(ctx context.Context) (*Proof, error) {
 	}
 	unix.CloseOnExec(queue)
 	p := &Proof{proofState: &proofState{id: before, queue: queue, watchOwned: true, expected: x.expected, admission: x.creator.admission}}
-	change := []unix.Kevent_t{{Ident: uint64(before.PID), Filter: unix.EVFILT_PROC, Flags: unix.EV_ADD | unix.EV_ONESHOT, Fflags: unix.NOTE_EXIT | unix.NOTE_EXEC}}
-	zero := unix.Timespec{}
-	var events [1]unix.Kevent_t
-	n, err := unix.Kevent(queue, change, events[:], &zero)
-	if err == nil && n == 0 {
+	err = registerProcessWatch(queue, before)
+	if err == nil {
 		after, e := observe(int(before.PID))
 		creator, ce := observe(os.Getpid())
 		if e != nil || ce != nil || !sameIdentity(before, after) || !sameIdentity(x.creator.self, creator) {
@@ -343,7 +392,10 @@ func (x *Owned) Pin(ctx context.Context) (*Proof, error) {
 		err = failed("fixture_watch_registration_refused", err)
 	}
 	if err == nil {
-		n, err = unix.Kevent(queue, nil, events[:], &zero)
+		zero := unix.Timespec{}
+		var events [1]unix.Kevent_t
+		var n int
+		n, err = pollWatch(func() (int, error) { return unix.Kevent(queue, nil, events[:], &zero) })
 		if n != 0 {
 			err = failed("fixture_admission_event_refused", err)
 		}
@@ -360,15 +412,30 @@ func (x *Owned) Pin(ctx context.Context) (*Proof, error) {
 		x.cleanup = errors.Join(x.cleanup, closeErr)
 		return nil, errors.Join(failed("fixture_postwatch_image_arguments_refused", errors.Join(pathErr, argsErr)), closeErr)
 	}
-	fresh, imageErr := protected.PrepareProtectedInstalledHost(ctx, x.expected.Path, x.expected.Digest, 128*1024*1024)
-	if imageErr != nil {
-		closeErr := p.close()
-		x.cleanup = errors.Join(x.cleanup, closeErr)
-		return nil, errors.Join(failed("fixture_postwatch_image_refused", imageErr), closeErr)
+	if x.client != nil {
+		if err := x.client.admission.Recheck(ctx); err != nil {
+			closeErr := p.close()
+			x.cleanup = errors.Join(x.cleanup, closeErr)
+			return nil, errors.Join(failed("fixture_postwatch_client_changed", err), closeErr)
+		}
+	} else {
+		fresh, imageErr := prepareLaunchImage(ctx, Launch{Path: x.expected.Path, Digest: x.expected.Digest}, x.stableFrontend)
+		if imageErr != nil {
+			closeErr := p.close()
+			x.cleanup = errors.Join(x.cleanup, closeErr)
+			return nil, errors.Join(failed("fixture_postwatch_image_refused", imageErr), closeErr)
+		}
+		if closeErr := safeClose(fresh, "fixture_postwatch_image_close_failed"); closeErr != nil {
+			x.cleanup = errors.Join(x.cleanup, closeErr, p.close())
+			return nil, x.cleanup
+		}
 	}
-	if closeErr := safeClose(fresh, "fixture_postwatch_image_close_failed"); closeErr != nil {
-		x.cleanup = errors.Join(x.cleanup, closeErr, p.close())
-		return nil, x.cleanup
+	if x.stableFrontend {
+		if err := x.image.(*protected.InstalledFrontendImage).Recheck(ctx); err != nil {
+			closeErr := p.close()
+			x.cleanup = errors.Join(x.cleanup, closeErr)
+			return nil, errors.Join(failed("fixture_postwatch_image_changed", err), closeErr)
+		}
 	}
 	final, finalErr := observe(int(before.PID))
 	if finalErr != nil || !sameIdentity(before, final) {
@@ -394,7 +461,7 @@ func (p *Proof) event() error {
 	}
 	if n != 0 {
 		e := events[0]
-		if e.Ident == uint64(p.id.PID) && e.Filter == unix.EVFILT_PROC && e.Flags&unix.EV_ERROR == 0 && e.Fflags&unix.NOTE_EXIT != 0 && e.Fflags&unix.NOTE_EXEC == 0 {
+		if exactProcessExit(p.id, e) {
 			p.exited = true
 			return ErrExited
 		}
@@ -412,15 +479,21 @@ func (p *Proof) Live() error {
 	return p.live()
 }
 func (p *Proof) live() error {
+	_, err := p.liveIdentity()
+	return err
+}
+
+// The caller holds p.mu, so the original watch and identity remain one owner.
+func (p *Proof) liveIdentity() (identity, error) {
 	if err := p.event(); err != nil {
-		return err
+		return identity{}, err
 	}
 	id, err := observe(int(p.id.PID))
 	if err != nil || !sameIdentity(p.id, id) {
 		p.valid = false
-		return failed("fixture_observation_failed", err)
+		return identity{}, failed("fixture_observation_failed", err)
 	}
-	return nil
+	return id, nil
 }
 func (p *Proof) Signal(signal syscall.Signal) error {
 	if signal != syscall.SIGTERM && signal != syscall.SIGKILL {
@@ -488,11 +561,16 @@ func (p *Proof) close() error {
 	}
 	p.closed = true
 	p.valid = false
+	for _, auxiliary := range p.auxiliary {
+		if state, ok := auxiliary.(*inspectionRosterOwner); ok && state != nil {
+			p.cleanup = errors.Join(p.cleanup, state.closeUntransferredObservations())
+		}
+	}
 	if !p.watchOwned {
 		return p.cleanup
 	}
 	if err := unix.Close(p.queue); err != nil {
-		p.cleanup = &failure{stage: "fixture_watch_close_failed", cause: err, retained: p}
+		p.cleanup = errors.Join(p.cleanup, &failure{stage: "fixture_watch_close_failed", cause: err, retained: p})
 	}
 	if p.assembly != nil {
 		p.cleanup = errors.Join(p.cleanup, p.assembly.release())
@@ -525,6 +603,9 @@ func (x *Owned) Close() error {
 		x.imageCloseAttempted = true
 		image := x.image
 		x.cleanup = errors.Join(x.cleanup, safeClose(image, "fixture_image_close_failed"))
+		if x.client != nil {
+			x.cleanup = errors.Join(x.cleanup, safeClose(x.client.admission, "fixture_client_close_failed"))
+		}
 	}
 	return x.cleanup
 }

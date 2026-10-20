@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:identity-application-account-resolution",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "algorithm": {"const": "Ed25519"},
+    "canonicalization": {"const": "RFC8785-JCS-UTF8"},
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "purpose": {"const": "agentmux-application-account-resolution-v1"},
+        "hubId": {"$ref": "urn:agentmux:contract:1:common#/$defs/identifier"},
+        "profileId": {"$ref": "urn:agentmux:contract:1:common#/$defs/identifier"},
+        "authorityId": {"$ref": "urn:agentmux:contract:1:common#/$defs/identifier"},
+        "issuerRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "requestDigest": {"$ref": "urn:agentmux:contract:1:common#/$defs/digest"},
+        "operationId": {"$ref": "urn:agentmux:contract:1:common#/$defs/identifier"},
+        "callerRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "scope": {"$ref": "urn:agentmux:contract:1:common#/$defs/scope"},
+        "accountRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "accountPublicKey": {"type": "string", "pattern": "^A[A-Z2-7]{55}$"},
+        "administratorIdentityRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "administratorTransportRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "administratorCredentialRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "accountIssuerRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "authoritySequence": {"$ref": "urn:agentmux:contract:1:common#/$defs/revision"},
+        "issuedAt": {"$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"},
+        "validUntil": {"$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"}
+      },
+      "required": ["purpose", "hubId", "profileId", "authorityId", "issuerRef", "requestDigest",
+        "operationId", "callerRef", "scope", "accountRef", "accountPublicKey",
+        "administratorIdentityRef", "administratorTransportRef", "administratorCredentialRef",
+        "accountIssuerRef", "authoritySequence", "issuedAt", "validUntil"]
+    },
+    "signature": {"type": "string", "pattern": "^[A-Za-z0-9_-]{86}$"}
+  },
+  "required": ["schemaVersion", "algorithm", "canonicalization", "claims", "signature"],
+  "title": "Signed current application account custody references",
+  "description": "Carries public bindings only. It grants no secret access and expires at the earliest current authority or enrollment boundary."
+}

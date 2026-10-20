@@ -57,6 +57,7 @@ type bootstrapDockerFixture struct {
 	BridgeEnrollment  *OwnerBridgeEnrollment
 	networkBaseline   map[string]bootstrapNetworkObservation
 	networkProvenance *bootstrapNetworkProvenance
+	networkRestart    *bootstrapNetworkRestart
 	networkRemoved    bool
 }
 
@@ -566,6 +567,55 @@ func (f *bootstrapDockerFixture) WriteEvidence(t *testing.T, name string, safe a
 	}
 }
 
+// Only completed fixture cleanup may remove its original stopped container.
+// The caller keeps the actual bootstrap and protected-role leases until return.
+func (f *bootstrapDockerFixture) allowStoppedContainerRemoval(owner OwnershipPreflight, id string, broker OwnedBroker, attachments map[string]bootstrapNetworkAttachment) bool {
+	expectedOwner := f.Owner
+	expectedOwner.LockHeld = true
+	if owner.valid(true) != nil || owner != expectedOwner || !fullID.MatchString(id) || broker.ContainerID != id || broker.State != "stopped" || attachments == nil || len(attachments) != 0 {
+		return false
+	}
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	_, existed := f.baseline[id]
+	return f.baseline != nil && !existed && f.ownedIDs[id] && f.networkRemoved && f.networkProvenance != nil && f.networkProvenance.containerID == id && f.networkRestart == nil
+}
+
+func (f *bootstrapDockerFixture) removeStoppedContainer(ctx context.Context, owner OwnershipPreflight, id string) error {
+	broker, err := f.ObserveBroker(ctx)
+	if err != nil {
+		return err
+	}
+	attachments, err := f.networkAttachments(ctx, id)
+	if err != nil {
+		return err
+	}
+	if !f.allowStoppedContainerRemoval(owner, id, broker, attachments) {
+		return errors.New("fixture_container_removal_refused")
+	}
+	if _, err := f.Driver.Inspect(ctx); err != nil {
+		return err
+	}
+	// No force or volume flag: Docker must refuse a concurrent restart and keep
+	// the named data volume. Never remove by a reusable name or project prefix.
+	removed, err := f.Driver.run(ctx, nil, "container", "rm", id)
+	if err != nil {
+		return err
+	}
+	if !validBootstrapContainerRemovalOutput(id, removed) {
+		return errors.New("fixture_container_removal_unverified")
+	}
+	broker, err = f.ObserveBroker(ctx)
+	if err != nil || broker.ContainerID != "" || broker.State != "absent" {
+		return errors.Join(errors.New("fixture_container_removal_unverified"), err)
+	}
+	return nil
+}
+
+func validBootstrapContainerRemovalOutput(id string, raw []byte) bool {
+	return fullID.MatchString(id) && string(bytes.TrimSpace(raw)) == id
+}
+
 func (f *bootstrapDockerFixture) Cleanup(t *testing.T) {
 	t.Helper()
 	f.mu.Lock()
@@ -605,6 +655,8 @@ func (f *bootstrapDockerFixture) Cleanup(t *testing.T) {
 		t.Error("fixture cleanup ownership unverifiable; stop refused")
 		return
 	}
+	var removedID string
+	var retainedVolume bootstrapVolumeObservation
 	if broker.ContainerID != "" {
 		beforeVolume, err := f.volume(ctx)
 		if err != nil {
@@ -631,17 +683,28 @@ func (f *bootstrapDockerFixture) Cleanup(t *testing.T) {
 			t.Error("fixture owned volume retention unverifiable")
 			return
 		}
-		f.WriteEvidence(t, "cleanup.json", map[string]any{"at": time.Now().UTC(), "containerId": broker.ContainerID, "state": stopped.State, "volumeRetained": true, "volume": afterVolume, "ownedIDs": f.ownedIDs})
 		if err := f.cleanupCreatedNetwork(ctx, broker.ContainerID); err != nil {
 			f.cleanupGap(t, "new_fixture_network_cleanup_unverified")
 			t.Error("new fixture network cleanup was not verified; owned state retained")
 			return
 		}
-		retainedVolume, err := f.volume(ctx)
+		retainedVolume, err = f.volume(ctx)
 		retainedBroker, brokerErr := f.ObserveBroker(ctx)
 		if err != nil || brokerErr != nil || !reflect.DeepEqual(afterVolume, retainedVolume) || retainedBroker.ContainerID != broker.ContainerID || retainedBroker.State != "stopped" {
 			f.cleanupGap(t, "network_cleanup_container_volume_retention_unverified")
 			t.Error("network cleanup changed retained container or volume")
+			return
+		}
+		if err := f.removeStoppedContainer(ctx, owner, broker.ContainerID); err != nil {
+			f.cleanupGap(t, "exact_stopped_container_removal_unverified")
+			t.Error("fixture stopped container removal was not verified; original owner retained for recovery")
+			return
+		}
+		removedID = broker.ContainerID
+		retainedVolume, err = f.volume(ctx)
+		if err != nil || !reflect.DeepEqual(afterVolume, retainedVolume) {
+			f.cleanupGap(t, "container_cleanup_volume_retention_unverified")
+			t.Error("container cleanup volume retention was not verified")
 			return
 		}
 	}
@@ -649,6 +712,10 @@ func (f *bootstrapDockerFixture) Cleanup(t *testing.T) {
 	networks, err := f.networkInventory(ctx)
 	if err != nil || !sameBootstrapNetworkBaseline(f.networkBaseline, networks) {
 		t.Error("unrelated network baseline changed")
+		return
+	}
+	if removedID != "" {
+		f.WriteEvidence(t, "cleanup.json", map[string]any{"at": time.Now().UTC(), "containerId": removedID, "state": "absent", "containerRemoved": true, "volumeRetained": true, "volume": retainedVolume, "unrelatedContainerBaselineUnchanged": true, "unrelatedNetworkBaselineUnchanged": true})
 	}
 }
 

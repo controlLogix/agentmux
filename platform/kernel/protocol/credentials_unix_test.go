@@ -21,7 +21,10 @@ func TestPrivateCredentialFileAndSupervisorBindings(t *testing.T) {
 		t.Fatal(err)
 	}
 	path := filepath.Join(dir, "role.json")
+	f := serverTrustTestMaterial(t)
 	c := validCredentials()
+	c.NATSURL = f.record.Endpoint
+	t.Setenv("AGENTMUX_NATS_SERVER_TRUST_FILE", writeTrustRecord(t, f.record))
 	data, _ := json.Marshal(c)
 	if err := os.WriteFile(path, data, 0600); err != nil {
 		t.Fatal(err)

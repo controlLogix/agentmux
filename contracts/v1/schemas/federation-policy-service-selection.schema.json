@@ -1,0 +1,185 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "service": {
+      "$ref": "urn:agentmux:contract:1:application-service-selection#/properties/configuration"
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "database": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "applicationId": {
+                  "type": "integer"
+                },
+                "userVersion": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "path",
+                "applicationId",
+                "userVersion"
+              ]
+            },
+            "policy": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "sha256": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                }
+              },
+              "required": [
+                "path",
+                "sha256"
+              ]
+            }
+          },
+          "required": [
+            "database",
+            "policy"
+          ]
+        },
+        "repository": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "localName": {
+              "type": "string",
+              "minLength": 1
+            },
+            "repositoryId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "normalizedRemote": {
+              "type": "string",
+              "minLength": 1
+            },
+            "counterPrefix": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "localName",
+            "repositoryId",
+            "normalizedRemote"
+          ]
+        },
+        "localPeer": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        }
+      },
+      "required": [
+        "sourceRef",
+        "source",
+        "repository",
+        "localPeer"
+      ]
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "bucket": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}$"
+        },
+        "storeRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "maxBytes": {
+          "type": "integer",
+          "minimum": 65576,
+          "maximum": 1048576
+        }
+      },
+      "required": [
+        "bucket",
+        "storeRef",
+        "maxBytes"
+      ]
+    },
+    "key": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "keyRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        }
+      },
+      "required": [
+        "path",
+        "keyRef"
+      ]
+    },
+    "backupAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "transportRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "grantRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        }
+      },
+      "required": [
+        "transportRef",
+        "grantRef"
+      ]
+    },
+    "projectionAuthority": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "serviceIdentityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "transportRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "grantRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        }
+      },
+      "required": [
+        "serviceIdentityRef",
+        "transportRef",
+        "grantRef"
+      ]
+    }
+  },
+  "required": [
+    "service",
+    "target",
+    "artifacts",
+    "key",
+    "backupAuthority",
+    "projectionAuthority"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-policy-service-selection"
+}

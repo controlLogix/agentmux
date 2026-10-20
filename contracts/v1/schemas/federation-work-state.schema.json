@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-work-state",
+  "title": "federation-work-state v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "batchId": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}$"
+        },
+        "purpose": {
+          "enum": [
+            "hub-state",
+            "hub-observation"
+          ]
+        },
+        "localNode": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,64}$"
+        },
+        "repositories": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "repository": {
+                "type": "string",
+                "pattern": "^[a-z0-9_]{1,32}$"
+              },
+              "resourceRef": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+              }
+            },
+            "required": [
+              "repository",
+              "resourceRef"
+            ]
+          }
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "session": {
+          "type": "string",
+          "maxLength": 256
+        },
+        "state": {
+          "enum": [
+            "starting",
+            "ready",
+            "busy",
+            "blocked",
+            "dead"
+          ]
+        },
+        "note": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 65536
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observation": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "handle": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "maxLength": 1024
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "panePid": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "created": {
+              "type": "string",
+              "maxLength": 128
+            },
+            "state": {
+              "enum": [
+                "starting",
+                "ready",
+                "busy",
+                "blocked",
+                "dead"
+              ]
+            }
+          },
+          "required": [
+            "handle",
+            "panePid",
+            "created",
+            "state"
+          ]
+        }
+      },
+      "required": [
+        "batchId",
+        "purpose",
+        "localNode",
+        "repositories",
+        "generation",
+        "session",
+        "state",
+        "note"
+      ]
+    },
+    "attribution": {
+      "const": "federation"
+    }
+  },
+  "required": [
+    "resourceRef",
+    "input",
+    "attribution"
+  ]
+}

@@ -122,6 +122,16 @@ func staticKernelFixture(t *testing.T, f *fixture) (string, []byte, assembly.Tru
 	if err := os.Mkdir(configs, 0700); err != nil {
 		t.Fatal(err)
 	}
+	if f.trust == nil {
+		t.Fatal("real role process fixture requires enrolled TLS")
+	}
+	policy := f.trust.Policy()
+	serverTrust := protocol.ServerTrustRecord{SchemaVersion: protocol.Version, Endpoint: policy.Endpoint, ServerName: policy.ServerName, RootsPEM: string(policy.RootsPEM), LeafCertificateSHA256: policy.LeafCertificateSHA256, Scope: f.scope}
+	trustBytes, err := json.Marshal(serverTrust)
+	trustPath := filepath.Join(configs, "server-trust.json")
+	if err != nil || os.WriteFile(trustPath, trustBytes, 0400) != nil {
+		t.Fatal("private role TLS trust fixture write failed")
+	}
 	var options [4]protected.RoleOptions
 	for i, role := range protocol.Roles() {
 		creds := protocol.Credentials{SchemaVersion: protocol.Version, Role: role, Username: role, Password: f.secrets[role], NATSURL: f.url, Scope: f.scope}
@@ -130,7 +140,7 @@ func staticKernelFixture(t *testing.T, f *fixture) (string, []byte, assembly.Tru
 		if err := os.WriteFile(path, bytes, 0400); err != nil {
 			t.Fatal("private role fixture write failed")
 		}
-		options[i] = protected.RoleOptions{ID: role, Env: map[string]string{"AGENTMUX_NATS_URL": f.url, "AGENTMUX_NATS_CREDS_FILE": path, "AGENTMUX_INSTANCE_ID": f.scope.InstanceID, "AGENTMUX_PROFILE_ID": f.scope.ProfileID}}
+		options[i] = protected.RoleOptions{ID: role, Env: map[string]string{"AGENTMUX_NATS_URL": f.url, "AGENTMUX_NATS_CREDS_FILE": path, "AGENTMUX_NATS_SERVER_TRUST_FILE": trustPath, "AGENTMUX_INSTANCE_ID": f.scope.InstanceID, "AGENTMUX_PROFILE_ID": f.scope.ProfileID}}
 	}
 	t.Log("fixtureReleaseSignatureVerified=true enrolledKeySeparatelyTrusted=true staticKernel=true")
 	return packageDir, raw, trust, options
@@ -157,7 +167,8 @@ func processSnapshot(t *testing.T, sub *nats.Subscription, scope protocol.Scope,
 }
 
 func TestFourSealedProtectedProcessesSignedReleaseAndOwnedShutdown(t *testing.T) {
-	f := setup(t)
+	recovery := newRecoveryFixture(t)
+	f := fixture{trust: recovery.trust, url: recovery.endpoint, secrets: recovery.secrets, scope: recovery.scope, wire: recovery.wire}
 	packageDir, raw, trust, options := staticKernelFixture(t, &f)
 	prepareCtx, prepareCancel := context.WithTimeout(context.Background(), 10*time.Second)
 	prepared, err := protected.Prepare(prepareCtx, raw, packageDir, trust, protected.Limits{})

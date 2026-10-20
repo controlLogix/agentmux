@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:dashboard-effect-complete",
+  "title": "Agentmux dashboard-effect-complete v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": { "$ref": "urn:agentmux:contract:1:common#/$defs/reference" },
+    "journalRef": { "$ref": "urn:agentmux:contract:1:common#/$defs/reference" },
+    "originalOperationId": { "$ref": "urn:agentmux:contract:1:common#/$defs/identifier" },
+    "originalPayloadDigest": { "$ref": "urn:agentmux:contract:1:common#/$defs/digest" },
+    "target": { "$ref": "urn:agentmux:contract:1:dashboard-command#/properties/target" },
+    "action": { "$ref": "urn:agentmux:contract:1:dashboard-command#/properties/action" },
+    "bodyDigest": { "$ref": "urn:agentmux:contract:1:common#/$defs/digest" },
+    "claimRef": { "$ref": "urn:agentmux:contract:1:common#/$defs/reference" },
+    "observationId": { "$ref": "urn:agentmux:contract:1:common#/$defs/identifier" },
+    "outcome": { "enum": ["applied", "not-applied", "uncertain"] }
+  },
+  "required": ["resourceRef", "journalRef", "originalOperationId", "originalPayloadDigest", "target", "action", "bodyDigest", "claimRef", "observationId", "outcome"]
+}

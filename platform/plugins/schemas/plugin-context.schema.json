@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:plugin-context",
+  "title": "Agentmux plugin-context v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "instanceId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+    },
+    "packageId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+    },
+    "packageVersion": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+    },
+    "packageDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "hubId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+    },
+    "parent": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "instanceId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+            },
+            "relationship": {
+              "enum": [
+                "private",
+                "independent-reference"
+              ]
+            }
+          },
+          "required": [
+            "instanceId",
+            "relationship"
+          ]
+        }
+      ]
+    },
+    "effectiveGrant": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/grant"
+    },
+    "services": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "logger": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/service"
+        },
+        "config": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/service"
+        },
+        "lifecycle": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/service"
+        },
+        "clock": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/service"
+        },
+        "tracing": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/service"
+        },
+        "metrics": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/service"
+        },
+        "domainGateway": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/service"
+        }
+      },
+      "required": [
+        "logger",
+        "config",
+        "lifecycle",
+        "clock",
+        "tracing",
+        "metrics",
+        "domainGateway"
+      ]
+    },
+    "secretReferences": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "configurationRevision": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991
+    },
+    "profileContext": {
+      "description": "Explicit display context from the selected profile. Omit absent fields. Project is a display value, not an authorization projectId; neither value grants access.",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "environment": {
+          "$ref": "#/$defs/profileDisplayValue"
+        },
+        "project": {
+          "$ref": "#/$defs/profileDisplayValue"
+        }
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "instanceId",
+    "packageId",
+    "packageVersion",
+    "packageDigest",
+    "hubId",
+    "parent",
+    "effectiveGrant",
+    "services",
+    "secretReferences",
+    "configurationRevision"
+  ],
+  "description": " Executable P01 contract. Runtime enrollment, authorization and durable ownership remain separate obligations.",
+  "$defs": {
+    "profileDisplayValue": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^\\S(?:[^\u0000-\u001f\u007f-\u009f\u2028\u2029]*\\S)?$",
+      "not": {
+        "pattern": "[\u0000-\u001f\u007f-\u009f\u2028\u2029]"
+      }
+    }
+  }
+}

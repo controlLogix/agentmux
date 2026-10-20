@@ -21,18 +21,6 @@ func (g *Group) StopRole(parent context.Context, role string) error {
 	if role != "boot" && role != "kernel-lifecycle" && role != "internal-communication" && role != "exported-status" {
 		return errors.New("stop role is not a protected member")
 	}
-	var child *owned
-	for _, candidate := range g.children {
-		if candidate != nil && candidate.role == role {
-			if child != nil {
-				return errors.New("owned role is repeated")
-			}
-			child = candidate
-		}
-	}
-	if child == nil || child.cmd == nil || child.cmd.Process == nil || child.done == nil {
-		return errors.New("protected role was not started by this group")
-	}
 	total := g.deadlines.StopGrace + g.deadlines.ReapTimeout
 	if g.deadlines.StopGrace <= 0 || g.deadlines.ReapTimeout <= 0 || total <= 0 {
 		return errors.New("positive lifecycle deadlines are required")
@@ -50,6 +38,24 @@ func (g *Group) StopRole(parent context.Context, role string) error {
 	}
 	if err := ctx.Err(); err != nil {
 		return err
+	}
+	if g.recovery != nil {
+		g.childrenMu.Lock()
+		g.recovery.enabled[role] = false
+		g.childrenMu.Unlock()
+		defer g.finishRecovery()
+	}
+	var child *owned
+	for _, candidate := range g.currentChildren() {
+		if candidate != nil && candidate.role == role {
+			if child != nil {
+				return errors.New("owned role is repeated")
+			}
+			child = candidate
+		}
+	}
+	if child == nil || child.cmd == nil || child.cmd.Process == nil || child.done == nil {
+		return errors.New("protected role was not started by this group")
 	}
 	select {
 	case <-child.done:

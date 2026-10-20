@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:identity-legacy-alias-set",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "authorityId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "record": {
+      "$ref": "urn:agentmux:contract:1:identity-legacy-alias"
+    },
+    "previousRef": {
+      "anyOf": [
+        {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        {"type": "null"}
+      ]
+    }
+  },
+  "required": ["authorityId", "record", "previousRef"],
+  "title": "Set non-authoritative legacy identity alias",
+  "description": "The identity owner authenticates and authorizes this provenance update. The alias does not grant membership, permission, or actor identity."
+}

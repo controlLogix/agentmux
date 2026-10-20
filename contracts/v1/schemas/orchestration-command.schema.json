@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:orchestration-command",
+  "title": "Agentmux orchestration-command v1",
+  "description": "One enrolled command for an exact project-scoped orchestration policy. The selected profile supplies routing and any optional environment binding.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": { "$ref": "urn:agentmux:contract:1:common#/$defs/reference" },
+    "environmentRef": {
+      "anyOf": [
+        { "$ref": "urn:agentmux:contract:1:common#/$defs/reference" },
+        { "type": "null" }
+      ]
+    },
+    "input": {
+      "oneOf": [
+        {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "command": { "const": "orchestrator-start" },
+            "request": { "type": "string", "minLength": 1, "maxLength": 8192 }
+          },
+          "required": ["command", "request"]
+        },
+        {
+          "type": "object", "additionalProperties": false,
+          "properties": { "command": { "const": "orchestrator-stop" } },
+          "required": ["command"]
+        },
+        {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "command": { "const": "run-start" },
+            "request": { "type": "string", "minLength": 1, "maxLength": 8192 }
+          },
+          "required": ["command", "request"]
+        },
+        {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "command": { "const": "run-assign" },
+            "runId": { "type": "string", "pattern": "^[a-f0-9]{6}$" },
+            "worker": { "type": "string", "pattern": "^[A-Za-z0-9_.-]{1,64}$" },
+            "reviewer": { "type": "string", "pattern": "^[A-Za-z0-9_.-]{1,64}$" },
+            "task": { "type": ["string", "null"], "pattern": "^[A-Z][A-Z0-9]{1,15}-[0-9]{1,12}$" },
+            "brief": { "type": ["string", "null"], "maxLength": 32768 }
+          },
+          "required": ["command", "runId", "worker", "reviewer", "task", "brief"]
+        },
+        {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "command": { "const": "run-complete" },
+            "runId": { "type": "string", "pattern": "^[a-f0-9]{6}$" }
+          },
+          "required": ["command", "runId"]
+        },
+        {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "command": { "const": "run-teardown" },
+            "runId": { "type": "string", "pattern": "^[a-f0-9]{6}$" }
+          },
+          "required": ["command", "runId"]
+        },
+        {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "command": { "const": "claim-for" },
+            "resource": { "type": "string", "pattern": "^[A-Za-z0-9_./-]{1,200}$" },
+            "holder": { "type": "string", "pattern": "^[A-Za-z0-9_.-]{1,64}$" },
+            "ttl": { "type": "integer", "minimum": 60, "maximum": 86400 },
+            "note": { "type": "string", "maxLength": 500 },
+            "task": { "type": ["string", "null"], "maxLength": 64 },
+            "dependsOn": {
+              "type": "array", "maxItems": 64, "uniqueItems": true,
+              "items": { "type": "string", "pattern": "^[A-Za-z0-9_./-]{1,200}$" }
+            }
+          },
+          "required": ["command", "resource", "holder", "ttl", "note", "task", "dependsOn"]
+        },
+        {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "command": { "const": "release-for" },
+            "resource": { "type": "string", "pattern": "^[A-Za-z0-9_./-]{1,200}$" },
+            "holder": { "type": "string", "pattern": "^[A-Za-z0-9_.-]{1,64}$" }
+          },
+          "required": ["command", "resource", "holder"]
+        }
+      ]
+    }
+  },
+  "required": ["resourceRef", "environmentRef", "input"]
+}

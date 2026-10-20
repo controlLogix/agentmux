@@ -1,0 +1,41 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "authorityId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "identityRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "externalIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "issuer": {
+          "type": "string",
+          "pattern": "^https://[^?#]+$",
+          "maxLength": 2048
+        },
+        "subject": {
+          "type": "string",
+          "pattern": "^[\\x20-\\x7E]+$",
+          "maxLength": 255
+        }
+      },
+      "required": [
+        "issuer",
+        "subject"
+      ]
+    }
+  },
+  "required": [
+    "authorityId",
+    "identityRef",
+    "externalIdentity"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:identity-external-account-link",
+  "title": "identity-external-account-link payload v1",
+  "description": "An organization-authorized identity owner links one verified external issuer/subject pair to one existing human identity. The token and mutable profile claims are never stored here."
+}

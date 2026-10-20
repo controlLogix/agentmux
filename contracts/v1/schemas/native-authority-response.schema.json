@@ -1,0 +1,611 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "algorithm": {
+      "const": "Ed25519"
+    },
+    "canonicalization": {
+      "const": "RFC8785-JCS-UTF8"
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "purpose": {
+          "const": "agentmux-native-authority-response-v1"
+        },
+        "requestId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "method": {
+          "enum": [
+            "bind-instance",
+            "admit-operation",
+            "recheck",
+            "prepare-domain-call",
+            "prepare-configuration-request",
+            "activate-instance",
+            "prepare-configuration-initialization",
+            "prepare-subscription-call",
+            "admit-domain-event"
+          ]
+        },
+        "profileId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "hubId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "authorityId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "signingKeyRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "issuedAt": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+        },
+        "requestDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "authorityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "authoritySequence": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+        },
+        "validUntil": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+        },
+        "outcome": {
+          "enum": [
+            "allowed",
+            "denied",
+            "approval_required",
+            "unavailable"
+          ]
+        },
+        "result": {}
+      },
+      "required": [
+        "purpose",
+        "requestId",
+        "method",
+        "profileId",
+        "hubId",
+        "authorityId",
+        "owner",
+        "signingKeyRef",
+        "issuedAt",
+        "requestDigest",
+        "authorityRef",
+        "authoritySequence",
+        "validUntil",
+        "outcome",
+        "result"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "allowed"
+              },
+              "method": {
+                "const": "bind-instance"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "result": {
+                "$ref": "urn:agentmux:contract:1:native-authority-facts"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "allowed"
+              },
+              "method": {
+                "const": "admit-operation"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "result": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "operation": {
+                    "$ref": "urn:agentmux:contract:1:operation-context"
+                  },
+                  "authorityRef": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  }
+                },
+                "required": [
+                  "operation",
+                  "authorityRef"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "allowed"
+              },
+              "method": {
+                "const": "prepare-domain-call"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "result": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "bindingId": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                  },
+                  "envelopeBytes": {
+                    "type": "string",
+                    "maxLength": 87384,
+                    "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+                  },
+                  "serviceRequestBytes": {
+                    "type": "string",
+                    "maxLength": 131072,
+                    "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+                  }
+                },
+                "required": [
+                  "bindingId",
+                  "envelopeBytes",
+                  "serviceRequestBytes"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "allowed"
+              },
+              "method": {
+                "const": "recheck"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "result": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "grant": {
+                    "allOf": [
+                      {
+                        "$ref": "urn:agentmux:contract:1:common#/$defs/grant"
+                      },
+                      {
+                        "properties": {
+                          "actions": {
+                            "maxItems": 256
+                          },
+                          "resourceIds": {
+                            "maxItems": 256
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "policy": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "reference": {
+                        "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                      },
+                      "subjectInstanceId": {
+                        "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                      },
+                      "scope": {
+                        "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+                      },
+                      "issuedAt": {
+                        "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+                      },
+                      "expiresAt": {
+                        "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+                      },
+                      "decisions": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "additionalProperties": false,
+                          "properties": {
+                            "access": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "action": {
+                                  "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                                },
+                                "resourceClass": {
+                                  "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                                },
+                                "resourceId": {
+                                  "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                                }
+                              },
+                              "required": [
+                                "action",
+                                "resourceClass",
+                                "resourceId"
+                              ]
+                            },
+                            "outcome": {
+                              "enum": [
+                                "allow",
+                                "deny",
+                                "approval_required"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "access",
+                            "outcome"
+                          ]
+                        },
+                        "maxItems": 256,
+                        "uniqueItems": true
+                      }
+                    },
+                    "required": [
+                      "reference",
+                      "subjectInstanceId",
+                      "scope",
+                      "issuedAt",
+                      "expiresAt",
+                      "decisions"
+                    ]
+                  },
+                  "parentGrant": {
+                    "anyOf": [
+                      {
+                        "allOf": [
+                          {
+                            "$ref": "urn:agentmux:contract:1:common#/$defs/grant"
+                          },
+                          {
+                            "properties": {
+                              "actions": {
+                                "maxItems": 256
+                              },
+                              "resourceIds": {
+                                "maxItems": 256
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "parentAccess": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "action": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                        },
+                        "resourceClass": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                        },
+                        "resourceId": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                        }
+                      },
+                      "required": [
+                        "action",
+                        "resourceClass",
+                        "resourceId"
+                      ]
+                    },
+                    "maxItems": 256,
+                    "uniqueItems": true
+                  },
+                  "scopeRef": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  },
+                  "configurationRevision": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+                  },
+                  "secretReferences": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                    },
+                    "maxItems": 256,
+                    "uniqueItems": true
+                  },
+                  "domainBindings": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "additionalProperties": false,
+                      "properties": {
+                        "id": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                        },
+                        "contractId": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                        },
+                        "action": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                        },
+                        "resourceClass": {
+                          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                        },
+                        "resourceIds": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                          },
+                          "maxItems": 256,
+                          "uniqueItems": true
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "contractId",
+                        "action",
+                        "resourceClass",
+                        "resourceIds"
+                      ]
+                    },
+                    "maxItems": 256,
+                    "uniqueItems": true
+                  },
+                  "operationAuthorityRef": {
+                    "anyOf": [
+                      {
+                        "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "grant",
+                  "policy",
+                  "parentGrant",
+                  "parentAccess",
+                  "scopeRef",
+                  "configurationRevision",
+                  "secretReferences",
+                  "domainBindings",
+                  "operationAuthorityRef"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "enum": [
+                  "denied",
+                  "approval_required",
+                  "unavailable"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "result": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "prepare-configuration-request"
+              },
+              "outcome": {
+                "const": "allowed"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "result": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "envelopeBytes": {
+                    "type": "string",
+                    "maxLength": 87384,
+                    "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+                  }
+                },
+                "required": [
+                  "envelopeBytes"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "activate-instance"
+              },
+              "outcome": {
+                "const": "allowed"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "result": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "enrollmentRef": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  },
+                  "facts": {
+                    "$ref": "urn:agentmux:contract:1:native-authority-facts"
+                  }
+                },
+                "required": [
+                  "enrollmentRef",
+                  "facts"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "prepare-configuration-initialization"
+              },
+              "outcome": {
+                "const": "allowed"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "result": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "envelopeBytes": {
+                    "type": "string",
+                    "maxLength": 87384,
+                    "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+                  }
+                },
+                "required": [
+                  "envelopeBytes"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "allowed"
+              },
+              "method": {
+                "const": "prepare-subscription-call"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "result": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "bindingId": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                  },
+                  "envelopeBytes": {
+                    "type": "string",
+                    "maxLength": 87384,
+                    "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+                  }
+                },
+                "required": [
+                  "bindingId",
+                  "envelopeBytes"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "outcome": {
+                "const": "allowed"
+              },
+              "method": {
+                "const": "admit-domain-event"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "result": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "payloadBytes": {
+                    "type": "string",
+                    "maxLength": 87384,
+                    "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"
+                  }
+                },
+                "required": [
+                  "payloadBytes"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{86}$"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "algorithm",
+    "canonicalization",
+    "claims",
+    "signature"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:native-authority-response",
+  "title": "native-authority-response v1"
+}

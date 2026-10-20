@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+: "${AGENTMUX_NATIVE_CORE_TMUX:?selected native transport required}"
+exec "$AGENTMUX_NATIVE_CORE_TMUX" "$@"

@@ -1,0 +1,442 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-ledger-import",
+  "title": "Agentmux federation ledger preservation payload v1",
+  "description": "Preserve a complete captured federation ledger for reconciliation. This grants no delivery, quarantine release, enrollment or writer transfer.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "archiveId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "sourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "captureDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "archiveDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "sourceArchive": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "format": {
+          "const": "amx-legacy-federation-source-v1"
+        },
+        "sourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "databaseDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "schemaVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6
+        },
+        "applicationVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "families": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "fed_outbox": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "present": {
+                  "type": "boolean"
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "rows": {
+                  "type": "array",
+                  "maxItems": 1024,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "memberId": {
+                        "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                      },
+                      "primaryKey": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "column": {
+                            "enum": [
+                              "seq",
+                              "msg_id",
+                              "id",
+                              "k"
+                            ]
+                          },
+                          "type": {
+                            "enum": [
+                              "integer",
+                              "text"
+                            ]
+                          },
+                          "value": {
+                            "type": [
+                              "integer",
+                              "string"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "column",
+                          "type",
+                          "value"
+                        ]
+                      },
+                      "row": {
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "memberId",
+                      "primaryKey",
+                      "row"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "present",
+                "count",
+                "rows"
+              ]
+            },
+            "fed_seen": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "present": {
+                  "type": "boolean"
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "rows": {
+                  "type": "array",
+                  "maxItems": 1024,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "memberId": {
+                        "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                      },
+                      "primaryKey": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "column": {
+                            "enum": [
+                              "seq",
+                              "msg_id",
+                              "id",
+                              "k"
+                            ]
+                          },
+                          "type": {
+                            "enum": [
+                              "integer",
+                              "text"
+                            ]
+                          },
+                          "value": {
+                            "type": [
+                              "integer",
+                              "string"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "column",
+                          "type",
+                          "value"
+                        ]
+                      },
+                      "row": {
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "memberId",
+                      "primaryKey",
+                      "row"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "present",
+                "count",
+                "rows"
+              ]
+            },
+            "fed_audit": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "present": {
+                  "type": "boolean"
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "rows": {
+                  "type": "array",
+                  "maxItems": 1024,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "memberId": {
+                        "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                      },
+                      "primaryKey": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "column": {
+                            "enum": [
+                              "seq",
+                              "msg_id",
+                              "id",
+                              "k"
+                            ]
+                          },
+                          "type": {
+                            "enum": [
+                              "integer",
+                              "text"
+                            ]
+                          },
+                          "value": {
+                            "type": [
+                              "integer",
+                              "string"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "column",
+                          "type",
+                          "value"
+                        ]
+                      },
+                      "row": {
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "memberId",
+                      "primaryKey",
+                      "row"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "present",
+                "count",
+                "rows"
+              ]
+            },
+            "fed_quarantine": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "present": {
+                  "type": "boolean"
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "rows": {
+                  "type": "array",
+                  "maxItems": 1024,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "memberId": {
+                        "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                      },
+                      "primaryKey": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "column": {
+                            "enum": [
+                              "seq",
+                              "msg_id",
+                              "id",
+                              "k"
+                            ]
+                          },
+                          "type": {
+                            "enum": [
+                              "integer",
+                              "text"
+                            ]
+                          },
+                          "value": {
+                            "type": [
+                              "integer",
+                              "string"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "column",
+                          "type",
+                          "value"
+                        ]
+                      },
+                      "row": {
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "memberId",
+                      "primaryKey",
+                      "row"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "present",
+                "count",
+                "rows"
+              ]
+            },
+            "fed_state": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "present": {
+                  "type": "boolean"
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "rows": {
+                  "type": "array",
+                  "maxItems": 1024,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                      "memberId": {
+                        "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                      },
+                      "primaryKey": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "column": {
+                            "enum": [
+                              "seq",
+                              "msg_id",
+                              "id",
+                              "k"
+                            ]
+                          },
+                          "type": {
+                            "enum": [
+                              "integer",
+                              "text"
+                            ]
+                          },
+                          "value": {
+                            "type": [
+                              "integer",
+                              "string"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "column",
+                          "type",
+                          "value"
+                        ]
+                      },
+                      "row": {
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "memberId",
+                      "primaryKey",
+                      "row"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "present",
+                "count",
+                "rows"
+              ]
+            }
+          },
+          "required": [
+            "fed_outbox",
+            "fed_seen",
+            "fed_audit",
+            "fed_quarantine",
+            "fed_state"
+          ]
+        },
+        "historicalHoldingPolicy": {
+          "const": "unknown"
+        },
+        "policyRevalidationRequired": {
+          "const": true
+        },
+        "sourceOwnerOrganizationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        }
+      },
+      "required": [
+        "format",
+        "sourceRef",
+        "databaseDigest",
+        "schemaVersion",
+        "applicationVersion",
+        "families",
+        "historicalHoldingPolicy",
+        "policyRevalidationRequired",
+        "sourceOwnerOrganizationId"
+      ]
+    }
+  },
+  "required": [
+    "archiveId",
+    "sourceRef",
+    "captureDigest",
+    "archiveDigest",
+    "sourceArchive"
+  ]
+}

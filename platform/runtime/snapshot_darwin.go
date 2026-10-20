@@ -21,6 +21,7 @@ import (
 const darwinReleaseBase = "/Library/Application Support/Agentmux/Protected/releases"
 
 type protectedDarwinExecutable struct {
+	frontend   bool
 	path       string
 	want       string
 	max        int64
@@ -47,7 +48,13 @@ func (e *protectedDarwinExecutable) validateForStart(ctx context.Context) (failu
 	if len(e.files) == 0 || len(e.files) != len(e.identities) {
 		return errors.New("protected_descriptor_closed")
 	}
-	fresh, err := openDarwinProtected(ctx, e.path, e.want, e.max)
+	var fresh *protectedDarwinExecutable
+	var err error
+	if e.frontend {
+		fresh, err = openDarwinStableFrontend(ctx, e.path, e.want, e.max)
+	} else {
+		fresh, err = openDarwinProtected(ctx, e.path, e.want, e.max)
+	}
 	if err != nil {
 		return err
 	}
@@ -95,21 +102,38 @@ func darwinReleaseRoot(path string) bool {
 	return err == nil
 }
 
-func openDarwinProtected(ctx context.Context, path, want string, max int64) (image *protectedDarwinExecutable, failure error) {
+func openDarwinProtected(ctx context.Context, path, want string, max int64) (*protectedDarwinExecutable, error) {
+	return openDarwinProtectedPath(ctx, path, want, max, false)
+}
+
+// Only the fixed frontend entrypoint uses this purpose. Release and member
+// callers retain their existing path admission and cannot select this mode.
+func openDarwinStableFrontend(ctx context.Context, path, want string, max int64) (*protectedDarwinExecutable, error) {
+	if path != StableFrontendPath || max < 1 || max > 128*1024*1024 {
+		return nil, errors.New("protected_frontend_path_invalid")
+	}
+	return openDarwinProtectedPath(ctx, path, want, max, true)
+}
+
+func openDarwinProtectedPath(ctx context.Context, path, want string, max int64, frontend bool) (image *protectedDarwinExecutable, failure error) {
 	if ctx == nil || max < 1 || max > 1024*1024*1024 || !strings.HasPrefix(want, "sha256:") || len(want) != 71 {
 		return nil, errors.New("protected_image_options_invalid")
 	}
 	if os.Geteuid() == 0 {
 		return nil, errors.New("protected_runtime_must_be_unprivileged")
 	}
-	if filepath.Clean(path) != path || !strings.HasPrefix(path, darwinReleaseBase+"/") || len(path) > 1023 {
+	allowed := strings.HasPrefix(path, darwinReleaseBase+"/")
+	if frontend {
+		allowed = path == StableFrontendPath
+	}
+	if filepath.Clean(path) != path || !allowed || len(path) > 1023 {
 		return nil, errors.New("protected_member_path_invalid")
 	}
 	parts := strings.Split(strings.TrimPrefix(path, "/"), "/")
 	if len(parts) > 64 {
 		return nil, errors.New("protected_member_path_invalid")
 	}
-	e := &protectedDarwinExecutable{path: path, want: want, max: max}
+	e := &protectedDarwinExecutable{path: path, want: want, max: max, frontend: frontend}
 	failed := true
 	defer func() {
 		if failed {

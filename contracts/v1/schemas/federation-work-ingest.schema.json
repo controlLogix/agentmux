@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-work-ingest",
+  "title": "federation-work-ingest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "envelope": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "v": {
+              "const": 3
+            },
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            },
+            "type": {
+              "const": "work"
+            },
+            "from": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]{1,32}$"
+            },
+            "node": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]{1,32}$"
+            },
+            "rid": {
+              "type": "string",
+              "pattern": "^r[0-9a-f]{12}$"
+            },
+            "to": {
+              "const": "*"
+            },
+            "at": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            "data": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "origin_id": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                },
+                "offer_digest": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                },
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 65536
+                },
+                "body": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 0,
+                      "maxLength": 524288
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "task_key": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 0,
+                      "maxLength": 512
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "requirements": {
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "maxProperties": 64
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "priority": {
+                  "type": "integer"
+                },
+                "role": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9_]{1,32}$"
+                },
+                "sender": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "operator": {
+                      "type": "boolean"
+                    },
+                    "role": {
+                      "type": "string",
+                      "minLength": 0,
+                      "maxLength": 128
+                    },
+                    "agent": {
+                      "type": "string",
+                      "minLength": 0,
+                      "maxLength": 128
+                    },
+                    "rid": {
+                      "anyOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^r[0-9a-f]{12}$"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": []
+                }
+              },
+              "required": [
+                "origin_id",
+                "offer_digest",
+                "title",
+                "role"
+              ]
+            }
+          },
+          "required": [
+            "v",
+            "id",
+            "type",
+            "from",
+            "node",
+            "rid",
+            "to",
+            "at",
+            "data"
+          ]
+        },
+        "subject": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "localNode": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]{1,32}$"
+        }
+      },
+      "required": [
+        "envelope",
+        "subject",
+        "localNode"
+      ]
+    },
+    "attribution": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    }
+  },
+  "required": [
+    "resourceRef",
+    "input",
+    "attribution"
+  ]
+}

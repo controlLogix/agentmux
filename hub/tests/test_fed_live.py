@@ -138,6 +138,22 @@ class Fed(unittest.TestCase):
         return [r for r in rows if r["decision"] == decision and all(r.get(k) == v for k, v in match.items())]
 
     # -- phase 0: cluster, identity, presence --------------------------------------------------
+    def test_p0_builtin_adapter_registry_matches_existing_contract(self):
+        from hub.fed.runtime import BUILTIN
+        from hub.fed.plugin_adapter import TrustedPluginAdapter
+        import importlib
+
+        expected = []
+        for name in BUILTIN:
+            original = importlib.import_module("hub.fed.plugins." + name).PLUGIN
+            expected.extend(TrustedPluginAdapter(original).contribution()["commands"])
+        expected.sort(key=lambda item: item["verb"])
+        for person in (self.nick, self.alice, self.mallory):
+            registered = person.ok("fed_verbs")
+            builtin = [row for row in registered if any(
+                row["verb"].startswith(f"fed_{name}_") for name in BUILTIN)]
+            self.assertEqual(builtin, expected)
+
     def test_p0_connected_and_present(self):
         st = self.nick.ok("fed_status")
         self.assertTrue(st["connected"])

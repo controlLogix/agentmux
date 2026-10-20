@@ -4,6 +4,8 @@ import hashlib
 from concurrent.futures import ThreadPoolExecutor
 import json
 import os
+import signal
+import re
 from pathlib import Path
 import sys
 import tempfile
@@ -83,6 +85,183 @@ class AgentsHTTP(unittest.TestCase):
                          cli="codex", persona="Review the changes.\nBe precise.",
                          tools=["Read", "Grep"], tools_deny=["Write"],
                          capabilities=["review"], max_instances=2), **changes)
+
+    def scoped_service(self):
+        from definition_service import DefinitionScope, DefinitionService
+        return DefinitionService(DefinitionScope(REPO, Path.home(),
+            Path(os.environ["AGENTMUX_HOME"]), "project-one"))
+
+    def test_scoped_identity_is_not_taken_from_body(self):
+        from definition_service import EditIdentity
+        service = self.scoped_service()
+        body = self.definition(actor="forged-user", project_id="project-one")
+        for identity in (None, {"user_id": "human-one", "project_id": "project-one"},
+                         EditIdentity("human-one", "other-project"),
+                         EditIdentity("", "project-one")):
+            with self.subTest(identity=identity):
+                with self.assertRaises(server.ccboard.Invalid):
+                    service.save(None, body, identity)
+                self.assertFalse((self.dirs[0] / "writer.md").exists())
+        # This checks trusted-composition propagation, not HTTP authentication.
+        with server.ccstore.connection() as db:
+            saved = service.save(db, body, EditIdentity("human-one", "project-one"))
+            row = db.execute("SELECT actor,detail FROM board_history "
+                             "WHERE event='agentdef' ORDER BY id DESC LIMIT 1").fetchone()
+            self.assertEqual(row["actor"], "human-one")
+            self.assertEqual(json.loads(row["detail"]),
+                             {"scope": "repo", "name": "writer", "project_id": "project-one"})
+            with self.assertRaises(server.ccboard.Invalid):
+                service.drop(db, saved, EditIdentity("human-one", "other-project"))
+            self.assertEqual(service.agents(db, {"name": ["writer"]}), saved)
+            service.drop(db, dict(saved, actor="forged-user"),
+                         EditIdentity("human-one", "project-one"))
+            row = db.execute("SELECT actor,detail FROM board_history "
+                             "WHERE event='agentdrop' ORDER BY id DESC LIMIT 1").fetchone()
+            self.assertEqual(row["actor"], "human-one")
+            self.assertEqual(json.loads(row["detail"])["project_id"], "project-one")
+
+    def test_scoped_roots_survive_ambient_changes(self):
+        from dataclasses import FrozenInstanceError
+        service = self.scoped_service()
+        self.write("scoped")
+        other = BASE / "other-project"
+        other.mkdir(exist_ok=True)
+        previous = Path.cwd()
+        try:
+            os.chdir(other)
+            with mock.patch.dict(os.environ, {"HOME": str(other), "AGENTMUX_HOME": str(other)}):
+                self.assertEqual([a["name"] for a in service.agents(None, {})["agents"]],
+                                 ["scoped"])
+                with server.ccstore.connection() as db:
+                    service.legacy_save(db, self.definition())
+            self.assertTrue((self.dirs[0] / "writer.md").exists())
+            self.assertFalse((other / ".agentmux/agents/writer.md").exists())
+        finally:
+            os.chdir(previous)
+        with self.assertRaises(FrozenInstanceError):
+            service.scope.project_id = "other-project"
+        with self.assertRaises(FrozenInstanceError):
+            service.scope = None
+
+    def test_legacy_and_scoped_writer_share_conflict_contract(self):
+        from definition_service import EditIdentity
+        service = self.scoped_service()
+        identity = EditIdentity("human-one", "project-one")
+        with server.ccstore.connection() as db:
+            original = service.save(db, self.definition(), identity)
+            changed = server.boardagents.agentdef(db, dict(original, persona="Legacy edit",
+                                                         actor="legacy-label"))
+            with self.assertRaises(server.ccboard.Refused):
+                service.save(db, dict(original, persona="Stale scoped edit"), identity)
+            self.assertEqual(service.agents(db, {"name": ["writer"]}), changed)
+            audit = db.execute("SELECT actor,detail FROM board_history "
+                               "WHERE event='agentdef' ORDER BY id DESC LIMIT 1").fetchone()
+            self.assertEqual(audit["actor"], "legacy-label")
+            self.assertNotIn("project_id", json.loads(audit["detail"]))
+
+    def test_substituted_fifo_and_symlink_are_not_read(self):
+        from definition_service import DefinitionService
+        service = self.scoped_service()
+        target = self.dirs[0] / "writer.md"
+        outside = self.write("outside", 1)
+        outside_bytes = outside.read_bytes()
+        original_target = DefinitionService._target
+        def timeout(signum, frame):
+            raise AssertionError("definition read blocked")
+        old_handler = signal.signal(signal.SIGALRM, timeout)
+        try:
+            for kind in ("fifo", "symlink"):
+                original = self.write("writer")
+                checksum = "sha256:" + hashlib.sha256(original.read_bytes()).hexdigest()
+                def substitute(instance, body):
+                    path, scope = original_target(instance, body)
+                    path.unlink()
+                    if kind == "fifo":
+                        os.mkfifo(path)
+                    else:
+                        path.symlink_to(outside)
+                    return path, scope
+                with mock.patch.object(DefinitionService, "_target", substitute), \
+                     mock.patch.object(server.ccboard, "_record") as audit:
+                    signal.alarm(3)
+                    try:
+                        with self.assertRaises(server.ccboard.Invalid):
+                            service.legacy_save(None, self.definition(checksum=checksum))
+                    finally:
+                        signal.alarm(0)
+                    audit.assert_not_called()
+                self.assertEqual(outside.read_bytes(), outside_bytes)
+                target.unlink()
+        finally:
+            signal.signal(signal.SIGALRM, old_handler)
+
+    def test_changed_file_identity_before_save_or_delete_is_preserved(self):
+        from definition_service import DefinitionService
+        service = self.scoped_service()
+        check = DefinitionService._assert_revision
+        for operation in (service.legacy_save, service.legacy_drop):
+            path = self.write("writer")
+            checksum = "sha256:" + hashlib.sha256(path.read_bytes()).hexdigest()
+            def substitute(instance, target, revision):
+                replacement = target.with_suffix(".replacement")
+                replacement.write_bytes(b"Independent replacement")
+                os.replace(replacement, target)
+                check(instance, target, revision)
+            with mock.patch.object(DefinitionService, "_assert_revision", substitute), \
+                 mock.patch.object(server.ccboard, "_record") as audit:
+                with self.assertRaises(server.ccboard.Refused):
+                    operation(None, self.definition(checksum=checksum))
+                audit.assert_not_called()
+            self.assertEqual(path.read_bytes(), b"Independent replacement")
+            self.assertEqual(list(path.parent.iterdir()), [path])
+
+    def test_http_read_uses_scoped_definition_importer_without_exposing_source(self):
+        from definition_team import DefinitionPlugin
+        self.write("imported", body="Private persona in imported bytes")
+        original = DefinitionPlugin.import_all
+        with mock.patch.object(DefinitionPlugin, "import_all", autospec=True,
+                               side_effect=original) as imported:
+            status, listing = self.call()
+        self.assertEqual(status, 200)
+        imported.assert_called_once()
+        plugin = imported.call_args.args[0]
+        self.assertEqual(plugin.repo_root, REPO)
+        self.assertEqual(plugin.home, Path.home())
+        self.assertEqual(plugin.global_root, Path(os.environ["AGENTMUX_HOME"]))
+        self.assertEqual(imported.call_args.kwargs, {"package_name": "legacy-local-markdown"})
+        self.assertNotIn("Private persona", json.dumps(listing))
+        self.assertNotIn("source", listing["agents"][0])
+        self.assertEqual(self.call("?name=imported")[1]["persona"],
+                         "Private persona in imported bytes")
+
+    def test_component_assets_are_explicit_and_private_sources_stay_unserved(self):
+        dashboard = Path(__file__).resolve().parent
+        html = (dashboard / "index.html").read_text()
+        assets = re.findall(r'<script src="(src/[^"]+)"', html)
+        self.assertTrue(assets)
+        for asset in assets:
+            with urllib.request.urlopen(
+                    f"http://127.0.0.1:{self.httpd.server_address[1]}/{asset}", timeout=10) as response:
+                self.assertEqual(response.status, 200)
+                self.assertEqual(response.headers.get_content_type(), "text/javascript")
+                self.assertEqual(response.read(), (dashboard / asset).read_bytes())
+        for private in ("definition_service.py", "src/components/private.js",
+                        "src/components/organisms/DefinitionEditor/DefinitionEditor.test.js",
+                        "src/components/organisms/ProfilePackagePreview/ProfilePackagePreview.test.js"):
+            self.assertEqual(self.call(path="/" + private)[0], 404)
+        self.assertEqual(self.call(path="/../taskmgmt/profile_owner.py")[0], 403)
+
+    def test_bundled_profile_preview_is_metadata_only_and_never_a_write_route(self):
+        status, result = self.call(path="/api/board/profiles")
+        self.assertEqual(status, 200)
+        self.assertEqual(len(result["profiles"]), 14)
+        self.assertTrue(all(row["appliesTo"] == str(REPO) for row in result["profiles"]))
+        self.assertTrue(all("persona" not in row and "source" not in row for row in result["profiles"]))
+        self.assertTrue(all(row["permissions"]["grants"] == [] for row in result["profiles"]))
+        self.assertEqual(self.call("?project=foreign", path="/api/board/profiles")[0], 400)
+        self.assertEqual(self.call(method="POST", path="/api/board/profiles",
+            body={"actor": "dashboard", "uid": os.getuid(), "projectRoot": str(REPO)})[0], 405)
+        self.assertFalse((REPO / ".agentmux/profile-adoptions").exists())
 
     def test_create_update_roundtrip_and_permissions(self):
         for scope, index in (("repo", 0), ("global", 1)):
@@ -208,6 +387,8 @@ class AgentsHTTP(unittest.TestCase):
                             model=None, auth=None, posture="workspace-write", tools=[],
                             tools_deny=[], role="worker", capabilities=[], worktree="per-member",
                             max_instances=1, path=str(path), editable=scope != "claude",
+                            toolIntent={"desired": [], "denied": [], "hostEnforceable": [],
+                                        "hostEnforceableDenied": [], "advisory": []},
                             checksum="sha256:" + hashlib.sha256(path.read_bytes()).hexdigest())
             status, detail = self.call("?name=" + name)
             self.assertEqual(status, 200)
@@ -250,6 +431,9 @@ class AgentsHTTP(unittest.TestCase):
         self.assertEqual(row["tools"], ["Read", "Grep"])
         self.assertEqual(row["tools_deny"], ["Write"])
         self.assertEqual(row["capabilities"], ["review", "security"])
+        self.assertEqual(row["toolIntent"], {"desired": ["Read", "Grep"], "denied": ["Write"],
+                         "hostEnforceable": [], "hostEnforceableDenied": [],
+                         "advisory": ["Read", "Grep", "Write"]})
 
     def test_http_errors(self):
         self.assertEqual(self.call(method="POST")[0], 405)

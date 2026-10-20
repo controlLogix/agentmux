@@ -4,7 +4,9 @@ package runtime
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 	"os/user"
@@ -21,16 +23,23 @@ import (
 // HostInvocation carries only literal policy selection, never credentials or
 // generic application arguments. Readiness is observed separately over NATS.
 type HostInvocation struct {
-	InvocationID   string
-	PolicyPath     string
-	WorkspaceRoots []string
+	InvocationID                            string
+	PolicyPath                              string
+	WorkspaceRoots                          []string
+	ApplicationAttestorSelectionPath        string
+	ApplicationAttestorSelectionSHA256      string
+	ApplicationServicesInstallationID       string
+	ApplicationServicesSelectionPath        string
+	ApplicationServicesSelectionSHA256      string
+	ApplicationServicesHostAccountPublicKey string
 }
 
 type InstalledHostImage struct {
-	mu       sync.Mutex
-	image    executable
-	consumed bool
-	digest   string
+	mu           sync.Mutex
+	image        executable
+	consumed     bool
+	digest       string
+	closeFailure error
 }
 
 // HostProcess retains the exact child handle and its sole wait operation.
@@ -44,7 +53,74 @@ type HostProcess struct {
 
 func hostExecutionError(code string) error { return errors.New("installed_host_" + code) }
 
+// InstalledHostImageError keeps the original protected-image refusal and
+// any owned cleanup cause. Its public representation remains a fixed code.
+type InstalledHostImageError struct {
+	code  string
+	cause error
+}
+
+func (e *InstalledHostImageError) Error() string {
+	if e != nil && e.code == "snapshot_close_failed" {
+		return "installed_host_snapshot_close_failed"
+	}
+	return "installed_host_protected_image_invalid"
+}
+func (e *InstalledHostImageError) Format(state fmt.State, _ rune) { fmt.Fprint(state, e.Error()) }
+func (e *InstalledHostImageError) MarshalJSON() ([]byte, error)   { return json.Marshal(e.Error()) }
+func (e *InstalledHostImageError) Unwrap() error {
+	if e == nil {
+		return nil
+	}
+	return e.cause
+}
+
+func installedHostPreparationFailure(cause error) error {
+	// This constructor receives the reviewed protected-image admission result.
+	// Keep its cleanup sentinel directly reachable by closed diagnostic walkers,
+	// without asking them to inspect arbitrary runtime implementation wrappers.
+	if errors.Is(cause, ErrStartupCleanup) {
+		cause = errors.Join(cause, ErrStartupCleanup)
+	}
+	return &InstalledHostImageError{code: "protected_image_invalid", cause: cause}
+}
+
 var installedHostDigest = regexp.MustCompile(`^sha256:[0-9a-f]{64}$`)
+
+// Recheck keeps the original host image admission without starting or consuming
+// it. Registration uses this owner separately from the fixed frontend image.
+func (h *InstalledHostImage) Recheck(ctx context.Context) error {
+	if h == nil || ctx == nil || ctx.Err() != nil {
+		return hostExecutionError("recheck_invalid")
+	}
+	for !h.mu.TryLock() {
+		timer := time.NewTimer(5 * time.Millisecond)
+		select {
+		case <-ctx.Done():
+			timer.Stop()
+			return hostExecutionError("recheck_cancelled")
+		case <-timer.C:
+		}
+	}
+	defer h.mu.Unlock()
+	if ctx.Err() != nil {
+		return hostExecutionError("recheck_cancelled")
+	}
+	if h.closeFailure != nil {
+		return h.closeFailure
+	}
+	if h.consumed || h.image == nil {
+		return hostExecutionError("recheck_invalid")
+	}
+	validator, ok := h.image.(interface{ validateForStart(context.Context) error })
+	if !ok {
+		return ErrPlatformUnqualified
+	}
+	if err := validator.validateForStart(ctx); err != nil {
+		return installedHostPreparationFailure(err)
+	}
+	return nil
+}
 
 func (h *InstalledHostImage) Close() error {
 	if h == nil {
@@ -57,10 +133,10 @@ func (h *InstalledHostImage) Close() error {
 		e := h.image.close()
 		h.image = nil
 		if e != nil {
-			return hostExecutionError("snapshot_close_failed")
+			h.closeFailure = &InstalledHostImageError{code: "snapshot_close_failed", cause: errors.Join(e, ErrStartupCleanup)}
 		}
 	}
-	return nil
+	return h.closeFailure
 }
 
 func literalHostPath(path string) bool {
@@ -71,6 +147,14 @@ func hostArguments(i HostInvocation) ([]string, error) {
 	if !regexp.MustCompile(`^attempt_[0-9a-f]{32}$`).MatchString(i.InvocationID) || !literalHostPath(i.PolicyPath) || len(i.WorkspaceRoots) == 0 || len(i.WorkspaceRoots) > 16 {
 		return nil, hostExecutionError("invocation_invalid")
 	}
+	applicationSelected := i.ApplicationAttestorSelectionPath != "" || i.ApplicationAttestorSelectionSHA256 != ""
+	if applicationSelected && (!literalHostPath(i.ApplicationAttestorSelectionPath) || !installedHostDigest.MatchString(i.ApplicationAttestorSelectionSHA256)) {
+		return nil, hostExecutionError("invocation_invalid")
+	}
+	servicesSelected := i.ApplicationServicesInstallationID != "" || i.ApplicationServicesSelectionPath != "" || i.ApplicationServicesSelectionSHA256 != "" || i.ApplicationServicesHostAccountPublicKey != ""
+	if servicesSelected && (!applicationSelected || !ValidClientInstallationID(i.ApplicationServicesInstallationID) || !literalHostPath(i.ApplicationServicesSelectionPath) || !installedHostDigest.MatchString(i.ApplicationServicesSelectionSHA256) || i.ApplicationServicesHostAccountPublicKey != "") {
+		return nil, hostExecutionError("invocation_invalid")
+	}
 	args := []string{"host", "--host-policy", i.PolicyPath, "--invocation-id", i.InvocationID}
 	seen := map[string]bool{}
 	for _, root := range i.WorkspaceRoots {
@@ -79,6 +163,14 @@ func hostArguments(i HostInvocation) ([]string, error) {
 		}
 		seen[root] = true
 		args = append(args, "--workspace", root)
+	}
+	if applicationSelected {
+		args = append(args, "--application-attestor-selection", i.ApplicationAttestorSelectionPath, "--application-attestor-selection-sha256", i.ApplicationAttestorSelectionSHA256)
+	}
+	if servicesSelected {
+		args = append(args, "--application-services-installation", i.ApplicationServicesInstallationID,
+			"--application-services-selection", i.ApplicationServicesSelectionPath,
+			"--application-services-selection-sha256", i.ApplicationServicesSelectionSHA256)
 	}
 	return args, nil
 }

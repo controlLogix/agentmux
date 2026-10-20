@@ -3,6 +3,9 @@
 
 import base64
 import boardagents
+from definition_commands import LocalDefinitionOutcomeUnconfirmed
+from dashboard_commands import DashboardOutcomeUnconfirmed
+from oidc_browser_login import oidc_browser_cookie
 import chatter_feed
 import codesys_panel
 import github_panel
@@ -12,6 +15,7 @@ import boardteams
 import ccboard
 import ccstore
 import datetime as dt
+from agentmux_contracts import ContractError
 import github_auth
 import json
 import mqtt
@@ -23,6 +27,7 @@ from pathlib import Path
 import profinet
 import runsview
 import re
+import secrets
 import stat
 import struct
 import subprocess
@@ -193,6 +198,8 @@ def maybe_reap(name, key):
 MANIFEST = ROOT / "resources.json"
 _res_cache = {"at": 0.0, "data": None}
 _res_lock = threading.Lock()
+_res_refresh_lock = threading.Lock()
+RESOURCE_REFRESH_MIN = 2
 RESOURCE_TTL = 12
 RESOURCE_WORKERS = 4
 CTRL = re.compile("[" + "".join(chr(c) for c in list(range(0, 9)) + list(range(11, 32)) + [127]) + "]")
@@ -230,6 +237,30 @@ def load_manifest():
             data = json.load(fh)
         if not isinstance(data, dict) or not isinstance(data.get("resources"), list):
             return None
+        resources = data["resources"]
+        if len(resources) > 16:
+            return None
+        resource_ids = set()
+        count = 0
+        for resource in resources:
+            if not isinstance(resource, dict) or not isinstance(resource.get("id"), str):
+                return None
+            if resource["id"] in resource_ids:
+                return None
+            resource_ids.add(resource["id"])
+            checks = resource.get("checks", [])
+            if not isinstance(checks, list) or len(checks) > 16:
+                return None
+            check_ids = set()
+            for check in checks:
+                if not isinstance(check, dict) or not isinstance(check.get("id"), str):
+                    return None
+                if check["id"] in check_ids:
+                    return None
+                check_ids.add(check["id"])
+            count += len(checks)
+        if count > 64:
+            return None
         return data
     except (OSError, ValueError):
         return None
@@ -242,70 +273,9 @@ def _clean(text, limit=160):
 
 
 def _run_check(check):
-    """Execute one manifest check. Returns a dict with no secret content."""
-    out = {"id": check.get("id"), "label": check.get("label"),
-           "optional": bool(check.get("optional")), "ok": False, "detail": ""}
-    kind = check.get("type")
-
-    if kind == "file":
-        raw = check.get("path") or ""
-        if not isinstance(raw, str) or "\x00" in raw:
-            out["detail"] = "bad path in manifest"
-            return out
-        path = Path(os.path.expanduser(raw))
-        try:
-            info = path.lstat()
-        except OSError:
-            out["detail"] = "absent"
-            return out
-        out["ok"] = True
-        # POSIX mode is meaningless on drvfs (/mnt/...), where everything reports
-        # 777. Reporting that as a permission problem would be actively wrong.
-        on_drvfs = str(path.resolve()).startswith("/mnt/")
-        if on_drvfs:
-            out["detail"] = "present (on /mnt — NTFS ACL governs, POSIX mode not meaningful)"
-        else:
-            mode = stat.S_IMODE(info.st_mode)
-            out["detail"] = f"present, mode {mode:o}"
-            want = check.get("want_mode")
-            if want and f"{mode:o}" != str(want):
-                out["ok"] = False
-                out["detail"] += f" (expected {want})"
-        return out
-
-    if kind == "command":
-        argv = check.get("argv")
-        # Manifest-supplied only, and must be a list of plain strings.
-        if (not isinstance(argv, list) or not argv
-                or not all(isinstance(a, str) and "\x00" not in a for a in argv)):
-            out["detail"] = "bad argv in manifest"
-            return out
-        try:
-            proc = subprocess.run(argv, capture_output=True, text=True,
-                                  timeout=float(check.get("timeout", 12)),
-                                  check=False, stdin=subprocess.DEVNULL)
-            combined = (proc.stdout or "") + (proc.stderr or "")
-        except FileNotFoundError:
-            out["detail"] = "not installed"
-            return out
-        except (OSError, subprocess.SubprocessError, UnicodeError) as exc:
-            out["detail"] = f"probe failed: {type(exc).__name__}"
-            return out
-        expect = check.get("expect")
-        if expect:
-            try:
-                out["ok"] = re.search(expect, combined, re.I | re.M) is not None
-            except re.error:
-                out["detail"] = "bad expect regex in manifest"
-                return out
-        else:
-            out["ok"] = proc.returncode == 0
-        if not check.get("secret_output"):
-            out["detail"] = _clean(combined)
-        return out
-
-    out["detail"] = f"unknown check type {kind!r}"
-    return out
+    """Resolve only reviewed resource probes; requests never supply definitions."""
+    from resource_probes import run_check
+    return run_check(check)
 
 
 # --- Jira tickets -------------------------------------------------------------
@@ -602,6 +572,30 @@ def auth_snapshot():
 
 
 def resources_snapshot(force=False):
+    """Coalesce refreshes and rate-limit repeated force requests."""
+    with _res_lock:
+        cached = _res_cache["data"]
+        age = time.monotonic() - _res_cache["at"]
+        if cached is not None and age < (RESOURCE_REFRESH_MIN if force else RESOURCE_TTL):
+            return cached
+    if not _res_refresh_lock.acquire(blocking=False):
+        if cached is not None:
+            return dict(cached, refreshing=True)
+        return {"resources": [], "refreshing": True,
+                "error": "Resource checks are running. Refresh shortly."}
+    try:
+        # Another sweep may have finished between the first read and acquisition.
+        with _res_lock:
+            cached = _res_cache["data"]
+            age = time.monotonic() - _res_cache["at"]
+            if cached is not None and age < (RESOURCE_REFRESH_MIN if force else RESOURCE_TTL):
+                return cached
+        return _resources_snapshot(force=force)
+    finally:
+        _res_refresh_lock.release()
+
+
+def _resources_snapshot(force=False):
     now = time.monotonic()
     with _res_lock:
         if not force and _res_cache["data"] and now - _res_cache["at"] < RESOURCE_TTL:
@@ -620,21 +614,25 @@ def resources_snapshot(force=False):
         # Bounded fan-out: a dozen CLI probes should not each get a thread.
         import concurrent.futures as cf
         with cf.ThreadPoolExecutor(max_workers=RESOURCE_WORKERS) as pool:
-            futures = {pool.submit(_run_check, chk): (rid, chk.get("id"))
+            futures = {pool.submit(_run_check, chk): (rid, chk)
                        for rid, chk in jobs}
-            for fut in cf.as_completed(futures, timeout=90):
-                rid, cid = futures[fut]
+            for fut in cf.as_completed(futures):
+                rid, check = futures[fut]
+                cid = check.get("id")
                 try:
                     results[(rid, cid)] = fut.result()
                 except Exception:
-                    results[(rid, cid)] = {"id": cid, "ok": False,
-                                           "detail": "probe crashed", "optional": False}
+                    results[(rid, cid)] = {"id": cid, "label": check.get("label"), "ok": False,
+                                           "detail": "Unknown: probe failed",
+                                           "optional": bool(check.get("optional")),
+                                           "hint": _clean(check.get("hint", ""), 300),
+                                           "status": "unknown", "code": "probe_failed"}
 
         out = []
         for res in manifest["resources"]:
             checks = [results.get((res.get("id"), c.get("id")),
                                   {"id": c.get("id"), "label": c.get("label"),
-                                   "ok": False, "detail": "not run",
+                                   "ok": False, "detail": "Unknown: check not run", "status": "unknown",
                                    "optional": bool(c.get("optional"))})
                       for c in res.get("checks") or []]
             required = [c for c in checks if not c.get("optional")]
@@ -645,6 +643,11 @@ def resources_snapshot(force=False):
                 "id": res.get("id"), "name": res.get("name"), "kind": res.get("kind"),
                 "summary": res.get("summary", ""), "docs": res.get("docs", ""),
                 "state": state, "checks": checks,
+                "status": ("unavailable" if any(c.get("status") == "unavailable" for c in required)
+                           else "unknown" if not required or any(c.get("status") != "configured" for c in required)
+                           else "configured"),
+                "health_version": res.get("health_version", 1),
+                "scope": res.get("scope", "local-read-only"),
                 # Actions are DATA for the UI to display. The server never runs them.
                 "actions": [{"id": a.get("id"), "label": a.get("label"),
                              "command": a.get("command", ""),
@@ -1092,6 +1095,124 @@ class Handler(BaseHTTPRequestHandler):
     def send_json(self, status, data):
         self.send_body(status, json.dumps(data).encode("utf-8"), "application/json")
 
+    def send_local_auth(self, status, headers, data):
+        body = json.dumps(data).encode('utf-8')
+        self.send_response(status)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(body)))
+        self.send_header('X-Content-Type-Options', 'nosniff')
+        for name, value in headers.items():
+            self.send_header(name, value)
+        self.end_headers()
+        if self.command != 'HEAD':
+            self.wfile.write(body)
+
+    def local_auth_endpoint(self, path, query):
+        owner = getattr(self.server, 'application_host', None)
+        if owner is None:
+            self.send_json(404, {'error': 'not found'})
+            return
+        if self.command != 'POST' or query:
+            self.send_json(405, {'error': 'POST required'})
+            return
+        body = self.read_cc_body(1024)
+        if body is None:
+            return
+        hosts, origins = self.headers.get_all('Host', []), self.headers.get_all('Origin', [])
+        if len(hosts) != 1 or len(origins) != 1:
+            self.send_json(403, {'error': 'local sign-in unavailable'})
+            return
+        try:
+            if path == '/api/local-auth/oidc/start':
+                if body:
+                    raise ValueError()
+                headers, response = owner.browser_oidc_start(method=self.command,
+                    target=path, host=hosts[0].strip().lower(), origin=origins[0])
+                self.send_local_auth(200, headers, response)
+                return
+            if path == '/api/local-auth/pair':
+                if set(body) != {'challenge'}:
+                    raise ValueError()
+                login = owner.browser_pair(body['challenge'], method=self.command,
+                    target=path, host=hosts[0].strip().lower(), origin=origins[0])
+                headers, response = login.take_response()
+                self.send_local_auth(200, headers, response)
+                return
+            if path == '/api/local-auth/logout':
+                if body:
+                    raise ValueError()
+                cookies, csrf = self.headers.get_all('Cookie', []), self.headers.get_all('X-Agentmux-CSRF', [])
+                if len(cookies) != 1 or len(csrf) != 1:
+                    raise ValueError()
+                headers = owner.browser_logout(cookies[0], csrf[0], method=self.command,
+                    target=path, host=hosts[0].strip().lower(), origin=origins[0])
+                self.send_local_auth(200, headers, {'ok': True})
+                return
+            self.send_json(404, {'error': 'not found'})
+        except ContractError as error:
+            if str(error) == 'oidc_browser_not_configured':
+                self.send_local_auth(404, {'Cache-Control': 'no-store',
+                    'Referrer-Policy': 'no-referrer'}, {'error': 'hosted sign-in unavailable'})
+                return
+            self.send_local_auth(401, {'Cache-Control': 'no-store',
+                'Referrer-Policy': 'no-referrer'}, {'error': 'local sign-in unavailable'})
+        except Exception:
+            self.send_local_auth(401, {'Cache-Control': 'no-store',
+                'Referrer-Policy': 'no-referrer'}, {'error': 'local sign-in unavailable'})
+
+    def local_oidc_callback(self, target):
+        owner = getattr(self.server, 'application_host', None)
+        hosts = self.headers.get_all('Host', [])
+        cookies = self.headers.get_all('Cookie', [])
+        if (owner is None or self.command != 'GET' or len(hosts) != 1
+                or len(cookies) != 1):
+            self.send_body(404, b'Sign-in unavailable.', 'text/plain; charset=utf-8')
+            return
+        try:
+            login = owner.browser_oidc_callback(target, cookies[0],
+                method=self.command, host=hosts[0].strip().lower())
+            headers, response = login.take_response()
+            csrf = response.get('csrfToken')
+            if not isinstance(csrf, str) or not re.fullmatch(r'[A-Za-z0-9_-]{43}', csrf):
+                raise ValueError()
+            nonce = secrets.token_urlsafe(24)
+            message = json.dumps({'kind': 'agentmux-oidc-login', 'csrfToken': csrf},
+                                 separators=(',', ':'))
+            origin = json.dumps('http://' + hosts[0].strip().lower())
+            body = ("<!doctype html><meta charset=utf-8><title>Agentmux sign-in</title>"
+                "<p>Sign-in complete. You can return to Agentmux.</p>"
+                f"<script nonce={json.dumps(nonce)}>"
+                f"const message={message};"
+                "const channel=new BroadcastChannel('agentmux-local-auth');"
+                "channel.postMessage(message);channel.close();"
+                f"if(window.opener)window.opener.postMessage(message,{origin});"
+                "setTimeout(()=>window.close(),50);</script>").encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'text/html; charset=utf-8')
+            self.send_header('Content-Length', str(len(body)))
+            self.send_header('X-Content-Type-Options', 'nosniff')
+            self.send_header('Cache-Control', 'no-store')
+            self.send_header('Referrer-Policy', 'no-referrer')
+            self.send_header('Content-Security-Policy',
+                             "default-src 'none'; script-src 'nonce-" + nonce
+                             + "'; base-uri 'none'; frame-ancestors 'none'")
+            for name, value in headers.items():
+                self.send_header(name, value)
+            self.send_header('Set-Cookie', oidc_browser_cookie('', 0))
+            self.end_headers()
+            self.wfile.write(body)
+        except Exception:
+            body = b'Sign-in could not be completed.'
+            self.send_response(401)
+            self.send_header('Content-Type', 'text/plain; charset=utf-8')
+            self.send_header('Content-Length', str(len(body)))
+            self.send_header('Cache-Control', 'no-store')
+            self.send_header('Referrer-Policy', 'no-referrer')
+            self.send_header('X-Content-Type-Options', 'nosniff')
+            self.send_header('Set-Cookie', oidc_browser_cookie('', 0))
+            self.end_headers()
+            self.wfile.write(body)
+
     # How much of a REFUSED body is worth reading. Comfortably above every request
     # this server accepts - the largest cap is MQTT publish at 4096 - and small
     # enough that the drain itself cannot be turned into the denial of service.
@@ -1329,7 +1450,7 @@ class Handler(BaseHTTPRequestHandler):
 
     BOARD_READS = ("board", "meta", "entity", "history", "why", "graph", "doctor",
                    "find", "next", "sprint", "dispatchable", "agents", "roster",
-                   "targets", "chatter")
+                   "targets", "chatter", "profiles")
     BOARD_WRITES = ("create", "update", "status", "move", "delete", "acceptance",
                     "label", "dep", "evidence", "commit", "touch", "comment",
                     "link", "triage", "state", "config", "override",
@@ -1376,6 +1497,34 @@ class Handler(BaseHTTPRequestHandler):
                 if note is not None and not isinstance(note, str):
                     self.send_json(400, {"error": "note must be a string"})
                     return
+                application = getattr(self.server, 'application_host', None)
+                if application is not None:
+                    cookies = self.headers.get_all('Cookie', [])
+                    csrf = self.headers.get_all('X-Agentmux-CSRF', [])
+                    hosts = self.headers.get_all('Host', [])
+                    origins = self.headers.get_all('Origin', [])
+                    if not all(len(values) == 1 for values in
+                               (cookies, csrf, hosts, origins)):
+                        self.send_local_auth(401, {'Cache-Control': 'no-store',
+                            'Referrer-Policy': 'no-referrer'},
+                            {'error': 'local sign-in required'})
+                        return
+                    try:
+                        result = application.browser_dashboard_command(cookies[0], csrf[0],
+                            method=self.command, target=f'/api/runs/{run_id}/review',
+                            host=hosts[0].strip().lower(), origin=origins[0], body=body)
+                    except DashboardOutcomeUnconfirmed as error:
+                        self.send_local_auth(503, {'Cache-Control': 'no-store',
+                            'Referrer-Policy': 'no-referrer'}, {'error': 'dashboard outcome unconfirmed',
+                            'outcome': 'uncertain', 'operationId': error.operation_id})
+                        return
+                    except ContractError:
+                        self.send_local_auth(401, {'Cache-Control': 'no-store',
+                            'Referrer-Policy': 'no-referrer'},
+                            {'error': 'local sign-in required'})
+                        return
+                    self.send_json(200, result)
+                    return
                 # The reviewer is the person at this browser. There is no identity to
                 # check on loopback and pretending otherwise would be theatre; what
                 # matters is that the decision is recorded and attributable to a
@@ -1411,6 +1560,68 @@ class Handler(BaseHTTPRequestHandler):
                     return
                 if not isinstance(body, dict):
                     raise ccboard.Invalid("body must be a JSON object")
+                application = getattr(self.server, 'application_host', None)
+                if application is not None and op in ('agentdef', 'agentdrop'):
+                    cookies = self.headers.get_all('Cookie', [])
+                    csrf = self.headers.get_all('X-Agentmux-CSRF', [])
+                    hosts, origins = self.headers.get_all('Host', []), self.headers.get_all('Origin', [])
+                    if not all(len(values) == 1 for values in (cookies, csrf, hosts, origins)):
+                        self.send_local_auth(401, {'Cache-Control': 'no-store',
+                            'Referrer-Policy': 'no-referrer'}, {'error': 'local sign-in required'})
+                        return
+                    try:
+                        result = application.browser_definition(cookies[0], csrf[0],
+                            method=self.command, target='/api/board/' + op,
+                            host=hosts[0].strip().lower(), origin=origins[0], body=body)
+                    except (ccboard.Refused, ccboard.Invalid, ccboard.NotFound):
+                        # Preserve the shared edit/conflict responses below.
+                        raise
+                    except Exception as error:
+                        if isinstance(error, LocalDefinitionOutcomeUnconfirmed):
+                            denied = error.code == 'definition_not_authorized'
+                            response = {'error': ('definition completion denied' if denied
+                                                  else 'definition outcome unconfirmed'),
+                                'outcome': 'completion-denied' if denied else 'uncertain'}
+                            operation_id = getattr(error, 'operation_id', None)
+                            if isinstance(operation_id, str):
+                                response['operationId'] = operation_id
+                            self.send_local_auth(409 if denied else 503, {'Cache-Control': 'no-store',
+                                'Referrer-Policy': 'no-referrer'}, response)
+                            return
+                        self.send_local_auth(401, {'Cache-Control': 'no-store',
+                            'Referrer-Policy': 'no-referrer'}, {'error': 'local sign-in required'})
+                        return
+                    self.send_json(200, result)
+                    return
+                if application is not None:
+                    if 'actor' in body:
+                        raise ccboard.Invalid('actor is supplied by the signed-in identity')
+                    cookies = self.headers.get_all('Cookie', [])
+                    csrf = self.headers.get_all('X-Agentmux-CSRF', [])
+                    hosts = self.headers.get_all('Host', [])
+                    origins = self.headers.get_all('Origin', [])
+                    if not all(len(values) == 1 for values in
+                               (cookies, csrf, hosts, origins)):
+                        self.send_local_auth(401, {'Cache-Control': 'no-store',
+                            'Referrer-Policy': 'no-referrer'},
+                            {'error': 'local sign-in required'})
+                        return
+                    try:
+                        result = application.browser_dashboard_command(cookies[0], csrf[0],
+                            method=self.command, target='/api/board/' + op,
+                            host=hosts[0].strip().lower(), origin=origins[0], body=body)
+                    except DashboardOutcomeUnconfirmed as error:
+                        self.send_local_auth(503, {'Cache-Control': 'no-store',
+                            'Referrer-Policy': 'no-referrer'}, {'error': 'dashboard outcome unconfirmed',
+                            'outcome': 'uncertain', 'operationId': error.operation_id})
+                        return
+                    except ContractError:
+                        self.send_local_auth(401, {'Cache-Control': 'no-store',
+                            'Referrer-Policy': 'no-referrer'},
+                            {'error': 'local sign-in required'})
+                        return
+                    self.send_json(200, result)
+                    return
                 with ccstore.connection() as db:
                     self.send_json(200, self.board_write(db, op, body))
                 return
@@ -1456,6 +1667,8 @@ class Handler(BaseHTTPRequestHandler):
             return chatter_feed.chatter(db, params)
         if op == "agents":
             return boardagents.agents(db, params)
+        if op == "profiles":
+            return boardagents.profiles(db, params)
         if op == "roster":
             return boardteams.roster(db, params)
 
@@ -2371,6 +2584,13 @@ class Handler(BaseHTTPRequestHandler):
                 self.send_json(503, {"error": f"Control Center storage unavailable: "
                                               f"{HOME_DIR} does not exist"})
                 return
+            if path == '/api/local-auth/oidc/callback':
+                self.local_oidc_callback(target)
+                return
+            if path in ('/api/local-auth/pair', '/api/local-auth/logout',
+                        '/api/local-auth/oidc/start'):
+                self.local_auth_endpoint(path, parsed.query)
+                return
             if path in ("/api/epics", "/api/tasks", "/api/journal", "/api/messages",
                         "/api/devices", "/api/status", "/api/delete"):
                 self.cc_endpoint(path.rsplit("/", 1)[1], parsed.query)
@@ -2555,7 +2775,7 @@ class Handler(BaseHTTPRequestHandler):
             return
         if path == "/api/resources":
             # Read-only. Runs only the probes declared in resources.json; a request
-            # can never supply a command. `?refresh=1` bypasses the cache.
+            # can never supply a command. Refreshes share a bounded, rate-limited sweep.
             force = parse_qs(parsed.query).get("refresh", ["0"])[0] == "1"
             self.send_json(200, resources_snapshot(force=force))
             return
@@ -2568,7 +2788,21 @@ class Handler(BaseHTTPRequestHandler):
         elif path in ("/app.js", "/fitmatrix.js", "/agents.js", "/teams.js", "/iiot.js",
                       "/github.js", "/codesys.js", "/chatter.js", "/mqtt.js",
                       "/netscan.js", "/runs.js", "/kanban.js", "/hub.js",
-                      "/fed.js"):
+                      "/fed.js",
+                      "/src/components/molecules/index.js",
+                      "/src/components/molecules/LabeledField/LabeledField.js",
+                      "/src/components/molecules/LabeledField/index.js",
+                      "/src/components/molecules/LeadSelector/LeadSelector.js",
+                      "/src/components/molecules/LeadSelector/index.js",
+                      "/src/components/molecules/RevisionNotice/RevisionNotice.js",
+                      "/src/components/molecules/RevisionNotice/index.js",
+                      "/src/components/organisms/index.js",
+                      "/src/components/organisms/DefinitionEditor/DefinitionEditor.js",
+                      "/src/components/organisms/DefinitionEditor/index.js",
+                      "/src/components/organisms/ProfilePackagePreview/ProfilePackagePreview.js",
+                      "/src/components/organisms/ProfilePackagePreview/index.js",
+                      "/src/features/agentDefinitions.js",
+                      "/src/features/teams.js"):
             # fitmatrix.js is the readability test harness. index.html loads it only
             # when the URL carries ?fit=1, so it is inert on the normal page but can
             # be run against the REAL page rather than a mock.
@@ -2644,6 +2878,10 @@ class BacklogServer(ThreadingHTTPServer):
     as the kernel will take".
     """
     request_queue_size = 128
+
+    def __init__(self, server_address, handler, bind_and_activate=True, *, application_host=None):
+        self.application_host = application_host
+        super().__init__(server_address, handler, bind_and_activate)
 
 
 def main():

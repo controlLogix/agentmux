@@ -1,0 +1,222 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:application-attestor-host-selection",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "hostPolicy": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "ownerUid": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    },
+    "workspaces": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4096,
+        "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+      }
+    },
+    "kernelScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "hubId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "instanceId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "profileId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "assemblyDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "releaseManifestDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "releaseVersion": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/version"
+        }
+      },
+      "required": [
+        "hubId",
+        "instanceId",
+        "profileId",
+        "assemblyDigest",
+        "releaseManifestDigest",
+        "releaseVersion"
+      ]
+    },
+    "keyPath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+    },
+    "credentials": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^/[^\\u0000-\\u001f\\u007f]*$"
+        },
+        "sha256": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "accountPublicKey": {
+          "type": "string",
+          "pattern": "^A[A-Z2-7]{55}$"
+        },
+        "userPublicKey": {
+          "type": "string",
+          "pattern": "^U[A-Z2-7]{55}$"
+        },
+        "replyPrefix": {
+          "type": "string",
+          "pattern": "^_INBOX\\.[A-Za-z0-9_-]{16,64}$"
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "accountPublicKey",
+        "userPublicKey",
+        "replyPrefix"
+      ]
+    },
+    "application": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "authorityId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "identityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "issuerRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "transportRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "policyRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "workspaceRef": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "scope": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+        }
+      },
+      "required": [
+        "authorityId",
+        "identityRef",
+        "issuerRef",
+        "transportRef",
+        "policyRef",
+        "workspaceRef",
+        "scope"
+      ]
+    },
+    "receiptTrust": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "issuerRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "publicKey": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        },
+        "notBefore": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+        },
+        "expiresAt": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+        },
+        "minimumAuthorityRevision": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+        }
+      },
+      "required": [
+        "issuerRef",
+        "publicKey",
+        "notBefore",
+        "expiresAt",
+        "minimumAuthorityRevision"
+      ]
+    },
+    "initialGeneration": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
+    },
+    "connection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "endpoint": {
+          "type": "string",
+          "pattern": "^tls://127\\.0\\.0\\.1:[1-9][0-9]{0,4}$"
+        },
+        "serverName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 253
+        },
+        "rootsPEM": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384
+        },
+        "leafCertificateSHA256": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        }
+      },
+      "required": [
+        "endpoint",
+        "serverName",
+        "rootsPEM",
+        "leafCertificateSHA256"
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "hostPolicy",
+    "ownerUid",
+    "workspaces",
+    "kernelScope",
+    "keyPath",
+    "credentials",
+    "application",
+    "receiptTrust",
+    "initialGeneration",
+    "connection"
+  ]
+}

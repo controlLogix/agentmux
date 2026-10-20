@@ -45,11 +45,14 @@ command -v flock >/dev/null 2>&1 || flock() {
     shift
   done
   python3 -c '
-import fcntl, sys, time
+import fcntl, math, sys, time
 fd, op, nb, wait = int(sys.argv[1]), getattr(fcntl, sys.argv[2]), sys.argv[3] == "1", sys.argv[4]
+seconds = float(wait) if wait else 0
+if not math.isfinite(seconds):
+    sys.exit("flock shim: timeout must be finite")
 if op == fcntl.LOCK_UN or not (nb or wait):
     fcntl.flock(fd, op); sys.exit(0)
-deadline = time.monotonic() + (float(wait) if wait else 0)
+deadline = time.monotonic() + seconds
 while True:
     try:
         fcntl.flock(fd, op | fcntl.LOCK_NB); sys.exit(0)
@@ -77,6 +80,9 @@ file_mode() { stat -c '%a' "$1" 2>/dev/null || stat -f '%Lp' "$1" 2>/dev/null; }
 iso_now() { date -Is 2>/dev/null || date +%Y-%m-%dT%H:%M:%S%z | sed 's/\(..\)$/:\1/'; }
 
 SOCKET="agentmux"
+if [ -n "${AGENTMUX_NATIVE_CORE_ROOT:-}" ]; then
+  SOCKET="${AGENTMUX_SOCKET:?selected native transport required}"
+fi
 # Where THIS script lives on disk, for the idle watchdog to re-invoke minutes later.
 #
 # Not $0 and not BASH_SOURCE alone: agentmux is habitually run through process
@@ -95,6 +101,22 @@ agentmux_self() {
     [ -f "$candidate" ] && { printf '%s\n' "$candidate"; return 0; }
   done
   return 1
+}
+
+# Encode the MCP argument array before quoting it for the pane's shell.
+# A checkout path may contain spaces, quotes or backslashes.
+agentmux_mcp_config() {
+  local self
+  self="$(agentmux_self)" || return 1
+  python3 - "$(dirname "$self")/hub/cli.py" "${1:-}" <<'PYMCP'
+import json
+import sys
+arguments = [sys.argv[1], "mcp"]
+if sys.argv[2]:
+    arguments += ["--enrolled", "--selection", sys.argv[2], "--managed-worker"]
+print(json.dumps({"mcpServers": {"agentmux": {
+    "command": "python3", "args": arguments}}}))
+PYMCP
 }
 # Agent callbacks reach the Python client before any local state is created.
 # The client validates the complete scoped context and rejects lifecycle verbs.
@@ -556,6 +578,7 @@ agentmux - drive other agent CLIs in tmux panes
                [--agentdef NAME] [--posture read-only|workspace-write|unrestricted]
                [--persona-file PATH] [--tools CSV] [--deny-tools CSV]
                [--team TM-042] [--role lead|worker|reviewer|researcher]
+               [--client-selection ABSOLUTE_PATH] (managed Claude only)
                                start an agent in a detached tmux session.
                                --task binds a Jira issue: recorded in run/, shown
                                by `list` and the dashboard, and exported to the
@@ -818,10 +841,10 @@ cmd_spawn() (
   [ -n "$name" ] || die "spawn needs a name"
   local cli="codex" cwd="$PWD" model="" task="" summary="" created="" auth=""
   local agentdef="" posture="unrestricted" persona_file="" tools="" deny_tools="" team="" role=""
-  local posture_explicit=0
+  local posture_explicit=0 client_selection=""
   while [ $# -gt 0 ]; do
     case "$1" in
-      --cli|--cwd|--model|-m|--task|--auth|--agentdef|--posture|--persona-file|--tools|--deny-tools|--team|--role)
+      --cli|--cwd|--model|-m|--task|--auth|--agentdef|--posture|--persona-file|--tools|--deny-tools|--team|--role|--client-selection)
         [ $# -ge 2 ] && [ -n "$2" ] && [[ "$2" != --* ]] || die "spawn: $1 needs a value"
         ;;
       *) die "spawn: unknown option '$1'" ;;
@@ -832,9 +855,14 @@ cmd_spawn() (
       --posture) posture="$2"; posture_explicit=1 ;; --persona-file) persona_file="$2" ;;
       --tools) tools="$2" ;; --deny-tools) deny_tools="$2" ;;
       --team) team="$2" ;; --role) role="$2" ;;
+      --client-selection) client_selection="$2" ;;
     esac
     shift 2
   done
+  if [ -n "$client_selection" ]; then
+    [ "$cli" = claude ] && [ "$posture" = unrestricted ] && [ "${AGENTMUX_NO_BYPASS:-0}" != 1 ] || die "--client-selection requires managed Claude with unrestricted posture"
+    [[ "$client_selection" = /* ]] || die "--client-selection requires an absolute private selection path"
+  fi
   [ -z "$agentdef" ] || [[ "$agentdef" =~ ^[a-z][a-z0-9-]{0,63}$ ]] || die "invalid --agentdef"
   [ -z "$team" ] || { [ "${#team}" -le 511 ] && [[ "$team" =~ ^TM-[0-9]+$ ]]; } || die "invalid --team (expected TM-042)"
   case "$role" in ''|lead|worker|reviewer|researcher) ;; *) die "invalid --role" ;; esac
@@ -918,7 +946,8 @@ cmd_spawn() (
   claude_config_gc
 
   local nb launch env_prefix
-  nb="$(node_bin)"
+  nb=""
+  [ -n "${AGENTMUX_NATIVE_CORE_ROOT:-}" ] || nb="$(node_bin)"
   # ~/.grok/bin holds xAI's grok CLI. Its installer adds that to .bashrc, which a
   # tmux pane never sources (non-login, non-interactive), so add it explicitly.
   # ~/.local/bin is where install.sh puts `agentmux` itself. Without it an agent's own
@@ -926,6 +955,12 @@ cmd_spawn() (
   # shell pane: "agentmux: command not found". It only ever worked where a CLI happened
   # to start a login shell that added it.
   env_prefix="export PATH='${nb}:'\$HOME'/.local/bin:'\$HOME'/.grok/bin:'\$PATH;"
+  if [ -n "${AGENTMUX_NATIVE_CORE_ROOT:-}" ]; then
+    local native_path native_home
+    printf -v native_path '%q' "$AGENTMUX_NATIVE_CORE_ROOT/app/native-bin:/usr/bin:/bin"
+    printf -v native_home '%q' "$HOME"
+    env_prefix="export PATH=$native_path HOME=$native_home; unset CODEX_MANAGED_BY_BUN CODEX_MANAGED_BY_PNPM CODEX_MANAGED_BY_VITE_PLUS;"
+  fi
   # An issue key is not a secret, so exporting it directly is fine. Contrast
   # $ROOT/env below, which is SOURCED precisely so credentials never reach the
   # tmux command line or `ps`. The key is validated in the arg loop above.
@@ -1048,9 +1083,9 @@ except Exception:
       fi
       [ -z "$tools" ] || launch="$launch --tools '$tools'"
       [ -z "$deny_tools" ] || launch="$launch --disallowedTools '$deny_tools'"
-      if [ "$bypass" = 1 ] && federation_on; then
-        local _mself _mcp
-        _mself="$(agentmux_self)" && _mcp="{\"mcpServers\":{\"agentmux\":{\"command\":\"python3\",\"args\":[\"$(dirname "$_mself")/hub/cli.py\",\"mcp\"]}}}"
+      if [ "$bypass" = 1 ] && { [ -n "$client_selection" ] || federation_on; }; then
+        local _mcp
+        _mcp="$(agentmux_mcp_config "$client_selection")" || die "could not prepare the agentmux MCP configuration"
         printf -v quoted_path '%q' "$_mcp"
         [ -n "${_mcp:-}" ] && launch="$launch --mcp-config $quoted_path"
       fi
@@ -1083,7 +1118,7 @@ except Exception:
   # A shared tmux server must not reuse another pane's callback selection.
   # Values are paths/context only; inline tokens never go into pane commands.
   local callback_key callback_value
-  for callback_key in AGENTMUX_WINDOWS_CALLBACK AGENTMUX_WSL_DISTRO AGENTMUX_WSL_BIN AGENTMUX_WSL_CWD AGENTMUX_HUB_URL AGENTMUX_HUB_TOKEN_FILE AGENTMUX_SOCKET TMUX_TMPDIR; do
+  for callback_key in AGENTMUX_WINDOWS_CALLBACK AGENTMUX_WSL_DISTRO AGENTMUX_WSL_BIN AGENTMUX_WSL_CWD AGENTMUX_HUB_URL AGENTMUX_HUB_TOKEN_FILE AGENTMUX_SOCKET TMUX_TMPDIR AGENTMUX_NATIVE_CORE_ROOT AGENTMUX_NATIVE_CORE_TMUX AGENTMUX_NATIVE_CORE_CODEX CODEX_MANAGED_PACKAGE_ROOT CODEX_MANAGED_BY_NPM; do
     if declare -p "$callback_key" >/dev/null 2>&1; then
       printf -v callback_value '%q' "${!callback_key}"
       env_prefix="$env_prefix export $callback_key=$callback_value;"
@@ -1095,13 +1130,14 @@ except Exception:
   if [ "${AGENTMUX_SPAWN_WINDOWS_CALLBACK:-}" = 1 ]; then
     env_prefix="$env_prefix export AGENTMUX_WINDOWS_CALLBACK=1; unset AGENTMUX_HUB_TOKEN;"
   fi
+  if [ -n "${AGENTMUX_NATIVE_CORE_ROOT:-}" ]; then
+    # Credential settings may be sourced above; they cannot replace selected tools.
+    env_prefix="$env_prefix export PATH=$native_path HOME=$native_home;"
+  fi
 
   tm new-session -d -s "$name" -c "$cwd" -x "$COLS" -y "$ROWS" \
      "${env_prefix} exec ${launch}" \
      || die "failed to start tmux session"
-  flock -u "$spawn_lock"
-  exec {spawn_lock}>&-
-
   local pane
   pane="$(tm list-panes -t "$name" -F '#{pane_id}' 2>/dev/null | head -1)"
   [ -n "$pane" ] || die "spawned '$name' but could not resolve its pane"
@@ -1134,6 +1170,28 @@ except Exception:
     tm kill-session -t "=$name" 2>/dev/null
     rm -f "$RUNDIR/$name".*
     die "could not record spawn metadata"
+  fi
+  # Record an enrolled owner's bounded request in the same generation as the
+  # process sidecars. This remains under the spawn lock, so a same-name replacement
+  # cannot inherit the request. A failed write removes the process and its metadata.
+  if [ -n "${AGENTMUX_OWNER_REQUEST:-}" ]; then
+    if [ "${#AGENTMUX_OWNER_REQUEST}" -gt 8192 ] \
+       || ! printf '%s\n' "$AGENTMUX_OWNER_REQUEST" > "$RUNDIR/$name.request"; then
+      if tm kill-session -t "=$name" 2>/dev/null; then
+        rm -f "$RUNDIR/$name".*
+        die "could not record orchestration request; new session removed"
+      fi
+      printf 'could not record orchestration request; termination unconfirmed and metadata retained\n' >&2
+      return 75
+    fi
+    chmod 600 "$RUNDIR/$name.request" 2>/dev/null || {
+      if tm kill-session -t "=$name" 2>/dev/null; then
+        rm -f "$RUNDIR/$name".*
+        die "could not protect orchestration request; new session removed"
+      fi
+      printf 'could not protect orchestration request; termination unconfirmed and metadata retained\n' >&2
+      return 75
+    }
   fi
   # Read back by `list` and by the dashboard through its hardened read_field().
   [ -n "$task" ] && printf '%s\n' "$task" > "$RUNDIR/$name.task"
@@ -1169,6 +1227,11 @@ except Exception:
     rm -f "$RUNDIR/$name".* 2>/dev/null
     return 1
   fi
+
+  # Keep kill and replacement spawn excluded until all sidecars and the initial
+  # liveness check are complete, including failed-start cleanup.
+  flock -u "$spawn_lock"
+  exec {spawn_lock}>&-
 
   printf "spawned '%s' [%s] in %s\n" "$name" "$cli" "$cwd"
   [ -n "$auth" ] && printf "  auth: %s\n" "$auth"
@@ -2475,7 +2538,54 @@ stop_courier_if_idle() {
     && printf 'courier stopped (no agents left)\n'
 }
 
-cmd_kill() {
+# Pin the complete pane roster without adopting or writing a cached pane ID.
+kill_target_snapshot() {
+  local raw
+  raw="$(tm list-panes -s -t "=$1" -F '#{pid}|#{start_time}|#{session_id}|#{session_created}|#{pane_id}|#{pane_pid}')" || return 1
+  printf '%s\n' "$raw" | python3 -c '
+import re, sys
+rows = sys.stdin.read().splitlines()
+pattern = r"[1-9][0-9]*\|[0-9]+\|\$[0-9]+\|[0-9]+\|%[0-9]+\|[1-9][0-9]*"
+if not rows or any(not re.fullmatch(pattern, row) for row in rows):
+    sys.exit(1)
+parts = [row.split("|") for row in rows]
+if len({tuple(row[:4]) for row in parts}) != 1 or len({row[4] for row in parts}) != len(rows):
+    sys.exit(1)
+print("\n".join(sorted(rows)))
+'
+}
+
+# Missing legacy metadata is known absence. Unreadable or linked metadata is unknown.
+kill_run_snapshot() {
+  python3 - "$RUNDIR" "$1" <<'PYKILL'
+import hashlib, json, os, stat, sys
+result = []
+try:
+    for suffix in ("started", "task"):
+        path = os.path.join(sys.argv[1], sys.argv[2] + "." + suffix)
+        try:
+            fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        except FileNotFoundError:
+            result.append(None)
+            continue
+        with os.fdopen(fd, "rb") as stream:
+            before = os.fstat(stream.fileno())
+            if not stat.S_ISREG(before.st_mode) or before.st_size > 65536:
+                raise ValueError()
+            raw = stream.read(65537)
+            after = os.fstat(stream.fileno())
+            linked = os.lstat(path)
+            identity = lambda st: (st.st_dev, st.st_ino, st.st_size, st.st_mtime_ns, st.st_ctime_ns)
+            if len(raw) > 65536 or identity(before) != identity(after) or identity(after) != identity(linked):
+                raise ValueError()
+            result.append([*identity(after), hashlib.sha256(raw).hexdigest()])
+    print(json.dumps(result, separators=(",", ":")))
+except (OSError, ValueError):
+    sys.exit(1)
+PYKILL
+}
+
+cmd_kill() (
   local target="${1:-}"
   [ -n "$target" ] || die "kill needs a name or --all"
   if [ "$target" = "--all" ]; then
@@ -2485,7 +2595,24 @@ cmd_kill() {
     stop_idle_watchdog_if_no_agents
     return 0
   fi
-  need "$target"
+  case "$target" in */*|*$'\n'*|*$'\r'*) die "invalid kill target" ;; esac
+  local original run_original current run_current session_id kill_lock
+  original="$(kill_target_snapshot "$target")" || die "kill target identity unavailable"
+  run_original="$(kill_run_snapshot "$target")" || die "kill run metadata unavailable"
+  # Close-out reads logs and claims reporting by name. Keep spawn excluded from
+  # that phase too, so those inputs cannot belong to a replacement generation.
+  exec {kill_lock}>"$ROOT/.spawn.lock" || die "kill spawn lock unavailable"
+  flock -x "$kill_lock" || die "kill spawn lock unavailable"
+  current="$(kill_target_snapshot "$target")" || die "kill target identity unavailable"
+  run_current="$(kill_run_snapshot "$target")" || die "kill run metadata unavailable"
+  [ "$current" = "$original" ] && [ "$run_current" = "$run_original" ] || die "kill target changed while waiting for spawn lock"
+  if [ -n "${AGENTMUX_KILL_EXPECTED_TARGET:-}" ] && [ "$original" != "$AGENTMUX_KILL_EXPECTED_TARGET" ]; then
+    die "kill target changed before close-out"
+  fi
+  if [ "${AGENTMUX_OWNER_TERMINATION:-0}" = 1 ] && [ -z "${AGENTMUX_KILL_EXPECTED_TARGET:-}" ]; then
+    die "owner termination requires an exact target generation"
+  fi
+  session_id="$(printf '%s\n' "$original" | head -1 | cut -d '|' -f 3)"
 
   # Close out Jira BEFORE the session dies: the transition comment and the
   # Confluence report are both built from this agent's pane log, and the log is
@@ -2494,7 +2621,10 @@ cmd_kill() {
   # The marker is claimed BEFORE the two calls, not after, so a crash between them
   # cannot produce a duplicate on the next reaper pass (#16).
   local bound; bound="$(cat "$RUNDIR/$target.task" 2>/dev/null || true)"
-  if [ -n "$bound" ] && task_cli >/dev/null && claim_reported "$target" killed-by-cli; then
+  run_current="$(kill_run_snapshot "$target")" || die "kill run metadata unavailable"
+  [ "$run_current" = "$run_original" ] || die "kill run metadata changed before close-out"
+  if [ "${AGENTMUX_OWNER_TERMINATION:-0}" != 1 ] && [ -n "$bound" ] \
+     && task_cli >/dev/null && claim_reported "$target" killed-by-cli; then
     task_try done "$bound" --from-log "$target"
     task_try report "$target" --title "agentmux run - $target - $bound"
   fi
@@ -2505,7 +2635,25 @@ cmd_kill() {
   # no .task, so its issue was orphaned; and the dashboard listed a live pane it could
   # say nothing about. Deleting the record of a thing you failed to delete is the worst
   # of both outcomes, so the sweep now follows the kill only when the kill worked.
-  if tm kill-session -t "=$target"; then
+  # Recheck after slow close-out even while cooperating spawns are excluded.
+  current="$(kill_target_snapshot "$target")" || die "kill target identity unavailable after close-out"
+  run_current="$(kill_run_snapshot "$target")" || die "kill run metadata unavailable after close-out"
+  [ "$current" = "$original" ] && [ "$run_current" = "$run_original" ] || die "kill target changed during close-out; state retained"
+  local server_pid server_started session_created guard confirmation pane_id pane_pid pairs="" count=""
+  IFS='|' read -r server_pid server_started session_id session_created _ <<< "$original"
+  guard="#{&&:#{==:#{pid},$server_pid},#{&&:#{==:#{start_time},$server_started},#{==:#{session_created},$session_created}}}"
+  while IFS='|' read -r _ _ _ _ pane_id pane_pid; do
+    pairs="${pairs:+$pairs|}$pane_id[|]$pane_pid"
+    count="${count}1"
+  done <<< "$original"
+  # Refuse pane changes that occur after the sampled roster check above.
+  guard="#{&&:$guard,#{==:#{W:#{P:#{m/r:^($pairs)\$,#{pane_id}|#{pane_pid}}}},$count}}"
+  confirmation="$(tm if-shell -F -t "$session_id" "$guard" \
+    "kill-session -t $session_id ; display-message -p agentmux-kill-confirmed" \
+    'display-message -p agentmux-kill-refused')"
+  if [ "$?" = 0 ] && [ "$confirmation" = agentmux-kill-confirmed ]; then
+    run_current="$(kill_run_snapshot "$target")" || die "terminated target; cleanup metadata unavailable"
+    [ "$run_current" = "$run_original" ] || die "terminated target; changed sidecars retained"
     printf "killed '%s'\n" "$target"
     sweep_sidecars "$target"
     # The pane log and the claude mirror are deliberately NOT removed here: the log
@@ -2513,7 +2661,7 @@ cmd_kill() {
     # (TM-211). What IS done now is pulling a refresh this agent made back into the
     # shared credential store, so the operator's own claude and every other agent
     # are not left holding the refresh token it just retired (TM-212).
-    claude_credentials_sync_locked
+    claude_credentials_sync || true
   else
     printf "could not kill '%s'; its sidecars are left in place\n" "$target" >&2
     stop_courier_if_idle
@@ -2522,7 +2670,7 @@ cmd_kill() {
   fi
   stop_courier_if_idle
   stop_idle_watchdog_if_no_agents
-}
+)
 
 # All names that have sidecars under run/, live or not. ERE, because BRE alternation
 # (\|) is a GNU extension: BSD sed matched nothing and reap saw no stale agents.

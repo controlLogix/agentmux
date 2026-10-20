@@ -1,0 +1,310 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "routes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "routeId": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+          },
+          "scope": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+          },
+          "resourceRef": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "repository": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "localName": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "repositoryId": {
+                "type": "string",
+                "pattern": "^r[0-9a-f]{12}$"
+              },
+              "normalizedRemote": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16384
+              }
+            },
+            "required": [
+              "localName"
+            ]
+          },
+          "localNode": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]{1,32}$"
+          },
+          "accountPublicKey": {
+            "type": "string",
+            "pattern": "^A[A-Z2-7]{55}$"
+          },
+          "connection": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "endpoint": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16384
+              },
+              "serverName": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16384
+              },
+              "rootsPEM": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16384
+              },
+              "leafCertificateSHA256": {
+                "type": "string",
+                "pattern": "^sha256:[a-f0-9]{64}$"
+              }
+            },
+            "required": [
+              "endpoint",
+              "serverName",
+              "rootsPEM",
+              "leafCertificateSHA256"
+            ]
+          },
+          "workSubjects": {
+            "type": "array",
+            "maxItems": 64,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^am\\.work\\.[a-z0-9_]+(?:\\.[a-z0-9_]+){1,2}$"
+            }
+          },
+          "resultSubjects": {
+            "type": "array",
+            "maxItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^am\\.result\\.[a-z0-9_]{1,32}$"
+            }
+          },
+          "receiver": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "identityRef": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+              },
+              "transportRef": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+              },
+              "credentials": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 16384
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^sha256:[a-f0-9]{64}$"
+                  },
+                  "userPublicKey": {
+                    "type": "string",
+                    "pattern": "^U[A-Z2-7]{55}$"
+                  }
+                },
+                "required": [
+                  "path",
+                  "sha256",
+                  "userPublicKey"
+                ]
+              },
+              "grantRefs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "federation-work-ingest-legacy": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  },
+                  "federation-work-result-legacy": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  },
+                  "federation-work-inspect": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  },
+                  "federation-work-outcome": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  }
+                },
+                "required": [
+                  "federation-work-inspect",
+                  "federation-work-outcome"
+                ]
+              }
+            },
+            "required": [
+              "identityRef",
+              "transportRef",
+              "credentials",
+              "grantRefs"
+            ]
+          },
+          "peer": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "nodeId": {
+                "type": "string",
+                "pattern": "^[a-z0-9_]{1,32}$"
+              },
+              "identityRef": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+              },
+              "transportRef": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+              },
+              "grantRefs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "federation-work-ingest-legacy": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  },
+                  "federation-work-result-legacy": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  }
+                },
+                "required": []
+              },
+              "userPublicKey": {
+                "type": "string",
+                "pattern": "^U[A-Z2-7]{55}$"
+              },
+              "credentialJWT": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 16384
+              },
+              "publishSubjects": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 128,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^am\\.(?:work\\.[a-z0-9_]+(?:\\.[a-z0-9_]+){1,2}|result\\.[a-z0-9_]{1,32})$"
+                }
+              }
+            },
+            "required": [
+              "nodeId",
+              "identityRef",
+              "transportRef",
+              "grantRefs",
+              "userPublicKey",
+              "credentialJWT",
+              "publishSubjects"
+            ]
+          },
+          "publisher": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "identityRef": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+              },
+              "transportRef": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+              },
+              "grantRefs": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "federation-work-ingest-legacy": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  },
+                  "federation-work-result-legacy": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                  }
+                },
+                "required": []
+              },
+              "credentials": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 16384
+                  },
+                  "sha256": {
+                    "type": "string",
+                    "pattern": "^sha256:[a-f0-9]{64}$"
+                  },
+                  "userPublicKey": {
+                    "type": "string",
+                    "pattern": "^U[A-Z2-7]{55}$"
+                  }
+                },
+                "required": [
+                  "path",
+                  "sha256",
+                  "userPublicKey"
+                ]
+              },
+              "publishSubjects": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 128,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "pattern": "^am\\.(?:work\\.[a-z0-9_]+(?:\\.[a-z0-9_]+){1,2}|result\\.[a-z0-9_]{1,32})$"
+                }
+              }
+            },
+            "required": [
+              "identityRef",
+              "transportRef",
+              "grantRefs",
+              "credentials",
+              "publishSubjects"
+            ]
+          }
+        },
+        "required": [
+          "routeId",
+          "scope",
+          "resourceRef",
+          "repository",
+          "localNode",
+          "accountPublicKey",
+          "connection",
+          "workSubjects",
+          "resultSubjects",
+          "receiver",
+          "peer"
+        ]
+      }
+    }
+  },
+  "required": [
+    "routes"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:core-work-transport-selection",
+  "title": "Protected core work transport selection"
+}

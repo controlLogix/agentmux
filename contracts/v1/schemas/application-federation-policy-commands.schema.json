@@ -1,0 +1,121 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:application-federation-policy-commands",
+  "title": "application-federation-policy-commands v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "transportRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "replyIssuerRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "serviceIdentityRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "configurationRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "keyRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "authenticatedCaller": {
+      "const": "operator"
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "replyIssuerPublicKey": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{43}$"
+    },
+    "originDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "owner": {
+      "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+    },
+    "target": {
+      "$ref": "urn:agentmux:contract:1:federation-policy-project#/$defs/target"
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "localName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "repositoryId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 13,
+          "pattern": "^r[a-f0-9]{12}$"
+        },
+        "normalizedRemote": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "counterPrefix": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[A-Z0-9_-]{1,64}$"
+        }
+      },
+      "required": [
+        "localName",
+        "repositoryId",
+        "normalizedRemote"
+      ]
+    },
+    "grantRefs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "configuration-read": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "configuration-set": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        }
+      },
+      "required": [
+        "configuration-read",
+        "configuration-set"
+      ]
+    },
+    "policyPath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "^/"
+    },
+    "localPeer": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]{1,32}$"
+    }
+  },
+  "required": [
+    "transportRef",
+    "replyIssuerRef",
+    "serviceIdentityRef",
+    "configurationRef",
+    "keyRef",
+    "authenticatedCaller",
+    "subject",
+    "replyIssuerPublicKey",
+    "originDigest",
+    "owner",
+    "target",
+    "repository",
+    "grantRefs",
+    "policyPath",
+    "localPeer"
+  ]
+}

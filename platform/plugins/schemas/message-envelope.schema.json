@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:message-envelope",
+  "title": "Agentmux message-envelope v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "messageId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+    },
+    "kind": {
+      "enum": [
+        "command",
+        "event",
+        "reply"
+      ]
+    },
+    "contractId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+    },
+    "contractMajor": {
+      "const": 1
+    },
+    "sourceHubId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+    },
+    "sourceInstanceId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+    },
+    "destinationHubId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+    },
+    "sentAt": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+    },
+    "correlationId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+    },
+    "operation": {
+      "$ref": "urn:agentmux:contract:1:operation-context"
+    },
+    "payload": {
+      "type": "object"
+    },
+    "destinationServiceId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "ingressAttestation": {
+      "$ref": "urn:agentmux:contract:1:ingress-attestation"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "messageId",
+    "kind",
+    "contractId",
+    "contractMajor",
+    "sourceHubId",
+    "sourceInstanceId",
+    "destinationHubId",
+    "sentAt",
+    "correlationId",
+    "operation",
+    "payload",
+    "destinationServiceId",
+    "ingressAttestation"
+  ],
+  "description": " Executable P01 contract. Runtime enrollment, authorization and durable ownership remain separate obligations."
+}

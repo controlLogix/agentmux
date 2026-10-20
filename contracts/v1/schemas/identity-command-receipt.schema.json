@@ -1,0 +1,94 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "purpose": {
+          "const": "agentmux-identity-receipt-v1"
+        },
+        "hubId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "profileId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "authorityId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "issuerRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "requestDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "receipt": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "operationId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "decision": {
+              "enum": [
+                "allowed",
+                "denied",
+                "review-required"
+              ]
+            },
+            "reason": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "entityVersion": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "sequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "replayed": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "operationId",
+            "decision",
+            "reason",
+            "entityVersion",
+            "sequence",
+            "replayed"
+          ]
+        }
+      },
+      "required": [
+        "purpose",
+        "hubId",
+        "profileId",
+        "authorityId",
+        "issuerRef",
+        "requestDigest",
+        "receipt"
+      ]
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{86}$"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "claims",
+    "signature"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:identity-command-receipt",
+  "title": "Identity command outcome receipt"
+}

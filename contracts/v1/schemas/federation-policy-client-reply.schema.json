@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-policy-client-reply",
+  "type": "object", "additionalProperties": false,
+  "properties": {
+    "claims": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "purpose": {"const": "agentmux-federation-policy-client-response-v1"},
+        "requestDigest": {"$ref": "urn:agentmux:contract:1:common#/$defs/digest"},
+        "replySubject": {"type": "string", "minLength": 1, "maxLength": 512},
+        "kind": {"enum": ["prepared", "committed", "projected", "current"]},
+        "requestBinding": {
+          "type": "object", "additionalProperties": false,
+          "properties": {
+            "hubId": {"$ref": "urn:agentmux:contract:1:common#/$defs/identifier"},
+            "profileId": {"$ref": "urn:agentmux:contract:1:common#/$defs/identifier"},
+            "authorityId": {"$ref": "urn:agentmux:contract:1:common#/$defs/identifier"},
+            "transportRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+            "grantRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+            "callerRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+            "scope": {"$ref": "urn:agentmux:contract:1:common#/$defs/scope"},
+            "contractId": {"enum": ["configuration-set", "configuration-read", "federation-policy-project"]},
+            "operationId": {"$ref": "urn:agentmux:contract:1:common#/$defs/identifier"},
+            "expectedVersion": {"type": "integer", "minimum": 0, "maximum": 9007199254740991},
+            "payloadDigest": {"$ref": "urn:agentmux:contract:1:common#/$defs/digest"}
+          },
+          "required": ["hubId", "profileId", "authorityId", "transportRef", "grantRef", "callerRef", "scope", "contractId", "operationId", "expectedVersion", "payloadDigest"]
+        },
+        "configurationRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "owner": {"$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"},
+        "target": {"$ref": "urn:agentmux:contract:1:federation-policy-project#/$defs/target"},
+        "resultBytes": {"type": "string", "maxLength": 50000, "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"},
+        "authorityRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "signingKeyRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "issuedAt": {"$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"},
+        "validUntil": {"$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"}
+      },
+      "required": ["purpose", "requestDigest", "replySubject", "kind", "requestBinding", "configurationRef", "owner", "target", "resultBytes", "authorityRef", "signingKeyRef", "issuedAt", "validUntil"]
+    },
+    "signature": {"type": "string", "minLength": 1, "maxLength": 128}
+  },
+  "required": ["claims", "signature"]
+}

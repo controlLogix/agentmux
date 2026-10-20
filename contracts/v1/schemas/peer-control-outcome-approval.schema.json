@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:peer-control-outcome-approval",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["operationId", "approvalRefs"],
+  "properties": {
+    "operationId": {"$ref": "urn:agentmux:contract:1:common#/$defs/identifier"},
+    "approvalRefs": {
+      "type": "array",
+      "items": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+      "maxItems": 32,
+      "uniqueItems": true
+    }
+  }
+}

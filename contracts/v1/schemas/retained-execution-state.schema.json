@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:retained-execution-state",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "executionBinding": {
+      "$ref": "urn:agentmux:contract:1:execution-run-binding"
+    },
+    "originalEnvelope": {
+      "$ref": "urn:agentmux:contract:1:message-envelope"
+    },
+    "admissionEnd": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "executionPhase": {
+      "enum": [
+        "start-intent",
+        "running",
+        "cancel-intent",
+        "terminal",
+        "unknown"
+      ]
+    },
+    "step": {
+      "enum": [
+        "credential-prepare-intent",
+        "pending-enrollment",
+        "container-create-intent",
+        "container-prepared",
+        "delivery-intent",
+        "credential-delivered",
+        "proof-intent",
+        "proved",
+        "start-effect-intent",
+        "running",
+        "cancel-intent",
+        "terminal",
+        "retired",
+        "unknown"
+      ]
+    },
+    "credentialPrepare": {
+      "$ref": "urn:agentmux:contract:1:message-envelope"
+    },
+    "resourceRef": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "urn:agentmux:contract:1:task-credential-container-resource"
+        }
+      ]
+    },
+    "enrollment": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "record": {
+              "$ref": "urn:agentmux:contract:1:task-credential-record"
+            },
+            "enrollment": {
+              "$ref": "urn:agentmux:contract:1:identity-enroll"
+            }
+          },
+          "required": [
+            "record",
+            "enrollment"
+          ]
+        }
+      ]
+    },
+    "nativeBinding": {
+      "$ref": "urn:agentmux:contract:1:execution-native-binding"
+    }
+  },
+  "required": [
+    "executionBinding",
+    "originalEnvelope",
+    "admissionEnd",
+    "executionPhase",
+    "step",
+    "credentialPrepare",
+    "resourceRef",
+    "enrollment"
+  ]
+}

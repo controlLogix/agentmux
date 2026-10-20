@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:ingress-attestation",
+  "title": "Agentmux ingress-attestation v1",
+  "description": "An enrolled ingress authenticates a distinct scoped client credential mapping or verified OIDC session, strips caller-supplied authoritative contexts, constructs the operation context, and signs every claims field. Claims use RFC 8785 JCS encoded as UTF-8 with Ed25519 detached signatures. Resolve signingKeyRef only from pinned or enrolled issuer keys; never fetch a caller-provided key URL. The receiving owner verifies the signature, enrolled issuer and transport mapping, audience, time bounds, all envelope bindings and current grants, then recomputes operation.payloadDigest from the actual RFC 8785 canonical payload. A valid signature is not authorization and does not bypass durable replay/deduplication checks. Event/reply producers require the same authenticated source binding. P01 proves cross-language crypto/canonicalization; P04 proves enrollment, credentials and rotation. Executable P01 contract. Runtime enrollment, authorization and durable ownership remain separate obligations.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "algorithm": {
+      "const": "Ed25519"
+    },
+    "canonicalization": {
+      "const": "RFC8785-JCS-UTF8"
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "purpose": {
+          "const": "agentmux-ingress-v1"
+        },
+        "issuerHubId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "signingKeyRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "authenticationMethod": {
+          "enum": [
+            "nats-credential-mapping",
+            "oidc-session"
+          ]
+        },
+        "authenticatedTransportRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "audience": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "hubId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "serviceId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            }
+          },
+          "required": [
+            "hubId",
+            "serviceId"
+          ]
+        },
+        "issuedAt": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+        },
+        "expiresAt": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+        },
+        "messageId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "kind": {
+          "enum": [
+            "command",
+            "event",
+            "reply"
+          ]
+        },
+        "contractId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "contractMajor": {
+          "const": 1
+        },
+        "sourceHubId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "sourceInstanceId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "sentAt": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+        },
+        "correlationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "operation": {
+          "$ref": "urn:agentmux:contract:1:operation-context"
+        }
+      },
+      "required": [
+        "purpose",
+        "issuerHubId",
+        "signingKeyRef",
+        "authenticationMethod",
+        "authenticatedTransportRef",
+        "audience",
+        "issuedAt",
+        "expiresAt",
+        "messageId",
+        "kind",
+        "contractId",
+        "contractMajor",
+        "sourceHubId",
+        "sourceInstanceId",
+        "sentAt",
+        "correlationId",
+        "operation"
+      ]
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{85}[AQgw]$",
+      "description": "Exactly 64 Ed25519 signature bytes encoded as unpadded canonical base64url. Shape checks do not verify a signature."
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "algorithm",
+    "canonicalization",
+    "claims",
+    "signature"
+  ]
+}

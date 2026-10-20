@@ -59,6 +59,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import coordination                                    # noqa: E402  reuse, do not restate
 import agentdefs                                       # noqa: E402
+import definition_team                                 # noqa: E402
 
 ROOT = Path(os.environ.get("AGENTMUX_HOME", str(Path.home() / ".agentmux")))
 DISPATCH_DIR = ROOT / "dispatch"
@@ -603,6 +604,33 @@ def foreign_board():
             % (ours, coordination.DASHBOARD, theirs))
 
 
+def approved_project_lead(key, specs, cfg=None):
+    """Use only the board's approved revision, refusing a changed local import."""
+    payload = board("GET", "board/roster?id=" + key)
+    if payload is None:
+        raise ValueError("cannot read approved project roster")
+    rows = [row for row in payload.get("members", []) if row.get("role") == "lead"
+            and row.get("status") in ("approved", "hired")]
+    if not rows:
+        return None
+    if len(rows) != 1:
+        raise ValueError("project roster has multiple approved leads")
+    row = rows[0]
+    revision = row.get("definitionRevision")
+    if not isinstance(revision, dict):
+        raise ValueError("recruit and approve this roster again to save its definition")
+    if revision.get("projectRoot") != str(REPO.resolve()):
+        raise ValueError("approved lead belongs to another project")
+    spec = (definition_team.TeamPlugin().propose_legacy({}, {}, cfg or {})[0]
+            if row.get("definitionState") == "builtin" else
+            specs.get(row.get("agent_name")))
+    if spec is None or revision != dict(name=spec.name, scope=spec.scope,
+                                        path=spec.path, checksum=spec.checksum, projectRoot=str(REPO.resolve()),
+                                        snapshotDigest=definition_team.snapshot_digest(spec)):
+        raise ValueError("approved lead definition changed; recruit and approve its new revision")
+    return spec
+
+
 def dispatch_one(key=None, cli=None, dry_run=False, limit=10, quiet=False):
     """Hand one card to a fresh agent. Returns the worker name, or None.
 
@@ -644,7 +672,13 @@ def dispatch_one(key=None, cli=None, dry_run=False, limit=10, quiet=False):
     specs, problems = agentdefs.load_all(REPO)
     for problem in problems:
         log("dispatch: agent definition %s: %s" % (problem["path"], problem["error"]))
-    spec = agentdefs.choose_roster(task, specs, cfg, cli_override=cli)[0]
+    try:
+        approved_lead = approved_project_lead(key, specs, cfg)
+    except ValueError as error:
+        log("dispatch: " + str(error))
+        return None
+    spec = definition_team.TeamPlugin().propose_legacy(
+        task, specs, cfg, cli_override=cli, lead=approved_lead)[0]
     cli = spec.cli
     log("dispatch: lead %s (%s), cli=%s, posture=%s" %
         (spec.name, spec.path or "built-in fallback", cli, spec.posture))

@@ -74,13 +74,14 @@ type OwnerBridgeClient struct {
 	subjects   deployment.OwnerBridgeSubjectSet
 }
 type OwnerBridgeServer struct {
-	config     BootstrapConfig
-	enrollment OwnerBridgeEnrollment
-	owner      *OwnerStatus
-	credential OwnerBridgeCredential
-	subjects   deployment.OwnerBridgeSubjectSet
-	receipt    *ownerBridgeReceiptState
-	history    *ownerBridgeHistoryState
+	config      BootstrapConfig
+	enrollment  OwnerBridgeEnrollment
+	owner       *OwnerStatus
+	credential  OwnerBridgeCredential
+	subjects    deployment.OwnerBridgeSubjectSet
+	receipt     *ownerBridgeReceiptState
+	history     *ownerBridgeHistoryState
+	application *applicationAttestorHost
 }
 
 func (*OwnerBridgeClient) String() string   { return "[private owner bridge client]" }
@@ -202,6 +203,12 @@ func bridgeConnect(parent context.Context, c BootstrapConfig, credential OwnerBr
 // A live socket follows its owned lifetime; connection work is also bounded
 // by the startup or terminal-failure budget supplied by the same Run.
 func bridgeConnectWithin(parent, budget context.Context, c BootstrapConfig, credential OwnerBridgeCredential) (*nats.Conn, *localtls.Dialer, error) {
+	return bridgeConnectBound(parent, budget, c, credential, nil)
+}
+
+// Only the owning server carries a container binding across connections.
+// Clients still perform one complete observation and never reconnect.
+func bridgeConnectBound(parent, budget context.Context, c BootstrapConfig, credential OwnerBridgeCredential, containerID *string) (*nats.Conn, *localtls.Dialer, error) {
 	if parent == nil || budget == nil {
 		return nil, nil, bridgeError("deadline")
 	}
@@ -231,6 +238,9 @@ func bridgeConnectWithin(parent, budget context.Context, c BootstrapConfig, cred
 		return nil, nil, bridgeError("connection_unavailable")
 	}
 	if authority.state != "running" || authority.trust == nil || !reflect.DeepEqual(authority.trust.Policy(), c.Kernel.TLS.Policy()) || authority.trust.Policy().Endpoint != c.Kernel.Endpoint {
+		return nil, nil, bridgeError("authority_rejected")
+	}
+	if containerID != nil && *containerID != "" && *containerID != authority.broker.ContainerID {
 		return nil, nil, bridgeError("authority_rejected")
 	}
 	deadline, _ := ctx.Deadline()
@@ -267,6 +277,9 @@ func bridgeConnectWithin(parent, budget context.Context, c BootstrapConfig, cred
 	}
 	if nc.ConnectedServerName() != c.Health.ServerName || nc.ConnectedServerVersion() != c.Health.ServerVersion {
 		return nil, nil, closeBridgeConnection(nc, dialer, bridgeError("authority_rejected"))
+	}
+	if containerID != nil {
+		*containerID = authority.broker.ContainerID
 	}
 	return nc, dialer, nil
 }
@@ -533,11 +546,18 @@ func (s *OwnerBridgeServer) Run(startup, lifetime context.Context, coldInvocatio
 		actualSession, actualFailure := bootstrapForOperation(bootstrapCtx, runtimeLifetime, s.config, coldInvocationID, operation)
 		s.recordBootstrapHistoryTerminal(bootstrapCtx, operation, actualSession, actualFailure)
 	}()
+	applicationDone := s.startApplicationAttestor(runtimeLifetime, operation)
 	defer func() {
 		cancelBootstrap()
 		cancelRuntime()
 		<-operation.done
 		<-returned
+		<-applicationDone
+		_, applicationErr := s.ApplicationAttestorResult()
+		var serviceCleanup *applicationServiceOwnershipFailure
+		if errors.Is(applicationErr, ErrTransportCleanup) || errors.As(applicationErr, &serviceCleanup) {
+			failure = errors.Join(failure, applicationErr)
+		}
 		session, completedFailure := joinedBridgeBootstrapResult(operation, failure)
 		failure = completedFailure
 		// Optional history cleanup shares actual teardown, not healthy runtime life.
@@ -575,6 +595,7 @@ func (s *OwnerBridgeServer) serveLoop(lifetime, startup context.Context, coldInv
 	}
 	var nc *nats.Conn
 	var dialer *localtls.Dialer
+	var containerID string
 	for {
 		if operationDone != nil {
 			select {
@@ -592,7 +613,7 @@ func (s *OwnerBridgeServer) serveLoop(lifetime, startup context.Context, coldInv
 			budget, cancelBudget = context.WithDeadline(lifetime, failureDeadline)
 		}
 		var err error
-		nc, dialer, err = bridgeConnectWithin(lifetime, budget, s.config, s.credential)
+		nc, dialer, err = bridgeConnectBound(lifetime, budget, s.config, s.credential, &containerID)
 		cancelBudget()
 		if err == nil {
 			break
@@ -626,35 +647,143 @@ func (s *OwnerBridgeServer) serveLoop(lifetime, startup context.Context, coldInv
 		case <-timer.C:
 		}
 	}
-	connectionLost := make(chan struct{}, 1)
-	nc.SetClosedHandler(func(*nats.Conn) {
-		select {
-		case connectionLost <- struct{}{}:
-		default:
+	var connectionLost chan struct{}
+	var messages chan *nats.Msg
+	var sub *nats.Subscription
+	closeConnection := func() error {
+		if sub != nil {
+			_ = sub.Unsubscribe()
+			sub = nil
 		}
-	})
-	defer nc.Close()
-	defer nc.SetClosedHandler(nil)
-	defer func() {
-		failure, _ = closeOwnedTransport(dialer, failure, "owner_bridge_owned_connection_cleanup_failed")
-	}()
-	messages := make(chan *nats.Msg, 128)
-	sub, err := nc.ChanSubscribe(s.subjects.Request, messages)
-	if err != nil {
-		return bridgeError("subscribe_failed")
+		if nc != nil {
+			nc.SetClosedHandler(nil)
+		}
+		closed := closeBridgeConnection(nc, dialer, nil)
+		if closed == nil {
+			nc, dialer = nil, nil
+		}
+		return closed
 	}
-	defer sub.Unsubscribe()
-	sub.SetPendingLimits(128, 128*protocol.MaxPayload)
-	flush, cancelFlush := context.WithTimeout(lifetime, 5*time.Second)
-	err = nc.FlushWithContext(flush)
-	cancelFlush()
-	if err != nil {
-		return bridgeError("connection_unavailable")
+	defer func() {
+		failure = errors.Join(failure, closeConnection())
+	}()
+	bindConnection := func(budget context.Context) error {
+		// Capture each connection's channel, so a late callback from an old
+		// transport cannot close the new service or deliver queued requests.
+		lost := make(chan struct{}, 1)
+		connectionLost = lost
+		messages = make(chan *nats.Msg, 128)
+		nc.SetClosedHandler(func(*nats.Conn) {
+			select {
+			case lost <- struct{}{}:
+			default:
+			}
+		})
+		var err error
+		sub, err = nc.ChanSubscribe(s.subjects.Request, messages)
+		if err != nil {
+			if authority := ownerBridgeAuthorityLastError(nc); authority != nil {
+				return authority
+			}
+			if nc.IsClosed() && errors.Is(err, nats.ErrConnectionClosed) {
+				return bridgeError("connection_unavailable")
+			}
+			return bridgeError("subscribe_failed")
+		}
+		// ChanSubscribe is bounded by messages itself. The Go client does not
+		// support SetPendingLimits for channel subscriptions.
+		flush, cancelFlush := context.WithTimeout(budget, 5*time.Second)
+		err = nc.FlushWithContext(flush)
+		cancelFlush()
+		if authority := ownerBridgeAuthorityLastError(nc); authority != nil {
+			return authority
+		}
+		if err != nil {
+			return bridgeError("connection_unavailable")
+		}
+		return nil
+	}
+	if err := bindConnection(lifetime); err != nil {
+		return err
 	}
 	if ready != nil {
 		close(ready)
 	}
 	replay := bridgeReplay{ids: map[string]time.Time{}}
+	recoveries := 0
+	reconnect := func() error {
+		if authority := ownerBridgeAuthorityLastError(nc); authority != nil {
+			return authority
+		}
+		if err := closeConnection(); err != nil {
+			return err
+		}
+		if bootErr != nil || !failureDeadline.IsZero() || recoveries >= 2 {
+			return bridgeError("connection_lost")
+		}
+		recoveries++
+		// Keep the exact Session and service lease while its lifecycle owner
+		// repairs the broker. This window owns inspection, TLS, authentication
+		// and subscription flush; it never starts a broker or bootstraps again.
+		budget, cancel := context.WithTimeout(lifetime, 20*time.Second)
+		defer cancel()
+		if operationDone != nil {
+			if deadline, ok := startup.Deadline(); ok {
+				bounded, release := context.WithDeadline(budget, deadline)
+				defer release()
+				budget = bounded
+			}
+		}
+		for budget.Err() == nil {
+			if operationDone != nil {
+				select {
+				case <-operationDone:
+					complete()
+				default:
+				}
+				if bootErr != nil {
+					return bridgeError("startup_failed")
+				}
+			}
+			credential, _, err := loadBridgeCredential(s.config, s.enrollment, deployment.OwnerBridgeServerUser)
+			if err != nil {
+				return err
+			}
+			if !reflect.DeepEqual(credential, s.credential) {
+				return bridgeError("authority_rejected")
+			}
+			nc, dialer, err = bridgeConnectBound(lifetime, budget, s.config, credential, &containerID)
+			if err == nil {
+				// Inspection and TLS can overlap an enrollment change. Recheck
+				// the original authority before installing a new service subscription.
+				current, _, currentErr := loadBridgeCredential(s.config, s.enrollment, deployment.OwnerBridgeServerUser)
+				if currentErr != nil {
+					err = currentErr
+				} else if !reflect.DeepEqual(current, s.credential) {
+					err = bridgeError("authority_rejected")
+				}
+			}
+			if err == nil {
+				err = bindConnection(budget)
+			}
+			if err == nil {
+				return nil
+			}
+			if cleanup := closeConnection(); cleanup != nil {
+				return errors.Join(err, cleanup)
+			}
+			if errors.Is(err, ErrTransportCleanup) || IsOwnerBridgeAuthorityError(err) || err.Error() != "owner_bridge_connection_unavailable" {
+				return err
+			}
+			timer := time.NewTimer(250 * time.Millisecond)
+			select {
+			case <-budget.Done():
+				timer.Stop()
+			case <-timer.C:
+			}
+		}
+		return bridgeContextError("deadline", budget.Err())
+	}
 	for {
 		if operationDone != nil {
 			select {
@@ -678,7 +807,10 @@ func (s *OwnerBridgeServer) serveLoop(lifetime, startup context.Context, coldInv
 			if timer != nil {
 				timer.Stop()
 			}
-			return bridgeError("connection_lost")
+			if err := reconnect(); err != nil {
+				return err
+			}
+			continue
 		case <-lifetime.Done():
 			if timer != nil {
 				timer.Stop()
@@ -705,7 +837,10 @@ func (s *OwnerBridgeServer) serveLoop(lifetime, startup context.Context, coldInv
 			}
 		}
 		if nc.IsClosed() {
-			return bridgeError("connection_lost")
+			if err := reconnect(); err != nil {
+				return err
+			}
+			continue
 		}
 		request, err := validateBridgeRequest(msg, s.config.Kernel.Scope, s.subjects, time.Now())
 		if err != nil || !replay.accept(request.RequestID, time.Now()) {
@@ -770,6 +905,12 @@ func (s *OwnerBridgeServer) serveLoop(lifetime, startup context.Context, coldInv
 				beforePublish := nc.LastError()
 				if beforePublish != nil {
 					cancel()
+					if !nc.IsConnected() {
+						if err := reconnect(); err != nil {
+							return err
+						}
+						continue
+					}
 					outcome := ownerBridgeReplyOutcome(lifetime, beforePublish, nil, nil, nil, bootErr)
 					return ownerBridgeReplyFlushResult(lifetime, ctx, nil, outcome, bootErr)
 				}
@@ -783,6 +924,12 @@ func (s *OwnerBridgeServer) serveLoop(lifetime, startup context.Context, coldInv
 				replyErr := ownerBridgeReplyFlushResult(lifetime, ctx, flushErr, outcome, bootErr)
 				if replyErr != nil {
 					cancel()
+					if !nc.IsConnected() && !IsOwnerBridgeAuthorityError(replyErr) && bridgeObservationCleanupFailure(replyErr) == nil {
+						if err := reconnect(); err != nil {
+							return err
+						}
+						continue
+					}
 					return replyErr
 				}
 				if flushErr != nil {
@@ -898,10 +1045,16 @@ func (s *OwnerBridgeServer) refresh(ctx context.Context, id string, session *Ses
 		if cleanup := bridgeObservationCleanupFailure(pErr, kErr); cleanup != nil {
 			return StartupStatusObservation{}, cleanup
 		}
+		// Preserve each verified observation even when another service is not
+		// ready. Failed readiness cannot turn a valid snapshot into malformed data.
+		if pErr == nil {
+			input.status.Persistence = persistence
+		}
+		if kErr == nil {
+			input.status.Kernel = kernel
+		}
 		if pErr == nil && kErr == nil && persistence.BrokerVerified && persistence.PersistenceEvidence == deployment.PersistenceRecordSeen && kernel.KernelReadiness == "ready" {
 			input.status.Disposition = "reused"
-			input.status.Persistence = persistence
-			input.status.Kernel = kernel
 		}
 	}
 	input.receivedAt = time.Now().UTC()
@@ -924,32 +1077,15 @@ func (s *OwnerBridgeServer) refresh(ctx context.Context, id string, session *Ses
 	if err != nil {
 		return out, err
 	}
+	if out.Disposition == "failed" && input.status.Kernel.Kind == "kernel-info" {
+		out.Instance.Readiness = "not_ready"
+	}
 	if bootErr != nil {
 		out.Errors = append(out.Errors, StartupStatusError{Component: "instance", Code: "host_startup_failed", Message: "The owning host could not complete startup.", Retryable: true})
 	}
 	if session != nil {
-		if err = lockOwnerObservation(ctx, &session.mu); err != nil {
+		if err := session.recheckOwnedKernelObservation(ctx, input.status.Kernel, &out); err != nil {
 			return StartupStatusObservation{}, err
-		}
-		failed := session.cleanupFailure != nil || session.retiredGroup != nil
-		if session.group != nil {
-			for _, child := range session.group.Status() {
-				failed = failed || child.Exited
-			}
-		}
-		session.mu.Unlock()
-		if failed {
-			out.Disposition = "failed"
-			out.Instance.Readiness = "not_ready"
-			out.Instance.RunningVersion = nil
-			for i, service := range out.Instance.Services {
-				for _, role := range protocol.Roles() {
-					if service.ServiceID == role {
-						out.Instance.Services[i] = unknownStatusService(role, "probe_failed")
-					}
-				}
-			}
-			out.Errors = append(out.Errors, StartupStatusError{Component: "instance", Code: "owned_runtime_exited", Message: "The owned runtime is unavailable.", Retryable: true})
 		}
 	}
 	return out, nil

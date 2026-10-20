@@ -186,7 +186,7 @@ class NativePolicy:
                     (actual.st_dev, actual.st_ino, actual.st_uid, actual.st_mode), "native_stat_disagrees")
             if present.value == 0:
                 return
-            require(present.value == 1, "descriptor_acl_unknown")
+            # A nonzero native validity bitmask means the ACL is present.
             acl_record = {"kind": "acl", "retrievalAttempted": True, "allocated": False,
                           "freeAttempted": False, "freeSucceeded": False}
             self.ledger["nativeAllocations"].append(acl_record)

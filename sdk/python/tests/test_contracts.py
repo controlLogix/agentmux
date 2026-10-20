@@ -168,6 +168,140 @@ class AttestationTests(unittest.TestCase):
             with self.assertRaisesRegex(ContractError, 'schema_configuration_error'):
                 validate('copied', 'changed', directory)
 
+    def test_schema_cache_tracks_linked_directory_and_retargeted_schema(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            schemas, targets = root / 'schemas', root / 'targets'
+            schemas.mkdir()
+            targets.mkdir()
+            schema = {'$schema': 'https://json-schema.org/draft/2020-12/schema',
+                      '$id': 'urn:agentmux:test:linked', 'const': 'allowed'}
+            for name in ('first', 'second'):
+                (targets / (name + '.schema.json')).write_text(json.dumps(schema), encoding='utf-8')
+            linked_root = root / 'linked-schemas'
+            linked_root.symlink_to('schemas', target_is_directory=True)
+            linked_file = schemas / 'linked.schema.json'
+            linked_file.symlink_to('../targets/first.schema.json')
+            validate('first', 'allowed', linked_root)
+
+            # Equal bytes do not hide a different schema target and its name.
+            linked_file.unlink()
+            linked_file.symlink_to('../targets/second.schema.json')
+            with self.assertRaisesRegex(ContractError, '^unknown_schema$'):
+                validate('first', 'allowed', linked_root)
+            validate('second', 'allowed', linked_root)
+
+            target = targets / 'second.schema.json'
+            previous = target.stat()
+            schema['const'] = 'changed'
+            target.write_text(json.dumps(schema), encoding='utf-8')
+            os.utime(target, ns=(previous.st_atime_ns, previous.st_mtime_ns))
+            with self.assertRaisesRegex(ContractError, '^schema_invalid$'):
+                validate('second', 'allowed', linked_root)
+            validate('second', 'changed', linked_root)
+
+    def test_schema_cache_tracks_added_and_removed_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name in ('first', 'second'):
+                schema = {'$schema': 'https://json-schema.org/draft/2020-12/schema',
+                          '$id': 'urn:agentmux:test:' + name, 'const': name}
+                (root / (name + '.schema.json')).write_text(json.dumps(schema), encoding='utf-8')
+                validate(name, name, root)
+            (root / 'first.schema.json').unlink()
+            with self.assertRaisesRegex(ContractError, '^unknown_schema$'):
+                validate('first', 'first', root)
+            validate('second', 'second', root)
+
+    def test_unchanged_schema_catalog_does_not_repeat_file_reads(self):
+        import io
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = root / 'copied.schema.json'
+            path.write_text(json.dumps({'$schema': 'https://json-schema.org/draft/2020-12/schema',
+                '$id': 'urn:agentmux:test:copied', 'const': 'allowed'}), encoding='utf-8')
+            validate('copied', 'allowed', root)
+            with patch('io.open', wraps=io.open) as opened:
+                validate('copied', 'allowed', root)
+                validate('copied', 'allowed', root)
+            self.assertEqual(opened.call_count, 0)
+
+    def test_absent_schema_catalog_fails_closed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            missing = Path(directory)/'absent'
+            with self.assertRaisesRegex(ContractError, '^schema_configuration_error$'):
+                validate('copied', 'allowed', missing)
+
+    def test_schema_catalog_still_refuses_unrelated_malformed_and_missing_references(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            path = root / 'copied.schema.json'
+            schema = {'$schema': 'https://json-schema.org/draft/2020-12/schema',
+                '$id': 'urn:agentmux:test:copied', 'const': 'allowed'}
+            path.write_text(json.dumps(schema), encoding='utf-8')
+            validate('copied', 'allowed', root)
+            malformed = root / 'other.schema.json'
+            malformed.write_text('{', encoding='utf-8')
+            with self.assertRaisesRegex(ContractError, '^schema_configuration_error$'):
+                validate('copied', 'allowed', root)
+            malformed.unlink()
+            validate('copied', 'allowed', root)
+            schema['$ref'] = 'https://unavailable.invalid/schema'
+            path.write_text(json.dumps(schema), encoding='utf-8')
+            with self.assertRaisesRegex(ContractError, '^schema_configuration_error$'):
+                validate('copied', 'allowed', root)
+
+    def test_schema_catalog_tracks_root_retarget_and_referenced_byte_change(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for name, value in (('first', 'allowed'), ('second', 'changed')):
+                target = root / name
+                target.mkdir()
+                (target/'outer.schema.json').write_text(json.dumps({
+                    '$schema':'https://json-schema.org/draft/2020-12/schema',
+                    '$id':'urn:agentmux:test:outer', '$ref':'urn:agentmux:test:inner'}), encoding='utf-8')
+                (target/'inner.schema.json').write_text(json.dumps({
+                    '$schema':'https://json-schema.org/draft/2020-12/schema',
+                    '$id':'urn:agentmux:test:inner', 'const':value}), encoding='utf-8')
+            linked = root/'linked'
+            linked.symlink_to('first', target_is_directory=True)
+            validate('outer', 'allowed', linked)
+            target = root/'first'/'inner.schema.json'
+            previous = target.stat()
+            target.write_text(target.read_text().replace('allowed','changed'), encoding='utf-8')
+            os.utime(target, ns=(previous.st_atime_ns,previous.st_mtime_ns))
+            with self.assertRaisesRegex(ContractError, '^schema_invalid$'):
+                validate('outer', 'allowed', linked)
+            validate('outer', 'changed', linked)
+            linked.unlink()
+            linked.symlink_to('second', target_is_directory=True)
+            with self.assertRaisesRegex(ContractError, '^schema_invalid$'):
+                validate('outer', 'allowed', linked)
+            validate('outer', 'changed', linked)
+
+    def test_schema_catalog_cache_is_bounded_and_separates_concurrent_roots(self):
+        from concurrent.futures import ThreadPoolExecutor
+        from agentmux_contracts import validation
+        with tempfile.TemporaryDirectory() as directory:
+            roots = []
+            for index in range(validation._CACHE_LIMIT+4):
+                root = Path(directory)/str(index)
+                root.mkdir()
+                (root/'copied.schema.json').write_text(json.dumps({
+                    '$schema':'https://json-schema.org/draft/2020-12/schema',
+                    '$id':'urn:agentmux:test:copied', 'const':index}), encoding='utf-8')
+                roots.append(root)
+            with ThreadPoolExecutor(max_workers=4) as workers:
+                list(workers.map(lambda pair:validate('copied',pair[0],pair[1]),enumerate(roots)))
+            for index, root in enumerate(roots):
+                validate('copied', index, root)
+                with self.assertRaisesRegex(ContractError, '^schema_invalid$'):
+                    validate('copied', index+1, root)
+            with validation._CACHE_LOCK:
+                self.assertLessEqual(len(validation._CACHE),validation._CACHE_LIMIT)
+                self.assertLessEqual(len(validation._CATALOG_CACHE),validation._CACHE_LIMIT)
+
 
 class SemanticTests(unittest.TestCase):
     def test_cross_field_invariants(self):

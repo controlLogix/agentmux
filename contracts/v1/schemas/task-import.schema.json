@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:task-import",
+  "title": "Agentmux task-import payload v1",
+  "description": "Preserve one captured legacy task for reconciliation; this grants no execution or writer transfer.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "taskId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "sourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "captureDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "legacyId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "sourceTaskDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "sourceRecord": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "format": {
+          "const": "amx-legacy-task-source-v1"
+        },
+        "sourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "databaseDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "schemaVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5
+        },
+        "applicationVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "work": {
+          "type": "object"
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "claims": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      },
+      "required": [
+        "format",
+        "sourceRef",
+        "databaseDigest",
+        "schemaVersion",
+        "applicationVersion",
+        "work",
+        "events",
+        "claims"
+      ]
+    },
+    "parentTaskId": {
+      "anyOf": [
+        {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "taskId",
+    "sourceRef",
+    "captureDigest",
+    "legacyId",
+    "sourceTaskDigest",
+    "sourceRecord",
+    "parentTaskId"
+  ]
+}

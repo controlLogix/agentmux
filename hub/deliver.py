@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import re
 import time
+from threading import Event
 from dataclasses import dataclass, field
 
 from . import profiles as P
@@ -66,18 +67,19 @@ def selected_label(screen: str):
     return None
 
 
-def select_option(t: Transport, handle: str, screen: str, want: str, max_moves=6):
+def select_option(t: Transport, handle: str, screen: str, want: str, max_moves=6, sent=None):
     """Answer a menu BY LABEL: move the highlight until it reads `want`, confirm on
     screen, then Enter. Positional answers break the day a CLI reorders its options -
     and the preselected option has been the destructive one (No, exit / Update now)."""
     rx = re.compile(want, re.I)
-    keys = []
+    keys = [] if sent is None else sent
     for direction in ("Down", "Up"):
         for _ in range(max_moves + 1):
             lab = selected_label(screen)
             if lab and rx.search(lab):
                 t.send_key(handle, "Enter")
-                return keys + ["Enter"]
+                keys.append("Enter")
+                return keys
             t.send_key(handle, direction)
             keys.append(direction)
             time.sleep(0.3)
@@ -95,22 +97,98 @@ def clear_modals(t: Transport, prof: P.Profile, handle: str, auto: bool, rc: Rec
             return None
         if m.answer is None or not auto:
             return m
+        answer = {"kind": m.kind, "keys": [], "complete": False}
+        rc.modal_answers.append(answer)
         if isinstance(m.answer, dict):
-            keys = select_option(t, handle, screen, m.answer["select"])
+            keys = select_option(t, handle, screen, m.answer["select"], sent=answer["keys"])
             if keys is None:
                 return m          # the safe option never became the highlighted one: a person decides
         else:
             keys = list(m.answer)
             for k in keys:
                 t.send_key(handle, k)
+                answer["keys"].append(k)
                 time.sleep(0.35)
-        rc.modal_answers.append({"kind": m.kind, "keys": keys})
+        del answer["complete"]
         time.sleep(0.8)
     m = prof.modal(settle(t, handle))
     return m
 
 
+class _DeliveryStopped(Exception):
+    def __init__(self, outcome, reason):
+        self.outcome, self.reason = outcome, reason
+
+
+class _CheckedTransport:
+    """Recheck the registered transport pair before each read or input operation."""
+    def __init__(self, transport, session, handle, pane_pid, cancel):
+        self.transport, self.session = transport, session
+        self.expected = (handle, pane_pid)
+        self.cancel = cancel
+
+    def check(self):
+        if self.cancel is not None and self.cancel.is_set():
+            raise _DeliveryStopped("deferred", "delivery cancelled")
+        observed = self.transport.handle(self.session)
+        if observed is None:
+            raise _DeliveryStopped("dead", "no such terminal")
+        if observed != self.expected:
+            raise _DeliveryStopped("failed", "identity: pane handle or PID changed (R-ID-2)")
+        if self.cancel is not None and self.cancel.is_set():
+            raise _DeliveryStopped("deferred", "delivery cancelled")
+
+    def handle(self, session):
+        self.check()
+        return self.expected
+
+    def _call(self, operation, *args):
+        self.check()
+        return getattr(self.transport, operation)(*args)
+
+    def mode(self, handle):
+        return self._call("mode", handle)
+
+    def capture(self, handle):
+        return self._call("capture", handle)
+
+    def leave_mode(self, handle):
+        return self._call("leave_mode", handle)
+
+    def send_key(self, handle, key):
+        return self._call("send_key", handle, key)
+
+    def send_text(self, handle, text):
+        return self._call("send_text", handle, text)
+
+    def send_buffer(self, handle, text):
+        self.check()
+        return self.transport.send_buffer(handle, text, before_paste=self.check)
+
+
 def deliver_line(t: Transport, prof: P.Profile, session: str, handle: str, text: str, *,
+                 pane_pid: int, cancel: Event | None = None,
+                 strategy: str = "type", auto_modals: bool = True, started_at: float | None = None,
+                 allow_busy: bool = False, submit_timeout_s: float = 6.0) -> Receipt:
+    rc, started = Receipt(), time.time()
+    if type(pane_pid) is not int or pane_pid <= 0:
+        rc.outcome, rc.reason = "failed", "identity: registered pane PID unavailable"
+        rc.stages["resolved"] = "identity unavailable"
+        return rc
+    checked = _CheckedTransport(t, session, handle, pane_pid, cancel)
+    try:
+        return _deliver_line(checked, prof, session, handle, text, receipt=rc,
+                             strategy=strategy, auto_modals=auto_modals, started_at=started_at,
+                             allow_busy=allow_busy, submit_timeout_s=submit_timeout_s)
+    except _DeliveryStopped as stopped:
+        rc.outcome, rc.reason = stopped.outcome, stopped.reason
+        rc.stages["resolved"] = stopped.reason
+        rc.elapsed_ms = int((time.time() - started) * 1000)
+        return rc
+
+
+def _deliver_line(t: Transport, prof: P.Profile, session: str, handle: str, text: str, *,
+                 receipt: Receipt,
                  strategy: str = "type", auto_modals: bool = True, started_at: float | None = None,
                  allow_busy: bool = False, submit_timeout_s: float = 6.0) -> Receipt:
     """Type ONE line into the agent's input and submit it, verifying every stage.
@@ -118,7 +196,7 @@ def deliver_line(t: Transport, prof: P.Profile, session: str, handle: str, text:
     strategy: 'type'   send-keys -l  (short text; the doorbell and pointer lines)
               'buffer' load-buffer + paste-buffer -p (long text; eval S2)
     """
-    rc = Receipt()
+    rc = receipt
     t0 = time.time()
 
     def done(outcome, reason=""):

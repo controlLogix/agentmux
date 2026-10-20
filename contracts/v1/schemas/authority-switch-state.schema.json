@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:authority-switch-state",
+  "title": "Agentmux authority-switch retained state v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "format": {"const": "amx-authority-switch-v1"},
+    "switchId": {"type": "string", "pattern": "^switch_[0-9a-f]{64}$"},
+    "phase": {"enum": ["source-fenced", "source-recovery-authorized", "target-admission-open", "target-fenced"]},
+    "operationAction": {"enum": ["record-source-fence", "request-recovery", "open-target-admission", "fence-target"]},
+    "source": {"$ref": "urn:agentmux:contract:1:authority-switch#/$defs/source"},
+    "targetAdmissionRevision": {
+      "oneOf": [
+        {"type": "integer", "minimum": 2, "maximum": 9007199254740991},
+        {"type": "null"}
+      ]
+    },
+    "targetFenceRevision": {
+      "oneOf": [
+        {"type": "integer", "minimum": 3, "maximum": 9007199254740991},
+        {"type": "null"}
+      ]
+    },
+    "reverseEvidence": {"type": "null"}
+  },
+  "required": ["format", "switchId", "phase", "operationAction", "source", "targetAdmissionRevision", "targetFenceRevision", "reverseEvidence"]
+}

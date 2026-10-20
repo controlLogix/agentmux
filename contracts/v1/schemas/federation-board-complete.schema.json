@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-board-complete",
+  "title": "Agentmux federation-board-complete v1",
+  "description": "Fresh owner-service completion linked to a private owner-held observation. No caller-supplied outcome or committed revision is accepted.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "journalRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "claimRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "originalOperationId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "originalPayloadDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "candidateDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "observationId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    }
+  },
+  "required": [
+    "resourceRef",
+    "journalRef",
+    "claimRef",
+    "originalOperationId",
+    "originalPayloadDigest",
+    "candidateDigest",
+    "observationId"
+  ]
+}

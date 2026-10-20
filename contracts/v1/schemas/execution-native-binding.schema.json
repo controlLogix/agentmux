@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:execution-native-binding",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "format": {
+      "const": "agentmux-execution-native-binding-v1"
+    },
+    "profileId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "authorityId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "hubId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "firstEnvelopeDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "businessDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "nativeFactsDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "pluginIdentityRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "hostIdentityRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "hostTransportRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "signingKeyRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "owner": {
+      "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+    },
+    "businessEnd": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+    },
+    "nativeInstanceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    }
+  },
+  "required": [
+    "format",
+    "profileId",
+    "authorityId",
+    "hubId",
+    "firstEnvelopeDigest",
+    "businessDigest",
+    "nativeFactsDigest",
+    "pluginIdentityRef",
+    "hostIdentityRef",
+    "hostTransportRef",
+    "signingKeyRef",
+    "owner",
+    "businessEnd",
+    "nativeInstanceRef"
+  ]
+}

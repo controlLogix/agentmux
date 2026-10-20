@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:plugin-context-reply",
+  "title": "Scoped plugin service reply v1",
+  "description": "A fixed reply subject and request ID correlate the result. Values may contain private configuration or domain output and must never enter diagnostics. Unknown failures use a fixed code without child or owner error text.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "kind": {
+      "const": "plugin-context-reply"
+    },
+    "requestId": {
+      "type": "string",
+      "pattern": "^request_[a-f0-9]{64}$"
+    },
+    "owner": {
+      "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+    },
+    "outcome": {
+      "enum": [
+        "completed",
+        "rejected"
+      ]
+    },
+    "code": {
+      "enum": [
+        "ok",
+        "context_request_invalid",
+        "context_owner_stale",
+        "context_operation_stale",
+        "context_authority_unavailable",
+        "context_service_unavailable",
+        "context_capacity_exceeded",
+        "context_request_repeated",
+        "context_operation_canceled",
+        "context_code_undeclared",
+        "context_span_stale",
+        "context_domain_unavailable",
+        "context_configuration_unavailable"
+      ]
+    },
+    "value": {}
+  },
+  "required": [
+    "schemaVersion",
+    "kind",
+    "requestId",
+    "owner",
+    "outcome",
+    "code",
+    "value"
+  ]
+}

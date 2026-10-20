@@ -1,0 +1,879 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:native-authority-host-selection",
+  "description": "Explicit native host enrollment pins. Loading grants no authority and creates no credentials or memberships.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "hostPolicy": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096,
+      "pattern": "^/[^\u0000-\u001f\u007f]*$"
+    },
+    "ownerUid": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    },
+    "workspaces": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 4096,
+        "pattern": "^/[^\u0000-\u001f\u007f]*$"
+      }
+    },
+    "kernelScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "hubId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "instanceId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "profileId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "assemblyDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "releaseManifestDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "releaseVersion": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/version"
+        }
+      },
+      "required": [
+        "hubId",
+        "instanceId",
+        "profileId",
+        "assemblyDigest",
+        "releaseManifestDigest",
+        "releaseVersion"
+      ]
+    },
+    "connection": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "endpoint": {
+          "type": "string",
+          "pattern": "^tls://127\\.0\\.0\\.1:[1-9][0-9]{0,4}$"
+        },
+        "serverName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 253
+        },
+        "rootsPEM": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 16384
+        },
+        "leafCertificateSHA256": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        }
+      },
+      "required": [
+        "endpoint",
+        "serverName",
+        "rootsPEM",
+        "leafCertificateSHA256"
+      ]
+    },
+    "credentials": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^/[^\u0000-\u001f\u007f]*$"
+        },
+        "sha256": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "accountPublicKey": {
+          "type": "string",
+          "pattern": "^A[A-Z2-7]{55}$"
+        },
+        "userPublicKey": {
+          "type": "string",
+          "pattern": "^U[A-Z2-7]{55}$"
+        },
+        "replyPrefix": {
+          "type": "string",
+          "pattern": "^_INBOX\\.[A-Za-z0-9_-]{16,64}$"
+        }
+      },
+      "required": [
+        "path",
+        "sha256",
+        "accountPublicKey",
+        "userPublicKey",
+        "replyPrefix"
+      ]
+    },
+    "keys": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "profileId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "hubId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "authorityId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "organizationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "issuerInstanceId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "stream": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,128}$"
+        },
+        "domain": {
+          "type": "string",
+          "pattern": "^([a-z][a-z0-9_-]{0,95})?$"
+        },
+        "streamCreated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "minimumSequence": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "maxBytes": {
+          "type": "integer",
+          "minimum": 131073,
+          "maximum": 107374182400
+        },
+        "replicas": {
+          "enum": [
+            1,
+            3
+          ]
+        },
+        "hostTransportRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "hostIdentityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "issuerRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "issuerIdentityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        }
+      },
+      "required": [
+        "profileId",
+        "hubId",
+        "authorityId",
+        "organizationId",
+        "issuerInstanceId",
+        "stream",
+        "domain",
+        "streamCreated",
+        "minimumSequence",
+        "maxBytes",
+        "replicas",
+        "hostTransportRef",
+        "hostIdentityRef",
+        "issuerRef",
+        "issuerIdentityRef"
+      ]
+    },
+    "requestSigner": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "keyFile": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\u0000-\u001f\u007f]*$"
+            },
+            "sha256": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            }
+          },
+          "required": [
+            "path",
+            "sha256"
+          ]
+        },
+        "publicKey": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{43}$"
+        },
+        "ref": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        }
+      },
+      "required": [
+        "keyFile",
+        "publicKey",
+        "ref"
+      ]
+    },
+    "destinations": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 64,
+      "propertyNames": {
+        "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+      }
+    },
+    "capabilityRoutes": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bindingId": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+          },
+          "requestContractId": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+          },
+          "replyContractId": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+          },
+          "service": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "profileId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "hubId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "serviceId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "serviceInstanceId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "serviceIdentityRef": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+              },
+              "signingKeyRef": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+              }
+            },
+            "required": [
+              "profileId",
+              "hubId",
+              "serviceId",
+              "serviceInstanceId",
+              "serviceIdentityRef",
+              "signingKeyRef"
+            ]
+          },
+          "scope": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+          }
+        },
+        "required": [
+          "bindingId",
+          "requestContractId",
+          "replyContractId",
+          "service",
+          "scope"
+        ]
+      }
+    },
+    "activationDeclarations": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 64,
+      "propertyNames": {
+        "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "recordRef": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "previousRef": {
+            "anyOf": [
+              {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "identityRef": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "pin": {
+            "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/packagePin"
+          },
+          "manifestDigest": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+          },
+          "configurationChecksum": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+          },
+          "facts": {
+            "$ref": "urn:agentmux:contract:1:native-authority-facts"
+          },
+          "configurationEventSources": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "configurationRef": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                },
+                "sourceDigest": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                },
+                "streamCreated": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+                },
+                "schemaRef": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 4096
+                }
+              },
+              "required": [
+                "configurationRef",
+                "sourceDigest",
+                "streamCreated",
+                "schemaRef"
+              ]
+            }
+          },
+          "privateStorageResources": {
+            "type": "array",
+            "maxItems": 64,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "resourceId": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                },
+                "scope": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+                },
+                "bindingDigest": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                }
+              },
+              "required": [
+                "resourceId",
+                "scope",
+                "bindingDigest"
+              ]
+            }
+          }
+        },
+        "required": [
+          "recordRef",
+          "previousRef",
+          "identityRef",
+          "pin",
+          "manifestDigest",
+          "configurationChecksum",
+          "facts"
+        ]
+      }
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "connection": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "endpoint": {
+              "type": "string",
+              "pattern": "^tls://127\\.0\\.0\\.1:[1-9][0-9]{0,4}$"
+            },
+            "serverName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 253
+            },
+            "rootsPEM": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 16384
+            },
+            "leafCertificateSHA256": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            }
+          },
+          "required": [
+            "endpoint",
+            "serverName",
+            "rootsPEM",
+            "leafCertificateSHA256"
+          ]
+        },
+        "caFile": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\u0000-\u001f\u007f]*$"
+            },
+            "sha256": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            }
+          },
+          "required": [
+            "path",
+            "sha256"
+          ]
+        },
+        "accountPublicKey": {
+          "type": "string",
+          "pattern": "^A[A-Z2-7]{55}$"
+        },
+        "controllerCredentials": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\u0000-\u001f\u007f]*$"
+            },
+            "sha256": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            },
+            "userPublicKey": {
+              "type": "string",
+              "pattern": "^U[A-Z2-7]{55}$"
+            }
+          },
+          "required": [
+            "path",
+            "sha256",
+            "userPublicKey"
+          ]
+        },
+        "stateDirectory": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "pattern": "^/[^\u0000-\u001f\u007f]*$"
+        },
+        "bindings": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "instanceId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "pin": {
+                "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/packagePin"
+              },
+              "credentials": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096,
+                    "pattern": "^/[^\u0000-\u001f\u007f]*$"
+                  },
+                  "sha256": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                  },
+                  "userPublicKey": {
+                    "type": "string",
+                    "pattern": "^U[A-Z2-7]{55}$"
+                  }
+                },
+                "required": [
+                  "path",
+                  "sha256",
+                  "userPublicKey"
+                ]
+              },
+              "workspace": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096,
+                    "pattern": "^/[^\u0000-\u001f\u007f]*$"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "instanceId",
+              "pin",
+              "credentials",
+              "workspace"
+            ]
+          }
+        }
+      },
+      "required": [
+        "connection",
+        "caFile",
+        "accountPublicKey",
+        "controllerCredentials",
+        "stateDirectory",
+        "bindings"
+      ]
+    },
+    "contextTransport": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "connection": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "endpoint": {
+              "type": "string",
+              "pattern": "^tls://127\\.0\\.0\\.1:[1-9][0-9]{0,4}$"
+            },
+            "serverName": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 253
+            },
+            "rootsPEM": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 16384
+            },
+            "leafCertificateSHA256": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            }
+          },
+          "required": [
+            "endpoint",
+            "serverName",
+            "rootsPEM",
+            "leafCertificateSHA256"
+          ]
+        },
+        "caFile": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\u0000-\u001f\u007f]*$"
+            },
+            "sha256": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            }
+          },
+          "required": [
+            "path",
+            "sha256"
+          ]
+        },
+        "accountPublicKey": {
+          "type": "string",
+          "pattern": "^A[A-Z2-7]{55}$"
+        },
+        "serverCredentials": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 4096,
+              "pattern": "^/[^\u0000-\u001f\u007f]*$"
+            },
+            "sha256": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            },
+            "userPublicKey": {
+              "type": "string",
+              "pattern": "^U[A-Z2-7]{55}$"
+            }
+          },
+          "required": [
+            "path",
+            "sha256",
+            "userPublicKey"
+          ]
+        },
+        "bindings": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 64,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "instanceId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "credentials": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 4096,
+                    "pattern": "^/[^\u0000-\u001f\u007f]*$"
+                  },
+                  "sha256": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                  },
+                  "userPublicKey": {
+                    "type": "string",
+                    "pattern": "^U[A-Z2-7]{55}$"
+                  }
+                },
+                "required": [
+                  "path",
+                  "sha256",
+                  "userPublicKey"
+                ]
+              }
+            },
+            "required": [
+              "instanceId",
+              "credentials"
+            ]
+          }
+        }
+      },
+      "required": [
+        "connection",
+        "caFile",
+        "accountPublicKey",
+        "serverCredentials",
+        "bindings"
+      ]
+    },
+    "configurationRoutes": {
+      "type": "object",
+      "minProperties": 1,
+      "maxProperties": 64,
+      "propertyNames": {
+        "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "configurationRef": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "authorityRef": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "service": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "profileId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "hubId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "serviceInstanceId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "serviceIdentityRef": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+              },
+              "signingKeyRef": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+              }
+            },
+            "required": [
+              "profileId",
+              "hubId",
+              "serviceInstanceId",
+              "serviceIdentityRef",
+              "signingKeyRef"
+            ]
+          },
+          "scope": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+          },
+          "resources": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 64,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "ref": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1024
+                },
+                "file": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 1024
+                }
+              },
+              "required": [
+                "ref",
+                "file"
+              ]
+            }
+          }
+        },
+        "required": [
+          "configurationRef",
+          "authorityRef",
+          "service",
+          "scope",
+          "resources"
+        ]
+      }
+    },
+    "subscriptionRoutes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "bindingId": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+          },
+          "source": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "configurationRef": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+              },
+              "sourceDigest": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+              },
+              "streamCreated": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+              },
+              "schemaRef": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 4096
+              }
+            },
+            "required": [
+              "configurationRef",
+              "sourceDigest",
+              "streamCreated",
+              "schemaRef"
+            ]
+          },
+          "service": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "profileId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "hubId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "serviceInstanceId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "serviceIdentityRef": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+              },
+              "signingKeyRef": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+              }
+            },
+            "required": [
+              "profileId",
+              "hubId",
+              "serviceInstanceId",
+              "serviceIdentityRef",
+              "signingKeyRef"
+            ]
+          },
+          "scope": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+          }
+        },
+        "required": [
+          "bindingId",
+          "source",
+          "service",
+          "scope"
+        ]
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "hostPolicy",
+    "ownerUid",
+    "workspaces",
+    "kernelScope",
+    "connection",
+    "credentials",
+    "keys",
+    "requestSigner",
+    "destinations",
+    "capabilityRoutes"
+  ]
+}

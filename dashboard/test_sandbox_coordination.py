@@ -66,7 +66,7 @@ class SandboxCoordination(unittest.TestCase):
                 # nothing real to protect - and it fires FIRST, before the posture
                 # refusal this case is about. Saying so explicitly is the point of the
                 # guard having an override: this suite means it.
-                with patch.dict(os.environ, {'AGENTMUX_NO_BYPASS': brake}), patch.object(dispatch, 'foreign_board', return_value=''), patch.object(dispatch, 'dispatch_view', return_value={'tasks': [task]}), patch.object(dispatch, 'entity', return_value=task), patch.object(dispatch, 'live_agents', return_value=set()), patch.object(agentdefs, 'load_all', return_value=({}, [])), patch.object(agentdefs, 'choose_roster', return_value=[spec]), patch.object(dispatch, 'agentmux') as spawn, patch.object(dispatch, 'claim_for') as claim, patch.object(dispatch, 'set_status') as status, patch.object(dispatch, 'log') as log:
+                with patch.dict(os.environ, {'AGENTMUX_NO_BYPASS': brake}), patch.object(dispatch, 'approved_project_lead', return_value=None), patch.object(dispatch, 'foreign_board', return_value=''), patch.object(dispatch, 'dispatch_view', return_value={'tasks': [task]}), patch.object(dispatch, 'entity', return_value=task), patch.object(dispatch, 'live_agents', return_value=set()), patch.object(agentdefs, 'load_all', return_value=({}, [])), patch.object(agentdefs, 'choose_roster', return_value=[spec]), patch.object(dispatch, 'agentmux') as spawn, patch.object(dispatch, 'claim_for') as claim, patch.object(dispatch, 'set_status') as status, patch.object(dispatch, 'log') as log:
                     self.assertIsNone(dispatch.dispatch_one('TM-068', dry_run=dry))
                     spawn.assert_not_called()
                     claim.assert_not_called()
@@ -80,7 +80,51 @@ class SandboxCoordination(unittest.TestCase):
         z = replace(fallback, name='z-lead', posture='workspace-write')
         a = replace(fallback, name='a-lead', posture='read-only')
         worker = replace(fallback, name='aaa-worker', role='worker')
-        self.assertEqual(agentdefs.choose_roster({}, {s.name: s for s in [z, a, worker]}, {})[0], a)
+        self.assertEqual(agentdefs.choose_roster({}, {s.name: s for s in [z, a, worker]}, {})[0], fallback)
+        self.assertEqual(agentdefs.choose_roster({}, {s.name: s for s in [z, a, worker]}, {}, approved_lead=z)[0], z)
+
+    def test_dispatch_uses_only_approved_exact_revision_and_refuses_missing_snapshot(self):
+        fallback = agentdefs.choose_roster({}, {}, {})[0]
+        spec = replace(fallback, name='project-lead', path='/project/lead.md',
+                       checksum='sha256:' + 'a' * 64)
+        revision = dict(name=spec.name, scope=spec.scope, path=spec.path, checksum=spec.checksum,
+                        projectRoot=str(dispatch.REPO.resolve()),
+                        snapshotDigest=dispatch.definition_team.snapshot_digest(spec))
+        row = dict(agent_name=spec.name, role='lead', status='approved',
+                   definitionRevision=revision, definitionState='current')
+        with patch.object(dispatch, 'board', return_value={'members': [row]}):
+            self.assertEqual(dispatch.approved_project_lead('TM-001', {spec.name: spec}), spec)
+            with self.assertRaisesRegex(ValueError, 'changed'):
+                dispatch.approved_project_lead('TM-001', {spec.name: replace(spec, checksum='sha256:' + 'b' * 64)})
+            with self.assertRaisesRegex(ValueError, 'changed'):
+                dispatch.approved_project_lead('TM-001', {})
+        with patch.object(dispatch, 'board', return_value={'members': [row]}):
+            with self.assertRaisesRegex(ValueError, 'changed'):
+                dispatch.approved_project_lead('TM-001', {spec.name: replace(spec, model='new-default')})
+        with patch.object(dispatch, 'board', return_value={'members': [dict(row,
+                definitionRevision=dict(revision, projectRoot='/other-project'))]}):
+            with self.assertRaisesRegex(ValueError, 'another project'):
+                dispatch.approved_project_lead('TM-001', {spec.name: spec})
+        with patch.object(dispatch, 'board', return_value={'members': [dict(row, definitionRevision=None)]}):
+            with self.assertRaisesRegex(ValueError, 'recruit and approve'):
+                dispatch.approved_project_lead('TM-001', {spec.name: spec})
+        with patch.object(dispatch, 'board', return_value=None):
+            with self.assertRaisesRegex(ValueError, 'cannot read'):
+                dispatch.approved_project_lead('TM-001', {spec.name: spec})
+        with patch.object(dispatch, 'board', return_value={'members': [dict(row, status='proposed')]}):
+            self.assertIsNone(dispatch.approved_project_lead('TM-001', {spec.name: spec}))
+
+    def test_dispatch_preserves_approved_builtin_settings_or_refuses_drift(self):
+        spec = agentdefs.choose_roster({}, {}, {'dispatchCli': 'claude'})[0]
+        revision = dict(name=spec.name, scope=spec.scope, path=spec.path, checksum=spec.checksum,
+                        projectRoot=str(dispatch.REPO.resolve()),
+                        snapshotDigest=dispatch.definition_team.snapshot_digest(spec))
+        row = dict(agent_name=spec.name, role='lead', status='approved',
+                   definitionRevision=revision, definitionState='builtin')
+        with patch.object(dispatch, 'board', return_value={'members': [row]}):
+            self.assertEqual(dispatch.approved_project_lead('TM-001', {}, {'dispatchCli': 'claude'}), spec)
+            with self.assertRaisesRegex(ValueError, 'changed'):
+                dispatch.approved_project_lead('TM-001', {}, {'dispatchCli': 'codex'})
 
     def test_team_spawn_refuses_effective_sandbox(self):
         with tempfile.TemporaryDirectory() as folder:

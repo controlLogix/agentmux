@@ -48,6 +48,32 @@ class TeamCLI(unittest.TestCase):
                             for r in approved["members"]))
         self.assertEqual(json.loads(self.cli("roster", self.key, "--json").stdout), approved)
 
+    def test_explicit_lead_is_a_proposal_until_approved(self):
+        self.mock.stop()
+        directory = Path.cwd() / ".agentmux/agents"
+        directory.mkdir(parents=True, exist_ok=True)
+        for name in ("aardvark-bundled", "project-lead"):
+            path = directory / (name + ".md")
+            path.write_text(f"---\nname: {name}\ndescription: Lead\nrole: lead\n---\n{name} persona")
+            self.addCleanup(path.unlink)
+        initial = json.loads(self.cli("recruit", self.key, "--json").stdout)
+        self.assertEqual(initial["members"][0]["agent_name"], "lead")
+        proposal = json.loads(self.cli("recruit", self.key, "--lead", "project-lead", "--json").stdout)
+        self.assertEqual(proposal["members"][0]["agent_name"], "project-lead")
+        self.assertEqual(proposal["members"][0]["status"], "proposed")
+        self.assertIsNone(proposal["members"][0]["approved_by"])
+        approved = json.loads(self.cli("approve", self.key, "--member", "project-lead", "--json").stdout)
+        self.assertEqual(approved["members"][0]["status"], "approved")
+        selected_path = directory / "project-lead.md"
+        original = selected_path.read_bytes()
+        selected_path.write_bytes(original + b"\nChanged persona")
+        self.assertIn("definition changed; saved revision retained",
+                      self.cli("roster", self.key).stdout)
+        selected_path.write_bytes(original)
+        refused = self.cli("recruit", self.key, "--lead", "missing", code=1)
+        self.assertIn("available lead definition", refused.stderr)
+        self.assertEqual(json.loads(self.cli("roster", self.key, "--json").stdout), approved)
+
     def test_human_output(self):
         self.assertIn("0 roster member(s)", self.cli("roster", self.key).stdout)
         self.assertIn("lead [lead] proposed", self.cli("recruit", self.key).stdout)

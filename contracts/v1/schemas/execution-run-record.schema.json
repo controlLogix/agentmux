@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:execution-run-record",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "runRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "stateDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    }
+  },
+  "required": [
+    "runRef",
+    "stateDigest"
+  ]
+}

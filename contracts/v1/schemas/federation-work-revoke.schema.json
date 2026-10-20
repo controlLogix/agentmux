@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-work-revoke",
+  "title": "federation-work-revoke v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "peer": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]{1,32}$"
+        },
+        "control": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "eventId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "eventDigest": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            },
+            "subject": {
+              "type": "string",
+              "pattern": "^am\\.ctl\\.[a-z0-9_]{1,32}$"
+            },
+            "signature": {
+              "type": "string",
+              "minLength": 86,
+              "maxLength": 88,
+              "pattern": "^[A-Za-z0-9+/]+={0,2}$"
+            },
+            "repositoryId": {
+              "type": "string",
+              "pattern": "^r[0-9a-f]{12}$"
+            }
+          },
+          "required": [
+            "eventId",
+            "eventDigest",
+            "subject",
+            "signature",
+            "repositoryId"
+          ]
+        }
+      },
+      "required": [
+        "peer"
+      ]
+    },
+    "attribution": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    }
+  },
+  "required": [
+    "resourceRef",
+    "input",
+    "attribution"
+  ]
+}

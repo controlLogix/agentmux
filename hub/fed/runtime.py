@@ -10,23 +10,94 @@ import asyncio
 import importlib
 import json
 import os
+import re
 import time
+from contextlib import nullcontext
 
 from hub import names
 from hub.fed import config, conn, envelope, guard, ledger
 from hub.fed.plugin import Param, Verb
+from hub.fed.plugin_adapter import TrustedPluginAdapter, builtin_context_factory
 from hub.fed.policy import Policy, normalize_remote
+from hub.fed.session import FederationSession, SessionCleanupFailure
 from hub.store import HubError, now
 
 BUILTIN = ("messages", "work", "board", "knowledge", "code")
 
 
+def _uses_work_owner(federation, item):
+    return (getattr(federation, '_qualified_work', False) and isinstance(item, dict)
+        and item.get('type') in ('work', 'work_claim', 'work_grant', 'result'))
+
+
 class Federation:
-    def __init__(self, hub, hubdir, log):
+    def __init__(self, hub, hubdir, log, *, profile_context=None, qualified_board=False, board_commands=None,
+                 qualified_messages=False, message_commands=None, qualified_knowledge=False, knowledge_commands=None,
+                 qualified_code=False, code_commands=None, qualified_work=False, work_commands=None):
+        from hub.profile_context import ProfileContext
+        if profile_context is not None and type(profile_context) is not ProfileContext:
+            raise HubError("invalid profile context")
+        if type(qualified_board) is not bool or (not qualified_board and board_commands is not None):
+            raise HubError('invalid qualified board selection')
+        if qualified_board:
+            from capability_owner.legacy_board_service import LegacyBoardCommandClient
+            if type(board_commands) is not LegacyBoardCommandClient or board_commands._hub is not hub:
+                raise HubError('qualified board owner route is required')
+        self._qualified_board, self._board_commands = qualified_board, board_commands
+        if type(qualified_messages) is not bool or (not qualified_messages and message_commands is not None):
+            raise HubError('invalid qualified message selection')
+        if qualified_messages:
+            from capability_owner.legacy_messages_client import LegacyMessageCommandClient
+            if type(message_commands) is not LegacyMessageCommandClient or message_commands._hub is not hub:
+                raise HubError('qualified message owner route is required')
+        self._qualified_messages, self._message_commands = qualified_messages, message_commands
+        if type(qualified_knowledge) is not bool or (not qualified_knowledge and knowledge_commands is not None):
+            raise HubError('invalid qualified knowledge selection')
+        if qualified_knowledge:
+            from capability_owner.legacy_knowledge_client import LegacyKnowledgeCommandClient
+            if type(knowledge_commands) is not LegacyKnowledgeCommandClient or knowledge_commands._hub is not hub:
+                raise HubError('qualified knowledge owner route is required')
+        self._qualified_knowledge, self._knowledge_commands = qualified_knowledge, knowledge_commands
+        if type(qualified_code) is not bool or (not qualified_code and code_commands is not None):
+            raise HubError('invalid qualified code selection')
+        if qualified_code:
+            from capability_owner.legacy_code_client import LegacyCodeCommandClient
+            if type(code_commands) is not LegacyCodeCommandClient or code_commands._hub is not hub:
+                raise HubError('qualified code owner route is required')
+        self._qualified_code, self._code_commands = qualified_code, code_commands
+        if type(qualified_work) is not bool or (not qualified_work and work_commands is not None):
+            raise HubError('invalid qualified work selection')
+        if qualified_work:
+            from capability_owner.legacy_work_client import LegacyWorkCommandClient
+            if type(work_commands) is not LegacyWorkCommandClient or work_commands._hub is not hub:
+                raise HubError('qualified work owner route is required')
+        self._qualified_work, self._work_commands = qualified_work, None
+        self._profile_context = profile_context
         self.hub, self.hubdir, self.log = hub, hubdir, log
         self.node = hub.cfg.get("node", "local")
         self.cfg = config.load(hubdir)
         self.nc = self.js = None
+        self.connection_cleanup = None
+        self.session = None
+        self._work_intents = None
+        if qualified_work:
+            from capability_owner.federated_work_client import FederatedWorkCommandClient, WorkBridgeIntents
+            self._work_commands = FederatedWorkCommandClient(self, work_commands)
+            self._work_intents = WorkBridgeIntents(self, self._work_commands)
+        self._message_intents = None
+        if qualified_messages:
+            from hub.fed.message_bridge import MessageBridgeIntents
+            self._message_intents = MessageBridgeIntents(self, message_commands)
+        self._knowledge_intents = None
+        if qualified_knowledge:
+            from hub.fed.knowledge_bridge import KnowledgeBridgeIntents
+            knowledge_commands.bind(self)
+            self._knowledge_intents = KnowledgeBridgeIntents(self, knowledge_commands)
+        self._code_intents = None
+        if qualified_code:
+            from hub.fed.code_bridge import CodeBridgeIntents
+            code_commands.bind(self)
+            self._code_intents = CodeBridgeIntents(self, code_commands)
         self.connected = False
         self.last_error = ""
         self.wake: asyncio.Event | None = None
@@ -34,20 +105,29 @@ class Federation:
         self.stats = {"published": 0, "received": 0, "delivered": 0, "dropped": 0, "quarantined": 0,
                       "duplicates": 0, "errors": 0}
         self.plugins = {}
+        self.plugin_adapters = {}
         self.routes = {}
         self._load_plugins()
         self.verbs = self._core_verbs()
-        for p in self.plugins.values():
+        self.plugin_verbs = {}
+        for p in self.plugin_adapters.values():
             for vn, v in p.verbs().items():
                 self.verbs[f"fed_{p.name}_{vn}"] = v
+                self.plugin_verbs[f"fed_{p.name}_{vn}"] = (p, vn)
         hub.dbx.submit(self._init_db).result()
         self.policy = Policy(self.cfg, {})
         hub.dbx.submit(self._refresh_policy_sync).result()
         self._last_presence = 0.0
         self.peer_ids: set[str] = set(p for p in self.cfg.get("peers", {}) if p != "*")
         self.presence: dict[str, list] = {}         # peer -> its nodes' presence docs (last seen)
+        if qualified_messages:
+            message_commands.bind(self)
 
     # -- setup ---------------------------------------------------------------------------
+    @property
+    def profile_context(self):
+        return getattr(self, "_profile_context", None)
+
     @property
     def fcfg(self):
         return self.cfg["federation"]
@@ -65,18 +145,35 @@ class Federation:
             mod = importlib.import_module(f"hub.fed.plugins.{name}" if name in BUILTIN else name)
             p = mod.PLUGIN
             names.check_part(p.name, "plugin")
+            adapter = TrustedPluginAdapter(p, builtin_context_factory(name) if name in BUILTIN else None,
+                                           profile_context=self.profile_context)
             self.plugins[p.name] = p
-            for t in p.handles:
-                self.routes[t] = p
+            self.plugin_adapters[p.name] = adapter
+            for t in adapter.handles:
+                self.routes[t] = adapter
 
     def _init_db(self):
         s = self.hub.store
-        for p in self.plugins.values():
+        fenced = s.migration_fence_status()
+        authority_closed = s.migration_authority_closed()
+        for p in self.plugin_adapters.values():
             for sql in p.tables:
                 head = sql.split("(")[0]
                 if f"p_{p.name}_" not in head:
                     raise HubError(f"plugin {p.name}: table must be named p_{p.name}_* ({head.strip()})")
-                s.db.execute(sql)
+                selected_work = self._qualified_work and hasattr(s, '_selected_custody')
+                if authority_closed or fenced is not None and fenced['state'] == 'fenced' or selected_work:
+                    declared = re.match(r'\s*CREATE\s+(?:VIRTUAL\s+)?(TABLE|TRIGGER|INDEX)\s+'
+                        r'(?:IF\s+NOT\s+EXISTS\s+)?([A-Za-z_][A-Za-z0-9_]*)\b', sql, re.I)
+                    if declared is None:
+                        raise HubError('selected database has an invalid plugin schema declaration')
+                    kind, name = declared.group(1).lower(), declared.group(2)
+                    if s.q1('SELECT 1 FROM sqlite_schema WHERE type=? AND name=?', (kind,name)) is None:
+                        if selected_work:
+                            raise HubError('selected Work database is missing a required plugin table')
+                        raise HubError('fenced legacy database is missing a required plugin table')
+                else:
+                    s.db.execute(sql)
 
     def _refresh_policy_sync(self):
         rows = self.hub.store.q("SELECT repo, alias FROM repo_aliases WHERE alias LIKE '%/%' ORDER BY rowid")
@@ -98,7 +195,32 @@ class Federation:
         return self.hub.store
 
     async def db(self, fn, *a, **kw):
-        return await self.hub.db(fn, *a, **kw)
+        # Cancelling an await cannot roll back an executor transaction. Keep its
+        # exact completion before releasing the operation that submitted it.
+        task = asyncio.create_task(self.hub.db(fn, *a, **kw))
+        try:
+            await asyncio.wait({task})
+            return task.result()
+        except asyncio.CancelledError:
+            while not task.done():
+                try:
+                    await asyncio.wait({task})
+                except asyncio.CancelledError:
+                    continue
+                except Exception:
+                    break
+            if not task.cancelled():
+                task.exception()
+            raise
+
+    async def send_message(self, caller, to, kind, body, ref=None):
+        adapter = self.plugin_adapters["messages"]
+        return await adapter.original.send(adapter.context(self), caller, to, kind, body, ref)
+
+    async def add_work(self, caller, to, title, body=None, task_key=None, requirements=None, priority=100):
+        adapter = self.plugin_adapters["work"]
+        return await adapter.original.add(adapter.context(self), caller, to, title, body, task_key,
+                                          requirements, priority)
 
     def kick(self):
         if self.loop and self.wake:
@@ -108,6 +230,8 @@ class Federation:
         """DB thread, INSIDE the caller's transaction: guard, then outbox + audit rows that
         commit (or roll back) with the caller's own state change."""
         envelope.validate_route(subject, env)
+        if local_repo is not None and self.policy.rid_of(local_repo) != env.get("rid"):
+            raise HubError("repo sharing changed before federation publication")
         plane = subject.split(".")[1]
         try:
             clean, kinds = guard.outbound(self.policy, env, local_repo, to_peer)
@@ -133,7 +257,7 @@ class Federation:
 
     async def post_local(self, sender, target, kind, body, ref=None, idem=None, meta=None):
         try:
-            return await self.db(self.store.post, sender, target, kind, body, ref, None, idem, meta=meta)
+            return await self.hub._post_current(sender, target, kind, body, ref, None, idem, meta=meta)
         except HubError as e:
             self.log("fed: local post failed", target, e)
             return None
@@ -181,20 +305,22 @@ class Federation:
     async def run(self):
         self.loop = asyncio.get_running_loop()
         self.wake = asyncio.Event()
-        for p in self.plugins.values():
+        for p in self.plugin_adapters.values():
             await p.start(self)
         backoff = 1
         while not self.hub.stop.is_set():
+            if getattr(self, '_qualified_knowledge', False):
+                try:
+                    await self._knowledge_commands.recover_captures()
+                except Exception as error:
+                    self.log('fed: knowledge recovery remains pending', type(error).__name__)
             killed = await self.db(ledger.state_get, self.store, "killed")
             if not self.enabled or killed:
                 self.last_error = "killed" if killed else "disabled"
                 await self._nap(2)
                 continue
             try:
-                self.nc = await asyncio.wait_for(conn.connect(
-                    self.fcfg["url"], self.fcfg.get("creds"), self.fcfg.get("ca"), f"agentmux-{self.me}-{self.node}",
-                    reconnect=True, error_cb=self._on_error, disconnected_cb=self._on_disc,
-                    reconnected_cb=self._on_reconn), 20)
+                self.nc = await asyncio.wait_for(self._connect_owned(), 20)
             except Exception as e:  # noqa: BLE001 - every failure is a retry with backoff
                 self.last_error = f"connect: {type(e).__name__}: {e}"
                 self.log("fed: cannot connect -", self.last_error, f"(retry in {backoff}s)")
@@ -202,13 +328,13 @@ class Federation:
                 backoff = min(backoff * 2, 30)
                 continue
             backoff = 1
-            self.js = self.nc.jetstream()
+            self.session = FederationSession()
+            self.js = self.session.jetstream(self.nc)
             self.connected, self.last_error = True, ""
             self.log("fed: connected", self.fcfg["url"], "as", self.me, "node", self.node)
-            tasks = []
             try:
-                tasks = await self._bind_core()
-                for p in self.plugins.values():
+                await self._bind_core()
+                for p in self.plugin_adapters.values():
                     await p.on_connect(self)
                 while not self.hub.stop.is_set() and not self.nc.is_closed:
                     if await self.db(ledger.state_get, self.store, "killed"):
@@ -216,25 +342,100 @@ class Federation:
                     if self.nc.is_connected:
                         await self._drain_outbox()
                         await self._presence()
-                        for p in self.plugins.values():
+                        for p in self.plugin_adapters.values():
                             try:
                                 await p.on_tick(self)
                             except Exception as e:  # noqa: BLE001
                                 self.log(f"fed: {p.name} tick error", type(e).__name__, e)
-                    for t in tasks:
-                        if t.done() and t.exception():
+                    for t in self.session.tasks():
+                        if t.done() and not t.cancelled() and t.exception():
                             raise t.exception()
                     await self._nap(0.5)
             except Exception as e:  # noqa: BLE001
                 self.last_error = f"{type(e).__name__}: {e}"
                 self.log("fed: session error -", self.last_error)
             finally:
-                for t in tasks:
-                    t.cancel()
                 self.connected = False
-                await conn.close(self.nc)
-                self.nc = self.js = None
+                await self._close_session_owned()
             await self._nap(1)
+
+    async def _close_session_owned(self):
+        session = getattr(self, "session", None)
+        if session is not None:
+            try:
+                await session.close()
+            except SessionCleanupFailure as error:
+                self.last_error = str(error)
+                self.log("fed: session cleanup incomplete")
+                if asyncio.current_task().cancelling():
+                    raise asyncio.CancelledError() from error
+                return
+        transferred = self.nc is None
+        try:
+            if self.nc is not None:
+                await conn.close(self.nc)
+                transferred = True
+        except conn.ConnectionCleanupFailure as error:
+            self.connection_cleanup = error
+            transferred = True
+            self.last_error = f"cleanup: {error}"
+            self.log("fed: cleanup incomplete -", self.last_error)
+            if asyncio.current_task().cancelling():
+                raise asyncio.CancelledError() from error
+        finally:
+            # A cancelled plain-client close has not transferred ownership.
+            if transferred:
+                self.nc = self.js = None
+                self.session = None
+
+    async def finish_cleanup(self):
+        """Join retained shutdown attempts before the hub reports it is down."""
+        while getattr(self, "session", None) is not None or self.nc is not None or self.connection_cleanup is not None:
+            await self._close_session_owned()
+            session = getattr(self, "session", None)
+            if session is not None:
+                if session.close_task.done():
+                    raise session.failure
+                continue
+            if self.connection_cleanup is not None:
+                owned = self.connection_cleanup
+                try:
+                    await owned.retry_close()
+                except conn.ConnectionCleanupFailure:
+                    if owned.close_task.done():
+                        raise
+                    continue
+                self.connection_cleanup = None
+
+    async def _connect_owned(self):
+        # A session timeout retains its exact tasks, subscriptions and client.
+        # Rejoin them before creating a replacement connection.
+        if getattr(self, "session", None) is not None:
+            await self._close_session_owned()
+            if self.session is not None:
+                raise self.session.failure
+        # A failed initial client stays owned across retry/backoff and even run
+        # cancellation. Never create another client while its close is pending.
+        if self.connection_cleanup is not None:
+            try:
+                await self.connection_cleanup.retry_close()
+            except conn.ConnectionCleanupFailure as error:
+                if asyncio.current_task().cancelling():
+                    raise asyncio.CancelledError() from error
+                raise
+            self.connection_cleanup = None
+        try:
+            return await conn.connect(
+                self.fcfg["url"], self.fcfg.get("creds"), self.fcfg.get("ca"), f"agentmux-{self.me}-{self.node}",
+                reconnect=True, error_cb=self._on_error, disconnected_cb=self._on_disc,
+                reconnected_cb=self._on_reconn)
+        except conn.ConnectionCleanupFailure as error:
+            self.connection_cleanup = error
+            if isinstance(error.operation_error, asyncio.CancelledError):
+                raise error.operation_error from error
+            if asyncio.current_task().cancelling():
+                raise asyncio.CancelledError() from error
+            raise
 
     async def _nap(self, s):
         try:
@@ -256,12 +457,15 @@ class Federation:
     async def _bind_core(self):
         from nats.js.api import AckPolicy, ConsumerConfig, DeliverPolicy
         cc = dict(ack_policy=AckPolicy.EXPLICIT, ack_wait=60, deliver_policy=DeliverPolicy.ALL, max_deliver=20)
-        msg = await self.js.pull_subscribe(f"am.msg.*.{self.me}", durable=f"msg_{self.me}_{self.node}",
-                                           stream="AM_MSG", config=ConsumerConfig(**cc))
-        share = await self.js.pull_subscribe("am.>", durable=f"share_{self.me}_{self.node}", stream="AM_SHARE",
-                                             config=ConsumerConfig(**cc))
-        await self.nc.subscribe("am.ctl.>", cb=self._on_ctl)
-        return [asyncio.create_task(self.consume(msg, "AM_MSG")), asyncio.create_task(self.consume(share, "AM_SHARE"))]
+        session = self.session
+        session.check_open()
+        msg = session.own_subscription(await self.js.pull_subscribe(
+            f"am.msg.*.{self.me}", durable=f"msg_{self.me}_{self.node}", stream="AM_MSG", config=ConsumerConfig(**cc)))
+        share = session.own_subscription(await self.js.pull_subscribe(
+            "am.>", durable=f"share_{self.me}_{self.node}", stream="AM_SHARE", config=ConsumerConfig(**cc)))
+        session.own_subscription(await self.nc.subscribe("am.ctl.>", cb=self._on_ctl))
+        return [session.start_task("messages", self.consume(msg, "AM_MSG")),
+                session.start_task("shares", self.consume(share, "AM_SHARE"))]
 
     async def consume(self, psub, label, batch=20):
         import nats.errors
@@ -294,6 +498,17 @@ class Federation:
         dec = guard.inbound(self.policy, subject, env)
         if dec.action != "drop" and mid and await self.db(ledger.seen, self.store, mid):
             self.stats["duplicates"] += 1
+            if getattr(self, '_qualified_messages', False) and env['type'] in ('message', 'handoff'):
+                await self._message_commands.confirm_receive(env)
+            if getattr(self, '_qualified_knowledge', False) and env['type'] == 'knowledge':
+                await self._knowledge_commands.confirm_receive(env)
+            if getattr(self, '_qualified_code', False) and env['type'] == 'code':
+                await self._code_commands.confirm_receive(env)
+            if _uses_work_owner(self, env) and dec.action == 'deliver':
+                with self._work_intents.inbound(subject, env, dec, msg):
+                    recovered = await self._work_commands.confirm_seen(env, dec)
+                if recovered:
+                    self._work_commands.finish_disclosure()
             await _ack(msg)
             return "duplicate"
         return await self.apply(subject, env, dec, msg, plane, frm)
@@ -333,7 +548,16 @@ class Federation:
             await _ack(msg)
             return "dropped"
         try:
-            outcome = await plugin.on_envelope(self, env, dec) or "delivered"
+            admission = (self._message_intents.inbound(subject, env, dec, msg)
+                if getattr(self, '_qualified_messages', False) and env['type'] in ('message', 'handoff')
+                else self._knowledge_intents.inbound(subject, env, dec, msg)
+                if getattr(self, '_qualified_knowledge', False) and env['type'] == 'knowledge'
+                else self._code_intents.inbound(subject, env, dec, msg)
+                if getattr(self, '_qualified_code', False) and env['type'] == 'code'
+                else self._work_intents.inbound(subject, env, dec, msg)
+                if _uses_work_owner(self, env) else nullcontext())
+            with admission:
+                outcome = await plugin.on_envelope(self, env, dec) or "delivered"
         except Exception as e:  # noqa: BLE001 - redelivered later; the ingest is idempotent
             self.stats["errors"] += 1
             self.log(f"fed: {plugin.name} failed on {env['id']}:", type(e).__name__, e)
@@ -349,8 +573,19 @@ class Federation:
                              {"trust": dec.trust, "approved": dec.approved} if dec.trust != "auto" or dec.approved else None)
                 ledger.mark_seen(self.store, env["id"])
         await self.db(done)
+        if getattr(self, '_qualified_messages', False) and env['type'] in ('message', 'handoff'):
+            await self._message_commands.confirm_receive(env)
+        if getattr(self, '_qualified_knowledge', False) and env['type'] == 'knowledge':
+            await self._knowledge_commands.confirm_receive(env)
+        if getattr(self, '_qualified_code', False) and env['type'] == 'code':
+            await self._code_commands.confirm_receive(env)
+        if _uses_work_owner(self, env):
+            await self._work_commands.confirm_receive(env)
+            self._work_commands.confirm_disclosure()
         self.stats["delivered"] += 1
         await _ack(msg)
+        if _uses_work_owner(self, env):
+            self._work_commands.finish_disclosure()
         return decision
 
     def _audit_tx(self, *a):
@@ -413,25 +648,47 @@ class Federation:
             return
         self.log("fed: peer", frm, "revoked its shares")
         await self.db(self._audit_tx, "in", "ctl", frm, None, m.subject, env.get("id"), env, "revoke", None)
-        for p in self.plugins.values():
+        for p in self.plugin_adapters.values():
             try:
-                await p.on_revoke(self, frm)
+                if p.name == 'knowledge' and getattr(self, '_qualified_knowledge', False):
+                    async with self._knowledge_intents.control(m.subject, env, m):
+                        await p.on_revoke(self, frm)
+                elif p.name == 'work' and getattr(self, '_qualified_work', False):
+                    async with self._work_intents.control(m.subject, env, m):
+                        await p.on_revoke(self, frm)
+                else:
+                    await p.on_revoke(self, frm)
             except Exception as e:  # noqa: BLE001
                 self.log(f"fed: {p.name} on_revoke error", e)
         await self.notify_operator(f"[fed] peer {frm} pulled its kill switch: its unclaimed work was withdrawn",
                                    f"fedrevoke:{env.get('id')}")
 
     # -- events from the hub ---------------------------------------------------------------
-    async def local_event(self, kind, data):
-        for p in self.plugins.values():
+    async def local_event(self, kind, data, *, require_completion=False):
+        for p in self.plugin_adapters.values():
             try:
-                await p.on_local_event(self, kind, data)
+                if (p.name == 'knowledge' and getattr(self, '_qualified_knowledge', False)
+                        and self.fcfg.get('capture', True)):
+                    async with self._knowledge_intents.local_event(kind, data):
+                        await p.on_local_event(self, kind, data)
+                elif p.name == 'work' and getattr(self, '_qualified_work', False):
+                    # The work service follow-on owns a separate private reply
+                    # group; finishing it cannot consume a local caller's group.
+                    await self._work_commands._joined(p.on_local_event(self, kind, data))
+                else:
+                    await p.on_local_event(self, kind, data)
             except HubError as e:
+                if require_completion:
+                    raise
                 self.log(f"fed: {p.name} {kind}:", e)
             except guard.Refused as e:
                 await self._audit_refusal(e)
+                if require_completion:
+                    raise
                 self.log(f"fed: {p.name} {kind} refused:", e)
             except Exception as e:  # noqa: BLE001
+                if require_completion:
+                    raise
                 self.log(f"fed: {p.name} {kind} error", type(e).__name__, e)
 
     async def guarded(self, coro):
@@ -461,6 +718,9 @@ class Federation:
             if p.required and a.get(pn) in (None, "", []):
                 raise HubError(f"{verb.removeprefix('fed_').replace('_', ' ')} needs --{pn}")
         try:
+            if verb in self.plugin_verbs:
+                adapter, name = self.plugin_verbs[verb]
+                return await adapter.invoke(self, name, a, caller)
             return await v.fn(self, a, caller)
         except guard.Refused as e:
             await self._audit_refusal(e)
@@ -544,6 +804,9 @@ async def _v_peers(fed, a, caller):
 
 
 async def _v_share(fed, a, caller):
+    commands = _policy_commands(fed)
+    if commands is not None:
+        return await commands._joined(_qualified_policy_change(fed, commands, 'share', a, caller))
     repo = a["repo"]
     if not await fed.db(fed.store.q1, "SELECT 1 FROM repos WHERE repo=?", (repo,)):
         raise HubError(f"unknown repo {repo!r} (agentmux hub repo add {repo} <path>)")
@@ -565,6 +828,9 @@ async def _v_share(fed, a, caller):
 
 
 async def _v_unshare(fed, a, caller):
+    commands = _policy_commands(fed)
+    if commands is not None:
+        return await commands._joined(_qualified_policy_change(fed, commands, 'unshare', a, caller))
     fed.cfg["repos"].pop(a["repo"], None)
     fed.save_cfg()
     await fed.refresh_policy()
@@ -572,6 +838,9 @@ async def _v_unshare(fed, a, caller):
 
 
 async def _v_trust(fed, a, caller):
+    commands = _policy_commands(fed)
+    if commands is not None:
+        return await commands._joined(_qualified_policy_change(fed, commands, 'trust', a, caller))
     level = a["level"]
     if level not in config.TRUST_LEVELS:
         raise HubError(f"trust must be one of {', '.join(config.TRUST_LEVELS)}")
@@ -584,7 +853,47 @@ async def _v_trust(fed, a, caller):
     return {"peer": peer, "trust": level}
 
 
+def _policy_commands(fed):
+    commands = getattr(fed.hub, '_policy_commands', None)
+    if commands is None and any(getattr(fed, name, False) for name in
+            ('_qualified_board', '_qualified_messages', '_qualified_knowledge', '_qualified_code', '_qualified_work')):
+        raise HubError('an enrolled federation policy owner is required')
+    return commands
+
+
+async def _qualified_policy_change(fed, commands, verb, arguments, caller):
+    if verb == 'share' and not await fed.db(fed.store.q1, 'SELECT 1 FROM repos WHERE repo=?', (arguments['repo'],)):
+        raise HubError(f"unknown repo {arguments['repo']} (agentmux hub repo add {arguments['repo']} <path>)")
+    await commands.change(caller, verb, arguments)
+    # The owner has verified both the commit and its selected source projection.
+    # Keep this refresh in the original owned verb through caller cancellation.
+    fed.cfg = config.load(fed.hubdir)
+    policy = await fed.refresh_policy()
+    if verb == 'trust':
+        return {'peer': arguments['peer'], 'trust': arguments['level']}
+    if verb == 'unshare':
+        return {'unshared': arguments['repo']}
+    repo = arguments['repo']
+    if repo not in policy.shared():
+        raise HubError(f'{repo} has no git remote to match on')
+    if fed.connected:
+        await fed._presence(force=True)
+    peers = arguments.get('peers') or ['*']
+    if isinstance(peers, str):
+        peers = peers.replace(',', ' ').split()
+    return {'repo': repo, 'rid': policy.rid_of(repo), 'peers': peers}
+
+
 async def _v_kill(fed, a, caller):
+    peer_control = getattr(fed.hub, '_peer_control_commands', None) if a.get('revoke') else None
+    if peer_control is not None:
+        # The client retains the whole original kill, including local cleanup,
+        # when its requesting connection is cancelled.
+        return await peer_control._joined(_kill_owned(fed, a, caller, peer_control=peer_control))
+    return await _kill_owned(fed, a, caller)
+
+
+async def _kill_owned(fed, a, caller, *, peer_control=None):
     revoke = bool(a.get("revoke"))
     report = {"killed": True, "revoke": revoke, "at": now()}
     if revoke and fed.connected:
@@ -594,12 +903,30 @@ async def _v_kill(fed, a, caller):
             await kv.delete(f"{fed.me}.{fed.node}")
         except Exception as e:  # noqa: BLE001
             report["presence_error"] = str(e)
+    if revoke and (fed.connected or peer_control is not None):
         env = envelope.make("revoke", fed.me, fed.node, None, "*", {"reason": a.get("reason") or "kill switch"})
-        await fed.nc.publish(f"am.ctl.{fed.me}", json.dumps(env).encode())
-        await fed.nc.flush(timeout=3)
+        if peer_control is None:
+            await fed.nc.publish(f"am.ctl.{fed.me}", json.dumps(env).encode())
+            await fed.nc.flush(timeout=3)
+        else:
+            try:
+                results = await peer_control.revoke(caller, env)
+                report['revoke_results'] = results
+                report['revoke_publication'] = ('published' if results
+                    and all(item['outcome'] == 'published' for item in results) else 'uncertain')
+            except Exception:
+                # Retained owner/client intent decides recovery. A refused or
+                # lost remote reply cannot prevent the original local kill.
+                report['revoke_publication'] = 'unconfirmed'
     if revoke:
         report["withdrawn_outbox"] = await fed.db(ledger.outbox_withdraw, fed.store)
     await fed.db(ledger.state_set, fed.store, "killed", report)
+    if peer_control is not None and report.get('revoke_publication') == 'published':
+        try:
+            await peer_control.confirm_killed(report)
+        except Exception:
+            report['revoke_confirmation'] = 'unconfirmed'
+            await fed.db(ledger.state_set, fed.store, 'killed', report)
     await fed.db(fed._audit_tx, "local", "ctl", fed.me, None, None, None, report, "killed", report)
     if fed.nc is not None:
         await conn.close(fed.nc)
@@ -640,7 +967,8 @@ async def _v_quarantine(fed, a, caller):
 
 async def _v_approve(fed, a, caller):
     q = await fed.db(ledger.quarantine_get, fed.store, a["id"])
-    if not q or q["state"] != "held":
+    recovery = q is not None and q['state'] == 'approved' and _uses_work_owner(fed, q['envelope'])
+    if not q or q["state"] != "held" and not recovery:
         raise HubError(f"no held quarantine item {a['id']}")
     env = q["envelope"]
     dec = guard.Decision("deliver", "approved by operator", fed.policy.trust(q["peer"]), untrusted=True,
@@ -649,10 +977,30 @@ async def _v_approve(fed, a, caller):
     plugin = fed.routes.get(env["type"])
     if plugin is None:
         raise HubError(f"no plugin handles {env['type']}")
-    out = await plugin.on_envelope(fed, env, dec) or "delivered"
-    await fed.db(ledger.quarantine_decide, fed.store, a["id"], "approved", caller)
+    admission = (nullcontext() if recovery else fed._message_intents.approved(q, caller)
+        if getattr(fed, '_qualified_messages', False) and env['type'] in ('message', 'handoff')
+        else fed._knowledge_intents.approved(q, caller, dec)
+        if getattr(fed, '_qualified_knowledge', False) and env['type'] == 'knowledge'
+        else fed._code_intents.approved(q, caller, dec)
+        if getattr(fed, '_qualified_code', False) and env['type'] == 'code'
+        else fed._work_intents.approved(q, caller)
+        if _uses_work_owner(fed, env) else nullcontext())
+    with admission:
+        out = (await fed._work_commands.recover_approved(q, caller) if recovery
+            else await plugin.on_envelope(fed, env, dec) or "delivered")
+    if not recovery:
+        await fed.db(ledger.quarantine_decide, fed.store, a["id"], "approved", caller)
+    if getattr(fed, '_qualified_messages', False) and env['type'] in ('message', 'handoff'):
+        await fed._message_commands.confirm_receive(env, quarantine_id=a['id'], privileged=bool(a.get('privileged')))
+    if getattr(fed, '_qualified_knowledge', False) and env['type'] == 'knowledge':
+        await fed._knowledge_commands.confirm_receive(env, quarantine_id=a['id'], privileged=bool(a.get('privileged')))
+    if getattr(fed, '_qualified_code', False) and env['type'] == 'code':
+        await fed._code_commands.confirm_receive(env, quarantine_id=a['id'], privileged=bool(a.get('privileged')))
     await fed.db(fed._audit_tx, "in", q["plane"], q["peer"], env.get("rid"), q["subject"], env["id"], env,
                  "approved", {"quarantine": a["id"], "privileged": bool(a.get("privileged")), "outcome": out})
+    if _uses_work_owner(fed, env):
+        await fed._work_commands.confirm_receive(env, quarantine_id=a['id'], privileged=bool(a.get('privileged')))
+        fed._work_commands.confirm_disclosure()
     return {"approved": a["id"], "outcome": out}
 
 
@@ -674,6 +1022,8 @@ async def _v_audit(fed, a, caller):
 
 
 async def _v_gate(fed, a, caller):
+    if getattr(fed, '_qualified_work', False):
+        return await fed.hub._qualified_work_gate(a, caller)
     who = a.get("session") if caller == "operator" and a.get("session") else caller
     rows = await fed.db(fed.store.q, "SELECT id, title, origin_peer, fed_flags FROM work_items WHERE claimed_by=? "
                         "AND state IN ('claimed','waiting_children') AND origin_peer IS NOT NULL", (who,))
@@ -692,6 +1042,10 @@ async def _v_verbs(fed, a, caller):
         out.append({"verb": name, "help": v.help, "operator_only": v.operator_only,
                     "params": {k: {"type": p.type, "required": p.required, "help": p.help, "positional": p.positional}
                                for k, p in v.params.items()}})
+        if name in ('fed_code_share', 'fed_code_fetch') and getattr(fed, '_qualified_code', False):
+            out[-1]['operationIds'] = True
+        if name == 'fed_work_add' and getattr(fed.hub, '_work_rpc', None) is not None:
+            out[-1]['operationIds'] = True
     return out
 
 
@@ -701,17 +1055,63 @@ async def _v_panel(fed, a, caller):
         peers = await _v_peers(fed, a, caller) if fed.connected else []
     except HubError:
         peers = []
+    knowledge_panel = code_panel = work_panel = None
+    if any(getattr(fed, '_qualified_' + domain, False) for domain in ('knowledge', 'code', 'work')):
+        with fed.hub._panel_callers(caller) as proofs:
+            for domain, title in (('knowledge', 'Knowledge'), ('code', 'Code'), ('work', 'Federated work')):
+                if not getattr(fed, '_qualified_' + domain, False):
+                    continue
+                token = fed.hub._authenticated_caller_context.set(proofs[domain])
+                try:
+                    value = (await fed._work_commands.read(caller, panel=True) if domain == 'work'
+                        else await getattr(fed, '_' + domain + '_commands').read(caller, 'panel', {}))
+                    if domain == 'knowledge':
+                        knowledge_panel = value
+                    elif domain == 'code':
+                        code_panel = value
+                    else:
+                        work_panel = value
+                except Exception:
+                    value = {'title': title, 'error': title + ' data is unavailable'}
+                    if domain == 'knowledge':
+                        knowledge_panel = value
+                    elif domain == 'code':
+                        code_panel = value
+                    else:
+                        work_panel = value
+                finally:
+                    fed.hub._authenticated_caller_context.reset(token)
 
     def sync():
         out = []
-        for p in fed.plugins.values():
+        for p in fed.plugin_adapters.values():
             try:
-                pan = p.panel(fed)
+                if p.name == 'knowledge' and knowledge_panel is not None:
+                    pan = knowledge_panel
+                elif p.name == 'code' and code_panel is not None:
+                    pan = code_panel
+                elif p.name == 'work' and work_panel is not None:
+                    pan = work_panel
+                else:
+                    pan = p.panel(fed)
             except Exception as e:  # noqa: BLE001
                 pan = {"title": p.name, "error": str(e)}
             if pan:
                 out.append({"plugin": p.name, **pan})
         return out
     panels = await fed.db(sync)
-    return {"status": st, "peers": peers, "quarantine": await _v_quarantine(fed, {}, caller),
-            "audit": await _v_audit(fed, {"limit": 40}, caller), "panels": panels}
+    quarantine = await _v_quarantine(fed, {}, caller)
+    audit = await _v_audit(fed, {"limit": 40}, caller)
+    if getattr(fed, '_qualified_code', False):
+        try:
+            fed._code_commands.confirm_panel_disclosure()
+        except Exception:
+            panels = [{"plugin": "code", "title": "Code", "error": "Code data is unavailable"}
+                if panel.get('plugin') == 'code' else panel for panel in panels]
+    if getattr(fed, '_qualified_work', False) and work_panel is not None and 'error' not in work_panel:
+        try:
+            fed._work_commands.confirm_disclosure()
+        except Exception:
+            panels = [{'plugin': 'work', 'title': 'Federated work', 'error': 'Federated work data is unavailable'}
+                if panel.get('plugin') == 'work' else panel for panel in panels]
+    return {"status": st, "peers": peers, "quarantine": quarantine, "audit": audit, "panels": panels}

@@ -89,25 +89,65 @@ func composeDarwinFailurePreservation(t *testing.T, f *bootstrapDockerFixture, q
 // Only the native helper owns the command, wait and process authority. Buffers
 // are populated from its joined snapshots, never from live output sinks.
 type composeDarwinCLIFront struct {
-	creator        *darwinfixtureidentity.Creator
-	launch         darwinfixtureidentity.Launch
-	owned          *darwinfixtureidentity.Owned
-	proof          *darwinfixtureidentity.Proof
-	pinErr         error
-	output         composeCLIOutput
-	stdout, stderr bytes.Buffer
-	completion     darwinfixtureidentity.Completion
-	lifetime       *composeDarwinCLILifetime
-	hostExpected   darwinfixtureidentity.ExpectedHost
-	mustOwnHost    bool
+	creator         *darwinfixtureidentity.Creator
+	launch          darwinfixtureidentity.Launch
+	owned           *darwinfixtureidentity.Owned
+	proof           *darwinfixtureidentity.Proof
+	pinErr          error
+	output          composeCLIOutput
+	stdout, stderr  bytes.Buffer
+	completion      darwinfixtureidentity.Completion
+	lifetime        *composeDarwinCLILifetime
+	hostExpected    darwinfixtureidentity.ExpectedHost
+	mustOwnHost     bool
+	installedClient bool
+	hostPinErr      error
+	hostPinNoHost   bool
+	hostPinProofs   []*darwinfixtureidentity.Proof
+	hostPinMarked   bool
+	hostPinDeadline time.Time
+	hostPinAttempt  func(context.Context) composeDarwinHostPinResult
+	joinAttempt     func(context.Context) (darwinfixtureidentity.Completion, error)
+	inspection      *darwinfixtureidentity.InspectionSelection
+}
+
+// The native path alone supplies the exact post-exit empty-roster result. The private
+// operation seam lets offline tests exercise this caller without native scans.
+type composeDarwinHostPinResult struct {
+	proof  *darwinfixtureidentity.Proof
+	args   []string
+	close  func() error
+	err    error
+	noHost bool
 }
 
 // This state receives only creator-derived proofs. It never accepts a PID or
 // reconstructs process authority from a response, file or serialized identity.
 type composeDarwinCLILifetime struct {
-	host    *darwinfixtureidentity.Proof
-	roles   []*darwinfixtureidentity.Proof
-	attempt string
+	inspection              *darwinfixtureidentity.InspectionSelection
+	host                    *darwinfixtureidentity.Proof
+	roles                   []*darwinfixtureidentity.Proof
+	attempt                 string
+	applicationInstallation string
+	applicationService      *darwinfixtureidentity.Proof
+	applicationEnded        bool
+	admissionFailure        func(error)
+	partial                 []*darwinfixtureidentity.Proof
+	cleanupOwners           []any
+}
+
+func (x *composeDarwinCLILifetime) pinRoster(ctx context.Context, f *bootstrapDockerFixture, args map[string][]string) ([]*darwinfixtureidentity.Proof, error) {
+	input := darwinfixtureidentity.Assembly{Raw: f.Config.Assembly, PackageDir: f.Config.PackageDirectory, Trust: f.Config.ReleaseTrust}
+	if x.applicationInstallation != "" && !x.applicationEnded {
+		if x.inspection != nil {
+			return x.host.PinDirectRolesWithApplicationService(ctx, input, args, x.applicationInstallation, x.inspection)
+		}
+		return x.host.PinDirectRolesWithApplicationService(ctx, input, args, x.applicationInstallation)
+	}
+	if x.inspection != nil {
+		return x.host.PinDirectRoles(ctx, input, args, x.inspection)
+	}
+	return x.host.PinDirectRoles(ctx, input, args)
 }
 
 func (x *composeDarwinCLIFront) creatorOwned() bool {
@@ -169,14 +209,27 @@ func (x *composeDarwinCLILifetime) pinRoles(t *testing.T, f *bootstrapDockerFixt
 		t.Fatal("actual role fixture expectations refused")
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	started := time.Now()
 	args := map[string][]string{}
 	for _, option := range f.Config.Roles {
 		args[option.ID] = append([]string(nil), option.Args...)
 	}
-	proofs, err := x.host.PinDirectRoles(ctx, darwinfixtureidentity.Assembly{Raw: f.Config.Assembly, PackageDir: f.Config.PackageDirectory, Trust: f.Config.ReleaseTrust}, args)
+	proofs, err := x.pinRoster(ctx, f, args)
 	x.roles = proofs
+	expired := ctx.Err() != nil
 	cancel()
-	if err != nil || len(proofs) != 4 {
+	expectedCount := 4
+	if x.applicationInstallation != "" && !x.applicationEnded {
+		expectedCount++
+	}
+	if err != nil || len(proofs) != expectedCount {
+		if x.admissionFailure != nil {
+			x.admissionFailure(errors.Join(err, errors.New("fixture_application_roster_refused")))
+		}
+		f.WriteEvidence(t, "darwin-role-admission-failure.json", map[string]any{
+			"categories": darwinfixtureidentity.FailureCategories(err), "returnedProofCount": len(proofs),
+			"contextExpired": expired, "elapsedNanoseconds": time.Since(started).Nanoseconds(),
+		})
 		f.RetainForRecovery(t)
 		t.Fatal("actual signed assembly descendant admission refused")
 	}
@@ -184,8 +237,17 @@ func (x *composeDarwinCLILifetime) pinRoles(t *testing.T, f *bootstrapDockerFixt
 	// its exact admitted role alias, never by its index or a reported process ID.
 	// PinDirectRoles independently binds each native image path and digest.
 	seen := map[string]bool{}
+	roles := make([]*darwinfixtureidentity.Proof, 0, 4)
 	for _, proof := range proofs {
 		literal := proof.LiteralArgs()
+		if x.applicationInstallation != "" {
+			root := filepath.Join(protected.InstalledClientBase, x.applicationInstallation)
+			serviceArgs := []string{filepath.Join(root, protected.ClientInterpreter), "-I", "-S", filepath.Join(root, protected.ClientBootstrap), "application-services"}
+			if slices.Equal(literal, serviceArgs) && x.applicationService == nil {
+				x.applicationService = proof
+				continue
+			}
+		}
 		if len(literal) == 0 || seen[literal[0]] {
 			f.RetainForRecovery(t)
 			t.Fatal("actual role proof has missing or repeated image association")
@@ -202,7 +264,15 @@ func (x *composeDarwinCLILifetime) pinRoles(t *testing.T, f *bootstrapDockerFixt
 			t.Fatal("actual role proof differs from enrolled path or literal arguments")
 		}
 		seen[literal[0]] = true
+		roles = append(roles, proof)
 	}
+	if len(roles) != 4 || (x.applicationInstallation != "" && x.applicationService == nil) {
+		if x.admissionFailure != nil {
+			x.admissionFailure(errors.New("fixture_application_roster_association_refused"))
+		}
+		t.Fatal("actual complete host child roster could not be associated")
+	}
+	x.roles = roles
 }
 
 func (x *composeDarwinCLILifetime) assertUnchanged(t *testing.T, f *bootstrapDockerFixture) {
@@ -213,15 +283,27 @@ func (x *composeDarwinCLILifetime) assertUnchanged(t *testing.T, f *bootstrapDoc
 		args[option.ID] = append([]string(nil), option.Args...)
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	proofs, err := x.host.PinDirectRoles(ctx, darwinfixtureidentity.Assembly{Raw: f.Config.Assembly, PackageDir: f.Config.PackageDirectory, Trust: f.Config.ReleaseTrust}, args)
+	proofs, err := x.pinRoster(ctx, f, args)
 	cancel()
 	for _, proof := range proofs {
-		if proof.Close() != nil {
+		if closeErr := proof.Close(); closeErr != nil {
+			x.partial = append(x.partial, proof)
+			err = errors.Join(err, closeErr)
+			if x.admissionFailure != nil {
+				x.admissionFailure(err)
+			}
 			f.RetainForRecovery(t)
 			t.Error("temporary role roster authority did not close")
 		}
 	}
-	if err != nil || len(proofs) != 4 {
+	expectedCount := 4
+	if x.applicationInstallation != "" && !x.applicationEnded {
+		expectedCount++
+	}
+	if err != nil || len(proofs) != expectedCount {
+		if x.admissionFailure != nil {
+			x.admissionFailure(errors.Join(err, errors.New("fixture_application_roster_changed")))
+		}
 		t.Fatal("reuse added or removed a protected role")
 	}
 	x.assertPinnedLive(t)
@@ -237,48 +319,124 @@ func (x *composeDarwinCLILifetime) assertPinnedLive(t *testing.T) {
 			t.Fatal("reuse replaced an exact owned protected role")
 		}
 	}
+	if x.applicationInstallation != "" {
+		if x.applicationService == nil {
+			t.Fatal("reuse lost the installed application service proof")
+		}
+		state := x.applicationService.Live()
+		if (!x.applicationEnded && state != nil) || (x.applicationEnded && !errors.Is(state, darwinfixtureidentity.ErrExited)) {
+			t.Fatal("reuse changed the expected installed application service lifetime")
+		}
+	}
 }
 
 func (x *composeDarwinCLILifetime) cleanup(t *testing.T, f *bootstrapDockerFixture) {
 	t.Helper()
+	defer func() {
+		if t.Failed() && x.admissionFailure != nil {
+			x.admissionFailure(errors.New("selected_service_cleanup_failed"))
+		}
+	}()
 	if x.host == nil {
 		f.RetainForRecovery(t)
 		t.Error("newly spawned host ownership was not established; fixture retained")
 		return
 	}
 	deadline := time.Now().Add(f.Config.Deadlines.StopGrace + f.Config.Deadlines.ReapTimeout)
+	if x.applicationInstallation != "" {
+		deadline = deadline.Add(5 * time.Second)
+	}
 	ctx, cancel := context.WithDeadline(context.Background(), deadline)
 	defer cancel()
 	state := x.host.Live()
 	if state == nil {
-		if x.host.Signal(syscall.SIGTERM) != nil {
+		if err := x.host.Signal(syscall.SIGTERM); err != nil {
+			if x.admissionFailure != nil {
+				x.admissionFailure(err)
+				return
+			}
 			f.RetainForRecovery(t)
 			t.Error("exact installed host stop failed")
 		}
 	} else if !errors.Is(state, darwinfixtureidentity.ErrExited) {
+		if x.admissionFailure != nil {
+			x.admissionFailure(state)
+		}
 		f.RetainForRecovery(t)
 		t.Error("exact installed host lifetime could not be observed")
 		return
 	}
 	err := x.host.WaitExit(ctx)
 	if err != nil {
+		if x.admissionFailure != nil {
+			x.admissionFailure(err)
+		}
 		f.RetainForRecovery(t)
 		t.Error("exact installed host exceeded its shutdown budget")
 		return
 	}
+	if x.applicationService != nil {
+		if err := x.applicationService.WaitExit(ctx); err != nil {
+			if x.admissionFailure != nil {
+				x.admissionFailure(err)
+			}
+			f.RetainForRecovery(t)
+			t.Error("owned application service exit was not established")
+			return
+		}
+		if err := x.applicationService.Close(); err != nil {
+			if x.admissionFailure != nil {
+				x.admissionFailure(err)
+			}
+			f.RetainForRecovery(t)
+			t.Error("owned application service exit or proof cleanup was not established")
+			return
+		}
+	}
 	for _, proof := range x.roles {
 		err = proof.WaitExit(ctx)
 		if err != nil {
+			if x.admissionFailure != nil {
+				x.admissionFailure(err)
+				return
+			}
 			f.RetainForRecovery(t)
 			t.Error("owned protected role exit was not established")
 			continue
 		}
-		if proof.Close() != nil {
+		if err := proof.Close(); err != nil {
+			if x.admissionFailure != nil {
+				x.admissionFailure(err)
+				return
+			}
 			f.RetainForRecovery(t)
 			t.Error("owned protected role proof did not close")
 		}
 	}
-	if x.host.Close() != nil {
+	if x.applicationInstallation != "" {
+		lease, err := AcquireBootstrapLock(ctx, f.Profile.ProfileDirectory, f.Profile.InstanceID, "application-services")
+		if err != nil {
+			if x.admissionFailure != nil {
+				x.admissionFailure(err)
+			}
+			f.RetainForRecovery(t)
+			t.Error("joined application service retained its lifetime lease")
+			return
+		}
+		if err := lease.Close(); err != nil {
+			x.cleanupOwners = append(x.cleanupOwners, lease)
+			if x.admissionFailure != nil {
+				x.admissionFailure(err)
+			}
+			f.RetainForRecovery(t)
+			t.Error("application service lease check did not close")
+			return
+		}
+	}
+	if err := x.host.Close(); err != nil {
+		if x.admissionFailure != nil {
+			x.admissionFailure(err)
+		}
 		f.RetainForRecovery(t)
 		t.Error("exact installed host proof did not close")
 	}
@@ -359,29 +517,114 @@ func composeDarwinCLIPrepare(t *testing.T, f *bootstrapDockerFixture, s HostPoli
 		args = append(args, "--workspace", root)
 	}
 	x := &composeDarwinCLIFront{creator: creator, launch: darwinfixtureidentity.Launch{Path: r.RuntimeExecutable.Path, Digest: r.RuntimeExecutable.Digest, Args: args, Env: os.Environ()}}
+	commands, err := composeDarwinInspectionCommands(f.Profile.Docker, f.Profile.ComposeProject, f.Config.BrokerImage)
+	if err != nil {
+		t.Fatal("selected Docker inspection grammar refused")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	x.inspection, err = darwinfixtureidentity.PrepareInspectionSelection(ctx, f.Profile.Docker.Executable, commands)
+	cancel()
+	if x.inspection != nil {
+		t.Cleanup(func() {
+			if err := x.inspection.Close(); err != nil {
+				f.RetainForRecovery(t)
+				t.Error("selected inspection image owner did not close")
+			}
+		})
+	}
+	if err != nil {
+		t.Fatal("selected Docker inspection image refused")
+	}
 	x.hostExpected = darwinfixtureidentity.ExpectedHost{Path: r.RuntimeExecutable.Path, Digest: r.RuntimeExecutable.Digest, PolicyPath: s.Path, WorkspaceRoots: append([]string(nil), s.WorkspaceRoots...)}
 	x.output.stdout, x.output.stderr = &x.stdout, &x.stderr
 	t.Cleanup(func() { x.cleanup(t, f) })
 	return x
 }
 
+func (x *composeDarwinCLIFront) rememberHostPinDeadline(ctx context.Context) {
+	// Stop and reap may use fresh budgets; host admission may only shorten
+	// the deadline retained from the original frontend request.
+	if deadline, bounded := ctx.Deadline(); bounded && (x.hostPinDeadline.IsZero() || deadline.Before(x.hostPinDeadline)) {
+		x.hostPinDeadline = deadline
+	}
+}
+
 func (x *composeDarwinCLIFront) pinHost(ctx context.Context) {
-	if x.lifetime != nil || x.proof == nil {
+	// Installed Python clients own an ensure child. Their cold host proof is
+	// admitted through the explicit ensure-to-host path, never this direct scan.
+	if x.installedClient || x.lifetime != nil || x.hostPinErr != nil || x.hostPinNoHost {
 		return
 	}
-	proof, err := x.proof.PinDirectHost(ctx, x.hostExpected)
-	if err != nil {
+	x.rememberHostPinDeadline(ctx)
+	if !x.hostPinDeadline.IsZero() {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithDeadline(ctx, x.hostPinDeadline)
+		defer cancel()
+	}
+	if err := ctx.Err(); err != nil {
+		x.hostPinErr = errors.Join(errors.New("native_host_admission_budget_expired"), err)
 		return
 	}
-	args := proof.LiteralArgs()
-	if len(args) < 6 || !ownerBridgeInvocation.MatchString(args[5]) {
-		proof.Close()
+	if !x.output.joined || x.proof == nil {
 		return
 	}
-	x.lifetime = &composeDarwinCLILifetime{host: proof, attempt: args[5]}
+	var result composeDarwinHostPinResult
+	if x.hostPinAttempt != nil {
+		result = x.hostPinAttempt(ctx)
+	} else {
+		if result.err = x.proof.WaitExit(ctx); result.err == nil {
+			if result.err = ctx.Err(); result.err == nil {
+				result.proof, result.err = x.proof.PinDirectHostAfterExit(ctx, x.hostExpected)
+			}
+		}
+		result.noHost = result.proof == nil && darwinfixtureidentity.NoSurvivingHost(result.err)
+		if result.proof != nil {
+			result.args, result.close = result.proof.LiteralArgs(), result.proof.Close
+		}
+	}
+	if result.proof != nil {
+		x.hostPinProofs = append(x.hostPinProofs, result.proof)
+	}
+	if err := ctx.Err(); err != nil {
+		result.err = errors.Join(result.err, err)
+		result.noHost = false
+	}
+	if result.proof == nil && result.err != nil && result.noHost {
+		x.hostPinNoHost = true
+		return
+	}
+	if result.err != nil {
+		x.hostPinErr = result.err
+		return
+	}
+	if result.proof == nil {
+		x.hostPinErr = errors.New("native_host_admission_result_invalid")
+		return
+	}
+	if len(result.args) < 6 || !ownerBridgeInvocation.MatchString(result.args[5]) {
+		x.hostPinErr = errors.New("native_host_admission_arguments_invalid")
+		if result.close != nil {
+			x.hostPinErr = errors.Join(x.hostPinErr, result.close())
+		}
+		return
+	}
+	x.lifetime = &composeDarwinCLILifetime{host: result.proof, attempt: result.args[5], inspection: x.inspection}
+}
+
+func (x *composeDarwinCLIFront) retainHostPinFailure(t *testing.T, f *bootstrapDockerFixture) bool {
+	t.Helper()
+	if x.hostPinErr == nil {
+		return false
+	}
+	if !x.hostPinMarked {
+		x.hostPinMarked = true
+		f.RetainForRecovery(t)
+	}
+	return true
 }
 
 func (x *composeDarwinCLIFront) start(ctx context.Context) error {
+	x.rememberHostPinDeadline(ctx)
 	var err error
 	x.owned, err = x.creator.StartProtected(ctx, x.launch)
 	// Successful creation retains ownership even when a fast frontend exits
@@ -400,7 +643,13 @@ func (x *composeDarwinCLIFront) join(ctx context.Context) error {
 	if x.output.joined {
 		return nil
 	}
-	completion, err := x.owned.Join(ctx)
+	var completion darwinfixtureidentity.Completion
+	var err error
+	if x.joinAttempt != nil {
+		completion, err = x.joinAttempt(ctx)
+	} else {
+		completion, err = x.owned.Join(ctx)
+	}
 	if err != nil {
 		return err
 	}
@@ -412,27 +661,37 @@ func (x *composeDarwinCLIFront) join(ctx context.Context) error {
 	return nil
 }
 
-// Concurrent callers poll completion after attempting host discovery. A failed
-// full pin is not an exit watch; only the sole joined wait proves completion.
+// Concurrent callers join the original frontend before classifying surviving
+// children. Neither a host proof nor an empty roster substitutes for that join.
 func (x *composeDarwinCLIFront) finished(ctx context.Context) bool {
+	x.rememberHostPinDeadline(ctx)
 	if x.output.joined {
+		x.pinHost(ctx)
 		return true
 	}
 	if x.owned == nil {
 		return false
 	}
 	poll, cancel := context.WithTimeout(ctx, time.Millisecond)
-	defer cancel()
-	return x.join(poll) == nil
+	err := x.join(poll)
+	cancel()
+	if err != nil {
+		if ctx.Err() != nil {
+			x.pinHost(ctx)
+		}
+		return false
+	}
+	x.pinHost(ctx)
+	return true
 }
 
 func (x *composeDarwinCLIFront) wait(t *testing.T, f *bootstrapDockerFixture, name string, budget time.Duration) ([]byte, bool) {
 	t.Helper()
 	x.output.captureName = name
 	ctx, cancel := context.WithDeadline(context.Background(), x.output.started.Add(budget))
+	x.rememberHostPinDeadline(ctx)
 	var err error
 	for ctx.Err() == nil {
-		x.pinHost(ctx)
 		request, stop := context.WithTimeout(ctx, time.Millisecond)
 		err = x.join(request)
 		stop()
@@ -443,6 +702,8 @@ func (x *composeDarwinCLIFront) wait(t *testing.T, f *bootstrapDockerFixture, na
 	if !x.output.joined && err == nil {
 		err = context.DeadlineExceeded
 	}
+	x.pinHost(ctx)
+	x.retainHostPinFailure(t, f)
 	cancel()
 	if err != nil {
 		f.WriteEvidence(t, name+"-deadline-failure.json", map[string]any{"observedElapsedNanoseconds": time.Since(x.output.started).Nanoseconds(), "boundNanoseconds": int64(budget), "frontendWaitJoined": false, "outputCaptureAvailable": false})
@@ -450,7 +711,8 @@ func (x *composeDarwinCLIFront) wait(t *testing.T, f *bootstrapDockerFixture, na
 	}
 	x.output.writeCapture(t, f)
 	f.WriteEvidence(t, name+"-joined-diagnostic.json", x.output.joinedDiagnostic(x.creatorOwned()))
-	f.WriteEvidence(t, name+"-native-admission.json", map[string]any{"frontendWaitJoined": true, "frontendFullPinAvailable": x.proof != nil, "frontendFullPinRefused": x.pinErr != nil, "creatorHostProofAvailable": x.creatorOwned()})
+	f.WriteEvidence(t, name+"-native-admission.json", map[string]any{"frontendWaitJoined": true, "frontendFullPinAvailable": x.proof != nil, "frontendFullPinRefused": x.pinErr != nil, "creatorHostProofAvailable": x.creatorOwned(),
+		"hostAdmissionRefused": x.hostPinErr != nil, "hostAdmissionCategories": darwinfixtureidentity.FailureCategories(x.hostPinErr), "retainedHostProofCount": len(x.hostPinProofs), "noSurvivingCreatedHost": x.hostPinNoHost})
 	elapsed := x.output.terminal.at.Sub(x.output.started)
 	f.WriteEvidence(t, name+"-timing.json", map[string]any{"entryToExitNanoseconds": elapsed.Nanoseconds(), "boundNanoseconds": int64(budget), "exitSuccess": x.output.terminal.err == nil, "stdoutBytes": x.stdout.Len(), "stderrBytes": x.stderr.Len()})
 	if !x.output.captured || x.completion.Stdout.Overflow || x.completion.Stderr.Overflow || x.completion.Stdout.Err != nil || x.completion.Stderr.Err != nil {
@@ -458,6 +720,9 @@ func (x *composeDarwinCLIFront) wait(t *testing.T, f *bootstrapDockerFixture, na
 	}
 	if elapsed > budget {
 		t.Fatal("actual installed frontend exceeded its original request budget")
+	}
+	if x.retainHostPinFailure(t, f) {
+		t.Fatal("native host admission failed; original proof and failure owners retained")
 	}
 	if x.mustOwnHost && !x.creatorOwned() {
 		f.RetainForRecovery(t)
@@ -468,6 +733,12 @@ func (x *composeDarwinCLIFront) wait(t *testing.T, f *bootstrapDockerFixture, na
 
 func (x *composeDarwinCLIFront) cleanup(t *testing.T, f *bootstrapDockerFixture) {
 	t.Helper()
+	if !x.hostPinDeadline.IsZero() && !time.Now().Before(x.hostPinDeadline) {
+		ctx, cancel := context.WithDeadline(context.Background(), x.hostPinDeadline)
+		x.pinHost(ctx)
+		cancel()
+	}
+	x.retainHostPinFailure(t, f)
 	if x.owned == nil {
 		return
 	}
@@ -479,9 +750,14 @@ func (x *composeDarwinCLIFront) cleanup(t *testing.T, f *bootstrapDockerFixture)
 			t.Error("newly spawned host ownership was not established; fixture retained")
 		}
 	}()
-	if !x.output.joined {
+	if x.output.joined {
 		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 		x.pinHost(ctx)
+		x.retainHostPinFailure(t, f)
+		cancel()
+	}
+	if !x.output.joined {
+		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 		// Owned.Signal is cleanup-only authority retained even when post-start
 		// image or argument pinning fails. It still binds the native creator.
 		if err := x.owned.Signal(syscall.SIGTERM); err != nil && !errors.Is(err, darwinfixtureidentity.ErrExited) {
@@ -489,6 +765,10 @@ func (x *composeDarwinCLIFront) cleanup(t *testing.T, f *bootstrapDockerFixture)
 			t.Error("exact native frontend cooperative stop refused")
 		}
 		err := x.join(ctx)
+		if err == nil {
+			x.pinHost(ctx)
+			x.retainHostPinFailure(t, f)
+		}
 		cancel()
 		if err != nil {
 			if err := x.owned.Signal(syscall.SIGKILL); err != nil && !errors.Is(err, darwinfixtureidentity.ErrExited) {
@@ -497,6 +777,10 @@ func (x *composeDarwinCLIFront) cleanup(t *testing.T, f *bootstrapDockerFixture)
 			}
 			ctx, cancel = context.WithTimeout(context.Background(), 2*time.Second)
 			err = x.join(ctx)
+			if err == nil {
+				x.pinHost(ctx)
+				x.retainHostPinFailure(t, f)
+			}
 			cancel()
 			if err != nil {
 				f.RetainForRecovery(t)
@@ -510,6 +794,10 @@ func (x *composeDarwinCLIFront) cleanup(t *testing.T, f *bootstrapDockerFixture)
 	f.WriteEvidence(t, x.output.captureName+"-cleanup-joined-diagnostic.json", x.output.joinedDiagnostic(x.creatorOwned()))
 	if x.completion.Stdout.Overflow || x.completion.Stderr.Overflow || x.completion.Stdout.Err != nil || x.completion.Stderr.Err != nil {
 		t.Error("native frontend cleanup output exceeded capture bounds or failed")
+	}
+	if x.retainHostPinFailure(t, f) {
+		t.Error("native host admission cleanup remains uncertain; original owners retained")
+		return
 	}
 	if x.owned.Close() != nil {
 		f.RetainForRecovery(t)

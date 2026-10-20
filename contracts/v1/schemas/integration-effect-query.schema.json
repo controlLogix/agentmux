@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "effectRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "originalOperationId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "originalPayloadDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    }
+  },
+  "required": [
+    "effectRef",
+    "originalOperationId",
+    "originalPayloadDigest"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:integration-effect-query",
+  "title": "integration-effect-query v1"
+}

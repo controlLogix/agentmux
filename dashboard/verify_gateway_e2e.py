@@ -1,190 +1,281 @@
 #!/usr/bin/env python3
-"""End-to-end: run BOTH gateways as real servers against a fake Bedrock.
+"""Opt-in HTTP checks against an owned synthetic loopback Bedrock fixture.
 
-    python3 dashboard/verify_gateway_e2e.py
+Run only in the coordinator's serialized test slot:
+    python -B dashboard/verify_gateway_e2e.py
 
-NOT IN run_tests.sh, deliberately: it binds two loopback ports plus a fake upstream,
-which is more than a unit suite should need. It joins `test_models.py`,
-`test_stream_slots.sh` and the `?fit=1` readability matrix in the set of checks run on
-purpose rather than on every pass.
-
-WHAT IT ADDS over dashboard/test_gateway.py
--------------------------------------------
-That suite compares the reconstructed `taskmgmt/bedrock_gateway.py` against the
-preserved 2026-09-19 bytecode at the function level, including `relay_once` and
-`relay_stream` driven through a fake socket. What it cannot reach is the HTTP surface:
-routing and path aliases, trailing slashes, query strings, body handling, status codes,
-and the mapping of an upstream failure onto a 502.
-
-So this runs both implementations as real `ThreadingHTTPServer`s, points
-`bedrock_url()` at a local fake Bedrock rather than AWS, issues identical requests to
-each and compares status and body. 16 cases, including a streamed response and an
-upstream 400.
-
-No network and no credential: the fake upstream is loopback, and the bearer token is a
-literal placeholder that never leaves the process.
-
-Perishable in the same way the differential is - once CPython will not load the
-2026-09-19 bytecode there is nothing left to compare against. Its value is now, while
-both halves still run.
+No provider account or external network is used. Credentials are synthetic,
+ports are ephemeral, and original server/thread handles are joined on cleanup.
+Importing this module starts no server and changes no environment. CPython 3.12
+also runs the preserved-bytecode differential; other versions explicitly skip it.
 """
+import http.client
 import importlib.machinery
 import importlib.util
 import json
 import os
+from pathlib import Path
 import re
-import sys
+import tempfile
 import threading
-import urllib.error
-import urllib.request
+import unittest
+from unittest.mock import patch
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-REPO = "/mnt/c/Dev/agentmux"
-os.environ["AWS_BEARER_TOKEN_BEDROCK"] = "fake-key-for-local-test"
-
-MODE = {"kind": "once"}          # flipped per scenario by the fake upstream
+REPO = Path(__file__).resolve().parent.parent
+TOKEN = "synthetic-local-test-token-not-a-cloud-key-1234"
+SECRET = "synthetic-cloud-key-for-loopback-only"
+PRIVATE = "synthetic-private-provider-error"
 
 
 class FakeBedrock(BaseHTTPRequestHandler):
     protocol_version = "HTTP/1.1"
 
-    def log_message(self, *a):
+    def setup(self):
+        super().setup()
+        self.connection.settimeout(5)
+
+    def log_message(self, *args):
         pass
 
     def do_POST(self):
-        length = int(self.headers.get("Content-Length") or 0)
-        self.rfile.read(length)
-        kind = MODE["kind"]
-        if kind == "http_error":
-            body = b'{"message":"bad model"}'
-            self.send_response(400)
-            self.send_header("Content-Length", str(len(body)))
-            self.end_headers()
-            self.wfile.write(body)
-            return
-        if kind == "stream":
-            chunks = [
-                {"choices": [{"delta": {"content": "hel"}}]},
-                {"choices": [{"delta": {"content": "lo"}}]},
-                {"usage": {"prompt_tokens": 2, "completion_tokens": 3}},
-            ]
-            payload = b"".join(b"data: " + json.dumps(c).encode() + b"\n\n"
-                               for c in chunks) + b"data: [DONE]\n\n"
-            self.send_response(200)
-            self.send_header("Content-Type", "text/event-stream")
-            self.send_header("Content-Length", str(len(payload)))
-            self.end_headers()
-            self.wfile.write(payload)
-            return
-        body = json.dumps({
-            "id": "up_1",
-            "choices": [{"message": {"content": "hello from bedrock"}}],
-            "usage": {"prompt_tokens": 2, "completion_tokens": 3},
-        }).encode()
-        self.send_response(200)
-        self.send_header("Content-Type", "application/json")
-        self.send_header("Content-Length", str(len(body)))
+        body = self.rfile.read(int(self.headers.get("Content-Length", "0")))
+        self.server.observed.append((self.headers.get("Authorization"), json.loads(body)))
+        mode = self.server.mode
+        status, content_type = 200, "application/json"
+        if mode == "http_error":
+            status, payload = 400, json.dumps({"message": PRIVATE + SECRET}).encode()
+        elif mode == "bad_json":
+            payload = b"{broken"
+        elif mode in ("stream", "lost_stream", "tool_stream"):
+            chunks = [{"choices": [{"delta": {"content": "hel"}}]},
+                      {"choices": [{"delta": {"content": "lo"}}]},
+                      {"usage": {"prompt_tokens": 2, "completion_tokens": 3}}]
+            if mode == "tool_stream":
+                chunks += [{"choices": [{"delta": {"tool_calls": [{"index": 0, "id": "call1",
+                    "function": {"name": "shell", "arguments": '{"a":1}'}}]}}]}]
+            payload = b"".join(b"data: " + json.dumps(chunk).encode() + b"\n\n" for chunk in chunks)
+            if mode != "lost_stream":
+                payload += b"data: [DONE]\n\n"
+            content_type = "text/event-stream"
+        else:
+            payload = json.dumps({"id": "up_1", "choices": [{"message": {"content": "hello from bedrock"}}],
+                "usage": {"prompt_tokens": 2, "completion_tokens": 3}}).encode()
+        self.send_response(status)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(payload)))
+        self.send_header("Connection", "close")
         self.end_headers()
-        self.wfile.write(body)
+        self.wfile.write(payload)
+        self.close_connection = True
 
 
 def load(name, path, sourceless=False):
-    if sourceless:
-        loader = importlib.machinery.SourcelessFileLoader(name, path)
-        spec = importlib.util.spec_from_file_location(name, path, loader=loader)
-    else:
-        spec = importlib.util.spec_from_file_location(name, path)
+    loader = importlib.machinery.SourcelessFileLoader(name, str(path)) if sourceless else None
+    spec = importlib.util.spec_from_file_location(name, path, loader=loader)
     module = importlib.util.module_from_spec(spec)
-    sys.modules[name] = module
     spec.loader.exec_module(module)
     return module
 
 
-upstream = ThreadingHTTPServer(("127.0.0.1", 0), FakeBedrock)
-threading.Thread(target=upstream.serve_forever, daemon=True).start()
-UPSTREAM_URL = f"http://127.0.0.1:{upstream.server_address[1]}/chat"
-
-old = load("gw_original", f"{REPO}/taskmgmt/recovered/bedrock_gateway.cpython-312.pyc.bin", True)
-new = load("gw_new", f"{REPO}/taskmgmt/bedrock_gateway.py")
-
-servers = {}
-for label, module in (("original", old), ("rewrite", new)):
-    module.bedrock_url = lambda: UPSTREAM_URL          # redirect off the internet
-    module.STATE.update(region="us-west-2", model_default="m-default", verbose=False,
-                        log=None)
-    server = ThreadingHTTPServer(("127.0.0.1", 0), module.Gateway)
-    server.daemon_threads = True
-    threading.Thread(target=server.serve_forever, daemon=True).start()
-    servers[label] = f"http://127.0.0.1:{server.server_address[1]}"
-
-VOLATILE = re.compile(r'(resp_gw_\d+|"created_at":\s*\d+|"id":\s*"resp_gw[^"]*")')
-checked = mismatched = 0
-failures = []
+def normalized(raw):
+    """Omit clocks and the explicitly added usage/outcome extension only."""
+    def clean(value):
+        if isinstance(value, dict):
+            if value.get("object") == "response":
+                value.pop("agentmux", None)
+                value.pop("created_at", None)
+            return {key: clean(item) for key, item in value.items()}
+        if isinstance(value, list):
+            return [clean(item) for item in value]
+        if isinstance(value, str):
+            return re.sub(r"resp_gw_[0-9]+", "resp_gw_X", value)
+        return value
+    text = raw.decode()
+    if text.startswith("event:"):
+        return [clean(json.loads(line[6:])) for line in text.splitlines() if line.startswith("data: ")]
+    return clean(json.loads(text))
 
 
-def fetch(base, method, path, body=None, headers=None):
-    url = base + path
-    data = None
-    request_headers = dict(headers or {})
-    if body is not None:
-        data = body if isinstance(body, bytes) else json.dumps(body).encode()
-        request_headers.setdefault("Content-Type", "application/json")
-    request = urllib.request.Request(url, method=method, data=data,
-                                     headers=request_headers)
-    try:
-        with urllib.request.urlopen(request, timeout=20) as response:
-            return response.status, response.read().decode("utf-8", "replace")
-    except urllib.error.HTTPError as err:
-        return err.code, err.read().decode("utf-8", "replace")
-    except Exception as err:
-        return "exc", f"{type(err).__name__}"
+class GatewayHTTPTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.owned = []
+        cls.home = tempfile.TemporaryDirectory(prefix="agentmux-gateway-http-")
+        cls.addClassCleanup(cls.home.cleanup)
+        cls.environment = patch.dict(os.environ, {"HOME": cls.home.name,
+            "AWS_BEARER_TOKEN_BEDROCK": SECRET, "AGENTMUX_BEDROCK_GATEWAY_TOKEN": TOKEN}, clear=True)
+        cls.environment.start()
+        cls.addClassCleanup(cls.environment.stop)
+        cls.addClassCleanup(cls.stop_servers)
+        cls.current = load("gateway_current_http", REPO / "taskmgmt/bedrock_gateway.py")
+        try:
+            cls.original = load("gateway_original_http",
+                REPO / "taskmgmt/recovered/bedrock_gateway.cpython-312.pyc.bin", True)
+        except (ImportError, OSError, ValueError):
+            cls.original = None
+        cls.upstream = cls.start_server(FakeBedrock)
+        cls.upstream.mode, cls.upstream.observed = "once", []
+        upstream_url = f"http://127.0.0.1:{cls.upstream.server_address[1]}/chat"
+        cls.gateways = {}
+        for name, module in (("current", cls.current), ("original", cls.original)):
+            if module is None:
+                continue
+            module.bedrock_url = lambda: upstream_url
+            module.STATE.update(region="us-west-2", model_default="fixture-model", verbose=False,
+                log=None, allowed_models=("fixture-model",))
+            cls.gateways[name] = cls.start_server(module.Gateway,
+                getattr(module, "GatewayServer", ThreadingHTTPServer))
+
+    @classmethod
+    def start_server(cls, handler, server_class=ThreadingHTTPServer):
+        server = server_class(("127.0.0.1", 0), handler)
+        server.daemon_threads = False
+        thread = threading.Thread(target=server.serve_forever, kwargs={"poll_interval": 0.05})
+        try:
+            thread.start()
+        except BaseException:
+            server.server_close()
+            raise
+        cls.owned.append((server, thread))
+        return server
+
+    @classmethod
+    def stop_servers(cls):
+        failures = []
+        for server, thread in reversed(cls.owned):
+            server.shutdown()
+            thread.join(timeout=5)
+            if thread.is_alive():
+                failures.append("gateway fixture thread did not stop; original handle retained")
+            else:
+                server.server_close()
+        if failures:
+            raise RuntimeError("; ".join(failures))
+
+    def setUp(self):
+        self.upstream.mode = "once"
+        self.upstream.observed.clear()
+
+    def fetch(self, method="POST", path="/v1/responses", body=None, *,
+              token=TOKEN, headers=None, which="current"):
+        values = {"Connection": "close"}
+        if token is not None:
+            values["Authorization"] = "Bearer " + token
+        if body is not None:
+            body = body if isinstance(body, bytes) else json.dumps(body).encode()
+            values["Content-Type"] = "application/json"
+        values.update(headers or {})
+        server = self.gateways[which]
+        connection = http.client.HTTPConnection("127.0.0.1", server.server_address[1], timeout=5)
+        try:
+            connection.request(method, path, body=body, headers=values)
+            response = connection.getresponse()
+            return response.status, response.read(self.current.MAX_UPSTREAM_BODY + 1)
+        finally:
+            connection.close()
+
+    def test_health_aliases(self):
+        for path in ("/health", "/v1/health", "/health/", "/health?x=1"):
+            status, body = self.fetch("GET", path, token=None)
+            self.assertEqual(status, 200)
+            self.assertFalse(json.loads(body)["managed_project_access"])
+        self.assertEqual(self.upstream.observed, [])
+
+    def test_authentication_and_browser_refusals(self):
+        for token, headers, expected in ((None, {}, 401), (SECRET, {}, 401),
+                (TOKEN, {"Origin": "https://example.invalid"}, 403)):
+            status, body = self.fetch(body={"input": "hi"}, token=token, headers=headers)
+            self.assertEqual(status, expected)
+            self.assertNotIn(SECRET.encode(), body)
+        self.assertEqual(self.upstream.observed, [])
+
+    def test_models_and_capabilities(self):
+        status, body = self.fetch("GET", "/v1/models")
+        self.assertEqual(status, 200)
+        self.assertEqual([item["id"] for item in json.loads(body)["data"]], ["fixture-model"])
+        status, body = self.fetch("GET", "/v1/capabilities")
+        self.assertEqual(status, 200)
+        self.assertFalse(json.loads(body)["managed_project_access"])
+
+    def test_response_aliases(self):
+        for path in ("/v1/responses", "/responses", "/v1/responses?x=1", "/v1/responses/"):
+            status, body = self.fetch(path=path, body={"input": "hi"})
+            self.assertEqual(status, 200)
+            self.assertEqual(json.loads(body)["status"], "completed")
+        self.assertTrue(all(auth == "Bearer " + SECRET for auth, _ in self.upstream.observed))
+
+    def test_missing_paths_do_not_echo_request(self):
+        for method in ("GET", "POST"):
+            status, body = self.fetch(method, "/missing?private=" + PRIVATE, {"input": "hi"})
+            self.assertEqual(status, 404)
+            self.assertNotIn(PRIVATE.encode(), body)
+
+    def test_invalid_and_oversized_bodies(self):
+        for body in (b"{not-json", b"", b"[]", b"null", b'{"input":"a","input":"b"}'):
+            self.assertEqual(self.fetch(body=body)[0], 400)
+        for headers, expected in (({"Content-Length": str(self.current.MAX_BODY + 1)}, 413),
+                ({"Transfer-Encoding": "chunked"}, 400), ({"Content-Type": "text/plain"}, 415)):
+            self.assertEqual(self.fetch(body=b"{}", headers=headers)[0], expected)
+        self.assertEqual(self.upstream.observed, [])
+
+    def test_unsupported_input_models_and_project_claims(self):
+        for fields in ({"model": "other-model"}, {"projectId": "unrelated-project"},
+                {"input": [{"type": "item_reference", "id": "other"}]},
+                {"tools": [{"type": "web_search"}]}):
+            self.assertEqual(self.fetch(body={"input": "hi", **fields})[0], 422)
+        self.assertEqual(self.upstream.observed, [])
+
+    def test_namespaced_function_tools(self):
+        status, _ = self.fetch(body={"input": "hi", "tools": [{"type": "namespace", "name": "ns",
+            "tools": [{"type": "function", "name": "shell", "parameters": {}}]}]})
+        self.assertEqual(status, 200)
+        self.assertEqual(self.upstream.observed[0][1]["tools"][0]["function"]["name"], "shell")
+
+    def test_stream_text_tools_and_usage(self):
+        for mode in ("stream", "tool_stream"):
+            self.upstream.mode = mode
+            status, body = self.fetch(body={"input": "hi", "stream": True})
+            self.assertEqual(status, 200)
+            final = normalized(body)[-1]
+            self.assertEqual(final["type"], "response.completed")
+            self.assertEqual(final["response"]["output"][0]["content"][0]["text"], "hello")
+            self.assertEqual(final["response"]["usage"]["total_tokens"], 5)
+            if mode == "tool_stream":
+                self.assertEqual(final["response"]["output"][1]["arguments"], '{"a":1}')
+
+    def test_lost_stream_reply_remains_unknown(self):
+        self.upstream.mode = "lost_stream"
+        status, body = self.fetch(body={"input": "hi", "stream": True})
+        self.assertEqual(status, 200)
+        self.assertNotIn(b'"type": "response.completed"', body)
+        self.assertEqual(normalized(body)[-1]["error"]["upstream_outcome"], "unknown")
+
+    def test_provider_errors_are_bounded_and_redacted(self):
+        for mode, expected in (("http_error", "upstream_http_error"), ("bad_json", "invalid_upstream_json")):
+            self.upstream.mode = mode
+            status, body = self.fetch(body={"input": "hi"})
+            self.assertEqual(status, 502)
+            self.assertNotIn(PRIVATE.encode(), body)
+            self.assertNotIn(SECRET.encode(), body)
+            self.assertEqual(json.loads(body)["error"]["code"], expected)
+
+    def test_retained_http_differential(self):
+        if self.original is None:
+            self.skipTest("preserved CPython 3.12 bytecode cannot load; current HTTP cases still run")
+        cases = [(path, {"input": "hi"}, "once") for path in
+            ("/v1/responses", "/responses", "/v1/responses?x=1", "/v1/responses/")]
+        cases.extend([("/responses", {"input": "hi", "stream": True}, "stream"),
+            ("/responses", {"input": "hi", "stream": True}, "tool_stream"),
+            ("/responses", {"input": "hi", "tools": [{"type": "namespace", "name": "ns",
+                "tools": [{"type": "function", "name": "shell", "parameters": {}}]}]}, "once")])
+        for path, body, mode in cases:
+            with self.subTest(path=path, mode=mode):
+                self.upstream.mode = mode
+                old_status, old_body = self.fetch(path=path, body=body, which="original")
+                status, current_body = self.fetch(path=path, body=body)
+                self.assertEqual((status, normalized(current_body)), (old_status, normalized(old_body)))
 
 
-def compare(label, method, path, body=None, headers=None, mode="once"):
-    global checked, mismatched
-    checked += 1
-    results = []
-    for which in ("original", "rewrite"):
-        MODE["kind"] = mode
-        status, text = fetch(servers[which], method, path, body, headers)
-        results.append((status, VOLATILE.sub("X", text)))
-    if results[0] != results[1]:
-        mismatched += 1
-        failures.append((label, results[0], results[1]))
-    else:
-        print(f"  ok    {label:<44} {str(results[0][0]):>4}  "
-              f"{results[0][1][:60]!r}")
-
-
-compare("GET /health", "GET", "/health")
-compare("GET /v1/health", "GET", "/v1/health")
-compare("GET /health/ (trailing slash)", "GET", "/health/")
-compare("GET /v1/models", "GET", "/v1/models")
-compare("GET /nope -> 404", "GET", "/nope")
-compare("GET /", "GET", "/")
-
-compare("POST /v1/responses", "POST", "/v1/responses", {"input": "hi"})
-compare("POST /responses (alias)", "POST", "/responses", {"input": "hi"})
-compare("POST /v1/responses?x=1", "POST", "/v1/responses?x=1", {"input": "hi"})
-compare("POST /v1/responses/ (slash)", "POST", "/v1/responses/", {"input": "hi"})
-compare("POST /wrong -> 404", "POST", "/wrong", {"input": "hi"})
-compare("POST invalid JSON -> 400", "POST", "/v1/responses", b"{not json")
-compare("POST empty body", "POST", "/v1/responses", b"")
-compare("POST with model + tools", "POST", "/v1/responses", {
-    "model": "m1", "input": "hi",
-    "tools": [{"type": "namespace", "name": "ns", "tools": [
-        {"type": "function", "name": "shell", "parameters": {}}]}]})
-compare("POST streaming", "POST", "/v1/responses",
-        {"input": "hi", "stream": True}, mode="stream")
-compare("POST upstream 400 -> 502", "POST", "/v1/responses", {"input": "hi"},
-        mode="http_error")
-
-print()
-print(f"compared {checked} end-to-end HTTP cases")
-print(f"mismatches: {mismatched}")
-for label, a, b in failures:
-    print()
-    print(f"  MISMATCH {label}")
-    print(f"    original: {str(a)[:300]}")
-    print(f"    rewrite:  {str(b)[:300]}")
-sys.exit(1 if mismatched else 0)
+if __name__ == "__main__":
+    unittest.main(verbosity=2)

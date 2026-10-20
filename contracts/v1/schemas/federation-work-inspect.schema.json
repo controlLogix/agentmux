@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-work-inspect",
+  "title": "federation-work-inspect v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sourceBinding": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "purpose": {
+              "const": "agentmux-work-source-binding-v1"
+            },
+            "nonce": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "coreTransport": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "mode": {
+                  "const": "tm218-core-v1"
+                }
+              },
+              "required": [
+                "mode"
+              ]
+            }
+          },
+          "required": [
+            "purpose",
+            "nonce"
+          ]
+        }
+      },
+      "required": []
+    }
+  },
+  "required": [
+    "resourceRef",
+    "input"
+  ]
+}

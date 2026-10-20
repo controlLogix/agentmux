@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Verify the auth provider/method plumbing end to end.
 
-    python3 dashboard/test_auth.py       # needs the dashboard running on 8787
+    Run through dashboard/run_tests.sh against its disposable dashboard.
 
 Runs setup_auth.py against an ISOLATED HOME under /tmp with an obviously fake
 token, so the operator's real ~/.agentmux/env and ~/.codex are never touched.
@@ -14,15 +14,13 @@ What this is actually proving:
   - a provider's SHARED attributes are stored ONCE on the provider, not copied
     onto each method that uses them;
   - an unconfigured provider blocks every method that depends on it;
-  - codex genuinely ACCEPTS the generated profile (--strict-config is the only
-    thing that validates one);
+  - the profile has valid TOML while native client acceptance stays unverified;
   - agentmux resolves a method into the right flags and exports;
   - no secret VALUE reaches the generated config, the HTTP API, or any output;
   - /api/auth/select keeps the same guards as every other mutating endpoint.
 
-NOTE ON getpass: it reads /dev/tty when a controlling terminal exists, ignoring a
-pipe. So every setup_auth run here goes through `setsid`, which detaches from the
-terminal and makes getpass fall back to stdin. Without it the test simply hangs.
+The subprocess test replaces getpass with a synthetic input reader. Production
+setup requires a terminal with hidden input and does not permit echoed fallback.
 """
 
 import atexit
@@ -38,9 +36,17 @@ import urllib.request
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-# The gate runs a private dashboard and exports its URL (run_tests.sh, TM-223);
-# run by hand, this still talks to the operator's dashboard on 8787.
-BASE = os.environ.get("AGENTMUX_BASE_URL", "http://127.0.0.1:8787")
+# Refuse missing fixture context before any configuration read or HTTP request.
+BASE = os.environ.get("AGENTMUX_BASE_URL", "")
+_fixture_home = os.environ.get("AGENTMUX_HOME", "")
+if (not re.fullmatch(r"http://127[.]0[.]0[.]1:[0-9]+", BASE)
+        or BASE.endswith(":8787") or not _fixture_home
+        or os.environ.get("AGENTMUX_NO_COURIER") != "1"):
+    raise SystemExit("Use the disposable dashboard runner; no test request was sent.")
+try:
+    Path(_fixture_home).resolve().relative_to(Path(tempfile.gettempdir()).resolve())
+except ValueError:
+    raise SystemExit("The auth integration test requires a temporary fixture home.")
 FAKE_TOKEN = "FAKE-NOT-A-REAL-KEY-do-not-use-0000"
 GATEWAY = "http://127.0.0.1:4000/v1"
 CODEX_MODEL = "example-model-v1"
@@ -98,16 +104,14 @@ env["CODEX_HOME"] = str(sandbox / ".codex")
 env["AGENTMUX_REPO"] = str(REPO)
 env["AGENTMUX_HOME"] = str(sandbox / ".agentmux")
 
-SETSID = shutil.which("setsid")
-
-
 def setup_auth(args, answers="", timeout=180):
-    """Run setup_auth.py detached from the terminal so getpass reads stdin."""
-    argv = [sys.executable, "taskmgmt/setup_auth.py", *args]
-    if SETSID:
-        argv = [SETSID, "-w", *argv]
-    return subprocess.run(argv, cwd=REPO, env=env, input=answers,
-                          capture_output=True, text=True, timeout=timeout)
+    """Exercise the command with synthetic input and no terminal fallback."""
+    harness = ("import getpass, runpy, sys; "
+               "getpass.getpass = lambda prompt: sys.stdin.readline().rstrip('\\n'); "
+               "sys.argv = ['taskmgmt/setup_auth.py', *sys.argv[1:]]; "
+               "runpy.run_path('taskmgmt/setup_auth.py', run_name='__main__')")
+    return subprocess.run([sys.executable, "-c", harness, *args], cwd=REPO, env=env,
+                          input=answers, capture_output=True, text=True, timeout=timeout)
 
 
 def split_resolution(stdout):
@@ -132,8 +136,6 @@ def resolve(method_id, cli):
 # ORDER MATTERS HERE. The "nothing configured yet" refusals have to run BEFORE the
 # providers are filled in, because configuring one is what makes its methods resolve.
 print(f"--- nothing configured: a method is refused, and says what is missing ({sandbox}) ---")
-if not SETSID:
-    print("        note: setsid not found; getpass may block")
 out = resolve("claude-vertex", "claude")
 check("unconfigured PROVIDER blocks its method", True,
       out.returncode != 0 and "vertex.gcp_project" in (out.stdout + out.stderr))
@@ -213,11 +215,12 @@ check("wire_api is responses", True, 'wire_api = "responses"' in profile)
 check("base_url is the gateway", True, f'base_url = "{GATEWAY}"' in profile)
 check("model is the configured one", True, f'model = "{CODEX_MODEL}"' in profile)
 
-print("--- codex must actually accept it (--strict-config) ---")
+print("--- local profile syntax does not establish native client acceptance ---")
 result = setup_auth(["--verify", "codex-custom"])
 combined = result.stdout + result.stderr
-check("verify exits 0", 0, result.returncode)
-check("codex loaded the profile", True, "codex loaded the profile" in combined)
+check("verify reports unqualified live access", 2, result.returncode)
+check("TOML syntax checked without starting Codex", True, "profile TOML syntax is valid" in combined)
+check("native client acceptance remains unknown", True, "UNKNOWN" in combined)
 check("verify reports presence only", True, "present (value not shown)" in combined)
 check("verify never prints the secret", False, FAKE_TOKEN in combined)
 
@@ -287,7 +290,7 @@ check("env file reported by mode only", {"path", "mode", "count"},
 print("--- /api/auth/select keeps the standard guards ---")
 # HTTP writes belong to the selected server home, not the setup_auth subprocess
 # sandbox. Restore that fixture only; never restore an unrelated default-home file.
-LIVE_AUTH = Path(os.environ.get("AGENTMUX_HOME", str(Path.home() / ".agentmux"))) / "auth.json"
+LIVE_AUTH = Path(_fixture_home) / "auth.json"
 _live_before = LIVE_AUTH.read_bytes() if LIVE_AUTH.exists() else None
 
 def _restore_live_auth(announce=True):

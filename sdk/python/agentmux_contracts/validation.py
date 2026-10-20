@@ -1,6 +1,7 @@
 """Offline schema resolution. No schema or key URL is fetched from a message."""
 from collections import OrderedDict
 import hashlib
+import os
 from datetime import datetime
 from pathlib import Path
 from threading import RLock
@@ -12,15 +13,51 @@ from .wire import ContractError, _check, strict_loads
 
 DEFAULT_SCHEMA_DIR = Path(__file__).resolve().parents[3] / "contracts" / "v1" / "schemas"
 _CACHE = OrderedDict()
+_CATALOG_CACHE = OrderedDict()
 _CACHE_LOCK = RLock()
 _CACHE_LIMIT = 8
 
 
+def _catalog(root):
+    def identity(info):
+        # ctime changes on a write even if size and mtime are restored. File
+        # identity also catches atomic replacement, including equal bytes.
+        return (info.st_dev, info.st_ino, info.st_size, info.st_mtime_ns, info.st_ctime_ns)
+    sources, versions = [], []
+    with os.scandir(root) as entries:
+        for entry in sorted(entries, key=lambda item: item.name):
+            if not entry.name.endswith('.schema.json'):
+                continue
+            path = Path(entry.path)
+            link = identity(entry.stat(follow_symlinks=False))
+            if entry.is_symlink():
+                path = path.resolve(strict=True)
+            sources.append(path)
+            versions.append((entry.name, str(path), link, identity(entry.stat())))
+    return (str(root), identity(root.stat()), tuple(versions)), sources
+
+
 def _validators(root):
-    # Read once per request: byte digests detect changes even when mtimes do not.
-    loaded = [(path.resolve(), path.read_bytes()) for path in sorted(root.glob("*.schema.json"))]
+    root = root.resolve()
+    version, sources = _catalog(root)
+    with _CACHE_LOCK:
+        identity = _CATALOG_CACHE.get(version)
+        # Windows ctime is creation time, so retain content reads there.
+        if os.name == 'posix' and identity in _CACHE:
+            _CATALOG_CACHE.move_to_end(version)
+            _CACHE.move_to_end(identity)
+            return _CACHE[identity]
+    # Reload every file after a catalog change. Keep byte-digest cache identity
+    # and full catalog validation; no schema or authority is omitted.
+    loaded = [(path, path.read_bytes()) for path in sources]
+    after, _ = _catalog(root)
+    if after != version:
+        raise ValueError('schema catalog changed while loading')
     identity = tuple((str(path), hashlib.sha256(raw).digest()) for path, raw in loaded)
     with _CACHE_LOCK:
+        _CATALOG_CACHE[version] = identity
+        if len(_CATALOG_CACHE) > _CACHE_LIMIT:
+            _CATALOG_CACHE.popitem(last=False)
         if identity in _CACHE:
             _CACHE.move_to_end(identity)
             return _CACHE[identity]

@@ -1,0 +1,457 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "profileId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "identities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "ref": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "principalId": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+          },
+          "kind": {
+            "enum": [
+              "human",
+              "device",
+              "service",
+              "plugin"
+            ]
+          },
+          "status": {
+            "enum": [
+              "active",
+              "revoked"
+            ]
+          },
+          "externalIdentity": {
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "issuer": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 2048
+                  },
+                  "subject": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 512
+                  }
+                },
+                "required": [
+                  "issuer",
+                  "subject"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "ref",
+          "principalId",
+          "kind",
+          "status",
+          "externalIdentity"
+        ]
+      },
+      "maxItems": 1024
+    },
+    "issuers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "ref": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "identityRef": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "instanceId": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+          },
+          "publicKey": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "revoked"
+            ]
+          },
+          "issuedAt": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+          },
+          "expiresAt": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+          }
+        },
+        "required": [
+          "ref",
+          "identityRef",
+          "instanceId",
+          "publicKey",
+          "status",
+          "issuedAt",
+          "expiresAt"
+        ]
+      },
+      "maxItems": 1024
+    },
+    "transports": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "ref": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "identityRef": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "issuerRef": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "method": {
+            "enum": [
+              "nats-credential-mapping",
+              "oidc-session"
+            ]
+          },
+          "status": {
+            "enum": [
+              "active",
+              "revoked"
+            ]
+          },
+          "issuedAt": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+          },
+          "expiresAt": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+          },
+          "publicKey": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$"
+          }
+        },
+        "required": [
+          "ref",
+          "identityRef",
+          "issuerRef",
+          "method",
+          "status",
+          "issuedAt",
+          "expiresAt",
+          "publicKey"
+        ]
+      },
+      "maxItems": 1024
+    },
+    "memberships": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "ref": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "identityRef": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "scope": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "revoked"
+            ]
+          }
+        },
+        "required": [
+          "ref",
+          "identityRef",
+          "scope",
+          "status"
+        ]
+      },
+      "maxItems": 1024
+    },
+    "grants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "ref": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "callerRef": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "actorRef": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "scope": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+          },
+          "contractId": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+          },
+          "resourceId": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+          },
+          "decision": {
+            "enum": [
+              "allowed",
+              "denied",
+              "review-required"
+            ]
+          },
+          "status": {
+            "enum": [
+              "active",
+              "revoked"
+            ]
+          },
+          "issuedAt": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+          },
+          "expiresAt": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+          },
+          "delegationRef": {
+            "anyOf": [
+              {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "definitionTarget": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]{0,63}$"
+                  },
+                  "scope": {
+                    "enum": [
+                      "repo",
+                      "global"
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "scope"
+                ]
+              }
+            ]
+          }
+        },
+        "required": [
+          "ref",
+          "callerRef",
+          "actorRef",
+          "scope",
+          "contractId",
+          "resourceId",
+          "decision",
+          "status",
+          "issuedAt",
+          "expiresAt",
+          "delegationRef",
+          "definitionTarget"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "contractId": {
+                  "enum": [
+                    "definition-save",
+                    "definition-drop",
+                    "definition-effect-query",
+                    "definition-effect-complete",
+                    "definition-effect-retry"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definitionTarget": {
+                  "type": "object"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "definitionTarget": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "maxItems": 1024
+    },
+    "approvals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "ref": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "grantRef": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "approverRef": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "payloadDigest": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+          },
+          "audience": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "hubId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              },
+              "serviceId": {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+              }
+            },
+            "required": [
+              "hubId",
+              "serviceId"
+            ]
+          },
+          "decision": {
+            "enum": [
+              "approved",
+              "rejected"
+            ]
+          },
+          "status": {
+            "enum": [
+              "active",
+              "revoked"
+            ]
+          },
+          "issuedAt": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+          },
+          "expiresAt": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+          },
+          "operationId": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+          },
+          "expectedVersion": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+          },
+          "approverGrantRef": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          }
+        },
+        "required": [
+          "ref",
+          "grantRef",
+          "approverRef",
+          "payloadDigest",
+          "audience",
+          "decision",
+          "status",
+          "issuedAt",
+          "expiresAt",
+          "operationId",
+          "expectedVersion",
+          "approverGrantRef"
+        ]
+      },
+      "maxItems": 1024
+    },
+    "organizationId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "nativeInstances": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {
+        "$ref": "urn:agentmux:contract:1:identity-native-instance"
+      }
+    },
+    "legacyAliases": {
+      "type": "array",
+      "maxItems": 2048,
+      "items": {
+        "$ref": "urn:agentmux:contract:1:identity-legacy-alias"
+      }
+    },
+    "secretReferences": {
+      "type": "array",
+      "maxItems": 256,
+      "items": {"$ref": "urn:agentmux:contract:1:identity-secret-reference"}
+    },
+    "ordinarySecretReferences": {
+      "type": "array",
+      "maxItems": 128,
+      "items": {"$ref": "urn:agentmux:contract:1:identity-ordinary-secret-reference"}
+    },
+    "applicationAccounts": {
+      "type": "array",
+      "maxItems": 128,
+      "items": {"$ref": "urn:agentmux:contract:1:identity-application-account"}
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "profileId",
+    "identities",
+    "issuers",
+    "transports",
+    "memberships",
+    "grants",
+    "approvals",
+    "organizationId"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:identity-authority-state",
+  "title": "Retained identity authority state v1",
+  "description": "One bounded owner aggregate. Public verification keys and references only; never credentials or signing seeds. Direct nondelegated admission is the initial supported slice. Enrollment and all changes require authenticated owner operations. Empty or missing state never enables enrollment."
+}

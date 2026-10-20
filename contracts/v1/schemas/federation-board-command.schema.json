@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-board-command",
+  "title": "Agentmux federation-board-command v1",
+  "description": "Legacy board command derived from actual authenticated local request and protected resource enrollment. Attribution is display provenance, not authenticated identity.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "attribution": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    },
+    "input": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "command": {
+              "const": "move"
+            },
+            "key": {
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "todo",
+                "doing",
+                "review",
+                "done",
+                "blocked"
+              ]
+            }
+          },
+          "required": [
+            "command",
+            "key",
+            "status"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "command": {
+              "const": "assign"
+            },
+            "key": {
+              "type": "string"
+            },
+            "to": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "command",
+            "key",
+            "to"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "command": {
+              "const": "comment"
+            },
+            "key": {
+              "type": "string"
+            },
+            "text": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "command",
+            "key",
+            "text"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "command": {
+              "const": "claim"
+            },
+            "key": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "command",
+            "key"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "command": {
+              "const": "add"
+            },
+            "title": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "body": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "labels": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "assign": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "from": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "command"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "resourceRef",
+    "attribution",
+    "input"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "authorityId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "record": {
+      "$ref": "urn:agentmux:contract:1:identity-authority-state#/properties/approvals/items"
+    },
+    "previousRef": {
+      "anyOf": [
+        {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "authorityId",
+    "record",
+    "previousRef"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:identity-approval-set",
+  "title": "identity-approval-set payload v1",
+  "description": "The identity owner authenticates and authorizes the signed operation, checks expectedVersion and current authority, and commits the resulting state and audit together. Shape validation does not authorize a change."
+}

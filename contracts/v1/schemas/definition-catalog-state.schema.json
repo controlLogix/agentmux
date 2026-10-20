@@ -1,0 +1,185 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "scope": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+    },
+    "definitions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "definitionId": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+          },
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,63}$"
+          },
+          "targetScope": {
+            "enum": [
+              "repo",
+              "global"
+            ]
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "checksum": {
+            "anyOf": [
+              {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "deleted": {
+            "type": "boolean"
+          },
+          "contentRef": {
+            "anyOf": [
+              {
+                "$ref": "urn:agentmux:contract:1:common#/$defs/artifact"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "effectReceiptRef": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "operationId": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                  },
+                  "payloadDigest": {
+                    "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                  }
+                },
+                "required": [
+                  "operationId",
+                  "payloadDigest"
+                ]
+              }
+            ],
+            "description": "Latest retained effect receipt operation and digest in this catalog aggregate. Resolve through its indexed outcome and check definition version and original effect identity; this pointer alone grants no authority."
+          }
+        },
+        "required": [
+          "definitionId",
+          "name",
+          "targetScope",
+          "version",
+          "checksum",
+          "deleted",
+          "contentRef"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "deleted": {
+                  "const": true
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "checksum": {
+                  "type": "null"
+                },
+                "contentRef": {
+                  "type": "null"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "checksum": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                },
+                "contentRef": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/artifact"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "maxItems": 128,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "scope",
+    "definitions"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:definition-catalog-state",
+  "title": "Retained definition catalog state v1",
+  "description": "One aggregate owns the full logical-name/ID mapping for its exact organization/project/workspace scope. The owner rejects duplicate definition IDs or logical targets across all entries, including tombstones, before one conditional append. This is not a separate authoritative name index. Bodies remain at most 64 KiB; immutable content uses owner-controlled references. Check content digest equals checksum and scope against every target. Deletion retains identity/version; recreation advances that version.",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "scope": {
+            "properties": {
+              "projectId": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "scope": {
+            "properties": {
+              "workspaceId": {
+                "type": "null"
+              }
+            }
+          },
+          "definitions": {
+            "items": {
+              "properties": {
+                "targetScope": {
+                  "const": "global"
+                }
+              }
+            }
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "definitions": {
+            "items": {
+              "properties": {
+                "targetScope": {
+                  "const": "repo"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

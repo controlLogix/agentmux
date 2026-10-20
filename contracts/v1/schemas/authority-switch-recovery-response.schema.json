@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:authority-switch-recovery-response",
+  "title": "Agentmux authority-switch recovery response v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "algorithm": {"const": "Ed25519"},
+    "canonicalization": {"const": "RFC8785-JCS-UTF8"},
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "purpose": {"const": "agentmux-authority-switch-recovery-response-v1"},
+        "profileId": {"$ref": "urn:agentmux:contract:1:common#/$defs/identifier"},
+        "hubId": {"$ref": "urn:agentmux:contract:1:common#/$defs/identifier"},
+        "authorityId": {"$ref": "urn:agentmux:contract:1:common#/$defs/identifier"},
+        "serviceId": {"const": "authority-switch-owner"},
+        "serviceIdentityRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "serviceInstanceId": {"$ref": "urn:agentmux:contract:1:common#/$defs/identifier"},
+        "signingKeyRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "requestDigest": {"$ref": "urn:agentmux:contract:1:common#/$defs/digest"},
+        "operation": {"$ref": "urn:agentmux:contract:1:operation-context"},
+        "payloadDigest": {"$ref": "urn:agentmux:contract:1:common#/$defs/digest"},
+        "replySubject": {"type": "string", "pattern": "^_INBOX\\.[A-Za-z0-9_-]{16,128}(?:\\.[A-Za-z0-9_-]{1,128})?$", "maxLength": 264},
+        "decision": {"const": "pre-cutover-abort"},
+        "switchRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "recordDigest": {"$ref": "urn:agentmux:contract:1:common#/$defs/digest"},
+        "source": {"$ref": "urn:agentmux:contract:1:authority-switch#/$defs/source"},
+        "stream": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "created": {"$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"},
+            "minimumSequence": {"type": "integer", "minimum": 1, "maximum": 9007199254740991}
+          },
+          "required": ["created", "minimumSequence"]
+        },
+        "authorityRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "grantRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "issuedAt": {"$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"},
+        "validUntil": {"$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"}
+      },
+      "required": ["purpose", "profileId", "hubId", "authorityId", "serviceId",
+        "serviceIdentityRef", "serviceInstanceId", "signingKeyRef", "requestDigest",
+        "operation", "payloadDigest", "replySubject", "decision", "switchRef",
+        "recordDigest", "source", "stream", "authorityRef", "grantRef", "issuedAt",
+        "validUntil"]
+    },
+    "signature": {"type": "string", "pattern": "^[A-Za-z0-9_-]{86}$"}
+  },
+  "required": ["schemaVersion", "algorithm", "canonicalization", "claims", "signature"]
+}

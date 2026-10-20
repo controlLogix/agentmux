@@ -2,7 +2,6 @@
 (() => {
   'use strict';
   let busy = false;
-  let actorValue = '';
   let notice = '';
   const warning = 'apt purge does NOT clear the runtime password. Device user management under /var/opt/codesys survives package removal and reinstall.';
   const labels = {start: 'Start', stop: 'Stop', reset: 'Reset', boot: 'Create boot application', install: 'Install runtime', update: 'Update runtime'};
@@ -17,27 +16,16 @@
     refresh.disabled = busy;
     refresh.addEventListener('click', load);
     root.appendChild(refresh);
-    const label = el('label', '', ' Operator / actor ');
-    const actor = el('input', '');
-    actor.type = 'text'; actor.maxLength = 64;
-    actor.placeholder = 'Your operator name'; actor.value = actorValue;
-    actor.setAttribute('aria-label', 'Operator / actor');
-    actor.addEventListener('input', () => { actorValue = actor.value.trim(); });
-    label.appendChild(actor); root.appendChild(label);
     if (notice) root.appendChild(el('p', '', notice));
   }
   async function act(target, action, resetType) {
     if (busy) return;
-    if (!/^[A-Za-z0-9_.-]{1,64}$/.test(actorValue)) {
-      notice = 'Enter your operator name (letters, digits, dot, underscore or dash) before preparing an action.';
-      await load(); return;
-    }
     busy = true;
     const root = document.getElementById('viewCodesys');
     base(root);
     root.appendChild(window.CCC.el('p', '', 'Preparing action; verifying target identity and version…'));
     const path = action === 'boot' ? '/api/board/bootapp' : '/api/board/plcstate';
-    const body = {target: target.id, actor: actorValue, action, phase: 'prepare'};
+    const body = {target: target.id, action, phase: 'prepare'};
     if (action === 'reset') body.reset_type = resetType;
     try {
       const prepared = await window.CCC.post(path, body);

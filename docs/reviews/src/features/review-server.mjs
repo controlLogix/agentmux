@@ -132,6 +132,9 @@ export async function manageReview({ repoRoot, reviewId, port, action = 'open', 
   }
   function reuse(existing) {
     if (existing.checkout !== paths.checkout || existing.reviewId !== reviewId) throw new Error('One review server is already open from another checkout or document. Close that review explicitly before switching.');
+    if (port !== undefined && port !== 0 && Number(new URL(existing.url).port || 80) !== port) {
+      throw new Error('The review server is already open on a different port. Restart it explicitly to use the requested port.');
+    }
     const { token, ...publicInfo } = existing;
     return { ...publicInfo, reused: true };
   }

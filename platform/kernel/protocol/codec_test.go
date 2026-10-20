@@ -167,3 +167,49 @@ func TestSnapshotSelfIncarnationAndPartialFreshness(t *testing.T) {
 		t.Fatal("honest stale peer observation rejected")
 	}
 }
+
+func TestUnknownPeerFieldsRemainRequiredAndTyped(t *testing.T) {
+	now := time.Now().UTC()
+	members := []Member{}
+	for _, role := range Roles() {
+		members = append(members, Member{Role: role, State: "unknown"})
+	}
+	event := testEvent(now)
+	event.Role, event.Members = "kernel-lifecycle", members
+	snapshot := Snapshot{Version, "kernel-info", testScope(), "exported-status", strings.Repeat("a", 32), 1, now.Format(time.RFC3339Nano), now.Add(time.Second).Format(time.RFC3339Nano), "not_ready", members}
+	for _, frame := range []struct {
+		name   string
+		value  any
+		decode func([]byte) error
+	}{
+		{"event", event, func(raw []byte) error {
+			_, err := DecodeEvent(raw, testScope(), "kernel-lifecycle", now, time.Second)
+			return err
+		}},
+		{"snapshot", snapshot, func(raw []byte) error { _, err := DecodeSnapshot(raw, testScope(), now, time.Second); return err }},
+	} {
+		t.Run(frame.name, func(t *testing.T) {
+			raw := mustJSON(frame.value)
+			if frame.decode(raw) != nil {
+				t.Fatal("complete unknown peer rejected")
+			}
+			for _, field := range []string{"incarnation", "revision", "observedAt"} {
+				for _, missing := range []bool{false, true} {
+					var object map[string]any
+					if json.Unmarshal(raw, &object) != nil {
+						t.Fatal("frame fixture decode failed")
+					}
+					member := object["members"].([]any)[0].(map[string]any)
+					if missing {
+						delete(member, field)
+					} else {
+						member[field] = nil
+					}
+					if frame.decode(mustJSON(object)) == nil {
+						t.Fatalf("missing=%t or null peer field %s accepted", missing, field)
+					}
+				}
+			}
+		})
+	}
+}

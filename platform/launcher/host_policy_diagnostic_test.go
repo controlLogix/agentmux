@@ -7,8 +7,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 	"testing"
+
+	protected "github.com/controlLogix/agentmux/platform/runtime"
 
 	"github.com/nats-io/nats.go"
 )
@@ -105,5 +108,29 @@ func TestHostPolicyDiagnosticLeafPresentation(t *testing.T) {
 		if e != nil || string(raw) != `"host_policy_profile_invalid"` {
 			t.Fatal("leaf JSON changed")
 		}
+	}
+}
+
+func TestHostPolicyProtectedAdmissionRetainsCleanupAndUnknownCauses(t *testing.T) {
+	original := &os.PathError{Op: "close", Path: "/private/host-admission-marker", Err: context.DeadlineExceeded}
+	failure := &hostPolicyFailure{code: "executable_unqualified", cause: errors.Join(original, protected.ErrStartupCleanup)}
+	var actual *os.PathError
+	if !errors.Is(failure, protected.ErrStartupCleanup) || !errors.As(failure, &actual) || actual != original {
+		t.Fatal("host admission lost exact protected cleanup cause")
+	}
+	if ProjectRequestDiagnostic(failure).Code != "owned_cleanup_incomplete" {
+		t.Fatal("host admission masked retained cleanup")
+	}
+	for _, format := range []string{"%s", "%v", "%+v", "%#v"} {
+		if fmt.Sprintf(format, failure) != "host_policy_executable_unqualified" {
+			t.Fatal("host admission exposed private cause")
+		}
+	}
+	if string(mustStatusJSON(failure)) != `"host_policy_executable_unqualified"` {
+		t.Fatal("host admission JSON exposed private cause")
+	}
+	unknown := &hostPolicyFailure{code: "executable_unqualified", cause: hostPolicyDiagnosticUnknownWrapper{original}}
+	if ProjectRequestDiagnostic(unknown).Code != "host_executable_invalid" {
+		t.Fatal("unknown cause gained trusted cleanup authority")
 	}
 }

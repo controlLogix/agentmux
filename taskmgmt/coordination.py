@@ -29,7 +29,10 @@ catches the common case, which is two agents unknowingly pulling in opposite dir
     python3 taskmgmt/coordination.py journal <kind> <subject> [--body B] [--agent A]
 """
 import argparse
+from contextlib import contextmanager
+from contextvars import ContextVar
 import fcntl
+import hashlib
 import json
 import os
 import re
@@ -82,6 +85,16 @@ def flatten(resource):
     return resource.strip("/").replace("/", "%2F") + ".json"
 
 
+def claim_path(resource, owner_binding=None):
+    """Keep enrolled project claims independent while preserving legacy paths."""
+    if owner_binding is None:
+        return CLAIMS_DIR / flatten(resource)
+    binding = json.dumps(owner_binding, sort_keys=True, separators=(",", ":")).encode()
+    namespace = hashlib.sha256(binding).hexdigest()
+    resource_id = hashlib.sha256(resource.encode()).hexdigest()
+    return CLAIMS_DIR / f"orchestration.{namespace}.{resource_id}.json"
+
+
 def now():
     return time.strftime("%Y-%m-%dT%H:%M:%S") + time.strftime("%z")
 
@@ -92,6 +105,33 @@ class IdentityError(Exception):
 
 class TmuxUnavailable(IdentityError):
     """Liveness is unknown, not empty; never infer a dead worker from this."""
+
+
+# The enrolled orchestration owner keeps authorization and the effect in one process.
+# This context carries only the result of that already admitted dispatch into the
+# existing domain functions. It is not serialized, read from the environment, or
+# accepted from a CLI argument. The legacy warrant remains below until the owner is
+# fully wired; callers outside this context continue to use the unchanged path.
+_OWNER_EFFECT = ContextVar("agentmux_orchestration_owner_effect", default=None)
+
+
+@contextmanager
+def _owner_effect(effect, *, actor, provenance):
+    """Private handoff from the scoped owner to existing run/claim effects."""
+    from orchestration_owner.commands import PreparedOrchestrationEffect
+    if (type(effect) is not PreparedOrchestrationEffect
+            or type(actor) is not str
+            or re.fullmatch(r"[a-z][a-z0-9_-]{0,95}", actor) is None
+            or not NAME_PATTERN.fullmatch(provenance or "")):
+        raise IdentityError("identity: invalid scoped orchestration effect")
+    current = _OWNER_EFFECT.get()
+    if current is not None:
+        raise IdentityError("identity: an orchestration effect is already active")
+    token = _OWNER_EFFECT.set((effect, actor, provenance))
+    try:
+        yield
+    finally:
+        _OWNER_EFFECT.reset(token)
 
 
 def live_agents():
@@ -234,8 +274,10 @@ def orchestrator_warrant():
 
 
 def orchestrator_pane():
-    """The warranted pane when this process is acting under one, else None. For the
-    ledger, so an autonomous run is distinguishable from an operator-driven one."""
+    """Return scoped owner provenance, or the legacy warranted pane during migration."""
+    owned = _OWNER_EFFECT.get()
+    if owned is not None:
+        return owned[2]
     env = os.environ.get("AGENTMUX_AGENT")
     return env if env and orchestrator_warrant() == env else None
 
@@ -246,6 +288,21 @@ def orchestrator_identity(verb, claimed=None, allow_test_identity=True):
     Coordination disables that bypass: its virtual orchestrator identity must only
     be available outside panes, even when synthetic agent liveness is trusted.
     """
+    owned = _OWNER_EFFECT.get()
+    if owned is not None:
+        effect, actor, _ = owned
+        allowed = {
+            "start": {"run-start"}, "assign": {"run-assign"},
+            "complete": {"run-complete"}, "teardown": {"run-teardown"},
+        }
+        if verb not in allowed or effect.command not in allowed[verb]:
+            raise IdentityError(
+                f"identity: scoped {effect.command!r} cannot perform {verb!r}")
+        if claimed and claimed not in ("orchestrator", actor):
+            raise IdentityError(
+                f"identity: {verb} is attributed to the enrolled actor; "
+                f"--by {claimed!r} cannot be honoured.\n  Drop --by.")
+        return actor
     env = os.environ.get("AGENTMUX_AGENT")
     # ORDER MATTERS. The legacy AGENTMUX_TRUST_IDENTITY bypass short-circuits first, so
     # the suites - which run without a warrant in scope - never touch the filesystem and
@@ -570,7 +627,8 @@ def cmd_claim(args):
     ttl = max(60, min(args.ttl, MAX_TTL))
     CLAIMS_DIR.mkdir(parents=True, exist_ok=True)
     os.chmod(CLAIMS_DIR, 0o700)
-    path = CLAIMS_DIR / flatten(args.resource)
+    owner_binding = getattr(args, "owner_binding", None)
+    path = claim_path(args.resource, owner_binding)
 
     record = {
         "resource": args.resource, "holder": args.holder, "at": now(),
@@ -579,6 +637,8 @@ def cmd_claim(args):
         "task": args.task or None,
         "depends_on": [d for d in (args.depends_on or []) if RESOURCE_PATTERN.fullmatch(d)],
     }
+    if owner_binding is not None:
+        record["owner_binding"] = owner_binding
 
     # WRITE FIRST, THEN PUBLISH ATOMICALLY.
     #
@@ -603,6 +663,10 @@ def cmd_claim(args):
             break
         except FileExistsError:
             existing = read_claim(path)
+            try:
+                existing_inode = os.stat(path).st_ino
+            except OSError:
+                existing_inode = None
             if existing is None or expired(existing):
                 # Genuinely dead or corrupt - takeable. An empty file from a crashed
                 # claimant also lands here, which is correct: nobody holds it.
@@ -641,6 +705,12 @@ def cmd_claim(args):
                 print("coordination: could not take an expired claim", file=sys.stderr)
                 return 1
             if existing.get("holder") == args.holder:
+                if (owner_binding is not None
+                        and existing.get("owner_binding") != owner_binding):
+                    staging.unlink(missing_ok=True)
+                    print("REFUSED: claim belongs to a different orchestration scope",
+                          file=sys.stderr)
+                    return 1
                 # Re-claiming your own is a renewal, not a conflict.
                 #
                 # This used to be open(path, "w") - truncate the live claim, THEN
@@ -671,7 +741,7 @@ def cmd_claim(args):
                 # loses the token and re-reads instead. The loser here is the holder
                 # of a lease that had in fact expired, which is exactly who should
                 # lose it.
-                token, _observed = take_generation(args.resource, path)
+                token, observed = take_generation(args.resource, path)
                 if token is GENERATION_LOST:
                     if attempt == 1:
                         continue
@@ -680,6 +750,18 @@ def cmd_claim(args):
                           "while it was expired", file=sys.stderr)
                     return 1
                 try:
+                    current = read_claim(path)
+                    if (existing_inode is None or observed != existing_inode
+                            or current is None
+                            or current.get("holder") != args.holder
+                            or owner_binding is not None
+                            and current.get("owner_binding") != owner_binding):
+                        if attempt == 1:
+                            continue
+                        staging.unlink(missing_ok=True)
+                        print("coordination: claim changed while renewal waited",
+                              file=sys.stderr)
+                        return 1
                     os.replace(staging, path)
                 finally:
                     drop_generation(token)
@@ -725,7 +807,8 @@ def cmd_claim(args):
     return 0
 
 
-def release_still_ours(path, holder, observed_ino, force):
+def release_still_ours(path, holder, observed_ino, force, expected_holder=None,
+                       owner_binding=None):
     """Is the claim on disk still the one we decided to release?
 
     Releasing is check-then-unlink, and the gap matters more than it looks. A claim
@@ -746,6 +829,10 @@ def release_still_ours(path, holder, observed_ino, force):
     current = read_claim(path)
     if current is None:
         return False
+    if (expected_holder is not None and current.get("holder") != expected_holder
+            or owner_binding is not None
+            and current.get("owner_binding") != owner_binding):
+        return False
     if force:
         return True
     return current.get("holder") == holder and not expired(current)
@@ -762,11 +849,19 @@ def cmd_release(args):
     if not RESOURCE_PATTERN.fullmatch(args.resource) or ".." in args.resource:
         print(f"coordination: invalid resource name {args.resource!r}", file=sys.stderr)
         return 2
-    path = CLAIMS_DIR / flatten(args.resource)
+    owner_binding = getattr(args, "owner_binding", None)
+    path = claim_path(args.resource, owner_binding)
     existing = read_claim(path)
     if existing is None:
         print(f"no claim on {args.resource}")
         return 0
+    expected_holder = getattr(args, "expected_holder", None)
+    if (expected_holder is not None and existing.get("holder") != expected_holder
+            or owner_binding is not None
+            and existing.get("owner_binding") != owner_binding):
+        print(f"REFUSED: {args.resource} belongs to a different holder or scope",
+              file=sys.stderr)
+        return 1
     try:
         observed_ino = os.stat(path).st_ino
     except OSError:
@@ -800,7 +895,8 @@ def cmd_release(args):
         return 1
     try:
         # Re-check immediately before the destructive act. See release_still_ours.
-        if not release_still_ours(path, args.holder, observed_ino, args.force):
+        if not release_still_ours(path, args.holder, observed_ino, args.force,
+                                  expected_holder, owner_binding):
             print(f"REFUSED: {args.resource} changed hands since it was read - not "
                   f"releasing someone else's claim.", file=sys.stderr)
             print("  Run `agentmux claims` to see who holds it now.", file=sys.stderr)
@@ -1423,6 +1519,8 @@ def cmd_team(args):
             body["actor"] = args.agent
             if args.command in ("approve", "retire"):
                 body["members"] = args.member
+            elif args.command == "recruit" and args.lead is not None:
+                body["lead"] = args.lead
         result = board_call("POST", "board/" + args.command, body)
     if result is None:
         return 1
@@ -1433,6 +1531,13 @@ def cmd_team(args):
         for row in result.get("members", []):
             pane = f" -> {row['member_name']}" if row.get("member_name") else ""
             print(f"  {row['agent_name']} [{row['role']}] {row['status']}{pane}")
+            revision_notes = {
+                "changed": "definition changed; saved revision retained",
+                "unavailable": "definition unavailable; saved revision retained",
+                "approval_required": "saved definition missing; recruit and approve again before hiring",
+            }
+            if row.get("definitionState") in revision_notes:
+                print("    " + revision_notes[row["definitionState"]])
     return 0
 
 
@@ -1702,6 +1807,8 @@ def main(argv=None):
         if name in ("approve", "retire"):
             team.add_argument("--member", action="append", required=True,
                               help="agent definition name; repeat for each member")
+        elif name == "recruit":
+            team.add_argument("--lead", help="propose this discovered lead definition for approval")
         elif name == "hire":
             team.add_argument("--name", required=True)
 

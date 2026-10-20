@@ -7,13 +7,17 @@ import (
 	"fmt"
 )
 
-// This private leaf retains only the existing error code. It carries no path,
-// credential, owner, callback or underlying error object.
-type hostPolicyFailure struct{ code string }
+// Presentation remains the existing fixed code. Protected installed-runtime
+// admission may also retain its original cause for exact cleanup ownership.
+type hostPolicyFailure struct {
+	code  string
+	cause error
+}
 
 func (e hostPolicyFailure) Error() string                { return "host_policy_" + e.code }
 func (e hostPolicyFailure) Format(s fmt.State, _ rune)   { fmt.Fprint(s, e.Error()) }
 func (e hostPolicyFailure) MarshalJSON() ([]byte, error) { return json.Marshal(e.Error()) }
+func (e hostPolicyFailure) Unwrap() error                { return e.cause }
 
 // Only constructor codes already returned by the reviewed policy sources gain
 // a public category. Error strings and unknown wrappers grant no category.

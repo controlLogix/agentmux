@@ -1,0 +1,531 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:ordinary-plugin-lifecycle",
+  "title": "Ordinary plugin lifecycle v1",
+  "description": "Ordinary trusted native package lifecycle only. This does not permit protected-kernel commands or business operations. The host additionally verifies the authenticated transport, exact current owner, command nonce, configuration/contribution checksums, deadline and observation freshness. Date-time format is an annotation; the host parses timestamps. Private-child v1.1.0 frames additionally bind the exact parent lifetime; independent v1.0.0 frames remain unchanged. Context v1.2.0 frames additionally bind the exact injected context checksum for both independent and private instances; earlier closed frame shapes remain unchanged.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/control"
+    },
+    {
+      "$ref": "#/$defs/report"
+    },
+    {
+      "$ref": "#/$defs/privateControl"
+    },
+    {
+      "$ref": "#/$defs/privateReport"
+    },
+    {
+      "$ref": "#/$defs/contextControl"
+    },
+    {
+      "$ref": "#/$defs/contextReport"
+    },
+    {
+      "$ref": "#/$defs/privateContextControl"
+    },
+    {
+      "$ref": "#/$defs/privateContextReport"
+    }
+  ],
+  "$defs": {
+    "packagePin": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "packageId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+        },
+        "manifestChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "packageChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "provenanceChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "packageId",
+        "version",
+        "manifestChecksum",
+        "packageChecksum",
+        "provenanceChecksum"
+      ]
+    },
+    "owner": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pin": {
+          "$ref": "#/$defs/packagePin"
+        },
+        "instanceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+        },
+        "epoch": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "pin",
+        "instanceId",
+        "epoch",
+        "generation"
+      ]
+    },
+    "control": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "ordinary-plugin-control"
+        },
+        "commandId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "#/$defs/owner"
+        },
+        "configurationChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "contributionsChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "action": {
+          "enum": [
+            "prepare",
+            "stop"
+          ]
+        },
+        "deadline": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 20,
+          "maxLength": 40
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "commandId",
+        "owner",
+        "configurationChecksum",
+        "contributionsChecksum",
+        "action",
+        "deadline"
+      ]
+    },
+    "report": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "ordinary-plugin-report"
+        },
+        "commandId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "#/$defs/owner"
+        },
+        "configurationChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "contributionsChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "status": {
+          "enum": [
+            "registered",
+            "ready",
+            "failed",
+            "stopped"
+          ]
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 20,
+          "maxLength": 40
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "commandId",
+        "owner",
+        "configurationChecksum",
+        "contributionsChecksum",
+        "status",
+        "observedAt"
+      ]
+    },
+    "privateControl": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.1.0"
+        },
+        "kind": {
+          "const": "ordinary-plugin-control"
+        },
+        "commandId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "#/$defs/owner"
+        },
+        "configurationChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "contributionsChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "action": {
+          "enum": [
+            "prepare",
+            "stop"
+          ]
+        },
+        "deadline": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 20,
+          "maxLength": 40
+        },
+        "parentOwner": {
+          "$ref": "#/$defs/owner"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "commandId",
+        "owner",
+        "configurationChecksum",
+        "contributionsChecksum",
+        "action",
+        "deadline",
+        "parentOwner"
+      ]
+    },
+    "privateReport": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.1.0"
+        },
+        "kind": {
+          "const": "ordinary-plugin-report"
+        },
+        "commandId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "#/$defs/owner"
+        },
+        "configurationChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "contributionsChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "status": {
+          "enum": [
+            "registered",
+            "ready",
+            "failed",
+            "stopped"
+          ]
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 20,
+          "maxLength": 40
+        },
+        "parentOwner": {
+          "$ref": "#/$defs/owner"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "commandId",
+        "owner",
+        "configurationChecksum",
+        "contributionsChecksum",
+        "status",
+        "observedAt",
+        "parentOwner"
+      ]
+    },
+    "contextControl": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.2.0"
+        },
+        "kind": {
+          "const": "ordinary-plugin-control"
+        },
+        "commandId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "#/$defs/owner"
+        },
+        "configurationChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "contributionsChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "action": {
+          "enum": [
+            "prepare",
+            "stop"
+          ]
+        },
+        "deadline": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 20,
+          "maxLength": 40
+        },
+        "contextChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "commandId",
+        "owner",
+        "configurationChecksum",
+        "contributionsChecksum",
+        "action",
+        "deadline",
+        "contextChecksum"
+      ]
+    },
+    "contextReport": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.2.0"
+        },
+        "kind": {
+          "const": "ordinary-plugin-report"
+        },
+        "commandId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "#/$defs/owner"
+        },
+        "configurationChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "contributionsChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "status": {
+          "enum": [
+            "registered",
+            "ready",
+            "failed",
+            "stopped"
+          ]
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 20,
+          "maxLength": 40
+        },
+        "contextChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "commandId",
+        "owner",
+        "configurationChecksum",
+        "contributionsChecksum",
+        "status",
+        "observedAt",
+        "contextChecksum"
+      ]
+    },
+    "privateContextControl": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.2.0"
+        },
+        "kind": {
+          "const": "ordinary-plugin-control"
+        },
+        "commandId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "#/$defs/owner"
+        },
+        "configurationChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "contributionsChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "action": {
+          "enum": [
+            "prepare",
+            "stop"
+          ]
+        },
+        "deadline": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 20,
+          "maxLength": 40
+        },
+        "parentOwner": {
+          "$ref": "#/$defs/owner"
+        },
+        "contextChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "commandId",
+        "owner",
+        "configurationChecksum",
+        "contributionsChecksum",
+        "action",
+        "deadline",
+        "parentOwner",
+        "contextChecksum"
+      ]
+    },
+    "privateContextReport": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.2.0"
+        },
+        "kind": {
+          "const": "ordinary-plugin-report"
+        },
+        "commandId": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "#/$defs/owner"
+        },
+        "configurationChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "contributionsChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        },
+        "status": {
+          "enum": [
+            "registered",
+            "ready",
+            "failed",
+            "stopped"
+          ]
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time",
+          "minLength": 20,
+          "maxLength": 40
+        },
+        "parentOwner": {
+          "$ref": "#/$defs/owner"
+        },
+        "contextChecksum": {
+          "type": "string",
+          "pattern": "^sha256:[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "commandId",
+        "owner",
+        "configurationChecksum",
+        "contributionsChecksum",
+        "status",
+        "observedAt",
+        "parentOwner",
+        "contextChecksum"
+      ]
+    }
+  }
+}

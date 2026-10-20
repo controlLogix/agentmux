@@ -1731,6 +1731,7 @@ async function tick() {
 
 let resourcesLoaded = false;
 let resourcesTimer = null;
+let resourcesLoading = false;
 
 function el(tag, cls, text) {
   const n = document.createElement(tag);
@@ -1759,7 +1760,8 @@ function renderResources(data) {
     const title = el('div', 'res-title');
     title.appendChild(el('h3', null, r.name || r.id || '?'));
     if (r.kind) title.appendChild(el('span', 'res-kind', r.kind));
-    title.appendChild(el('span', `res-state ${state}`, state));
+    const status = ['configured', 'unavailable', 'unknown'].includes(r.status) ? r.status : state;
+    title.appendChild(el('span', `res-state ${state}`, status));
     card.appendChild(title);
 
     if (r.summary) card.appendChild(el('p', 'res-summary', r.summary));
@@ -1769,13 +1771,15 @@ function renderResources(data) {
       for (const c of r.checks) {
         const li = el('li');
         const mark = c.ok ? 'ok' : (c.optional ? 'opt' : 'bad');
-        li.appendChild(el('span', `chk ${mark}`, c.ok ? '✓' : (c.optional ? '–' : '✗')));
+        li.appendChild(el('span', `chk ${mark}`, c.ok ? '✓' : (c.status === 'unknown' ? '?' : (c.optional ? '–' : '✗'))));
         li.appendChild(el('span', 'chk-label', c.label || c.id || ''));
         if (c.detail) {
           const d = el('span', 'chk-detail', c.detail);
           d.title = c.detail;              // title is text, not parsed
           li.appendChild(d);
         }
+        if (c.version) li.appendChild(el('span', 'chk-detail', `version ${c.version}`));
+        if (c.hint) li.appendChild(el('span', 'chk-detail', c.hint));
         ul.appendChild(li);
       }
       card.appendChild(ul);
@@ -1806,6 +1810,7 @@ ${a.note}` : a.command;
         });
         row.appendChild(copy);
         wrap.appendChild(row);
+        if (a.note) wrap.appendChild(el('p', 'res-summary', a.note));
       }
       if (wrap.childElementCount) card.appendChild(wrap);
     }
@@ -1829,20 +1834,37 @@ ${a.note}` : a.command;
 }
 
 async function loadResources(force) {
+  if (resourcesLoading) return;
+  resourcesLoading = true;
   els.resStamp.textContent = force ? 're-running probes…' : 'loading resources…';
   els.resRefresh.disabled = true;
   try {
     const res = await fetch(`api/resources${force ? '?refresh=1' : ''}`, { cache: 'no-store' });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
+    if (data.refreshing) {
+      if (Array.isArray(data.resources) && data.resources.length) renderResources(data);
+      else if (!els.resList.childElementCount) renderResources({error: 'Resource checks are running. Refresh shortly.'});
+      els.resStamp.textContent = 'resource checks are running; displayed results may be cached';
+      resourcesLoaded = false;
+      return;
+    }
+    if (data.error) {
+      if (!els.resList.childElementCount) renderResources(data);
+      els.resStamp.textContent = `could not load resources: ${data.error}`;
+      resourcesLoaded = false;
+      return;
+    }
     renderResources(data);
     const when = data.generated_at ? new Date(data.generated_at) : null;
     els.resStamp.textContent = (when && !Number.isNaN(when.getTime()))
       ? `probed ${when.toLocaleTimeString()}` : 'probed';
     resourcesLoaded = true;
   } catch (err) {
+    resourcesLoaded = false;
     els.resStamp.textContent = `could not load resources: ${err.message}`;
   } finally {
+    resourcesLoading = false;
     els.resRefresh.disabled = false;
   }
 }
@@ -2606,15 +2628,21 @@ async function getJSON(path) {
 // content type (which forces a CORS preflight cross-origin), and nothing secret
 // in the body - secrets are still terminal-only.
 async function post(path, body) {
-  const res = await fetch(path, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+  const send = () => fetch(path, {method: 'POST', headers: {
+    'Content-Type': 'application/json', ...(window.AgentmuxBrowserAuth?.headers() || {})
+  }, body: JSON.stringify(body)});
+  let res = await send();
+  if (res.status === 401 && window.AgentmuxBrowserAuth) {
+    window.AgentmuxBrowserAuth.clear();
+    await window.AgentmuxBrowserAuth.signIn();
+    res = await send();
+  }
   let payload = {};
   try { payload = await res.json(); } catch (_) {}
   if (!res.ok) {
-    const error = new Error(payload.error || `HTTP ${res.status}`);
+    const hints = Array.isArray(payload.missing)
+      ? payload.missing.map(item => item.hint).filter(Boolean) : [];
+    const error = new Error([payload.error || `HTTP ${res.status}`, ...hints].join(' · '));
     error.status = res.status;
     error.payload = payload;
     throw error;
@@ -2833,7 +2861,7 @@ function statusSelect(kind, id, status, options, after, stamp) {
   select.addEventListener('change', async () => {
     const wanted = select.value;
     select.disabled = true;
-    try { await post('api/board/status', { id, status: wanted, actor: 'dashboard' }); await after(); }
+    try { await post('api/board/status', { id, status: wanted }); await after(); }
     catch (err) {
       say(stamp, err.message);
       select.value = st;          // put it back: the change did not happen
@@ -3010,7 +3038,7 @@ function makeCardMovable(card, handle, key) {
 async function refileTask(taskKey, epicKey) {
   say(els.boardStamp, `moving ${taskKey} to ${epicKey}…`);
   try {
-    await post('api/board/move', { id: taskKey, epic: epicKey, actor: 'dashboard' });
+    await post('api/board/move', { id: taskKey, epic: epicKey });
     await loadBoard();
     say(els.boardStamp, `${taskKey} moved to ${epicKey}`);
   } catch (err) {
@@ -3074,7 +3102,7 @@ async function loadBoard() {
       if (e.key) controls.appendChild(statusSelect('epic', e.key, e.status, EPIC_STATUSES,
                                                    loadBoard, els.boardStamp));
       if (e.key) controls.appendChild(deleteButton('epic', e.key, `${e.key} ${e.title || ''}`,
-        loadBoard, els.boardStamp, () => post('api/board/delete', { id: e.key, actor: 'dashboard' })));
+        loadBoard, els.boardStamp, () => post('api/board/delete', { id: e.key })));
       card.appendChild(controls);
 
       const rows = el('div', 'task-rows');
@@ -3119,7 +3147,7 @@ async function loadBoard() {
           }
         }
         r.appendChild(deleteButton('task', t.key, `${t.key} ${t.title || ''}`,
-          loadBoard, els.boardStamp, () => post('api/board/delete', { id: t.key, actor: 'dashboard' })));
+          loadBoard, els.boardStamp, () => post('api/board/delete', { id: t.key })));
         rows.appendChild(r);
       }
       card.appendChild(rows);

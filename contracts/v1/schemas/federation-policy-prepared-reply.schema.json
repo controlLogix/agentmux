@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-policy-prepared-reply",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "purpose": {"const": "agentmux-federation-policy-prepared-v1"},
+        "requestDigest": {"$ref": "urn:agentmux:contract:1:common#/$defs/digest"},
+        "configurationRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "owner": {"$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"},
+        "target": {"$ref": "urn:agentmux:contract:1:federation-policy-project#/$defs/target"},
+        "previousRevision": {"type": "integer", "minimum": 0, "maximum": 9007199254740990},
+        "operationId": {"$ref": "urn:agentmux:contract:1:common#/$defs/identifier"},
+        "preparationDigest": {"$ref": "urn:agentmux:contract:1:common#/$defs/digest"},
+        "descriptorBytes": {"type": "string", "maxLength": 21848, "pattern": "^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$"},
+        "authorityRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "signingKeyRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "issuedAt": {"$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"},
+        "validUntil": {"$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"}
+      },
+      "required": ["purpose", "requestDigest", "configurationRef", "owner", "target", "previousRevision", "operationId", "preparationDigest", "descriptorBytes", "authorityRef", "signingKeyRef", "issuedAt", "validUntil"]
+    },
+    "signature": {"type": "string", "minLength": 1, "maxLength": 128}
+  },
+  "required": ["claims", "signature"]
+}

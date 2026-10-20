@@ -1,0 +1,961 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:plugin-context-request",
+  "title": "Scoped plugin service request v1",
+  "description": "The receiver derives identity from the admitted instance and operation handles. This message cannot select a caller, project, logging tag, NATS subject, connection or store. The receiver checks current authority and exact process lifetime before each call.",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "plugin-context-request"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^request_[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "handleId": {
+          "type": "string",
+          "pattern": "^service_[a-f0-9]{64}$"
+        },
+        "service": {
+          "const": "logger"
+        },
+        "method": {
+          "const": "record-instance"
+        },
+        "operationHandle": {
+          "type": "null"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "eventCode": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            }
+          },
+          "required": [
+            "eventCode"
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "requestId",
+        "owner",
+        "handleId",
+        "service",
+        "method",
+        "operationHandle",
+        "parameters"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "plugin-context-request"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^request_[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "handleId": {
+          "type": "string",
+          "pattern": "^service_[a-f0-9]{64}$"
+        },
+        "service": {
+          "const": "logger"
+        },
+        "method": {
+          "const": "record"
+        },
+        "operationHandle": {
+          "type": "string",
+          "pattern": "^operation_[a-f0-9]{64}$"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "eventCode": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            }
+          },
+          "required": [
+            "eventCode"
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "requestId",
+        "owner",
+        "handleId",
+        "service",
+        "method",
+        "operationHandle",
+        "parameters"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "plugin-context-request"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^request_[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "handleId": {
+          "type": "string",
+          "pattern": "^service_[a-f0-9]{64}$"
+        },
+        "service": {
+          "const": "config"
+        },
+        "method": {
+          "const": "read"
+        },
+        "operationHandle": {
+          "type": "string",
+          "pattern": "^operation_[a-f0-9]{64}$"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {},
+          "required": []
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "requestId",
+        "owner",
+        "handleId",
+        "service",
+        "method",
+        "operationHandle",
+        "parameters"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "plugin-context-request"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^request_[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "handleId": {
+          "type": "string",
+          "pattern": "^service_[a-f0-9]{64}$"
+        },
+        "service": {
+          "const": "lifecycle"
+        },
+        "method": {
+          "const": "status"
+        },
+        "operationHandle": {
+          "type": "null"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {},
+          "required": []
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "requestId",
+        "owner",
+        "handleId",
+        "service",
+        "method",
+        "operationHandle",
+        "parameters"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "plugin-context-request"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^request_[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "handleId": {
+          "type": "string",
+          "pattern": "^service_[a-f0-9]{64}$"
+        },
+        "service": {
+          "const": "lifecycle"
+        },
+        "method": {
+          "const": "wait-stopping"
+        },
+        "operationHandle": {
+          "type": "null"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {},
+          "required": []
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "requestId",
+        "owner",
+        "handleId",
+        "service",
+        "method",
+        "operationHandle",
+        "parameters"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "plugin-context-request"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^request_[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "handleId": {
+          "type": "string",
+          "pattern": "^service_[a-f0-9]{64}$"
+        },
+        "service": {
+          "const": "clock"
+        },
+        "method": {
+          "const": "now"
+        },
+        "operationHandle": {
+          "type": "null"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {},
+          "required": []
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "requestId",
+        "owner",
+        "handleId",
+        "service",
+        "method",
+        "operationHandle",
+        "parameters"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "plugin-context-request"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^request_[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "handleId": {
+          "type": "string",
+          "pattern": "^service_[a-f0-9]{64}$"
+        },
+        "service": {
+          "const": "clock"
+        },
+        "method": {
+          "const": "elapsed"
+        },
+        "operationHandle": {
+          "type": "null"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {},
+          "required": []
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "requestId",
+        "owner",
+        "handleId",
+        "service",
+        "method",
+        "operationHandle",
+        "parameters"
+      ],
+      "description": "Read whole milliseconds elapsed since this context lease opened, using the host monotonic clock. Wall-clock adjustments do not change this duration."
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "plugin-context-request"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^request_[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "handleId": {
+          "type": "string",
+          "pattern": "^service_[a-f0-9]{64}$"
+        },
+        "service": {
+          "const": "clock"
+        },
+        "method": {
+          "const": "wait"
+        },
+        "operationHandle": {
+          "type": "string",
+          "pattern": "^operation_[a-f0-9]{64}$"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "durationMs": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 180000
+            }
+          },
+          "required": [
+            "durationMs"
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "requestId",
+        "owner",
+        "handleId",
+        "service",
+        "method",
+        "operationHandle",
+        "parameters"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "plugin-context-request"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^request_[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "handleId": {
+          "type": "string",
+          "pattern": "^service_[a-f0-9]{64}$"
+        },
+        "service": {
+          "const": "tracing"
+        },
+        "method": {
+          "const": "start"
+        },
+        "operationHandle": {
+          "type": "string",
+          "pattern": "^operation_[a-f0-9]{64}$"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "spanCode": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            }
+          },
+          "required": [
+            "spanCode"
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "requestId",
+        "owner",
+        "handleId",
+        "service",
+        "method",
+        "operationHandle",
+        "parameters"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "plugin-context-request"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^request_[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "handleId": {
+          "type": "string",
+          "pattern": "^service_[a-f0-9]{64}$"
+        },
+        "service": {
+          "const": "tracing"
+        },
+        "method": {
+          "const": "finish"
+        },
+        "operationHandle": {
+          "type": "string",
+          "pattern": "^operation_[a-f0-9]{64}$"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "spanHandle": {
+              "type": "string",
+              "pattern": "^span_[a-f0-9]{64}$"
+            },
+            "outcomeCode": {
+              "enum": [
+                "completed",
+                "failed",
+                "canceled"
+              ]
+            }
+          },
+          "required": [
+            "spanHandle",
+            "outcomeCode"
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "requestId",
+        "owner",
+        "handleId",
+        "service",
+        "method",
+        "operationHandle",
+        "parameters"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "plugin-context-request"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^request_[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "handleId": {
+          "type": "string",
+          "pattern": "^service_[a-f0-9]{64}$"
+        },
+        "service": {
+          "const": "metrics"
+        },
+        "method": {
+          "const": "add"
+        },
+        "operationHandle": {
+          "type": "string",
+          "pattern": "^operation_[a-f0-9]{64}$"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "metricCode": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "value": {
+              "type": "number",
+              "minimum": -1000000000000.0,
+              "maximum": 1000000000000.0
+            }
+          },
+          "required": [
+            "metricCode",
+            "value"
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "requestId",
+        "owner",
+        "handleId",
+        "service",
+        "method",
+        "operationHandle",
+        "parameters"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "plugin-context-request"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^request_[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "handleId": {
+          "type": "string",
+          "pattern": "^service_[a-f0-9]{64}$"
+        },
+        "service": {
+          "const": "domainGateway"
+        },
+        "method": {
+          "const": "request"
+        },
+        "operationHandle": {
+          "type": "string",
+          "pattern": "^operation_[a-f0-9]{64}$"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "bindingId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "contractId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "payload": {}
+          },
+          "required": [
+            "bindingId",
+            "contractId",
+            "payload"
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "requestId",
+        "owner",
+        "handleId",
+        "service",
+        "method",
+        "operationHandle",
+        "parameters"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "plugin-context-request"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^request_[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "handleId": {
+          "type": "string",
+          "pattern": "^service_[a-f0-9]{64}$"
+        },
+        "service": {
+          "const": "config"
+        },
+        "method": {
+          "const": "wait-change"
+        },
+        "operationHandle": {
+          "type": "string",
+          "pattern": "^operation_[a-f0-9]{64}$"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "afterRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            }
+          },
+          "required": [
+            "afterRevision"
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "requestId",
+        "owner",
+        "handleId",
+        "service",
+        "method",
+        "operationHandle",
+        "parameters"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "plugin-context-request"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^request_[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "handleId": {
+          "type": "string",
+          "pattern": "^service_[a-f0-9]{64}$"
+        },
+        "service": {
+          "const": "lifecycle"
+        },
+        "method": {
+          "const": "report-health"
+        },
+        "operationHandle": {
+          "type": "null"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "health": {
+              "enum": [
+                "healthy",
+                "unhealthy"
+              ]
+            }
+          },
+          "required": [
+            "health"
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "requestId",
+        "owner",
+        "handleId",
+        "service",
+        "method",
+        "operationHandle",
+        "parameters"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "plugin-context-request"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^request_[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "handleId": {
+          "type": "string",
+          "pattern": "^service_[a-f0-9]{64}$"
+        },
+        "service": {
+          "const": "domainGateway"
+        },
+        "method": {
+          "const": "subscribe"
+        },
+        "operationHandle": {
+          "type": "string",
+          "pattern": "^operation_[a-f0-9]{64}$"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "bindingId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "contractId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "payload": {}
+          },
+          "required": [
+            "bindingId",
+            "contractId",
+            "payload"
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "requestId",
+        "owner",
+        "handleId",
+        "service",
+        "method",
+        "operationHandle",
+        "parameters"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "plugin-context-request"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^request_[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "handleId": {
+          "type": "string",
+          "pattern": "^service_[a-f0-9]{64}$"
+        },
+        "service": {
+          "const": "domainGateway"
+        },
+        "method": {
+          "const": "next"
+        },
+        "operationHandle": {
+          "type": "string",
+          "pattern": "^operation_[a-f0-9]{64}$"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "subscriptionHandle": {
+              "type": "string",
+              "pattern": "^subscription_[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "subscriptionHandle"
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "requestId",
+        "owner",
+        "handleId",
+        "service",
+        "method",
+        "operationHandle",
+        "parameters"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "kind": {
+          "const": "plugin-context-request"
+        },
+        "requestId": {
+          "type": "string",
+          "pattern": "^request_[a-f0-9]{64}$"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "handleId": {
+          "type": "string",
+          "pattern": "^service_[a-f0-9]{64}$"
+        },
+        "service": {
+          "const": "domainGateway"
+        },
+        "method": {
+          "const": "unsubscribe"
+        },
+        "operationHandle": {
+          "type": "string",
+          "pattern": "^operation_[a-f0-9]{64}$"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "subscriptionHandle": {
+              "type": "string",
+              "pattern": "^subscription_[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "subscriptionHandle"
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "kind",
+        "requestId",
+        "owner",
+        "handleId",
+        "service",
+        "method",
+        "operationHandle",
+        "parameters"
+      ]
+    }
+  ]
+}

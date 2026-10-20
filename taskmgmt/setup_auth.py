@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Configure agentmux authentication. Nothing is echoed; nothing is a CLI argument.
+"""Configure agentmux authentication without echoing credentials or passing them as arguments.
 
     python3 taskmgmt/setup_auth.py --list
     python3 taskmgmt/setup_auth.py --provider vertex      # shared: project + region
@@ -29,20 +29,34 @@ touch the second. agentmux SOURCES the env file into each pane rather than
 interpolating it into the tmux command, so a key never lands in `ps`, in
 `pane_start_command`, or in shell history.
 
-Secrets are read with getpass: not echoed, not a command argument, and never printed
-back to confirm. A key you can see in your scrollback is a key in your scrollback.
+Setup parses literal env assignments without sourcing them. Secrets require a
+non-echoing terminal and are never printed back. Default checks make no model call.
 """
 
 import argparse
-import getpass
+import importlib.util
+import ipaddress
 import json
 import os
 import re
 import stat
-import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from urllib.parse import urlsplit
+
+try:
+    from taskmgmt import provider_setup
+except ModuleNotFoundError as error:
+    if error.name != "taskmgmt":
+        raise
+    # The dashboard loads this file by path, so its import path need not contain
+    # either the repository root or taskmgmt. Resolve this sibling explicitly.
+    helper_spec = importlib.util.spec_from_file_location(
+        "_agentmux_provider_setup", Path(__file__).with_name("provider_setup.py"))
+    provider_setup = importlib.util.module_from_spec(helper_spec)
+    sys.modules[helper_spec.name] = provider_setup
+    helper_spec.loader.exec_module(provider_setup)
 
 REPO = Path(__file__).resolve().parent.parent
 MANIFEST = REPO / "dashboard" / "auth.json"
@@ -52,11 +66,39 @@ ROOT = Path(os.environ.get("AGENTMUX_HOME") or Path.home() / ".agentmux")
 SETTINGS = ROOT / "auth.json"
 ENV_FILE = ROOT / "env"
 
+class EndpointValidator:
+    """Share syntax and host/port validation with the dashboard's match caller."""
+
+    shape = re.compile(r"https?://[A-Za-z0-9._:\[\]-]+(/[A-Za-z0-9._~/-]*)?\Z")
+
+    def match(self, value):
+        if not isinstance(value, str) or len(value) > 300:
+            return None
+        matched = self.shape.fullmatch(value)
+        if not matched:
+            return None
+        try:
+            endpoint = urlsplit(value)
+            host = endpoint.hostname
+            if not host or endpoint.port == 0:
+                return None
+            if ":" in host or re.fullmatch(r"[0-9.]+", host):
+                ipaddress.ip_address(host)
+            elif any(not re.fullmatch(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?", label)
+                     for label in host.rstrip(".").split(".")):
+                return None
+        except ValueError:
+            return None
+        return matched
+
+    fullmatch = match
+
+
 # Validators named by settings[].validate in the manifest.
 VALIDATORS = {
     "base_url": (
-        re.compile(r"https?://[A-Za-z0-9._:\[\]-]+(/[A-Za-z0-9._~/-]*)?\Z"),
-        "must be an http(s) URL, no query string and no credentials in it",
+        EndpointValidator(),
+        "must be an http(s) URL with a valid host and port, no query string or credentials",
     ),
     "gcp_region": (re.compile(r"[a-z]{2}(-[a-z]+)+[0-9]\Z"), "must look like us-east5"),
     "gcp_project": (re.compile(r"[a-z][a-z0-9-]{4,62}\Z"),
@@ -91,106 +133,129 @@ class Manifest:
             if method.get("provider") not in self.providers:
                 die(f"method {method['id']} names an unknown provider "
                     f"{method.get('provider')!r}")
+        self.credential_references = {}
+        for provider_id, provider in self.providers.items():
+            secrets = provider.get("secrets", [])
+            references = provider.get("credential_references", [])
+            if (not isinstance(secrets, list) or any(not isinstance(name, str) for name in secrets)
+                    or len(secrets) != len(set(secrets)) or not isinstance(references, list)):
+                die(f"provider {provider_id} has invalid credential declarations")
+            declared = {}
+            for raw in references:
+                if not isinstance(raw, dict) or set(raw) != {"kind", "provider", "name"}:
+                    die(f"provider {provider_id} has an invalid credential reference")
+                try:
+                    reference = provider_setup.LocalSecretReference(**raw)
+                except (TypeError, provider_setup.SetupError):
+                    die(f"provider {provider_id} has an unsupported credential reference")
+                if reference.provider != provider_id or reference.name in declared:
+                    die(f"provider {provider_id} has a mismatched credential reference")
+                declared[reference.name] = reference
+            if set(declared) != set(secrets):
+                die(f"provider {provider_id} must declare one credential reference per secret")
+            self.credential_references.update(
+                ((provider_id, name), reference) for name, reference in declared.items())
 
     def provider_of(self, method_id):
         return self.providers[self.methods[method_id]["provider"]]
 
+    def credential_reference(self, provider_id, name):
+        try:
+            return self.credential_references[(provider_id, name)]
+        except KeyError:
+            die(f"provider {provider_id} does not declare a credential reference for {name}")
+
+
+class SettingsDocument(dict):
+    """Keep the original bytes so setup can refuse a concurrent settings change."""
+
+    def __init__(self, data, original):
+        super().__init__(data)
+        self.original = original
+
 
 def load_settings():
-    if not SETTINGS.exists():
-        return {"version": 2, "active": {}, "providers": {}, "methods": {}}
-    mode = stat.S_IMODE(SETTINGS.lstat().st_mode)
-    if mode & 0o077 and not str(SETTINGS).startswith("/mnt/"):
-        die(f"{SETTINGS} is mode {mode:o}; run: chmod 600 {SETTINGS}")
     try:
-        with SETTINGS.open(encoding="utf-8") as fh:
-            data = json.load(fh)
-    except ValueError as err:
-        die(f"{SETTINGS} is not valid JSON: {err}")
-    # Migrate a v1 flat file rather than losing it. v1 kept every attribute under a
-    # single "settings" key, which is exactly the collision this version fixes, so the
-    # values are parked under _v1_settings and must be re-confirmed per method.
-    #
-    # NON-DESTRUCTIVE, deliberately. The first version rebuilt the dict from scratch
-    # with empty providers{} and methods{}, so a file carrying BOTH a legacy settings
-    # blob and real v2 data lost the v2 data on every single load — settings written
-    # seconds earlier silently vanished and the method reported itself unconfigured.
-    # A migration that discards data is worse than no migration.
-    if "settings" in data and data.get("version") != 2:
-        legacy = data.pop("settings")
-        if legacy:
-            print("  note: this auth.json carries v1 flat settings. They are kept under")
-            print("        _v1_settings; re-run --provider <id> and <method-id> to")
-            print("        confirm them under the new two-level layout.")
-            data.setdefault("_v1_settings", legacy)
-        data["version"] = 2
+        original = provider_setup.read_local(SETTINGS, missing=True)
+        data = provider_setup.read_json(original) if original is not None else {
+            "version": 2, "active": {}, "providers": {}, "methods": {}}
+    except provider_setup.SetupError as error:
+        die(str(error))
+    if data.get("version", 1) not in (1, 2):
+        die("settings use an unsupported version; the file was preserved")
     for key in ("active", "providers", "methods"):
-        data.setdefault(key, {})
-    return data
+        if not isinstance(data.setdefault(key, {}), dict):
+            die("settings contain an invalid section; the file was preserved")
+    if any(not isinstance(value, str) for value in data["active"].values()):
+        die("active method settings are invalid; the file was preserved")
+    for key in ("providers", "methods"):
+        if any(not isinstance(value, dict) for value in data[key].values()):
+            die("provider or method settings are invalid; the file was preserved")
+    if "settings" in data and data.get("version") != 2:
+        if "_v1_settings" not in data:
+            data["_v1_settings"] = data.pop("settings")
+        # If both legacy fields already exist, retain both, including conflicts.
+        print("  Legacy settings were preserved. Confirm them under each provider or method.")
+        data["version"] = 2
+    return SettingsDocument(data, original)
 
 
 def write_private(path, text):
-    """Write 0600 atomically; the file is never briefly world-readable."""
-    path.parent.mkdir(parents=True, exist_ok=True)
-    previous = os.umask(0o077)
+    """Write an owned private file atomically without following symlinks."""
     try:
-        handle, temporary = tempfile.mkstemp(dir=str(path.parent), prefix=f".{path.name}.")
-        try:
-            with os.fdopen(handle, "w", encoding="utf-8") as fh:
-                fh.write(text)
-            os.chmod(temporary, 0o600)
-            os.replace(temporary, path)
-        except BaseException:
-            try:
-                os.unlink(temporary)
-            except OSError:
-                pass
-            raise
-    finally:
-        os.umask(previous)
+        original = provider_setup.read_local(path, missing=True)
+        provider_setup.write_local(path, text.encode("utf-8"), expected=original)
+    except provider_setup.SetupError as error:
+        die(str(error))
 
 
 def save_settings(data):
-    write_private(SETTINGS, json.dumps(data, indent=2, sort_keys=True) + "\n")
-    print(f"  wrote {SETTINGS} (0600)")
+    try:
+        original = data.original if isinstance(data, SettingsDocument) else provider_setup.read_local(SETTINGS, missing=True)
+        content = (json.dumps(data, indent=2, sort_keys=True) + "\n").encode("utf-8")
+        provider_setup.write_local(SETTINGS, content, expected=original)
+        if isinstance(data, SettingsDocument):
+            data.original = content
+    except provider_setup.SetupError as error:
+        die(str(error))
+    print("  saved private authentication settings (0600)")
 
 
 def read_env_names_and_lines():
-    """Return (names, lines). Values stay inside `lines` and are never printed."""
-    if not ENV_FILE.exists():
-        return set(), {}
-    mode = stat.S_IMODE(ENV_FILE.lstat().st_mode)
-    if mode & 0o077 and not str(ENV_FILE).startswith("/mnt/"):
-        die(f"{ENV_FILE} is mode {mode:o}; agentmux refuses to source it. "
-            f"Run: chmod 600 {ENV_FILE}")
-    entries = {}
-    for line in ENV_FILE.read_text(encoding="utf-8").splitlines():
-        match = re.match(r"\s*export\s+([A-Z][A-Z0-9_]*)=(.*)", line)
-        if match:
-            entries[match.group(1)] = match.group(2)
-    return set(entries), entries
+    """Return literal values locally; callers may print only the variable names."""
+    try:
+        content = provider_setup.read_local(ENV_FILE, missing=True)
+        entries = provider_setup.env_values(content or b"")
+    except provider_setup.SetupError as error:
+        die(str(error))
+    return {name for name, value in entries.items() if value.strip()}, entries
 
 
 def save_env(entries):
-    body = [
-        "# agentmux private pane environment. Mode 0600 is enforced: agentmux refuses",
-        "# to source this file otherwise.",
-        "#",
-        "# SOURCED into each pane, never interpolated into a command line, so these",
-        "# values do not appear in `ps` or in tmux's pane_start_command.",
-        "#",
-        "# Written by taskmgmt/setup_auth.py. The dashboard never reads the values - it",
-        "# reports variable names, presence and file mode only.",
-        "",
-    ]
-    for name in sorted(entries):
-        body.append(f"export {name}={entries[name]}")
-    write_private(ENV_FILE, "\n".join(body) + "\n")
-    print(f"  wrote {ENV_FILE} (0600) — {len(entries)} variable(s), values not shown")
+    """Merge explicitly changed entries into the current private env file."""
+    try:
+        original = provider_setup.read_local(ENV_FILE, missing=True)
+        current = provider_setup.env_values(original or b"")
+        changes = {name: value for name, value in entries.items() if current.get(name) != value}
+        content = provider_setup.replace_env_values(original or b"", changes)
+        provider_setup.write_local(ENV_FILE, content, expected=original)
+    except provider_setup.SetupError as error:
+        die(str(error))
+    print("  saved private credential entries (0600); values are not shown")
+
+
+def save_credentials(entries):
+    """Store values selected through exact typed references."""
+    replacements = {}
+    for reference, value in entries.items():
+        if not isinstance(reference, provider_setup.LocalSecretReference):
+            die("a typed local credential reference is required")
+        replacements[reference.name] = value
+    save_env(replacements)
 
 
 def shell_quote(value):
-    return "'" + value.replace("'", "'\\''") + "'"
+    return provider_setup.shell_quote(value)
 
 
 def ask_setting(spec):
@@ -206,18 +271,10 @@ def ask_setting(spec):
 
 
 def ask_secret(name):
-    while True:
-        first = getpass.getpass(f"  {name} (not echoed): ")
-        if not first.strip():
-            print("    empty; nothing stored. Ctrl-C to abort.")
-            continue
-        if "\n" in first or "\x00" in first:
-            print("    rejected: control characters")
-            continue
-        if first != getpass.getpass("  repeat to confirm: "):
-            print("    the two entries differ; try again")
-            continue
-        return first.strip()
+    try:
+        return provider_setup.prompt_secret(name)
+    except provider_setup.SetupError as error:
+        die(str(error))
 
 
 def collect(specs, store, label):
@@ -226,8 +283,9 @@ def collect(specs, store, label):
     for spec in specs:
         key = spec["key"]
         if key in store:
-            print(f"  {label} {key} = {store[key]}")
-            if input("  keep it? [Y/n] ").strip().lower() in ("", "y", "yes"):
+            valid = valid_setting(spec, store[key])
+            print(f"  {label} {key}: {'already set' if valid else 'saved value is invalid'}")
+            if valid and input("  keep it? [Y/n] ").strip().lower() in ("", "y", "yes"):
                 continue
         store[key] = ask_setting(spec)
         changed = True
@@ -238,23 +296,33 @@ def codex_home():
     return Path(os.environ.get("CODEX_HOME") or (Path.home() / ".codex"))
 
 
-def write_codex_profile(method, method_values):
-    """Generate $CODEX_HOME/<id>.config.toml for a custom-provider method.
+def require_new_codex_profile(method):
+    path = codex_home() / f"{method['id']}.config.toml"
+    if os.path.lexists(path):
+        die("Codex profile already exists; it was preserved. Review and back up "
+            "the existing profile in your terminal before choosing a new setup.")
+    return path
 
-    codex 0.155.0 requires a separate profile FILE - an inline [profiles.x] table in
-    config.toml is rejected - and accepts only wire_api = "responses". Any backend
-    whose native API is not the Responses API therefore needs a translating gateway
-    in front of it, which is what base_url points at.
+
+def write_codex_profile(method, method_values):
+    """Create the legacy custom-provider profile without replacing native files.
+
+    Native client acceptance must be checked separately; writing TOML does not
+    establish that the installed client supports this profile format.
     """
+    for setting in method.get("settings", []):
+        value = method_values.get(setting["key"])
+        pattern = VALIDATORS.get(setting.get("validate", "text"), VALIDATORS["text"])[0]
+        if not isinstance(value, str) or not pattern.fullmatch(value):
+            die("profile settings are missing or invalid; existing files were preserved")
     spec = method["codex_profile"]
     provider = spec["provider_id"]
-    path = codex_home() / f"{method['id']}.config.toml"
+    path = require_new_codex_profile(method)
     text = f'''# Generated by agentmux: taskmgmt/setup_auth.py {method['id']}
-# Regenerate rather than hand-editing.
+# Existing profiles are preserved. Review changes in your own terminal.
 #
-# wire_api MUST be "responses"; codex rejects "chat" outright, so the endpoint below
-# has to speak the OpenAI Responses API. A backend that does not will need a
-# translating gateway in front of it.
+# This profile requests the OpenAI Responses API. The endpoint must support it.
+# Check profile compatibility with the installed client in your own terminal.
 #
 # No credential appears in this file. env_key names an environment variable that
 # agentmux sources from ~/.agentmux/env (0600) into the pane.
@@ -269,7 +337,18 @@ wire_api = "{spec['wire_api']}"
 env_key = "{spec['env_key']}"
 '''
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(text, encoding="utf-8")
+    handle, temporary = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.")
+    try:
+        with os.fdopen(handle, "w", encoding="utf-8") as fh:
+            fh.write(text)
+        try:
+            # Publish the complete file only if the destination is still absent.
+            os.link(temporary, path)
+        except FileExistsError:
+            die("Codex profile appeared during setup; it was preserved. "
+                "Review it in your terminal before retrying.")
+    finally:
+        os.unlink(temporary)
     print(f"  wrote {path}")
 
 
@@ -281,6 +360,8 @@ def missing_for(manifest, method_id, settings, env_names):
     for spec in provider.get("settings", []):
         if spec["key"] not in provider_values:
             gaps.append(f"{provider['id']}.{spec['key']}")
+        elif not valid_setting(spec, provider_values[spec["key"]]):
+            gaps.append(f"{provider['id']}.{spec['key']} (invalid)")
     for name in provider.get("secrets", []):
         if name not in env_names:
             gaps.append(name)
@@ -288,7 +369,14 @@ def missing_for(manifest, method_id, settings, env_names):
     for spec in method.get("settings", []):
         if spec["key"] not in method_values:
             gaps.append(f"{method_id}.{spec['key']}")
+        elif not valid_setting(spec, method_values[spec["key"]]):
+            gaps.append(f"{method_id}.{spec['key']} (invalid)")
     return gaps
+
+
+def valid_setting(spec, value):
+    pattern = VALIDATORS.get(spec.get("validate", "text"), VALIDATORS["text"])[0]
+    return isinstance(value, str) and bool(pattern.fullmatch(value))
 
 
 def configure_provider(provider_id, manifest):
@@ -307,7 +395,8 @@ def configure_provider(provider_id, manifest):
 
     secrets = provider.get("secrets", [])
     if secrets:
-        env_names, env_lines = read_env_names_and_lines()
+        env_names, _ = read_env_names_and_lines()
+        changed_entries = {}
         for name in secrets:
             if not ENV_NAME.match(name):
                 die(f"manifest declares an invalid env var name: {name}")
@@ -315,8 +404,10 @@ def configure_provider(provider_id, manifest):
                 print(f"  {name} is already set")
                 if input("  replace it? [y/N] ").strip().lower() not in ("y", "yes"):
                     continue
-            env_lines[name] = shell_quote(ask_secret(name))
-        save_env(env_lines)
+            reference = manifest.credential_reference(provider_id, name)
+            changed_entries[reference] = ask_secret(name)
+        if changed_entries:
+            save_credentials(changed_entries)
     elif provider.get("kind") == "oauth":
         print("  nothing to store: the CLI owns this login.")
         for action in provider.get("setup", []):
@@ -329,13 +420,16 @@ def configure_provider(provider_id, manifest):
         if method["provider"] != provider_id:
             continue
         gaps = missing_for(manifest, method["id"], settings, env_names)
-        state = "ready" if not gaps else f"still needs {', '.join(gaps)}"
+        state = "local inputs set; client unverified" if not gaps else f"still needs {', '.join(gaps)}"
         print(f"  {method['id']:<20} {state}")
     return 0
 
 
 def configure_method(method_id, manifest):
     method = manifest.methods[method_id]
+    if "codex_profile" in method:
+        # Refuse existing profiles before prompts or provider/settings writes.
+        require_new_codex_profile(method)
     provider = manifest.provider_of(method_id)
     print(f"Configuring {method_id} — {method.get('label', '')}")
     print(f"  provider: {provider['id']} ({provider.get('label', '')})")
@@ -384,7 +478,7 @@ def configure_method(method_id, manifest):
 
 
 def verify(method_id, manifest):
-    """Prove the configuration loads rather than assuming it does."""
+    """Check local settings without starting a client or provider operation."""
     method = manifest.methods[method_id]
     settings = load_settings()
     env_names, _ = read_env_names_and_lines()
@@ -396,37 +490,33 @@ def verify(method_id, manifest):
 
     if "codex_profile" in method:
         path = codex_home() / f"{method_id}.config.toml"
-        if not path.is_file():
-            problems.append(f"codex profile not generated: {path}")
-        else:
-            print(f"  profile present: {path}")
-            # codex ignores unknown config fields unless asked not to, so
-            # --strict-config is the only thing that actually validates a profile.
-            try:
-                proc = subprocess.run(
-                    ["codex", "exec", "--strict-config", "--profile", method_id,
-                     "--skip-git-repo-check", "noop"],
-                    capture_output=True, text=True, stdin=subprocess.DEVNULL,
-                    timeout=60, check=False)
-                combined = (proc.stdout or "") + (proc.stderr or "")
-            except FileNotFoundError:
-                combined = ""
-                print("  codex not on PATH; skipped the profile validation")
-            except subprocess.TimeoutExpired:
-                combined = ""
-                print("  codex did not answer in 60s; skipped the profile validation")
-            if "Error loading config" in combined or "is no longer supported" in combined:
-                first = next((ln for ln in combined.splitlines() if ln.strip()), "")
-                problems.append(f"codex rejected the profile: {first}")
-            elif combined:
-                print("  codex loaded the profile (config parsed)")
+        try:
+            import tomllib
+            handle = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+            with os.fdopen(handle, "rb") as fh:
+                if not stat.S_ISREG(os.fstat(fh.fileno()).st_mode):
+                    raise ValueError("not a regular file")
+                content = fh.read(65537)
+                if len(content) > 65536:
+                    raise ValueError("profile too large")
+                tomllib.loads(content.decode("utf-8"))
+            print("  profile TOML syntax is valid; native client acceptance was not checked")
+        except ImportError:
+            print("  UNKNOWN: TOML syntax check requires Python 3.11 or later")
+        except (OSError, ValueError):
+            problems.append("Codex profile is missing, unreadable, unsafe, too large or invalid TOML")
 
     if problems:
         for problem in problems:
             print(f"  MISSING: {problem}")
         return 1
-    print(f"  {method_id}: configured")
-    return 0
+    if "codex_profile" in method:
+        print("  UNKNOWN: native Codex configuration and authentication were not checked. "
+              "Use the installed client's supported checks in your terminal.")
+        return 2
+    print(f"  {method_id}: local inputs are present")
+    print("  UNKNOWN: client selection and live authentication were not checked.")
+    return 2
 
 
 def select(method_id, manifest):
@@ -452,7 +542,8 @@ def show_list(manifest):
     for provider_id in sorted(by_provider):
         provider = manifest.providers[provider_id]
         shared = settings["providers"].get(provider_id, {})
-        bits = [f"{k}={v}" for k, v in sorted(shared.items())]
+        bits = [f"{spec['key']}={'set' if spec['key'] in shared else 'NOT SET'}"
+                for spec in provider.get("settings", [])]
         bits += [f"{s}={'set' if s in env_names else 'NOT SET'}"
                  for s in provider.get("secrets", [])]
         print(f"\n{provider_id}  [{provider.get('label', '')}]"
@@ -464,7 +555,7 @@ def show_list(manifest):
                 marks.append("ACTIVE")
             elif not settings["active"].get(method["cli"]) and method.get("default"):
                 marks.append("cli default")
-            marks.append("ready" if not gaps else f"needs {', '.join(gaps)}")
+            marks.append("local inputs set; client unverified" if not gaps else f"needs {', '.join(gaps)}")
             print(f"    {method['id']:<20} {method['cli']:<7} [{', '.join(marks)}]")
     print()
 
@@ -476,13 +567,11 @@ def main():
     parser.add_argument("--provider", metavar="ID",
                         help="configure a provider's shared attributes (region, API key)")
     parser.add_argument("--list", action="store_true", help="show everything and its state")
-    parser.add_argument("--verify", metavar="ID", help="check a method is fully configured")
+    parser.add_argument("--verify", metavar="ID", help="check local inputs only; exit 2 means live support is unverified")
     parser.add_argument("--select", metavar="ID", help="make a configured method the default")
     args = parser.parse_args()
 
     manifest = Manifest()
-    ROOT.mkdir(parents=True, exist_ok=True)
-
     if args.list or not any((args.method, args.provider, args.verify, args.select)):
         show_list(manifest)
         return 0
@@ -504,4 +593,6 @@ if __name__ == "__main__":
     try:
         sys.exit(main())
     except KeyboardInterrupt:
-        sys.exit("\nsetup_auth: aborted; nothing was written")
+        sys.exit("\nsetup_auth: cancelled; earlier completed setup changes remain saved")
+    except OSError:
+        sys.exit("setup_auth: local file operation failed; review the private setup files before retrying")

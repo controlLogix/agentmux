@@ -1,0 +1,189 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "purpose": {
+          "const": "agentmux-client-possession-v1"
+        },
+        "hubId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "profileId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "transportRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "grantRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "operationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "expectedVersion": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+        },
+        "contractId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "payload": {
+          "type": "object"
+        },
+        "approvalRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "maxItems": 32,
+          "uniqueItems": true
+        },
+        "issuedAt": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+        },
+        "expiresAt": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+        },
+        "authorityId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "replySubject": {
+          "type": "string",
+          "pattern": "^_INBOX\\.[A-Za-z0-9_-]{16,128}(?:\\.[A-Za-z0-9_-]{1,128})?$",
+          "maxLength": 264
+        },
+        "terminalSessionId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "workSource": {
+          "$ref": "#/$defs/workSource"
+        }
+      },
+      "required": [
+        "purpose",
+        "hubId",
+        "profileId",
+        "transportRef",
+        "grantRef",
+        "operationId",
+        "expectedVersion",
+        "contractId",
+        "payload",
+        "approvalRefs",
+        "issuedAt",
+        "expiresAt",
+        "authorityId"
+      ]
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{86}$"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "claims",
+    "signature"
+  ],
+  "$defs": {
+    "workSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "formatVersion": {
+          "const": 1
+        },
+        "sourceDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "schemaDigest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        },
+        "applicationId": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "userVersion": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "schemaVersion": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "localNode": {
+          "type": "string",
+          "pattern": "^[a-z0-9_]{1,32}$"
+        },
+        "repository": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "coreTransport": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "mode": {
+                  "const": "local-only"
+                }
+              },
+              "required": [
+                "mode"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "mode": {
+                  "const": "tm218-core-v1"
+                },
+                "bindingDigest": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              },
+              "required": [
+                "mode",
+                "bindingDigest"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "formatVersion",
+        "sourceDigest",
+        "schemaDigest",
+        "applicationId",
+        "userVersion",
+        "schemaVersion",
+        "localNode",
+        "repository"
+      ]
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:identity-ingress-request",
+  "title": "Client credential possession request v1",
+  "description": "Canonical Ed25519 proof using a currently enrolled transport public key. Actor and scope are resolved from current authority, never accepted from this request. The broker account mapping and original credential provisioning remain enrollment obligations."
+}

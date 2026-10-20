@@ -238,8 +238,11 @@ func bootstrapReadDarwinInstalledCLI(t *testing.T) hostPolicyExecutable {
 		t.Fatal("installed CLI plan does not match its reviewed bytes")
 	}
 	directory := filepath.Dir(plan.Destination)
+	// The product installer snapshots verified package bytes before exclusive
+	// creation. Keep the earlier stdin installer usable for existing fixtures.
+	copyProtocolValid := plan.CopyProtocol == "bounded_stdin_sha256_verified_before_exclusive_descriptor_creation" || plan.CopyProtocol == "verified_native_package_snapshot_exclusive_copy"
 	if filepath.Dir(directory) != bootstrapDarwinReleaseBase || !fullID.MatchString(filepath.Base(directory)) || filepath.Base(plan.Destination) != "agentmux-runtime" ||
-		plan.Bytes < 1 || plan.Bytes > 128*1024*1024 || !releaseHash.MatchString(plan.Digest) || plan.CopyProtocol != "bounded_stdin_sha256_verified_before_exclusive_descriptor_creation" {
+		plan.Bytes < 1 || plan.Bytes > 128*1024*1024 || !releaseHash.MatchString(plan.Digest) || !copyProtocolValid {
 		t.Fatal("reviewed installed CLI prerequisite binding invalid")
 	}
 	return hostPolicyExecutable{Path: plan.Destination, Digest: plan.Digest}

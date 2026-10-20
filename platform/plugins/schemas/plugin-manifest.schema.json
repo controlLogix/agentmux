@@ -1,0 +1,288 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:plugin-manifest",
+  "title": "Agentmux plugin-manifest v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "packageId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+    },
+    "apiMajor": {
+      "const": 1
+    },
+    "installationModes": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "independent",
+          "private-child"
+        ]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "platforms": {
+      "type": "array",
+      "items": {
+        "$ref": "urn:agentmux:contract:1:common#/$defs/platform"
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "process",
+            "container"
+          ]
+        },
+        "executableRef": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          },
+          "minItems": 0,
+          "uniqueItems": false
+        },
+        "workingDirectoryPolicy": {
+          "enum": [
+            "package",
+            "assigned-workspace"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "executableRef",
+        "args",
+        "workingDirectoryPolicy"
+      ]
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "packageId": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+          },
+          "minimumVersion": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+          },
+          "exclusiveMaximumVersion": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+          },
+          "optional": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "packageId",
+          "minimumVersion",
+          "exclusiveMaximumVersion",
+          "optional"
+        ]
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "children": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "packageId": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+          },
+          "relationship": {
+            "enum": [
+              "private",
+              "independent-reference"
+            ]
+          },
+          "required": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "packageId",
+          "relationship",
+          "required"
+        ]
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "requestedCapabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+          },
+          "resourceClass": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+          },
+          "required": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "action",
+          "resourceClass",
+          "required"
+        ]
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "configurationSchemaRef": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 4096
+    },
+    "contributions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "tool",
+              "cli",
+              "mcp",
+              "ag-ui",
+              "decision-definition",
+              "skill",
+              "domain-service",
+              "provider"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+          },
+          "contractRef": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        },
+        "required": [
+          "kind",
+          "id",
+          "contractRef"
+        ]
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "startDeadlineMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 180000
+        },
+        "drainDeadlineMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 180000
+        },
+        "restartLimit": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        }
+      },
+      "required": [
+        "startDeadlineMs",
+        "drainDeadlineMs",
+        "restartLimit"
+      ]
+    },
+    "migrations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "domain": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,95}$"
+          },
+          "fromSchema": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+          },
+          "toSchema": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+          },
+          "contractRef": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        },
+        "required": [
+          "domain",
+          "fromSchema",
+          "toSchema",
+          "contractRef"
+        ]
+      },
+      "minItems": 0,
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "packageId",
+    "version",
+    "apiMajor",
+    "installationModes",
+    "platforms",
+    "runtime",
+    "dependencies",
+    "children",
+    "requestedCapabilities",
+    "configurationSchemaRef",
+    "contributions",
+    "lifecycle",
+    "migrations"
+  ],
+  "description": " Executable P01 contract. Runtime enrollment, authorization and durable ownership remain separate obligations."
+}

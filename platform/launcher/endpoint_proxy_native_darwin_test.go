@@ -4,6 +4,8 @@ package launcher
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"net"
 	"os"
@@ -67,6 +69,7 @@ type endpointProxyServer struct {
 	sessions         map[*endpointProxySession]struct{}
 	results          []endpointProxyStreamResult
 	workers          sync.WaitGroup
+	beforeResponse   func(context.Context) error
 }
 
 type endpointProxySession struct {
@@ -197,7 +200,15 @@ func endpointProxyStart(path, upstream string) (*endpointProxyServer, error) {
 					result.CloseFailed, result.Joined = a != nil || b != nil, true
 					return
 				}
-				result = endpointProxyRelay(sessionCtx, ownedLeft, ownedRight, 16*1024*1024)
+				result = endpointProxyRelay(sessionCtx, ownedLeft, ownedRight, 16*1024*1024, func(ctx context.Context) error {
+					p.mu.Lock()
+					before := p.beforeResponse
+					p.mu.Unlock()
+					if before != nil {
+						return before(ctx)
+					}
+					return nil
+				})
 			}()
 		}
 	}()
@@ -271,15 +282,24 @@ var endpointProxyRetained struct {
 }
 
 type endpointProxyPreparation struct {
-	SchemaVersion           string `json:"schemaVersion"`
-	Root                    string `json:"root"`
-	RootDev                 uint64 `json:"rootDev"`
-	RootInode               uint64 `json:"rootInode"`
-	GateDev                 uint64 `json:"gateDev"`
-	GateInode               uint64 `json:"gateInode"`
-	OwnerUID                uint32 `json:"ownerUid"`
-	UpstreamSelectionSHA256 string `json:"upstreamSelectionSHA256"`
-	SelectedSelectionSHA256 string `json:"selectedSelectionSHA256"`
+	SchemaVersion           string                       `json:"schemaVersion"`
+	Root                    string                       `json:"root"`
+	RootDev                 uint64                       `json:"rootDev"`
+	RootInode               uint64                       `json:"rootInode"`
+	GateDev                 uint64                       `json:"gateDev"`
+	GateInode               uint64                       `json:"gateInode"`
+	OwnerUID                uint32                       `json:"ownerUid"`
+	UpstreamSelectionSHA256 string                       `json:"upstreamSelectionSHA256"`
+	SelectedSelectionSHA256 string                       `json:"selectedSelectionSHA256"`
+	RetainedSocket          *endpointProxyRetainedSocket `json:"retainedSocket,omitempty"`
+}
+
+// These pins identify a previously joined fixture, never a process to adopt.
+type endpointProxyRetainedSocket struct {
+	ProfileDirectory   string `json:"profileDirectory"`
+	ReleaseFingerprint string `json:"releaseFingerprint"`
+	InstanceID         string `json:"instanceId"`
+	SocketInode        uint64 `json:"socketInode"`
 }
 
 type endpointProxyFixture struct {
@@ -366,8 +386,6 @@ func endpointProxyPrepare(t *testing.T) *endpointProxyFixture {
 	})
 	p.rootInfo = endpointProxyPinDir(t, p.rootFD, prep.RootDev, prep.RootInode)
 	p.gateInfo = endpointProxyPinDir(t, p.gateFD, prep.GateDev, prep.GateInode)
-	entries, err := p.gateFD.ReadDir(-1)
-	endpointProxyRequire(t, err == nil && len(entries) == 0, "endpoint_proxy_gate_must_be_empty")
 	// Actual upstream admission occurs only during explicitly authorized tests.
 	driver, err := NewDocker(upstream.dockerConfig())
 	endpointProxyRequire(t, err == nil, "endpoint_proxy_upstream_driver")
@@ -375,6 +393,11 @@ func endpointProxyPrepare(t *testing.T) *endpointProxyFixture {
 	_, err = driver.Inspect(ctx)
 	cancel()
 	endpointProxyRequire(t, err == nil, "endpoint_proxy_actual_upstream_not_admitted")
+	if prep.RetainedSocket != nil {
+		p.retainStaleSocket(t, prep, selected)
+	}
+	entries, err := p.gateFD.ReadDir(-1)
+	endpointProxyRequire(t, err == nil && len(entries) == 0, "endpoint_proxy_gate_must_be_empty")
 	// One outer cleanup owns ALL listener generations. It is registered before
 	// the Docker fixture, so no recovery listener is stopped ahead of engine cleanup.
 	t.Cleanup(func() {
@@ -406,6 +429,136 @@ func endpointProxyPrepare(t *testing.T) *endpointProxyFixture {
 	})
 	p.bind(t)
 	return p
+}
+
+func (p *endpointProxyFixture) retainStaleSocket(t *testing.T, prep endpointProxyPreparation, selected bootstrapFixtureSelection) {
+	t.Helper()
+	pin := prep.RetainedSocket
+	// Only these two original fixtures have reviewed successful listener and
+	// stream joins. Other retained endpoints have no takeover permission.
+	approved := map[string]struct {
+		fixture string
+		inode   uint64
+	}{
+		"/private/tmp/amx-ep-9bbe1503b10107ba": {"p02-bootstrap-private-2049690329", 3020213},
+		"/private/tmp/amx-ep-89e1cf12b74886d0": {"p02-bootstrap-private-3104153514", 3021882},
+	}
+	original, ok := approved[prep.Root]
+	endpointProxyRequire(t, ok && pin != nil && pin.SocketInode == original.inode &&
+		pin.ProfileDirectory == filepath.Join("/Users/ryan/.cache/agentmux-governance", original.fixture, "profile"), "endpoint_proxy_retained_scope_not_approved")
+	policy := ProfilePolicy{Directory: pin.ProfileDirectory, WorkspaceRoots: []string{selected.WorkspaceRoot}, OwnerUID: 501, InstalledReleaseFingerprint: pin.ReleaseFingerprint}
+	loaded, err := LoadProfile(policy)
+	endpointProxyRequire(t, err == nil, "endpoint_proxy_original_profile_not_admitted")
+	profile := loaded.Declaration()
+	endpointProxyRequire(t, profile.InstanceID == pin.InstanceID && profile.Docker != nil && reflect.DeepEqual(*profile.Docker, selected.Docker), "endpoint_proxy_original_profile_binding_changed")
+	root, err := openPrivateHostRoot(pin.ProfileDirectory, 501, policy.WorkspaceRoots)
+	endpointProxyRequire(t, err == nil, "endpoint_proxy_original_profile_root_not_admitted")
+	defer func() {
+		if root.Close() != nil {
+			t.Error("endpoint_proxy_original_profile_root_close")
+		}
+	}()
+	rootFD, err := root.Open(".")
+	endpointProxyRequire(t, err == nil, "endpoint_proxy_original_profile_descriptor")
+	defer func() {
+		if rootFD.Close() != nil {
+			t.Error("endpoint_proxy_original_profile_descriptor_close")
+		}
+	}()
+	rootInfo, err := rootFD.Stat()
+	endpointProxyRequire(t, err == nil && privatefs.CheckDescriptor(rootFD, privatefs.PrivateObject) == nil, "endpoint_proxy_original_profile_access")
+	identities := append([]string{profile.Docker.EngineID, "owner-status-service"}, bootstrapFixtureRoleLeaseIDs(profile.Docker.EngineID)...)
+	var files []*os.File
+	defer func() {
+		for _, f := range files {
+			if f.Close() != nil {
+				t.Error("endpoint_proxy_original_lock_descriptor_close")
+			}
+		}
+	}()
+	// Require all six existing files before AcquireBootstrapLock can refresh
+	// their own attempt metadata. Missing files do not authorize preparation.
+	for _, identity := range identities {
+		digest := sha256.Sum256([]byte(profile.InstanceID + "\x00" + identity))
+		name := "bootstrap-" + hex.EncodeToString(digest[:]) + ".lock"
+		fd, openErr := unix.Openat(int(rootFD.Fd()), name, unix.O_RDONLY|unix.O_NOFOLLOW|unix.O_NONBLOCK|unix.O_CLOEXEC, 0)
+		endpointProxyRequire(t, openErr == nil, "endpoint_proxy_original_lock_missing")
+		file := os.NewFile(uintptr(fd), name)
+		files = append(files, file)
+		info, statErr := file.Stat()
+		pathInfo, pathErr := root.Lstat(name)
+		endpointProxyRequire(t, statErr == nil && pathErr == nil && privateProfileInfo(info, 501, false) && os.SameFile(info, pathInfo) &&
+			privatefs.CheckDescriptor(file, privatefs.PrivateObject) == nil, "endpoint_proxy_original_lock_changed")
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	selectedDriver, err := NewDocker(selected.dockerConfig())
+	endpointProxyRequire(t, err == nil, "endpoint_proxy_original_context_driver")
+	var endpoint string
+	err = selectedDriver.readFixed(ctx, "endpoint", &endpoint, "context", "inspect", selected.Docker.Context, "--format", "{{json .Endpoints.docker.Host}}")
+	endpointProxyRequire(t, err == nil && endpoint == selected.Docker.Endpoint, "endpoint_proxy_original_context_binding_changed")
+	var leases []*BootstrapLock
+	defer func() {
+		for i := len(leases) - 1; i >= 0; i-- {
+			if leases[i].Close() != nil {
+				t.Error("endpoint_proxy_original_lease_close")
+			}
+		}
+	}()
+	for i, identity := range identities {
+		lease, leaseErr := AcquireBootstrapLock(ctx, profile.ProfileDirectory, profile.InstanceID, identity)
+		endpointProxyRequire(t, leaseErr == nil, "endpoint_proxy_original_owner_still_active")
+		leases = append(leases, lease)
+		before, beforeErr := files[i].Stat()
+		after, afterErr := lease.file.Stat()
+		endpointProxyRequire(t, beforeErr == nil && afterErr == nil && os.SameFile(before, after), "endpoint_proxy_original_lease_replaced")
+	}
+	current, err := LoadProfile(policy)
+	endpointProxyRequire(t, err == nil && reflect.DeepEqual(current.Declaration(), profile), "endpoint_proxy_original_profile_replaced")
+	currentRoot, err := os.Lstat(profile.ProfileDirectory)
+	endpointProxyRequire(t, err == nil && os.SameFile(rootInfo, currentRoot) && privatefs.CheckDescriptor(rootFD, privatefs.PrivateObject) == nil, "endpoint_proxy_original_profile_root_changed")
+	p.checkDirs(t, false)
+	socket := p.socketInfo(t)
+	endpointProxyRequire(t, uint64(socket.Dev) == prep.GateDev && socket.Ino == pin.SocketInode && socket.Gid == 0 && socket.Mode == unix.S_IFSOCK|0700,
+		"endpoint_proxy_original_socket_changed")
+	entryFD, err := p.gate.Open(".")
+	endpointProxyRequire(t, err == nil, "endpoint_proxy_original_gate_descriptor")
+	defer func() {
+		if entryFD.Close() != nil {
+			t.Error("endpoint_proxy_original_gate_descriptor_close")
+		}
+	}()
+	entries, err := entryFD.ReadDir(-1)
+	endpointProxyRequire(t, err == nil && len(entries) == 1 && entries[0].Name() == "docker.sock", "endpoint_proxy_original_gate_changed")
+	connection, dialErr := (&net.Dialer{Timeout: time.Second}).DialContext(ctx, "unix", p.path)
+	if connection != nil {
+		if connection.Close() != nil {
+			t.Error("endpoint_proxy_original_probe_close")
+		}
+		t.Fatal("endpoint_proxy_original_listener_still_live")
+	}
+	endpointProxyRequire(t, errors.Is(dialErr, syscall.ECONNREFUSED) && ctx.Err() == nil, "endpoint_proxy_original_native_refusal_required")
+	current, err = LoadProfile(policy)
+	endpointProxyRequire(t, err == nil && reflect.DeepEqual(current.Declaration(), profile), "endpoint_proxy_original_profile_changed_before_retention")
+	currentRoot, err = os.Lstat(profile.ProfileDirectory)
+	endpointProxyRequire(t, err == nil && os.SameFile(rootInfo, currentRoot) && privateProfileInfo(currentRoot, 501, true) &&
+		privatefs.CheckDescriptor(rootFD, privatefs.PrivateObject) == nil, "endpoint_proxy_original_profile_root_changed_before_retention")
+	for _, file := range files {
+		info, statErr := file.Stat()
+		pathInfo, pathErr := root.Lstat(file.Name())
+		endpointProxyRequire(t, statErr == nil && pathErr == nil && os.SameFile(info, pathInfo) && privateProfileInfo(info, 501, false) &&
+			privatefs.CheckDescriptor(file, privatefs.PrivateObject) == nil, "endpoint_proxy_original_lock_changed_before_retention")
+	}
+	p.checkDirs(t, false)
+	var pathSocket unix.Stat_t
+	endpointProxyRequire(t, unix.Lstat(p.path, &pathSocket) == nil && endpointProxySameSocket(socket, pathSocket) &&
+		endpointProxySameSocket(socket, p.socketInfo(t)) && ctx.Err() == nil, "endpoint_proxy_original_socket_replaced")
+	retained := "retained-docker-socket-" + strconv.FormatUint(socket.Ino, 10)
+	endpointProxyRequire(t, unix.RenameatxNp(int(p.gateFD.Fd()), "docker.sock", int(p.rootFD.Fd()), retained, unix.RENAME_EXCL) == nil, "endpoint_proxy_original_socket_retention_refused")
+	var archived, absent unix.Stat_t
+	endpointProxyRequire(t, unix.Fstatat(int(p.rootFD.Fd()), retained, &archived, unix.AT_SYMLINK_NOFOLLOW) == nil && endpointProxySameSocket(socket, archived) &&
+		errors.Is(unix.Fstatat(int(p.gateFD.Fd()), "docker.sock", &absent, unix.AT_SYMLINK_NOFOLLOW), unix.ENOENT), "endpoint_proxy_original_socket_retention_unconfirmed")
+	p.checkDirs(t, false)
 }
 
 func (p *endpointProxyFixture) checkDirs(t *testing.T, denied bool) {

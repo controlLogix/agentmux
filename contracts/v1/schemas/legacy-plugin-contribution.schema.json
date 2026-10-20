@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:legacy-plugin-contribution",
+  "title": "Trusted Python federation plugin contribution v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "kind", "plugin", "trust", "context", "hooks", "envelopeTypes", "tablePrefix", "tableStatements", "panelId", "commands"],
+  "properties": {
+    "schemaVersion": {"const": "1.0.0"},
+    "kind": {"const": "legacy-federation-plugin"},
+    "plugin": {"type": "string", "minLength": 1},
+    "trust": {"const": "administrator-installed-python"},
+    "context": {"const": "legacy-federation"},
+    "profileContext": {
+      "description": "Explicit display context from the selected profile. Omit absent fields. Project is a display value, not an authorization projectId; neither value grants access.",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "environment": {"$ref": "#/$defs/profileDisplayValue"},
+        "project": {"$ref": "#/$defs/profileDisplayValue"}
+      }
+    },
+    "hooks": {"const": ["start", "on_connect", "on_tick", "on_envelope", "on_local_event", "on_revoke"]},
+    "envelopeTypes": {"type": "array", "items": {"type": "string"}},
+    "tablePrefix": {"type": "string", "pattern": "^p_.+_$"},
+    "tableStatements": {"type": "array", "items": {"type": "string"}},
+    "panelId": {"type": "string", "minLength": 1},
+    "commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["verb", "help", "operator_only", "params"],
+        "properties": {
+          "verb": {"type": "string", "minLength": 1},
+          "help": {"type": "string"},
+          "operator_only": {"type": "boolean"},
+          "params": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["type", "required", "help", "positional"],
+              "properties": {
+                "type": {"type": "string"},
+                "required": {"type": "boolean"},
+                "help": {"type": "string"},
+                "positional": {"type": "boolean"}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "profileDisplayValue": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^\\S(?:[^\u0000-\u001f\u007f-\u009f\u2028\u2029]*\\S)?$",
+      "not": {"pattern": "[\u0000-\u001f\u007f-\u009f\u2028\u2029]"}
+    }
+  }
+}

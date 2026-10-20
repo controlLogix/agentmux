@@ -24,10 +24,13 @@ import html
 import os
 import pathlib
 import re
+import stat
 import sys
 
-sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
-import atlassian as atl  # noqa: E402
+try:
+    from taskmgmt import atlassian as atl
+except ModuleNotFoundError:
+    import atlassian as atl
 
 # AGENTMUX_HOME, like every sibling module. This file resolved the home directly
 # from $HOME, so an isolated run still read and wrote the operator's real one.
@@ -35,37 +38,70 @@ LOG_DIR = pathlib.Path(
     os.environ.get("AGENTMUX_HOME") or pathlib.Path.home() / ".agentmux"
 ) / "logs"
 NAME_RE = re.compile(r"^[A-Za-z0-9_.-]{1,64}$")
-KEY_RE = re.compile(r"^[A-Z][A-Z0-9_]+-[0-9]+$")
+KEY_RE = re.compile(r"[A-Z][A-Z0-9_]*-[0-9]+\Z")
 
 # Matches ANSI CSI/OSC escapes. Agent logs are raw terminal output; Jira and
 # Confluence must never receive escape bytes.
-ANSI_RE = re.compile(r"\x1b\[[0-9;:?]*[ -/]*[@-~]|\x1b\][^\x07]*\x07|\x1b[()][A-Za-z0-9]|\x1b[=>]")
+ANSI_RE = re.compile(
+    r"(?:\x1b\]|\x9d)[\s\S]*?(?:\x07|\x1b\\|\x9c|$)"
+    r"|(?:\x1b[P^_]|\x90|\x9e|\x9f)[\s\S]*?(?:\x1b\\|\x9c|$)"
+    r"|(?:\x1b\[|\x9b)[0-?]*[ -/]*[@-~]|\x1b[ -/]*[@-~]")
+CONTROL_RE = re.compile(r"[\x00-\x08\x0b-\x1f\x7f-\x9f]")
 
 
 def err(msg: str) -> None:
     print(f"task.py: {msg}", file=sys.stderr)
 
 
+def display(value, cfg, limit=300):
+    """Bound external text and remove controls and the known credential forms."""
+    if not isinstance(value, str):
+        return "unavailable"
+    text = CONTROL_RE.sub("", ANSI_RE.sub("", value))
+    header = atl._auth_header(cfg)
+    secrets = (cfg.get("api_token"), header, header.partition(" ")[2])
+    for secret in sorted((item for item in secrets if item), key=len, reverse=True):
+        text = text.replace(secret, "[redacted]")
+    return text[:limit]
+
+
+def transition_entries(data):
+    entries = data.get("transitions")
+    if not isinstance(entries, list) or len(entries) > 1000:
+        raise atl.AtlassianError("Jira returned no usable transition list")
+    for entry in entries:
+        if (not isinstance(entry, dict) or type(entry.get("id")) not in (str, int)
+                or not re.fullmatch(r"[0-9]{1,30}", str(entry["id"]))
+                or not isinstance(entry.get("name"), str) or not 1 <= len(entry["name"]) <= 300):
+            raise atl.AtlassianError("Jira returned an invalid transition")
+    return entries
+
+
 def read_agent_log(agent: str, max_bytes: int = 8000) -> str:
     """Tail of an agent's pane log, ANSI-stripped and CR-normalised."""
-    if not NAME_RE.match(agent):
-        raise atl.AtlassianError(f"invalid agent name: {agent!r}")
-    path = LOG_DIR / f"{agent}.log"
-    resolved = path.resolve()
-    if resolved.parent != LOG_DIR.resolve():
-        raise atl.AtlassianError("log path escapes the log directory")
-    if not resolved.is_file():
-        raise atl.AtlassianError(f"no log for agent {agent!r}")
-    # Same hardening as the dashboard: refuse a hardlinked log, which could point
-    # at a credential file.
-    if resolved.stat().st_nlink > 1:
-        raise atl.AtlassianError("log has st_nlink > 1; refusing to read a hardlink")
-    with open(resolved, "rb") as fh:
-        size = resolved.stat().st_size
-        if size > max_bytes:
-            fh.seek(size - max_bytes)
-        raw = fh.read()
-    text = ANSI_RE.sub("", raw.decode("utf-8", "replace")).replace("\r", "")
+    if not isinstance(agent, str) or not NAME_RE.fullmatch(agent):
+        raise atl.AtlassianError("invalid agent name")
+    if type(max_bytes) is not int or not 1 <= max_bytes <= 60000:
+        raise atl.AtlassianError("log export limit must be between 1 and 60000 bytes")
+    directory = None
+    try:
+        # Hold the directory and exact file handles across validation and read.
+        # Do not follow a replaced name, symlink, FIFO or hardlinked secret file.
+        directory = os.open(LOG_DIR, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        fd = os.open(f"{agent}.log", os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK,
+                     dir_fd=directory)
+        with os.fdopen(fd, "rb") as handle:
+            info = os.fstat(handle.fileno())
+            if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1:
+                raise atl.AtlassianError("log export requires a regular file without links")
+            handle.seek(max(0, info.st_size - max_bytes))
+            raw = handle.read(max_bytes)
+    except OSError:
+        raise atl.AtlassianError("log could not be safely read from the selected log directory") from None
+    finally:
+        if directory is not None:
+            os.close(directory)
+    text = CONTROL_RE.sub("", ANSI_RE.sub("", raw.decode("utf-8", "replace")))
     return "\n".join(line.rstrip() for line in text.splitlines()).strip()
 
 
@@ -73,17 +109,21 @@ def pick_transition(cfg, key, wanted: str | None):
     """Resolve a transition id. Jira transitions are per-project and per-workflow,
     so a hardcoded id would break on any other project."""
     data = atl.jira_transitions(cfg, key)
-    options = data.get("transitions") or []
+    options = transition_entries(data)
     if not options:
         raise atl.AtlassianError(f"{key} has no available transitions")
     pattern = wanted or cfg.get("done_transition") or r"done|closed|complete|resolve"
+    try:
+        matcher = re.compile(pattern, re.I)
+    except (TypeError, re.error):
+        raise atl.AtlassianError("the selected transition pattern is invalid") from None
     for t in options:
-        if re.search(pattern, t.get("name", ""), re.I):
+        if matcher.search(t["name"]):
             return t["id"], t["name"]
-    names = ", ".join(t.get("name", "?") for t in options)
+    names = ", ".join(display(t["name"], cfg, 80) for t in options[:10])
     raise atl.AtlassianError(
-        f"no transition on {key} matched /{pattern}/i. Available: {names}\n"
-        f'Set "done_transition" in ~/.agentmux/atlassian.json to one of those.'
+        f"no transition on {key} matched the selected pattern. Available: {names}. "
+        'Review "done_transition" in the selected Atlassian configuration.'
     )
 
 
@@ -131,14 +171,20 @@ def main(argv=None) -> int:
         return 1
 
     def need_key(k):
-        if not KEY_RE.match(k):
-            raise atl.AtlassianError(f"not a Jira issue key: {k!r}")
+        if not KEY_RE.fullmatch(k):
+            raise atl.AtlassianError("invalid Jira issue key")
         return k
 
     try:
         if args.cmd == "whoami":
             me = atl.whoami(cfg, dry_run=dry)
-            print(me.get("displayName") or me.get("emailAddress") or me)
+            if dry:
+                print(me)
+            else:
+                name = me.get("displayName") or me.get("emailAddress")
+                if not isinstance(name, str) or not name.strip():
+                    raise atl.AtlassianError("Atlassian returned no usable account name")
+                print(display(name, cfg, 200))
 
         elif args.cmd == "create":
             out = atl.jira_create(cfg, args.summary, args.desc, args.type,
@@ -147,8 +193,8 @@ def main(argv=None) -> int:
                 print(out)
             else:
                 key = out.get("key")
-                if not key:
-                    raise atl.AtlassianError(f"create returned no key: {out}")
+                if not isinstance(key, str) or not KEY_RE.fullmatch(key):
+                    raise atl.OutcomeUnknown("create returned no valid issue key; reconcile the issue before retrying")
                 print(key)            # stdout = the key, for shell capture
 
         elif args.cmd == "comment":
@@ -171,7 +217,7 @@ def main(argv=None) -> int:
             else:
                 tid, tname = pick_transition(cfg, key, args.transition)
                 atl.jira_transition(cfg, key, tid)
-                print(f"{key} -> {tname}")
+                print(f"{key} -> {display(tname, cfg)}")
 
         elif args.cmd == "report":
             body = read_agent_log(args.agent, max_bytes=60000)
@@ -188,8 +234,11 @@ def main(argv=None) -> int:
             if dry:
                 print(out)
             else:
-                link = ((out.get("_links") or {}).get("webui") or "")
-                print(f"{cfg['base_url']}/wiki{link}" if link else out.get("id", "ok"))
+                # Build the link from the configured site and validated receipt,
+                # never from an arbitrary URL returned in an external response.
+                page_id = atl._content_id(out.get("id"))
+                prefix = "/wiki" if cfg["deployment"] == "cloud" else ""
+                print(f"{cfg['base_url']}{prefix}/pages/viewpage.action?pageId={page_id}")
 
         elif args.cmd == "transitions":
             key = need_key(args.key)
@@ -197,11 +246,11 @@ def main(argv=None) -> int:
             if dry:
                 print(data)
             else:
-                for tr in data.get("transitions") or []:
-                    print(f"{tr['id']:>6}  {tr.get('name')}")
+                for tr in transition_entries(data):
+                    print(f"{str(tr['id']):>6}  {display(tr['name'], cfg)}")
 
     except atl.AtlassianError as exc:
-        err(str(exc))
+        err(display(str(exc), cfg, 500))
         return 1
     except KeyboardInterrupt:
         return 130

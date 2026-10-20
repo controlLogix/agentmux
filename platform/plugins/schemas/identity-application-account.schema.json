@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:identity-application-account",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "ref": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+    "profileId": {"$ref": "urn:agentmux:contract:1:common#/$defs/identifier"},
+    "scope": {"$ref": "urn:agentmux:contract:1:common#/$defs/scope"},
+    "accountPublicKey": {"type": "string", "pattern": "^A[A-Z2-7]{55}$"},
+    "administratorIdentityRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+    "administratorTransportRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+    "administratorCredentialRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+    "accountIssuerRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+    "status": {"enum": ["active", "revoked"]},
+    "issuedAt": {"$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"},
+    "expiresAt": {"$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"}
+  },
+  "required": ["ref", "profileId", "scope", "accountPublicKey", "administratorIdentityRef",
+    "administratorTransportRef", "administratorCredentialRef", "accountIssuerRef", "status",
+    "issuedAt", "expiresAt"],
+  "title": "Enrolled application NATS account metadata",
+  "description": "Binds one application account public key to its exact project scope, administrator transport and two owner-custodied secret references."
+}

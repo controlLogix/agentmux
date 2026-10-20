@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:definition-save",
+  "title": "Agentmux definition-save payload v1",
+  "description": "The owner checks envelope expectedVersion against its retained revision and this exact source checksum. First creation uses version zero and null checksum. Recreation uses the retained tombstone version and null checksum. Updates use the current version and exact checksum. Authentication, current grants, global edit permission and encoded byte limits require owner checks.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "definitionId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "scope": {
+      "enum": [
+        "repo",
+        "global"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,63}$"
+    },
+    "expectedChecksum": {
+      "anyOf": [
+        {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "definition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048,
+          "pattern": "\\S"
+        },
+        "cli": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{1,32}$"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 65536
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "auth": {
+          "anyOf": [
+            {
+              "type": "string",
+              "maxLength": 65536
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "persona": {
+          "type": "string",
+          "maxLength": 4096
+        },
+        "posture": {
+          "enum": [
+            "read-only",
+            "workspace-write",
+            "unrestricted"
+          ]
+        },
+        "role": {
+          "enum": [
+            "lead",
+            "worker",
+            "reviewer",
+            "researcher"
+          ]
+        },
+        "worktree": {
+          "enum": [
+            "per-member",
+            "integration",
+            "none"
+          ]
+        },
+        "tools": {
+          "type": "array",
+          "maxItems": 65536,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536,
+            "pattern": "^[^,]*$",
+            "allOf": [
+              {
+                "pattern": "\\S"
+              }
+            ]
+          }
+        },
+        "tools_deny": {
+          "type": "array",
+          "maxItems": 65536,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 65536,
+            "pattern": "^[^,]*$",
+            "allOf": [
+              {
+                "pattern": "\\S"
+              }
+            ]
+          }
+        },
+        "capabilities": {
+          "type": "array",
+          "maxItems": 16,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,23}$"
+          }
+        },
+        "max_instances": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        }
+      },
+      "required": [
+        "description"
+      ]
+    }
+  },
+  "required": [
+    "definitionId",
+    "scope",
+    "name",
+    "expectedChecksum",
+    "definition"
+  ]
+}

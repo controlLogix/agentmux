@@ -16,6 +16,8 @@ Use the exact packages in `requirements.lock` inside an isolated environment. Ad
 
 `now` must be a timezone-aware UTC `datetime`. Expiry is exclusive. No clock-skew grace is implied. Input and canonical output are limited to 1 MiB and nested values to depth 64. Raw integer tokens and Python integers outside the interoperable safe-integer range are rejected; finite binary64 floating-point values follow JCS. Domain schemas must enforce exact decimal or large integer strings where required. Valid Unicode is not normalized.
 
+A missing configured `schema_dir` now raises `schema_configuration_error`; earlier versions returned `unknown_schema` for that condition. An unknown schema name in an available catalog still raises `unknown_schema`. Callers that handle a missing directory must use the configuration error code.
+
 The caller must resolve the supplied public key from its enrolled issuer/key revision, authenticate the ingress credential mapping, verify current grants and revocation, choose the registered domain payload schema, bind broker subjects, and enforce durable replay/idempotency rules. A supplied public key that validates a signature is not evidence that its signer is trusted. Use `verify_envelope` for received envelopes; verifying only their embedded attestation does not bind unsigned outer fields.
 
 ## Test CLI
@@ -29,3 +31,39 @@ Run `python -m unittest discover -s sdk/python/tests -v` with `PYTHONPATH=sdk/py
 ## Registered domain payloads
 
 Complete-envelope verification also checks the trusted `contracts/v1/registry.json`: known contract/version, message kind, destination, closed payload shape and task/attempt/delegation correlation. The CLI `validatePayload` operation accepts an `envelope` and performs these structural checks without signature verification. It does not resolve grants or authorize execution. Production owners still check current authority and durable operation history.
+
+
+## Native child connections
+
+`load_native_bootstrap(path, schema_dir=None)` reads the Go host's private
+`NativeBootstrap`, including configuration, optional context, CA and credential
+snapshots. Pass the path supplied through `AGENTMUX_PLUGIN_BOOTSTRAP`. The new
+client requires separate `serverName` and `leafCertificateSha256` pins for each
+connection, the selected loopback TLS endpoint and private files. It supports the
+existing 1.0.0, 1.1.0 and 1.2.0 lifecycle frame shapes; it does not add fields to
+those frames or provide an unpinned fallback.
+
+Create `NativeChild(bootstrap)` and await `connect()`. This opens TLS 1.3 before
+reading broker INFO, verifies the DNS name and leaf pin before sending credentials,
+authenticates the NATS nonce, subscribes and flushes, then reports `registered`.
+`next_control()` accepts the matching prepare or a fresh stop command. Call
+`report("ready")` only after application preparation and `report("stopped")` only
+after application cleanup. Failed preparation can report `failed`.
+
+`bootstrap.context` is an immutable descriptor snapshot. Profile environment and
+project values are display context; they grant no access. The optional
+`context_connection` exposes `publish(subject, bytes)` and `receive(subject)` on
+only the bootstrap's exact subjects. It does not authenticate business envelopes
+or create operation handles. The host remains responsible for those checks.
+
+Always await `close()` in a `finally` block. It closes both original connections
+and joins their readers. Cancellation of a close caller preserves the original
+close task. A `NativeChildCleanupError` retains `.owner`; keep that owner and retry
+its `close()` before treating cleanup as complete. The client does not reconnect,
+follow discovered servers, subscribe to wildcards or implement JetStream.
+
+The controlled TLS socket tests are in `tests/test_native_child.py`. For the
+TypeScript cases, set `AGENTMUX_NATIVE_CHILD_NODE` to the prepared Node binary and
+`AGENTMUX_NATIVE_CHILD_TS_MODULE` to the disposable build's `native-child.js`.
+Set `AGENTMUX_SCHEMA_DIR` to the repository schema directory for those Node tests.
+These tests do not qualify a live broker or installed native candidate.

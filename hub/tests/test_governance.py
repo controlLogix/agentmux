@@ -2,6 +2,8 @@
 
 Use temporary stores and injected failures; never touch a user's running hub.
 """
+from hub.fed.work_services import build_work_context
+
 import asyncio
 from contextlib import closing
 import concurrent.futures
@@ -174,14 +176,14 @@ class WorkRecovery(unittest.IsolatedAsyncioTestCase):
                                   "BEGIN SELECT RAISE(ABORT, 'injected attribution failure'); END")
         env = self.offer()
         with self.assertRaises(sqlite3.IntegrityError):
-            await self.plugin.on_envelope(self.ctx, env, guard.Decision("deliver", local_repo="falcon"))
+            await self.plugin.on_envelope(build_work_context(self.ctx), env, guard.Decision("deliver", local_repo="falcon"))
         self.assertEqual(self.ctx.store.q("SELECT * FROM work_items"), [])
 
     async def test_same_peer_other_node_is_not_discarded(self):
         self.ctx.me = "nick"
         self.ctx.policy = policy(me="nick")
         env = self.offer()
-        outcome = await self.plugin.on_envelope(self.ctx, env, guard.Decision("deliver", local_repo="falcon"))
+        outcome = await self.plugin.on_envelope(build_work_context(self.ctx), env, guard.Decision("deliver", local_repo="falcon"))
         self.assertNotEqual(outcome, "stale")
         self.assertEqual(len(self.ctx.store.q("SELECT * FROM work_items")), 1)
 
@@ -194,7 +196,7 @@ class WorkRecovery(unittest.IsolatedAsyncioTestCase):
                                   (PENDING, json.dumps(flags), w["id"]))
         env = envelope.make("result", "bob", "unselected", self.rid, "alice",
                              {"origin_id": w["id"], "state": "done", "result": "forged"})
-        await self.plugin.on_envelope(self.ctx, env, guard.Decision("deliver", local_repo="falcon"))
+        await self.plugin.on_envelope(build_work_context(self.ctx), env, guard.Decision("deliver", local_repo="falcon"))
         self.assertEqual(self.ctx.store.work(w["id"])["claimed_by"], PENDING)
 
     async def test_completion_keeps_durable_return_intent_without_callback(self):
@@ -219,7 +221,7 @@ class WorkProtocol(unittest.IsolatedAsyncioTestCase):
         self.b = LocalContext(os.path.join(self.tmp.name, "b"), "bob", "b")
         for ctx in [self.origin, self.a, self.b]: self.addCleanup(ctx.store.db.close)
         self.p = Work()
-        self.w = await self.p.add(self.origin, "operator", "role:falcon/worker", "Read fixture", "report checksum")
+        self.w = await self.p.add(build_work_context(self.origin), "operator", "role:falcon/worker", "Read fixture", "report checksum")
         self.offer = self.outbox(self.origin, "work")[0]
 
     def outbox(self, ctx, kind):
@@ -231,7 +233,7 @@ class WorkProtocol(unittest.IsolatedAsyncioTestCase):
         tail = [env["rid"], env["data"]["role"]] if plane == "work" else [env["to"]]
         dec = guard.inbound(ctx.policy, envelope.subject(plane, env["from"], *tail), env)
         self.assertEqual(dec.action, "deliver", dec.reason)
-        return await self.p.on_envelope(ctx, env, dec)
+        return await self.p.on_envelope(build_work_context(ctx), env, dec)
 
     async def grant(self, receiver):
         await self.deliver(receiver, self.offer)
@@ -278,10 +280,10 @@ class WorkProtocol(unittest.IsolatedAsyncioTestCase):
         self.a.store = Store(self.a.store.path)
         self.addCleanup(self.a.store.db.close)
         with patch.object(self.a, "stage", side_effect=OSError("publish staging unavailable")):
-            await self.p.recover_results(self.a)
+            await self.p.recover_results(build_work_context(self.a))
         self.assertTrue(json.loads(self.a.store.work(w["id"])["fed_flags"])["result_pending"])
-        await self.p.recover_results(self.a)
-        await self.p.recover_results(self.a)
+        await self.p.recover_results(build_work_context(self.a))
+        await self.p.recover_results(build_work_context(self.a))
         results = self.outbox(self.a, "result")
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]["id"], identity)
@@ -294,7 +296,7 @@ class WorkProtocol(unittest.IsolatedAsyncioTestCase):
     async def test_result_binds_peer_node_attempt_task_repo_grant_and_evidence(self):
         import copy
         w = await self.complete(self.a)
-        await self.p.recover_results(self.a)
+        await self.p.recover_results(build_work_context(self.a))
         valid = self.outbox(self.a, "result")[0]
         changes = [('from', 'bob'), ('node', 'wrong'), ('rid', 'r000000000000'),
                    ('origin_node', 'other'), ('origin_id', 'W-other'), ('offer_id', 'wrong'),
@@ -304,7 +306,7 @@ class WorkProtocol(unittest.IsolatedAsyncioTestCase):
             invalid = copy.deepcopy(valid)
             (invalid if field in ['from', 'node', 'rid'] else invalid['data'])[field] = value
             with self.subTest(field=field):
-                await self.p.on_envelope(self.origin, invalid, guard.Decision("deliver", local_repo="falcon"))
+                await self.p.on_envelope(build_work_context(self.origin), invalid, guard.Decision("deliver", local_repo="falcon"))
                 self.assertEqual(self.origin.store.work(self.w["id"])["claimed_by"], "fed:pending")
         await self.deliver(self.origin, valid)
         self.assertEqual(self.origin.store.work(self.w["id"])["state"], "done")
@@ -313,7 +315,7 @@ class WorkProtocol(unittest.IsolatedAsyncioTestCase):
         self.a.me = "nick"
         self.a.policy = policy(me="nick")
         await self.complete(self.a)
-        await self.p.recover_results(self.a)
+        await self.p.recover_results(build_work_context(self.a))
         result = self.outbox(self.a, "result")[0]
         await self.deliver(self.origin, result)
         self.assertEqual(self.origin.store.work(self.w["id"])["state"], "done")
@@ -335,7 +337,7 @@ class WorkProtocol(unittest.IsolatedAsyncioTestCase):
         self.a.store.sweep_leases()
         self.assertEqual(self.a.store.work(w['id'])['state'], 'failed')
         self.assertTrue(json.loads(self.a.store.work(w['id'])['fed_flags'])['result_pending'])
-        await self.p.recover_results(self.a)
+        await self.p.recover_results(build_work_context(self.a))
         await self.deliver(self.origin, self.outbox(self.a, 'result')[0])
         self.assertEqual(self.origin.store.work(self.w['id'])['state'], 'failed')
 
@@ -350,7 +352,7 @@ class WorkProtocol(unittest.IsolatedAsyncioTestCase):
         code = "from hub.store import Store; import os,sys; s=Store(sys.argv[1]); s.release(sys.argv[2],sys.argv[3],'done','survived process exit','a'); os._exit(73)"
         proc = subprocess.run([sys.executable, "-c", code, self.a.store.path, session, w["id"]], timeout=15)
         self.assertEqual(proc.returncode, 73)
-        await self.p.recover_results(self.a)
+        await self.p.recover_results(build_work_context(self.a))
         await self.deliver(self.origin, self.outbox(self.a, "result")[0])
         self.assertEqual(self.origin.store.work(self.w["id"])["result"], "survived process exit")
 
@@ -361,7 +363,7 @@ class WorkProtocol(unittest.IsolatedAsyncioTestCase):
         for key, value in [('execution_id', []), ('origin_node', {}), ('offer_digest', 5)]:
             env = copy.deepcopy(valid)
             env['data'][key] = value
-            self.assertEqual(await self.p.on_envelope(self.origin, env, guard.Decision('deliver')), 'invalid_work')
+            self.assertEqual(await self.p.on_envelope(build_work_context(self.origin), env, guard.Decision('deliver')), 'invalid_work')
             self.assertNotIn('executor', json.loads(self.origin.store.work(self.w['id'])['fed_flags']))
 
     async def test_late_grant_cannot_revive_cancelled_execution(self):
@@ -379,5 +381,5 @@ class WorkProtocol(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(decision.action, 'quarantine')
         from hub.store import HubError
         with self.assertRaises(HubError):
-            await self.p.on_envelope(self.a, legacy, guard.Decision('deliver', approved=True))
+            await self.p.on_envelope(build_work_context(self.a), legacy, guard.Decision('deliver', approved=True))
         self.assertEqual(self.a.store.q("SELECT * FROM work_items"), [])

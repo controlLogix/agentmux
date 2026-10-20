@@ -1,0 +1,43 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contractId": {
+          "enum": [
+            "capability-storage-write",
+            "federation-board-command",
+            "capability-secret-use",
+            "capability-process-start",
+            "capability-process-cancel",
+            "capability-decision-request"
+          ]
+        },
+        "operationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "payloadDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        }
+      },
+      "required": [
+        "contractId",
+        "operationId",
+        "payloadDigest"
+      ]
+    }
+  },
+  "required": [
+    "resourceRef",
+    "input"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:capability-outcome-query",
+  "title": "capability-outcome-query v1"
+}

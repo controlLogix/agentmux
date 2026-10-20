@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:identity-native-instance",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "ref": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "status": {
+      "enum": [
+        "active",
+        "revoked"
+      ]
+    },
+    "owner": {
+      "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+    },
+    "identityRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "hostIdentityRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "manifestDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "relationship": {
+      "enum": [
+        "independent",
+        "private"
+      ]
+    },
+    "parentOwner": {
+      "anyOf": [
+        {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "configurationChecksum": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "facts": {
+      "$ref": "urn:agentmux:contract:1:native-authority-facts"
+    },
+    "configurationEventSources": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "configurationRef": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+          },
+          "sourceDigest": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+          },
+          "streamCreated": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+          },
+          "schemaRef": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        },
+        "required": [
+          "configurationRef",
+          "sourceDigest",
+          "streamCreated",
+          "schemaRef"
+        ]
+      }
+    },
+    "privateStorageResources": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "resourceId": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+          },
+          "scope": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+          },
+          "bindingDigest": {
+            "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+          }
+        },
+        "required": [
+          "resourceId",
+          "scope",
+          "bindingDigest"
+        ]
+      }
+    }
+  },
+  "required": [
+    "ref",
+    "status",
+    "owner",
+    "identityRef",
+    "hostIdentityRef",
+    "manifestDigest",
+    "relationship",
+    "parentOwner",
+    "configurationChecksum",
+    "facts"
+  ]
+}

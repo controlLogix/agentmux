@@ -12,6 +12,7 @@ from __future__ import annotations
 import os
 import re
 import subprocess
+import uuid
 from abc import ABC, abstractmethod
 
 ANSI = re.compile(r"\x1b\[[0-9;?]*[ -/]*[@-~]|\x1b\][^\x07\x1b]*(\x07|\x1b\\)|\x1b[()][A-Za-z0-9]|\x1b[=>]")
@@ -43,7 +44,7 @@ class Transport(ABC):
     @abstractmethod
     def send_text(self, handle: str, text: str) -> None: ...          # literal, no submit
     @abstractmethod
-    def send_buffer(self, handle: str, text: str) -> None: ...        # large text, bracketed paste
+    def send_buffer(self, handle: str, text: str, *, before_paste=None) -> None: ...
     @abstractmethod
     def send_key(self, handle: str, key: str) -> None: ...
     @abstractmethod
@@ -51,23 +52,58 @@ class Transport(ABC):
     @abstractmethod
     def output_mark(self, session: str) -> int | None: ...             # monotonic output counter
     @abstractmethod
-    def kill(self, session: str) -> None: ...
+    def kill(self, session: str, *, expected=None) -> bool: ...
+
+    def termination_target(self, session: str) -> str:
+        raise TmuxError("termination identity unavailable")
+
+    def require_buffer_cleanup(self) -> None:
+        """Refuse final cleanup if this transport retains an input buffer."""
 
 
 class TmuxError(RuntimeError):
     pass
 
 
+class TmuxBufferCleanupFailure(TmuxError):
+    """Retain the original allocation without exposing its text in diagnostics."""
+    def __init__(self, transport, socket, name):
+        super().__init__("tmux buffer cleanup incomplete")
+        self.transport, self.socket, self.name = transport, socket, name
+        self.state = "active"
+        self.operation_failure = self.cleanup_failure = self.retry_failure = None
+
+    def retry_cleanup(self):
+        if self.state == "closed":
+            return
+        if self.state != "cleanup_uncertain":
+            raise TmuxError("tmux buffer operation remains active")
+        try:
+            self.transport._remove_buffer(self)
+        except BaseException as failure:
+            self.retry_failure = failure
+            raise self from failure
+
+
 class TmuxTransport(Transport):
     name = "tmux"
 
-    def __init__(self, socket: str | None = None, logdir: str | None = None):
+    def __init__(self, socket: str | None = None, logdir: str | None = None, *, native_core=None):
+        if native_core is not None:
+            from hub.native_core_context import NativeCoreContext
+            if type(native_core) is not NativeCoreContext:
+                raise TmuxError('native core context required')
+        self.native_core = native_core
         self.socket = socket or os.environ.get("AGENTMUX_SOCKET", "agentmux")
         self.logdir = logdir
+        self._buffers: dict[str, TmuxBufferCleanupFailure] = {}
 
     def _tm(self, *args, input_=None, check=True) -> str:
-        r = subprocess.run(["tmux", "-L", self.socket, *args], input=input_, capture_output=True,
-                           stdin=None if input_ is not None else subprocess.DEVNULL, timeout=10)
+        if self.native_core is not None:
+            r = self.native_core.tmux(self.socket, args, input_=input_)
+        else:
+            r = subprocess.run(["tmux", "-L", self.socket, *args], input=input_, capture_output=True,
+                               stdin=None if input_ is not None else subprocess.DEVNULL, timeout=10)
         if check and r.returncode != 0:
             raise TmuxError(r.stderr.decode(errors="replace").strip() or f"tmux {args[0]} failed")
         return r.stdout.decode(errors="replace")
@@ -80,8 +116,11 @@ class TmuxTransport(Transport):
         return [l for l in out.splitlines() if l]
 
     def alive(self, session):
-        r = subprocess.run(["tmux", "-L", self.socket, "has-session", "-t", f"={session}"],
-                           capture_output=True, stdin=subprocess.DEVNULL, timeout=10)
+        if self.native_core is not None:
+            r = self.native_core.tmux(self.socket, ('has-session', '-t', f'={session}'))
+        else:
+            r = subprocess.run(["tmux", "-L", self.socket, "has-session", "-t", f"={session}"],
+                               capture_output=True, stdin=subprocess.DEVNULL, timeout=10)
         if r.returncode != 0:
             return False
         h = self.handle(session)
@@ -112,13 +151,49 @@ class TmuxTransport(Transport):
             raise ValueError("send_text is single-line; use send_buffer for multi-line text")
         self._tm("send-keys", "-t", handle, "-l", "--", text)
 
-    def send_buffer(self, handle, text):
+    def send_buffer(self, handle, text, *, before_paste=None):
         # load-buffer from stdin: no argv size limit (D04: >16 KB became a bare Enter),
         # no shell parsing of ; or \ . paste-buffer -p wraps it in bracketed paste
-        # only if the application asked for it; -d deletes the named buffer after.
-        name = f"hub-{os.getpid()}-{abs(hash(handle)) % 100000}"
-        self._tm("load-buffer", "-b", name, "-", input_=text.encode())
-        self._tm("paste-buffer", "-p", "-d", "-b", name, "-t", handle)
+        # only if the application asked for it. Reclaim only this allocation.
+        name = f"hub-{os.getpid()}-{uuid.uuid4().hex}"
+        allocation = TmuxBufferCleanupFailure(self, self.socket, name)
+        self._buffers[name] = allocation
+        try:
+            self._tm("load-buffer", "-b", name, "-", input_=text.encode())
+            if before_paste is not None:
+                before_paste()
+            self._tm("paste-buffer", "-p", "-b", name, "-t", handle)
+        except BaseException as failure:
+            try:
+                self._remove_buffer(allocation)
+            except BaseException as cleanup:
+                allocation.state = "cleanup_uncertain"
+                allocation.operation_failure, allocation.cleanup_failure = failure, cleanup
+                raise allocation from BaseExceptionGroup("tmux buffer operation and cleanup failed", [failure, cleanup])
+            raise
+        try:
+            self._remove_buffer(allocation)
+        except BaseException as cleanup:
+            allocation.state, allocation.cleanup_failure = "cleanup_uncertain", cleanup
+            raise allocation from cleanup
+
+    def _remove_buffer(self, allocation):
+        # Reconcile an uncertain load reply as well as a confirmed allocation.
+        if self._buffers.get(allocation.name) is not allocation or self.socket != allocation.socket:
+            raise TmuxError("tmux buffer allocation owner changed")
+        names = self._tm("list-buffers", "-F", "#{buffer_name}").splitlines()
+        if self.socket != allocation.socket:
+            raise TmuxError("tmux buffer allocation socket changed")
+        if allocation.name in names:
+            if self.socket != allocation.socket:
+                raise TmuxError("tmux buffer allocation socket changed")
+            self._tm("delete-buffer", "-b", allocation.name)
+        allocation.state = "closed"
+        del self._buffers[allocation.name]
+
+    def require_buffer_cleanup(self):
+        if self._buffers:
+            raise next(iter(self._buffers.values()))
 
     def send_key(self, handle, key):
         if key not in KEYS and not re.fullmatch(r"[!-~]", key):
@@ -139,8 +214,36 @@ class TmuxTransport(Transport):
         except OSError:
             return None
 
-    def kill(self, session):
-        self._tm("kill-session", "-t", f"={session}", check=False)
+    def termination_target(self, session):
+        raw = self._tm("list-panes", "-s", "-t", f"={session}", "-F",
+                       "#{pid}|#{start_time}|#{session_id}|#{session_created}|#{pane_id}|#{pane_pid}")
+        rows = raw.splitlines()
+        pattern = r"[1-9][0-9]*\|[0-9]+\|\$[0-9]+\|[0-9]+\|%[0-9]+\|[1-9][0-9]*"
+        if not rows or any(not re.fullmatch(pattern, row) for row in rows):
+            raise TmuxError("termination identity unavailable")
+        parts = [row.split("|") for row in rows]
+        if len({tuple(row[:4]) for row in parts}) != 1 or len({row[4] for row in parts}) != len(rows):
+            raise TmuxError("termination identity unavailable")
+        return "\n".join(sorted(rows))
+
+    def kill(self, session, *, expected=None):
+        if expected is None or self.termination_target(session) != expected:
+            raise TmuxError("termination target changed")
+        server_pid, started, session_id, created, _, _ = expected.splitlines()[0].split("|")
+        guard = (f"#{{&&:#{{==:#{{pid}},{server_pid}}},"
+                 f"#{{&&:#{{==:#{{start_time}},{started}}},#{{==:#{{session_created}},{created}}}}}}}")
+        pairs = [row.split("|")[4:] for row in expected.splitlines()]
+        pattern = "^(" + "|".join(f"{pane}[|]{pid}" for pane, pid in pairs) + ")$"
+        # Check every pane and the total count inside the same tmux command.
+        # A sampled roster alone leaves a gap before termination.
+        roster = "#{W:#{P:#{m/r:" + pattern + ",#{pane_id}|#{pane_pid}}}}"
+        guard = "#{&&:" + guard + ",#{==:" + roster + "," + "1" * len(pairs) + "}}"
+        result = self._tm("if-shell", "-F", "-t", session_id, guard,
+                          f"kill-session -t {session_id} ; display-message -p agentmux-kill-confirmed",
+                          "display-message -p agentmux-kill-refused")
+        if result.strip() != "agentmux-kill-confirmed":
+            raise TmuxError("termination unconfirmed")
+        return True
 
 
 class FakeTransport(Transport):
@@ -180,7 +283,9 @@ class FakeTransport(Transport):
             return                                     # copy-mode swallows keys (D02)
         s["screen"] = s["screen"].rstrip("\n") + text
 
-    def send_buffer(self, handle, text):
+    def send_buffer(self, handle, text, *, before_paste=None):
+        if before_paste is not None:
+            before_paste()
         self.sent.append((handle, "buffer", text))
         self._s(handle)["screen"] += f"[Pasted Content {len(text)} chars]"
 
@@ -201,5 +306,13 @@ class FakeTransport(Transport):
         s = self.sessions.get(session)
         return s["out"] if s else None
 
-    def kill(self, session):
-        self.sessions.pop(session, None)
+    def termination_target(self, session):
+        if session not in self.sessions:
+            raise TmuxError("termination identity unavailable")
+        return f"{session}|{self.sessions[session]['pid']}|{id(self.sessions[session])}"
+
+    def kill(self, session, *, expected=None):
+        if expected is None or self.termination_target(session) != expected:
+            raise TmuxError("termination target changed")
+        del self.sessions[session]
+        return True

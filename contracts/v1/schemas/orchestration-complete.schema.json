@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:orchestration-complete",
+  "title": "Agentmux orchestration-complete v1",
+  "description": "A service-owned completion for one dispatched orchestration effect and private owner-held observation.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": { "$ref": "urn:agentmux:contract:1:common#/$defs/reference" },
+    "journalRef": { "$ref": "urn:agentmux:contract:1:common#/$defs/reference" },
+    "claimRef": { "$ref": "urn:agentmux:contract:1:common#/$defs/reference" },
+    "originalOperationId": { "$ref": "urn:agentmux:contract:1:common#/$defs/identifier" },
+    "originalPayloadDigest": { "$ref": "urn:agentmux:contract:1:common#/$defs/digest" },
+    "candidateDigest": { "$ref": "urn:agentmux:contract:1:common#/$defs/digest" },
+    "observationId": { "$ref": "urn:agentmux:contract:1:common#/$defs/identifier" }
+  },
+  "required": ["resourceRef", "journalRef", "claimRef", "originalOperationId", "originalPayloadDigest", "candidateDigest", "observationId"]
+}

@@ -14,7 +14,9 @@ if node <<'JS'
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
-const source = fs.readFileSync('dashboard/teams.js', 'utf8');
+const componentPaths = [...fs.readFileSync('dashboard/index.html', 'utf8').matchAll(/<script src="(src\/components\/[^"]+)"/g)].map(match => match[1]);
+const source = [...componentPaths, 'src/features/teams.js', 'teams.js']
+  .map(path => fs.readFileSync('dashboard/' + path, 'utf8')).join('\n');
 const app = fs.readFileSync('dashboard/app.js', 'utf8');
 const html = fs.readFileSync('dashboard/index.html', 'utf8');
 const server = fs.readFileSync('dashboard/server.py', 'utf8');
@@ -70,6 +72,7 @@ context.window.CCC = {
     reads++;
     if (failRead) throw Error('offline');
     if (url === 'api/board/board') return board;
+    if (url === 'api/board/agents') return {agents: [{name: 'bundled-lead', role: 'lead'}, {name: 'project-lead', role: 'lead'}, {name: 'worker', role: 'worker'}]};
     assert.equal(url, 'api/board/roster?id=TM-051');
     return {members, gaps: ['Capability <img src=x onerror=alert(2)>: no definition provides it']};
   },
@@ -86,15 +89,19 @@ vm.runInContext(source, context);
   assert.ok(text(root).includes('<img src=x onerror=alert(1)>'));
   assert.ok(text(root).includes('Roster gap: Capability <img src=x onerror=alert(2)>: no definition provides it'));
   assert.equal(flatten(root).filter(n => n.tag === 'img').length, 0);
+  members[0].definitionState = 'changed';
+  members[1].definitionState = 'approval_required';
+  await loader();
+  assert.match(text(root), /Definition changed; this roster keeps its saved revision/);
+  assert.match(text(root), /Propose and approve this roster again before hiring/);
+  members[1].definitionState = 'unavailable';
+  await loader();
+  assert.match(text(root), /Definition unavailable; this roster keeps its saved revision/);
   assert.equal(button('Save roster decision').disabled, true);
   choice('Approve lead').events.click();
   assert.equal(button('Save roster decision').disabled, true);
   choice('Reject review').events.click();
   assert.equal(button('Save roster decision').disabled, false);
-  await button('Save roster decision').events.click();
-  assert.equal(posts.length, 0);
-  assert.match(text(root), /Enter a decision actor/);
-  root.children[1].children[0].value = 'operator';
   failWrite = true;
   await button('Save roster decision').events.click();
   assert.match(text(root), /write refused/);
@@ -103,12 +110,12 @@ vm.runInContext(source, context);
   failWrite = false;
   const before = reads;
   await button('Save roster decision').events.click();
-  assert.deepEqual(posts.at(-1), {url: 'api/board/approve', body: {id: 'TM-051', actor: 'operator', members: ['lead']}});
-  assert.equal(reads, before + 2);
+  assert.deepEqual(posts.at(-1), {url: 'api/board/approve', body: {id: 'TM-051', members: ['lead']}});
+  assert.equal(reads, before + 3);
   assert.match(text(root), /approved/); assert.match(text(root), /rejected/);
   assert.match(text(root), /server-actor/); assert.doesNotMatch(text(root), /WRONG POST DATA/);
   assert.equal(choice('Approve lead'), undefined);
-  const settings = () => root.children[2].children[0].children.slice(1);
+  const settings = () => root.children[1].children[0].children.slice(1);
   assert.equal(settings().length, 4);
   assert.equal(settings()[1].children[1].value, '0');
   assert.equal(settings()[3].children[1].value, 'false');
@@ -152,7 +159,6 @@ vm.runInContext(source, context);
   assert.ok(choice('Hire approved'));
   board.tasks[0].status = 'done'; await loader(); assert.equal(button('Hire'), undefined);
   board.tasks[0].status = 'in_progress'; await loader();
-  root.children[1].children[0].value = '';
   // These are the server's actual refusal reasons, not fabricated status codes.
   // Posture is clamped by the server, so it does not emit a posture refusal.
   const backend = fs.readFileSync('dashboard/boardteams.py', 'utf8');
@@ -160,7 +166,7 @@ vm.runInContext(source, context);
     'hire requires an approved roster row on an open card',
     'dashboardMayHire and dispatchEnabled must both be enabled',
     'dashboard hire slots exhausted',
-    'agent definition is unavailable',
+    'approved definition snapshot is unavailable',
     'dashboard hiring requires a 127.0.0.1 listener',
     'agent spawn failed'
   ];
@@ -188,7 +194,7 @@ vm.runInContext(source, context);
   assert.equal(button('Refresh').disabled, true);
   await hireButton.events.click(); assert.equal(posts.length, count + 1);
   releaseHire(); await pending; holdHire = null;
-  assert.equal(reads, beforeHireReads + 2);
+  assert.equal(reads, beforeHireReads + 3);
   assert.equal(choice('Hire approved'), undefined);
   assert.equal(members[1].status, 'hired');
   assert.doesNotMatch(text(root), /WRONG POST DATA/);
@@ -199,10 +205,18 @@ vm.runInContext(source, context);
   assert.equal(choice('Hire approved').disabled, true);
   failRead = false; await loader(); assert.equal(choice('Hire approved'), undefined);
   members = []; await loader(); assert.match(text(root), /No roster proposed/);
+  const leadChoice = flatten(root).find(n => n['aria-label'] === 'Lead definition for TM-051');
+  assert.equal(leadChoice.value, '');
+  assert.equal(leadChoice.children[0].value, '');
+  assert.deepEqual(leadChoice.children.slice(1).map(n => n.value), ['bundled-lead', 'project-lead']);
+  leadChoice.value = 'project-lead';
+  await button('Propose roster').events.click();
+  assert.deepEqual(posts.at(-1), {url: 'api/board/recruit', body: {id: 'TM-051', lead: 'project-lead'}});
+
   assert.ok(button('Propose roster'));
   board.tasks[0].status = 'done'; await loader(); assert.equal(button('Propose roster'), undefined);
   board.tasks = []; await loader(); assert.match(text(root), /No task cards/);
-  console.log('PASS: Teams loader/registry, decisions, settings, legacy auth, id/name-only hire, permission/status gates, six distinct API refusals, duplicate guard, server re-read and refresh failure');
+  console.log('PASS: Teams loader/registry, enrolled decisions, settings, id/name-only hire, permission/status gates, six distinct API refusals, duplicate guard, server re-read and refresh failure');
 })().catch(error => { console.error(error); process.exitCode = 1; });
 JS
 then

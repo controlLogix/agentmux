@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:configuration-read",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "configurationRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "owner": {
+      "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+    }
+  },
+  "required": [
+    "configurationRef",
+    "owner"
+  ]
+}

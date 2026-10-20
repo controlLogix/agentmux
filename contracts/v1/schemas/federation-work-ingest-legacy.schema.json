@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-work-ingest-legacy",
+  "title": "federation-work-ingest-legacy v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "envelope": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "const": "work"
+            },
+            "origin": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "origin_node": {
+              "type": "string",
+              "pattern": "^[a-z0-9_]{1,32}$"
+            },
+            "origin_id": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,128}$"
+            },
+            "work": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "repo": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 32
+                },
+                "target": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 300
+                },
+                "title": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 65536
+                },
+                "body": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 0,
+                      "maxLength": 524288
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "task_key": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 0,
+                      "maxLength": 512
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "requirements": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 0,
+                      "maxLength": 65536
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "priority": {
+                  "type": "integer"
+                },
+                "created_by": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 300
+                }
+              },
+              "required": [
+                "repo",
+                "target",
+                "title",
+                "created_by"
+              ]
+            }
+          },
+          "required": [
+            "type",
+            "origin",
+            "origin_node",
+            "origin_id",
+            "work"
+          ]
+        },
+        "coreTransport": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "routeId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "eventId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "eventDigest": {
+              "type": "string",
+              "pattern": "^sha256:[a-f0-9]{64}$"
+            },
+            "subject": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 512
+            },
+            "signature": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "admissionId": {
+              "type": "string",
+              "pattern": "^core_admission_[a-f0-9]{48}$"
+            }
+          },
+          "required": [
+            "routeId",
+            "eventId",
+            "eventDigest",
+            "subject",
+            "signature",
+            "admissionId"
+          ]
+        }
+      },
+      "required": [
+        "envelope"
+      ]
+    },
+    "attribution": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    }
+  },
+  "required": [
+    "resourceRef",
+    "input",
+    "attribution"
+  ]
+}

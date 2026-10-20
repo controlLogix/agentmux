@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:configuration-reply",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "purpose": {
+          "const": "agentmux-configuration-response-v1"
+        },
+        "requestDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "configurationRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "authorityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "signingKeyRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "issuedAt": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+        },
+        "validUntil": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+        },
+        "state": {
+          "$ref": "urn:agentmux:contract:1:configuration-state"
+        }
+      },
+      "required": [
+        "purpose",
+        "requestDigest",
+        "configurationRef",
+        "owner",
+        "authorityRef",
+        "signingKeyRef",
+        "issuedAt",
+        "validUntil",
+        "state"
+      ]
+    },
+    "signature": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    }
+  },
+  "required": [
+    "claims",
+    "signature"
+  ]
+}

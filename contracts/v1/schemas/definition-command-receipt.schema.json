@@ -1,0 +1,163 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "purpose": {
+          "const": "agentmux-definition-command-receipt-v1"
+        },
+        "hubId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "profileId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "authorityId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "issuerRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "requestDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "receipt": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "operationId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "originalOperationId": {
+              "anyOf": [
+                {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "effectId": {
+              "anyOf": [
+                {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "definitionVersion": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "currentDefinitionVersion": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "catalogSequence": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "receiptSequence": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9007199254740991
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "attemptOperationId": {
+              "anyOf": [
+                {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "status": {
+              "enum": [
+                "intent-committed",
+                "pending",
+                "retry-authorized",
+                "applied",
+                "reconciliation-required",
+                "superseded"
+              ]
+            },
+            "replayed": {
+              "type": "boolean"
+            },
+            "observedAt": {
+              "anyOf": [
+                {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "required": [
+            "operationId",
+            "originalOperationId",
+            "effectId",
+            "definitionVersion",
+            "currentDefinitionVersion",
+            "catalogSequence",
+            "receiptSequence",
+            "attemptOperationId",
+            "status",
+            "replayed",
+            "observedAt"
+          ]
+        }
+      },
+      "required": [
+        "purpose",
+        "hubId",
+        "profileId",
+        "authorityId",
+        "issuerRef",
+        "requestDigest",
+        "receipt"
+      ]
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{86}$"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "claims",
+    "signature"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:definition-command-receipt",
+  "title": "Signed definition command receipt v1"
+}

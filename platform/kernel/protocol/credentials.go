@@ -108,19 +108,16 @@ func LoadEnvironment() (Config, error) {
 	if c.Role != role || c.Scope.InstanceID != os.Getenv("AGENTMUX_INSTANCE_ID") || c.Scope.ProfileID != os.Getenv("AGENTMUX_PROFILE_ID") || c.NATSURL != os.Getenv("AGENTMUX_NATS_URL") {
 		return Config{}, errors.New("kernel_supervisor_context_mismatch")
 	}
-	config := Config{Credentials: c}
-	trustPath := os.Getenv("AGENTMUX_NATS_SERVER_TRUST_FILE")
-	if strings.HasPrefix(c.NATSURL, "tls://") {
-		if trustPath == "" {
-			return Config{}, errors.New("kernel_server_trust_required")
-		}
-		trust, err := LoadServerTrustFile(trustPath, c.Scope, c.NATSURL)
-		if err != nil {
-			return Config{}, err
-		}
-		config.ServerTrust = trust
-	} else if trustPath != "" {
-		return Config{}, errors.New("kernel_server_trust_endpoint_invalid")
+	if !strings.HasPrefix(c.NATSURL, "tls://") {
+		return Config{}, errors.New("kernel_server_trust_required")
 	}
-	return config.prepared(role)
+	trustPath := os.Getenv("AGENTMUX_NATS_SERVER_TRUST_FILE")
+	if trustPath == "" {
+		return Config{}, errors.New("kernel_server_trust_required")
+	}
+	trust, err := LoadServerTrustFile(trustPath, c.Scope, c.NATSURL)
+	if err != nil {
+		return Config{}, err
+	}
+	return (Config{Credentials: c, ServerTrust: trust}).prepared(role)
 }

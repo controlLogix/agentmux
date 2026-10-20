@@ -69,6 +69,22 @@ type endpointProxyCapWriter struct {
 	remaining   int64
 }
 
+type endpointProxyResponseWriter struct {
+	ctx         context.Context
+	destination io.Writer
+	before      func(context.Context) error
+}
+
+func (w endpointProxyResponseWriter) Write(raw []byte) (int, error) {
+	if len(raw) == 0 {
+		return 0, nil
+	}
+	if err := w.before(w.ctx); err != nil {
+		return 0, err
+	}
+	return w.destination.Write(raw)
+}
+
 func (w *endpointProxyCapWriter) Write(raw []byte) (int, error) {
 	if int64(len(raw)) > w.remaining {
 		return 0, endpointProxyCapError
@@ -82,8 +98,8 @@ func (w *endpointProxyCapWriter) Write(raw []byte) (int, error) {
 // for those original goroutines. This function makes no guaranteed exit-time
 // claim for a stream whose Close does not unblock its IO. Native streams also
 // get fixed deadlines; uncertain owners remain retained by the fixture.
-func endpointProxyRelay(ctx context.Context, left, right endpointProxyStream, capBytes int64) endpointProxyStreamResult {
-	if ctx == nil || left == nil || right == nil || capBytes < 1 || capBytes > 16*1024*1024 {
+func endpointProxyRelay(ctx context.Context, left, right endpointProxyStream, capBytes int64, beforeResponse ...func(context.Context) error) endpointProxyStreamResult {
+	if ctx == nil || left == nil || right == nil || capBytes < 1 || capBytes > 16*1024*1024 || len(beforeResponse) > 1 {
 		return endpointProxyStreamResult{Failed: true}
 	}
 	var result endpointProxyStreamResult
@@ -104,9 +120,13 @@ func endpointProxyRelay(ctx context.Context, left, right endpointProxyStream, ca
 		failed bool
 	}
 	done := make(chan copied, 2)
-	copyOne := func(dst, src endpointProxyStream) copied {
+	copyOne := func(dst, src endpointProxyStream, reverse bool) copied {
 		buffer := make([]byte, 32*1024)
-		n, err := io.CopyBuffer(&endpointProxyCapWriter{dst, capBytes}, src, buffer)
+		var destination io.Writer = dst
+		if reverse && len(beforeResponse) == 1 && beforeResponse[0] != nil {
+			destination = endpointProxyResponseWriter{ctx, dst, beforeResponse[0]}
+		}
+		n, err := io.CopyBuffer(&endpointProxyCapWriter{destination, capBytes}, src, buffer)
 		if err != nil {
 			closeBoth()
 			return copied{n, "copy_io", endpointProxyErrno(err), true}
@@ -125,8 +145,8 @@ func endpointProxyRelay(ctx context.Context, left, right endpointProxyStream, ca
 	}
 	// Separate channels keep byte-count direction independent of finish order.
 	forward := make(chan copied, 1)
-	go func() { forward <- copyOne(right, left) }()
-	go func() { done <- copyOne(left, right) }()
+	go func() { forward <- copyOne(right, left, false) }()
+	go func() { done <- copyOne(left, right, true) }()
 	a, b := <-forward, <-done
 	stopCancel()
 	closeBoth()

@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:plugin-context-operation",
+  "title": "Scoped plugin operation transport v1",
+  "description": "Only an enrolled ingress and current authority owner can admit an operation. The context host binds an opaque operation handle to the exact instance lifetime. Cancellation requests stopping; it does not establish that a business effect was reversed or never occurred.",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "operationHandle": {
+          "type": "string",
+          "pattern": "^operation_[a-f0-9]{64}$"
+        },
+        "kind": {
+          "const": "plugin-operation-invoke"
+        },
+        "operation": {
+          "$ref": "urn:agentmux:contract:1:operation-context"
+        },
+        "envelope": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "owner",
+        "operationHandle",
+        "kind",
+        "operation",
+        "envelope"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "operationHandle": {
+          "type": "string",
+          "pattern": "^operation_[a-f0-9]{64}$"
+        },
+        "kind": {
+          "const": "plugin-operation-result"
+        },
+        "outcome": {
+          "enum": [
+            "completed",
+            "failed"
+          ]
+        },
+        "value": {}
+      },
+      "required": [
+        "schemaVersion",
+        "owner",
+        "operationHandle",
+        "kind",
+        "outcome",
+        "value"
+      ]
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "schemaVersion": {
+          "const": "1.0.0"
+        },
+        "owner": {
+          "$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"
+        },
+        "operationHandle": {
+          "type": "string",
+          "pattern": "^operation_[a-f0-9]{64}$"
+        },
+        "kind": {
+          "const": "plugin-operation-cancel"
+        },
+        "reason": {
+          "enum": [
+            "canceled",
+            "owner_stale",
+            "deadline"
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "owner",
+        "operationHandle",
+        "kind",
+        "reason"
+      ]
+    }
+  ]
+}

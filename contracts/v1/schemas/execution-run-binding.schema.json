@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:execution-run-binding",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "format": {
+      "const": "agentmux-execution-run-binding-v1"
+    },
+    "runRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "executorRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "planRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "scope": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/scope"
+    },
+    "originalOperation": {
+      "$ref": "urn:agentmux:contract:1:operation-context"
+    },
+    "taskRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "taskInputRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "delegationRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "executionGrantRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "attemptId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "assignmentEpoch": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+    },
+    "repositoryRevision": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 2048
+    },
+    "workerIdentityRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "consumerRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "credentialRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "executionValidUntil": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+    }
+  },
+  "required": [
+    "format",
+    "runRef",
+    "executorRef",
+    "planRef",
+    "scope",
+    "originalOperation",
+    "taskRef",
+    "taskInputRef",
+    "delegationRef",
+    "executionGrantRef",
+    "attemptId",
+    "assignmentEpoch",
+    "repositoryRevision",
+    "workerIdentityRef",
+    "consumerRef",
+    "credentialRef",
+    "executionValidUntil"
+  ]
+}

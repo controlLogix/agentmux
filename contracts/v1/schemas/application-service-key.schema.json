@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:application-service-key",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "purpose": {
+      "const": "agentmux-application-service-key-v1"
+    },
+    "serviceId": {
+      "enum": [
+        "identity-owner",
+        "definition-owner",
+        "integration-owner",
+        "configuration-owner",
+        "task-owner",
+        "orchestration-owner",
+        "policy-owner",
+        "authority-switch-owner",
+        "storage-owner",
+        "secret-owner",
+        "process-owner",
+        "outcome-owner",
+        "workspace-owner",
+        "artifact-owner"
+      ]
+    },
+    "hubId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "profileId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "authorityId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "issuerRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "seed": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9+/]{43}=$"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "purpose",
+    "serviceId",
+    "hubId",
+    "profileId",
+    "authorityId",
+    "issuerRef",
+    "seed"
+  ]
+}

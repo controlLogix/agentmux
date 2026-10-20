@@ -10,6 +10,7 @@ import ccboard
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "taskmgmt"))
 import agentdefs
+import definition_team
 import dispatch
 
 HIRE_SLOTS = threading.BoundedSemaphore(2)
@@ -41,8 +42,32 @@ def _proposal_gaps(db, key):
     return json.loads(row[0] or "{}").get("gaps", []) if row else []
 
 
+def _saved_spec(db, row):
+    saved = db.execute("SELECT project_root,spec_json FROM board_roster_definitions "
+                       "WHERE roster_id=?", (row["id"],)).fetchone()
+    if saved is None or saved["project_root"] != str(Path.cwd().resolve()):
+        return None
+    try:
+        spec = definition_team.load_spec(saved["spec_json"])
+    except (ValueError, TypeError, KeyError):
+        return None
+    if spec.name != row["agent_name"] or spec.role != row["role"]:
+        return None
+    return spec
+
+
 def _payload(db, key):
     rows = _rows(db, key)
+    current, _ = agentdefs.load_all()
+    for row in rows:
+        spec = _saved_spec(db, row)
+        row["definitionRevision"] = (dict(name=spec.name, scope=spec.scope,
+            path=spec.path, checksum=spec.checksum, projectRoot=str(Path.cwd().resolve()),
+            snapshotDigest=definition_team.snapshot_digest(spec)) if spec else None)
+        now = current.get(row["agent_name"])
+        row["definitionState"] = ("approval_required" if spec is None else
+            "builtin" if not spec.path else "unavailable" if now is None else
+            "current" if now == spec else "changed")
     return {"id": key, "members": rows, "count": len(rows), "gaps": _proposal_gaps(db, key)}
 
 
@@ -88,9 +113,27 @@ def recruit(db, body):
     for row in db.execute("SELECT entity_key,blocked_by FROM board_deps"):
         dependencies.setdefault(row["entity_key"], []).append(row["blocked_by"])
     cfg = ccboard.config(db)
-    selected = agentdefs.choose_roster(task, specs, cfg, dependencies=dependencies)
+    lead = None
+    if "lead" in body:
+        name = ccboard.text(body["lead"], "lead", 64, required=True,
+                            pattern=agentdefs.NAME_RE)
+        lead = specs.get(name)
+        if lead is None or lead.role != "lead":
+            raise ccboard.Invalid("lead must name an available lead definition")
+    else:
+        for row in _rows(db, key):
+            if row["role"] == "lead" and row["status"] in ("approved", "hired"):
+                lead = _saved_spec(db, row)
+                break
+    selected = definition_team.TeamPlugin().propose_legacy(
+        task, specs, cfg, dependencies=dependencies, lead=lead)
     gaps = getattr(selected, "gaps", [])
     existing = _rows(db, key)
+    for row in existing:
+        if (row["role"] == "lead" and row["status"] == "hired"
+                and _saved_spec(db, row) != selected[0]):
+            raise ccboard.Refused("retire the hired lead before proposing a different lead", [
+                {"field": "lead", "hint": "stop and retire the current lead, then recruit again"}])
     hired = {row["agent_name"] for row in existing if row["status"] == "hired"}
     desired = [(spec.name, spec.role, position) for position, spec in enumerate(selected)
                if spec.name not in hired]
@@ -98,8 +141,14 @@ def recruit(db, body):
                if row["status"] != "hired"]
     # A retry preserves proposal IDs, timestamps and history. A fresh recruitment
     # after approval deliberately replaces every non-hired row with a proposal.
-    if current == desired and gaps == _proposal_gaps(db, key) and all(row["status"] in ("proposed", "hired") for row in existing):
+    snapshots_match = all(_saved_spec(db, row) == next(
+        (spec for spec in selected if spec.name == row["agent_name"]), None)
+        for row in existing if row["status"] != "hired")
+    if snapshots_match and current == desired and gaps == _proposal_gaps(db, key) and all(row["status"] in ("proposed", "hired") for row in existing):
         return _payload(db, key)
+    # Explicit cleanup also covers stores whose foreign-key pragma predates this table.
+    db.execute("DELETE FROM board_roster_definitions WHERE roster_id IN "
+               "(SELECT id FROM board_roster WHERE entity_key=? AND status!='hired')", (key,))
     db.execute("DELETE FROM board_roster WHERE entity_key=? AND status!='hired'", (key,))
     stamp = ccboard.now()
     # teamRequireApproval IS A SETTING THAT DID NOTHING.
@@ -117,13 +166,17 @@ def recruit(db, body):
     # who, so the audit row still names somebody rather than going quiet.
     approved_on_recruit = not cfg.get("teamRequireApproval", True)
     for name, role, position in desired:
-        db.execute(
+        inserted = db.execute(
             "INSERT INTO board_roster (entity_key,agent_name,role,position,proposed_by,"
             "status,approved_by,approved_at,at,updated_at) VALUES (?,?,?,?,?,?,?,?,?,?)",
             (key, name, role, position, actor,
              "approved" if approved_on_recruit else "proposed",
              actor if approved_on_recruit else None,
              stamp if approved_on_recruit else None, stamp, stamp))
+        spec = next(spec for spec in selected if spec.name == name)
+        db.execute("INSERT INTO board_roster_definitions (roster_id,project_root,spec_json) "
+                   "VALUES (?,?,?)", (inserted.lastrowid, str(Path.cwd().resolve()),
+                                       definition_team.dump_spec(spec)))
     ccboard._record(db, key, "recruit", actor, detail={"members": [r[0] for r in desired], "gaps": gaps})
     if approved_on_recruit:
         ccboard._record(db, key, "approve", actor,
@@ -250,11 +303,12 @@ def hire(db, body, *, bind_host=None):
         raise HireUnavailable("dashboard hire slots exhausted")
     try:
         # Only id and name are read from the wire. cli/cwd/argv/model/flags and
-        # even actor are ignored; resolve the current definition from disk.
-        spec = agentdefs.resolve(name, dispatch.REPO)
+        # even actor are ignored. Launch the exact definition saved at proposal;
+        # later edits cannot silently replace an approved persona.
+        spec = _saved_spec(db, row)
         if spec is None:
-            raise ccboard.Refused("agent definition is unavailable", [
-                {"field": "name", "hint": "restore a valid agent definition"}])
+            raise ccboard.Refused("approved definition snapshot is unavailable", [
+                {"field": "roster", "hint": "recruit and approve this roster again"}])
         posture = spec.posture
         if os.environ.get("AGENTMUX_NO_BYPASS") == "1" and posture == "unrestricted":
             posture = "workspace-write"

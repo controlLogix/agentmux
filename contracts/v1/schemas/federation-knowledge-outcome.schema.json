@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-knowledge-outcome",
+  "title": "federation-knowledge-outcome v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contractId": {
+          "enum": [
+            "federation-knowledge-share",
+            "federation-knowledge-index",
+            "federation-knowledge-capture",
+            "federation-knowledge-withdraw",
+            "federation-knowledge-approve"
+          ]
+        },
+        "operationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "payloadDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        }
+      },
+      "required": [
+        "contractId",
+        "operationId",
+        "payloadDigest"
+      ]
+    }
+  },
+  "required": [
+    "resourceRef",
+    "input"
+  ]
+}

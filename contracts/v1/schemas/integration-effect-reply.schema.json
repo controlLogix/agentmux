@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:integration-effect-reply",
+  "title": "Agentmux integration-effect-reply v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "operationId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "originalOperationId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "originalPayloadDigest": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+    },
+    "sequence": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+    },
+    "attemptOperationId": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        }
+      ]
+    },
+    "phase": {
+      "enum": [
+        "absent",
+        "intent-committed",
+        "dispatch-claimed",
+        "applied",
+        "not-dispatched",
+        "reconciliation-required"
+      ]
+    }
+  },
+  "required": [
+    "operationId",
+    "originalOperationId",
+    "originalPayloadDigest",
+    "sequence",
+    "attemptOperationId",
+    "phase"
+  ]
+}

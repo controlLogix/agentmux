@@ -8,9 +8,15 @@ import (
 )
 
 type HostInvocation struct {
-	InvocationID   string
-	PolicyPath     string
-	WorkspaceRoots []string
+	InvocationID                            string
+	PolicyPath                              string
+	WorkspaceRoots                          []string
+	ApplicationAttestorSelectionPath        string
+	ApplicationAttestorSelectionSHA256      string
+	ApplicationServicesInstallationID       string
+	ApplicationServicesSelectionPath        string
+	ApplicationServicesSelectionSHA256      string
+	ApplicationServicesHostAccountPublicKey string
 }
 type InstalledHostImage struct{}
 type HostProcess struct{}

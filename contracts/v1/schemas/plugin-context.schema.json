@@ -105,6 +105,20 @@
       "type": "integer",
       "minimum": 0,
       "maximum": 9007199254740991
+    },
+    "profileContext": {
+      "description": "Explicit display context from the selected profile. Omit absent fields. Project is a display value, not an authorization projectId; neither value grants access.",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "environment": {
+          "$ref": "#/$defs/profileDisplayValue"
+        },
+        "project": {
+          "$ref": "#/$defs/profileDisplayValue"
+        }
+      }
     }
   },
   "required": [
@@ -120,5 +134,16 @@
     "secretReferences",
     "configurationRevision"
   ],
-  "description": " Executable P01 contract. Runtime enrollment, authorization and durable ownership remain separate obligations."
+  "description": " Executable P01 contract. Runtime enrollment, authorization and durable ownership remain separate obligations.",
+  "$defs": {
+    "profileDisplayValue": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^\\S(?:[^\u0000-\u001f\u007f-\u009f\u2028\u2029]*\\S)?$",
+      "not": {
+        "pattern": "[\u0000-\u001f\u007f-\u009f\u2028\u2029]"
+      }
+    }
+  }
 }

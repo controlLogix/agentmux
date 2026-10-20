@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-policy-current-state",
+  "type": "object", "additionalProperties": false,
+  "properties": {
+    "format": {"const": "amx-federation-policy-current-v1"},
+    "configurationRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+    "owner": {"$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"},
+    "target": {"$ref": "urn:agentmux:contract:1:federation-policy-project#/$defs/target"},
+    "projected": {"type": "boolean"},
+    "state": {"oneOf": [{"type": "null"}, {"$ref": "urn:agentmux:contract:1:configuration-state"}]},
+    "operation": {"oneOf": [{"type": "null"}, {"$ref": "urn:agentmux:contract:1:operation-context"}]},
+    "originalOperationId": {"oneOf": [{"type": "null"}, {"$ref": "urn:agentmux:contract:1:common#/$defs/identifier"}]},
+    "originalPayloadDigest": {"oneOf": [{"type": "null"}, {"$ref": "urn:agentmux:contract:1:common#/$defs/digest"}]}
+  },
+  "required": ["format", "configurationRef", "owner", "target", "projected", "state", "operation", "originalOperationId", "originalPayloadDigest"]
+}

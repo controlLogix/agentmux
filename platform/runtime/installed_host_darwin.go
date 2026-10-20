@@ -23,7 +23,7 @@ func PrepareProtectedInstalledHost(ctx context.Context, path, want string, max i
 	}
 	image, err := openDarwinProtected(ctx, path, want, max)
 	if err != nil {
-		return nil, hostExecutionError("protected_image_invalid")
+		return nil, installedHostPreparationFailure(err)
 	}
 	return &InstalledHostImage{image: image, digest: want}, nil
 }

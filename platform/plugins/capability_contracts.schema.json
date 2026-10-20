@@ -1,0 +1,476 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:proposal:capability-contracts",
+  "title": "Proposed capability payload and reply schemas",
+  "description": "Handoff to the shared contract owner. These definitions are not installed contracts. Registry destinations and authenticated owner adapters must be supplied before admission. Select an explicit definition; validating against this document root alone proves nothing.",
+  "not": {},
+  "$defs": {
+    "capability-storage-read": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {},
+          "required": []
+        }
+      },
+      "required": [
+        "resourceRef",
+        "input"
+      ]
+    },
+    "capability-storage-write": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "value": {}
+          },
+          "required": [
+            "value"
+          ]
+        }
+      },
+      "required": [
+        "resourceRef",
+        "input"
+      ]
+    },
+    "capability-artifact-read": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "digest": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            }
+          },
+          "required": [
+            "digest"
+          ]
+        }
+      },
+      "required": [
+        "resourceRef",
+        "input"
+      ]
+    },
+    "capability-secret-use": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "consumerRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "purposeRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            }
+          },
+          "required": [
+            "consumerRef",
+            "purposeRef"
+          ]
+        }
+      },
+      "required": [
+        "resourceRef",
+        "input"
+      ]
+    },
+    "capability-workspace-read": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "relativePath": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1024,
+              "description": "Owner must enforce workspace and symlink containment. Client also refuses absolute, non-clean, dot, parent, backslash, NUL, CR and LF paths."
+            }
+          },
+          "required": [
+            "relativePath"
+          ]
+        }
+      },
+      "required": [
+        "resourceRef",
+        "input"
+      ]
+    },
+    "capability-process-start": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "planRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            }
+          },
+          "required": [
+            "planRef"
+          ]
+        }
+      },
+      "required": [
+        "resourceRef",
+        "input"
+      ]
+    },
+    "capability-process-cancel": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "runRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            }
+          },
+          "required": [
+            "runRef"
+          ]
+        }
+      },
+      "required": [
+        "resourceRef",
+        "input"
+      ]
+    },
+    "capability-policy-evaluate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "resourceClass": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "resourceId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            }
+          },
+          "required": [
+            "action",
+            "resourceClass",
+            "resourceId"
+          ]
+        }
+      },
+      "required": [
+        "resourceRef",
+        "input"
+      ]
+    },
+    "capability-decision-request": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "proposalRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            }
+          },
+          "required": [
+            "proposalRef"
+          ]
+        }
+      },
+      "required": [
+        "resourceRef",
+        "input"
+      ]
+    },
+    "capability-outcome-query": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "contractId": {
+              "enum": [
+                "capability-storage-write",
+                "capability-secret-use",
+                "capability-process-start",
+                "capability-process-cancel",
+                "capability-decision-request"
+              ]
+            },
+            "operationId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "payloadDigest": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            }
+          },
+          "required": [
+            "contractId",
+            "operationId",
+            "payloadDigest"
+          ]
+        }
+      },
+      "required": [
+        "resourceRef",
+        "input"
+      ]
+    },
+    "content-reply": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "resourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "data": {
+          "type": "string",
+          "contentEncoding": "base64",
+          "description": "Required non-null bytes; reference must equal the requested reference. Enforce decoded and encoded wire limits."
+        }
+      },
+      "required": [
+        "resourceRef",
+        "data"
+      ]
+    },
+    "capability-storage-write-reply": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "receiptRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "outcome": {
+          "enum": [
+            "applied",
+            "conflict",
+            "rejected",
+            "uncertain"
+          ]
+        }
+      },
+      "required": [
+        "receiptRef",
+        "outcome"
+      ]
+    },
+    "capability-secret-use-reply": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "receiptRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "outcome": {
+          "enum": [
+            "accepted",
+            "rejected",
+            "uncertain"
+          ]
+        }
+      },
+      "required": [
+        "receiptRef",
+        "outcome"
+      ]
+    },
+    "capability-process-start-reply": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "receiptRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "outcome": {
+          "enum": [
+            "accepted",
+            "rejected",
+            "uncertain"
+          ]
+        }
+      },
+      "required": [
+        "receiptRef",
+        "outcome"
+      ]
+    },
+    "capability-process-cancel-reply": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "receiptRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "outcome": {
+          "enum": [
+            "pending",
+            "stopped",
+            "rejected",
+            "uncertain"
+          ]
+        }
+      },
+      "required": [
+        "receiptRef",
+        "outcome"
+      ]
+    },
+    "capability-policy-evaluate-reply": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "receiptRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "outcome": {
+          "enum": [
+            "allow",
+            "deny",
+            "approval_required"
+          ]
+        }
+      },
+      "required": [
+        "receiptRef",
+        "outcome"
+      ]
+    },
+    "capability-decision-request-reply": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "receiptRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "outcome": {
+          "enum": [
+            "pending",
+            "approved",
+            "rejected",
+            "uncertain"
+          ]
+        }
+      },
+      "required": [
+        "receiptRef",
+        "outcome"
+      ]
+    },
+    "capability-outcome-query-reply": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "operationId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "payloadDigest": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            },
+            "recordRef": {
+              "type": "null"
+            },
+            "outcome": {
+              "const": "absent"
+            }
+          },
+          "required": [
+            "operationId",
+            "payloadDigest",
+            "recordRef",
+            "outcome"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "operationId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "payloadDigest": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            },
+            "recordRef": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+            },
+            "outcome": {
+              "enum": [
+                "committed",
+                "rejected"
+              ]
+            }
+          },
+          "required": [
+            "operationId",
+            "payloadDigest",
+            "recordRef",
+            "outcome"
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,178 +1,511 @@
 {
   "version": 1,
   "_comment": [
-    "Declarative resource manifest for the dashboard's Resources tab.",
-    "",
-    "WHY A MANIFEST: adding a resource should be a data change, not a code change.",
-    "The backend executes ONLY what is listed here - a request can name a resource",
-    "id but can never supply a command. That is the whole security model, so keep",
-    "argv arrays literal and never interpolate anything from a request into them.",
-    "",
-    "check.type:",
-    "  command  - run argv, match `expect` (regex, case-insensitive) against stdout",
-    "  file     - report existence and mode of `path` (~ expanded). NEVER reads content.",
-    "check.secret_output: true  -> the detail line is withheld from the API response.",
-    "",
-    "action.command is shown to the operator to run themselves. Actions are NEVER",
-    "executed by the server. Anything touching a credential MUST set secret: true,",
-    "which makes the UI state plainly that it must be run in a real terminal."
+    "Reviewed local resource checks and operator-only setup hints.",
+    "Requests cannot supply commands or arguments. Server-side checks use a fixed command allowlist.",
+    "Native configuration references inspect metadata only. Credential file presence does not prove authentication.",
+    "Command output is parsed in private and never returned verbatim. Actions are displayed, never executed."
   ],
-
   "resources": [
     {
       "id": "atlassian",
-      "name": "Atlassian — Jira + Confluence",
+      "name": "Atlassian \u2014 Jira + Confluence",
       "kind": "integration",
       "summary": "Jira is the task system of record; Confluence is the documentation sink. Two paths are both required because MCP cannot be reached from a shell script.",
       "docs": "https://www.atlassian.com/platform/remote-mcp-server",
       "checks": [
-        { "id": "mcp-codex",  "label": "MCP registered in codex",  "type": "command",
-          "argv": ["codex", "mcp", "list"], "expect": "atlassian" },
-        { "id": "mcp-grok",   "label": "MCP registered in grok",   "type": "command",
-          "argv": ["grok", "mcp", "list"], "expect": "atlassian" },
-        { "id": "mcp-claude", "label": "MCP registered in claude", "type": "command",
-          "argv": ["claude", "mcp", "list"], "expect": "atlassian", "timeout": 25 },
-        { "id": "rest-config", "label": "REST config for scripted hooks", "type": "file",
-          "path": "~/.agentmux/atlassian.json", "want_mode": "600" }
+        {
+          "id": "mcp-codex",
+          "label": "MCP registered in codex",
+          "type": "command",
+          "argv": [
+            "codex",
+            "mcp",
+            "list"
+          ],
+          "expect": "atlassian",
+          "secret_output": true
+        },
+        {
+          "id": "mcp-grok",
+          "label": "MCP registered in grok",
+          "type": "command",
+          "argv": [
+            "grok",
+            "mcp",
+            "list"
+          ],
+          "expect": "atlassian",
+          "secret_output": true
+        },
+        {
+          "id": "mcp-claude",
+          "label": "MCP registered in claude",
+          "type": "command",
+          "argv": [
+            "claude",
+            "mcp",
+            "list"
+          ],
+          "expect": "atlassian",
+          "timeout": 25,
+          "secret_output": true
+        },
+        {
+          "id": "rest-config",
+          "label": "REST config for scripted hooks",
+          "type": "file",
+          "want_mode": "600",
+          "native_ref": "agentmux.atlassian"
+        }
       ],
       "actions": [
-        { "id": "login-codex", "label": "Authenticate codex (OAuth)",
-          "command": "codex mcp login atlassian", "secret": true },
-        { "id": "setup-rest", "label": "Create the REST config",
-          "command": "python3 taskmgmt/setup_atlassian.py", "secret": true,
-          "note": "Uses getpass: the token is never echoed and never becomes a command argument." },
-        { "id": "verify", "label": "Verify the REST path",
-          "command": "python3 taskmgmt/task.py whoami" },
-        { "id": "dry-run", "label": "Dry-run a Jira create",
-          "command": "python3 taskmgmt/task.py --dry-run create --summary test" }
+        {
+          "id": "login-codex",
+          "label": "Authenticate codex (OAuth)",
+          "command": "codex mcp login atlassian",
+          "secret": true
+        },
+        {
+          "id": "setup-rest",
+          "label": "Create the REST config",
+          "command": "python3 taskmgmt/setup_atlassian.py",
+          "secret": true,
+          "note": "Uses getpass: the token is never echoed and never becomes a command argument."
+        },
+        {
+          "id": "verify",
+          "label": "Verify the REST path",
+          "command": "python3 taskmgmt/task.py whoami"
+        },
+        {
+          "id": "dry-run",
+          "label": "Dry-run a Jira create",
+          "command": "python3 taskmgmt/task.py --dry-run create --summary test"
+        }
       ],
       "notes": [
-        "OAuth runs as you, and agents spawn unrestricted, so any agent can close tickets or edit spaces. The MCP server has no read-only variant.",
-        "Cloud only — no Server/Data Center, no FedRAMP/HIPAA.",
+        "MCP actions use the connected account permissions. Review consequential changes before authorizing them.",
+        "Cloud only \u2014 no Server/Data Center, no FedRAMP/HIPAA.",
         "Site rate limits: Free 500 calls/hour, Standard and Premium 1000/hour."
-      ]
+      ],
+      "health_version": 1,
+      "scope": "local-read-only"
     },
-
     {
       "id": "codex",
       "name": "OpenAI Codex CLI",
       "kind": "agent-cli",
-      "summary": "Backend/implementation agent. Account auth via ChatGPT OAuth — no API key.",
+      "summary": "Native Codex CLI. Authentication and settings remain owned by Codex.",
       "checks": [
-        { "id": "installed", "label": "installed (Linux build)", "type": "command",
-          "argv": ["codex", "--version"], "expect": "codex-cli" },
-        { "id": "auth", "label": "logged in", "type": "command",
-          "argv": ["codex", "login", "status"], "expect": "logged in" },
-        { "id": "yolo", "label": "unrestricted profile present", "type": "file",
-          "path": "~/.codex/yolo.config.toml" },
-        { "id": "config", "label": "config loads", "type": "command",
-          "argv": ["codex", "doctor"], "expect": "\\u2713 config", "timeout": 25 }
+        {
+          "id": "installed",
+          "label": "CLI version (not workflow qualification)",
+          "type": "command",
+          "argv": [
+            "codex",
+            "--version"
+          ],
+          "expect": "codex-cli",
+          "secret_output": true
+        },
+        {
+          "id": "auth",
+          "label": "logged in",
+          "type": "command",
+          "argv": [
+            "codex",
+            "login",
+            "status"
+          ],
+          "expect": "logged in",
+          "secret_output": true,
+          "hint": "Run codex login in your own terminal if the native client reports that you are signed out."
+        },
+        {
+          "id": "yolo",
+          "label": "Legacy unrestricted profile (optional)",
+          "type": "file",
+          "native_ref": "codex.profile",
+          "optional": true
+        },
+        {
+          "id": "config",
+          "label": "Native user config reference (optional)",
+          "type": "file",
+          "native_ref": "codex.config",
+          "optional": true
+        }
       ],
       "actions": [
-        { "id": "login", "label": "Log in", "command": "codex login", "secret": true },
-        { "id": "install", "label": "Install / update (Linux build in WSL)",
-          "command": "npm install -g @openai/codex@latest" }
+        {
+          "id": "login",
+          "label": "Log in",
+          "command": "codex login",
+          "secret": true
+        },
+        {
+          "id": "install",
+          "label": "Install or update only if needed (operator action)",
+          "command": "npm install -g @openai/codex@latest"
+        }
       ],
       "notes": [
-        "A Windows npm shim on PATH will fail under WSL with 'Missing optional dependency @openai/codex-linux-x64'. The harness prepends the nvm node bin to avoid it.",
-        "codex exec reads stdin — redirect from /dev/null when scripting it."
-      ]
+        "CODEX_HOME selects the native configuration directory; its default is ~/.codex. Project and managed settings may also apply.",
+        "Codex chooses its own file, keychain or other supported credential store. No credential is copied to Agentmux. A config file is optional and does not prove authentication.",
+        "Use the existing client installation and its update channel. A reported version does not qualify the Agentmux integration."
+      ],
+      "health_version": 1,
+      "scope": "local-read-only",
+      "docs": "https://developers.openai.com/codex/auth"
     },
-
     {
       "id": "grok",
       "name": "xAI Grok Build CLI",
       "kind": "agent-cli",
       "summary": "Reviewer/analyst agent. Browser or device-code login to the Grok account; XAI_API_KEY is only the non-browser fallback.",
       "checks": [
-        { "id": "installed", "label": "installed", "type": "command",
-          "argv": ["grok", "--version"], "expect": "grok" },
-        { "id": "auth", "label": "logged in", "type": "command",
-          "argv": ["grok", "models"], "expect": "logged in" },
-        { "id": "shared-auth", "label": "auth shared with Windows", "type": "file",
-          "path": "~/.grok/auth.json" }
+        {
+          "id": "installed",
+          "label": "installed",
+          "type": "command",
+          "argv": [
+            "grok",
+            "--version"
+          ],
+          "expect": "grok",
+          "secret_output": true
+        },
+        {
+          "id": "auth",
+          "label": "Native Grok authentication status",
+          "type": "manual",
+          "hint": "Check login in the existing Grok client. Its native non-secret status format requires provider integration qualification; do not infer login from a substring."
+        },
+        {
+          "id": "shared-auth",
+          "label": "Legacy Grok credential reference (not login proof)",
+          "type": "file",
+          "native_ref": "grok.auth",
+          "optional": true
+        }
       ],
       "actions": [
-        { "id": "login", "label": "Log in (device code)",
-          "command": "grok login --device-auth", "secret": true },
-        { "id": "install", "label": "Install / update",
-          "command": "curl -fsSL https://x.ai/cli/install.sh | bash" }
+        {
+          "id": "login",
+          "label": "Log in (device code)",
+          "command": "grok login --device-auth",
+          "secret": true
+        },
+        {
+          "id": "install",
+          "label": "Install / update",
+          "command": "curl -fsSL https://x.ai/cli/install.sh | bash"
+        }
       ],
       "notes": [
         "grok -p BLOCKS ON STDIN. Always redirect from /dev/null when scripting it.",
         "Headless runs need --permission-mode bypassPermissions, or a tool-approval prompt nobody can answer cancels the turn.",
-        "Usage is billed per request even with browser login."
-      ]
+        "Usage is billed per request even with browser login.",
+        "Grok is retained as an existing provider resource; its native beta qualification belongs to provider integration work."
+      ],
+      "health_version": 1,
+      "scope": "local-read-only"
     },
-
     {
       "id": "claude",
-      "name": "Claude Code (WSL)",
+      "name": "Claude Code",
       "kind": "agent-cli",
-      "summary": "Orchestrator and frontend agent. Spawned agents get an isolated CLAUDE_CONFIG_DIR.",
+      "summary": "Native Claude Code. Keep the same client-owned configuration directory and authentication store.",
       "checks": [
-        { "id": "installed", "label": "installed", "type": "command",
-          "argv": ["claude", "--version"], "expect": "Claude Code" },
-        { "id": "creds", "label": "WSL credentials present", "type": "file",
-          "path": "~/.claude-wsl/.credentials.json" },
-        { "id": "agent-config", "label": "spawned-agent config dir built", "type": "file",
-          "path": "~/.agentmux/claude-config/settings.json" }
+        {
+          "id": "installed",
+          "label": "installed",
+          "type": "command",
+          "argv": [
+            "claude",
+            "--version"
+          ],
+          "expect": "Claude Code",
+          "secret_output": true
+        },
+        {
+          "id": "creds",
+          "label": "Native authentication status",
+          "type": "command",
+          "argv": [
+            "claude",
+            "auth",
+            "status"
+          ],
+          "secret_output": true,
+          "hint": "Use claude auth login in your own terminal; keep the same CLAUDE_CONFIG_DIR."
+        },
+        {
+          "id": "agent-config",
+          "label": "Legacy isolated agent config (optional)",
+          "type": "file",
+          "native_ref": "claude.legacy-agent-config",
+          "optional": true
+        },
+        {
+          "id": "native-config",
+          "label": "Native settings reference (optional)",
+          "type": "file",
+          "native_ref": "claude.config",
+          "optional": true
+        }
       ],
       "actions": [
-        { "id": "login", "label": "Log in (interactive)", "command": "claude", "secret": true,
-          "note": "Run claude, then /login. Windows keeps its login in the DPAPI credential store, which Linux cannot read — no symlink can share it." }
+        {
+          "id": "login",
+          "label": "Log in (interactive)",
+          "command": "claude auth login",
+          "secret": true,
+          "note": "Run in your own terminal. Claude Code owns its macOS Keychain or supported fallback store."
+        }
       ],
       "notes": [
-        "The effective config dir is ~/.claude-wsl via CLAUDE_CONFIG_DIR, not ~/.claude. Add MCP servers with --scope user AND that variable set, or they land at project scope in a file spawned agents never read."
-      ]
+        "CLAUDE_CONFIG_DIR selects the native settings and credential namespace. Its default is ~/.claude. Do not change it to share or copy a login.",
+        "The legacy isolated agent-config reference is retained for compatibility; it is not the native authentication authority.",
+        "The CLI auth status lookup is version-dependent. An unsupported command remains unknown, not signed out."
+      ],
+      "health_version": 1,
+      "scope": "local-read-only",
+      "docs": "https://code.claude.com/docs/en/authentication"
     },
-
     {
       "id": "harness",
       "name": "agentmux harness",
       "kind": "core",
       "summary": "tmux-backed agent orchestration on a dedicated socket.",
       "checks": [
-        { "id": "tmux", "label": "tmux available", "type": "command",
-          "argv": ["tmux", "-V"], "expect": "tmux" },
-        { "id": "launcher", "label": "launcher installed", "type": "file",
-          "path": "~/.local/bin/agentmux" },
-        { "id": "pane-env", "label": "private pane env (optional)", "type": "file",
-          "path": "~/.agentmux/env", "want_mode": "600", "optional": true }
+        {
+          "id": "tmux",
+          "label": "tmux available",
+          "type": "command",
+          "argv": [
+            "tmux",
+            "-V"
+          ],
+          "expect": "tmux",
+          "secret_output": true
+        },
+        {
+          "id": "launcher",
+          "label": "launcher installed",
+          "type": "file",
+          "native_ref": "agentmux.launcher"
+        },
+        {
+          "id": "pane-env",
+          "label": "private pane env (optional)",
+          "type": "file",
+          "want_mode": "600",
+          "optional": true,
+          "native_ref": "agentmux.env"
+        }
       ],
       "actions": [
-        { "id": "install", "label": "Reinstall the launcher",
-          "command": "bash <(tr -d '\\r' < install.sh)" },
-        { "id": "share", "label": "Check Windows state sharing",
-          "command": "bash <(tr -d '\\r' < link-windows-state.sh) --check" }
+        {
+          "id": "install",
+          "label": "Reinstall the launcher",
+          "command": "bash <(tr -d '\\r' < install.sh)",
+          "note": "Legacy harness install hint. For the native platform installer, follow docs/PLATFORM_INSTALLATION.md and preserve the enrolled profile."
+        },
+        {
+          "id": "share",
+          "label": "Check Windows state sharing",
+          "command": "bash <(tr -d '\\r' < link-windows-state.sh) --check",
+          "note": "Historical Windows/WSL hint only; not supported by the native macOS ARM64 beta."
+        }
       ],
       "notes": [
-        "The launcher exports AGENTMUX_REPO so the harness can find taskmgmt/task.py — it runs via process substitution and cannot locate itself."
-      ]
+        "The launcher check only observes the stable command reference; it does not establish enrolled runtime readiness.",
+        "Run the installed platform doctor for enrollment and broker prerequisites. Use --client claude, --client codex, --client pi or --client claude-desktop for the selected client prerequisites; these do not qualify a complete workflow."
+      ],
+      "health_version": 1,
+      "scope": "local-read-only"
     },
-
     {
       "id": "addons",
       "name": "Plugins & skills",
       "kind": "addon",
-      "summary": "Marketplace plugins across the CLIs.",
+      "summary": "Client plugin prerequisites and optional plugin listings. Installation and trust remain explicit operator choices.",
       "checks": [
-        { "id": "claude-plugins", "label": "claude plugins enabled", "type": "command",
-          "argv": ["claude", "plugin", "list"], "expect": "enabled", "timeout": 25 },
-        { "id": "grok-plugins", "label": "grok plugins installed", "type": "command",
-          "argv": ["grok", "plugin", "list"],
+        {
+          "id": "claude-plugins",
+          "label": "Claude plugins enabled",
+          "type": "command",
+          "hint": "Enabled state comes from the native JSON listing. Resolve reported load errors in Claude Code; diagnostics never enable or install plugins.",
+          "argv": [
+            "claude",
+            "plugin",
+            "list",
+            "--json"
+          ],
+          "secret_output": true
+        },
+        {
+          "id": "grok-plugins",
+          "label": "grok plugins installed",
+          "type": "command",
+          "argv": [
+            "grok",
+            "plugin",
+            "list"
+          ],
           "_note": "Matches the name@marketplace listing form. A negative lookahead does NOT work here: re.search with re.M finds a match later in the output and reports a false ok.",
-          "expect": "[A-Za-z0-9_.-]+@[A-Za-z0-9_.-]+", "optional": true }
+          "expect": "[A-Za-z0-9_.-]+@[A-Za-z0-9_.-]+",
+          "optional": true,
+          "secret_output": true
+        },
+        {
+          "id": "claude-native-lookup-version",
+          "label": "Claude config-directory lookup prerequisite (2.1.268+)",
+          "type": "command",
+          "argv": [
+            "claude",
+            "--version"
+          ],
+          "minimum_version": "2.1.268",
+          "optional": true,
+          "secret_output": true,
+          "hint": "Use the existing Claude Code update channel if this lookup is needed; do not install a second copy."
+        },
+        {
+          "id": "codex-plugin-prerequisite",
+          "label": "Codex CLI prerequisite",
+          "type": "command",
+          "argv": [
+            "codex",
+            "--version"
+          ],
+          "optional": true,
+          "secret_output": true
+        },
+        {
+          "id": "pi-plugin-prerequisite",
+          "label": "Pi CLI prerequisite",
+          "type": "command",
+          "argv": [
+            "pi",
+            "--version"
+          ],
+          "optional": true,
+          "secret_output": true
+        }
       ],
       "actions": [
-        { "id": "grok-market", "label": "Browse the grok marketplace",
-          "command": "grok plugin list --available" },
-        { "id": "grok-install", "label": "Install a grok plugin (needs --trust)",
+        {
+          "id": "grok-market",
+          "label": "Browse the grok marketplace",
+          "command": "grok plugin list --available"
+        },
+        {
+          "id": "grok-install",
+          "label": "Install a grok plugin (needs --trust)",
           "command": "grok plugin install <path-or-url> --trust",
-          "note": "Plugins can run hooks, MCP servers and skills. --trust is an execute-untrusted-code decision." }
+          "note": "Plugins can run hooks, MCP servers and skills. --trust is an execute-untrusted-code decision."
+        }
       ],
       "notes": [
-        "Claude plugin metadata records absolute paths. Sharing plugins/known_marketplaces.json between Windows and WSL breaks them — link-windows-state.sh deliberately keeps those two files per-OS."
+        "A plugin listing is a local diagnostic, not permission to install or run a plugin. Missing optional plugins do not remove Resources or setup hints.",
+        "The client owns plugin configuration and updates. Check its supported-version requirements before enabling a plugin.",
+        "Native client version checks are diagnostic only; installed integration qualification is tracked separately."
+      ],
+      "health_version": 1,
+      "scope": "local-read-only"
+    },
+    {
+      "id": "pi",
+      "name": "Pi",
+      "kind": "agent-cli",
+      "health_version": 1,
+      "scope": "local-read-only",
+      "summary": "Native Pi settings and credentials stay in the client-owned agent directory.",
+      "docs": "https://pi.dev",
+      "checks": [
+        {
+          "id": "installed",
+          "label": "CLI version (not workflow qualification)",
+          "type": "command",
+          "argv": [
+            "pi",
+            "--version"
+          ],
+          "secret_output": true
+        },
+        {
+          "id": "config",
+          "label": "Native settings reference (optional)",
+          "type": "file",
+          "native_ref": "pi.config",
+          "optional": true
+        },
+        {
+          "id": "auth",
+          "label": "Credential reference (not login proof)",
+          "type": "file",
+          "native_ref": "pi.auth"
+        }
+      ],
+      "actions": [
+        {
+          "id": "login",
+          "label": "Open Pi, then use /login",
+          "command": "pi",
+          "secret": true,
+          "note": "Pi owns provider login. Do not copy auth.json or run credential helper commands from diagnostics."
+        }
+      ],
+      "notes": [
+        "PI_CODING_AGENT_DIR selects the native agent directory; its default is ~/.pi/agent.",
+        "A saved credential file does not prove that a provider is usable. Provider environment variables and helpers may also apply; automatic authentication qualification is unknown.",
+        "Use /reload after changing supported Pi settings. Use the existing installation and update channel."
+      ]
+    },
+    {
+      "id": "claude-desktop",
+      "name": "Claude Desktop",
+      "kind": "desktop",
+      "health_version": 1,
+      "scope": "local-read-only",
+      "summary": "Desktop manages its own sign-in. MCP settings remain in the native application configuration.",
+      "docs": "https://modelcontextprotocol.io/docs/develop/connect-local-servers",
+      "checks": [
+        {
+          "id": "config",
+          "label": "Native MCP config reference (optional)",
+          "type": "file",
+          "native_ref": "desktop.config",
+          "optional": true
+        },
+        {
+          "id": "auth",
+          "label": "Desktop sign-in",
+          "type": "manual",
+          "hint": "Check sign-in inside Claude Desktop. No supported non-secret external auth lookup is qualified."
+        },
+        {
+          "id": "installed",
+          "label": "Installed application and version",
+          "type": "manual",
+          "hint": "Check Claude Desktop About and its update channel. Bundle presence alone does not qualify the integration."
+        }
+      ],
+      "actions": [
+        {
+          "id": "setup",
+          "label": "Open native setup",
+          "command": "open -a Claude",
+          "note": "Use Settings > Developer > Edit Config. Apply only an Agentmux entry verified against the selected installation and enrollment. Preserve unrelated MCP servers and settings; do not replace the whole file."
+        }
+      ],
+      "notes": [
+        "Native MCP config: ~/Library/Application Support/Claude/claude_desktop_config.json.",
+        "Restart Desktop to load changed MCP configuration. Keep login in the application; do not inspect or copy its private session storage.",
+        "Automatic auth-store inspection and installed-client qualification remain open checks."
       ]
     }
   ]

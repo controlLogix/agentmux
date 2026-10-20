@@ -72,7 +72,8 @@ func TestParentLifetimeHostHelper(t *testing.T) {
 }
 
 func TestKilledHostFourProtectedRolesExitAndReleaseLeases(t *testing.T) {
-	f := setup(t)
+	recovery := newRecoveryFixture(t)
+	f := fixture{trust: recovery.trust, url: recovery.endpoint, secrets: recovery.secrets, scope: recovery.scope, wire: recovery.wire}
 	packageDir, raw, trust, options := staticKernelFixture(t, &f)
 	dir := t.TempDir()
 	if os.Chmod(dir, 0700) != nil {

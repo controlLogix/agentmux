@@ -29,6 +29,7 @@ class GithubTests(unittest.TestCase):
         (self.repo / 'file').write_text('one')
         self.git('add', 'file')
         self.git('commit', '-m', 'first')
+        self.git('remote', 'add', 'origin', 'https://github.com/fixture/repo.git')
         self.config = {'name': 'fixture', 'path': str(self.repo)}
         (self.root / 'github.json').write_text(json.dumps({'repos': [self.config]}))
 
@@ -78,7 +79,7 @@ class GithubTests(unittest.TestCase):
     def test_issue_body_keeps_pipe(self):
         with patch.object(auth, 'gh_path', return_value='/bin/gh'), patch.object(auth.subprocess, 'run', return_value=subprocess.CompletedProcess([], 0, 'https://github.com/a/b/issues/1')) as run:
             auth.create_issue({'repo': 'a/b', 'title': 'Issue', 'body': 'body\ntext', 'actor': 'operator', 'confirm': True})
-            self.assertEqual(run.call_args.args[0], ['/bin/gh', 'issue', 'create', '--repo', 'a/b', '--title', 'Issue', '--body-file', '-'])
+            self.assertEqual(run.call_args.args[0], ['/bin/gh', 'issue', 'create', '--repo', 'github.com/a/b', '--title=Issue', '--body-file', '-'])
             self.assertEqual(run.call_args.kwargs['input'], 'body\ntext')
             self.assertNotIn('stdin', run.call_args.kwargs)
 
@@ -147,7 +148,7 @@ class GithubTests(unittest.TestCase):
         with patch.object(auth.shutil, 'which', return_value=None):
             row = panel.snapshot(self.root)
             self.assertEqual(row['gh']['state'], 'missing')
-            self.assertEqual(row['gh']['command'], 'sudo apt install gh')
+            self.assertEqual(row['gh']['command'], auth.install_command())
             self.assertEqual(row['repos'][0]['branch'], 'main')
             with patch.object(panel, 'configured_repos', side_effect=AssertionError('cache miss')):
                 self.assertEqual(panel.snapshot(self.root), row)
@@ -301,10 +302,19 @@ function flatten(n) { return [n, ...n.children.flatMap(flatten)]; }
         import server
         from http.server import ThreadingHTTPServer
         httpd = ThreadingHTTPServer(('127.0.0.1', 0), server.Handler)
-        thread = threading.Thread(target=httpd.serve_forever, daemon=True)
-        thread.start()
-        self.addCleanup(httpd.server_close)
-        self.addCleanup(httpd.shutdown)
+        httpd.daemon_threads = False
+        thread = threading.Thread(target=httpd.serve_forever)
+        try:
+            thread.start()
+        except BaseException:
+            httpd.server_close()
+            raise
+        def stop_server():
+            httpd.shutdown()
+            thread.join(timeout=5)
+            self.assertFalse(thread.is_alive(), 'original HTTP server thread is still running')
+            httpd.server_close()
+        self.addCleanup(stop_server)
         with patch.object(server.github_panel, 'snapshot', return_value={'repos': []}) as snap:
             conn = http.client.HTTPConnection('127.0.0.1', httpd.server_port)
             self.addCleanup(conn.close)

@@ -32,7 +32,22 @@ func (e *dockerCommandFailure) Unwrap() error {
 	return e.cause
 }
 
+const preparedBrokerImageFormat = `{"ID":{{json .Id}},"RepoDigests":{{json .RepoDigests}},"OS":{{json .Os}},"Architecture":{{json .Architecture}}}`
+
+func pinnedBrokerImage(image string) bool {
+	value, ok := strings.CutPrefix(image, "docker.io/library/nats@")
+	return ok && digest.MatchString(value)
+}
+
 func dockerCommandStage(args []string) string {
+	if len(args) == 5 && args[0] == "image" && args[1] == "pull" &&
+		args[2] == "--platform" && args[3] == "linux/arm64" && pinnedBrokerImage(args[4]) {
+		return "pinned_image_pull"
+	}
+	if len(args) == 5 && args[0] == "image" && args[1] == "inspect" &&
+		pinnedBrokerImage(args[2]) && args[3] == "--format" && args[4] == preparedBrokerImageFormat {
+		return "prepared_image_read"
+	}
 	if len(args) == 3 {
 		switch {
 		case args[0] == "compose" && args[1] == "version" && args[2] == "--short":
@@ -103,6 +118,10 @@ func dockerFailureDetail(failure error) string {
 		return "docker_engine_check_failed"
 	case "pinned_image_read":
 		return "docker_cache_check_failed"
+	case "pinned_image_pull":
+		return "docker_image_pull_failed"
+	case "prepared_image_read":
+		return "docker_prepared_image_check_failed"
 	case "compose_start":
 		return "docker_compose_start_failed"
 	}

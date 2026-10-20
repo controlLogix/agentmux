@@ -185,19 +185,39 @@ def _spec(path, scope, raw, fields, persona, cli_default, settings, manifest):
                      worktree, int(count), "sha256:" + hashlib.sha256(raw).hexdigest())
 
 
-def load_all(repo_root=None):
+def _read_source(path):
+    """Read one bounded regular source without following a substituted link."""
+    fd = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) |
+                 getattr(os, "O_NONBLOCK", 0))
+    with os.fdopen(fd, "rb") as stream:
+        before = os.fstat(stream.fileno())
+        if not stat.S_ISREG(before.st_mode):
+            raise ValueError("definition must be a regular file, not a symlink")
+        raw = stream.read(MAX_BYTES + 1)
+        after = os.fstat(stream.fileno())
+        signature = lambda info: (info.st_dev, info.st_ino, info.st_size,
+                                  info.st_mtime_ns, info.st_ctime_ns)
+        if signature(before) != signature(after):
+            raise ValueError("definition changed while reading")
+    if len(raw) > MAX_BYTES:
+        raise ValueError("definition exceeds 64 KiB")
+    return raw
+
+
+def _load_catalog(repo_root=None, *, home=None, global_root=None, _with_membership=False):
     """Return (specs, problems), including path and reason for every failed file.
 
     Names are reserved even by invalid files: a broken duplicate cannot cause a
     different definition to be selected accidentally. Duplicate groups yield one
     collision diagnostic containing all paths, with no discovery precedence.
     """
-    specs, problems, groups = {}, [], {}
+    specs, problems, groups, sources, membership = {}, [], {}, {}, {}
     def problem(path, scope, error):
         problems.append({"path": str(path), "scope": scope, "error": str(error)})
     try:
-        home = Path.home()
-        root = Path(os.environ.get("AGENTMUX_HOME", str(home / ".agentmux")))
+        home = Path(home) if home is not None else Path.home()
+        root = (Path(global_root) if global_root is not None else
+                Path(os.environ.get("AGENTMUX_HOME", str(home / ".agentmux"))))
         repo = Path(repo_root if repo_root is not None else Path.cwd()).absolute()
         default_cli, settings, manifest = _defaults(root, problem)
         directories = ((repo / ".agentmux/agents", "repo"), (root / "agents", "global"),
@@ -221,43 +241,68 @@ def load_all(repo_root=None):
                 except FileNotFoundError:
                     continue
                 for path in sorted(paths):
+                    # Shipped examples are a catalogue, not implicit project
+                    # membership. Other local definitions keep their old scope.
+                    try:
+                        from . import profile_packages
+                    except ImportError:
+                        import profile_packages
+                    if (profile_packages.is_bundled_directory(directory)
+                            and path.stem in profile_packages.NAMES):
+                        continue
                     groups.setdefault(path.stem, []).append((path, scope))
                     try:
                         if path.is_symlink() or not path.is_file():
                             raise ValueError("definition must be a regular file, not a symlink")
                         # O_NOFOLLOW closes the check/open symlink race on Unix;
                         # O_NONBLOCK avoids blocking on a substituted FIFO.
-                        fd = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) |
-                                     getattr(os, "O_NONBLOCK", 0))
-                        with os.fdopen(fd, "rb") as stream:
-                            if not stat.S_ISREG(os.fstat(stream.fileno()).st_mode):
-                                raise ValueError("definition must be a regular file")
-                            raw = stream.read(MAX_BYTES + 1)
-                        if len(raw) > MAX_BYTES:
-                            raise ValueError("definition exceeds 64 KiB")
+                        raw = _read_source(path)
                         fields, persona = _frontmatter(raw)
                         for key in fields.keys() - KEYS:
                             problem(path, scope, f"unknown key {key!r}")
                         spec = _spec(path, scope, raw, fields, persona,
                                      default_cli, settings, manifest)
                         specs[spec.name] = spec
+                        sources[spec.name] = raw
                     except Exception as exc:
                         problem(path, scope, str(exc))
             except Exception as exc:
                 problem(directory, scope, str(exc))
+        try:
+            from . import profile_packages
+        except ImportError:
+            import profile_packages
+        adopted, adoption_problems, adopted_sources, membership = profile_packages.adopted_catalog(repo)
+        problems.extend(adoption_problems)
+        for name, spec in adopted.items():
+            groups.setdefault(name, []).append((Path(spec.path), "repo"))
+            specs[name] = spec
+            # Approved snapshots retain original bytes in the private record.
+            # The public import manifest must still carry those same bytes.
+            sources[name] = adopted_sources[name]
         for name, entries in groups.items():
             if len(entries) > 1:
                 specs.pop(name, None)
+                sources.pop(name, None)
+                membership.pop(name, None)
                 problem(entries[0][0], entries[0][1],
                         f"duplicate name {name!r}; all entries unusable: " +
                         ", ".join(str(path) for path, _ in entries))
     except Exception as exc:
         problem(str(repo_root), "repo", str(exc))
+    if _with_membership:
+        return specs, problems, sources, membership
+    return specs, problems, sources
+
+
+def load_all(repo_root=None, *, home=None, global_root=None):
+    """Discover definitions using explicit roots, or the legacy process defaults."""
+    specs, problems, _ = _load_catalog(repo_root, home=home, global_root=global_root)
     return specs, problems
 
 
-def resolve(name, repo_root=None):
-    return load_all(repo_root)[0].get(name)
+def resolve(name, repo_root=None, *, home=None, global_root=None):
+    return load_all(repo_root, home=home, global_root=global_root)[0].get(name)
 
 
 class Roster(list):
@@ -281,15 +326,16 @@ def _deep_chain(task, dependencies):
     return False
 
 
-def choose_roster(task, specs, cfg, cli_override=None, *, dependencies=None):
+def choose_roster(task, specs, cfg, cli_override=None, *, dependencies=None, approved_lead=None):
     """Select a deterministic lead, then bounded workers from existing card signals.
 
     dependencies maps board keys to blockedBy keys; callers resolve it, keeping
     selection independent of storage. C3 documents sizing, ranking and gaps.
     """
-    leads = sorted((s for s in specs.values() if s.role == "lead"), key=lambda s: s.name)
-    if leads:
-        lead = leads[0]
+    if approved_lead is not None:
+        if not isinstance(approved_lead, AgentSpec) or approved_lead.role != "lead":
+            raise ValueError("approved lead must be a lead definition")
+        lead = approved_lead
         if cli_override and cli_override != lead.cli:
             lead = replace(lead, cli=cli_override, auth=None, model=None)
     else:
@@ -342,7 +388,8 @@ def choose_roster(task, specs, cfg, cli_override=None, *, dependencies=None):
 
     # Reserve the second slot for a bug reviewer, if the configured cap allows it.
     requests = ["worker"] + (["reviewer"] if kind == "bug" else []) + ["worker"] * (workers - 1)
-    shortages = []
+    shortages = ([] if approved_lead is not None else
+                 ["Lead: no project-approved definition; using compatibility fallback"])
     for role in requests:
         pool = [s for s in candidates if s.role == role or
                 (role == "worker" and kind == "spike" and s.role == "researcher")]

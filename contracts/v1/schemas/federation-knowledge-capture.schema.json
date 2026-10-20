@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-knowledge-capture",
+  "title": "federation-knowledge-capture v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "const": "handoff"
+                },
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "resourceRef": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                },
+                "operationId": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                },
+                "payloadDigest": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                }
+              },
+              "required": [
+                "kind",
+                "id",
+                "resourceRef",
+                "operationId",
+                "payloadDigest"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "work-released",
+                    "fed-result"
+                  ]
+                },
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "digest": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                }
+              },
+              "required": [
+                "kind",
+                "id",
+                "digest"
+              ]
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "enum": [
+                    "work-released",
+                    "fed-result"
+                  ]
+                },
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                },
+                "digest": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                },
+                "resourceRef": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                },
+                "receiptRef": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+                },
+                "operationId": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+                },
+                "payloadDigest": {
+                  "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+                }
+              },
+              "required": [
+                "kind",
+                "id",
+                "digest",
+                "resourceRef",
+                "receiptRef",
+                "operationId",
+                "payloadDigest"
+              ]
+            }
+          ]
+        }
+      },
+      "required": [
+        "source"
+      ]
+    },
+    "attribution": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+    }
+  },
+  "required": [
+    "resourceRef",
+    "input",
+    "attribution"
+  ]
+}

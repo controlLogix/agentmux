@@ -301,6 +301,34 @@ A Claim Check: the payload stays in git, and NATS carries the pointer.
 The receiver runs `agentmux hub fed code fetch <id>`, which fetches the ref into
 `refs/agentmux/<from>/<slug>` and **verifies the sha** before reporting success.
 
+With an explicitly selected code owner, the Hub sends code reads and changes
+through signed storage commands. The owner retains the original code table,
+share IDs, metadata and outbox in their original database. The Hub does not read
+code rows directly. The selected source, repository, caller and current grants
+must still match before Git runs or a result is returned.
+
+The CLI and MCP generate one operation ID for each code share or fetch request.
+After a transport failure they retry once with that same ID. If recovery still
+fails, use the reported ID with `--operation-id` and the original arguments.
+Reusing the ID with another caller, source or arguments is refused. A new command
+gets a new ID, so a later `HEAD` can produce a new share. Explicit completion
+records remain in the private Hub operation state; they are not silently evicted
+or reused. Recovery still requires current code-owner permission and, for a
+handoff, current message-owner permission.
+
+The Hub retains the original Git effect until publication and any handoff are
+confirmed together. An uncertain Git effect is not repeated automatically.
+Completed results survive response loss and client restart without another push,
+fetch, publication or handoff. Cancellation and shutdown join the original work
+before releasing borrowed resources.
+
+Older clients without an operation ID can recover a completed result after a
+detected response write or drain failure. A successful drain retires that
+temporary receipt, but does not prove the caller received it. Indistinguishable
+new requests from those clients cannot receive the same retry guarantee. These
+selected-owner paths are qualified for native macOS ARM64; other platforms are
+not qualified by this work.
+
 ### 9.6 board
 The shared central board for shared repos, in KV `am_board`:
 - **Keys** are minted from `<rid>.seq.<PREFIX>` with compare-and-set, so two people never

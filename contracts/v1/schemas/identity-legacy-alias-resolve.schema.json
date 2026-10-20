@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:identity-legacy-alias-resolve",
+  "title": "Resolve enrolled legacy registrations",
+  "description": "Registration fields are comparison inputs from the legacy Hub. A remote address selects one current authority mapping without supplying source or generation. Current identity authority supplies scope, identity, source and alias provenance.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "authorityId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "registrations": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "items": {
+        "$ref": "#/$defs/registration"
+      }
+    },
+    "remoteAddress": {
+      "type": "string",
+      "pattern": "^agent:[a-z0-9_]{1,32}-[a-z0-9_]{1,24}-[a-z0-9_]{1,32}$",
+      "maxLength": 96
+    }
+  },
+  "required": ["authorityId"],
+  "oneOf": [
+    {
+      "required": ["registrations"],
+      "not": {"required": ["remoteAddress"]}
+    },
+    {
+      "required": ["remoteAddress"],
+      "not": {"required": ["registrations"]}
+    }
+  ],
+  "$defs": {
+    "registration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requestedAddress": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "canonicalSession": {"type": "string", "minLength": 1, "maxLength": 320},
+        "registrationGeneration": {"type": "integer", "minimum": 1, "maximum": 9007199254740991},
+        "repository": {"type": "string", "pattern": "^[a-z0-9_]+$", "minLength": 1, "maxLength": 32},
+        "role": {"type": "string", "pattern": "^[a-z0-9_]+$", "minLength": 1, "maxLength": 24},
+        "agent": {"type": "string", "pattern": "^[a-z0-9_]+$", "minLength": 1, "maxLength": 32},
+        "state": {"enum": ["starting", "ready", "busy", "blocked"]},
+        "legacyAlias": {
+          "anyOf": [
+            {"type": "string", "minLength": 1, "maxLength": 320},
+            {"type": "null"}
+          ]
+        }
+      },
+      "required": ["requestedAddress", "canonicalSession", "registrationGeneration",
+                   "repository", "role", "agent", "state", "legacyAlias"]
+    }
+  }
+}

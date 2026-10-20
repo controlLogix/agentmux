@@ -1,0 +1,84 @@
+{
+  "description": "Offline Python SDK JCS/signature vectors with a public fixed test seed; no enrollment or live readiness is claimed.",
+  "seedHex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+  "vectors": [
+    {
+      "claims": {
+        "purpose": "agentmux-application-runtime-observation-v1",
+        "hubId": "fixture_hub",
+        "profileId": "fixture_profile",
+        "instanceId": "fixture_instance",
+        "generation": 2,
+        "lifetimeId": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "releaseDigest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "policyRef": {
+          "id": "application_policy",
+          "ownerHubId": "fixture_hub",
+          "revision": 1
+        },
+        "workspaceRef": null,
+        "scope": {
+          "organizationId": "fixture_org",
+          "projectId": null,
+          "workspaceId": null
+        },
+        "signingKeyRef": {
+          "id": "attestor_issuer",
+          "ownerHubId": "fixture_hub",
+          "revision": 1
+        },
+        "issuedAt": "2030-01-01T00:00:00.000001Z",
+        "expiresAt": "2030-01-01T00:00:03.000001Z"
+      },
+      "signed": "{\"algorithm\":\"Ed25519\",\"canonicalization\":\"RFC8785-JCS-UTF8\",\"claims\":{\"expiresAt\":\"2030-01-01T00:00:03.000001Z\",\"generation\":2,\"hubId\":\"fixture_hub\",\"instanceId\":\"fixture_instance\",\"issuedAt\":\"2030-01-01T00:00:00.000001Z\",\"lifetimeId\":\"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"policyRef\":{\"id\":\"application_policy\",\"ownerHubId\":\"fixture_hub\",\"revision\":1},\"profileId\":\"fixture_profile\",\"purpose\":\"agentmux-application-runtime-observation-v1\",\"releaseDigest\":\"sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"scope\":{\"organizationId\":\"fixture_org\",\"projectId\":null,\"workspaceId\":null},\"signingKeyRef\":{\"id\":\"attestor_issuer\",\"ownerHubId\":\"fixture_hub\",\"revision\":1},\"workspaceRef\":null},\"schemaVersion\":\"1.0.0\",\"signature\":\"68wlxhCBZLvV1mb1EUlA8Z1H4qfoV4CF0vXxuA8MGCcWQrlVoin5tO79OzPi8gIAA_jER9KG9gSu8fMbZpqqCg\"}"
+    },
+    {
+      "claims": {
+        "purpose": "agentmux-application-observation-update-v1",
+        "requestId": "fixture_request",
+        "hubId": "fixture_hub",
+        "profileId": "fixture_profile",
+        "authorityId": "fixture_authority",
+        "action": "refresh",
+        "generation": 2,
+        "lifetimeId": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "transportRef": {
+          "id": "attestor_transport",
+          "ownerHubId": "fixture_hub",
+          "revision": 1
+        },
+        "observationBytes": "eyJhbGdvcml0aG0iOiJFZDI1NTE5IiwiY2Fub25pY2FsaXphdGlvbiI6IlJGQzg3ODUtSkNTLVVURjgiLCJjbGFpbXMiOnsiZXhwaXJlc0F0IjoiMjAzMC0wMS0wMVQwMDowMDowMy4wMDAwMDFaIiwiZ2VuZXJhdGlvbiI6MiwiaHViSWQiOiJmaXh0dXJlX2h1YiIsImluc3RhbmNlSWQiOiJmaXh0dXJlX2luc3RhbmNlIiwiaXNzdWVkQXQiOiIyMDMwLTAxLTAxVDAwOjAwOjAwLjAwMDAwMVoiLCJsaWZldGltZUlkIjoiZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZCIsInBvbGljeVJlZiI6eyJpZCI6ImFwcGxpY2F0aW9uX3BvbGljeSIsIm93bmVySHViSWQiOiJmaXh0dXJlX2h1YiIsInJldmlzaW9uIjoxfSwicHJvZmlsZUlkIjoiZml4dHVyZV9wcm9maWxlIiwicHVycG9zZSI6ImFnZW50bXV4LWFwcGxpY2F0aW9uLXJ1bnRpbWUtb2JzZXJ2YXRpb24tdjEiLCJyZWxlYXNlRGlnZXN0Ijoic2hhMjU2OmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmIiLCJzY29wZSI6eyJvcmdhbml6YXRpb25JZCI6ImZpeHR1cmVfb3JnIiwicHJvamVjdElkIjpudWxsLCJ3b3Jrc3BhY2VJZCI6bnVsbH0sInNpZ25pbmdLZXlSZWYiOnsiaWQiOiJhdHRlc3Rvcl9pc3N1ZXIiLCJvd25lckh1YklkIjoiZml4dHVyZV9odWIiLCJyZXZpc2lvbiI6MX0sIndvcmtzcGFjZVJlZiI6bnVsbH0sInNjaGVtYVZlcnNpb24iOiIxLjAuMCIsInNpZ25hdHVyZSI6IjY4d2x4aENCWkx2VjFtYjFFVWxBOFoxSDRxZm9WNENGMHZYeHVBOE1HQ2NXUXJsVm9pbjV0Tzc5T3pQaThnSUFBX2pFUjlLRzlnU3U4Zk1iWnBxcUNnIn0=",
+        "replySubject": "_INBOX.abcdefghijklmnop.fixture_reply",
+        "issuedAt": "2030-01-01T00:00:00.000001Z",
+        "expiresAt": "2030-01-01T00:00:03.000001Z"
+      },
+      "signed": "{\"algorithm\":\"Ed25519\",\"canonicalization\":\"RFC8785-JCS-UTF8\",\"claims\":{\"action\":\"refresh\",\"authorityId\":\"fixture_authority\",\"expiresAt\":\"2030-01-01T00:00:03.000001Z\",\"generation\":2,\"hubId\":\"fixture_hub\",\"issuedAt\":\"2030-01-01T00:00:00.000001Z\",\"lifetimeId\":\"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"observationBytes\":\"eyJhbGdvcml0aG0iOiJFZDI1NTE5IiwiY2Fub25pY2FsaXphdGlvbiI6IlJGQzg3ODUtSkNTLVVURjgiLCJjbGFpbXMiOnsiZXhwaXJlc0F0IjoiMjAzMC0wMS0wMVQwMDowMDowMy4wMDAwMDFaIiwiZ2VuZXJhdGlvbiI6MiwiaHViSWQiOiJmaXh0dXJlX2h1YiIsImluc3RhbmNlSWQiOiJmaXh0dXJlX2luc3RhbmNlIiwiaXNzdWVkQXQiOiIyMDMwLTAxLTAxVDAwOjAwOjAwLjAwMDAwMVoiLCJsaWZldGltZUlkIjoiZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZGRkZCIsInBvbGljeVJlZiI6eyJpZCI6ImFwcGxpY2F0aW9uX3BvbGljeSIsIm93bmVySHViSWQiOiJmaXh0dXJlX2h1YiIsInJldmlzaW9uIjoxfSwicHJvZmlsZUlkIjoiZml4dHVyZV9wcm9maWxlIiwicHVycG9zZSI6ImFnZW50bXV4LWFwcGxpY2F0aW9uLXJ1bnRpbWUtb2JzZXJ2YXRpb24tdjEiLCJyZWxlYXNlRGlnZXN0Ijoic2hhMjU2OmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmIiLCJzY29wZSI6eyJvcmdhbml6YXRpb25JZCI6ImZpeHR1cmVfb3JnIiwicHJvamVjdElkIjpudWxsLCJ3b3Jrc3BhY2VJZCI6bnVsbH0sInNpZ25pbmdLZXlSZWYiOnsiaWQiOiJhdHRlc3Rvcl9pc3N1ZXIiLCJvd25lckh1YklkIjoiZml4dHVyZV9odWIiLCJyZXZpc2lvbiI6MX0sIndvcmtzcGFjZVJlZiI6bnVsbH0sInNjaGVtYVZlcnNpb24iOiIxLjAuMCIsInNpZ25hdHVyZSI6IjY4d2x4aENCWkx2VjFtYjFFVWxBOFoxSDRxZm9WNENGMHZYeHVBOE1HQ2NXUXJsVm9pbjV0Tzc5T3pQaThnSUFBX2pFUjlLRzlnU3U4Zk1iWnBxcUNnIn0=\",\"profileId\":\"fixture_profile\",\"purpose\":\"agentmux-application-observation-update-v1\",\"replySubject\":\"_INBOX.abcdefghijklmnop.fixture_reply\",\"requestId\":\"fixture_request\",\"transportRef\":{\"id\":\"attestor_transport\",\"ownerHubId\":\"fixture_hub\",\"revision\":1}},\"schemaVersion\":\"1.0.0\",\"signature\":\"QiY8MkB8JU3GGprvUp7rFThCXgKsWxKop3lB9ANyRCYFGPHPabDidy060qdn9FVrYlTOeyFPmFPcgQug2bfRAw\"}"
+    },
+    {
+      "claims": {
+        "purpose": "agentmux-application-observation-receipt-v1",
+        "requestId": "fixture_request",
+        "hubId": "fixture_hub",
+        "profileId": "fixture_profile",
+        "authorityId": "fixture_authority",
+        "action": "refresh",
+        "generation": 2,
+        "lifetimeId": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "requestDigest": "sha256:8d6499d94d1accd383424e537f842d050eb8fcd80d740d3e9fefaed95c94f039",
+        "signingKeyRef": {
+          "id": "identity_issuer",
+          "ownerHubId": "fixture_hub",
+          "revision": 1
+        },
+        "authorityRef": {
+          "id": "fixture_authority",
+          "ownerHubId": "fixture_hub",
+          "revision": 1
+        },
+        "issuedAt": "2030-01-01T00:00:00.000001Z",
+        "validUntil": "2030-01-01T00:00:03.000001Z"
+      },
+      "signed": "{\"algorithm\":\"Ed25519\",\"canonicalization\":\"RFC8785-JCS-UTF8\",\"claims\":{\"action\":\"refresh\",\"authorityId\":\"fixture_authority\",\"authorityRef\":{\"id\":\"fixture_authority\",\"ownerHubId\":\"fixture_hub\",\"revision\":1},\"generation\":2,\"hubId\":\"fixture_hub\",\"issuedAt\":\"2030-01-01T00:00:00.000001Z\",\"lifetimeId\":\"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"profileId\":\"fixture_profile\",\"purpose\":\"agentmux-application-observation-receipt-v1\",\"requestDigest\":\"sha256:8d6499d94d1accd383424e537f842d050eb8fcd80d740d3e9fefaed95c94f039\",\"requestId\":\"fixture_request\",\"signingKeyRef\":{\"id\":\"identity_issuer\",\"ownerHubId\":\"fixture_hub\",\"revision\":1},\"validUntil\":\"2030-01-01T00:00:03.000001Z\"},\"schemaVersion\":\"1.0.0\",\"signature\":\"bEBPVAumXskAdQpQnJeuOJ_R5l9jWdYKN0e5Y4iotiK5rIFVJc1bBlPburUP0bjENiyZ7HzWH6xGIqFTLE8FDg\"}"
+    }
+  ]
+}

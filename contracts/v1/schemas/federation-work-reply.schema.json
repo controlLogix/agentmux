@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-work-reply",
+  "title": "federation-work-reply v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "purpose": {
+          "const": "agentmux-legacy-work-response-v1"
+        },
+        "profileId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "hubId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "authorityId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "serviceInstanceId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "operationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "serviceIdentityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "signingKeyRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "requestContractId": {
+          "enum": [
+            "federation-work-create",
+            "federation-work-offer",
+            "federation-work-claim",
+            "federation-work-heartbeat",
+            "federation-work-release",
+            "federation-work-cancel",
+            "federation-work-claim-path",
+            "federation-work-stage-result",
+            "federation-work-revoke",
+            "federation-work-return-leases",
+            "federation-work-sweep-leases",
+            "federation-work-register",
+            "federation-work-state",
+            "federation-work-sweep-global",
+            "federation-work-ingest",
+            "federation-work-claim-envelope",
+            "federation-work-grant-envelope",
+            "federation-work-result-envelope",
+            "federation-work-approve",
+            "federation-work-approve-privileged",
+            "federation-work-ingest-legacy",
+            "federation-work-result-legacy",
+            "federation-work-read",
+            "federation-work-inspect",
+            "federation-work-outcome"
+          ]
+        },
+        "requestDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "payloadDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "resourceRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "authorityRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "replySubject": {
+          "type": "string",
+          "pattern": "^_INBOX\\.[A-Za-z0-9_-]{16,128}(?:\\.[A-Za-z0-9_-]{1,128})?$",
+          "maxLength": 264
+        },
+        "issuedAt": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+        },
+        "validUntil": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+        },
+        "result": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "purpose",
+        "profileId",
+        "hubId",
+        "authorityId",
+        "serviceInstanceId",
+        "operationId",
+        "serviceIdentityRef",
+        "signingKeyRef",
+        "requestContractId",
+        "requestDigest",
+        "payloadDigest",
+        "resourceRef",
+        "authorityRef",
+        "replySubject",
+        "issuedAt",
+        "validUntil",
+        "result"
+      ]
+    },
+    "signature": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{86}$"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "claims",
+    "signature"
+  ]
+}

@@ -12,6 +12,7 @@ import (
 	"github.com/controlLogix/agentmux/platform/deployment"
 	"github.com/controlLogix/agentmux/platform/kernel/protocol"
 	"github.com/controlLogix/agentmux/platform/localtls"
+	protected "github.com/controlLogix/agentmux/platform/runtime"
 	"github.com/nats-io/nats.go"
 )
 
@@ -34,7 +35,8 @@ func diagnosticReviewedWrapper(failure error) bool {
 		*LocalPortCleanupError, *bootstrapFailureCause,
 		deployment.ProbeCleanupError, *deployment.ProbeCleanupError,
 		deployment.RawTransportCleanupError, *deployment.RawTransportCleanupError,
-		*protocol.CleanupError:
+		*protocol.CleanupError, *protected.RecoveryCleanupError, *brokerPreparationCleanupError,
+		hostPolicyFailure, *hostPolicyFailure, *protected.InstalledHostImageError:
 		return true
 	}
 	actual := reflect.TypeOf(failure)
@@ -113,6 +115,20 @@ func requestDiagnostic(code string) RequestDiagnostic {
 		action, message = "check_exact_pinned_cache", "Inspection of the enrolled pinned image failed. Verify that exact reference on the selected engine; missing cache is unconfirmed. Do not pull, retag, prune or delete data to diagnose it."
 	case "docker_compose_start_failed":
 		action, message = "inspect_owned_start_and_pinned_cache", "The no-pull Compose start failed. Inspect partial owned resources and the exact pinned cache before an explicit retry; missing image is unconfirmed. Do not delete data or start another stack."
+	case "docker_image_pull_failed":
+		action, message = "check_pinned_image_access", "The explicit pinned-image pull failed. Check the owner's registry access and selected local engine, then retry preparation. A registry, network or authentication cause is unconfirmed."
+	case "docker_image_pull_timeout_outcome_unknown":
+		action, message = "retry_explicit_preparation", "The explicit pinned-image pull timed out and the image-cache outcome is unknown. Let owned cleanup finish, then retry preparation for the same enrolled image. Do not delete cached images."
+	case "docker_prepared_image_check_failed":
+		action, message = "check_exact_prepared_image", "The prepared image inspection failed. Check the selected local engine and repeat explicit preparation; the specific cause is unconfirmed."
+	case "docker_prepared_image_mismatch":
+		action, message = "check_release_image", "The prepared image does not match the release's pinned identity and Linux ARM64 platform. Check the installed release and selected engine before retrying. Do not retag or delete images to bypass this check."
+	case "broker_preparation_owner_required":
+		action, message = "run_as_enrolled_owner", "Image preparation requires the enrolled OS owner as both the actual and effective user. Run it from that owner's ordinary session."
+	case "broker_preparation_platform_unqualified":
+		action, message = "use_qualified_native_platform", "Image preparation is qualified only on native macOS ARM64. Use the supported installed runtime."
+	case "broker_preparation_output_failed":
+		action, message = "restore_preparation_output", "Preparation could not write its public progress or result. Restore the terminal or output destination, then retry explicit preparation."
 	case "docker_command_failed":
 		action, message = "check_selected_local_service", "The selected Docker command failed. Check the selected local service; the specific cause is unconfirmed."
 	case "docker_command_timeout_outcome_unknown":
@@ -150,6 +166,7 @@ func ProjectRequestDiagnostic(failure error) RequestDiagnostic {
 	queue := []error{failure}
 	var refusalCode, hostCategory string
 	var commandDetail string
+	imagePullDeadline, preparationOutput := false, false
 	hostCategoriesConflict := false
 	cleanup, specificAuth, authority, deadline := false, false, false, false
 	derivedAuthority := false
@@ -191,6 +208,7 @@ func ProjectRequestDiagnostic(failure error) RequestDiagnostic {
 				refusalCode = "command_failed"
 				if value.timedOut {
 					refusalCode = "command_timeout_outcome_unknown"
+					imagePullDeadline = imagePullDeadline || value.stage == "pinned_image_pull"
 				}
 				commandDetail = dockerFailureDetail(value)
 			}
@@ -224,14 +242,15 @@ func ProjectRequestDiagnostic(failure error) RequestDiagnostic {
 			}
 		case dockerRefusalError:
 			refusalCode = value.code
-		case bootstrapCleanupFailure, *bootstrapCleanupFailure, *TransportCleanupError, TransportCleanupError, *RuntimeCleanupError, RuntimeCleanupError, runtimeCleanupCause, *runtimeCleanupCause, *LocalPortCleanupError, *deployment.ProbeCleanupError, deployment.ProbeCleanupError, *deployment.RawTransportCleanupError, deployment.RawTransportCleanupError, *protocol.CleanupError:
+		case bootstrapCleanupFailure, *bootstrapCleanupFailure, *TransportCleanupError, TransportCleanupError, *RuntimeCleanupError, RuntimeCleanupError, runtimeCleanupCause, *runtimeCleanupCause, *LocalPortCleanupError, *deployment.ProbeCleanupError, deployment.ProbeCleanupError, *deployment.RawTransportCleanupError, deployment.RawTransportCleanupError, *protocol.CleanupError, *protected.RecoveryCleanupError, *brokerPreparationCleanupError:
 			cleanup = true
 		}
-		cleanup = cleanup || err == ErrTransportCleanup || err == errRuntimeCleanup || err == errLocalPortCleanup || err == deployment.ErrProbeCleanup || err == deployment.ErrRawTransportCleanup || err == localtls.ErrCleanup || err == protocol.ErrCleanup
-		specificAuth = specificAuth || err == localtls.ErrServerAuthentication || err == localtls.ErrInvalidPolicy || err == nats.ErrAuthorization || err == nats.ErrPermissionViolation || err == nats.ErrAuthExpired || err == nats.ErrAuthRevoked
+		cleanup = cleanup || err == ErrTransportCleanup || err == errRuntimeCleanup || err == errLocalPortCleanup || err == deployment.ErrProbeCleanup || err == deployment.ErrRawTransportCleanup || err == localtls.ErrCleanup || err == protocol.ErrCleanup || err == protected.ErrStartupCleanup
+		specificAuth = specificAuth || err == localtls.ErrServerAuthentication || err == localtls.ErrInvalidPolicy || err == protocol.ErrBrokerAuthentication || err == protocol.ErrBrokerAuthorization || err == protocol.ErrServerAuthentication || err == nats.ErrAuthorization || err == nats.ErrPermissionViolation || err == nats.ErrAuthExpired || err == nats.ErrAuthRevoked || err == nats.ErrAccountAuthExpired
 		authority = authority || err == errOwnerBridgeAuthority || err == errKernelStatusAuthority
 		deadline = deadline || err == context.DeadlineExceeded || err == localtls.ErrDeadline
 		canceled = canceled || err == context.Canceled
+		preparationOutput = preparationOutput || err == ErrBrokerPreparationOutput
 		if !diagnosticReviewedWrapper(err) {
 			continue
 		}
@@ -255,6 +274,15 @@ func ProjectRequestDiagnostic(failure error) RequestDiagnostic {
 	if specificAuth {
 		return requestDiagnostic("runtime_authority_rejected")
 	}
+	if imagePullDeadline {
+		if authority {
+			return requestDiagnostic("runtime_authority_rejected")
+		}
+		return requestDiagnostic("docker_image_pull_timeout_outcome_unknown")
+	}
+	if preparationOutput {
+		return requestDiagnostic("broker_preparation_output_failed")
+	}
 	if commandDetail != "" && refusalCode == "command_failed" {
 		if authority {
 			return requestDiagnostic("runtime_authority_rejected")
@@ -269,6 +297,14 @@ func ProjectRequestDiagnostic(failure error) RequestDiagnostic {
 	}
 
 	switch refusalCode {
+	case "preparation_owner_required":
+		return requestDiagnostic("broker_preparation_owner_required")
+	case "preparation_platform_unqualified":
+		return requestDiagnostic("broker_preparation_platform_unqualified")
+	case "preparation_selection_invalid":
+		return requestDiagnostic("docker_selection_mismatch")
+	case "prepared_image_mismatch":
+		return requestDiagnostic("docker_prepared_image_mismatch")
 	case "selected_host_port_occupied":
 		// A selected-port observation cannot outrank joined authentication,
 		// cancellation or deadline evidence. Existing refusal cases stay fixed.

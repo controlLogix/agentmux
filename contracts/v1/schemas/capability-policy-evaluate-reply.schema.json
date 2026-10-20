@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "receiptRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "outcome": {
+      "enum": [
+        "allow",
+        "deny",
+        "approval_required"
+      ]
+    }
+  },
+  "required": [
+    "receiptRef",
+    "outcome"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:capability-policy-evaluate-reply",
+  "title": "capability-policy-evaluate-reply v1"
+}

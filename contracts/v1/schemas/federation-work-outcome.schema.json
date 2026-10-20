@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-work-outcome",
+  "title": "federation-work-outcome v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "resourceRef": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contractId": {
+          "enum": [
+            "federation-work-create",
+            "federation-work-offer",
+            "federation-work-claim",
+            "federation-work-heartbeat",
+            "federation-work-release",
+            "federation-work-cancel",
+            "federation-work-claim-path",
+            "federation-work-stage-result",
+            "federation-work-revoke",
+            "federation-work-return-leases",
+            "federation-work-sweep-leases",
+            "federation-work-register",
+            "federation-work-state",
+            "federation-work-sweep-global",
+            "federation-work-ingest",
+            "federation-work-claim-envelope",
+            "federation-work-grant-envelope",
+            "federation-work-result-envelope",
+            "federation-work-approve",
+            "federation-work-approve-privileged",
+            "federation-work-ingest-legacy",
+            "federation-work-result-legacy"
+          ]
+        },
+        "operationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "payloadDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "readyState": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "operationId": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+            },
+            "payloadDigest": {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+            }
+          },
+          "required": [
+            "operationId",
+            "payloadDigest"
+          ]
+        }
+      },
+      "required": [
+        "contractId",
+        "operationId",
+        "payloadDigest"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "readyState"
+            ]
+          },
+          "then": {
+            "properties": {
+              "contractId": {
+                "const": "federation-work-register"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "resourceRef",
+    "input"
+  ]
+}

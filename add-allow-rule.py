@@ -1,103 +1,93 @@
 #!/usr/bin/env python3
-"""Add the agentmux Bash allow rule to Claude Code user settings.
+"""Preview a Claude Code permission rule for this checkout.
 
-Run this yourself - Claude Code blocks an agent from editing its own permission
-settings (reason: Self-Modification), which is correct. This script exists so the
-change is one command rather than a hand-edit.
-
-    python C:\\Dev\\agentmux\\add-allow-rule.py            # apply
-    python C:\\Dev\\agentmux\\add-allow-rule.py --check     # report only
-
-Idempotent. Preserves the file's existing formatting by doing a text insertion
-rather than reserialising the JSON. Writes a timestamped backup first, and
-refuses to write anything that does not parse as valid JSON.
+Run with no arguments (or --check) to preview. Only the operator should apply
+this permission: rerun with --apply followed by the exact displayed rule.
+Existing settings and a private backup are preserved. No client is launched.
 """
-
-import datetime
+import argparse
 import json
-import pathlib
-import shutil
+import os
+from pathlib import Path
+import re
+import shlex
 import sys
+import tempfile
 
-SETTINGS = pathlib.Path.home() / ".claude" / "settings.json"
-RULE = "Bash(wsl.exe -d Ubuntu -- /home/nick/.local/bin/agentmux:*)"
-ANCHOR = '"Bash(git push)"'
+from taskmgmt.provider_setup import SetupError, read_json, read_local, write_local
 
 
-def main() -> int:
-    check_only = "--check" in sys.argv
+def permission_rule(repo: Path) -> str:
+    repo = repo.resolve(strict=True)
+    launcher = repo / "agentmux.sh"
+    if launcher.is_symlink() or not launcher.is_file():
+        raise SetupError("the checkout has no regular agentmux.sh launcher")
+    if not re.fullmatch(r"[A-Za-z0-9_./ -]+", str(launcher)):
+        raise SetupError("checkout path cannot be represented by an exact permission rule")
+    return f"Bash(bash {shlex.quote(str(launcher))}:*)"
 
-    if not SETTINGS.is_file():
-        print(f"error: not found: {SETTINGS}")
-        return 1
 
-    text = SETTINGS.read_text(encoding="utf-8")
+def proposed_settings(original: bytes, rule: str) -> tuple[bytes, bool]:
+    data = read_json(original)
+    permissions = data.setdefault("permissions", {})
+    if not isinstance(permissions, dict):
+        raise SetupError("permissions must be an object; settings were preserved")
+    allow = permissions.setdefault("allow", [])
+    if not isinstance(allow, list) or any(not isinstance(item, str) for item in allow):
+        raise SetupError("permissions.allow must be a string list; settings were preserved")
+    if rule in allow:
+        return original, False
+    allow.append(rule)
+    return (json.dumps(data, ensure_ascii=False, indent=2) + "\n").encode("utf-8"), True
+
+
+def update_permission(settings: Path, repo: Path, approved_rule: str | None = None) -> dict:
+    rule = permission_rule(repo)
+    if approved_rule is not None and approved_rule != rule:
+        raise SetupError("approved rule does not exactly match this checkout; nothing was changed")
+    original = read_local(settings, private=False)
+    proposed, changed = proposed_settings(original, rule)
+    result = {"rule": rule, "state": "present" if not changed else "preview", "backup": None}
+    if approved_rule is None or not changed:
+        return result
+    # Create a new, private backup without overwriting any earlier backup.
+    fd, backup = tempfile.mkstemp(prefix=f"{settings.name}.bak-", dir=settings.parent)
     try:
-        cfg = json.loads(text)
-    except json.JSONDecodeError as exc:
-        print(f"error: {SETTINGS} is not valid JSON ({exc}). Fix it first.")
-        return 1
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(original)
+            handle.flush()
+            os.fsync(handle.fileno())
+        write_local(settings, proposed, expected=original, private_existing=False)
+    except BaseException:
+        # Retain the original bytes even when replacement fails.
+        raise
+    result.update(state="applied", backup=Path(backup).name)
+    return result
 
-    allow = cfg.get("permissions", {}).get("allow", [])
-    print(f"settings : {SETTINGS}")
-    print(f"allow rules: {len(allow)}")
 
-    if RULE in allow:
-        print("result   : rule ALREADY PRESENT, nothing to do")
-        return 0
-    if check_only:
-        print("result   : rule NOT present (run without --check to add it)")
-        return 0
-
-    # Text insertion after the anchor line, so surrounding formatting survives.
-    idx = text.find(ANCHOR)
-    if idx == -1:
-        print(f"error: could not find anchor {ANCHOR} to insert after.")
-        print("       Add this line to permissions.allow by hand instead:")
-        print(f'         "{RULE}"')
-        return 1
-    line_end = text.find("\n", idx)
-    if line_end == -1:
-        print("error: anchor is on the final line; refusing to guess. Add by hand.")
-        return 1
-
-    indent = text[text.rfind("\n", 0, idx) + 1 : idx]
-    updated = (
-        text[:line_end] + ",\n" + indent + f'"{RULE}"' + text[line_end:]
-    )
-
-    # Never write something that does not parse, and never write something whose
-    # only difference is not the one rule we intend to add.
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--check", action="store_true", help="preview only (the default)")
+    parser.add_argument("--apply", metavar="EXACT_RULE", help="operator approval of the exact proposed rule")
+    parser.add_argument("--settings", type=Path, help="explicit user settings file")
+    args = parser.parse_args(argv)
+    if args.check and args.apply is not None:
+        parser.error("--check and --apply cannot be combined")
+    settings = args.settings or Path(os.environ.get("CLAUDE_CONFIG_DIR") or Path.home() / ".claude") / "settings.json"
     try:
-        new_cfg = json.loads(updated)
-    except json.JSONDecodeError as exc:
-        print(f"error: insertion produced invalid JSON ({exc}). Nothing written.")
+        result = update_permission(settings, Path(__file__).resolve().parent, args.apply)
+    except (SetupError, OSError):
+        print("Permission setup failed. Check the settings file, checkout path and exact rule; existing settings were preserved.", file=sys.stderr)
         return 1
-
-    new_allow = new_cfg.get("permissions", {}).get("allow", [])
-    if new_allow != allow + [RULE]:
-        print("error: unexpected diff in the allow array. Nothing written.")
-        return 1
-    scrubbed = dict(new_cfg)
-    scrubbed["permissions"] = {
-        k: v for k, v in new_cfg["permissions"].items() if k != "allow"
-    }
-    original = dict(cfg)
-    original["permissions"] = {
-        k: v for k, v in cfg["permissions"].items() if k != "allow"
-    }
-    if scrubbed != original:
-        print("error: something outside permissions.allow changed. Nothing written.")
-        return 1
-
-    stamp = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    backup = SETTINGS.with_name(f"settings.json.bak-{stamp}")
-    shutil.copy2(SETTINGS, backup)
-    SETTINGS.write_text(updated, encoding="utf-8")
-
-    print(f"backup   : {backup}")
-    print(f"result   : ADDED -> {RULE}")
-    print(f"allow rules now: {len(new_allow)}")
+    print("Proposed rule:", result["rule"])
+    if result["state"] == "preview":
+        print("Preview only. Review this rule, then apply it yourself with:")
+        print("  python3", shlex.quote(str(Path(__file__).resolve())), "--apply", shlex.quote(result["rule"]), "--settings", shlex.quote(str(settings)))
+    elif result["state"] == "applied":
+        print("Applied the exact approved rule. Private backup:", result["backup"])
+    else:
+        print("The exact rule is already present. No file was changed.")
+    print("Client permission matching has not been qualified by this offline check.")
     return 0
 
 

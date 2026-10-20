@@ -7,6 +7,7 @@
 The lock outlives this process because flock(2) locks belong to the open file
 description, which the calling shell shares with us and keeps open."""
 import fcntl
+import math
 import sys
 import time
 
@@ -24,6 +25,8 @@ while args:
         nb = True
     elif a in ("-w", "--timeout"):
         wait = float(args.pop(0))
+        if not math.isfinite(wait):
+            sys.exit("flock shim: timeout must be finite")
     elif a.isdecimal():
         fd = int(a)
     else:

@@ -24,7 +24,16 @@
         "effect",
         "approval",
         "project",
-        "plugin-instance"
+        "plugin-instance",
+        "plugin-storage",
+        "identity-authority",
+        "definition-catalog",
+        "configuration",
+        "federation-archive",
+        "conversation-archive",
+        "authority-switch",
+        "policy-evaluation",
+        "approved-execution-plan"
       ]
     },
     "ownerHubId": {
@@ -141,6 +150,91 @@
           ]
         }
       ]
+    },
+    "authorizationDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "operationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "decision": {
+          "enum": [
+            "allowed",
+            "denied",
+            "review-required"
+          ]
+        },
+        "reason": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "actorRef": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/reference"
+        },
+        "contractId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        }
+      },
+      "required": [
+        "operationId",
+        "decision",
+        "reason",
+        "actorRef",
+        "contractId"
+      ]
+    },
+    "definitionEffectReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "definitionId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "originalOperationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "effectId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "attemptOperationId": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+        },
+        "originalPayloadDigest": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/digest"
+        },
+        "definitionVersion": {
+          "$ref": "urn:agentmux:contract:1:common#/$defs/revision"
+        },
+        "status": {
+          "enum": [
+            "retry-authorized",
+            "applied",
+            "reconciliation-required",
+            "superseded"
+          ]
+        },
+        "observedAt": {
+          "anyOf": [
+            {
+              "$ref": "urn:agentmux:contract:1:common#/$defs/timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "definitionId",
+        "originalOperationId",
+        "effectId",
+        "attemptOperationId",
+        "originalPayloadDigest",
+        "definitionVersion",
+        "status",
+        "observedAt"
+      ],
+      "description": "Owner-held attempt observation, at most 4 KiB encoded. Never supplied by a command caller. Exact original intent and attempt must be verified by the definition owner; matching file bytes alone cannot establish application."
     }
   },
   "required": [

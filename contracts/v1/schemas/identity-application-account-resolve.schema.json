@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:identity-application-account-resolve",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "authorityId": {"$ref": "urn:agentmux:contract:1:common#/$defs/identifier"},
+    "accountRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+    "profileId": {"$ref": "urn:agentmux:contract:1:common#/$defs/identifier"},
+    "scope": {"$ref": "urn:agentmux:contract:1:common#/$defs/scope"},
+    "accountPublicKey": {"type": "string", "pattern": "^A[A-Z2-7]{55}$"}
+  },
+  "required": ["authorityId", "accountRef", "profileId", "scope", "accountPublicKey"],
+  "title": "Resolve current application account custody references",
+  "description": "The identity owner applies current caller, membership, grant, approval, denial and revocation checks before returning public references."
+}

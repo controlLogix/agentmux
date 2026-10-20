@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:orchestration-command-receipt",
+  "title": "Signed orchestration command receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": "1.0.0" },
+    "claims": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "purpose": { "const": "agentmux-orchestration-command-receipt-v1" },
+        "hubId": { "$ref": "urn:agentmux:contract:1:common#/$defs/identifier" },
+        "profileId": { "$ref": "urn:agentmux:contract:1:common#/$defs/identifier" },
+        "authorityId": { "$ref": "urn:agentmux:contract:1:common#/$defs/identifier" },
+        "issuerRef": { "$ref": "urn:agentmux:contract:1:common#/$defs/reference" },
+        "requestDigest": { "$ref": "urn:agentmux:contract:1:common#/$defs/digest" },
+        "receipt": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "operationId": { "$ref": "urn:agentmux:contract:1:common#/$defs/identifier" },
+            "actorRef": { "$ref": "urn:agentmux:contract:1:common#/$defs/reference" },
+            "resourceRef": { "$ref": "urn:agentmux:contract:1:common#/$defs/reference" },
+            "environmentRef": { "anyOf": [
+              { "$ref": "urn:agentmux:contract:1:common#/$defs/reference" }, { "type": "null" }
+            ] },
+            "originalOperationId": { "$ref": "urn:agentmux:contract:1:common#/$defs/identifier" },
+            "originalPayloadDigest": { "$ref": "urn:agentmux:contract:1:common#/$defs/digest" },
+            "receiptRef": { "anyOf": [
+              { "$ref": "urn:agentmux:contract:1:common#/$defs/reference" }, { "type": "null" }
+            ] },
+            "phase": { "enum": ["absent", "prepared", "dispatching", "uncertain", "finished"] },
+            "outcome": { "anyOf": [
+              { "enum": ["applied", "refused", "not-dispatched", "uncertain"] },
+              { "type": "null" }
+            ] },
+            "result": { "anyOf": [
+              { "type": "null" },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "command": { "enum": ["orchestrator-start", "orchestrator-stop", "run-start", "run-assign", "run-complete", "run-teardown", "claim-for", "release-for"] },
+                  "outcome": { "enum": ["applied", "refused", "not-dispatched", "uncertain"] },
+                  "exitCode": { "anyOf": [{ "type": "integer" }, { "type": "null" }] },
+                  "result": { "anyOf": [
+                    { "type": "null" },
+                    {
+                      "type": "object", "additionalProperties": false,
+                      "properties": { "runId": { "type": "string", "pattern": "^[a-f0-9]{6}$" } },
+                      "required": ["runId"]
+                    },
+                    {
+                      "type": "object", "additionalProperties": false,
+                      "properties": { "jobId": { "type": "string", "pattern": "^[a-f0-9]{6}/[1-9][0-9]{0,3}$" } },
+                      "required": ["jobId"]
+                    }
+                  ] }
+                },
+                "required": ["command", "outcome", "exitCode", "result"]
+              }
+            ] }
+          },
+          "required": ["operationId", "actorRef", "resourceRef", "environmentRef", "originalOperationId", "originalPayloadDigest", "receiptRef", "phase", "outcome", "result"]
+        }
+      },
+      "required": ["purpose", "hubId", "profileId", "authorityId", "issuerRef", "requestDigest", "receipt"]
+    },
+    "signature": { "type": "string", "pattern": "^[A-Za-z0-9_-]{86}$" }
+  },
+  "required": ["schemaVersion", "claims", "signature"]
+}

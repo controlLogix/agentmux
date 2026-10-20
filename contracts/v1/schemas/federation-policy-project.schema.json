@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:federation-policy-project",
+  "type": "object",
+  "additionalProperties": false,
+  "$defs": {
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sourceRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+        "selectionDigest": {"$ref": "urn:agentmux:contract:1:common#/$defs/digest"},
+        "repositoryId": {"type": "string", "minLength": 1, "maxLength": 128}
+      },
+      "required": ["sourceRef", "selectionDigest", "repositoryId"]
+    }
+  },
+  "properties": {
+    "configurationRef": {"$ref": "urn:agentmux:contract:1:common#/$defs/reference"},
+    "owner": {"$ref": "urn:agentmux:contract:1:ordinary-plugin-lifecycle#/$defs/owner"},
+    "target": {"$ref": "#/$defs/target"},
+    "originalOperationId": {"$ref": "urn:agentmux:contract:1:common#/$defs/identifier"},
+    "originalPayloadDigest": {"$ref": "urn:agentmux:contract:1:common#/$defs/digest"},
+    "desiredPolicyDigest": {"$ref": "urn:agentmux:contract:1:common#/$defs/digest"}
+  },
+  "required": ["configurationRef", "owner", "target", "originalOperationId", "originalPayloadDigest", "desiredPolicyDigest"]
+}

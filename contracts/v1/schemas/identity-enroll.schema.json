@@ -1,0 +1,64 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "authorityId": {
+      "$ref": "urn:agentmux:contract:1:common#/$defs/identifier"
+    },
+    "identity": {
+      "$ref": "urn:agentmux:contract:1:identity-authority-state#/properties/identities/items"
+    },
+    "issuers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "record": {
+            "$ref": "urn:agentmux:contract:1:identity-authority-state#/properties/issuers/items"
+          },
+          "proof": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{86}$"
+          }
+        },
+        "required": [
+          "record",
+          "proof"
+        ]
+      },
+      "maxItems": 16
+    },
+    "transports": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "record": {
+            "$ref": "urn:agentmux:contract:1:identity-authority-state#/properties/transports/items"
+          },
+          "proof": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{86}$"
+          }
+        },
+        "required": [
+          "record",
+          "proof"
+        ]
+      },
+      "maxItems": 16
+    }
+  },
+  "required": [
+    "authorityId",
+    "identity",
+    "issuers",
+    "transports"
+  ],
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:agentmux:contract:1:identity-enroll",
+  "title": "identity-enroll payload v1",
+  "description": "The identity owner authenticates and authorizes the signed operation, checks expectedVersion and current authority, and commits the resulting state and audit together. Shape validation does not authorize a change."
+}

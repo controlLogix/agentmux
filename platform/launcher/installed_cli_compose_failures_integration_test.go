@@ -355,6 +355,9 @@ func TestInstalledCLIRealComposeOccupiedSelectedPort(t *testing.T) {
 			if protocol.DecodeClosedJSON(statusRaw, &out, 64*1024) != nil || out.Disposition == "started" || out.Disposition == "reused" {
 				t.Fatal("occupied-port status overclaims running readiness")
 			}
+			if statusSucceeded && (out.Disposition == "failed" || out.Disposition == "unconfigured") {
+				t.Fatal("failed or unconfigured status returned command success")
+			}
 		}
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

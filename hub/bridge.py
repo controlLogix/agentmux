@@ -120,10 +120,12 @@ class Bridge:
         while not self.hub.stop.is_set():
             self.nc = NatsClient(self.url, f"agentmux-hub-{self.node}")
             self.role_subs = {}
+            reader = None
             try:
                 await self.nc.connect()
                 await self.nc.sub("am.agent.>", self.on_agent)
-                await self.nc.sub(f"am.result.{self.node}", self.on_result)
+                if getattr(self.hub, '_work_storage_commands', None) is None:
+                    await self.nc.sub(f"am.result.{self.node}", self.on_result)
                 self.connected, backoff = True, 1
                 self.log("nats connected", self.url, "node", self.node)
                 reader = asyncio.create_task(self.nc.read_loop())
@@ -133,32 +135,65 @@ class Bridge:
                     await asyncio.sleep(0.5)
                 if reader.done():
                     reader.result()                # surface the connection error
-                reader.cancel()
             except (OSError, ConnectionError, asyncio.IncompleteReadError) as e:
                 self.log("nats unavailable:", type(e).__name__, e, f"- retrying in {backoff}s")
             finally:
                 self.connected = False
-                self.nc.close()
-            await asyncio.sleep(backoff)
+                await self._disconnect(self.nc, reader)
+            if not self.hub.stop.is_set():
+                await asyncio.sleep(backoff)
             backoff = min(backoff * 2, 30)
 
+    @staticmethod
+    async def _disconnect(connection, reader):
+        """Join the original reader and socket before reconnecting or stopping."""
+        async def finish():
+            connection.close()
+            if reader is not None:
+                reader.cancel()
+                await asyncio.gather(reader, return_exceptions=True)
+            if connection.writer is not None:
+                try:
+                    await connection.writer.wait_closed()
+                except (OSError, ConnectionError):
+                    pass
+        cleanup = asyncio.create_task(finish(), name='legacy-bridge:disconnect')
+        cancelled = None
+        while not cleanup.done():
+            try:
+                await asyncio.shield(cleanup)
+            except asyncio.CancelledError as error:
+                cancelled = error
+        cleanup.result()
+        if cancelled is not None:
+            raise cancelled
+
     async def drain_outbox(self):
-        rows = await self.hub.db(self.hub.store.outbox_pending)
+        qualified = getattr(self.hub, '_work_storage_commands', None) is not None
+        rows = await self.hub.db(self.hub.store.outbox_pending, include_work=not qualified)
         if not rows:
             return
+        published = []
         for r in rows:
+            if (getattr(self.hub, '_work_storage_commands', None) is not None
+                    and r['subject'].startswith(('am.work.', 'am.result.'))):
+                continue
             await self.nc.pub(r["subject"], r["payload"].encode())
+            published.append(r['seq'])
+        if not published:
+            return
         await self.nc.flush()
-        await self.hub.db(self.hub.store.outbox_sent, [r["seq"] for r in rows])
-        self.stats["published"] += len(rows)
+        await self.hub.db(self.hub.store.outbox_sent, published)
+        self.stats["published"] += len(published)
 
     async def sync_role_subs(self):
         """Queue-subscribe to exactly the role subjects our live agents can serve."""
         want = set()
-        for ag in await self.hub.db(self.hub.store.agents, True):
-            for t in await self.hub.db(self.hub.store.eligible_targets, ag["session"]):
-                if t.startswith("role:"):
-                    want.add(names.nats_subject(names.parse_address(t), self.node))
+        if getattr(self.hub, '_work_storage_commands', None) is None:
+            for ag in await self.hub.db(self.hub.store.agents, True):
+                for t in await self.hub.db(self.hub.store.eligible_targets, ag["session"]):
+                    if t.startswith("role:"):
+                        want.add(names.nats_subject(names.parse_address(t), self.node))
         for subj in want - set(self.role_subs):
             self.role_subs[subj] = await self.nc.sub(subj, self.on_work, queue=subj.replace(".", "_"))
         for subj in set(self.role_subs) - want:
@@ -167,11 +202,14 @@ class Bridge:
     async def on_agent(self, subj, data):
         env = _load(data)
         if env and env.get("origin") != self.node:
-            r = await self.hub.db(self.hub.store.ingest_message, env)
+            r = await self.hub.ingest_message(env)
             if r and not r.get("duplicate"):
                 self.stats["ingested_messages"] += 1
 
     async def on_work(self, subj, data):
+        if getattr(self.hub, '_work_storage_commands', None) is not None:
+            self.log('federated work refused: authenticated owner transport required')
+            return
         env = _load(data)
         if env:
             try:
@@ -182,6 +220,9 @@ class Bridge:
                 self.log("federated work refused:", e)
 
     async def on_result(self, subj, data):
+        if getattr(self.hub, '_work_storage_commands', None) is not None:
+            self.log('federated result refused: authenticated owner transport required')
+            return
         env = _load(data)
         w = await self.hub.db(self.hub.store.ingest_result, env) if env else None
         if w:

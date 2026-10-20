@@ -71,6 +71,39 @@ func TestEndpointProxyPureByteExactAndHalfClose(t *testing.T) {
 	}
 }
 
+func TestEndpointProxyPureResponseGateCancelsAndJoinsCopies(t *testing.T) {
+	left, right := endpointMemoryPair([]byte("actual-request"), []byte("actual-response"))
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	entered, withheld := false, false
+	r := endpointProxyRelay(ctx, left, right, 1024, func(session context.Context) error {
+		entered = true
+		withheld = left.output.Len() == 0
+		cancel()
+		return session.Err()
+	})
+	if !entered || !withheld || !r.Joined || !r.Cancelled || r.Failed || r.CloseFailed || r.ReverseBytes != 0 ||
+		left.output.Len() != 0 || left.closed != 1 || right.closed != 1 {
+		t.Fatal("real response gate lost withheld bytes, cancellation or original copy ownership")
+	}
+}
+
+func TestEndpointProxyPureResponseGateForwardsExactBytes(t *testing.T) {
+	a, b := []byte("request"), []byte("response")
+	left, right := endpointMemoryPair(a, b)
+	entered := false
+	r := endpointProxyRelay(context.Background(), left, right, 1024, func(context.Context) error { entered = true; return nil })
+	if !entered || !r.Joined || r.Failed || r.CloseFailed || !bytes.Equal(left.output.Bytes(), b) || !bytes.Equal(right.output.Bytes(), a) {
+		t.Fatal("released response callback changed actual bytes or original owners")
+	}
+	var output bytes.Buffer
+	calls := 0
+	writer := endpointProxyResponseWriter{context.Background(), &output, func(context.Context) error { calls++; return nil }}
+	if n, err := writer.Write(nil); n != 0 || err != nil || calls != 0 {
+		t.Fatal("empty write entered the actual-response gate")
+	}
+}
+
 func TestEndpointProxyPureOverflowRefuses(t *testing.T) {
 	left, right := endpointMemoryPair(bytes.Repeat([]byte{0xff}, 33), nil)
 	r := endpointProxyRelay(context.Background(), left, right, 32)
