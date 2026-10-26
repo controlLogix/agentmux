@@ -581,8 +581,12 @@ class Ceremony:
         repository = self.request['repositories'][0]
         lines = ['[federation]', 'peer = "%s"' % self.request['localPeer'], '',
                  '[repos.%s]' % repository['localName'], 'remote = "%s"' % repository['normalizedRemote'], '',
-                 # The message peer is declared but not trusted until federation enrollment.
-                 '[peers.%s]' % self.request['messagePeer'], 'trust = "deny"', '']
+                 # "approve" is the most restrictive trust the message owner admits:
+                 # every message from the peer needs explicit human approval. A
+                 # "deny" peer makes MessageStorageResource refuse the channel as
+                 # stale, which stops the whole storage host. No link to this
+                 # peer exists until federation enrollment adds one.
+                 '[peers.%s]' % self.request['messagePeer'], 'trust = "approve"', '']
         return '\n'.join(lines).encode()
 
     def hub_files(self):

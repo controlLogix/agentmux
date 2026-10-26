@@ -88,6 +88,10 @@ class Installation:
         self.runtime = runtime
         self.base = runtime.root / ('install-' + secrets.token_hex(4))
         self.base.mkdir(mode=0o700)
+        # A private workspace per installation: owners such as definitions
+        # claim retained state inside the approved repository root.
+        self.workspace = self.base / 'workspace'
+        self.workspace.mkdir(mode=0o700)
         hub = 'hub_' + secrets.token_hex(6)
         profile = 'profile_' + secrets.token_hex(16)
         self.owner = {'schemaVersion': '1.0.0', 'owner': {'schemaVersion': '1.0.0', 'ownerUid': os.getuid(),
@@ -96,7 +100,7 @@ class Installation:
             'instanceId': 'instance_' + secrets.token_hex(6), 'profileId': profile,
             'releaseFingerprint': runtime.authorization['releaseManifestDigest']},
             'context': {'environment': 'Test'}, 'clientInstallationId': secrets.token_hex(32),
-            'approvedWorkspaceRoots': [str(REPOSITORY)],
+            'approvedWorkspaceRoots': [str(self.workspace)],
             'release': {'packageDirectory': str(runtime.release),
                         'releaseManifestDigest': runtime.authorization['releaseManifestDigest']},
             'hostPort': overrides.pop('hostPort', 4333)}
@@ -106,7 +110,7 @@ class Installation:
         owner_digest = _private_write(setup / 'owner-request.json', owner_raw)
         self.request = {'schemaVersion': '1.0.0',
             'ownerRequest': {'path': str(setup / 'owner-request.json'), 'sha256': owner_digest},
-            'projectId': 'project_test', 'repositories': [{'root': str(REPOSITORY), 'localName': 'agentmux',
+            'projectId': 'project_test', 'repositories': [{'root': str(self.workspace), 'localName': 'agentmux',
                 'normalizedRemote': 'github.com/controllogix/agentmux'}],
             'localPeer': 'tester', 'localNode': 'tester_node', 'messagePeer': 'remote', 'validityDays': 30,
             'applicationRuntime': str(runtime.directory)}
@@ -296,6 +300,30 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
                 self.assertTrue(await violation(), 'broad subscribe was not refused')
             finally:
                 await client.close()
+
+    async def test_ceremony_selection_starts_the_services_host_including_storage(self):
+        # The installed services process runs this host from the packaged
+        # dashboard and taskmgmt roots; mirror that layout from the checkout.
+        import sys
+        for root in (REPOSITORY / 'dashboard', REPOSITORY / 'taskmgmt'):
+            if str(root) not in sys.path:
+                sys.path.insert(0, str(root))
+        from application_service_host import ApplicationServiceHost
+        from identity.application_service_selection import ApplicationServiceSelection
+        install = Installation(self.runtime)
+        await install.run()
+        policy = (install.base / 'hubs' / install.profile / 'hub' / 'federation.toml').read_text()
+        self.assertIn('[peers.remote]\ntrust = "approve"', policy)
+        self.assertNotIn('"deny"', policy)
+        raw = _read_material(install.enrollment / 'service-selection.json', max_bytes=1048576, return_bytes=True)
+        host = ApplicationServiceHost(ApplicationServiceSelection(raw), browser_port=0)
+        try:
+            await asyncio.wait_for(host.start(), 60)
+            self.assertEqual([type(service).__name__ for service in host._services],
+                             ['IdentityService', 'DefinitionCommandService', 'IntegrationService', 'SelectedStorageHost'])
+            host.check_health()
+        finally:
+            await host.close()
 
     async def test_three_installations_get_distinct_identities(self):
         seen = set()
