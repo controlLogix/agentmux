@@ -8,6 +8,7 @@ import (
 	"errors"
 	"flag"
 	"io"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -19,6 +20,7 @@ const applicationRuntimeCommandLimit = 30 * time.Second
 
 type applicationRuntimeRequest struct {
 	operation string
+	directory string
 	inputs    appruntime.Inputs
 }
 
@@ -28,7 +30,7 @@ func parseApplicationRuntime(args []string) (applicationRuntimeRequest, error) {
 	invalid := func() (applicationRuntimeRequest, error) {
 		return applicationRuntimeRequest{}, errors.New("application_runtime_arguments_invalid")
 	}
-	if len(args) < 2 || len(args) > 6 || args[0] != "application-runtime" {
+	if len(args) < 2 || len(args) > 8 || args[0] != "application-runtime" {
 		return invalid()
 	}
 	for _, arg := range args {
@@ -39,13 +41,21 @@ func parseApplicationRuntime(args []string) (applicationRuntimeRequest, error) {
 	request := applicationRuntimeRequest{operation: args[1]}
 	flags := flag.NewFlagSet("application-runtime", flag.ContinueOnError)
 	flags.SetOutput(io.Discard)
-	var server, port string
+	var server, port, directory string
 	serverFlag := singleApplicationFlag{value: &server}
 	portFlag := singleApplicationFlag{value: &port}
+	directoryFlag := singleApplicationFlag{value: &directory}
 	flags.Var(&serverFlag, "nats-server", "Absolute path of the pinned native nats-server "+appruntime.NATSVersion)
 	flags.Var(&portFlag, "port", "Loopback port fixed at first initialization")
+	flags.Var(&directoryFlag, "directory", "Explicit private runtime directory; defaults to the per-user location")
 	if flags.Parse(args[2:]) != nil || flags.NArg() != 0 {
 		return invalid()
+	}
+	if directoryFlag.present {
+		if !filepath.IsAbs(directory) || filepath.Clean(directory) != directory {
+			return invalid()
+		}
+		request.directory = directory
 	}
 	switch request.operation {
 	case "init":
@@ -83,9 +93,11 @@ func runApplicationRuntime(ctx context.Context, args []string, output io.Writer)
 	if err != nil {
 		return err
 	}
-	path, err := appruntime.DefaultDirectory()
-	if err != nil {
-		return err
+	path := request.directory
+	if path == "" {
+		if path, err = appruntime.DefaultDirectory(); err != nil {
+			return err
+		}
 	}
 	result := applicationRuntimeOutput{SchemaVersion: appruntime.SchemaVersion, Kind: "application-runtime-result", Operation: request.operation}
 	switch request.operation {
