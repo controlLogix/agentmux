@@ -986,6 +986,11 @@ class ApplicationServiceSelection:
         """Return the protected dashboard resource, or keep writes disabled."""
         return self.policy.get('dashboard')
 
+    def local_browser_port(self):
+        """Return the selected private loopback port, or None for the historical default."""
+        selected = self.policy.get('localBrowser')
+        return None if selected is None else selected['port']
+
     def orchestration_policy(self):
         """Return the protected orchestration resource and local routing inputs."""
         return self.policy.get('orchestration')

@@ -97,7 +97,10 @@ async def receive(reader, writer):
             expected_digest=request['selectionSHA256'], host_policy=request['hostPolicy'],
             owner_uid=request['ownerUid'], workspaces=request['workspaces'], kernel_scope=request['kernelScope'],
             protected_host_account=request['protectedHostAccount']))
-        host = ApplicationServiceHost(selected)
+        # A selected private port avoids colliding with another local listener;
+        # omitted keeps the historical default.
+        port = selected.local_browser_port()
+        host = ApplicationServiceHost(selected) if port is None else ApplicationServiceHost(selected, browser_port=port)
         oidc = selected.oidc_browser_configuration()
         if oidc is not None:
             host.configure_oidc_browser(*oidc)

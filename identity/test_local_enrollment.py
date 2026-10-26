@@ -316,14 +316,47 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn('[peers.remote]\ntrust = "approve"', policy)
         self.assertNotIn('"deny"', policy)
         raw = _read_material(install.enrollment / 'service-selection.json', max_bytes=1048576, return_bytes=True)
-        host = ApplicationServiceHost(ApplicationServiceSelection(raw), browser_port=0)
+        selection = ApplicationServiceSelection(raw)
+        port = selection.local_browser_port()
+        self.assertNotIn(port, (None, local_enrollment.LEGACY_BROWSER_PORT, install.owner['hostPort']))
+        # Hold the historical shared port, as a running legacy dashboard does.
+        import socket
+        legacy = socket.socket()
+        try:
+            legacy.bind(('127.0.0.1', local_enrollment.LEGACY_BROWSER_PORT))
+            legacy.listen()
+        except OSError:
+            legacy.close()
+            legacy = None  # already held by another local listener, which is the same condition
+        # Construct the host exactly as the installed services process does.
+        host = ApplicationServiceHost(selection, browser_port=port)
         try:
             await asyncio.wait_for(host.start(), 60)
             self.assertEqual([type(service).__name__ for service in host._services],
                              ['IdentityService', 'DefinitionCommandService', 'IntegrationService', 'SelectedStorageHost'])
+            self.assertEqual(host._browser_server.server_address, ('127.0.0.1', port))
             host.check_health()
         finally:
             await host.close()
+            if legacy is not None:
+                legacy.close()
+
+    async def test_private_browser_port_is_retained_and_schema_closed(self):
+        from identity.application_service_selection import ApplicationServiceSelection
+        install = Installation(self.runtime)
+        await install.run()
+        materials = _read_material(install.enrollment / 'materials.json', max_bytes=1048576)
+        port = materials['service']['localBrowser']['port']
+        selection = _read_material(install.enrollment / 'service-selection.json', max_bytes=1048576)
+        self.assertEqual(selection['localBrowser'], {'port': port})
+        await install.run()
+        self.assertEqual(_read_material(install.enrollment / 'service-selection.json', max_bytes=1048576)['localBrowser'],
+                         {'port': port})
+        for changed in ({'port': 1023}, {'port': 65536}, {'port': '9000'}, {'port': port, 'host': '0.0.0.0'}, {}):
+            with self.subTest(localBrowser=changed), self.assertRaises(ContractError):
+                ApplicationServiceSelection(canonical_bytes(dict(selection, localBrowser=changed)))
+        without = {k: v for k, v in selection.items() if k != 'localBrowser'}
+        self.assertIsNone(ApplicationServiceSelection(canonical_bytes(without)).local_browser_port())
 
     async def test_three_installations_get_distinct_identities(self):
         seen = set()

@@ -61,6 +61,7 @@ SESSIONS = (('identity', 'identity', None), ('messages-operator', 'messages', 'o
             ('work-federation', 'work', 'federation'))
 RETENTION = Retention(524288, 131072)
 ARTIFACT_BYTES = 1048576
+LEGACY_BROWSER_PORT = 8787
 MESSAGE_OPERATOR = ('send', 'approve', 'inspect', 'outcome')
 MESSAGE_SERVICE = ('deliver', 'inspect', 'outcome')
 WORK_OPERATOR = ('create', 'claim', 'heartbeat', 'release', 'claim-path', 'read', 'inspect', 'outcome', 'cancel')
@@ -305,6 +306,9 @@ class Ceremony:
         identity_issuer = value['identity']['issuer']
         storage, extra_identities = self.storage_materials(staging, value, connection, payloads, interval)
         value['storage'] = storage
+        # A private per-installation port for the services host's local browser
+        # listener, chosen once and retained, never the historical shared default.
+        value['localBrowser'] = {'port': self.local_browser_port()}
         observer = {'ref': ref('observer'), 'principalId': 'local_observer', 'kind': 'service',
                     'status': 'active', 'externalIdentity': None}
         payloads.append(provision_application_attestor(staging / 'attestor.json', profile_id=self.profile,
@@ -320,6 +324,17 @@ class Ceremony:
         return {'schemaVersion': SCHEMA_VERSION, 'interval': self.interval, 'service': value,
                 'attestor': {'keyPath': str(staging / 'attestor.json'), 'credentials': attestor_credentials},
                 'families': families, 'state': state, 'payloads': payloads}
+
+    def local_browser_port(self):
+        import socket
+        reserved = {LEGACY_BROWSER_PORT, self.owner['hostPort'], int(self.runtime['endpoint'].rsplit(':', 1)[1])}
+        for _ in range(32):
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+                probe.bind(('127.0.0.1', 0))
+                port = probe.getsockname()[1]
+            if 1024 <= port <= 65535 and port not in reserved:
+                return port
+        raise ContractError('local_enrollment_browser_port_unavailable')
 
     def storage_materials(self, staging, value, connection, payloads, interval):
         """Enroll the Hub's messages and Work storage owners on hub.db."""

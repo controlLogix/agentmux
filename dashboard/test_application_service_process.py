@@ -27,7 +27,8 @@ class ProcessProtocol(unittest.IsolatedAsyncioTestCase):
         self.writer = SimpleNamespace(write=lambda raw:self.lines.append(strict_loads(raw)), drain=AsyncMock())
         self.selected = SimpleNamespace(policy={'kernelScope': self.packet['kernelScope']},
             oidc_browser_configuration=Mock(return_value=None),
-            oidc_device_configuration=Mock(return_value=None))
+            oidc_device_configuration=Mock(return_value=None),
+            local_browser_port=Mock(return_value=None))
         self.patchers = [patch('application_service_process._lease'),
             patch('application_service_process._release_lease'),
             patch('application_service_process.load_application_service_selection', return_value=self.selected),
@@ -78,6 +79,18 @@ class ProcessProtocol(unittest.IsolatedAsyncioTestCase):
         self.host.fence.assert_called()
         self.mocks[1].assert_called_once_with(3)
         self.assertEqual(self.mocks[2].call_args.kwargs['expected_digest'], self.packet['selectionSHA256'])
+
+    async def test_selected_private_browser_port_reaches_the_host(self):
+        for selected, expected in ((None, {}), (49321, {'browser_port': 49321})):
+            with self.subTest(port=selected):
+                self.lines.clear()
+                self.reader = asyncio.StreamReader()
+                self.selected.local_browser_port.return_value = selected
+                self.mocks[3].reset_mock()
+                self.start_packet()
+                self.writer.drain.side_effect = lambda: self.stop_packet() if len(self.lines) == 1 else None
+                self.assertEqual(await process.receive(self.reader, self.writer), 0)
+                self.mocks[3].assert_called_once_with(self.selected, **expected)
 
     async def test_protected_oidc_selection_configures_host_before_start(self):
         oidc = (object(), 'https://identity.example/realms/team/auth',

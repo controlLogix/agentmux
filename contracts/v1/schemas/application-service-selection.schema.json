@@ -1868,6 +1868,15 @@
         "requesterReplyPrefix"
       ]
     },
+    "localBrowser": {
+      "description": "Private per-installation loopback port for the services host's local browser listener. Omitted means the historical default.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["port"],
+      "properties": {
+        "port": {"type": "integer", "minimum": 1024, "maximum": 65535}
+      }
+    },
     "dashboard": {
       "type": "object",
       "additionalProperties": false,
