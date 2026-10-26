@@ -131,6 +131,9 @@ func run(ctx context.Context, args []string, output io.Writer) (failure error) {
 	if len(args) > 0 && args[0] == "register-central-profile" {
 		return runCentralProfileRegistration(ctx, args, output)
 	}
+	if len(args) > 0 && args[0] == "application-runtime" {
+		return runApplicationRuntime(ctx, args, output)
+	}
 	if len(args) > 0 && args[0] == "profile-core" {
 		return runProfileCore(ctx, args)
 	}
@@ -350,8 +353,9 @@ func main() {
 	preparation := len(os.Args) > 1 && os.Args[1] == "prepare"
 	registration := len(os.Args) > 1 && os.Args[1] == "register-central-profile"
 	ownerPreparation := len(os.Args) > 1 && (os.Args[1] == "prepare-owner-profile" || os.Args[1] == "recover-owner-profile")
+	applicationRuntime := len(os.Args) > 1 && os.Args[1] == "application-runtime"
 	signals := []os.Signal{syscall.SIGINT, syscall.SIGTERM}
-	if preparation || registration || ownerPreparation {
+	if preparation || registration || ownerPreparation || applicationRuntime {
 		// These explicit foreground owners must finish owned work when their terminal closes.
 		// The shared host and ordinary frontend keep their existing lifetime.
 		signals = append(signals, syscall.SIGHUP)
@@ -373,6 +377,11 @@ func main() {
 		ctx, stop = context.WithTimeout(ctx, ownerPreparationCommandLimit)
 		defer stop()
 	}
+	if applicationRuntime {
+		var stop context.CancelFunc
+		ctx, stop = context.WithTimeout(ctx, applicationRuntimeCommandLimit)
+		defer stop()
+	}
 	if err := run(ctx, os.Args[1:], os.Stdout); err != nil {
 		// This fixed diagnostic is separate from authenticated L04 output. Its
 		// static fields never include underlying error text or private objects.
@@ -382,6 +391,8 @@ func main() {
 			_ = writeOwnerProfilePreparationDiagnostic(ctx, os.Stderr, err)
 		} else if registration {
 			_ = writeCentralProfileRegistrationDiagnostic(ctx, os.Stderr, err)
+		} else if applicationRuntime {
+			_ = writeApplicationRuntimeDiagnostic(os.Stderr, err)
 		} else {
 			_ = emitRequestDiagnostic(os.Stderr, err)
 		}
