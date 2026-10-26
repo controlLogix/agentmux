@@ -17,6 +17,7 @@ import time
 
 from agentmux_contracts import strict_loads
 from hub.client_launch_selection import load_selection
+from hub.native_check_timing import sample as _timing_sample
 from hub.installed_client_admission import (
     InstalledClientAdmission, PROTECTED_CLIENT_BASE, _RetainedPath, _read_file,
     _native_images, _native_text,
@@ -272,9 +273,12 @@ class NativeCoreContext:
     def recheck(self, *, deadline):
         if self.closed or self.pending:
             raise NativeCoreError('native_core_cleanup_pending', owner=self)
+        _timing_sample('recheck-start')
         self.installed.recheck(deadline=deadline)
+        _timing_sample('recheck-installed-return')
         for item in self.files:
             item.check(deadline)
+        _timing_sample('recheck-return')
         for path, expected in self.aliases.items():
             if (expected is None and os.path.lexists(path)
                     or expected is not None and os.path.realpath(path) != expected):
@@ -286,8 +290,10 @@ class NativeCoreContext:
         """Positive ancestry evidence, independent of transport availability."""
         from native_security.core_caller import NativeCallerProbe
         self.recheck(deadline=deadline)
+        _timing_sample('probe-start')
         proof = NativeCallerProbe().observe(pid,
             tmux_image=self.tools['tmux'].path, deadline=deadline)
+        _timing_sample('probe-return')
         self.recheck(deadline=deadline)
         return proof
 
@@ -335,10 +341,12 @@ class NativeCoreContext:
                 or type(timeout) not in (int, float) or not 0 < timeout <= 10):
             raise NativeCoreError()
         self.recheck(deadline=time.monotonic()+10)
+        _timing_sample('tmux-run-start')
         result = subprocess.run([self.tools['tmux'].path, '-L', socket_name, *arguments],
             input=input_, stdin=None if input_ is not None else subprocess.DEVNULL,
             capture_output=True, timeout=timeout,
             env={'PATH': '/usr/bin:/bin', 'HOME': self.home, 'LANG': 'en_US.UTF-8'})
+        _timing_sample('tmux-run-return')
         self.recheck(deadline=time.monotonic()+10)
         return result
 

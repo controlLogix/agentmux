@@ -43,6 +43,7 @@ from hub.fed.runtime import Federation  # noqa: E402
 from hub.profile_context import ProfileContext  # noqa: E402
 from hub.receipts import ReceiptScanner  # noqa: E402
 from hub.transport import TmuxTransport, TmuxBufferCleanupFailure  # noqa: E402
+from hub import native_check_timing  # noqa: E402
 from agentmux_windows import command as windows_command
 
 ROOT = os.environ.get("AGENTMUX_HOME") or os.path.expanduser("~/.agentmux")
@@ -731,31 +732,43 @@ class Hub:
         return None, bool(set(chain) & pane_pids)
 
     def _identify_native_core(self, pid, native_core):
+        sample = native_check_timing.sample
+        sample('identify-start')
         try:
             proof = native_core.caller(pid, deadline=time.monotonic()+10)
+            sample('caller-return')
             chain = {item.pid for item in proof.processes}
             by_pid = {agent['pane_pid']: agent['session']
                       for agent in self.store.agents(live_only=True) if agent['pane_pid']}
+            sample('agents-return')
             for item in proof.processes:
                 if item.pid in by_pid:
+                    sample('identify-return')
                     return by_pid[item.pid], True
             if proof.in_pane:
+                sample('identify-return')
                 return None, True
             result = native_core.tmux(self.tp.socket, ('list-panes', '-a', '-F', '#{pane_pid}'), timeout=5)
             if result.returncode == 0:
                 pane_pids = {int(value) for value in result.stdout.split()}
                 if any(value <= 0 for value in pane_pids):
                     raise ValueError()
+                sample('identify-return')
                 return None, bool(chain & pane_pids)
             # Outside-pane authority comes from the admitted complete chain above.
             # A non-connectable endpoint is not a dead server or empty inventory.
+            sample('not-connectable-start')
             if not native_core.transport_not_connectable(self.tp.socket):
                 raise ValueError()
+            sample('not-connectable-return')
             fresh = native_core.caller(pid, deadline=time.monotonic()+10)
+            sample('fresh-caller-return')
             if fresh != proof or fresh.in_pane:
                 raise ValueError()
+            sample('identify-return')
             return None, False
         except Exception:
+            sample('identify-refused')
             raise CallerClassificationUnavailable('caller pane classification unavailable') from None
 
     async def caller_of(self, req, writer, tcp):
@@ -1005,8 +1018,12 @@ class Hub:
             else:
                 def checked():
                     _kill_reply_sample(timing, 'db-entry')
+                    native = None
+                    if timing is not None:
+                        native = timing.setdefault('native', {'proof': timing['proof'], 'samples': []})
                     try:
-                        result = self._check_work_request_current(targets, identity)
+                        with native_check_timing.recording(native):
+                            result = self._check_work_request_current(targets, identity)
                         if completion is not None:
                             owner, reservation, task, expected, identities = completion
                             if (owner._kill_admission_turn is not reservation or reservation['owner'] is not task
@@ -1170,6 +1187,10 @@ class Hub:
                 if timing is not None:
                     log('kill reply timing', json.dumps({'connection': timing['connection'],
                         'samples': timing['samples']}))
+                    native = timing.get('native')
+                    if native is not None and native['samples']:
+                        log('native check timing', json.dumps({'connection': timing['connection'],
+                            'samples': native['samples']}))
             except BaseException:
                 pass
 
