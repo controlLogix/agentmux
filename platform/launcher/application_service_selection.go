@@ -88,6 +88,8 @@ type applicationServiceSelectionHeader struct {
 	OrganizationID    string                           `json:"organizationId"`
 	AuthoritySwitch   any                              `json:"authoritySwitch"`
 	OIDCBrowser       map[string]any                   `json:"oidcBrowser,omitempty"`
+	LocalBrowser      map[string]any                   `json:"localBrowser,omitempty"`
+	OrdinarySecret    map[string]any                   `json:"ordinarySecret,omitempty"`
 	Identity          map[string]any                   `json:"identity"`
 	Definitions       map[string]any                   `json:"definitions"`
 	Integration       map[string]any                   `json:"integration,omitempty"`

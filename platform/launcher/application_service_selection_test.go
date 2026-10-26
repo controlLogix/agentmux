@@ -9,7 +9,9 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"os"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -422,5 +424,73 @@ func TestApplicationServiceStartEntriesRefuseMissingHostAdmissionAndStaleKey(t *
 	err = composedHost.RunWithApplicationServices(context.Background(), "attempt_"+strings.Repeat("a", 32), attestor, selected)
 	if !errors.As(err, &failure) || failure.code != "selection_invalid" {
 		t.Fatal("composed service start did not refuse the stale HOST key")
+	}
+}
+
+// The Python schema and this closed native header must agree on every field
+// the host decodes. A field only one side knows makes the host refuse the whole
+// selection before the services process starts, with no visible error.
+func TestApplicationServiceSelectionHeaderMatchesSchemaFields(t *testing.T) {
+	raw, err := os.ReadFile(filepath.Join("..", "..", "contracts", "v1", "schemas", "application-service-selection.schema.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var schema struct {
+		Properties map[string]struct {
+			Properties map[string]json.RawMessage `json:"properties"`
+		} `json:"properties"`
+	}
+	if err := json.Unmarshal(raw, &schema); err != nil {
+		t.Fatal(err)
+	}
+	fields := func(value any) map[string]bool {
+		names := map[string]bool{}
+		kind := reflect.TypeOf(value)
+		for index := 0; index < kind.NumField(); index++ {
+			names[strings.Split(kind.Field(index).Tag.Get("json"), ",")[0]] = true
+		}
+		return names
+	}
+	compare := func(label string, header map[string]bool, schemaFields []string) {
+		expected := map[string]bool{}
+		for _, name := range schemaFields {
+			expected[name] = true
+		}
+		if !reflect.DeepEqual(header, expected) {
+			t.Fatalf("%s: native header fields %v differ from schema fields %v", label, header, expected)
+		}
+	}
+	top := make([]string, 0, len(schema.Properties))
+	for name := range schema.Properties {
+		top = append(top, name)
+	}
+	compare("top level", fields(applicationServiceSelectionHeader{}), top)
+	storage := make([]string, 0)
+	for name := range schema.Properties["storage"].Properties {
+		storage = append(storage, name)
+	}
+	compare("storage", fields(applicationServiceStorageHeader{}), storage)
+}
+
+func TestApplicationServiceSelectionAdmitsLocalBrowserAndOrdinarySecret(t *testing.T) {
+	host := HostPolicySelection{Path: "/private/host-policy", OwnerUID: 501, WorkspaceRoots: []string{"/workspace"}}
+	scope := protocol.Scope{HubID: "hub", InstanceID: "instance", ProfileID: "profile"}
+	header := applicationServiceSelectionHeader{SchemaVersion: protocol.Version, HostPolicy: host.Path, OwnerUID: host.OwnerUID, Workspaces: host.WorkspaceRoots, KernelScope: scope, AuthorityID: "authority", OrganizationID: "organization", AuthoritySwitch: map[string]any{"custodyDirectory": "/private/authority-switch", "binding": nil}, Identity: map[string]any{"selected": true}, Definitions: map[string]any{"selected": true}}
+	pin := func(raw []byte) ApplicationServiceProcessSelection {
+		sum := sha256.Sum256(raw)
+		return ApplicationServiceProcessSelection{SHA256: "sha256:" + hex.EncodeToString(sum[:])}
+	}
+	header.LocalBrowser = map[string]any{"port": 62665}
+	header.OrdinarySecret = map[string]any{"selected": true}
+	selected, _ := json.Marshal(header)
+	if bindApplicationServiceSelection(selected, pin(selected), host, scope, nil) != nil {
+		t.Fatal("selection with localBrowser and ordinarySecret refused at the native boundary")
+	}
+	var value map[string]json.RawMessage
+	_ = json.Unmarshal(selected, &value)
+	value["unknownSection"] = json.RawMessage(`{}`)
+	unknown, _ := json.Marshal(value)
+	if bindApplicationServiceSelection(unknown, pin(unknown), host, scope, nil) == nil {
+		t.Fatal("unknown top-level section accepted; the header must stay closed")
 	}
 }
