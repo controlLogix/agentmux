@@ -21,7 +21,7 @@ PYTHON_VERSION = "3.14.4"
 REPOSITORY = Path(__file__).resolve().parents[2]
 MODULES = (
     "agentmux_windows.py", "hub/__init__.py", "hub/cli.py",
-    "hub/server.py", "hub/enrolled_hub_bootstrap.py", "hub/legacy_identity_client.py",
+    "hub/server.py", "hub/native_check_timing.py", "hub/enrolled_hub_bootstrap.py", "hub/legacy_identity_client.py",
     "hub/bridge.py", "hub/deliver.py", "hub/profiles.py", "hub/receipts.py", "hub/transport.py",
     "hub/client_startup.py", "hub/client_launch_selection.py",
     "hub/client_launch_coordinator.py", "hub/client_launch_entrypoint.py",
@@ -48,6 +48,13 @@ MODULES = (
     "identity/oidc_terminal_login.py",
     # The local enrollment ceremony and the bootstrap owner it drives (AMUX-728).
     "identity/bootstrap.py", "identity/local_enrollment.py",
+    # Imported by dashboard/application_service_host.py, which the installed
+    # application-services process runs. Process execution stays excluded:
+    # capability_owner/process_resource.py is optional by find_spec.
+    "identity/execution_evidence.py", "execution_owner/__init__.py", "execution_owner/plans.py",
+    "orchestration_owner/__init__.py", "orchestration_owner/commands.py", "orchestration_owner/domain_adapter.py",
+    "orchestration_owner/journal.py", "orchestration_owner/owner.py", "orchestration_owner/phase_signer.py",
+    "orchestration_owner/service.py", "orchestration_owner/worker.py",
     "integration_owner/__init__.py", "integration_owner/receipts.py", "integration_owner/intent.py",
     # Private service receiver and the selected identity, definition and
     # integration owners. Keep production dependencies explicit.

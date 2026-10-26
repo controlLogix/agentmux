@@ -861,3 +861,48 @@ class LocalEnrollmentBootstrapRoute(unittest.TestCase):
     def test_package_roster_includes_the_ceremony_and_bootstrap_owner(self):
         self.assertIn("identity/local_enrollment.py", package.MODULES)
         self.assertIn("identity/bootstrap.py", package.MODULES)
+
+
+class PackagedImportClosure(unittest.TestCase):
+    # Imported only behind a guard that the supported installed routes never
+    # take. Anything else a packaged module imports must be in the roster.
+    INTENTIONALLY_UNPACKAGED = {
+        "capability_owner/process_resource.py": "Process execution is outside the MVP; receiver uses find_spec",
+        "capability_owner/process_admission.py": "only reached through process_resource",
+        "capability_owner/process_host.py": "only when a service selection has a process section",
+        "identity/process_selection.py": "only when a service selection has a process section",
+        "capability_owner/legacy_board_service.py": "only when qualified_board=True, which no route passes",
+        "dashboard/resource_probes.py": "dashboard resource checks; not the services host or core Hub",
+        "dashboard/modbus_rtu.py": "dashboard Modbus RTU; not the services host or core Hub",
+    }
+
+    def test_every_in_repository_import_is_packaged_or_explicitly_optional(self):
+        import ast
+        repository = package.REPOSITORY
+        listed = set(package.MODULES)
+
+        def resolve(name):
+            parts = name.split(".")
+            for base in ((), ("dashboard",), ("taskmgmt",)):
+                for candidate in (Path(*base, *parts).with_suffix(".py"), Path(*base, *parts, "__init__.py")):
+                    if (repository / candidate).is_file():
+                        return str(candidate)
+            return None
+        unexpected = {}
+        for module in sorted(listed):
+            parent = Path(module).parent.parts
+            for node in ast.walk(ast.parse((repository / module).read_text())):
+                names = []
+                if isinstance(node, ast.Import):
+                    names = [alias.name for alias in node.names]
+                elif isinstance(node, ast.ImportFrom):
+                    target = node.module or ""
+                    if node.level:
+                        target = ".".join([*parent[:len(parent) - node.level + 1], *([target] if target else [])])
+                    names = [target, *(target + "." + alias.name for alias in node.names)]
+                for name in names:
+                    path = resolve(name) if name else None
+                    if (path and path not in listed and path not in self.INTENTIONALLY_UNPACKAGED
+                            and not path.startswith("sdk/python/")):
+                        unexpected.setdefault(path, set()).add(module)
+        self.assertEqual(unexpected, {}, "packaged modules import unpackaged project modules")
