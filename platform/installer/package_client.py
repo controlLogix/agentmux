@@ -46,6 +46,8 @@ MODULES = (
     "identity/local_browser_session.py", "identity/oidc_adapter.py",
     "identity/oidc_authorization_code.py", "identity/oidc_device_authorization.py",
     "identity/oidc_terminal_login.py",
+    # The local enrollment ceremony and the bootstrap owner it drives (AMUX-728).
+    "identity/bootstrap.py", "identity/local_enrollment.py",
     "integration_owner/__init__.py", "integration_owner/receipts.py", "integration_owner/intent.py",
     # Private service receiver and the selected identity, definition and
     # integration owners. Keep production dependencies explicit.

@@ -311,3 +311,24 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class LocalEnrollmentEntryTests(unittest.TestCase):
+    def test_malformed_arguments_report_only_a_closed_code(self):
+        import io
+        for arguments in ([], ['--request', 'relative', '--request-sha256', 'sha256:' + 'a' * 64],
+                          ['--request', '/private/r.json', '--request-sha256', 'sha256:BAD'],
+                          ['--request-sha256', 'sha256:' + 'a' * 64, '--request', '/private/r.json']):
+            with self.subTest(arguments=arguments), mock.patch('sys.stderr', new_callable=io.StringIO) as err, \
+                    mock.patch('sys.stdout', new_callable=io.StringIO) as out:
+                self.assertEqual(local_enrollment.main(arguments), 1)
+                self.assertEqual(json.loads(err.getvalue())['code'], 'local_enrollment_arguments_invalid')
+                self.assertEqual(out.getvalue(), '')
+
+    def test_ceremony_failure_reports_closed_code_without_private_detail(self):
+        import io
+        with mock.patch.object(local_enrollment, 'run', side_effect=ContractError('local_enrollment_request_changed')), \
+                mock.patch('sys.stderr', new_callable=io.StringIO) as err:
+            self.assertEqual(local_enrollment.main(['--request', '/private/r.json', '--request-sha256', 'sha256:' + 'a' * 64]), 1)
+        self.assertEqual(json.loads(err.getvalue()), {'schemaVersion': '1.0.0', 'kind': 'local-enrollment-diagnostic',
+                                                      'code': 'local_enrollment_request_changed'})

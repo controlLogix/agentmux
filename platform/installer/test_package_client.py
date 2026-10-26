@@ -833,3 +833,31 @@ class RegisteredClientBootstrap(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class LocalEnrollmentBootstrapRoute(unittest.TestCase):
+    root = "/protected/clients/" + "a" * 64
+    request = "/private/setup 'literal' request.json"
+    digest = "sha256:" + "b" * 64
+
+    def test_enrollment_route_keeps_literal_request_and_digest(self):
+        arguments = ["application-enroll", "--client-installation", "a" * 64,
+                     "--request", self.request, "--request-sha256", self.digest]
+        self.assertEqual(bootstrap._arguments(self.root, arguments),
+                         ("application-enroll", ["--request", self.request, "--request-sha256", self.digest]))
+
+    def test_enrollment_route_refuses_other_installations_and_shapes(self):
+        base = ["application-enroll", "--client-installation", "a" * 64,
+                "--request", self.request, "--request-sha256", self.digest]
+        for changed in (base[:5], base + ["--apply"],
+                        [*base[:2], "b" * 64, *base[3:]],
+                        [*base[:4], "relative.json", *base[5:]],
+                        [*base[:4], "/private/../request.json", *base[5:]],
+                        [*base[:6], "sha256:BAD"],
+                        [*base[:3], "--selection", *base[4:]]):
+            with self.subTest(arguments=changed), self.assertRaises(SystemExit):
+                bootstrap._arguments(self.root, changed)
+
+    def test_package_roster_includes_the_ceremony_and_bootstrap_owner(self):
+        self.assertIn("identity/local_enrollment.py", package.MODULES)
+        self.assertIn("identity/bootstrap.py", package.MODULES)

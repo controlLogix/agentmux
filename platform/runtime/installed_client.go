@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -244,6 +245,25 @@ func (a *InstalledClientAdmission) ExecSetup(ctx context.Context, selection, rec
 		args = append(args, "--apply")
 	}
 	return a.exec(ctx, args, home)
+}
+
+var localEnrollmentDigest = regexp.MustCompile(`^sha256:[0-9a-f]{64}$`)
+
+// ExecLocalEnrollment runs the installation's local application enrollment
+// ceremony (AMUX-728) from an explicit private request and its approved
+// digest. The native account home is fixed before Python starts.
+func (a *InstalledClientAdmission) ExecLocalEnrollment(ctx context.Context, request, digest string) error {
+	if !validClientSelection(request) || !localEnrollmentDigest.MatchString(digest) {
+		return &clientFailure{code: "selection_invalid"}
+	}
+	home, err := installedClientAccountHome()
+	if err != nil {
+		return err
+	}
+	if a == nil {
+		return &clientFailure{code: "recheck_invalid"}
+	}
+	return a.exec(ctx, []string{"application-enroll", "--client-installation", a.id, "--request", request, "--request-sha256", digest}, home)
 }
 
 // ExecClaudeHookSetup selects the account's Claude namespace before isolated

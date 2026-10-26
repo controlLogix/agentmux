@@ -380,7 +380,7 @@ tls: {
   min_version: "1.3"
   handshake_first: true
 }
-`,quote(m.RuntimeID), inputs.Port, quote(operatorJWT), quote(m.SystemAccountPublicKey),
+`, quote(m.RuntimeID), inputs.Port, quote(operatorJWT), quote(m.SystemAccountPublicKey),
 		m.SystemAccountPublicKey, quote(systemJWT), m.AccountPublicKey, quote(accountJWT),
 		quote(r.Path("jetstream")), quote(m.Domain), int64(diskStoreBytes),
 		quote(r.Path("tls-server-cert.pem")), quote(r.Path("tls-server-key.pem"))))

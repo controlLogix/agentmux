@@ -52,6 +52,12 @@ def _arguments(root, arguments):
         return arguments[0], []
     if arguments == ["integration-operator"]:
         return arguments[0], []
+    if (len(arguments) == 7 and arguments[0] == "application-enroll"
+            and arguments[1] == "--client-installation" and re.fullmatch(r"[0-9a-f]{64}", arguments[2])
+            and arguments[2] == os.path.basename(root)
+            and arguments[3] == "--request" and _absolute(arguments[4])
+            and arguments[5] == "--request-sha256" and re.fullmatch(r"sha256:[0-9a-f]{64}", arguments[6])):
+        return arguments[0], ["--request", arguments[4], "--request-sha256", arguments[6]]
     if (7 <= len(arguments) <= 134 and arguments[0] == 'registered-core'
             and _absolute(arguments[1]) and _registration_descriptor(arguments[2])
             and re.fullmatch(r'sha256:[0-9a-f]{64}', arguments[3])
@@ -208,6 +214,9 @@ def main():
     if operation == "integration-operator":
         from integration_owner.operator_command import main as operator_main
         raise SystemExit(operator_main())
+    if operation == "application-enroll":
+        from identity.local_enrollment import main as enrollment_main
+        raise SystemExit(enrollment_main(selected))
     if operation == "claude-hook-setup":
         from dashboard.claude_hook_setup import main as hook_setup_main
         raise SystemExit(hook_setup_main(selected[1:], configuration_path=selected[0]))

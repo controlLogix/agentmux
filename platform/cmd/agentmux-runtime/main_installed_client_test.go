@@ -97,3 +97,25 @@ func TestInstalledClientPrivateServicesHaveNoPublicRoute(t *testing.T) {
 		t.Fatal("public frontend accepted a private service command", err)
 	}
 }
+
+func TestLocalEnrollmentRouteRefusesMalformedArgumentsBeforeAdmission(t *testing.T) {
+	id := strings.Repeat("a", 64)
+	request, digest := "/private/setup 'literal' request.json", "sha256:"+strings.Repeat("b", 64)
+	for _, invalid := range [][]string{
+		{"application-enroll"},
+		{"application-enroll", "--client-installation", id, "--request", request},
+		{"application-enroll", "--client-installation", "short", "--request", request, "--request-sha256", digest},
+		{"application-enroll", "--client-installation", id, "--request", "relative.json", "--request-sha256", digest},
+		{"application-enroll", "--client-installation", id, "--request", "/private/../request.json", "--request-sha256", digest},
+		{"application-enroll", "--client-installation", id, "--request", "/private/request\n.json", "--request-sha256", digest},
+		{"application-enroll", "--client-installation", id, "--request", request, "--request-sha256", "sha256:BAD"},
+		{"application-enroll", "--client-installation", id, "--request", request, "--request-sha256", digest, "--apply"},
+		{"application-enroll", "--client-installation", id, "--selection", request, "--request-sha256", digest},
+	} {
+		var output bytes.Buffer
+		err := run(context.Background(), invalid, &output)
+		if err == nil || err.Error() != "installed_client_arguments_invalid" || output.Len() != 0 {
+			t.Fatalf("malformed enrollment route reached admission or emitted output: %v %v", invalid, err)
+		}
+	}
+}

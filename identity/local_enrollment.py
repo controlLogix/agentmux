@@ -708,3 +708,33 @@ async def run(request_path, request_sha256, *, root=None, now=None):
         return _read_material(result_path, max_bytes=16384)
     finally:
         ceremony.account.wipe()
+
+
+def main(arguments):
+    """Installed entry: ``--request PATH --request-sha256 DIGEST``.
+
+    Only the public coreHub and startup pins reach stdout. Failures report a
+    closed code; private paths, keys and causes never leave the process.
+    """
+    import json
+    import sys
+    if (len(arguments) != 4 or arguments[0] != '--request' or arguments[2] != '--request-sha256'
+            or not os.path.isabs(arguments[1]) or os.path.normpath(arguments[1]) != arguments[1]
+            or not _DIGEST.fullmatch(arguments[3])):
+        sys.stderr.write(json.dumps({'schemaVersion': SCHEMA_VERSION, 'kind': 'local-enrollment-diagnostic',
+                                     'code': 'local_enrollment_arguments_invalid'}) + '\n')
+        return 1
+    try:
+        result = asyncio.run(run(arguments[1], arguments[3]))
+    except ContractError as error:
+        code = str(error) if re.fullmatch(r'[a-z_]{1,96}', str(error)) else 'local_enrollment_failed'
+        sys.stderr.write(json.dumps({'schemaVersion': SCHEMA_VERSION, 'kind': 'local-enrollment-diagnostic',
+                                     'code': code}) + '\n')
+        return 1
+    except Exception:
+        sys.stderr.write(json.dumps({'schemaVersion': SCHEMA_VERSION, 'kind': 'local-enrollment-diagnostic',
+                                     'code': 'local_enrollment_failed'}) + '\n')
+        return 1
+    sys.stdout.buffer.write(canonical_bytes({**result, 'kind': 'local-enrollment-result'}) + b'\n')
+    sys.stdout.buffer.flush()
+    return 0
