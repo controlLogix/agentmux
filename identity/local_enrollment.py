@@ -62,6 +62,9 @@ SESSIONS = (('identity', 'identity', None), ('messages-operator', 'messages', 'o
 RETENTION = Retention(524288, 131072)
 ARTIFACT_BYTES = 1048576
 LEGACY_BROWSER_PORT = 8787
+# macOS limits a Unix socket path to 104 bytes; the selected core Hub route
+# (hub/core_profile.py) refuses a hub.sock path longer than this.
+HUB_SOCKET_BYTES = 103
 MESSAGE_OPERATOR = ('send', 'approve', 'inspect', 'outcome')
 MESSAGE_SERVICE = ('deliver', 'inspect', 'outcome')
 WORK_OPERATOR = ('create', 'claim', 'heartbeat', 'release', 'claim-path', 'read', 'inspect', 'outcome', 'cancel')
@@ -200,7 +203,10 @@ class Ceremony:
         self.organization = enrollment['scope']['organizationId']
         root = Path(root) if root is not None else AGENTMUX
         self.directory = root / 'application-enrollment' / self.profile
-        self.home = root / 'hubs' / self.profile
+        # A short private name keeps <home>/hub/hub.sock inside the socket limit.
+        self.home = root / 'hubs' / self.profile.removeprefix('profile_')[:12]
+        if len(str(self.home / 'hub' / 'hub.sock').encode()) > HUB_SOCKET_BYTES:
+            raise ContractError('local_enrollment_home_too_long')
         self.host_policy = str(root / 'profiles' / self.profile / 'host-policy.json')
         runtime = Path(request.get('applicationRuntime') or runtime or (root / 'application-runtime'))
         self.runtime = strict_loads(_read_material(runtime / 'runtime.json', max_bytes=65536, return_bytes=True))

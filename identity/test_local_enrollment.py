@@ -47,7 +47,7 @@ class Runtime:
             raise unittest.SkipTest('pinned Go toolchain or nats-server 2.15.0 unavailable')
         cache = Path.home() / '.cache'
         cache.mkdir(mode=0o700, exist_ok=True)
-        self.root = Path(tempfile.mkdtemp(prefix='agentmux-enrollment-test.', dir=cache)).resolve()
+        self.root = Path(tempfile.mkdtemp(prefix='amux-enroll.', dir=cache)).resolve()
         os.chmod(self.root, 0o700)
         self.binary = self.root / 'agentmux-runtime'
         env = {**os.environ, 'GOTOOLCHAIN': 'local', 'GOPROXY': 'off', 'GOSUMDB': 'off', 'CGO_ENABLED': '1'}
@@ -120,6 +120,10 @@ class Installation:
         self.profile = profile
 
     @property
+    def home(self):
+        return self.base / 'hubs' / self.profile.removeprefix('profile_')[:12]
+
+    @property
     def enrollment(self):
         return self.base / 'application-enrollment' / self.profile
 
@@ -157,6 +161,9 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
                 load_connection_selection(selection.application_connection, workspaces=selection.invocation.workspaces,
                                           deadline=time.monotonic() + 5)
         self.assertEqual(load_selection(core['identity'][0]['selection']).application_repositories, ('agentmux',))
+        # The selected core Hub route refuses a socket path the OS cannot bind.
+        self.assertEqual(core['home'], str(install.home))
+        self.assertLessEqual(len(str(Path(core['home']) / 'hub' / 'hub.sock').encode()), local_enrollment.HUB_SOCKET_BYTES)
         for path in install.enrollment.rglob('*'):
             if path.is_file():
                 self.assertEqual(path.stat().st_mode & 0o077, 0, path)
@@ -257,6 +264,12 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
         with self.assertRaisesRegex(ContractError, 'local_enrollment_infrastructure_endpoint'):
             await install.run()
         self.assertFalse(install.enrollment.exists())
+        install = Installation(self.runtime)
+        deep = install.base / ('d' * 60)
+        deep.mkdir(mode=0o700)
+        with self.assertRaisesRegex(ContractError, 'local_enrollment_home_too_long'):
+            await local_enrollment.run(str(install.request_path), install.request_digest, root=deep)
+        self.assertEqual(sorted(p.name for p in deep.iterdir()), [])
 
     async def test_live_credentials_are_least_privilege(self):
         import nats
@@ -312,7 +325,7 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
         from identity.application_service_selection import ApplicationServiceSelection
         install = Installation(self.runtime)
         await install.run()
-        policy = (install.base / 'hubs' / install.profile / 'hub' / 'federation.toml').read_text()
+        policy = (install.home / 'hub' / 'federation.toml').read_text()
         self.assertIn('[peers.remote]\ntrust = "approve"', policy)
         self.assertNotIn('"deny"', policy)
         raw = _read_material(install.enrollment / 'service-selection.json', max_bytes=1048576, return_bytes=True)
