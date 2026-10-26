@@ -354,6 +354,25 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
             if legacy is not None:
                 legacy.close()
 
+    async def test_binding_grants_observation_and_sessions_share_one_scope(self):
+        # The identity binding provider refuses discovery unless the bind grant,
+        # the attested runtime observation and the client selection scopes match.
+        install = Installation(self.runtime)
+        await install.run()
+        materials = _read_material(install.enrollment / 'materials.json', max_bytes=1048576)
+        attestor = _read_material(install.enrollment / 'attestor-selection.json', max_bytes=1048576)
+        scope = attestor['application']['scope']
+        grants = [g for g in materials['state']['grants'] if g['contractId'] in ('application-bind', 'application-attest')]
+        self.assertEqual(sorted(g['contractId'] for g in grants), ['application-attest'] + ['application-bind'] * 5)
+        self.assertEqual({canonical_bytes(g['scope']) for g in grants}, {canonical_bytes(scope)})
+        keys = sorted((install.enrollment / 'materials').glob('client-*/client-key.json'))
+        self.assertEqual(len(keys), 5)
+        for key in keys:
+            self.assertEqual(_read_material(key, max_bytes=65536)['scope'], scope, key.parent.name)
+        observer = attestor['application']['identityRef']
+        self.assertIn(canonical_bytes(scope), {canonical_bytes(m['scope']) for m in materials['state']['memberships']
+                                               if m['identityRef'] == observer})
+
     async def test_private_browser_port_is_retained_and_schema_closed(self):
         from identity.application_service_selection import ApplicationServiceSelection
         install = Installation(self.runtime)

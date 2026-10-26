@@ -472,13 +472,15 @@ class Ceremony:
 
         operator, federation, observer = ref('operator'), ref('federation'), ref('observer')
         for identity, scope in ((operator, self.org_scope), (operator, self.project_scope),
-                                (federation, self.project_scope), (observer, self.org_scope)):
+                                (federation, self.project_scope), (observer, self.project_scope)):
             state['memberships'].append({'ref': {**identity, 'id': identity['id'] + '_' + ('org' if scope is self.org_scope else 'project') + '_membership'},
                                          'identityRef': identity, 'scope': scope, 'status': 'active'})
         for name, session in families.items():
             grant(ref(name.replace('-', '_') + '_bind_grant'), session['caller'], 'application-bind',
                   self.instance, self.project_scope)
-        grant(ref('attest_grant'), observer, 'application-attest', self.instance, self.org_scope)
+        # Binding requires the bind grant, the attested observation and each
+        # client selection to share one scope; every client session is project-scoped.
+        grant(ref('attest_grant'), observer, 'application-attest', self.instance, self.project_scope)
         grant(ref('alias_resolve_grant'), operator, 'identity-legacy-alias-resolve', self.authority, self.project_scope)
         for family, channel in (('messages', 'message_channel'), ('work', 'work_channel')):
             for caller, identity in (('operator', operator), ('federation', federation)):
@@ -642,7 +644,7 @@ class Ceremony:
             'credentials': materials['attestor']['credentials'],
             'application': {'authorityId': self.authority, 'identityRef': self.ref('observer'),
                 'issuerRef': self.ref('observer_issuer'), 'transportRef': self.ref('observer_transport'),
-                'policyRef': self.ref('policy'), 'workspaceRef': None, 'scope': self.org_scope},
+                'policyRef': self.ref('policy'), 'workspaceRef': None, 'scope': self.project_scope},
             'receiptTrust': {'issuerRef': identity['issuerRef'], 'publicKey': identity['publicKey'],
                 'notBefore': materials['interval']['issuedAt'], 'expiresAt': materials['interval']['expiresAt'],
                 'minimumAuthorityRevision': confirmed['sequence']},
