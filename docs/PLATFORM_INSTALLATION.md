@@ -4,6 +4,11 @@
 
 Installation and enrollment are separate operations. The final `check` operation requires an existing explicit user enrollment. The installer does not import a profile bundle, create an identity, enroll a certificate authority or grant release authority. Installing a package does not prove operational readiness.
 
+For another developer's Mac, follow [native development setup](DEVELOPMENT_SETUP.md).
+The repository's `agentmux-dev-package` command prepares a locally signed dev
+package with a fresh ephemeral key. It does not require sharing a private release
+key or importing another user's enrollment.
+
 ## Select and verify
 
 The release administrator supplies the signed package and an independently trusted release policy: the Ed25519 public key, authority identity and revision, release version, API major and parent manifest digest. A package's own public key or manifest cannot grant that trust. The existing release signature binds the parent manifest and four-role assembly; it does not bind `agentmux-runtime`. The administrator must also approve that executable's separate SHA-256 digest.

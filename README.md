@@ -1,5 +1,10 @@
 # agentmux
 
+For the native macOS ARM64 platform development branch, start with
+[development setup](docs/DEVELOPMENT_SETUP.md). It covers pinned dependencies,
+local dev package signing, installation and the separate enrollment steps. The
+harness instructions below describe the earlier installation path.
+
 Drive other coding-agent CLIs (codex, claude, grok, any REPL) as long-lived tmux panes
 you can attach to and watch — and drive **orchestrations** across them, where one agent
 hands work to a worker, a second agent on a different model reviews it, and nothing is
