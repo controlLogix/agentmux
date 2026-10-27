@@ -443,3 +443,69 @@ func TestOwnerProfilePreparationRefusesFrontendHostBeforeMutation(t *testing.T) 
 		t.Fatal("incompatible host request created profile files")
 	}
 }
+
+type ownerPreparationClientTree struct {
+	centralTestOwner
+	changed func() bool
+}
+
+func (o *ownerPreparationClientTree) Recheck(context.Context) error {
+	o.checks++
+	if o.changed != nil && o.changed() {
+		return errors.New("client tree changed")
+	}
+	return nil
+}
+
+func TestOwnerProfilePreparationRechecksClientTreeOncePerPhase(t *testing.T) {
+	// Readmitting an installed client walks every packaged file. Repeating it
+	// around each published file made native preparation exceed its deadline.
+	q, deps, _, _ := ownerPreparationRequest(t)
+	client := &ownerPreparationClientTree{}
+	deps.central.client = func(context.Context, string) (centralClientOwner, error) { return client, nil }
+	r, err := prepareOwnerProfile(context.Background(), q, deps)
+	if err != nil || r == nil {
+		t.Fatal("preparation failed", err)
+	}
+	defer r.Close()
+	published := 0
+	for _, stage := range r.stages {
+		if stage.published {
+			published++
+		}
+	}
+	if published < 10 {
+		t.Fatalf("fixture published only %d files", published)
+	}
+	if client.checks == 0 || client.checks > 8 {
+		t.Fatalf("client tree rechecked %d times for %d published files", client.checks, published)
+	}
+	// The cheap per-file checks still run around every publication.
+	for _, owner := range []centralImageOwner{r.files.image, r.files.hostImage} {
+		image, ok := owner.(*centralTestOwner)
+		if !ok || image.checks < 3*published {
+			t.Fatalf("image rechecked too rarely for %d published files", published)
+		}
+	}
+}
+
+func TestOwnerProfilePreparationRefusesClientTreeChangedDuringPublication(t *testing.T) {
+	q, deps, home, _ := ownerPreparationRequest(t)
+	first := filepath.Join(home, "Library", "Application Support", "Agentmux", "profiles", q.Owner.ProfileID)
+	client := &ownerPreparationClientTree{changed: func() bool {
+		entries, err := os.ReadDir(first)
+		return err == nil && len(entries) > 0
+	}}
+	deps.central.client = func(context.Context, string) (centralClientOwner, error) { return client, nil }
+	r, err := prepareOwnerProfile(context.Background(), q, deps)
+	if r == nil || err == nil || r.prepared || r.registration != nil {
+		t.Fatal("a client changed during publication reached registration")
+	}
+	defer r.Close()
+	if !strings.Contains(fmt.Sprintf("%v", err), "preparation_recovery_required") || !r.mutated {
+		t.Fatal("changed client did not retain the partial preparation for recovery:", err)
+	}
+	if _, err := os.Stat(filepath.Join(first, centralProfileRegistrationName)); !os.IsNotExist(err) {
+		t.Fatal("changed client published a registration")
+	}
+}

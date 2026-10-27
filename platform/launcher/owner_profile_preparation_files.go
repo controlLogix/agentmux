@@ -43,7 +43,7 @@ func (r *OwnerProfilePreparation) createDirectory(ctx context.Context) (*ownerPr
 		return nil, err
 	}
 	for i, name := range []string{"Library", "Application Support", "Agentmux", "profiles", r.request.Owner.ProfileID} {
-		if err := r.recheckInputs(ctx); err != nil {
+		if err := r.recheckPublication(ctx); err != nil {
 			return nil, err
 		}
 		fd := int(parent.file.Fd())
@@ -95,7 +95,7 @@ func (r *OwnerProfilePreparation) createDirectory(ctx context.Context) (*ownerPr
 		if created && r.deps.syncDirectory(&ownerProfilePreparationDirectory{parent}) != nil {
 			return nil, centralProfileError("directory_creation_uncertain")
 		}
-		if err := r.recheckInputs(ctx); err != nil {
+		if err := r.recheckPublication(ctx); err != nil {
 			return nil, err
 		}
 		parent = child
@@ -111,7 +111,7 @@ func (r *OwnerProfilePreparation) createDirectory(ctx context.Context) (*ownerPr
 }
 
 func (r *OwnerProfilePreparation) publish(ctx context.Context, directory *ownerProfilePreparationDirectory, name string, raw []byte) error {
-	if err := r.recheckInputs(ctx); err != nil {
+	if err := r.recheckPublication(ctx); err != nil {
 		return err
 	}
 	if filepath.Base(name) != name || name == "." || name == ".." || len(raw) == 0 {
@@ -142,7 +142,7 @@ func (r *OwnerProfilePreparation) publish(ctx context.Context, directory *ownerP
 	if staged.Sync() != nil {
 		return centralProfileError("publication_failed")
 	}
-	if err := r.recheckInputs(ctx); err != nil {
+	if err := r.recheckPublication(ctx); err != nil {
 		return err
 	}
 	var named unix.Stat_t
@@ -174,7 +174,7 @@ func (r *OwnerProfilePreparation) publish(ctx context.Context, directory *ownerP
 	if err != nil || !os.SameFile(held, final.info) {
 		return centralProfileError("publication_uncertain")
 	}
-	return r.recheckInputs(ctx)
+	return r.recheckPublication(ctx)
 }
 
 func infoSys(info os.FileInfo) (*syscall.Stat_t, bool) {

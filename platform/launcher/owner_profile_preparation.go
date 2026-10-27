@@ -292,6 +292,21 @@ func prepareOwnerProfileMode(parent context.Context, request OwnerProfilePrepara
 }
 
 func (r *OwnerProfilePreparation) recheckInputs(ctx context.Context) error {
+	return r.recheck(ctx, true)
+}
+
+// recheckPublication runs around each created directory and published file.
+// It rechecks everything except the installed client tree, whose readmission
+// walks every packaged file (about 0.1 s for a 2,000-file client). Repeating
+// that around each file exhausted the preparation deadline. recheckInputs
+// still rechecks the client tree before the directory is created, after all
+// files are published and after registration, so a change is refused before
+// success.
+func (r *OwnerProfilePreparation) recheckPublication(ctx context.Context) error {
+	return r.recheck(ctx, false)
+}
+
+func (r *OwnerProfilePreparation) recheck(ctx context.Context, clientTree bool) error {
 	if err := ctx.Err(); err != nil {
 		return &centralProfileFailure{code: "preparation_interrupted", cause: err}
 	}
@@ -306,7 +321,11 @@ func (r *OwnerProfilePreparation) recheckInputs(ctx context.Context) error {
 	if a != r.account || r.files.client == nil || r.files.image == nil || r.files.hostImage == nil {
 		return centralProfileError("preparation_changed")
 	}
-	for _, check := range []func(context.Context) error{r.files.recheckFiles, r.files.client.Recheck, r.files.image.Recheck, r.files.hostImage.Recheck} {
+	checks := []func(context.Context) error{r.files.recheckFiles, r.files.image.Recheck, r.files.hostImage.Recheck}
+	if clientTree {
+		checks = append(checks, r.files.client.Recheck)
+	}
+	for _, check := range checks {
 		if err := check(ctx); err != nil {
 			r.retainedFailure = errors.Join(r.retainedFailure, err)
 			return &centralProfileFailure{code: "preparation_changed", cause: errors.Join(err, ctx.Err())}
