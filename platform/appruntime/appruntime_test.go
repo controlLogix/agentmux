@@ -245,6 +245,63 @@ func TestInterruptedPublishLeftoversAreSweptOnResumeAndStart(t *testing.T) {
 	}
 }
 
+// Review item 2: the runtime owns the server it started whatever the admitted
+// executable is called, including a name longer than the kernel keeps.
+func TestServerUnderAnotherNameIsOwnedReadyAndStopped(t *testing.T) {
+	server := natsServer(t)
+	raw, err := os.ReadFile(server)
+	if err != nil {
+		t.Fatal(err)
+	}
+	base, err := filepath.EvalSymlinks(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	renamed := filepath.Join(base, "agentmux-nats-server-2.15.0")
+	if err := os.WriteFile(renamed, raw, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	ctx := context.Background()
+	dir := runtimeDir(t)
+	if _, err := Initialize(ctx, dir, Inputs{NATSServer: renamed}); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _, _ = Stop(context.Background(), dir) })
+	started, err := Start(ctx, dir)
+	if err != nil || started.State != "running" || started.PID == 0 {
+		t.Fatalf("start: %v %+v", err, started)
+	}
+	if observed, err := Observe(ctx, dir); err != nil || observed.State != "running" {
+		t.Fatalf("observe: %v %+v", err, observed)
+	}
+	if stopped, err := Stop(ctx, dir); err != nil || stopped.State != "stopped" {
+		t.Fatalf("stop: %v %+v", err, stopped)
+	}
+	if _, _, comm, alive := processStart(started.PID); alive && comm == commandName(renamed) {
+		t.Fatal("renamed server still running after stop")
+	}
+}
+
+func TestRecordWithoutCommandKeepsTheHistoricalName(t *testing.T) {
+	dir := runtimeDir(t)
+	if err := os.MkdirAll(dir, 0o700); err != nil {
+		t.Fatal(err)
+	}
+	r, err := Open(dir, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer r.Close()
+	old := `{"schemaVersion":"1.0.0","runtimeId":"x","pid":999999,"startSeconds":1,"startMicros":1}` + "\n"
+	if err := r.publish("runtime-process.json", []byte(old)); err != nil {
+		t.Fatal(err)
+	}
+	record, err := r.record()
+	if err != nil || record.Command != "nats-server" {
+		t.Fatalf("record: %v %+v", err, record)
+	}
+}
+
 func TestThreeInstallationsHaveDistinctIdentities(t *testing.T) {
 	server := natsServer(t)
 	seen := map[string]bool{}

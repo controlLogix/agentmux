@@ -9,6 +9,7 @@ import (
 	"net"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"syscall"
 	"time"
@@ -33,14 +34,32 @@ const (
 	killGrace       = 5 * time.Second
 )
 
-// processRecord binds the owned server by PID and kernel start time, so a
-// reused PID is never mistaken for this runtime's broker.
+// processRecord binds the owned server by PID, kernel start time and the
+// command name of the admitted executable, so a reused PID is never mistaken
+// for this runtime's broker.
 type processRecord struct {
 	SchemaVersion string `json:"schemaVersion"`
 	RuntimeID     string `json:"runtimeId"`
 	PID           int    `json:"pid"`
 	StartSeconds  int64  `json:"startSeconds"`
 	StartMicros   int32  `json:"startMicros"`
+	Command       string `json:"command,omitempty"`
+}
+
+// legacyCommand is the only name records written before Command existed used.
+const legacyCommand = "nats-server"
+
+// maxCommandBytes is Darwin's MAXCOMLEN: kinfo_proc p_comm holds this many
+// bytes of the executable's base name plus a terminating NUL.
+const maxCommandBytes = 16
+
+// commandName is the kernel's command name for an executable.
+func commandName(executable string) string {
+	name := filepath.Base(executable)
+	if len(name) > maxCommandBytes {
+		name = name[:maxCommandBytes]
+	}
+	return name
 }
 
 // Status is the closed lifecycle observation.
@@ -78,13 +97,16 @@ func (r *Runtime) record() (*processRecord, error) {
 	if json.Unmarshal(raw, &record) != nil || record.SchemaVersion != SchemaVersion || record.PID <= 1 {
 		return nil, ErrConflict
 	}
+	if record.Command == "" {
+		record.Command = legacyCommand
+	}
 	return &record, nil
 }
 
 // owned reports whether the recorded process is still this runtime's server.
 func owned(record *processRecord) bool {
 	seconds, micros, comm, alive := processStart(record.PID)
-	return alive && seconds == record.StartSeconds && micros == record.StartMicros && comm == "nats-server"
+	return alive && seconds == record.StartSeconds && micros == record.StartMicros && comm == record.Command
 }
 
 func (r *Runtime) clearRecord() error {
@@ -226,12 +248,14 @@ func Start(ctx context.Context, path string) (Status, error) {
 		return status, ErrServer
 	}
 	pid := cmd.Process.Pid
-	seconds, micros, _, alive := processStart(pid)
-	if !alive {
+	seconds, micros, comm, alive := processStart(pid)
+	if !alive || comm != commandName(inputs.NATSServer) {
+		_ = cmd.Process.Kill()
 		_ = cmd.Wait()
 		return status, ErrNotReady
 	}
-	record = &processRecord{SchemaVersion: SchemaVersion, RuntimeID: m.RuntimeID, PID: pid, StartSeconds: seconds, StartMicros: micros}
+	record = &processRecord{SchemaVersion: SchemaVersion, RuntimeID: m.RuntimeID, PID: pid, StartSeconds: seconds,
+		StartMicros: micros, Command: comm}
 	raw, _ := json.Marshal(record)
 	if err := r.publish("runtime-process.json", append(raw, '\n')); err != nil {
 		_ = terminate(record)
