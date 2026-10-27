@@ -267,7 +267,7 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
         original = local_enrollment._write_material
 
         def lose_receipt(path, material, **kwargs):
-            if Path(path).name == 'bootstrap.json':
+            if 'bootstrap.json' in Path(path).name:
                 raise RuntimeError('interrupted after commit')
             return original(path, material, **kwargs)
         with mock.patch.object(local_enrollment, '_write_material', side_effect=lose_receipt):
@@ -283,7 +283,7 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
         original = local_enrollment._write_material
 
         def lose_core(path, material, **kwargs):
-            if Path(path).name == 'core-hub.json':
+            if 'core-hub.json' in Path(path).name:
                 raise RuntimeError('interrupted before coreHub')
             return original(path, material, **kwargs)
         with mock.patch.object(local_enrollment, '_write_material', side_effect=lose_core):
@@ -295,13 +295,41 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(Path(path).read_bytes(), raw)
         self.assertEqual(local_enrollment.digest(Path(result['coreHub']['selection']).read_bytes()), result['coreHub']['sha256'])
 
-    async def test_half_built_materials_are_refused_not_regenerated(self):
+    async def test_interruption_while_creating_keys_resumes_with_unused_keys_replaced(self):
+        # Review item 4: keys from a materials stage that never completed were
+        # never published, so a rerun replaces them instead of refusing forever.
         install = Installation(self.runtime)
-        install.enrollment.parent.mkdir(mode=0o700)
-        install.enrollment.mkdir(mode=0o700)
-        (install.enrollment / 'materials').mkdir(mode=0o700)
-        with self.assertRaisesRegex(ContractError, 'local_enrollment_materials_incomplete'):
-            await install.run()
+        with mock.patch.object(local_enrollment, 'provision_application_attestor',
+                               side_effect=RuntimeError('interrupted while creating keys')):
+            with self.assertRaises(RuntimeError):
+                await install.run()
+        self.assertTrue((install.enrollment / 'materials').is_dir())
+        self.assertFalse((install.enrollment / 'materials.json').exists())
+        result = await install.run()
+        self.assertEqual(local_enrollment.digest(Path(result['coreHub']['selection']).read_bytes()),
+                         result['coreHub']['sha256'])
+        self.assertEqual(await install.run(), result)
+
+    async def test_interruption_while_writing_a_stage_record_resumes(self):
+        # Review item 4: a stage record cut off mid-write never takes its final
+        # name, so a rerun is not left reading a truncated materials.json.
+        install = Installation(self.runtime)
+        original = local_enrollment._write_material
+
+        def cut_off(path, material, **kwargs):
+            if 'materials.json' in Path(path).name:
+                raw = canonical_bytes(material)
+                fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+                os.write(fd, raw[:len(raw) // 2])
+                os.close(fd)
+                raise RuntimeError('interrupted while writing materials.json')
+            return original(path, material, **kwargs)
+        with mock.patch.object(local_enrollment, '_write_material', side_effect=cut_off):
+            with self.assertRaises(RuntimeError):
+                await install.run()
+        result = await install.run()
+        self.assertTrue(Path(result['coreHub']['selection']).exists())
+        self.assertEqual([p.name for p in install.enrollment.iterdir() if p.name.endswith('.partial')], [])
 
     async def test_changed_retained_selection_is_refused(self):
         install = Installation(self.runtime)
@@ -522,14 +550,69 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
                                                if m['identityRef'] == observer})
 
     async def test_hub_database_holds_every_default_plugin_schema(self):
-        # A selected Work Hub refuses to start unless each default federation
-        # plugin's tables, triggers and indexes already exist; it never creates them.
-        import importlib, re, sqlite3
-        from hub.fed.config import DEFAULT_PLUGINS
-        from hub.store import APP_ID, MIGRATIONS
         install = Installation(self.runtime)
         await install.run()
-        database = sqlite3.connect((install.home / 'hub' / 'hub.db').as_uri() + '?mode=ro', uri=True)
+        self.assertHubDatabaseComplete(install.home / 'hub' / 'hub.db')
+
+    async def test_damaged_hub_database_is_repaired_on_rerun(self):
+        # Review item 3: a finished enrollment whose hub.db lost its private mode
+        # or a plugin table (or predates the plugin tables) is completed on rerun.
+        import sqlite3
+        install = Installation(self.runtime)
+        first = await install.run()
+        path = install.home / 'hub' / 'hub.db'
+        database = sqlite3.connect(path)
+        database.execute('DROP TABLE p_board_cards')
+        database.close()
+        path.chmod(0o644)
+        self.assertEqual(await install.run(), first)
+        self.assertHubDatabaseComplete(path)
+
+    async def test_interrupted_hub_database_is_completed_on_rerun(self):
+        # Review item 3: an interruption after SQLite created hub.db but before
+        # the plugin tables leaves a file the next run must complete, not keep.
+        class Interrupted:
+            def __iter__(self):
+                raise RuntimeError('interrupted before plugin tables')
+        install = Installation(self.runtime)
+        with mock.patch.object(local_enrollment, 'DEFAULT_PLUGINS', Interrupted()):
+            with self.assertRaises(RuntimeError):
+                await install.run()
+        self.assertTrue((install.home / 'hub' / 'hub.db').exists())
+        await install.run()
+        self.assertHubDatabaseComplete(install.home / 'hub' / 'hub.db')
+
+    async def test_profiles_on_one_runtime_never_share_a_reply_prefix(self):
+        # Review item 1: every profile on a runtime uses the same account, so a
+        # shared reply prefix would deliver one profile's replies to another's.
+        def prefixes(value):
+            if isinstance(value, dict):
+                return {v for k, v in value.items() if k == 'replyPrefix'} | {
+                    p for v in value.values() for p in prefixes(v)}
+            if isinstance(value, list):
+                return {p for v in value for p in prefixes(v)}
+            return set()
+        seen = set()
+        for _ in range(2):
+            install = Installation(self.runtime)
+            await install.run()
+            materials = _read_material(install.enrollment / 'materials.json', max_bytes=1048576)
+            found = prefixes(materials)
+            # Three owners, two storage receivers, the attestor and five client sessions.
+            self.assertEqual(len(found), 11)
+            self.assertFalse(found & seen, found & seen)
+            seen |= found
+
+    def assertHubDatabaseComplete(self, path):
+        # A selected Work Hub opens hub.db only when it is owner-private and each
+        # default federation plugin's tables, triggers and indexes already exist.
+        import importlib, re, sqlite3
+        from hub.fed.config import DEFAULT_PLUGINS
+        from hub.store import APP_ID, MIGRATIONS, Store
+        self.assertEqual(Path(path).stat().st_mode & 0o777, 0o600)
+        Store.open_existing(str(path), application_id=APP_ID, user_version=len(MIGRATIONS),
+                            owner_uid=os.getuid()).db.close()
+        database = sqlite3.connect(Path(path).as_uri() + '?mode=ro', uri=True)
         try:
             self.assertEqual(database.execute('PRAGMA application_id').fetchone()[0], APP_ID)
             self.assertEqual(database.execute('PRAGMA user_version').fetchone()[0], len(MIGRATIONS))

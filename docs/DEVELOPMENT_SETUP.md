@@ -335,8 +335,11 @@ The ceremony runs against this installation's application runtime. It writes
 `application-enrollment/<profileId>/` (identity, definitions and integration
 issuers, least-privilege users, the attestor and five client session selections)
 and the profile's Hub home `hubs/<first 12 hex of the profile ID>/hub/`
-(`federation.toml`, `config.toml` and `hub.db` with the default plugin schema). It
-is create-only: rerunning with the same request reuses retained material. The
+(`federation.toml`, `config.toml` and `hub.db` with the default plugin schema).
+Each profile gets its own reply subjects on the shared runtime. It is
+create-only: rerunning with the same request reuses retained material, resumes
+an interrupted run (keys from an unfinished first stage were never used and are
+replaced) and brings `hub.db` back to a private, complete database. The
 result's `coreHub` object (`selection`, `sha256`) pins the core Hub manifest.
 
 ### 6. Prepare the profile with its core Hub, recovering if needed

@@ -7,8 +7,10 @@ application-runtime``). It generates every private key and credential locally,
 commits the initial identity authority, and writes the attestor, service and
 client selections plus the pinned ``coreHub`` manifest.
 
-The ceremony is staged. Each stage writes create-only private files, so a rerun
-resumes after the last complete stage and never regenerates a retained key:
+The ceremony is staged. Each stage writes create-only private files whole or
+not at all, so a rerun resumes after the last complete stage and never
+regenerates a retained key. Keys from a materials stage that never completed
+were never used and are replaced:
 
 1. ``materials``: keys, credentials, possession proofs and the bootstrap state.
 2. ``bootstrap``: streams, the artifact store and the committed authority.
@@ -26,6 +28,7 @@ import os
 from pathlib import Path
 import re
 import secrets
+import shutil
 import ssl
 import stat
 import time
@@ -237,6 +240,11 @@ class Ceremony:
     def ref(self, name):
         return {'id': 'local_' + name, 'ownerHubId': self.hub, 'revision': 1}
 
+    def inbox(self, name):
+        # Profiles share one runtime account; a per-profile reply prefix keeps
+        # every reply, identity records included, inside its own profile.
+        return '_INBOX.local_' + name + '_' + self.suffix
+
     def __repr__(self):
         return '<LocalEnrollmentCeremony private>'
 
@@ -285,7 +293,7 @@ class Ceremony:
                       else effect_id(scope, 'local_original_operation'))
             # One runtime may serve several profiles; streams are per profile.
             stream = 'LOCAL_' + role.upper() + '_' + self.suffix.upper()
-            prefix = '_INBOX.local_' + role + '_0001'
+            prefix = self.inbox(role)
             options = dict(role=role, hub_id=self.hub, entity_id=entity, scope=scope, stream=stream,
                            reply_prefix=prefix, jetstream_domain=self.runtime['domain'])
             if role != 'identity':
@@ -326,7 +334,7 @@ class Ceremony:
                                           self.authority, 'command'))
         attestor_dir = _private_dir(staging / 'attestor')
         attestor_credentials = self.credentials(attestor_dir, 'attestor', [self.identity_command],
-                                                ['_INBOX.local_attestor_0001.>'])
+                                                [self.inbox('attestor') + '.>'])
         families = self.family_materials(staging, value, payloads, interval, extra_identities)
         state = self.initial_state(payloads, extra_identities, families)
         return {'schemaVersion': SCHEMA_VERSION, 'interval': self.interval, 'service': value,
@@ -357,7 +365,7 @@ class Ceremony:
                 issuer_ref=ref(name + '_issuer'), **interval)
             payloads.append(payload)
             inputs = {'hub_id': self.hub, 'scope': self.project_scope, 'service_id': name + '-owner',
-                      'reply_prefix': '_INBOX.local_storage_' + name + '_0001'}
+                      'reply_prefix': self.inbox('storage_' + name)}
             policy = storage_receiver_policy(**inputs)
             creds = self.credentials(selected, name, policy.publish_subjects, policy.subscribe_subjects,
                                      response=policy.response_permissions, validator=validate_storage_receiver, inputs=inputs)
@@ -450,7 +458,7 @@ class Ceremony:
             payload = provision_application_client(selected / 'client-key.json', selection=selection,
                                                    identity=caller, **interval)
             payloads.append(payload)
-            prefix = '_INBOX.local_client_' + key + '_0001'
+            prefix = self.inbox('client_' + key)
             creds = self.credentials(selected, 'client-' + name, publish, [prefix + '.>'])
             sessions[name] = {'family': family, 'caller': caller['ref'], 'clientKey': str(selected / 'client-key.json'),
                               'credentials': creds, 'directory': str(selected)}
@@ -512,7 +520,7 @@ class Ceremony:
             self.protocol_error = True
         self.client = new_client(require_tls=True, leaf_certificate_sha256=self.runtime['leafCertificateSHA256'])
         await self.client.connect(servers=[self.runtime['endpoint']], tls=tls, tls_hostname=self.runtime['serverName'],
-            user_jwt_cb=lambda: token, signature_cb=sign, inbox_prefix='_INBOX.local_setup_0001',
+            user_jwt_cb=lambda: token, signature_cb=sign, inbox_prefix=self.inbox('setup'),
             tls_handshake_first=True, allow_reconnect=False, max_reconnect_attempts=1, connect_timeout=3,
             error_cb=error)
 
@@ -624,21 +632,41 @@ class Ceremony:
                     raise ContractError('local_enrollment_hub_file_conflict')
             else:
                 _private_bytes(path, raw)
-        database = hubdir / 'hub.db'
-        if not database.exists():
-            store = Store(str(database))
-            try:
-                for repository in self.request['repositories']:
-                    store.repo_add(repository['localName'])
-                # A selected Work Hub never creates plugin schema; it refuses to
-                # start unless every default federation plugin's tables exist.
-                for name in DEFAULT_PLUGINS:
-                    for statement in importlib.import_module('hub.fed.plugins.' + name).PLUGIN.tables:
-                        store.db.execute(statement)
-            finally:
-                store.db.close()
-            database.chmod(0o600)
+        self.hub_database(hubdir / 'hub.db')
         return hubdir
+
+    def hub_database(self, database):
+        """Create or repair hub.db: private, current schema, repositories and plugin tables.
+
+        Every step is idempotent, so a run interrupted half way, or a database
+        left by an earlier release, is completed rather than kept as it is.
+        """
+        # Exist as an owner-private file before SQLite opens it.
+        fd = os.open(database, os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_CLOEXEC, 0o600)
+        try:
+            meta = os.fstat(fd)
+            if not stat.S_ISREG(meta.st_mode) or meta.st_uid != os.getuid() or meta.st_nlink != 1:
+                raise ContractError('local_enrollment_hub_database_unsafe')
+            os.fchmod(fd, 0o600)
+        finally:
+            os.close(fd)
+        store = Store(str(database))
+        try:
+            present = {row[0] for row in store.db.execute('SELECT repo FROM repos')}
+            for repository in self.request['repositories']:
+                if repository['localName'] not in present:
+                    store.repo_add(repository['localName'])
+            # A selected Work Hub never creates plugin schema; it refuses to
+            # start unless every default federation plugin's tables exist.
+            for name in DEFAULT_PLUGINS:
+                for statement in importlib.import_module('hub.fed.plugins.' + name).PLUGIN.tables:
+                    store.db.execute(statement)
+        finally:
+            store.db.close()
+        for suffix in ('', '-wal', '-shm'):
+            path = Path(str(database) + suffix)
+            if path.exists() and not path.is_symlink():
+                path.chmod(0o600)
 
     def selections(self, directory, materials, confirmed):
         value = confirmed['service']
@@ -702,7 +730,44 @@ def _matches(path, material):
 
 def _write_or_match(path, material, *, max_bytes):
     if not _matches(path, material):
-        _write_material(path, material, max_bytes=max_bytes)
+        _publish(path, material, max_bytes=max_bytes)
+
+
+def _publish(path, material, *, max_bytes):
+    """Write a create-only file whole or not at all.
+
+    The bytes go to a private partial name first and are renamed into place,
+    so an interruption never leaves a truncated file under the final name. A
+    partial left by an earlier interrupted run is discarded.
+    """
+    path = Path(path)
+    partial = path.with_name('.' + path.name + '.partial')
+    try:
+        os.unlink(partial)
+    except FileNotFoundError:
+        pass
+    _write_material(partial, material, max_bytes=max_bytes)
+    if path.exists() or path.is_symlink():
+        os.unlink(partial)
+        raise ContractError('local_enrollment_selection_conflict')
+    os.rename(partial, path)
+    directory = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        os.fsync(directory)
+    finally:
+        os.close(directory)
+
+
+def _discard_staging(staging):
+    """Remove keys from an interrupted materials stage.
+
+    Materials touch no broker and no other file before materials.json exists,
+    so these keys were never published or used and may be replaced.
+    """
+    meta = os.lstat(staging)
+    if not stat.S_ISDIR(meta.st_mode) or meta.st_uid != os.getuid() or meta.st_mode & 0o077:
+        raise ContractError('local_enrollment_directory_unsafe')
+    shutil.rmtree(staging)
 
 
 def _stage_file(directory, name):
@@ -718,12 +783,11 @@ async def run(request_path, request_sha256, *, root=None, now=None):
         materials_path = _stage_file(directory, 'materials.json')
         if not materials_path.exists():
             staging = directory / 'materials'
-            if staging.exists():
-                # Keys exist without their recorded proofs; refuse rather than mint a second identity.
-                raise ContractError('local_enrollment_materials_incomplete')
+            if staging.exists() or staging.is_symlink():
+                _discard_staging(staging)
             _private_dir(staging)
             materials = ceremony.materials(staging, now or datetime.now(timezone.utc))
-            _write_material(materials_path, materials, max_bytes=1048576)
+            _publish(materials_path, materials, max_bytes=1048576)
         materials = _read_material(materials_path, max_bytes=1048576)
         ceremony.interval = materials['interval']
         bootstrap_path = _stage_file(directory, 'bootstrap.json')
@@ -732,13 +796,14 @@ async def run(request_path, request_sha256, *, root=None, now=None):
                 confirmed = await ceremony.bootstrap(materials)
             finally:
                 await ceremony.close()
-            _write_material(bootstrap_path, confirmed, max_bytes=1048576)
+            _publish(bootstrap_path, confirmed, max_bytes=1048576)
         confirmed = _read_material(bootstrap_path, max_bytes=1048576)
         result_path = _stage_file(directory, 'result.json')
+        # Every run completes the Hub files, including a resume after result.json.
+        ceremony.hub_files()
         if not result_path.exists():
-            ceremony.hub_files()
             result = ceremony.selections(directory, materials, confirmed)
-            _write_material(result_path, result, max_bytes=16384)
+            _publish(result_path, result, max_bytes=16384)
         return _read_material(result_path, max_bytes=16384)
     finally:
         ceremony.account.wipe()
