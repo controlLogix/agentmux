@@ -21,6 +21,7 @@ import asyncio
 import base64
 from datetime import datetime, timedelta, timezone
 import hashlib
+import importlib
 import os
 from pathlib import Path
 import re
@@ -33,6 +34,7 @@ import nkeys
 from nats.js.api import ObjectStoreConfig, StorageType
 
 from agentmux_contracts import ContractError, canonical_bytes, payload_digest, strict_loads
+from hub.fed.config import DEFAULT_PLUGINS
 from hub.fed.policy import rid_for_remote
 from hub.nats_transport import new_client
 from hub.store import APP_ID, MIGRATIONS, Store
@@ -628,6 +630,11 @@ class Ceremony:
             try:
                 for repository in self.request['repositories']:
                     store.repo_add(repository['localName'])
+                # A selected Work Hub never creates plugin schema; it refuses to
+                # start unless every default federation plugin's tables exist.
+                for name in DEFAULT_PLUGINS:
+                    for statement in importlib.import_module('hub.fed.plugins.' + name).PLUGIN.tables:
+                        store.db.execute(statement)
             finally:
                 store.db.close()
             database.chmod(0o600)

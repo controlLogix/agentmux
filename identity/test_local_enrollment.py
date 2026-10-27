@@ -373,6 +373,27 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn(canonical_bytes(scope), {canonical_bytes(m['scope']) for m in materials['state']['memberships']
                                                if m['identityRef'] == observer})
 
+    async def test_hub_database_holds_every_default_plugin_schema(self):
+        # A selected Work Hub refuses to start unless each default federation
+        # plugin's tables, triggers and indexes already exist; it never creates them.
+        import importlib, re, sqlite3
+        from hub.fed.config import DEFAULT_PLUGINS
+        from hub.store import APP_ID, MIGRATIONS
+        install = Installation(self.runtime)
+        await install.run()
+        database = sqlite3.connect((install.home / 'hub' / 'hub.db').as_uri() + '?mode=ro', uri=True)
+        try:
+            self.assertEqual(database.execute('PRAGMA application_id').fetchone()[0], APP_ID)
+            self.assertEqual(database.execute('PRAGMA user_version').fetchone()[0], len(MIGRATIONS))
+            for name in DEFAULT_PLUGINS:
+                for statement in importlib.import_module('hub.fed.plugins.' + name).PLUGIN.tables:
+                    kind, declared = re.match(r'\s*CREATE\s+(?:VIRTUAL\s+)?(TABLE|TRIGGER|INDEX)\s+'
+                        r'(?:IF\s+NOT\s+EXISTS\s+)?([A-Za-z_][A-Za-z0-9_]*)\b', statement, re.I).groups()
+                    self.assertIsNotNone(database.execute('SELECT 1 FROM sqlite_schema WHERE type=? AND name=?',
+                                                          (kind.lower(), declared)).fetchone(), (name, declared))
+        finally:
+            database.close()
+
     async def test_private_browser_port_is_retained_and_schema_closed(self):
         from identity.application_service_selection import ApplicationServiceSelection
         install = Installation(self.runtime)
