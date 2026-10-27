@@ -198,6 +198,53 @@ func TestGapStageAndChangedInputsAreRefused(t *testing.T) {
 	}
 }
 
+// Review item 5: a publish interrupted after its stage was written, or after
+// the stage was linked but before it was removed, must not block init or start.
+func TestInterruptedPublishLeftoversAreSweptOnResumeAndStart(t *testing.T) {
+	server := natsServer(t)
+	ctx := context.Background()
+	dir := runtimeDir(t)
+	first, err := Initialize(ctx, dir, Inputs{NATSServer: server})
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Linked, not yet unlinked: account.jwt has a second name.
+	if err := os.Link(filepath.Join(dir, "account.jwt"), filepath.Join(dir, ".stage-0123456789abcdef")); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _, _ = Stop(context.Background(), dir) })
+	started, err := Start(ctx, dir)
+	if err != nil || started.State != "running" {
+		t.Fatalf("start after interrupted link: %v %+v", err, started)
+	}
+	if _, err := Stop(ctx, dir); err != nil {
+		t.Fatal(err)
+	}
+	// Written, not yet linked: runtime.json is missing and its stage is partial.
+	if err := os.Remove(filepath.Join(dir, "runtime.json")); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(dir, ".stage-fedcba9876543210"), []byte("{\"sche"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	resumed, err := Initialize(ctx, dir, Inputs{})
+	if err != nil || resumed.Outcome != "recovered" || resumed.Manifest != first.Manifest {
+		t.Fatalf("resume after interrupted stage: %v %+v", err, resumed.Outcome)
+	}
+	names, _ := os.ReadDir(dir)
+	for _, entry := range names {
+		if strings.HasPrefix(entry.Name(), ".stage-") {
+			t.Fatalf("stage %s left behind", entry.Name())
+		}
+	}
+	for _, name := range artifacts {
+		var st unix.Stat_t
+		if err := unix.Lstat(filepath.Join(dir, name), &st); err != nil || st.Nlink != 1 {
+			t.Fatalf("%s is not a single-link file", name)
+		}
+	}
+}
+
 func TestThreeInstallationsHaveDistinctIdentities(t *testing.T) {
 	server := natsServer(t)
 	seen := map[string]bool{}

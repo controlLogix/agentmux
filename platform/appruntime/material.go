@@ -171,7 +171,12 @@ func Open(path string, create bool) (*Runtime, error) {
 		dir.Close()
 		return nil, ErrBusy
 	}
-	return &Runtime{path: path, dir: dir, lock: lock}, nil
+	r := &Runtime{path: path, dir: dir, lock: lock}
+	if err := r.sweepStages(); err != nil {
+		r.Close()
+		return nil, err
+	}
+	return r, nil
 }
 
 func (r *Runtime) read(name string) ([]byte, bool, error) {
@@ -208,7 +213,7 @@ func (r *Runtime) publish(name string, data []byte) error {
 	if _, err := rand.Read(suffix); err != nil {
 		return ErrConflict
 	}
-	stage := ".stage-" + hex.EncodeToString(suffix)
+	stage := stagePrefix + hex.EncodeToString(suffix)
 	fd, err := unix.Openat(dirFD, stage, unix.O_WRONLY|unix.O_CREAT|unix.O_EXCL|unix.O_NOFOLLOW|unix.O_CLOEXEC, 0o600)
 	if err != nil {
 		return ErrConflict
@@ -218,15 +223,51 @@ func (r *Runtime) publish(name string, data []byte) error {
 	syncErr := file.Sync()
 	closeErr := file.Close()
 	if writeErr != nil || syncErr != nil || closeErr != nil {
+		_ = unix.Unlinkat(dirFD, stage, 0)
 		return ErrConflict
 	}
 	if err := unix.Linkat(dirFD, stage, dirFD, name, 0); err != nil {
+		_ = unix.Unlinkat(dirFD, stage, 0)
 		return ErrConflict
 	}
 	if err := unix.Unlinkat(dirFD, stage, 0); err != nil {
 		return ErrConflict
 	}
 	return unix.Fsync(dirFD)
+}
+
+const stagePrefix = ".stage-"
+
+var stageName = regexp.MustCompile(`^\.stage-[0-9a-f]{16}$`)
+
+// sweepStages removes stage names an interrupted publish left behind. A stage
+// is either an unpublished partial file or a second link to a published
+// artifact; removing it never removes a published name. The caller holds the
+// directory lock, so no publish is in flight.
+func (r *Runtime) sweepStages() error {
+	names, err := r.entries()
+	if err != nil {
+		return err
+	}
+	swept := false
+	for _, name := range names {
+		if !stageName.MatchString(name) {
+			continue
+		}
+		var st unix.Stat_t
+		if unix.Fstatat(int(r.dir.Fd()), name, &st, unix.AT_SYMLINK_NOFOLLOW) != nil ||
+			st.Mode&unix.S_IFMT != unix.S_IFREG || int(st.Uid) != os.Geteuid() {
+			return ErrUnsafePath
+		}
+		if err := unix.Unlinkat(int(r.dir.Fd()), name, 0); err != nil && !errors.Is(err, unix.ENOENT) {
+			return ErrUnsafePath
+		}
+		swept = true
+	}
+	if swept {
+		return unix.Fsync(int(r.dir.Fd()))
+	}
+	return nil
 }
 
 func (r *Runtime) entries() ([]string, error) {
