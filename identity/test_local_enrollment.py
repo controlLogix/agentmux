@@ -6,6 +6,7 @@ cache. Every test uses a fresh profile on that runtime. The tests skip when Go
 or the pinned server is unavailable; they never touch a real installation.
 """
 import asyncio
+import base64
 from datetime import datetime, timedelta, timezone
 import hashlib
 import json
@@ -20,7 +21,7 @@ import time
 import unittest
 from unittest import mock
 
-from agentmux_contracts import ContractError, canonical_bytes, strict_loads
+from agentmux_contracts import ContractError, canonical_bytes, sign_claims, strict_loads
 from identity import local_enrollment
 from identity.application_enrollment import _read_material
 
@@ -132,6 +133,89 @@ class Installation:
 
     def snapshot(self):
         return {str(p): p.read_bytes() for p in self.enrollment.rglob('*') if p.is_file()}
+
+
+class RuntimeAttestor:
+    """Stand in for the installed host's Go attestor using the ceremony's own material.
+
+    Mirrors EnrolledApplicationObservationSigner (platform/launcher/
+    application_runtime_signer.go): the same observation and update claims,
+    taken only from attestor-selection.json, signed with its key file and sent
+    with its own NATS credentials, refreshed before each 4-second expiry.
+    """
+
+    def __init__(self, enrollment):
+        self.selection = _read_material(enrollment / 'attestor-selection.json', max_bytes=1048576)
+        key = _read_material(self.selection['keyPath'], max_bytes=4096)
+        self.seed = base64.b64decode(key['seed'])
+        self.lifetime = secrets.token_hex(32)
+        self.receipts = []
+        self.task = None
+
+    def signed(self, claims):
+        return canonical_bytes({'schemaVersion': '1.0.0', 'algorithm': 'Ed25519',
+                                'canonicalization': 'RFC8785-JCS-UTF8', 'claims': claims,
+                                'signature': sign_claims(claims, self.seed)})
+
+    def update(self, reply, number):
+        from identity.application_binding import _stamp
+        s, kernel = self.selection, self.selection['kernelScope']
+        application = s['application']
+        now = datetime.now(timezone.utc)
+        expires = now + timedelta(seconds=4)
+        observation = self.signed({'purpose': 'agentmux-application-runtime-observation-v1',
+            'hubId': kernel['hubId'], 'profileId': kernel['profileId'], 'instanceId': kernel['instanceId'],
+            'generation': s['initialGeneration'], 'lifetimeId': self.lifetime,
+            'releaseDigest': kernel['releaseManifestDigest'], 'policyRef': application['policyRef'],
+            'workspaceRef': application['workspaceRef'], 'scope': application['scope'],
+            'signingKeyRef': application['issuerRef'], 'issuedAt': _stamp(now), 'expiresAt': _stamp(expires)})
+        return self.signed({'purpose': 'agentmux-application-observation-update-v1',
+            'requestId': 'attest_%d' % number, 'hubId': kernel['hubId'], 'profileId': kernel['profileId'],
+            'authorityId': application['authorityId'], 'action': 'refresh', 'generation': s['initialGeneration'],
+            'lifetimeId': self.lifetime, 'transportRef': application['transportRef'],
+            'observationBytes': base64.b64encode(observation).decode(), 'replySubject': reply,
+            'issuedAt': _stamp(now), 'expiresAt': _stamp(expires)})
+
+    async def start(self):
+        import nats
+        s = self.selection
+        tls = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        tls.minimum_version = ssl.TLSVersion.TLSv1_3
+        tls.load_verify_locations(cadata=s['connection']['rootsPEM'])
+        prefix = s['credentials']['replyPrefix']
+        self.client = await nats.connect(servers=[s['connection']['endpoint']], tls=tls,
+            tls_hostname=s['connection']['serverName'], tls_handshake_first=True,
+            user_credentials=s['credentials']['path'], allow_reconnect=False, inbox_prefix=prefix,
+            connect_timeout=3)
+        subject = '.'.join(('amx', 'v1', 'h', s['kernelScope']['hubId'], 'o',
+                            s['application']['scope']['organizationId'], 'identity',
+                            s['application']['authorityId'], 'command'))
+        replies = asyncio.Queue()
+        reply = prefix + '.attestor'
+        await self.client.subscribe(reply, cb=replies.put)
+        async def refresh():
+            number = 0
+            while True:
+                number += 1
+                await self.client.publish(subject, self.update(reply, number), reply=reply)
+                self.receipts.append(strict_loads((await asyncio.wait_for(replies.get(), 3)).data))
+                await asyncio.sleep(1.5)
+        self.task = asyncio.create_task(refresh())
+        deadline = time.monotonic() + 10
+        while not self.receipts and not self.task.done() and time.monotonic() < deadline:
+            await asyncio.sleep(0.05)
+        if self.task.done():
+            self.task.result()
+        return self.receipts[0] if self.receipts else None
+
+    async def close(self):
+        if self.task is not None:
+            self.task.cancel()
+            try:
+                await self.task
+            except (asyncio.CancelledError, Exception):
+                pass
+        await self.client.close()
 
 
 class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
@@ -353,6 +437,70 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
             await host.close()
             if legacy is not None:
                 legacy.close()
+
+    async def test_ceremony_output_starts_the_enrolled_hub_and_answers_ping(self):
+        # Runs the selected Hub's application half end to end: the services the
+        # ceremony selected, then the enrolled Hub with its coreHub identity,
+        # message and Work sessions, then ping. The native kernel operator
+        # (NativeCoreContext) is outside this test; it needs an installed client.
+        import signal
+        import sys
+        for root in (REPOSITORY / 'dashboard', REPOSITORY / 'taskmgmt'):
+            if str(root) not in sys.path:
+                sys.path.insert(0, str(root))
+        from application_service_host import ApplicationServiceHost
+        from identity.application_service_selection import ApplicationServiceSelection
+        install = Installation(self.runtime)
+        result = await install.run()
+        core = _read_material(result['coreHub']['selection'], max_bytes=16384)
+        raw = _read_material(install.enrollment / 'service-selection.json', max_bytes=1048576, return_bytes=True)
+        selection = ApplicationServiceSelection(raw)
+        host = ApplicationServiceHost(selection, browser_port=selection.local_browser_port())
+        env = {**os.environ, 'AGENTMUX_HOME': core['home']}
+        arguments = []
+        for flag, family in (('--selection', 'identity'), ('--message-selection', 'messages'),
+                             ('--work-selection', 'work')):
+            for pin in core[family]:
+                arguments += [flag, pin['selection']]
+        # The startup deadline is the child's own monotonic clock.
+        start = ('import sys, time\nfrom hub.enrolled_hub_bootstrap import main\n'
+                 "raise SystemExit(main(['--startup-deadline', str(time.monotonic() + 30)] + sys.argv[1:]))")
+        hub = attestor = None
+        try:
+            await asyncio.wait_for(host.start(), 60)
+            attestor = RuntimeAttestor(install.enrollment)
+            receipt = await attestor.start()
+            self.assertIsNotNone(receipt, 'identity service did not answer the runtime observation')
+            self.assertNotIn('error', receipt)
+            log = open(install.base / 'hub.log', 'wb')
+            hub = subprocess.Popen([sys.executable, '-c', start, *arguments], cwd=REPOSITORY, env=env,
+                                   stdin=subprocess.DEVNULL, stdout=log, stderr=log)
+            socket = Path(core['home']) / 'hub' / 'hub.sock'
+            deadline = time.monotonic() + 45
+            while not socket.is_socket() and hub.poll() is None and time.monotonic() < deadline:
+                await asyncio.sleep(0.2)
+            if hub.poll() is not None:
+                self.fail('enrolled Hub exited during startup: %r' % (install.base / 'hub.log').read_bytes()[-2000:])
+            self.assertTrue(socket.is_socket(), 'enrolled Hub did not open its socket')
+            ping = await asyncio.to_thread(subprocess.run,
+                [sys.executable, '-c', "from hub import cli; cli.main(['--json', 'ping'])"],
+                cwd=REPOSITORY, env=env, capture_output=True, timeout=30)
+            self.assertEqual(ping.returncode, 0, (ping.stderr[-2000:], (install.base / 'hub.log').read_bytes()[-4000:]))
+            self.assertIn('pong', strict_loads(ping.stdout))
+        finally:
+            if hub is not None:
+                if hub.poll() is None:
+                    hub.send_signal(signal.SIGTERM)
+                try:
+                    await asyncio.to_thread(hub.wait, 30)
+                except subprocess.TimeoutExpired:
+                    hub.kill()
+                    hub.wait()
+                log.close()
+            if attestor is not None:
+                await attestor.close()
+            await host.close()
+        self.assertIn(hub.returncode, (0, 130), 'enrolled Hub did not stop cleanly')
 
     async def test_binding_grants_observation_and_sessions_share_one_scope(self):
         # The identity binding provider refuses discovery unless the bind grant,
