@@ -636,9 +636,15 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
         await install.run()
         self.assertEqual(_read_material(install.enrollment / 'service-selection.json', max_bytes=1048576)['localBrowser'],
                          {'port': port})
-        for changed in ({'port': 1023}, {'port': 65536}, {'port': '9000'}, {'port': port, 'host': '0.0.0.0'}, {}):
+        # Review item 9: the old dashboard's port 8787 is never a selectable port.
+        for changed in ({'port': 1023}, {'port': 65536}, {'port': '9000'}, {'port': port, 'host': '0.0.0.0'}, {},
+                        {'port': local_enrollment.LEGACY_BROWSER_PORT}):
             with self.subTest(localBrowser=changed), self.assertRaises(ContractError):
                 ApplicationServiceSelection(canonical_bytes(dict(selection, localBrowser=changed)))
+        from application_service_host import ApplicationServiceHost
+        with self.assertRaisesRegex(ContractError, 'local_browser_auth_configuration'):
+            ApplicationServiceHost(ApplicationServiceSelection(canonical_bytes(selection)),
+                                   browser_port=local_enrollment.LEGACY_BROWSER_PORT)
         without = {k: v for k, v in selection.items() if k != 'localBrowser'}
         self.assertIsNone(ApplicationServiceSelection(canonical_bytes(without)).local_browser_port())
 

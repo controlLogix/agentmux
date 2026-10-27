@@ -66,7 +66,7 @@ class ApplicationServiceFailure(RuntimeError):
 
 
 class ApplicationServiceHost:
-    def __init__(self, selection, *, browser_port=8787, browser_write_timeout=10):
+    def __init__(self, selection, *, browser_port=0, browser_write_timeout=10):
         if not isinstance(selection, ApplicationServiceSelection):
             raise ContractError('application_service_selection_required')
         self._selection = selection
@@ -99,7 +99,8 @@ class ApplicationServiceHost:
         self._browser_auth = None
         self._oidc_settings = self._oidc_login = None
         self._oidc_terminal_settings = self._oidc_terminal = None
-        if (type(browser_port) is not int or not 0 <= browser_port <= 65535
+        # 8787 belongs to the old dashboard; the services host never takes it.
+        if (type(browser_port) is not int or not 0 <= browser_port <= 65535 or browser_port == 8787
                 or type(browser_write_timeout) not in (int, float)
                 or not 0 < browser_write_timeout <= 10):
             raise ContractError('local_browser_auth_configuration')

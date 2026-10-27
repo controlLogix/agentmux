@@ -987,7 +987,7 @@ class ApplicationServiceSelection:
         return self.policy.get('dashboard')
 
     def local_browser_port(self):
-        """Return the selected private loopback port, or None for the historical default."""
+        """Return the selected private loopback port, or None when none was selected."""
         selected = self.policy.get('localBrowser')
         return None if selected is None else selected['port']
 

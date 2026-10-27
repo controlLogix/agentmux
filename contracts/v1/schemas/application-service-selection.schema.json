@@ -1869,12 +1869,12 @@
       ]
     },
     "localBrowser": {
-      "description": "Private per-installation loopback port for the services host's local browser listener. Omitted means the historical default.",
+      "description": "Private per-installation loopback port for the services host's local browser listener. The installed services process refuses a selection without it. Never 8787, the old dashboard's port.",
       "type": "object",
       "additionalProperties": false,
       "required": ["port"],
       "properties": {
-        "port": {"type": "integer", "minimum": 1024, "maximum": 65535}
+        "port": {"type": "integer", "minimum": 1024, "maximum": 65535, "not": {"const": 8787}}
       }
     },
     "dashboard": {
