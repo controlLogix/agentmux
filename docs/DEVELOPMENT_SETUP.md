@@ -363,7 +363,9 @@ AMUX_CORE_SHA="sha256:$(shasum -a 256 < "$AMUX_REQUESTS/owner-request-core.json"
 
 Success reports `prepared` and creates
 `~/Library/Application Support/Agentmux/profiles/<profileId>/`. The apply has a
-10-second deadline and measured 7.4–8.5 s on Nick's Mac. If it reports
+10-second deadline. Launchers built before commit 77ee9f0 took 7.4–8.5 s on
+Nick's Mac and sometimes exceeded it; a launcher with that commit took 2.17 s.
+If it reports
 `review_required`, keep every file and run the supported recovery with the same
 request and digest (preview first, then `--apply`):
 
@@ -431,7 +433,8 @@ two files. Keep the retired profile's files for inspection.
 
 ### Known limits
 
-* The prepare apply deadline is tight; expect occasional recovery (step 6).
+* A launcher built before commit 77ee9f0 can exceed the prepare apply deadline;
+  recover as in step 6, or install a newer launcher and client.
 * `startup` may report `observation_unavailable` for a healthy start (step 7).
 * Identity handler errors reach clients only as `identity_outcome_unconfirmed`,
   and the services process's stderr is discarded, so start failures need tracing.
