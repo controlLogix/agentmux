@@ -38,7 +38,11 @@ const (
 	NATSVersion     = "v2.15.0"
 	maxPrivateBytes = 1 << 20
 	diskStoreBytes  = 1 << 30
-	tlsLifetime     = 397 * 24 * time.Hour
+	// Every enrollment pins this runtime's root and leaf certificate, so a
+	// renewed certificate would invalidate every enrollment just as a new
+	// runtime does. The lifetime is therefore deliberately the life of the
+	// installation; status reports the expiry and start refuses after it.
+	tlsLifetime = 10 * 365 * 24 * time.Hour
 )
 
 // Fixed artifact order. Every file is create-only and later files derive only
@@ -406,6 +410,23 @@ func issueTLS(serverName string) (tlsBundle, error) {
 	return tlsBundle{RootsPEM: string(pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: caDER})),
 		CertPEM: string(pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: leafDER})),
 		KeyPEM:  string(pem.EncodeToMemory(&pem.Block{Type: "EC PRIVATE KEY", Bytes: privateDER}))}, nil
+}
+
+// leafNotAfter reads the expiry of the retained server certificate.
+func (r *Runtime) leafNotAfter() (time.Time, error) {
+	raw, ok, err := r.read("tls-server-cert.pem")
+	if err != nil || !ok {
+		return time.Time{}, ErrUnsafePath
+	}
+	block, _ := pem.Decode(raw)
+	if block == nil || block.Type != "CERTIFICATE" {
+		return time.Time{}, ErrConflict
+	}
+	leaf, err := x509.ParseCertificate(block.Bytes)
+	if err != nil {
+		return time.Time{}, ErrConflict
+	}
+	return leaf.NotAfter.UTC(), nil
 }
 
 func leafPin(certPEM string) (string, error) {

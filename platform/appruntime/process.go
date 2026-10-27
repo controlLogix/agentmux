@@ -26,6 +26,7 @@ var (
 	ErrNotReady       = errors.New("application_runtime_not_ready")
 	ErrStopUncertain  = errors.New("application_runtime_stop_uncertain")
 	ErrRunningUnready = errors.New("application_runtime_running_unready")
+	ErrTLSExpired     = errors.New("application_runtime_tls_expired")
 )
 
 const (
@@ -68,6 +69,17 @@ type Status struct {
 	RuntimeID string `json:"runtimeId"`
 	Endpoint  string `json:"endpoint"`
 	PID       int    `json:"pid,omitempty"`
+	// TLSNotAfter is when the pinned server certificate expires.
+	TLSNotAfter string `json:"tlsNotAfter,omitempty"`
+}
+
+func (r *Runtime) withTLSExpiry(status Status) (Status, time.Time, error) {
+	notAfter, err := r.leafNotAfter()
+	if err != nil {
+		return status, notAfter, err
+	}
+	status.TLSNotAfter = notAfter.Format(time.RFC3339)
+	return status, notAfter, nil
 }
 
 func processStart(pid int) (int64, int32, string, bool) {
@@ -206,7 +218,10 @@ func Start(ctx context.Context, path string) (Status, error) {
 	if err != nil {
 		return Status{}, ErrNotInitialized
 	}
-	status := Status{RuntimeID: m.RuntimeID, Endpoint: m.Endpoint}
+	status, notAfter, err := r.withTLSExpiry(Status{RuntimeID: m.RuntimeID, Endpoint: m.Endpoint})
+	if err != nil {
+		return status, err
+	}
 	record, err := r.record()
 	if err != nil {
 		return status, err
@@ -223,6 +238,10 @@ func Start(ctx context.Context, path string) (Status, error) {
 		if err := r.clearRecord(); err != nil {
 			return status, err
 		}
+	}
+	// Clients refuse an expired certificate, so the server would never be ready.
+	if !time.Now().Before(notAfter) {
+		return status, ErrTLSExpired
 	}
 	digest, err := AdmitNATSServer(ctx, inputs.NATSServer)
 	if err != nil || digest != inputs.NATSSHA256 {
@@ -326,7 +345,10 @@ func Observe(ctx context.Context, path string) (Status, error) {
 	if err != nil {
 		return Status{State: "not_initialized"}, nil
 	}
-	status := Status{RuntimeID: m.RuntimeID, Endpoint: m.Endpoint, State: "stopped"}
+	status, _, err := r.withTLSExpiry(Status{RuntimeID: m.RuntimeID, Endpoint: m.Endpoint, State: "stopped"})
+	if err != nil {
+		return status, err
+	}
 	record, err := r.record()
 	if err != nil || record == nil {
 		return status, err

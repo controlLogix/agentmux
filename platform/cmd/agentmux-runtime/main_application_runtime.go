@@ -85,6 +85,7 @@ type applicationRuntimeOutput struct {
 	RuntimeID     string               `json:"runtimeId,omitempty"`
 	Endpoint      string               `json:"endpoint,omitempty"`
 	PID           int                  `json:"pid,omitempty"`
+	TLSNotAfter   string               `json:"tlsNotAfter,omitempty"`
 	Manifest      *appruntime.Manifest `json:"manifest,omitempty"`
 }
 
@@ -116,6 +117,7 @@ func runApplicationRuntime(ctx context.Context, args []string, output io.Writer)
 			return err
 		}
 		result.Outcome, result.RuntimeID, result.Endpoint, result.PID = status.State, status.RuntimeID, status.Endpoint, status.PID
+		result.TLSNotAfter = status.TLSNotAfter
 	}
 	return json.NewEncoder(output).Encode(result)
 }
@@ -125,7 +127,7 @@ func writeApplicationRuntimeDiagnostic(output io.Writer, failure error) error {
 	code := "application_runtime_failed"
 	for _, known := range []error{appruntime.ErrBusy, appruntime.ErrAmbiguous, appruntime.ErrConflict, appruntime.ErrInputs,
 		appruntime.ErrUnsafePath, appruntime.ErrServer, appruntime.ErrNotInitialized, appruntime.ErrPortInUse,
-		appruntime.ErrNotReady, appruntime.ErrStopUncertain, appruntime.ErrRunningUnready} {
+		appruntime.ErrNotReady, appruntime.ErrStopUncertain, appruntime.ErrRunningUnready, appruntime.ErrTLSExpired} {
 		if errors.Is(failure, known) {
 			code = known.Error()
 		}

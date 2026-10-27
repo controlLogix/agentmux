@@ -275,9 +275,14 @@ admitted nats-server 2.15.0 executable on this machine.
 "$AMUX_RUNTIME" application-runtime status
 ```
 
-`status` reports the runtime ID and its `tls://127.0.0.1:<port>` endpoint. Keep the
-application runtime running for enrollment and for every profile that uses it.
-`application-runtime stop` stops it.
+`status` reports the runtime ID, its `tls://127.0.0.1:<port>` endpoint and
+`tlsNotAfter`, when its certificate expires. The port is chosen once from
+20000–32767, below the system's temporary port range, and cannot be changed
+later. Every enrollment pins the certificate, so it is issued for ten years
+instead of being renewed; a runtime initialized before that change keeps its
+397-day certificate, and `start` refuses an expired one with
+`application_runtime_tls_expired`. Keep the application runtime running for
+enrollment and for every profile that uses it. `application-runtime stop` stops it.
 
 ### 4. Write the private owner and setup requests
 
@@ -441,7 +446,7 @@ two files. Keep the retired profile's files for inspection.
 * `startup` may report `observation_unavailable` for a healthy start (step 7).
 * Identity handler errors reach clients only as `identity_outcome_unconfirmed`,
   and the services process's stderr is discarded, so start failures need tracing.
-* No end-to-end test yet runs Hub start against the ceremony's output.
+* Retained ports (runtime and browser) cannot be changed after they are chosen.
 
 Track these on AMUX-728. Preparing a package or passing unit tests does not
 qualify installed spawn, kill and recovery (AMUX-725). No step here requires

@@ -4,7 +4,14 @@ package appruntime
 
 import (
 	"context"
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
+	"crypto/x509"
+	"crypto/x509/pkix"
+	"encoding/pem"
 	"errors"
+	"math/big"
 	"net"
 	"os"
 	"path/filepath"
@@ -328,6 +335,67 @@ func TestRuntimePortIsChosenBelowTheTemporaryRange(t *testing.T) {
 		if err != nil || port < 1024 || port >= limit {
 			t.Fatalf("port %d (%v) is in the temporary range", port, err)
 		}
+	}
+}
+
+func retainedLeaf(t *testing.T, dir string) *x509.Certificate {
+	t.Helper()
+	raw, err := os.ReadFile(filepath.Join(dir, "tls-server-cert.pem"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	block, _ := pem.Decode(raw)
+	leaf, err := x509.ParseCertificate(block.Bytes)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return leaf
+}
+
+// Review item 7: every enrollment pins the root and leaf, so the certificate
+// lives as long as the installation instead of expiring after 397 days.
+func TestTLSLifetimeOutlivesTheInstallationAndIsReported(t *testing.T) {
+	server := natsServer(t)
+	dir := runtimeDir(t)
+	if _, err := Initialize(context.Background(), dir, Inputs{NATSServer: server}); err != nil {
+		t.Fatal(err)
+	}
+	leaf := retainedLeaf(t, dir)
+	if leaf.NotAfter.Before(time.Now().AddDate(9, 0, 0)) {
+		t.Fatalf("certificate expires %s", leaf.NotAfter)
+	}
+	observed, err := Observe(context.Background(), dir)
+	if err != nil || observed.TLSNotAfter != leaf.NotAfter.UTC().Format(time.RFC3339) {
+		t.Fatalf("status must report the certificate expiry: %v %+v", err, observed)
+	}
+}
+
+// Review item 7: an expired certificate is a clear refusal, not a ten-second
+// wait for a server no client will accept.
+func TestExpiredCertificateIsRefusedBeforeStart(t *testing.T) {
+	server := natsServer(t)
+	dir := runtimeDir(t)
+	if _, err := Initialize(context.Background(), dir, Inputs{NATSServer: server}); err != nil {
+		t.Fatal(err)
+	}
+	key, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	expired := &x509.Certificate{SerialNumber: big.NewInt(2), Subject: pkix.Name{CommonName: "expired"},
+		NotBefore: time.Now().Add(-48 * time.Hour), NotAfter: time.Now().Add(-time.Hour)}
+	der, err := x509.CreateCertificate(rand.Reader, expired, expired, &key.PublicKey, key)
+	if err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(dir, "tls-server-cert.pem")
+	if err := os.Remove(path); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(path, pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: der}), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _, _ = Stop(context.Background(), dir) })
+	began := time.Now()
+	if _, err := Start(context.Background(), dir); !errors.Is(err, ErrTLSExpired) || time.Since(began) > 2*time.Second {
+		t.Fatalf("expired certificate must be refused at once, got %v after %s", err, time.Since(began))
 	}
 }
 
