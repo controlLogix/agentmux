@@ -174,98 +174,272 @@ output for a corrected attempt; do not delete other installations or data.
 
 ## Install, then initialize this user's enrollment
 
+This is the sequence verified on Nick's Mac for AMUX-728 (profile 7, October 2026):
+foundation and launcher install, client install, application runtime, enrollment
+ceremony, profile preparation, installer check, startup, selected Hub start and
+`ping`. Each step names its owner command. Do not patch registration, enrollment or
+database files to get past a refusal; record the refusal in Jira and fix its owner.
+
+### 1. Install the foundation and the stable launcher
+
 Package preparation needs no administrator. To install the reviewed selection on
 the developer's own machine, use the existing administrator boundary:
 
 ```sh
-sudo -n "$AMUX_DEV_DIR/agentmux-install" install \
+sudo "$AMUX_DEV_DIR/agentmux-install" install \
   --selection "$AMUX_SELECTION" --selection-sha256 "$AMUX_SELECTION_SHA" \
   --owner-uid "$(id -u)"
 ```
 
-Use only this specific authorized command. If administrator authentication is
-needed, follow the current client's permissions and have the user authenticate
-locally; never request or expose a password. This installs a new digest-named
-foundation. It does **not** switch the shared launcher, start services, install a
-Python client, register a profile or prove readiness. Replacing a shared launcher
-requires its exact current digest and consideration of existing registrations;
-follow [platform installation](PLATFORM_INSTALLATION.md).
+Use only this specific authorized command. The user types the administrator
+password in their own terminal; never request or expose it. Record the returned
+`installationId` as `AMUX_FOUNDATION_ID`. This installs a new digest-named
+foundation under `/Library/Application Support/Agentmux/Protected/releases/`. It
+does not start services, install a Python client or register a profile.
 
-Complete these receiving-machine steps in order, using the existing owners:
+Clients call the stable launcher
+`/Library/Application Support/Agentmux/Protected/agentmux-runtime`. On a machine
+that has none, install it from the same selection:
 
-1. **Build/install the ordinary client.** Follow
-   [the installed client package guide](INSTALLED_CLIENT_PACKAGE.md). Use the
-   returned foundation installation ID, exact standalone Python 3.14.4,
-   `client-requirements.lock`, this runtime, and this machine's admitted native
-   tool selection. The builder is `platform/installer/package_client.py`; inspect
-   its `--help`. `agentmux-install verify-client` precedes explicit `install-client`.
-   If the complete locked dependencies are already cached, prepare an isolated
-   directory with the command below. A missing cache entry is a concrete missing
-   prerequisite; follow the user's download authorization before fetching it.
+```sh
+sudo "$AMUX_DEV_DIR/agentmux-install" install-launcher \
+  --selection "$AMUX_SELECTION" --selection-sha256 "$AMUX_SELECTION_SHA" \
+  --owner-uid "$(id -u)"
+```
 
-   ```sh
-   AMUX_PYTHON_ROOT=$("$AMUX_PYTHON" -I -c 'import sys; print(sys.prefix)')
-   uv pip install --offline --python "$AMUX_PYTHON" \
-     --target "$AMUX_DEV_DIR/dependencies" --no-deps \
-     --requirement "$AMUX_REPO/platform/installer/client-requirements.lock"
-   ```
+To replace an existing launcher, add
+`--replace-launcher-sha256 sha256:<current launcher digest>` (for example from
+`shasum -a 256` of the installed file). An installed client only runs under the
+launcher whose digest matches its packaged frontend, so replacing the launcher
+stops older clients: build and install a new client afterwards (step 2). See
+[client launcher integration](CLIENT_LAUNCHER_INTEGRATION.md).
 
-   Set `AMUX_FOUNDATION_ID` to the installation ID returned by this foundation's
-   successful `install`, and `AMUX_CORE_TOOLS` to the new machine's reviewed native
-   core tool selection. Then run the existing builder from the repository root:
+```sh
+AMUX_RUNTIME="/Library/Application Support/Agentmux/Protected/agentmux-runtime"
+```
 
-   ```sh
-   cd "$AMUX_REPO"
-   "$AMUX_PYTHON" platform/installer/package_client.py \
-     --python-root "$AMUX_PYTHON_ROOT" \
-     --dependencies "$AMUX_DEV_DIR/dependencies" \
-     --frontend "$AMUX_DEV_DIR/agentmux-runtime" \
-     --foundation-installation "$AMUX_FOUNDATION_ID" \
-     --native-core-tools "$AMUX_CORE_TOOLS" \
-     --output "$AMUX_DEV_DIR/client-package" \
-     --selection-output "$AMUX_DEV_DIR/client-selection.json"
-   ```
+### 2. Build, verify and install the client
 
-   Review the builder's returned selection digest and use it with `verify-client`
-   and the authorized `install-client`. This selection installs a package; it is
-   different from the later client's private enrollment selection.
-2. **Prepare local identity and application enrollment.** Use this machine's
-   credentials, broker/TLS authority, workspace paths, identity/message/Work
-   application selections and current grants. Follow
-   [client startup](CLIENT_STARTUP.md) and
-   [native client setup](NATIVE_CLIENT_SETUP.md). Ryan's retained test fixture,
-   profile registration, release selection and credentials are not portable input.
-   Test-only `identity/bootstrap.py` and old `launcher/testdata` scripts are not a
-   general production enrollment command. Do not run historical helpers containing
-   another user's absolute paths.
-3. **Create/register the profile through the owner.** Prepare the complete private
-   `prepare-owner-profile` request, including its already enrolled `coreHub`
-   selection for core commands. Preview using `--request` and the independently
-   reviewed `--request-sha256`; apply that same request with `--apply` only after
-   review. Follow the request shape and recovery instructions in the native client
-   setup guide. Do not invent grants or patch registration/database files.
-   The request's release directory must identify the new installed foundation
-   under `/Library/Application Support/Agentmux/Protected/releases/`, and its
-   runtime path/digest must identify the admitted installed executable. Do not
-   substitute the writable staging paths from `foundation-selection.json` for
-   installed host policy. Review and pin the complete new owner request separately.
-4. **Select the repository profile.** Its `.agentmux/config.json` references the
-   admitted central profile ID. Project and/or environment belong in the profile;
-   at least one is required. A display name such as `Nick - agentmux - dev` is a
-   label, not authorization. Use the actual generated profile ID, not the example
-   ID in a guide. Keep private profile metadata outside version control.
-5. **Verify, then run.** Run `agentmux-install check --host-policy PATH --workspace
-   REPO` with the actual local private policy. Start the selected Hub in the
-   foreground, then check `ping`, `status`, Work and events using the commands in
-   the platform installation guide. Keep the original operation ID for uncertain
-   spawn/kill/Work retries. Stop and join owned resources after testing.
+Follow [the installed client package guide](INSTALLED_CLIENT_PACKAGE.md). Use the
+foundation installation ID, exact standalone Python 3.14.4,
+`client-requirements.lock`, the runtime built above and this machine's admitted
+native tool selection. If the complete locked dependencies are already cached,
+prepare an isolated directory with the command below. A missing cache entry is a
+concrete missing prerequisite; follow the user's download authorization before
+fetching it.
 
-There is currently no single supported command that invents all fresh-machine
-identity, broker and core application grants. If the documented owner inputs or
-provisioning route are missing, record the exact remaining setup blocker in Jira
-and implement its bounded prerequisite. Do not report that a signing key, successful
-package preparation, a passing unit test or an infrastructure-only profile supplies
-those grants. No step here requires Ryan's private signing key.
+```sh
+AMUX_PYTHON_ROOT=$("$AMUX_PYTHON" -I -c 'import sys; print(sys.prefix)')
+uv pip install --offline --python "$AMUX_PYTHON" \
+  --target "$AMUX_DEV_DIR/dependencies" --no-deps \
+  --requirement "$AMUX_REPO/platform/installer/client-requirements.lock"
+```
+
+Set `AMUX_CORE_TOOLS` to this machine's reviewed native core tool selection. Then
+build, verify and install from the repository root. Each rebuild needs a fresh
+`--output` directory.
+
+```sh
+cd "$AMUX_REPO"
+"$AMUX_PYTHON" platform/installer/package_client.py \
+  --python-root "$AMUX_PYTHON_ROOT" \
+  --dependencies "$AMUX_DEV_DIR/dependencies" \
+  --frontend "$AMUX_DEV_DIR/agentmux-runtime" \
+  --foundation-installation "$AMUX_FOUNDATION_ID" \
+  --native-core-tools "$AMUX_CORE_TOOLS" \
+  --output "$AMUX_DEV_DIR/client-package" \
+  --selection-output "$AMUX_DEV_DIR/client-selection.json" >"$AMUX_DEV_DIR/client-build.json"
+AMUX_CLIENT_SHA=$("$AMUX_PYTHON" -I -c 'import json,os; print(json.load(open(os.environ["AMUX_DEV_DIR"]+"/client-build.json"))["selectionDigest"])')
+"$AMUX_DEV_DIR/agentmux-install" verify-client \
+  --selection "$AMUX_DEV_DIR/client-selection.json" --selection-sha256 "$AMUX_CLIENT_SHA"
+sudo "$AMUX_DEV_DIR/agentmux-install" install-client \
+  --selection "$AMUX_DEV_DIR/client-selection.json" --selection-sha256 "$AMUX_CLIENT_SHA" \
+  --owner-uid "$(id -u)"
+```
+
+Success reports `"outcome":"installed"`. Record its `installationId` as
+`AMUX_CLIENT_ID`. This package selection is different from the later private
+enrollment selections.
+
+### 3. Initialize the application runtime (once per installation)
+
+Each installation owns a separate native `nats-server` 2.15.0 in operator/JWT mode,
+apart from the protected infrastructure broker. `init` is create-only and
+resumable; it generates the operator, accounts, TLS and JetStream configuration in
+the per-user `application-runtime` directory. Pass the absolute path of the
+admitted nats-server 2.15.0 executable on this machine.
+
+```sh
+"$AMUX_RUNTIME" application-runtime init --nats-server /absolute/path/to/nats-server
+"$AMUX_RUNTIME" application-runtime start
+"$AMUX_RUNTIME" application-runtime status
+```
+
+`status` reports the runtime ID and its `tls://127.0.0.1:<port>` endpoint. Keep the
+application runtime running for enrollment and for every profile that uses it.
+`application-runtime stop` stops it.
+
+### 4. Write the private owner and setup requests
+
+Create a private request directory (mode `0700`) under
+`~/Library/Application Support/Agentmux/`, one per profile. Write each request
+once, mode `0600`, and never edit it afterwards; a changed request needs a new
+digest and a new review.
+
+* `owner-request.json` follows the closed `prepare-owner-profile` format in
+  [native client setup](NATIVE_CLIENT_SETUP.md). Use fresh `profileId`,
+  `instanceId` and owner Hub ID values, `clientInstallationId` set to
+  `AMUX_CLIENT_ID`, the release fields from `foundation-selection.json` with
+  `packageDirectory` set to the installed
+  `/Library/Application Support/Agentmux/Protected/releases/<AMUX_FOUNDATION_ID>`,
+  and `runtimeExecutable` set to that directory's `agentmux-runtime` and the
+  selection's runtime digest. `hostPort`, `composeProject`, `serverName` and
+  `domain` must not collide with another profile's infrastructure broker on this
+  machine.
+* `setup-request.json` is the enrollment ceremony's input
+  (`identity/local_enrollment.py`). It has exactly these fields:
+
+  ```json
+  {
+   "schemaVersion": "1.0.0",
+   "ownerRequest": {"path": "/abs/path/owner-request.json", "sha256": "sha256:<owner request digest>"},
+   "projectId": "agentmux",
+   "repositories": [{"root": "/abs/path/to/agentmux", "localName": "agentmux",
+                     "normalizedRemote": "github.com/controllogix/agentmux"}],
+   "localPeer": "nick", "localNode": "nick_mbp", "messagePeer": "ryan",
+   "validityDays": 365
+  }
+  ```
+
+  `repositories` must cover exactly the owner request's `approvedWorkspaceRoots`.
+  `localPeer` and `messagePeer` must differ; `validityDays` is 1 to 397.
+
+Record both digests (`"sha256:$(shasum -a 256 < FILE | cut -d' ' -f1)"`) as
+`AMUX_OWNER_SHA` and `AMUX_SETUP_SHA`, with `AMUX_REQUESTS` set to the directory.
+Preview the base owner request; it must report `request_checked`:
+
+```sh
+"$AMUX_RUNTIME" prepare-owner-profile \
+  --request "$AMUX_REQUESTS/owner-request.json" --request-sha256 "$AMUX_OWNER_SHA"
+```
+
+### 5. Run the enrollment ceremony
+
+```sh
+"$AMUX_RUNTIME" application-enroll --client-installation "$AMUX_CLIENT_ID" \
+  --request "$AMUX_REQUESTS/setup-request.json" --request-sha256 "$AMUX_SETUP_SHA" \
+  >"$AMUX_REQUESTS/enroll-result.json"
+```
+
+The ceremony runs against this installation's application runtime. It writes
+`application-enrollment/<profileId>/` (identity, definitions and integration
+issuers, least-privilege users, the attestor and five client session selections)
+and the profile's Hub home `hubs/<first 12 hex of the profile ID>/hub/`
+(`federation.toml`, `config.toml` and `hub.db` with the default plugin schema). It
+is create-only: rerunning with the same request reuses retained material. The
+result's `coreHub` object (`selection`, `sha256`) pins the core Hub manifest.
+
+### 6. Prepare the profile with its core Hub, recovering if needed
+
+Write `owner-request-core.json`: the base owner request plus the `coreHub` object
+from the enrollment result, and nothing else changed. Create it exclusively with
+mode `0600`, for example:
+
+```sh
+"$AMUX_PYTHON" -I - "$AMUX_REQUESTS" <<'EOF'
+import json, os, sys
+q = sys.argv[1]
+base = json.load(open(q + '/owner-request.json'))
+final = dict(base, coreHub=json.load(open(q + '/enroll-result.json'))['coreHub'])
+fd = os.open(q + '/owner-request-core.json', os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+os.write(fd, (json.dumps(final, indent=1, sort_keys=True) + '\n').encode()); os.close(fd)
+EOF
+AMUX_CORE_SHA="sha256:$(shasum -a 256 < "$AMUX_REQUESTS/owner-request-core.json" | cut -d' ' -f1)"
+"$AMUX_RUNTIME" prepare-owner-profile \
+  --request "$AMUX_REQUESTS/owner-request-core.json" --request-sha256 "$AMUX_CORE_SHA"
+"$AMUX_RUNTIME" prepare-owner-profile \
+  --request "$AMUX_REQUESTS/owner-request-core.json" --request-sha256 "$AMUX_CORE_SHA" --apply
+```
+
+Success reports `prepared` and creates
+`~/Library/Application Support/Agentmux/profiles/<profileId>/`. The apply has a
+10-second deadline and measured 7.4–8.5 s on Nick's Mac. If it reports
+`review_required`, keep every file and run the supported recovery with the same
+request and digest (preview first, then `--apply`):
+
+```sh
+"$AMUX_RUNTIME" recover-owner-profile \
+  --request "$AMUX_REQUESTS/owner-request-core.json" --request-sha256 "$AMUX_CORE_SHA"
+"$AMUX_RUNTIME" recover-owner-profile \
+  --request "$AMUX_REQUESTS/owner-request-core.json" --request-sha256 "$AMUX_CORE_SHA" --apply
+```
+
+Recovery reported `prepared` in about 1 s. Its refusals and limits are described
+in [native client setup](NATIVE_CLIENT_SETUP.md).
+
+### 7. Check, then start the owner
+
+```sh
+AMUX_PROFILE=profile_<generated id>
+AMUX_PROFILE_DIR="$HOME/Library/Application Support/Agentmux/profiles/$AMUX_PROFILE"
+AMUX_ENROLLMENT="$HOME/Library/Application Support/Agentmux/application-enrollment/$AMUX_PROFILE"
+"$AMUX_DEV_DIR/agentmux-install" check \
+  --host-policy "$AMUX_PROFILE_DIR/host-policy.json" --workspace "$AMUX_REPO"
+"$AMUX_RUNTIME" startup --client-installation "$AMUX_CLIENT_ID" \
+  --selection "$AMUX_ENROLLMENT/client-selection-identity.json" --output json
+```
+
+`check` must report `enrollment_verified`. `startup` brings up the owner host
+(`agentmux-runtime host --host-policy …`), its kernel roles, the attestor and the
+application services. Its report can still say `progress` /
+`observation_unavailable` while everything comes up, so confirm directly: the
+services listen on the private browser port in
+`$AMUX_ENROLLMENT/service-selection.json` (`localBrowser.port`), and the
+repository's `.agentmux/agents/.owner-fence` names this profile's Hub ID.
+
+### 8. Start the selected core Hub, then ping it
+
+Run the Hub in its own terminal and leave it running; it stops when that terminal
+or its parent process ends.
+
+```sh
+"$AMUX_RUNTIME" profile-core --profile-id "$AMUX_PROFILE" --repository-root "$AMUX_REPO" -- start
+```
+
+It logs `hub up <home>/hub/hub.sock` after about 8–12 s. From another terminal:
+
+```sh
+"$AMUX_RUNTIME" profile-core --profile-id "$AMUX_PROFILE" --repository-root "$AMUX_REPO" -- ping
+```
+
+A working Hub answers with `"caller": "operator"`, `lifecycleOperationIds` and
+`workOperationIds` true. Use the other Hub commands (`status`, Work, events) from
+[platform installation](PLATFORM_INSTALLATION.md). Do not use an older
+`~/.local/bin/agentmux` wrapper; it belongs to the previous harness. Any failure
+prints only `Selected core Hub setup or command failed. No default Hub was used.`;
+record the profile and step in Jira rather than retrying with changed files.
+
+### 9. Stop and retire a profile
+
+Stop the Hub with Ctrl-C in its terminal. Stop the owner by sending `SIGTERM` to
+its `agentmux-runtime host --host-policy …/<profileId>/…` process, then wait until
+the host and its child processes have exited. Only one owner can hold the
+repository's definitions at a time. Before enrolling a replacement profile, stop
+the old owner, confirm `.agentmux/agents/.owner-fence` names the retired profile's
+Hub ID and that neither it nor `.writer-lock` is open (`lsof`), then remove those
+two files. Keep the retired profile's files for inspection.
+
+### Known limits
+
+* The prepare apply deadline is tight; expect occasional recovery (step 6).
+* `startup` may report `observation_unavailable` for a healthy start (step 7).
+* Identity handler errors reach clients only as `identity_outcome_unconfirmed`,
+  and the services process's stderr is discarded, so start failures need tracing.
+* No end-to-end test yet runs Hub start against the ceremony's output.
+
+Track these on AMUX-728. Preparing a package or passing unit tests does not
+qualify installed spawn, kill and recovery (AMUX-725). No step here requires
+Ryan's private signing key, and none of these private files belong in Git.
 
 ## Continue the assigned implementation
 
