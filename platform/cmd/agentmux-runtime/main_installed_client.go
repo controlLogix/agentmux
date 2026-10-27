@@ -50,6 +50,8 @@ func parseInstalledClientSetup(args []string) (installedClientSetupOptions, erro
 
 var localEnrollmentRequestDigest = regexp.MustCompile(`^sha256:[0-9a-f]{64}$`)
 
+var definitionsOwnerHub = regexp.MustCompile(`^[a-z][a-z0-9_-]{0,63}$`)
+
 func runInstalledClient(ctx context.Context, args []string) (failure error) {
 	if len(args) > 0 && args[0] == "application-enroll" {
 		// application-enroll --client-installation ID --request PATH --request-sha256 DIGEST
@@ -64,6 +66,21 @@ func runInstalledClient(ctx context.Context, args []string) (failure error) {
 		}
 		defer func() { failure = errors.Join(failure, admitted.Close()) }()
 		return admitted.ExecLocalEnrollment(ctx, args[4], args[6])
+	}
+	if len(args) > 0 && args[0] == "retire-definitions-owner" {
+		// retire-definitions-owner --client-installation ID --repository-root PATH --hub-id HUB [--apply]
+		if (len(args) != 7 && len(args) != 8) || args[1] != "--client-installation" || !protected.ValidClientInstallationID(args[2]) ||
+			args[3] != "--repository-root" || !filepath.IsAbs(args[4]) || filepath.Clean(args[4]) != args[4] || len(args[4]) > 4096 ||
+			strings.ContainsAny(args[4], "\x00\r\n") || args[5] != "--hub-id" || !definitionsOwnerHub.MatchString(args[6]) ||
+			(len(args) == 8 && args[7] != "--apply") {
+			return errors.New("installed_client_arguments_invalid")
+		}
+		admitted, err := protected.PrepareInstalledClient(ctx, args[2])
+		if err != nil {
+			return err
+		}
+		defer func() { failure = errors.Join(failure, admitted.Close()) }()
+		return admitted.ExecDefinitionsOwnerRetirement(ctx, args[4], args[6], len(args) == 8)
 	}
 	if len(args) > 0 && (args[0] == "client-setup" || args[0] == "claude-hook-setup") {
 		selected, err := parseInstalledClientSetup(args)

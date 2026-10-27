@@ -863,6 +863,33 @@ class LocalEnrollmentBootstrapRoute(unittest.TestCase):
         self.assertIn("identity/bootstrap.py", package.MODULES)
 
 
+class DefinitionsRetirementBootstrapRoute(unittest.TestCase):
+    root = "/protected/clients/" + "a" * 64
+    repository = "/Users/owner/repo 'literal'"
+
+    def test_retirement_route_keeps_literal_repository_hub_and_apply(self):
+        base = ["retire-definitions-owner", "--client-installation", "a" * 64,
+                "--repository-root", self.repository, "--hub-id", "hub_nick_c44c0018"]
+        self.assertEqual(bootstrap._arguments(self.root, base),
+                         ("retire-definitions-owner", ["--repository-root", self.repository,
+                                                       "--hub-id", "hub_nick_c44c0018"]))
+        self.assertEqual(bootstrap._arguments(self.root, base + ["--apply"])[1][-1], "--apply")
+
+    def test_retirement_route_refuses_other_installations_and_shapes(self):
+        base = ["retire-definitions-owner", "--client-installation", "a" * 64,
+                "--repository-root", self.repository, "--hub-id", "hub_old"]
+        for changed in (base[:5], base + ["--force"], base + ["--apply", "--apply"],
+                        [*base[:2], "b" * 64, *base[3:]],
+                        [*base[:4], "relative", *base[5:]],
+                        [*base[:6], "Bad Hub"],
+                        [*base[:5], "--hub", "hub_old"]):
+            with self.subTest(arguments=changed), self.assertRaises(SystemExit):
+                bootstrap._arguments(self.root, changed)
+
+    def test_package_roster_includes_the_retirement_command(self):
+        self.assertIn("dashboard/definition_retirement.py", package.MODULES)
+
+
 class PackagedImportClosure(unittest.TestCase):
     # Imported only behind a guard that the supported installed routes never
     # take. Anything else a packaged module imports must be in the roster.

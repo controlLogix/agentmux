@@ -98,6 +98,28 @@ func TestInstalledClientPrivateServicesHaveNoPublicRoute(t *testing.T) {
 	}
 }
 
+func TestDefinitionsRetirementRouteRefusesMalformedArgumentsBeforeAdmission(t *testing.T) {
+	id := strings.Repeat("a", 64)
+	repository := "/Users/owner/repo 'literal'"
+	for _, invalid := range [][]string{
+		{"retire-definitions-owner"},
+		{"retire-definitions-owner", "--client-installation", id, "--repository-root", repository},
+		{"retire-definitions-owner", "--client-installation", "short", "--repository-root", repository, "--hub-id", "hub_old"},
+		{"retire-definitions-owner", "--client-installation", id, "--repository-root", "relative", "--hub-id", "hub_old"},
+		{"retire-definitions-owner", "--client-installation", id, "--repository-root", "/Users/../repo", "--hub-id", "hub_old"},
+		{"retire-definitions-owner", "--client-installation", id, "--repository-root", "/Users/re\npo", "--hub-id", "hub_old"},
+		{"retire-definitions-owner", "--client-installation", id, "--repository-root", repository, "--hub-id", "Bad Hub"},
+		{"retire-definitions-owner", "--client-installation", id, "--repository-root", repository, "--hub-id", "hub_old", "--force"},
+		{"retire-definitions-owner", "--client-installation", id, "--repository-root", repository, "--hub", "hub_old"},
+	} {
+		var output bytes.Buffer
+		err := run(context.Background(), invalid, &output)
+		if err == nil || err.Error() != "installed_client_arguments_invalid" || output.Len() != 0 {
+			t.Fatalf("malformed retirement route reached admission or emitted output: %v %v", invalid, err)
+		}
+	}
+}
+
 func TestLocalEnrollmentRouteRefusesMalformedArgumentsBeforeAdmission(t *testing.T) {
 	id := strings.Repeat("a", 64)
 	request, digest := "/private/setup 'literal' request.json", "sha256:"+strings.Repeat("b", 64)

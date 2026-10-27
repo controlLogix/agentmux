@@ -433,11 +433,32 @@ record the profile and step in Jira rather than retrying with changed files.
 
 Stop the Hub with Ctrl-C in its terminal. Stop the owner by sending `SIGTERM` to
 its `agentmux-runtime host --host-policy …/<profileId>/…` process, then wait until
-the host and its child processes have exited. Only one owner can hold the
-repository's definitions at a time. Before enrolling a replacement profile, stop
-the old owner, confirm `.agentmux/agents/.owner-fence` names the retired profile's
-Hub ID and that neither it nor `.writer-lock` is open (`lsof`), then remove those
-two files. Keep the retired profile's files for inspection.
+the host and its child processes have exited.
+
+Only one owner can hold the repository's definitions at a time. Before preparing a
+replacement profile, retire the stopped owner's definitions fence with the
+installed client, naming the retired profile's Hub ID. Preview first, then apply:
+
+```sh
+"$AMUX_RUNTIME" retire-definitions-owner --client-installation "$AMUX_CLIENT_ID" \
+  --repository-root "$AMUX_REPO" --hub-id <retired hubId>
+"$AMUX_RUNTIME" retire-definitions-owner --client-installation "$AMUX_CLIENT_ID" \
+  --repository-root "$AMUX_REPO" --hub-id <retired hubId> --apply
+```
+
+The preview reports `retirable` and changes nothing; `--apply` reports `retired`
+(and `already_retired` when repeated). It refuses with:
+
+* `definition_owner_running` while an owner still holds the fence's lease;
+* `definition_owner_fence_mismatch` when the fence names another Hub;
+* `definition_owner_fence_absent` when there is no fence.
+
+Retirement keeps legacy definition writes denied. The next profile's owner takes
+the fence over at startup. Never delete `.owner-fence` or `.writer-lock` by hand.
+
+An owner started from a client installed before this command holds no lease, so
+the command cannot see that it is running: stop it first, as above. Keep the
+retired profile's files for inspection.
 
 ### Known limits
 

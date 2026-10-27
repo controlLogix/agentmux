@@ -58,6 +58,13 @@ def _arguments(root, arguments):
             and arguments[3] == "--request" and _absolute(arguments[4])
             and arguments[5] == "--request-sha256" and re.fullmatch(r"sha256:[0-9a-f]{64}", arguments[6])):
         return arguments[0], ["--request", arguments[4], "--request-sha256", arguments[6]]
+    if (len(arguments) in (7, 8) and arguments[0] == "retire-definitions-owner"
+            and arguments[1] == "--client-installation" and re.fullmatch(r"[0-9a-f]{64}", arguments[2])
+            and arguments[2] == os.path.basename(root)
+            and arguments[3] == "--repository-root" and _absolute(arguments[4])
+            and arguments[5] == "--hub-id" and re.fullmatch(r"[a-z][a-z0-9_-]{0,63}", arguments[6])
+            and arguments[7:] in ([], ["--apply"])):
+        return arguments[0], ["--repository-root", arguments[4], "--hub-id", arguments[6], *arguments[7:]]
     if (7 <= len(arguments) <= 134 and arguments[0] == 'registered-core'
             and _absolute(arguments[1]) and _registration_descriptor(arguments[2])
             and re.fullmatch(r'sha256:[0-9a-f]{64}', arguments[3])
@@ -217,6 +224,12 @@ def main():
     if operation == "application-enroll":
         from identity.local_enrollment import main as enrollment_main
         raise SystemExit(enrollment_main(selected))
+    if operation == "retire-definitions-owner":
+        # The definitions owner imports its siblings from these fixed roots.
+        sys.path[:0] = [os.path.join(root, "app", "dashboard"),
+                       os.path.join(root, "app", "taskmgmt")]
+        from definition_retirement import main as retirement_main
+        raise SystemExit(retirement_main(selected))
     if operation == "claude-hook-setup":
         from dashboard.claude_hook_setup import main as hook_setup_main
         raise SystemExit(hook_setup_main(selected[1:], configuration_path=selected[0]))

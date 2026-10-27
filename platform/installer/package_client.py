@@ -71,6 +71,8 @@ MODULES = (
     "dashboard/definition_command_service.py", "dashboard/definition_commands.py",
     "dashboard/definition_completion.py", "dashboard/definition_effects.py",
     "dashboard/definition_owner_adapter.py", "dashboard/definition_service.py",
+    # Owner-supported retirement of a stopped profile's definitions fence.
+    "dashboard/definition_retirement.py",
     "hub/fed/owned_nats.py", "hub/fed/session.py", "hub/names.py", "hub/store.py",
     "hub/migration_recovery.py",
     "identity/application_host_selection.py", "identity/application_service_selection.py",

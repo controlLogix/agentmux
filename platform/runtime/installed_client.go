@@ -266,6 +266,29 @@ func (a *InstalledClientAdmission) ExecLocalEnrollment(ctx context.Context, requ
 	return a.exec(ctx, []string{"application-enroll", "--client-installation", a.id, "--request", request, "--request-sha256", digest}, home)
 }
 
+var definitionsOwnerHub = regexp.MustCompile(`^[a-z][a-z0-9_-]{0,63}$`)
+
+// ExecDefinitionsOwnerRetirement retires a stopped profile's repository
+// definitions fence (AMUX-728). The installed Python owner proves the old owner
+// stopped and keeps legacy writes denied; without apply it only reports.
+func (a *InstalledClientAdmission) ExecDefinitionsOwnerRetirement(ctx context.Context, repository, hub string, apply bool) error {
+	if !validClientSelection(repository) || !definitionsOwnerHub.MatchString(hub) {
+		return &clientFailure{code: "selection_invalid"}
+	}
+	home, err := installedClientAccountHome()
+	if err != nil {
+		return err
+	}
+	if a == nil {
+		return &clientFailure{code: "recheck_invalid"}
+	}
+	args := []string{"retire-definitions-owner", "--client-installation", a.id, "--repository-root", repository, "--hub-id", hub}
+	if apply {
+		args = append(args, "--apply")
+	}
+	return a.exec(ctx, args, home)
+}
+
 // ExecClaudeHookSetup selects the account's Claude namespace before isolated
 // Python starts. A present invalid override never falls back to another file.
 func (a *InstalledClientAdmission) ExecClaudeHookSetup(ctx context.Context, selection, receipt, operation string, apply bool) error {

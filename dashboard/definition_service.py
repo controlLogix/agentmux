@@ -32,6 +32,32 @@ _WRITE_LOCK = threading.Lock()
 # enrollment or business-state authority; every retained command still admits
 # current authority. Startup must bind its enrolled owner before serving edits.
 _WRITER_CLAIMS = {}
+# A live retained owner holds an exclusive lock on .owner-lease for the rest
+# of its process lifetime. Retirement proves the owner stopped by taking it.
+_WRITER_LEASES = {}
+# A retired fence keeps legacy writes denied until the next owner claims it.
+_RETIRED = 'retiredOwner'
+
+
+def _fence_owner(raw):
+    """The hub a fence names, or None for a malformed or foreign fence."""
+    try:
+        value = json.loads(raw)
+    except (ValueError, UnicodeDecodeError):
+        return None
+    hub = value.get('hubId') if isinstance(value, dict) else None
+    return hub if isinstance(hub, str) and hub else None
+
+
+def _retired_owner(raw):
+    """The retired hub a retirement record names, or None."""
+    try:
+        value = json.loads(raw)
+    except (ValueError, UnicodeDecodeError):
+        return None
+    if not isinstance(value, dict) or set(value) != {_RETIRED} or not isinstance(value[_RETIRED], dict):
+        return None
+    return _fence_owner(json.dumps(value[_RETIRED]))
 
 
 @dataclass(frozen=True, repr=False)
@@ -125,16 +151,33 @@ class DefinitionService:
             if existing is not None and (existing.owner != owner or existing.directory != directory):
                 raise ccboard.Refused('definition directory already has another retained owner', [])
             fence = self._read_writer_fence(scope)
-            if fence is not None and fence != owner:
+            retired = fence is not None and _retired_owner(fence) is not None
+            if fence is not None and fence != owner and not retired:
                 raise ccboard.Refused('definition directory already has another retained owner', [])
-            if fence is None:
-                # Never replace or roll back a fence after an uncertain write.
-                # Its only legacy effect is denial, including malformed fences.
-                fd = os.open(directory / '.owner-fence', os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
-                with os.fdopen(fd, 'wb') as stream:
-                    stream.write(owner)
-                    stream.flush()
-                    os.fsync(stream.fileno())
+            lease = None
+            if existing is None and directory not in _WRITER_LEASES:
+                lease = self._take_lease(directory)
+                if lease is None:
+                    raise ccboard.Refused('definition directory already has another retained owner', [])
+            try:
+                if fence is None:
+                    # Never replace or roll back a fence after an uncertain write.
+                    # Its only legacy effect is denial, including malformed fences.
+                    fd = os.open(directory / '.owner-fence', os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+                    with os.fdopen(fd, 'wb') as stream:
+                        stream.write(owner)
+                        stream.flush()
+                        os.fsync(stream.fileno())
+                elif retired:
+                    # Only an explicit retirement record is ever replaced, and
+                    # atomically, so legacy writes stay denied throughout.
+                    self._replace_fence(directory, owner)
+            except BaseException:
+                if lease is not None:
+                    os.close(lease)
+                raise
+            if lease is not None:
+                _WRITER_LEASES[directory] = lease
             # Persist newly created ancestor entries as well as the fence.
             # Repeat after an uncertain prior handoff before admitting a writer.
             root = self.scope.project_root if scope == 'repo' else self.scope.global_root
@@ -155,6 +198,75 @@ class DefinitionService:
             _WRITER_CLAIMS[directory] = claim
             _WRITER_CLAIMS[lexical] = claim
             return claim
+
+    def retire_retained_writer(self, scope, hub_id, *, apply=False):
+        """Owner-supported retirement of a stopped retained owner's fence.
+
+        The fence must name hub_id, and no live owner may hold the lease, in
+        this or any other process. Retirement rewrites the fence as a
+        retirement record: legacy writes stay denied, and the next retained
+        owner claims the directory atomically. Without apply nothing changes.
+        """
+        if scope not in ('repo', 'global') or type(hub_id) is not str or not hub_id or len(hub_id) > 128:
+            raise ccboard.Invalid('invalid retained writer binding')
+        with _WRITE_LOCK, self._writer_lock(scope):
+            directory = self._writer_directory(scope)
+            lexical = next(path for path, kind in self._directories() if kind == scope).absolute()
+            fence = self._read_writer_fence(scope)
+            if fence is None:
+                raise ccboard.Refused('definition_owner_fence_absent', [])
+            if _retired_owner(fence) == hub_id:
+                return {'outcome': 'already_retired', 'hubId': hub_id}
+            if _fence_owner(fence) != hub_id:
+                raise ccboard.Refused('definition_owner_fence_mismatch', [])
+            if (_WRITER_CLAIMS.get(lexical) or _WRITER_CLAIMS.get(directory)) is not None:
+                raise ccboard.Refused('definition_owner_running', [])
+            lease = self._take_lease(directory)
+            if lease is None:
+                raise ccboard.Refused('definition_owner_running', [])
+            try:
+                if not apply:
+                    return {'outcome': 'retirable', 'hubId': hub_id}
+                retired = json.dumps({_RETIRED: json.loads(fence)}, sort_keys=True, separators=(',', ':')).encode()
+                self._replace_fence(directory, retired)
+                return {'outcome': 'retired', 'hubId': hub_id}
+            finally:
+                os.close(lease)
+
+    def _take_lease(self, directory):
+        """Return the held owner lease, or None while another owner holds it."""
+        import fcntl
+        fd = os.open(directory / '.owner-lease', os.O_RDWR | os.O_CREAT | os.O_NOFOLLOW | os.O_CLOEXEC, 0o600)
+        try:
+            info = os.fstat(fd)
+            if not stat.S_ISREG(info.st_mode) or info.st_nlink != 1:
+                raise ccboard.Refused('definition writer fence requires reconciliation', [])
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            os.close(fd)
+            return None
+        except BaseException:
+            os.close(fd)
+            raise
+        return fd
+
+    def _replace_fence(self, directory, raw):
+        staged = directory / '.owner-fence.replacing'
+        try:
+            os.unlink(staged)
+        except FileNotFoundError:
+            pass
+        fd = os.open(staged, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+        with os.fdopen(fd, 'wb') as stream:
+            stream.write(raw)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.rename(staged, directory / '.owner-fence')
+        fd = os.open(directory, os.O_RDONLY | os.O_DIRECTORY)
+        try:
+            os.fsync(fd)
+        finally:
+            os.close(fd)
 
     def _writer_directory(self, scope):
         return next(directory for directory, kind in self._directories() if kind == scope).resolve()
