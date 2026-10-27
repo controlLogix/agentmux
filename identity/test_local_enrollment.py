@@ -648,6 +648,31 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
         without = {k: v for k, v in selection.items() if k != 'localBrowser'}
         self.assertIsNone(ApplicationServiceSelection(canonical_bytes(without)).local_browser_port())
 
+    async def test_private_browser_port_avoids_temporary_range_and_retained_ports(self):
+        # Review item 8: a retained port from the temporary range can be taken
+        # by any outgoing connection while its installation is stopped, and a
+        # second profile could pick a stopped profile's retained port.
+        first = Installation(self.runtime)
+        await first.run()
+        kept = _read_material(first.enrollment / 'service-selection.json', max_bytes=1048576)['localBrowser']['port']
+        temporary = int(subprocess.run(['sysctl', '-n', 'net.inet.ip.portrange.first'],
+                                       capture_output=True, text=True, check=True).stdout)
+        self.assertLess(kept, min(temporary, 32768))
+        second = Installation(self.runtime, hostPort=4334)
+        ceremony = local_enrollment.Ceremony(*local_enrollment.admit_request(str(second.request_path),
+                                                                              second.request_digest), root=first.base)
+        try:
+            picks = {ceremony.local_browser_port() for _ in range(200)}
+            self.assertTrue(all(port < min(temporary, 32768) for port in picks), sorted(picks)[-3:])
+            # The retained port of the stopped first profile is never offered again.
+            offset = local_enrollment.PRIVATE_PORTS.index(kept)
+            size = len(local_enrollment.PRIVATE_PORTS)
+            with mock.patch.object(local_enrollment.secrets, 'randbelow',
+                                   side_effect=[offset] + [(offset + n) % size for n in range(1, 64)]):
+                self.assertNotEqual(ceremony.local_browser_port(), kept)
+        finally:
+            ceremony.account.wipe()
+
     async def test_three_installations_get_distinct_identities(self):
         seen = set()
         for _ in range(3):

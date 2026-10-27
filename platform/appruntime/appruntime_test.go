@@ -8,6 +8,7 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -299,6 +300,34 @@ func TestRecordWithoutCommandKeepsTheHistoricalName(t *testing.T) {
 	record, err := r.record()
 	if err != nil || record.Command != "nats-server" {
 		t.Fatalf("record: %v %+v", err, record)
+	}
+}
+
+// Review item 8: a retained port from the temporary range can be taken by any
+// outgoing connection while the runtime is stopped, so its start then fails.
+func TestRuntimePortIsChosenBelowTheTemporaryRange(t *testing.T) {
+	server := natsServer(t)
+	first, err := unix.SysctlUint32("net.inet.ip.portrange.first")
+	if err != nil {
+		t.Fatal(err)
+	}
+	limit := 32768
+	if int(first) < limit {
+		limit = int(first)
+	}
+	result, err := Initialize(context.Background(), runtimeDir(t), Inputs{NATSServer: server})
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, port, _ := net.SplitHostPort(strings.TrimPrefix(result.Manifest.Endpoint, "tls://"))
+	if value, _ := strconv.Atoi(port); value < 1024 || value >= limit {
+		t.Fatalf("runtime port %s is in the temporary range", port)
+	}
+	for i := 0; i < 200; i++ {
+		port, err := freePort()
+		if err != nil || port < 1024 || port >= limit {
+			t.Fatalf("port %d (%v) is in the temporary range", port, err)
+		}
 	}
 }
 

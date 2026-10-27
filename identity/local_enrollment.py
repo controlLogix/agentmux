@@ -67,6 +67,10 @@ SESSIONS = (('identity', 'identity', None), ('messages-operator', 'messages', 'o
 RETENTION = Retention(524288, 131072)
 ARTIFACT_BYTES = 1048576
 LEGACY_BROWSER_PORT = 8787
+# Retained private ports come from below every common temporary (ephemeral)
+# range: macOS and BSD start at 49152 and Linux at 32768. Outgoing connections
+# never take a port here, so a stopped installation keeps its port free.
+PRIVATE_PORTS = range(20000, 32768)
 # macOS limits a Unix socket path to 104 bytes; the selected core Hub route
 # (hub/core_profile.py) refuses a hub.sock path longer than this.
 HUB_SOCKET_BYTES = 103
@@ -344,13 +348,30 @@ class Ceremony:
     def local_browser_port(self):
         import socket
         reserved = {LEGACY_BROWSER_PORT, self.owner['hostPort'], int(self.runtime['endpoint'].rsplit(':', 1)[1])}
-        for _ in range(32):
+        reserved |= self.retained_browser_ports()
+        for _ in range(64):
+            port = PRIVATE_PORTS[secrets.randbelow(len(PRIVATE_PORTS))]
+            if port in reserved:
+                continue
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
-                probe.bind(('127.0.0.1', 0))
-                port = probe.getsockname()[1]
-            if 1024 <= port <= 65535 and port not in reserved:
-                return port
+                try:
+                    probe.bind(('127.0.0.1', port))
+                except OSError:
+                    continue
+            return port
         raise ContractError('local_enrollment_browser_port_unavailable')
+
+    def retained_browser_ports(self):
+        """Ports other profiles here already keep, running or stopped."""
+        ports = set()
+        for selection in self.directory.parent.glob('*/service-selection.json'):
+            try:
+                port = _read_material(selection, max_bytes=1048576).get('localBrowser', {}).get('port')
+            except (ContractError, OSError, ValueError):
+                continue
+            if type(port) is int:
+                ports.add(port)
+        return ports
 
     def storage_materials(self, staging, value, connection, payloads, interval):
         """Enroll the Hub's messages and Work storage owners on hub.db."""

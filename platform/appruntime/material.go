@@ -23,6 +23,7 @@ import (
 	"os/user"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 
@@ -303,13 +304,31 @@ func AdmitNATSServer(ctx context.Context, path string) (string, error) {
 	return "sha256:" + hex.EncodeToString(sum[:]), nil
 }
 
+// The retained runtime port comes from below every common temporary
+// (ephemeral) range: macOS and BSD start at 49152 and Linux at 32768. An
+// outgoing connection never takes a port here, so a stopped runtime keeps its
+// port free.
+const (
+	privatePortFirst = 20000
+	privatePortLast  = 32767
+)
+
 func freePort() (int, error) {
-	listener, err := net.Listen("tcp", "127.0.0.1:0")
-	if err != nil {
-		return 0, ErrInputs
+	span := big.NewInt(privatePortLast - privatePortFirst + 1)
+	for attempt := 0; attempt < 64; attempt++ {
+		offset, err := rand.Int(rand.Reader, span)
+		if err != nil {
+			return 0, ErrInputs
+		}
+		port := privatePortFirst + int(offset.Int64())
+		listener, err := net.Listen("tcp", net.JoinHostPort("127.0.0.1", strconv.Itoa(port)))
+		if err != nil {
+			continue
+		}
+		listener.Close()
+		return port, nil
 	}
-	defer listener.Close()
-	return listener.Addr().(*net.TCPAddr).Port, nil
+	return 0, ErrInputs
 }
 
 func newSeed(prefix nkeys.PrefixByte) ([]byte, error) {
