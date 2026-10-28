@@ -261,13 +261,21 @@ Success reports `"outcome":"installed"`. Record its `installationId` as
 `AMUX_CLIENT_ID`. This package selection is different from the later private
 enrollment selections.
 
-### 3. Initialize the application runtime (once per installation)
+### 3. Initialize the application runtime (once per macOS user)
 
-Each installation owns a separate native `nats-server` 2.15.0 in operator/JWT mode,
-apart from the protected infrastructure broker. `init` is create-only and
-resumable; it generates the operator, accounts, TLS and JetStream configuration in
-the per-user `application-runtime` directory. Pass the absolute path of the
-admitted nats-server 2.15.0 executable on this machine.
+An installation's application runtime is one native `nats-server` 2.15.0 per macOS
+user, in operator/JWT mode and apart from the protected infrastructure broker
+(AMUX-728 decision 10). Client upgrades keep it. Every profile of that user shares
+its one account and is kept apart by its own subjects, streams, reply prefixes and
+least-privilege credentials. `init` is create-only and resumable; it generates the
+operator, accounts, TLS and JetStream configuration in the per-user
+`application-runtime` directory. Pass the absolute path of the admitted
+nats-server 2.15.0 executable on this machine.
+
+After `init`, the server key is kept only in `tls-server-key.pem`; `tls.json`
+holds the certificates. The operator and system account keys stay, private, so
+accounts can still be changed later (decision 11). A runtime initialized before
+this change has the key copy removed from `tls.json` on its next `init`.
 
 ```sh
 "$AMUX_RUNTIME" application-runtime init --nats-server /absolute/path/to/nats-server

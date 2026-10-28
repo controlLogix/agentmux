@@ -47,11 +47,12 @@ const (
 
 // Fixed artifact order. Every file is create-only and later files derive only
 // from earlier ones, so an interrupted initialization resumes after the last
-// complete file and never regenerates a retained identity.
+// complete file and never regenerates a retained identity. The one exception
+// is removing an older tls.json's copy of the server key (see replace).
 var artifacts = []string{
 	"inputs.json",
 	"operator.nk", "system-account.nk", "account.nk",
-	"tls.json", "tls-server-key.pem", "tls-server-cert.pem",
+	"tls-server-key.pem", "tls.json", "tls-server-cert.pem",
 	"operator.jwt", "system-account.jwt", "account.jwt",
 	"readiness.creds", "server.conf", "runtime.json",
 }
@@ -97,10 +98,18 @@ type Manifest struct {
 	NATSVersion            string `json:"natsVersion"`
 }
 
+// tlsBundle holds the certificates issued for tls-server-key.pem. The server
+// key is kept only in that file (AMUX-728 decision 11).
 type tlsBundle struct {
 	RootsPEM string `json:"rootsPEM"`
 	CertPEM  string `json:"certPEM"`
-	KeyPEM   string `json:"keyPEM"`
+}
+
+// olderBundle is the tls.json shape written before decision 11, which also
+// held a copy of the server key.
+type olderBundle struct {
+	tlsBundle
+	KeyPEM string `json:"keyPEM"`
 }
 
 // DefaultDirectory is the single per-user application runtime location.
@@ -241,6 +250,35 @@ func (r *Runtime) publish(name string, data []byte) error {
 	return unix.Fsync(dirFD)
 }
 
+// replace publishes data under an existing name through a stage. Only the
+// one-time removal of an older bundle's key copy uses it; every other artifact
+// is create-only.
+func (r *Runtime) replace(name string, data []byte) error {
+	dirFD := int(r.dir.Fd())
+	suffix := make([]byte, 8)
+	if _, err := rand.Read(suffix); err != nil {
+		return ErrConflict
+	}
+	stage := stagePrefix + hex.EncodeToString(suffix)
+	fd, err := unix.Openat(dirFD, stage, unix.O_WRONLY|unix.O_CREAT|unix.O_EXCL|unix.O_NOFOLLOW|unix.O_CLOEXEC, 0o600)
+	if err != nil {
+		return ErrConflict
+	}
+	file := os.NewFile(uintptr(fd), stage)
+	_, writeErr := file.Write(data)
+	syncErr := file.Sync()
+	closeErr := file.Close()
+	if writeErr != nil || syncErr != nil || closeErr != nil {
+		_ = unix.Unlinkat(dirFD, stage, 0)
+		return ErrConflict
+	}
+	if err := unix.Renameat(dirFD, stage, dirFD, name); err != nil {
+		_ = unix.Unlinkat(dirFD, stage, 0)
+		return ErrConflict
+	}
+	return unix.Fsync(dirFD)
+}
+
 const stagePrefix = ".stage-"
 
 var stageName = regexp.MustCompile(`^\.stage-[0-9a-f]{16}$`)
@@ -370,7 +408,34 @@ func identityFor(operatorPublic string) (runtimeID, serverName, domain string) {
 	return "appruntime_" + short, "app-" + short + ".agentmux.invalid", "app_" + short
 }
 
-func issueTLS(serverName string) (tlsBundle, error) {
+func newServerKey() ([]byte, error) {
+	key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	if err != nil {
+		return nil, ErrConflict
+	}
+	defer key.D.SetInt64(0)
+	der, err := x509.MarshalECPrivateKey(key)
+	if err != nil {
+		return nil, ErrConflict
+	}
+	return pem.EncodeToMemory(&pem.Block{Type: "EC PRIVATE KEY", Bytes: der}), nil
+}
+
+func loadServerKey(raw []byte) (*ecdsa.PrivateKey, error) {
+	block, rest := pem.Decode(raw)
+	if block == nil || block.Type != "EC PRIVATE KEY" || len(bytes.TrimSpace(rest)) != 0 {
+		return nil, ErrConflict
+	}
+	key, err := x509.ParseECPrivateKey(block.Bytes)
+	if err != nil || key.Curve != elliptic.P256() {
+		return nil, ErrConflict
+	}
+	return key, nil
+}
+
+// issueTLS issues a one-use CA and a server certificate for serverKey. The CA
+// key is discarded once the certificate is signed.
+func issueTLS(serverName string, serverKey *ecdsa.PrivateKey) (tlsBundle, error) {
 	if !serverNamePattern.MatchString(serverName) {
 		return tlsBundle{}, ErrConflict
 	}
@@ -379,10 +444,6 @@ func issueTLS(serverName string) (tlsBundle, error) {
 		return tlsBundle{}, ErrConflict
 	}
 	defer caKey.D.SetInt64(0)
-	serverKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-	if err != nil {
-		return tlsBundle{}, ErrConflict
-	}
 	serial := func() *big.Int {
 		n, _ := rand.Int(rand.Reader, new(big.Int).Lsh(big.NewInt(1), 128))
 		return n.Add(n, big.NewInt(1))
@@ -403,13 +464,18 @@ func issueTLS(serverName string) (tlsBundle, error) {
 	if err != nil {
 		return tlsBundle{}, ErrConflict
 	}
-	privateDER, err := x509.MarshalECPrivateKey(serverKey)
-	if err != nil {
-		return tlsBundle{}, ErrConflict
-	}
 	return tlsBundle{RootsPEM: string(pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: caDER})),
-		CertPEM: string(pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: leafDER})),
-		KeyPEM:  string(pem.EncodeToMemory(&pem.Block{Type: "EC PRIVATE KEY", Bytes: privateDER}))}, nil
+		CertPEM: string(pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: leafDER}))}, nil
+}
+
+// leafMatchesKey reports whether certPEM was issued for key.
+func leafMatchesKey(certPEM string, key *ecdsa.PrivateKey) bool {
+	block, _ := pem.Decode([]byte(certPEM))
+	if block == nil || block.Type != "CERTIFICATE" {
+		return false
+	}
+	leaf, err := x509.ParseCertificate(block.Bytes)
+	return err == nil && key.PublicKey.Equal(leaf.PublicKey)
 }
 
 // leafNotAfter reads the expiry of the retained server certificate.
@@ -609,9 +675,19 @@ func Initialize(ctx context.Context, path string, requested Inputs) (Result, err
 	}
 	runtimeID, serverName, domain := identityFor(operatorPublic)
 
-	// 4-6. TLS, published atomically then copied for nats-server.
+	// 4-6. Server key, the certificates issued for it, and the certificate
+	// copied for nats-server. Only tls-server-key.pem holds the key.
+	rawKey, err := readOr("tls-server-key.pem", newServerKey)
+	if err != nil {
+		return Result{}, err
+	}
+	serverKey, err := loadServerKey(rawKey)
+	if err != nil {
+		return Result{}, err
+	}
+	defer serverKey.D.SetInt64(0)
 	rawTLS, err := readOr("tls.json", func() ([]byte, error) {
-		bundle, err := issueTLS(serverName)
+		bundle, err := issueTLS(serverName, serverKey)
 		if err != nil {
 			return nil, err
 		}
@@ -621,15 +697,28 @@ func Initialize(ctx context.Context, path string, requested Inputs) (Result, err
 	if err != nil {
 		return Result{}, err
 	}
-	var bundle tlsBundle
-	if json.Unmarshal(rawTLS, &bundle) != nil {
+	var older olderBundle
+	if json.Unmarshal(rawTLS, &older) != nil {
+		return Result{}, ErrConflict
+	}
+	bundle := older.tlsBundle
+	if older.KeyPEM != "" {
+		// A bundle from before decision 11: drop its copy of the key once it
+		// is confirmed to be the retained server key.
+		if older.KeyPEM != string(rawKey) {
+			return Result{}, ErrConflict
+		}
+		raw, _ := json.Marshal(bundle)
+		if err := r.replace("tls.json", append(raw, '\n')); err != nil {
+			return Result{}, err
+		}
+		published = append(published, "tls.json")
+	}
+	if !leafMatchesKey(bundle.CertPEM, serverKey) {
 		return Result{}, ErrConflict
 	}
 	pin, err := leafPin(bundle.CertPEM)
 	if err != nil {
-		return Result{}, err
-	}
-	if err := write("tls-server-key.pem", []byte(bundle.KeyPEM)); err != nil {
 		return Result{}, err
 	}
 	if err := write("tls-server-cert.pem", []byte(bundle.CertPEM)); err != nil {

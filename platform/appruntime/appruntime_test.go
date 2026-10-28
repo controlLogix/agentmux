@@ -9,6 +9,7 @@ import (
 	"crypto/rand"
 	"crypto/x509"
 	"crypto/x509/pkix"
+	"encoding/json"
 	"encoding/pem"
 	"errors"
 	"math/big"
@@ -428,5 +429,122 @@ func TestPrivateFileModes(t *testing.T) {
 		if err := unix.Lstat(filepath.Join(dir, name), &st); err != nil || st.Mode&0o777 != 0o600 || st.Nlink != 1 {
 			t.Fatalf("%s is not a private single-link file", name)
 		}
+	}
+}
+
+// Decision 11: the server key lives only in tls-server-key.pem, and the
+// published bundle carries the certificates for that key and nothing private.
+func TestTLSBundleHoldsNoPrivateKey(t *testing.T) {
+	server := natsServer(t)
+	dir := runtimeDir(t)
+	if _, err := Initialize(context.Background(), dir, Inputs{NATSServer: server}); err != nil {
+		t.Fatal(err)
+	}
+	bundle, _ := os.ReadFile(filepath.Join(dir, "tls.json"))
+	if strings.Contains(string(bundle), "PRIVATE KEY") || strings.Contains(string(bundle), "keyPEM") {
+		t.Fatal("tls.json keeps a copy of the server key")
+	}
+	assertKeyMatchesCertificate(t, dir)
+}
+
+// A bundle written before decision 11 has its key copy removed on the next
+// initialization, and nothing else changes.
+func TestOlderBundleLosesItsKeyCopyOnResume(t *testing.T) {
+	server := natsServer(t)
+	ctx := context.Background()
+	dir := runtimeDir(t)
+	if _, err := Initialize(ctx, dir, Inputs{NATSServer: server}); err != nil {
+		t.Fatal(err)
+	}
+	writeOlderBundle(t, dir, "")
+	kept := map[string][]byte{}
+	for _, name := range artifacts {
+		kept[name], _ = os.ReadFile(filepath.Join(dir, name))
+	}
+	if _, err := Initialize(ctx, dir, Inputs{}); err != nil {
+		t.Fatal(err)
+	}
+	bundle, _ := os.ReadFile(filepath.Join(dir, "tls.json"))
+	if strings.Contains(string(bundle), "PRIVATE KEY") || strings.Contains(string(bundle), "keyPEM") {
+		t.Fatal("older bundle kept its key copy")
+	}
+	for name, before := range kept {
+		after, _ := os.ReadFile(filepath.Join(dir, name))
+		if name != "tls.json" && string(after) != string(before) {
+			t.Fatalf("%s changed", name)
+		}
+	}
+	var st unix.Stat_t
+	if err := unix.Lstat(filepath.Join(dir, "tls.json"), &st); err != nil || st.Mode&0o777 != 0o600 || st.Nlink != 1 {
+		t.Fatal("rewritten tls.json is not a private single-link file")
+	}
+	assertKeyMatchesCertificate(t, dir)
+	if _, err := Initialize(ctx, dir, Inputs{}); err != nil {
+		t.Fatal(err)
+	}
+}
+
+// An older bundle whose key copy differs from the server key is refused.
+func TestOlderBundleWithAnotherKeyIsRefused(t *testing.T) {
+	server := natsServer(t)
+	ctx := context.Background()
+	dir := runtimeDir(t)
+	if _, err := Initialize(ctx, dir, Inputs{NATSServer: server}); err != nil {
+		t.Fatal(err)
+	}
+	other, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	der, _ := x509.MarshalECPrivateKey(other)
+	writeOlderBundle(t, dir, string(pem.EncodeToMemory(&pem.Block{Type: "EC PRIVATE KEY", Bytes: der})))
+	before, _ := os.ReadFile(filepath.Join(dir, "tls.json"))
+	if _, err := Initialize(ctx, dir, Inputs{}); !errors.Is(err, ErrConflict) {
+		t.Fatalf("mismatched key copy must be refused, got %v", err)
+	}
+	after, _ := os.ReadFile(filepath.Join(dir, "tls.json"))
+	if string(after) != string(before) {
+		t.Fatal("refused bundle was changed")
+	}
+}
+
+// writeOlderBundle replaces tls.json with the pre-decision-11 shape, holding
+// keyPEM (the retained server key when keyPEM is empty).
+func writeOlderBundle(t *testing.T, dir, keyPEM string) {
+	t.Helper()
+	if keyPEM == "" {
+		raw, _ := os.ReadFile(filepath.Join(dir, "tls-server-key.pem"))
+		keyPEM = string(raw)
+	}
+	raw, _ := os.ReadFile(filepath.Join(dir, "tls.json"))
+	var bundle map[string]string
+	if err := json.Unmarshal(raw, &bundle); err != nil {
+		t.Fatal(err)
+	}
+	bundle["keyPEM"] = keyPEM
+	older, _ := json.Marshal(bundle)
+	path := filepath.Join(dir, "tls.json")
+	os.Remove(path)
+	if err := os.WriteFile(path, append(older, '\n'), 0o600); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func assertKeyMatchesCertificate(t *testing.T, dir string) {
+	t.Helper()
+	rawKey, _ := os.ReadFile(filepath.Join(dir, "tls-server-key.pem"))
+	rawCert, _ := os.ReadFile(filepath.Join(dir, "tls-server-cert.pem"))
+	keyBlock, _ := pem.Decode(rawKey)
+	certBlock, _ := pem.Decode(rawCert)
+	if keyBlock == nil || certBlock == nil {
+		t.Fatal("server key or certificate unreadable")
+	}
+	key, err := x509.ParseECPrivateKey(keyBlock.Bytes)
+	if err != nil {
+		t.Fatal(err)
+	}
+	leaf, err := x509.ParseCertificate(certBlock.Bytes)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !key.PublicKey.Equal(leaf.PublicKey) {
+		t.Fatal("certificate is not for the retained server key")
 	}
 }
