@@ -796,7 +796,8 @@ def _stage_file(directory, name):
 
 
 async def run(request_path, request_sha256, *, root=None, now=None):
-    """Run or resume the ceremony; return the public coreHub and startup pins."""
+    """Run or resume the ceremony; return the public coreHub and startup pins
+    and the core owner request written for ``prepare-owner-profile``."""
     request, owner = admit_request(request_path, request_sha256)
     ceremony = Ceremony(request, owner, root=root)
     try:
@@ -825,16 +826,37 @@ async def run(request_path, request_sha256, *, root=None, now=None):
         if not result_path.exists():
             result = ceremony.selections(directory, materials, confirmed)
             _publish(result_path, result, max_bytes=16384)
-        return _read_material(result_path, max_bytes=16384)
+        result = _read_material(result_path, max_bytes=16384)
+        return {**result, 'coreOwnerRequest': core_owner_request(request, owner, result['coreHub'])}
     finally:
         ceremony.account.wipe()
+
+
+def core_owner_request(request, owner, core_hub):
+    """Write owner-request-core.json beside the owner request, once.
+
+    It is the admitted owner request plus the pinned ``coreHub`` and nothing
+    else, ready for ``prepare-owner-profile``. A retained file must hold exactly
+    that request; its formatting may differ, as when it was written by hand.
+    """
+    path = Path(request['ownerRequest']['path']).with_name('owner-request-core.json')
+    core = {**owner, 'coreHub': core_hub}
+    if path.exists() or path.is_symlink():
+        raw = _read_material(path, max_bytes=65536, return_bytes=True)
+        if strict_loads(raw) != core:
+            raise ContractError('local_enrollment_core_request_conflict')
+    else:
+        _publish(path, core, max_bytes=65536)
+        raw = _read_material(path, max_bytes=65536, return_bytes=True)
+    return {'path': str(path), 'sha256': digest(raw)}
 
 
 def main(arguments):
     """Installed entry: ``--request PATH --request-sha256 DIGEST``.
 
-    Only the public coreHub and startup pins reach stdout. Failures report a
-    closed code; private paths, keys and causes never leave the process.
+    Only the public coreHub and startup pins and the core owner request's path
+    and digest reach stdout. Failures report a closed code; private keys and
+    causes never leave the process.
     """
     import json
     import sys

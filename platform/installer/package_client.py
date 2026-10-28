@@ -47,7 +47,7 @@ MODULES = (
     "identity/oidc_authorization_code.py", "identity/oidc_device_authorization.py",
     "identity/oidc_terminal_login.py",
     # The local enrollment ceremony and the bootstrap owner it drives (AMUX-728).
-    "identity/bootstrap.py", "identity/local_enrollment.py",
+    "identity/bootstrap.py", "identity/local_enrollment.py", "identity/application_requests.py",
     # Imported by dashboard/application_service_host.py, which the installed
     # application-services process runs. Process execution stays excluded:
     # capability_owner/process_resource.py is optional by find_spec.

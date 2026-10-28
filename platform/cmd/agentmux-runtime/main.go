@@ -140,7 +140,7 @@ func run(ctx context.Context, args []string, output io.Writer) (failure error) {
 	if len(args) > 0 && args[0] == "profile-client" {
 		return runProfileClient(ctx, args)
 	}
-	if len(args) > 0 && (args[0] == "mcp" || args[0] == "startup" || args[0] == "dashboard" || args[0] == "client-setup" || args[0] == "claude-hook-setup" || args[0] == "launch-claude-desktop" || args[0] == "claude-code-hook" || args[0] == "application-enroll" || args[0] == "retire-definitions-owner") {
+	if len(args) > 0 && (args[0] == "mcp" || args[0] == "startup" || args[0] == "dashboard" || args[0] == "client-setup" || args[0] == "claude-hook-setup" || args[0] == "launch-claude-desktop" || args[0] == "claude-code-hook" || args[0] == "application-enroll" || args[0] == "application-requests" || args[0] == "retire-definitions-owner") {
 		// Client admission has a bounded check. A long-lived MCP session uses
 		// the existing Python lifetime after direct process replacement.
 		return runInstalledClient(ctx, args)
@@ -342,7 +342,7 @@ func main() {
 		}
 		return
 	}
-	if len(os.Args) > 1 && (os.Args[1] == "mcp" || os.Args[1] == "startup" || os.Args[1] == "dashboard" || os.Args[1] == "client-setup" || os.Args[1] == "claude-hook-setup" || os.Args[1] == "launch-claude-desktop" || os.Args[1] == "claude-code-hook" || os.Args[1] == "application-enroll" || os.Args[1] == "retire-definitions-owner") {
+	if len(os.Args) > 1 && (os.Args[1] == "mcp" || os.Args[1] == "startup" || os.Args[1] == "dashboard" || os.Args[1] == "client-setup" || os.Args[1] == "claude-hook-setup" || os.Args[1] == "launch-claude-desktop" || os.Args[1] == "claude-code-hook" || os.Args[1] == "application-enroll" || os.Args[1] == "application-requests" || os.Args[1] == "retire-definitions-owner") {
 		// Keep normal process signals through exec. Infrastructure cancellation
 		// handlers must not consume a signal just before the Python replacement.
 		if err := runInstalledClientCommand(context.Background(), os.Args[1:], os.Stderr); err != nil {

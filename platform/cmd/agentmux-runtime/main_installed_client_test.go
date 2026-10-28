@@ -141,3 +141,39 @@ func TestLocalEnrollmentRouteRefusesMalformedArgumentsBeforeAdmission(t *testing
 		}
 	}
 }
+
+func TestApplicationRequestsRouteRefusesMalformedArgumentsBeforeAdmission(t *testing.T) {
+	id := strings.Repeat("a", 64)
+	valid := []string{"application-requests", "--client-installation", id,
+		"--foundation-selection", "/private/dev 'literal'/foundation-selection.json",
+		"--foundation-selection-sha256", "sha256:" + strings.Repeat("b", 64),
+		"--repository-root", "/Users/owner/repo", "--principal", "nick", "--local-node", "nick_mbp",
+		"--message-peer", "ryan", "--organization", "adag", "--output", "/Users/owner/requests"}
+	with := func(index int, value string) []string {
+		changed := append([]string(nil), valid...)
+		changed[index] = value
+		return changed
+	}
+	for _, invalid := range [][]string{
+		{"application-requests"},
+		valid[:17],
+		append(append([]string(nil), valid...), "--apply"),
+		with(2, "short"),
+		with(4, "relative.json"),
+		with(4, "/private/../selection.json"),
+		with(6, "sha256:BAD"),
+		with(8, "/Users/re\npo"),
+		with(10, "Nick"),
+		with(12, "nick mbp"),
+		with(14, strings.Repeat("r", 33)),
+		with(16, "Bad Org"),
+		with(18, "requests"),
+		with(9, "--owner"),
+	} {
+		var output bytes.Buffer
+		err := run(context.Background(), invalid, &output)
+		if err == nil || err.Error() != "installed_client_arguments_invalid" || output.Len() != 0 {
+			t.Fatalf("malformed requests route reached admission or emitted output: %v %v", invalid, err)
+		}
+	}
+}

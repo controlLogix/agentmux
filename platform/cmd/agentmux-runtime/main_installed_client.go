@@ -52,6 +52,41 @@ var localEnrollmentRequestDigest = regexp.MustCompile(`^sha256:[0-9a-f]{64}$`)
 
 var definitionsOwnerHub = regexp.MustCompile(`^[a-z][a-z0-9_-]{0,63}$`)
 
+var applicationRequestsPeer = regexp.MustCompile(`^[a-z0-9_]{1,32}$`)
+
+// parseApplicationRequests admits application-requests' fixed flag order:
+// --client-installation ID --foundation-selection PATH
+// --foundation-selection-sha256 DIGEST --repository-root PATH --principal NAME
+// --local-node NAME --message-peer NAME --organization ID --output DIR.
+func parseApplicationRequests(args []string) (string, protected.ApplicationRequests, bool) {
+	flags := []string{"--client-installation", "--foundation-selection", "--foundation-selection-sha256", "--repository-root",
+		"--principal", "--local-node", "--message-peer", "--organization", "--output"}
+	if len(args) != 1+2*len(flags) {
+		return "", protected.ApplicationRequests{}, false
+	}
+	values := map[string]string{}
+	for i, flag := range flags {
+		if args[1+2*i] != flag {
+			return "", protected.ApplicationRequests{}, false
+		}
+		values[flag] = args[2+2*i]
+	}
+	path := func(value string) bool {
+		return filepath.IsAbs(value) && filepath.Clean(value) == value && len(value) <= 4096 && !strings.ContainsAny(value, "\x00\r\n")
+	}
+	if !protected.ValidClientInstallationID(values["--client-installation"]) || !path(values["--foundation-selection"]) ||
+		!localEnrollmentRequestDigest.MatchString(values["--foundation-selection-sha256"]) || !path(values["--repository-root"]) ||
+		!applicationRequestsPeer.MatchString(values["--principal"]) || !applicationRequestsPeer.MatchString(values["--local-node"]) ||
+		!applicationRequestsPeer.MatchString(values["--message-peer"]) || !definitionsOwnerHub.MatchString(values["--organization"]) ||
+		!path(values["--output"]) {
+		return "", protected.ApplicationRequests{}, false
+	}
+	return values["--client-installation"], protected.ApplicationRequests{FoundationSelection: values["--foundation-selection"],
+		FoundationSelectionDigest: values["--foundation-selection-sha256"], RepositoryRoot: values["--repository-root"],
+		Principal: values["--principal"], LocalNode: values["--local-node"], MessagePeer: values["--message-peer"],
+		Organization: values["--organization"], Output: values["--output"]}, true
+}
+
 func runInstalledClient(ctx context.Context, args []string) (failure error) {
 	if len(args) > 0 && args[0] == "application-enroll" {
 		// application-enroll --client-installation ID --request PATH --request-sha256 DIGEST
@@ -66,6 +101,18 @@ func runInstalledClient(ctx context.Context, args []string) (failure error) {
 		}
 		defer func() { failure = errors.Join(failure, admitted.Close()) }()
 		return admitted.ExecLocalEnrollment(ctx, args[4], args[6])
+	}
+	if len(args) > 0 && args[0] == "application-requests" {
+		id, requests, ok := parseApplicationRequests(args)
+		if !ok {
+			return errors.New("installed_client_arguments_invalid")
+		}
+		admitted, err := protected.PrepareInstalledClient(ctx, id)
+		if err != nil {
+			return err
+		}
+		defer func() { failure = errors.Join(failure, admitted.Close()) }()
+		return admitted.ExecApplicationRequests(ctx, requests)
 	}
 	if len(args) > 0 && args[0] == "retire-definitions-owner" {
 		// retire-definitions-owner --client-installation ID --repository-root PATH --hub-id HUB [--apply]

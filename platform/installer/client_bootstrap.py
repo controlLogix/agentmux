@@ -58,6 +58,15 @@ def _arguments(root, arguments):
             and arguments[3] == "--request" and _absolute(arguments[4])
             and arguments[5] == "--request-sha256" and re.fullmatch(r"sha256:[0-9a-f]{64}", arguments[6])):
         return arguments[0], ["--request", arguments[4], "--request-sha256", arguments[6]]
+    if (len(arguments) == 19 and arguments[0] == "application-requests"
+            and arguments[1::2] == ["--client-installation", "--foundation-selection", "--foundation-selection-sha256",
+                                    "--repository-root", "--principal", "--local-node", "--message-peer",
+                                    "--organization", "--output"]
+            and re.fullmatch(r"[0-9a-f]{64}", arguments[2]) and arguments[2] == os.path.basename(root)
+            and _absolute(arguments[4]) and re.fullmatch(r"sha256:[0-9a-f]{64}", arguments[6])
+            and _absolute(arguments[8]) and all(re.fullmatch(r"[a-z0-9_]{1,32}", v) for v in arguments[10:15:2])
+            and re.fullmatch(r"[a-z][a-z0-9_-]{0,63}", arguments[16]) and _absolute(arguments[18])):
+        return arguments[0], arguments[1:]
     if (len(arguments) in (7, 8) and arguments[0] == "retire-definitions-owner"
             and arguments[1] == "--client-installation" and re.fullmatch(r"[0-9a-f]{64}", arguments[2])
             and arguments[2] == os.path.basename(root)
@@ -224,6 +233,9 @@ def main():
     if operation == "application-enroll":
         from identity.local_enrollment import main as enrollment_main
         raise SystemExit(enrollment_main(selected))
+    if operation == "application-requests":
+        from identity.application_requests import main as requests_main
+        raise SystemExit(requests_main(selected))
     if operation == "retire-definitions-owner":
         # The definitions owner imports its siblings from these fixed roots.
         sys.path[:0] = [os.path.join(root, "app", "dashboard"),

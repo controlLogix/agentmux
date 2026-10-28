@@ -252,6 +252,31 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
             if path.is_file():
                 self.assertEqual(path.stat().st_mode & 0o077, 0, path)
 
+    async def test_core_owner_request_is_written_once_beside_the_owner_request(self):
+        # AMUX-728 criterion 1: the ceremony writes owner-request-core.json, the
+        # admitted owner request plus coreHub, so no step writes it by hand.
+        install = Installation(self.runtime)
+        result = await install.run()
+        path = Path(install.request['ownerRequest']['path']).with_name('owner-request-core.json')
+        self.assertEqual(result['coreOwnerRequest'], {'path': str(path), 'sha256': local_enrollment.digest(path.read_bytes())})
+        self.assertEqual(json.loads(path.read_bytes()), {**install.owner, 'coreHub': result['coreHub']})
+        self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+        before = path.read_bytes()
+        self.assertEqual(await install.run(), result)
+        self.assertEqual(path.read_bytes(), before)
+        # A request written by hand keeps working when it holds the same request.
+        path.unlink()
+        _private_write(path, json.dumps({**install.owner, 'coreHub': result['coreHub']}, indent=1).encode())
+        again = await install.run()
+        self.assertEqual(again['coreOwnerRequest']['sha256'], local_enrollment.digest(path.read_bytes()))
+        # Anything else in that file is refused and left alone.
+        path.unlink()
+        changed = json.dumps({**install.owner, 'coreHub': result['coreHub'], 'hostPort': 4999}).encode()
+        _private_write(path, changed)
+        with self.assertRaisesRegex(ContractError, 'local_enrollment_core_request_conflict'):
+            await install.run()
+        self.assertEqual(path.read_bytes(), changed)
+
     async def test_issued_credentials_pass_the_launch_guard_and_broader_ones_are_refused(self):
         # AMUX-728 criterion 6: every coreHub application credential the
         # ceremony issues passes the shared credential guard exactly as the

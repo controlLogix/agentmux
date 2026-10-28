@@ -890,6 +890,32 @@ class DefinitionsRetirementBootstrapRoute(unittest.TestCase):
         self.assertIn("dashboard/definition_retirement.py", package.MODULES)
 
 
+class ApplicationRequestsBootstrapRoute(unittest.TestCase):
+    root = "/protected/clients/" + "a" * 64
+    base = ["application-requests", "--client-installation", "a" * 64,
+            "--foundation-selection", "/private/dev 'literal'/foundation-selection.json",
+            "--foundation-selection-sha256", "sha256:" + "b" * 64, "--repository-root", "/Users/owner/repo",
+            "--principal", "nick", "--local-node", "nick_mbp", "--message-peer", "ryan",
+            "--organization", "adag", "--output", "/Users/owner/requests"]
+
+    def test_requests_route_keeps_literal_values_and_the_installation(self):
+        operation, selected = bootstrap._arguments(self.root, self.base)
+        self.assertEqual(operation, "application-requests")
+        self.assertEqual(selected, ["--client-installation", "a" * 64, *self.base[3:]])
+
+    def test_requests_route_refuses_other_installations_and_shapes(self):
+        base = self.base
+        for changed in (base[:17], base + ["--apply"], [*base[:2], "b" * 64, *base[3:]],
+                        [*base[:4], "relative.json", *base[5:]], [*base[:6], "sha256:BAD", *base[7:]],
+                        [*base[:10], "Nick", *base[11:]], [*base[:16], "Bad Org", *base[17:]],
+                        [*base[:18], "requests"], [*base[:9], "--owner", *base[10:]]):
+            with self.subTest(arguments=changed), self.assertRaises(SystemExit):
+                bootstrap._arguments(self.root, changed)
+
+    def test_package_roster_includes_the_requests_command(self):
+        self.assertIn("identity/application_requests.py", package.MODULES)
+
+
 class PackagedImportClosure(unittest.TestCase):
     # Imported only behind a guard that the supported installed routes never
     # take. Anything else a packaged module imports must be in the roster.

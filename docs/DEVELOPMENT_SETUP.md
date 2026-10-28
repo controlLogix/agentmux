@@ -294,42 +294,41 @@ enrollment and for every profile that uses it. `application-runtime stop` stops 
 
 ### 4. Write the private owner and setup requests
 
-Create a private request directory (mode `0700`) under
-`~/Library/Application Support/Agentmux/`, one per profile. Write each request
-once, mode `0600`, and never edit it afterwards; a changed request needs a new
-digest and a new review.
+`application-requests` writes a new profile's two private requests into a new
+folder, once. Give it the foundation selection and digest the installer used
+(`AMUX_SELECTION`, `AMUX_SELECTION_SHA`; it holds the release public key, which
+the installation does not keep), the repository, and
+the names that identify you:
 
-* `owner-request.json` follows the closed `prepare-owner-profile` format in
-  [native client setup](NATIVE_CLIENT_SETUP.md). Use fresh `profileId`,
-  `instanceId` and owner Hub ID values, `clientInstallationId` set to
-  `AMUX_CLIENT_ID`, the release fields from `foundation-selection.json` with
-  `packageDirectory` set to the installed
-  `/Library/Application Support/Agentmux/Protected/releases/<AMUX_FOUNDATION_ID>`,
-  and `runtimeExecutable` set to that directory's `agentmux-runtime` and the
-  selection's runtime digest. `hostPort`, `composeProject`, `serverName` and
-  `domain` must not collide with another profile's infrastructure broker on this
-  machine.
-* `setup-request.json` is the enrollment ceremony's input
-  (`identity/local_enrollment.py`). It has exactly these fields:
+```sh
+AMUX_REQUESTS="$HOME/Library/Application Support/Agentmux/requests-<name>"
+"$AMUX_RUNTIME" application-requests --client-installation "$AMUX_CLIENT_ID" \
+  --foundation-selection "$AMUX_SELECTION" \
+  --foundation-selection-sha256 "$AMUX_SELECTION_SHA" \
+  --repository-root "$AMUX_REPO" --principal <you> --local-node <you>_<machine> \
+  --message-peer <other person> --organization <organization> \
+  --output "$AMUX_REQUESTS" >"$AMUX_REQUESTS.json"
+```
 
-  ```json
-  {
-   "schemaVersion": "1.0.0",
-   "ownerRequest": {"path": "/abs/path/owner-request.json", "sha256": "sha256:<owner request digest>"},
-   "projectId": "agentmux",
-   "repositories": [{"root": "/abs/path/to/agentmux", "localName": "agentmux",
-                     "normalizedRemote": "github.com/controllogix/agentmux"}],
-   "localPeer": "nick", "localNode": "nick_mbp", "messagePeer": "ryan",
-   "validityDays": 365
-  }
-  ```
+* `--principal`, `--local-node` and `--message-peer` are 1–32 lowercase letters,
+  digits or underscores; the principal starts with a letter and differs from the
+  message peer. They become federation identity, so use your own names, not the
+  examples in this guide. `--organization` is a lowercase ID.
+* `--output` must not exist. The command never changes requests that were
+  already written; for different requests, choose a new folder.
+* It generates fresh profile, instance and Hub IDs and broker names, takes the
+  release and runtime of the client's installed foundation (refusing
+  `application_requests_release_mismatch` if they differ from the selection),
+  reads the repository's origin remote from `.git/config`, records the Docker
+  context, engine and versions as Docker reports them, and picks a free broker
+  port from 20000–32767 that no other profile or runtime here keeps.
 
-  `repositories` must cover exactly the owner request's `approvedWorkspaceRoots`.
-  `localPeer` and `messagePeer` must differ; `validityDays` is 1 to 397.
-
-Record both digests (`"sha256:$(shasum -a 256 < FILE | cut -d' ' -f1)"`) as
-`AMUX_OWNER_SHA` and `AMUX_SETUP_SHA`, with `AMUX_REQUESTS` set to the directory.
-Preview the base owner request; it must report `request_checked`:
+The result (`$AMUX_REQUESTS.json`) holds `profileId`, `hubId` and each request's
+`path` and `sha256`. Record the digests as `AMUX_OWNER_SHA` and `AMUX_SETUP_SHA`.
+The file formats are described in [native client setup](NATIVE_CLIENT_SETUP.md)
+(`owner-request.json`) and in `identity/local_enrollment.py`
+(`setup-request.json`). Preview the base owner request; it must report
+`request_checked`:
 
 ```sh
 "$AMUX_RUNTIME" prepare-owner-profile \
@@ -352,25 +351,18 @@ and the profile's Hub home `hubs/<first 12 hex of the profile ID>/hub/`
 Each profile gets its own reply subjects on the shared runtime. It is
 create-only: rerunning with the same request reuses retained material, resumes
 an interrupted run (keys from an unfinished first stage were never used and are
-replaced) and brings `hub.db` back to a private, complete database. The
-result's `coreHub` object (`selection`, `sha256`) pins the core Hub manifest.
+replaced) and brings `hub.db` back to a private, complete database.
+
+It also writes `owner-request-core.json` next to the owner request: the owner
+request plus the `coreHub` pin and nothing else. The result's
+`coreOwnerRequest` gives its `path` and `sha256`. A rerun leaves it unchanged,
+and refuses (`local_enrollment_core_request_conflict`) if that file holds
+anything else.
 
 ### 6. Prepare the profile with its core Hub, recovering if needed
 
-Write `owner-request-core.json`: the base owner request plus the `coreHub` object
-from the enrollment result, and nothing else changed. Create it exclusively with
-mode `0600`, for example:
-
 ```sh
-"$AMUX_PYTHON" -I - "$AMUX_REQUESTS" <<'EOF'
-import json, os, sys
-q = sys.argv[1]
-base = json.load(open(q + '/owner-request.json'))
-final = dict(base, coreHub=json.load(open(q + '/enroll-result.json'))['coreHub'])
-fd = os.open(q + '/owner-request-core.json', os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
-os.write(fd, (json.dumps(final, indent=1, sort_keys=True) + '\n').encode()); os.close(fd)
-EOF
-AMUX_CORE_SHA="sha256:$(shasum -a 256 < "$AMUX_REQUESTS/owner-request-core.json" | cut -d' ' -f1)"
+AMUX_CORE_SHA=<coreOwnerRequest.sha256 from enroll-result.json>
 "$AMUX_RUNTIME" prepare-owner-profile \
   --request "$AMUX_REQUESTS/owner-request-core.json" --request-sha256 "$AMUX_CORE_SHA"
 "$AMUX_RUNTIME" prepare-owner-profile \

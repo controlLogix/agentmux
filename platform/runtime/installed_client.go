@@ -268,6 +268,38 @@ func (a *InstalledClientAdmission) ExecLocalEnrollment(ctx context.Context, requ
 
 var definitionsOwnerHub = regexp.MustCompile(`^[a-z][a-z0-9_-]{0,63}$`)
 
+var applicationRequestsPeer = regexp.MustCompile(`^[a-z0-9_]{1,32}$`)
+
+// ApplicationRequests are the explicit inputs for writing a new profile's
+// owner and setup requests (AMUX-728). Everything else is derived by the
+// installed Python owner.
+type ApplicationRequests struct {
+	FoundationSelection, FoundationSelectionDigest, RepositoryRoot string
+	Principal, LocalNode, MessagePeer, Organization, Output         string
+}
+
+// ExecApplicationRequests writes a new profile's private owner and setup
+// requests into a new output directory. It never changes existing requests.
+func (a *InstalledClientAdmission) ExecApplicationRequests(ctx context.Context, r ApplicationRequests) error {
+	if !validClientSelection(r.FoundationSelection) || !localEnrollmentDigest.MatchString(r.FoundationSelectionDigest) ||
+		!validClientSelection(r.RepositoryRoot) || !validClientSelection(r.Output) ||
+		!applicationRequestsPeer.MatchString(r.Principal) || !applicationRequestsPeer.MatchString(r.LocalNode) ||
+		!applicationRequestsPeer.MatchString(r.MessagePeer) || !definitionsOwnerHub.MatchString(r.Organization) {
+		return &clientFailure{code: "selection_invalid"}
+	}
+	home, err := installedClientAccountHome()
+	if err != nil {
+		return err
+	}
+	if a == nil {
+		return &clientFailure{code: "recheck_invalid"}
+	}
+	return a.exec(ctx, []string{"application-requests", "--client-installation", a.id,
+		"--foundation-selection", r.FoundationSelection, "--foundation-selection-sha256", r.FoundationSelectionDigest,
+		"--repository-root", r.RepositoryRoot, "--principal", r.Principal, "--local-node", r.LocalNode,
+		"--message-peer", r.MessagePeer, "--organization", r.Organization, "--output", r.Output}, home)
+}
+
 // ExecDefinitionsOwnerRetirement retires a stopped profile's repository
 // definitions fence (AMUX-728). The installed Python owner proves the old owner
 // stopped and keeps legacy writes denied; without apply it only reports.
