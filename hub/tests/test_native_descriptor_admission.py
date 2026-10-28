@@ -193,9 +193,23 @@ class NativeDescriptorAdmission(unittest.TestCase):
             return metadata(inode=23 if changed else 22)
         return inspect
 
+    # The native snapshot of metadata(): inode, mode, owner, group and links.
+    SNAPSHOT = (22, stat.S_IFREG | 0o600, 501, 20, 1)
+
+    def writing(self):
+        """fstat results of a file whose size and times move on every read."""
+        state = {'reads': 0}
+        def inspect(fd):
+            state['reads'] += 1
+            info = metadata()
+            info.st_size = info.st_mtime_ns = info.st_ctime_ns = state['reads']
+            return info
+        return inspect
+
     def test_mutation_on_every_pass_refuses_after_bounded_passes(self):
         for check, fd in ((native.check_descriptor, 90), (native.check_retained_descriptor, 7)):
             checker = Mock()
+            checker.check.return_value = self.SNAPSHOT
             with self.subTest(check=check.__name__), patch.object(native, '_supported'), \
                  patch.object(native, '_Darwin', return_value=checker), \
                  patch.object(native.os, 'geteuid', return_value=501), \
@@ -210,6 +224,7 @@ class NativeDescriptorAdmission(unittest.TestCase):
     def test_one_overlapping_change_is_accepted_only_from_a_later_stable_pass(self):
         for check in (native.check_descriptor, native.check_retained_descriptor):
             checker = Mock()
+            checker.check.return_value = self.SNAPSHOT
             with self.subTest(check=check.__name__), patch.object(native, '_supported'), \
                  patch.object(native, '_Darwin', return_value=checker), \
                  patch.object(native.os, 'geteuid', return_value=501), \
@@ -218,20 +233,75 @@ class NativeDescriptorAdmission(unittest.TestCase):
                 self.assertIs(check(7, purpose=native.DescriptorPurpose.PRIVATE_FILE, deadline=11), True)
                 self.assertEqual(checker.check.call_count, 2)
 
-    def test_change_to_refused_policy_is_refused_not_retried(self):
-        reads = iter([metadata(), metadata(), metadata(mode=0o640)])
+    def test_retained_live_file_ignores_data_changes_but_not_identity_or_policy(self):
         checker = Mock()
+        checker.check.return_value = self.SNAPSHOT
         with patch.object(native, '_supported'), patch.object(native, '_Darwin', return_value=checker), \
              patch.object(native.os, 'geteuid', return_value=501), \
-             patch.object(native.os, 'fstat', side_effect=lambda fd: next(reads)):
-            with self.assertRaisesRegex(native.AdmissionError, '^native_admission_permissions$'):
-                native.check_retained_descriptor(7, purpose=native.DescriptorPurpose.PRIVATE_FILE, deadline=11)
-            self.assertEqual(checker.check.call_count, 1)
+             patch.object(native.os, 'dup', return_value=90), patch.object(native.os, 'close'):
+            # Size and times that move during every pass: a live database file.
+            with patch.object(native.os, 'fstat', side_effect=self.writing()):
+                self.assertIs(native.check_retained_descriptor(7, purpose=native.DescriptorPurpose.PRIVATE_FILE,
+                                                               deadline=11), True)
+                self.assertEqual(checker.check.call_count, 1)
+            # Only the retained private-file form relaxes data fields.
+            for check, purpose, data in ((native.check_descriptor, native.DescriptorPurpose.PRIVATE_FILE, self.writing()),
+                                         (native.check_retained_descriptor, native.DescriptorPurpose.PRIVATE_DIRECTORY, None)):
+                checker.reset_mock()
+                if data is None:
+                    state = {'reads': 0}
+                    def data(fd):
+                        state['reads'] += 1
+                        info = metadata(directory=True)
+                        info.st_ctime_ns = state['reads']
+                        return info
+                with self.subTest(check=check.__name__, purpose=purpose), \
+                     patch.object(native.os, 'fstat', side_effect=data):
+                    with self.assertRaisesRegex(native.AdmissionError, '^native_admission_changed$'):
+                        check(7, purpose=purpose, deadline=11)
+                    self.assertEqual(checker.check.call_count, native._STABLE_PASSES)
+            # The atomic native snapshot must agree with the identity and policy read around it.
+            for snapshot in ((23,) + self.SNAPSHOT[1:], (22, stat.S_IFREG | 0o644, 501, 20, 1),
+                             (22, stat.S_IFREG | 0o600, 502, 20, 1), (22, stat.S_IFREG | 0o600, 501, 0, 1),
+                             (22, stat.S_IFREG | 0o600, 501, 20, 2), None):
+                checker.reset_mock()
+                checker.check.return_value = snapshot
+                with self.subTest(snapshot=snapshot), patch.object(native.os, 'fstat', return_value=metadata()):
+                    with self.assertRaisesRegex(native.AdmissionError, '^native_admission_changed$'):
+                        native.check_retained_descriptor(7, purpose=native.DescriptorPurpose.PRIVATE_FILE, deadline=11)
+                    self.assertEqual(checker.check.call_count, native._STABLE_PASSES)
+            # A group change between the reads around the snapshot is a change too.
+            checker.reset_mock()
+            checker.check.return_value = self.SNAPSHOT
+            seen = {'reads': 0}
+            def drifting(fd):
+                seen['reads'] += 1
+                info = metadata()
+                if seen['reads'] % 3 == 0:
+                    info.st_gid = 0
+                return info
+            with patch.object(native.os, 'fstat', side_effect=drifting):
+                with self.assertRaisesRegex(native.AdmissionError, '^native_admission_changed$'):
+                    native.check_retained_descriptor(7, purpose=native.DescriptorPurpose.PRIVATE_FILE, deadline=11)
+
+    def test_change_to_refused_policy_is_refused_not_retried(self):
+        for purpose_reads in ([metadata(), metadata(), metadata(mode=0o640)],
+                              [metadata(), metadata(), metadata(links=2)]):
+            reads = iter(purpose_reads)
+            checker = Mock()
+            checker.check.return_value = self.SNAPSHOT
+            with patch.object(native, '_supported'), patch.object(native, '_Darwin', return_value=checker), \
+                 patch.object(native.os, 'geteuid', return_value=501), \
+                 patch.object(native.os, 'fstat', side_effect=lambda fd: next(reads)):
+                with self.assertRaisesRegex(native.AdmissionError, '^native_admission_permissions$'):
+                    native.check_retained_descriptor(7, purpose=native.DescriptorPurpose.PRIVATE_FILE, deadline=11)
+                self.assertEqual(checker.check.call_count, 1)
 
     def test_change_at_the_deadline_refuses_without_another_pass(self):
         checker = Mock()
         def late(*args):
             self.clock.return_value = 11
+            return self.SNAPSHOT
         checker.check.side_effect = late
         with patch.object(native, '_supported'), patch.object(native, '_Darwin', return_value=checker), \
              patch.object(native.os, 'geteuid', return_value=501), \
@@ -363,10 +433,13 @@ class NativeDescriptorLocalFiles(unittest.TestCase):
             fd = os.open(directory, os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC)
             stop = threading.Event()
             def churn():
+                # Far busier than a real home directory, which changes about once a
+                # minute, but with a gap no four back-to-back passes can all miss.
                 while not stop.is_set():
                     path = os.path.join(directory, 'entry')
                     open(path, 'w').close()
                     os.unlink(path)
+                    time.sleep(0.0005)
             worker = threading.Thread(target=churn)
             worker.start()
             try:
@@ -384,6 +457,64 @@ class NativeDescriptorLocalFiles(unittest.TestCase):
                 worker.join()
                 os.chmod(directory, 0o700)
                 os.close(fd)
+
+    def test_a_live_wal_being_committed_is_not_a_policy_change(self):
+        import sqlite3
+        import tempfile
+        import threading
+        import time
+        # Back-to-back commits keep a WAL's size and times moving through every
+        # pass; requiring them unchanged refused a large share of these checks.
+        with tempfile.TemporaryDirectory(prefix='agentmux-descriptor-') as directory:
+            os.chmod(directory, 0o700)
+            database = os.path.join(directory, 'hub.db')
+            os.close(os.open(database, os.O_CREAT | os.O_EXCL | os.O_RDWR, 0o600))
+            setup = sqlite3.connect(database)
+            setup.execute('PRAGMA journal_mode=WAL')
+            setup.execute('CREATE TABLE t(x)')
+            setup.commit()
+            os.chmod(database + '-wal', 0o600)
+            fd = os.open(database + '-wal', os.O_RDONLY | os.O_CLOEXEC)
+            stop = threading.Event()
+            def commit():
+                writer = sqlite3.connect(database)
+                try:
+                    while not stop.is_set():
+                        writer.execute('INSERT INTO t VALUES (randomblob(20000))')
+                        writer.commit()
+                finally:
+                    writer.close()
+            worker = threading.Thread(target=commit)
+            worker.start()
+            try:
+                for _ in range(300):
+                    self.assertIs(native.check_retained_descriptor(fd, purpose=native.DescriptorPurpose.PRIVATE_FILE,
+                                                                   deadline=time.monotonic() + 1), True)
+                # Identity and policy of the same live file are still enforced.
+                os.link(database + '-wal', os.path.join(directory, 'second-link'))
+                with self.assertRaisesRegex(native.AdmissionError, '^native_admission_permissions$'):
+                    native.check_retained_descriptor(fd, purpose=native.DescriptorPurpose.PRIVATE_FILE,
+                                                     deadline=time.monotonic() + 1)
+                os.unlink(os.path.join(directory, 'second-link'))
+                os.chmod(database + '-wal', 0o644)
+                with self.assertRaisesRegex(native.AdmissionError, '^native_admission_permissions$'):
+                    native.check_retained_descriptor(fd, purpose=native.DescriptorPurpose.PRIVATE_FILE,
+                                                     deadline=time.monotonic() + 1)
+                os.chmod(database + '-wal', 0o600)
+                # An ACL leaves mode, owner and links alone; the native snapshot refuses it.
+                import subprocess
+                subprocess.run(['/bin/chmod', '+a', 'everyone allow read', database + '-wal'], check=True)
+                with self.assertRaisesRegex(native.AdmissionError, '^native_admission_acl$'):
+                    native.check_retained_descriptor(fd, purpose=native.DescriptorPurpose.PRIVATE_FILE,
+                                                     deadline=time.monotonic() + 1)
+                subprocess.run(['/bin/chmod', '-N', database + '-wal'], check=True)
+                self.assertIs(native.check_retained_descriptor(fd, purpose=native.DescriptorPurpose.PRIVATE_FILE,
+                                                               deadline=time.monotonic() + 1), True)
+            finally:
+                stop.set()
+                worker.join()
+                os.close(fd)
+                setup.close()
 
 
 if __name__ == "__main__": unittest.main()

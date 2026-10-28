@@ -114,8 +114,10 @@ class _Darwin:
             if (call("fstatx_np", fd, C.byref(metadata), security) != 0
                     or call("filesec_query_property", security, 5, C.byref(present)) != 0):
                 raise AdmissionError("native_admission_acl")
+            # The ACL below and this identity and policy come from one atomic call.
+            snapshot = (metadata.ino, metadata.mode, metadata.uid, metadata.gid, metadata.nlink)
             if present.value == 0:
-                return
+                return snapshot
             # Darwin returns a validity bitmask (ACL is 1 << 5), not Boolean 1.
             _deadline(deadline)
             status = self.lib.filesec_get_property(security, 5, C.byref(acl))
@@ -128,7 +130,7 @@ class _Darwin:
                 status = call("acl_get_entry", acl, index, C.byref(entry))
                 if status != 0:
                     if C.get_errno() == errno.EINVAL:
-                        return
+                        return snapshot
                     raise AdmissionError("native_admission_acl")
                 if index == 128 or not entry.value:
                     raise AdmissionError("native_admission_acl")
@@ -198,14 +200,25 @@ def _metadata(fd, purpose):
 _STABLE_PASSES = 4
 
 
-def _stable_check(backend, fd, purpose, deadline):
+def _identity(metadata):
+    """Identity and policy only: device, inode, mode, owner, group, links."""
+    return metadata[:5] + ((metadata[5][0],) if metadata[5] is not None else ())
+
+
+def _stable_check(backend, fd, purpose, deadline, *, live=False):
     for _ in range(_STABLE_PASSES):
         before = _metadata(fd, purpose)
         revision = os.fstat(fd).st_ctime_ns
         _deadline(deadline)
-        backend.check(fd, purpose, deadline)
+        snapshot = backend.check(fd, purpose, deadline)
         after = _metadata(fd, purpose)
-        if before == after and os.fstat(fd).st_ctime_ns == revision:
+        if live:
+            # A live database file's size and times move with each of its owner's
+            # commits; its identity and policy, and the ACL snapshot taken with
+            # them, must not.
+            if _identity(before) == _identity(after) and snapshot == _identity(after)[1:]:
+                return
+        elif before == after and os.fstat(fd).st_ctime_ns == revision:
             return
         if time.monotonic() >= deadline:
             break
@@ -218,6 +231,11 @@ def check_retained_descriptor(fd, *, purpose, deadline):
     The caller must retain this exact descriptor throughout the call and until
     its dependent resource closes. SQLite custody needs this form because closing
     any descriptor for an inode can release that process's POSIX locks.
+
+    A retained private file is a live database file its caller writes, so only
+    its identity and policy are compared across a pass, not its size or times.
+    That custody fences observed replacement; it does not isolate a hostile
+    same-UID host, which could change and restore a mode within one pass.
     """
     now = time.monotonic()
     if type(deadline) not in (int, float) or not now < deadline < float('inf'):
@@ -229,7 +247,7 @@ def check_retained_descriptor(fd, *, purpose, deadline):
         raise AdmissionError('native_admission_invalid')
     try:
         backend = _Darwin()
-        _stable_check(backend, fd, purpose, deadline)
+        _stable_check(backend, fd, purpose, deadline, live=purpose is DescriptorPurpose.PRIVATE_FILE)
         _deadline(deadline)
     except (OSError, AttributeError):
         raise AdmissionError('native_admission_unavailable') from None
