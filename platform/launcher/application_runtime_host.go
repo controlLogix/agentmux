@@ -84,6 +84,7 @@ func (s *OwnerBridgeServer) startApplicationAttestor(lifetime context.Context, o
 	app.mu.Unlock()
 	go func() {
 		result := runApplicationAttestorWithServices(lifetime, operation, app.enrollment, app.services)
+		recordApplicationAttestorEnd(lifetime, result)
 		app.mu.Lock()
 		app.result = result
 		clear(app.enrollment.Credentials)
