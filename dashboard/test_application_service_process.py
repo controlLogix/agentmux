@@ -36,6 +36,15 @@ class ProcessProtocol(unittest.IsolatedAsyncioTestCase):
         self.mocks = [patcher.start() for patcher in self.patchers]
         for patcher in self.patchers:
             self.addCleanup(patcher.stop)
+        # Tests never write to the developer's system log.
+        log = patch('application_service_process.syslog')
+        self.log = log.start()
+        self.addCleanup(log.stop)
+        process._reported = False
+
+    def record(self):
+        self.log.syslog.assert_called_once()
+        return self.log.syslog.call_args.args
 
     def start_packet(self):
         self.reader.feed_data(canonical_bytes(self.packet)+b'\n')
@@ -150,6 +159,76 @@ class ProcessProtocol(unittest.IsolatedAsyncioTestCase):
         self.assertEqual([line['state'] for line in self.lines], ['ready'])
         self.mocks[1].assert_called_once_with(3)
 
+    async def test_failed_health_check_records_only_its_stage_and_closed_code(self):
+        self.start_packet()
+        def failing():
+            self.host.health_stage = 'storage'
+            try:
+                raise ConnectionResetError('tls://user:secret@10.0.0.1 /Users/private')
+            except ConnectionResetError as cause:
+                raise ContractError('storage_ledger_unavailable') from cause
+        self.host.check_health.side_effect = failing
+        with self.assertRaises(ContractError):
+            await process.receive(self.reader, self.writer)
+        level, record = self.record()
+        self.assertEqual(level, self.log.LOG_ERR)
+        self.assertEqual(record, 'application_services_failed phase=health stage=storage'
+            ' type=agentmux_contracts.wire.ContractError code=storage_ledger_unavailable'
+            ' cause=builtins.ConnectionResetError cause_code=none')
+        self.assertEqual([line['state'] for line in self.lines], ['ready'])
+
+    async def test_clean_stop_is_recorded_as_an_owner_stop(self):
+        self.start_packet()
+        self.writer.drain.side_effect = lambda: self.stop_packet() if self.lines[-1]['state'] == 'ready' else None
+        self.assertEqual(await process.receive(self.reader, self.writer), 0)
+        self.assertEqual(self.record(), (self.log.LOG_WARNING, 'application_services_ended reason=stopped'))
+
+    async def test_wrong_stop_is_recorded_as_a_protocol_failure(self):
+        self.start_packet()
+        self.writer.drain.side_effect = lambda: self.stop_packet('service_'+'f'*32) if self.lines[-1]['state'] == 'ready' else None
+        self.assertEqual(await process.receive(self.reader, self.writer), 1)
+        self.assertEqual(self.record(), (self.log.LOG_WARNING, 'application_services_ended reason=protocol_failure'))
+
+    async def test_startup_and_close_failures_name_their_phase(self):
+        self.start_packet()
+        self.host.start.side_effect = ContractError('application_service_start_unconfirmed')
+        with self.assertRaises(ContractError):
+            await process.receive(self.reader, self.writer)
+        self.assertIn('phase=startup stage=none', self.record()[1])
+        self.assertIn('code=application_service_start_unconfirmed', self.record()[1])
+
+    async def test_close_failure_names_its_phase(self):
+        self.start_packet()
+        self.writer.drain.side_effect = lambda: self.stop_packet()
+        self.host.close.side_effect = OSError('private cleanup failure')
+        with self.assertRaises(OSError):
+            await process.receive(self.reader, self.writer)
+        self.assertEqual(self.record(), (self.log.LOG_ERR, 'application_services_failed phase=close stage=none'
+            ' type=builtins.OSError code=none cause=none cause_code=none'))
+
+
+    def test_failure_record_never_carries_messages_or_uncoded_text(self):
+        from native_security.descriptor_admission import AdmissionError
+        record = process._failure_record
+        self.assertEqual(record('startup', 'storage', AdmissionError('native_admission_acl')),
+            'application_services_failed phase=startup stage=storage'
+            ' type=native_security.descriptor_admission.AdmissionError code=native_admission_acl'
+            ' cause=none cause_code=none')
+        for error in (ContractError('Secret_Value'), ContractError('password'), ContractError('a_' * 30 + 'b'),
+                      ContractError('code_with /path'), ContractError(('tuple_code',)),
+                      ValueError('value_error_text'), OSError(2, 'no_such_file')):
+            text = record('health', 'identity', error)
+            for private in ('Secret', 'password', '/path', 'value_error_text', 'no_such_file', 'tuple_code', 'a_a_'):
+                self.assertNotIn(private, text)
+            self.assertIn(' code=none ', text)
+        self.assertIn('phase=unknown stage=none', record('elsewhere', 'not_a_stage', ValueError()))
+        Hostile = type('Bad Name', (Exception,), {})
+        self.assertIn('type=unnamed', record('health', 'host', Hostile()))
+
+    def test_unavailable_system_log_never_changes_the_outcome(self):
+        self.log.syslog.side_effect = OSError('log unavailable')
+        process._report_failure('health', 'host', ValueError())
+
     async def test_extra_start_fields_cannot_choose_an_executable(self):
         self.packet['command'] = ['python','other.py']
         self.start_packet()
@@ -172,3 +251,26 @@ class ProcessProtocol(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result.returncode, 1)
         self.assertEqual(result.stdout, b'')
         self.assertEqual(result.stderr, b'Application services could not finish startup or cleanup.\n')
+
+
+class ProcessOutsideTheBody(unittest.TestCase):
+    def test_failure_outside_the_body_is_recorded_once_as_cleanup(self):
+        async def failing():
+            raise OSError('private pipe failure')
+        process._reported = False
+        with patch('application_service_process._stdio', failing), \
+                patch('application_service_process.syslog') as log, patch('sys.stderr'):
+            self.assertEqual(process.main(), 1)
+        log.syslog.assert_called_once_with(log.LOG_ERR, 'application_services_failed phase=cleanup'
+            ' stage=none type=builtins.OSError code=none cause=none cause_code=none')
+
+    def test_failure_already_recorded_in_the_body_is_not_recorded_again(self):
+        async def failing():
+            process._report_failure('health', 'task', ContractError('task_host_unavailable'))
+            raise ContractError('task_host_unavailable')
+        process._reported = False
+        with patch('application_service_process._stdio', failing), \
+                patch('application_service_process.syslog') as log, patch('sys.stderr'):
+            self.assertEqual(process.main(), 1)
+        log.syslog.assert_called_once()
+        self.assertIn('phase=health stage=task', log.syslog.call_args.args[1])

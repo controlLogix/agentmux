@@ -257,6 +257,13 @@ class HostComposition(unittest.IsolatedAsyncioTestCase):
         with patch('application_service_host.new_client', side_effect=self.clients) as create:
             await self.host.start()
         self.host.check_health()
+        self.assertIsNone(self.host.health_stage)
+        with patch.object(self.host._identity, 'check_health', side_effect=ContractError('identity_unavailable')):
+            with self.assertRaises(ContractError):
+                self.host.check_health()
+        self.assertEqual(self.host.health_stage, 'identity')
+        self.host.check_health()
+        self.assertIsNone(self.host.health_stage)
         self.assertEqual(create.call_count, 2)
         for role, client in zip(('identity','definitions'), self.clients):
             self.assertEqual(client.js.selected_domain, 'enrolled-domain')

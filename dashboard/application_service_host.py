@@ -77,6 +77,7 @@ class ApplicationServiceHost:
         self._services, self._clients, self._histories = [], [], []
         self._connects, self._checkpoints, self._sessions = [], {}, []
         self._connection_failure = None
+        self.health_stage = None
         self._identity = self._definitions = self._integration = self._configuration = None
         self._federation_policy = None
         self._federation_policy_keys = []
@@ -963,37 +964,31 @@ class ApplicationServiceHost:
             raise ApplicationServiceFailure('application_service_start_unconfirmed', self, error) from None
 
     def check_health(self):
+        # health_stage names the part being checked, so a failed check can be
+        # reported by that fixed name alone.
+        self.health_stage = 'host'
         self._open()
         if not self._ready:
             raise ContractError('application_service_host_unavailable')
+        self.health_stage = 'identity'
         self._identity.check_health()
-        if self._integration is not None:
-            self._integration.check_health()
-        if self._configuration is not None:
-            self._configuration.check_health()
-        if self._federation_policy is not None:
-            self._federation_policy.check_health()
-        if self._task is not None:
-            self._task.check_health()
-        if self._orchestration is not None:
-            self._orchestration.check_health()
-        if self._storage is not None:
-            self._storage.check_health()
-        if self._policy_service is not None:
-            self._policy_service.check_health()
-        if self._workspace is not None:
-            self._workspace.check_health()
-        if self._artifact is not None:
-            self._artifact.check_health()
-        if self._secret_use is not None:
-            self._secret_use.check_health()
-        if self._process is not None:
-            self._process.check_health()
+        for stage, part in (('integration', self._integration),
+                            ('configuration', self._configuration),
+                            ('federation_policy', self._federation_policy), ('task', self._task),
+                            ('orchestration', self._orchestration), ('storage', self._storage),
+                            ('policy', self._policy_service), ('workspace', self._workspace),
+                            ('artifact', self._artifact), ('secret_use', self._secret_use),
+                            ('process', self._process)):
+            if part is not None:
+                self.health_stage = stage
+                part.check_health()
+        self.health_stage = 'definitions'
         if self._definitions._closed:
             raise ContractError('application_service_host_unavailable')
         for task in (self._definitions._checkpoint_task, self._definitions._checkpoint_work):
             if task is not None and task.done():
                 task.result()
+        self.health_stage = None
 
     async def _close(self):
         if self._startup is not None:

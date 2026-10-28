@@ -11,12 +11,13 @@ import re
 import signal
 import stat
 import sys
+import syslog
 import time
 
 from agentmux_contracts import ContractError, canonical_bytes, strict_loads
 from identity.application_service_selection import load_application_service_selection, validate_protected_host_account
-from native_security.descriptor_admission import check_descriptor, DescriptorPurpose
-from application_service_host import ApplicationServiceHost
+from native_security.descriptor_admission import AdmissionError, check_descriptor, DescriptorPurpose
+from application_service_host import ApplicationServiceFailure, ApplicationServiceHost
 from definition_commands import _joined
 
 _START = {'schemaVersion', 'kind', 'lifetimeId', 'selection', 'selectionSHA256', 'hostPolicy',
@@ -51,6 +52,67 @@ def _release_lease(fd):
     os.close(fd)
 
 
+# The failure record holds only fixed names: the phase, the host's health stage,
+# exception types (which are code), and a code-shaped error code. Never a message,
+# path, payload or credential. It goes to the system log because the native owner
+# keeps this process's stderr in memory only. Read it with:
+#   log show --last 1h --predicate 'eventMessage BEGINSWITH "application_services_"'
+_PHASES = frozenset({'start', 'lease', 'selection', 'startup', 'ready', 'health', 'close', 'drained',
+                     'cleanup'})
+_STAGES = frozenset({'host', 'identity', 'integration', 'configuration', 'federation_policy', 'task',
+                     'orchestration', 'storage', 'policy', 'workspace', 'artifact', 'secret_use',
+                     'process', 'definitions'})
+_CODED = (ContractError, AdmissionError, ApplicationServiceFailure)
+_CODE = re.compile(r'[a-z][a-z0-9]*(?:_[a-z0-9]+){1,9}')
+_TYPE = re.compile(r'[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*){0,8}')
+
+
+def _type_name(error):
+    if error is None:
+        return 'none'
+    kind = type(error)
+    name = f'{kind.__module__}.{kind.__qualname__}'
+    return name if len(name) <= 128 and _TYPE.fullmatch(name) else 'unnamed'
+
+
+def _code(error):
+    if isinstance(error, _CODED) and len(error.args) == 1 and type(error.args[0]) is str:
+        code = error.args[0]
+        if len(code) <= 80 and _CODE.fullmatch(code):
+            return code
+    return 'none'
+
+
+def _failure_record(phase, stage, error):
+    cause = error.__cause__ if error.__cause__ is not None else error.__context__
+    return (f'application_services_failed phase={phase if phase in _PHASES else "unknown"}'
+            f' stage={stage if stage in _STAGES else "none"} type={_type_name(error)}'
+            f' code={_code(error)} cause={_type_name(cause)} cause_code={_code(cause)}')
+
+
+_reported = False
+
+
+def _log(level, record):
+    global _reported
+    _reported = True
+    try:
+        syslog.openlog('agentmux-application-services', syslog.LOG_PID, syslog.LOG_USER)
+        syslog.syslog(level, record)
+    except Exception:
+        pass  # The diagnostic never changes the process outcome.
+
+
+def _report_failure(phase, stage, error):
+    _log(syslog.LOG_ERR, _failure_record(phase, stage, error))
+
+
+def _report_end(protocol_failure):
+    # A clean end is recorded too, so an owner stop is told apart from a failure.
+    _log(syslog.LOG_WARNING, 'application_services_ended reason='
+         + ('protocol_failure' if protocol_failure else 'stopped'))
+
+
 async def receive(reader, writer):
     """Consume the fixed private protocol on owned asyncio pipe streams."""
     host = watcher = None
@@ -60,11 +122,13 @@ async def receive(reader, writer):
     protocol_failure = False
     lease_admitted = False
     starting = None
+    phase = 'start'
     try:
         raw = await asyncio.wait_for(reader.readline(), 3)
         if not raw or len(raw) > 65536 or not raw.endswith(b'\n'):
             raise ContractError('application_service_start_invalid')
         request = _start(raw)
+        phase = 'lease'
         _lease(3, request['ownerUid'])
         lease_admitted = True
         loop = asyncio.get_running_loop()
@@ -93,6 +157,7 @@ async def receive(reader, writer):
                 end_lifetime()
 
         watcher = asyncio.create_task(lifetime())
+        phase = 'selection'
         selected = await _joined(lambda: load_application_service_selection(request['selection'],
             expected_digest=request['selectionSHA256'], host_policy=request['hostPolicy'],
             owner_uid=request['ownerUid'], workspaces=request['workspaces'], kernel_scope=request['kernelScope'],
@@ -117,6 +182,7 @@ async def receive(reader, writer):
             await asyncio.wait_for(writer.drain(), 3)
 
         if not stop.is_set():
+            phase = 'startup'
             starting = asyncio.create_task(host.start())
             stopping = asyncio.create_task(stop.wait())
             try:
@@ -124,7 +190,9 @@ async def receive(reader, writer):
                 if starting.done() and not stop.is_set():
                     starting.result()
                 if not stop.is_set():
+                    phase = 'ready'
                     await emit('ready')
+                phase = 'health'
                 while not stop.is_set():
                     host.check_health()
                     try:
@@ -135,9 +203,15 @@ async def receive(reader, writer):
                 if not stopping.done():
                     stopping.cancel()
                 await asyncio.gather(stopping, return_exceptions=True)
+        phase = 'close'
         await host.close()
+        phase = 'drained'
         await emit('drained')
+        _report_end(protocol_failure)
         return 1 if protocol_failure else 0
+    except BaseException as error:
+        _report_failure(phase, getattr(host, 'health_stage', None) if phase == 'health' else None, error)
+        raise
     finally:
         # No drained packet is emitted on an uncertain join. The native owner
         # keeps its process, lease and package handle for that failed outcome.
@@ -183,7 +257,9 @@ def main():
     """Called with no arguments by the admitted private installed bootstrap."""
     try:
         return asyncio.run(_stdio())
-    except BaseException:
+    except BaseException as error:
+        if not _reported:
+            _report_failure('cleanup', None, error)
         # Never print credentials, selected paths or private child/transport errors.
         sys.stderr.write('Application services could not finish startup or cleanup.\n')
         return 1
