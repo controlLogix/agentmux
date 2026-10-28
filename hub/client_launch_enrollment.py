@@ -101,13 +101,30 @@ def tls_options(selection):
             'inbox_prefix': policy['replyPrefix']}
 
 
+def admit_connection_credential(enrollment, publish_subjects):
+    """Run the shared credential guard on the selected connection's admitted bytes.
+
+    The credential must be signed by the enrolled account, belong to the
+    enrolled user, and grant exactly ``publish_subjects`` and this connection's
+    own reply prefix; anything broader or different is refused.
+    """
+    from native_security.nats_credentials import validate
+
+    policy = enrollment.policy
+    credential = validate(enrollment.credentials, account_public_key=policy['accountPublicKey'],
+        publish_subjects=publish_subjects, subscribe_subjects=[policy['replyPrefix'] + '.>'],
+        private_inbox=True, application_publish=True)
+    if credential.public_key != policy['userPublicKey']:
+        raise ValueError('application_credential_mismatch')
+    return credential
+
+
 async def open_application_client(client_key_path, connection_path, *, selected, deadline, cleanup_deadline):
     """Admit private inputs, connect once and verify discovery/binding on that client."""
     import asyncio
     import base64
     import nkeys
     from identity.application_client import load_application_client
-    from native_security.nats_credentials import validate
     from hub.client_launch_connection import _new_connection_owner, ConnectionFailure, selected_publish_subjects
 
     loop = asyncio.get_running_loop()
@@ -129,12 +146,7 @@ async def open_application_client(client_key_path, connection_path, *, selected,
         def checked_credential():
             if loop.time() >= deadline:
                 raise ValueError('application_connection_deadline')
-            credential = validate(enrollment.credentials, account_public_key=policy['accountPublicKey'],
-                publish_subjects=publish_subjects, subscribe_subjects=[policy['replyPrefix'] + '.>'],
-                private_inbox=True, application_publish=True)
-            if credential.public_key != policy['userPublicKey']:
-                raise ValueError('application_credential_mismatch')
-            return credential
+            return admit_connection_credential(enrollment, publish_subjects)
         checked_credential()
         options = tls_options(enrollment)
         owner = _new_connection_owner(signer, reply_prefix=policy['replyPrefix'],

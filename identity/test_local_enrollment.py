@@ -252,6 +252,53 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
             if path.is_file():
                 self.assertEqual(path.stat().st_mode & 0o077, 0, path)
 
+    async def test_issued_credentials_pass_the_launch_guard_and_broader_ones_are_refused(self):
+        # AMUX-728 criterion 6: every coreHub application credential the
+        # ceremony issues passes the shared credential guard exactly as the
+        # selected client admits it at launch, and the guard refuses a broader,
+        # foreign-prefix or different-user credential for the same connection.
+        import dataclasses
+        import nkeys
+        from hub.client_launch_connection import selected_publish_subjects
+        from hub.client_launch_enrollment import admit_connection_credential, load_connection_selection
+        from hub.client_launch_selection import load_selection
+        from identity.application_client import load_application_client
+        from native_security.nats_credentials import CredentialError
+        install = Installation(self.runtime)
+        result = await install.run()
+        core = _read_material(result['coreHub']['selection'], max_bytes=16384)
+        seed = (self.runtime.directory / 'account.nk').read_bytes().strip()
+        account = nkeys.from_seed(seed)
+        expires = datetime.now(timezone.utc) + timedelta(days=1)
+        checked = 0
+        try:
+            for family in ('identity', 'messages', 'work'):
+                for pin in core[family]:
+                    selection = load_selection(pin['selection'])
+                    enrollment = load_connection_selection(selection.application_connection,
+                        workspaces=selection.invocation.workspaces, deadline=time.monotonic() + 5)
+                    publish = selected_publish_subjects(load_application_client(selection.application_client))
+                    prefix = enrollment.policy['replyPrefix']
+                    credential = admit_connection_credential(enrollment, publish)
+                    self.assertEqual(credential.public_key, enrollment.policy['userPublicKey'])
+                    checked += 1
+                    refused = {
+                        'broader publish': local_enrollment.user_credential(
+                            account, list(publish) + ['amx.>'], [prefix + '.>'], name='t', expires_at=expires),
+                        'foreign reply prefix': local_enrollment.user_credential(
+                            account, publish, ['_INBOX.other_profile.>'], name='t', expires_at=expires),
+                        # Exact permissions, but a user other than the enrolled one.
+                        'other user': local_enrollment.user_credential(
+                            account, publish, [prefix + '.>'], name='t', expires_at=expires),
+                    }
+                    for case, raw in refused.items():
+                        with self.subTest(family=family, case=case):
+                            with self.assertRaises((CredentialError, ValueError)):
+                                admit_connection_credential(dataclasses.replace(enrollment, credentials=raw), publish)
+        finally:
+            account.wipe()
+        self.assertEqual(checked, 5)
+
     async def test_interruption_after_materials_resumes_without_new_keys(self):
         install = Installation(self.runtime)
         with mock.patch.object(local_enrollment.Ceremony, 'bootstrap', side_effect=RuntimeError('interrupted')):
