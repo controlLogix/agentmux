@@ -10,7 +10,24 @@ from agentmux_contracts import ContractError, canonical_bytes, strict_loads
 from hub.store import Store, _ExistingDatabaseCustody
 
 
-def _refuse():
+_ADMISSION_CAUSES = frozenset('native_admission_' + name for name in (
+    'acl', 'changed', 'cleanup', 'deadline', 'invalid', 'mount', 'permissions',
+    'unavailable', 'unqualified'))
+
+
+def _custody_cause(error):
+    """Name a custody failure with a closed code, never its private message."""
+    from native_security.descriptor_admission import AdmissionError
+    if type(error) is AdmissionError and str(error) in _ADMISSION_CAUSES:
+        return str(error)
+    if type(error) is ValueError:
+        return 'custody_identity_changed'
+    if isinstance(error, OSError):
+        return 'custody_unavailable'
+    return 'custody_other'
+
+
+def _refuse(cause=None):
     try:
         import json
         import sys
@@ -18,7 +35,10 @@ def _refuse():
         caller = sys._getframe(1)
         line = caller.f_lineno if caller.f_code.co_filename == __file__ else None
         del caller
-        log('work source refusal site', json.dumps({'file': 'work_source.py', 'line': line}))
+        record = {'file': 'work_source.py', 'line': line}
+        if cause is not None:
+            record['cause'] = _custody_cause(cause)
+        log('work source refusal site', json.dumps(record))
     except BaseException:
         pass
     raise ContractError('work_source_binding_refused')
@@ -45,8 +65,8 @@ class WorkSourcePin:
         try:
             self.connection.in_transaction
             self.custody.check()
-        except Exception:
-            _refuse()
+        except Exception as error:
+            _refuse(error)
 
     def read(self, *, full=False):
         """Run only on the source's original database worker."""

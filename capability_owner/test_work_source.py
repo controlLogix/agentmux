@@ -395,6 +395,31 @@ class WorkSourceSchedulingTests(unittest.IsolatedAsyncioTestCase):
             with self.assertRaisesRegex(ContractError, '^work_source_binding_refused$'):
                 pin.check()
 
+    def test_custody_refusal_names_only_a_closed_cause(self):
+        import json
+        from types import SimpleNamespace
+        from unittest.mock import Mock
+        from native_security.descriptor_admission import AdmissionError
+        from .work_source import WorkSourcePin
+        cases = [(AdmissionError('native_admission_changed'), 'native_admission_changed'),
+                 (AdmissionError('/private/path'), 'custody_other'),
+                 (ValueError(), 'custody_identity_changed'),
+                 (FileNotFoundError('/private/path'), 'custody_unavailable'),
+                 (RuntimeError('/private/path'), 'custody_other')]
+        for error, cause in cases:
+            custody = SimpleNamespace(check=Mock(side_effect=error))
+            pin = object.__new__(WorkSourcePin)
+            pin.custody = custody
+            pin.connection = SimpleNamespace(_selected_custody=custody, in_transaction=False)
+            pin.store = SimpleNamespace(db=pin.connection, _selected_custody=custody)
+            with self.subTest(cause=cause), patch('hub.server.log') as log:
+                with self.assertRaisesRegex(ContractError, '^work_source_binding_refused$'):
+                    pin.check()
+                record = json.loads(log.call_args.args[1])
+                self.assertEqual(set(record), {'file', 'line', 'cause'})
+                self.assertEqual(record['cause'], cause)
+                self.assertNotIn('private', log.call_args.args[1])
+
     async def test_route_refusal_keeps_original_future_and_closed_diagnostic(self):
         from concurrent.futures import Future
         import json

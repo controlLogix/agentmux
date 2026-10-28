@@ -184,15 +184,71 @@ class NativeDescriptorAdmission(unittest.TestCase):
                 native.check_descriptor(7, purpose=native.DescriptorPurpose.PRIVATE_FILE, deadline=11)
             close.assert_called_once_with(90)
 
-    def test_mutation_during_native_check_refuses(self):
+    def changing(self, every_pass):
+        """fstat results that differ at a pass's after-read (its third; a changed pass stops there)."""
+        state = {'reads': 0}
+        def inspect(fd):
+            state['reads'] += 1
+            changed = state['reads'] % 3 == 0 if every_pass else state['reads'] == 3
+            return metadata(inode=23 if changed else 22)
+        return inspect
+
+    def test_mutation_on_every_pass_refuses_after_bounded_passes(self):
+        for check, fd in ((native.check_descriptor, 90), (native.check_retained_descriptor, 7)):
+            checker = Mock()
+            with self.subTest(check=check.__name__), patch.object(native, '_supported'), \
+                 patch.object(native, '_Darwin', return_value=checker), \
+                 patch.object(native.os, 'geteuid', return_value=501), \
+                 patch.object(native.os, 'dup', return_value=90), patch.object(native.os, 'close') as close, \
+                 patch.object(native.os, 'fstat', side_effect=self.changing(every_pass=True)):
+                with self.assertRaisesRegex(native.AdmissionError, '^native_admission_changed$'):
+                    check(7, purpose=native.DescriptorPurpose.PRIVATE_FILE, deadline=11)
+                self.assertEqual(checker.check.call_count, native._STABLE_PASSES)
+                checker.check.assert_called_with(fd, native.DescriptorPurpose.PRIVATE_FILE, 11)
+                self.assertEqual(close.call_count, int(check is native.check_descriptor))
+
+    def test_one_overlapping_change_is_accepted_only_from_a_later_stable_pass(self):
+        for check in (native.check_descriptor, native.check_retained_descriptor):
+            checker = Mock()
+            with self.subTest(check=check.__name__), patch.object(native, '_supported'), \
+                 patch.object(native, '_Darwin', return_value=checker), \
+                 patch.object(native.os, 'geteuid', return_value=501), \
+                 patch.object(native.os, 'dup', return_value=90), patch.object(native.os, 'close'), \
+                 patch.object(native.os, 'fstat', side_effect=self.changing(every_pass=False)):
+                self.assertIs(check(7, purpose=native.DescriptorPurpose.PRIVATE_FILE, deadline=11), True)
+                self.assertEqual(checker.check.call_count, 2)
+
+    def test_change_to_refused_policy_is_refused_not_retried(self):
+        reads = iter([metadata(), metadata(), metadata(mode=0o640)])
         checker = Mock()
         with patch.object(native, '_supported'), patch.object(native, '_Darwin', return_value=checker), \
              patch.object(native.os, 'geteuid', return_value=501), \
-             patch.object(native.os, 'dup', return_value=90), patch.object(native.os, 'close') as close, \
-             patch.object(native.os, 'fstat', side_effect=[metadata(), metadata(), metadata(inode=23)]):
-            with self.assertRaisesRegex(native.AdmissionError, 'changed'):
-                native.check_descriptor(7, purpose=native.DescriptorPurpose.PRIVATE_FILE, deadline=11)
-            close.assert_called_once_with(90)
+             patch.object(native.os, 'fstat', side_effect=lambda fd: next(reads)):
+            with self.assertRaisesRegex(native.AdmissionError, '^native_admission_permissions$'):
+                native.check_retained_descriptor(7, purpose=native.DescriptorPurpose.PRIVATE_FILE, deadline=11)
+            self.assertEqual(checker.check.call_count, 1)
+
+    def test_change_at_the_deadline_refuses_without_another_pass(self):
+        checker = Mock()
+        def late(*args):
+            self.clock.return_value = 11
+        checker.check.side_effect = late
+        with patch.object(native, '_supported'), patch.object(native, '_Darwin', return_value=checker), \
+             patch.object(native.os, 'geteuid', return_value=501), \
+             patch.object(native.os, 'fstat', side_effect=self.changing(every_pass=False)):
+            with self.assertRaisesRegex(native.AdmissionError, '^native_admission_changed$'):
+                native.check_retained_descriptor(7, purpose=native.DescriptorPurpose.PRIVATE_FILE, deadline=11)
+            self.assertEqual(checker.check.call_count, 1)
+
+    def test_native_refusal_is_never_retried(self):
+        checker = Mock()
+        checker.check.side_effect = native.AdmissionError('native_admission_acl')
+        with patch.object(native, '_supported'), patch.object(native, '_Darwin', return_value=checker), \
+             patch.object(native.os, 'geteuid', return_value=501), \
+             patch.object(native.os, 'fstat', return_value=metadata()):
+            with self.assertRaisesRegex(native.AdmissionError, '^native_admission_acl$'):
+                native.check_retained_descriptor(7, purpose=native.DescriptorPurpose.PRIVATE_FILE, deadline=11)
+            self.assertEqual(checker.check.call_count, 1)
 
     def test_native_refusal_closes_duplicate_and_not_callers_descriptor(self):
         checker = Mock()
@@ -295,6 +351,39 @@ class NativeDescriptorLocalFiles(unittest.TestCase):
                     os.close(fd)
             finally:
                 os.close(directory_fd)
+
+    def test_entry_changes_in_a_held_ancestor_are_not_a_policy_change(self):
+        import tempfile
+        import threading
+        import time
+        # Unrelated tools add and remove entries in held ancestors such as $HOME.
+        # Before stable passes, about 2% of these checks refused as changed.
+        with tempfile.TemporaryDirectory(prefix='agentmux-descriptor-') as directory:
+            os.chmod(directory, 0o700)
+            fd = os.open(directory, os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC)
+            stop = threading.Event()
+            def churn():
+                while not stop.is_set():
+                    path = os.path.join(directory, 'entry')
+                    open(path, 'w').close()
+                    os.unlink(path)
+            worker = threading.Thread(target=churn)
+            worker.start()
+            try:
+                for _ in range(2000):
+                    for check, purpose in ((native.check_retained_descriptor, native.DescriptorPurpose.PRIVATE_ANCESTOR),
+                                           (native.check_descriptor, native.DescriptorPurpose.PRIVATE_DIRECTORY)):
+                        self.assertIs(check(fd, purpose=purpose, deadline=time.monotonic() + 1), True)
+                # A real policy change is still refused.
+                os.chmod(directory, 0o777)
+                with self.assertRaisesRegex(native.AdmissionError, '^native_admission_permissions$'):
+                    native.check_retained_descriptor(fd, purpose=native.DescriptorPurpose.PRIVATE_ANCESTOR,
+                                                     deadline=time.monotonic() + 1)
+            finally:
+                stop.set()
+                worker.join()
+                os.chmod(directory, 0o700)
+                os.close(fd)
 
 
 if __name__ == "__main__": unittest.main()

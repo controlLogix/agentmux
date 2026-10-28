@@ -193,6 +193,25 @@ def _metadata(fd, purpose):
             None if directory else (info.st_nlink, info.st_size, info.st_mtime_ns, info.st_ctime_ns))
 
 
+# A held ancestor's ctime moves whenever any entry in it changes, so one pass can
+# overlap unrelated activity. Only a complete pass that saw no change is accepted.
+_STABLE_PASSES = 4
+
+
+def _stable_check(backend, fd, purpose, deadline):
+    for _ in range(_STABLE_PASSES):
+        before = _metadata(fd, purpose)
+        revision = os.fstat(fd).st_ctime_ns
+        _deadline(deadline)
+        backend.check(fd, purpose, deadline)
+        after = _metadata(fd, purpose)
+        if before == after and os.fstat(fd).st_ctime_ns == revision:
+            return
+        if time.monotonic() >= deadline:
+            break
+    raise AdmissionError('native_admission_changed')
+
+
 def check_retained_descriptor(fd, *, purpose, deadline):
     """Apply native policy without duplicating or closing a borrowed descriptor.
 
@@ -210,13 +229,7 @@ def check_retained_descriptor(fd, *, purpose, deadline):
         raise AdmissionError('native_admission_invalid')
     try:
         backend = _Darwin()
-        before = _metadata(fd, purpose)
-        revision = os.fstat(fd).st_ctime_ns
-        _deadline(deadline)
-        backend.check(fd, purpose, deadline)
-        after = _metadata(fd, purpose)
-        if before != after or os.fstat(fd).st_ctime_ns != revision:
-            raise AdmissionError('native_admission_changed')
+        _stable_check(backend, fd, purpose, deadline)
         _deadline(deadline)
     except (OSError, AttributeError):
         raise AdmissionError('native_admission_unavailable') from None
@@ -245,13 +258,7 @@ def check_descriptor(fd, *, purpose, deadline):
         backend = _Darwin()
         _deadline(deadline)
         owned = os.dup(fd)
-        before = _metadata(owned, purpose)
-        revision = os.fstat(owned).st_ctime_ns
-        _deadline(deadline)
-        backend.check(owned, purpose, deadline)
-        after = _metadata(owned, purpose)
-        if before != after or os.fstat(owned).st_ctime_ns != revision:
-            raise AdmissionError("native_admission_changed")
+        _stable_check(backend, owned, purpose, deadline)
         _deadline(deadline)
     except (OSError, AttributeError):
         raise AdmissionError("native_admission_unavailable") from None
