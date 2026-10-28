@@ -227,6 +227,7 @@ func runApplicationAttestor(lifetime context.Context, operation *bootstrapOperat
 		return err
 	}
 	var last *ApplicationRuntimeEvidence
+	misses := 0
 	defer func() {
 		if last != nil {
 			endContext, cancel := context.WithTimeout(context.WithoutCancel(lifetime), time.Second)
@@ -259,12 +260,27 @@ func runApplicationAttestor(lifetime context.Context, operation *bootstrapOperat
 				producer, err = newApplicationRuntimeProducer(ctx, operation, nextGeneration)
 				cancel()
 				if err != nil {
-					return err
+					return errors.Join(applicationEvidenceError("successor_unavailable", nil), err)
+				}
+				continue
+			}
+			// A busy or briefly stale roles check issues no evidence for this tick;
+			// already issued evidence still expires on its own. Only a sustained
+			// miss ends the attestor (and with it the owned services).
+			if applicationMissSkippable(err, misses) && lifetime.Err() == nil {
+				misses++
+				select {
+				case <-lifetime.Done():
+					return nil
+				case <-producer.group.Done():
+					return nil
+				case <-ticker.C:
 				}
 				continue
 			}
 			return err
 		}
+		misses = 0
 		// Retain even an uncertain publication so cleanup can attempt its exact end.
 		last = evidence
 		if err = transport.exchange(lifetime, evidence, false); err != nil {

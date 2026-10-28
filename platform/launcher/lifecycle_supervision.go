@@ -223,22 +223,34 @@ func (s *Session) currentKernelSnapshot(snapshot protocol.Snapshot) bool {
 }
 
 func (s *Session) currentKernelRoles(snapshot protocol.Snapshot) (map[string]bool, bool) {
+	allowed, complete, _, _ := s.kernelRolesState(snapshot)
+	return allowed, complete
+}
+
+// kernelRolesState also reports busy when supervision held its lock (for a
+// heartbeat or a replacement) and terminal when supervision failed or marked a
+// role failed or stopped, so a caller can tell both apart from a stale heartbeat.
+func (s *Session) kernelRolesState(snapshot protocol.Snapshot) (allowed map[string]bool, complete, busy, terminal bool) {
 	if s == nil || s.supervision == nil {
 		allowed := map[string]bool{}
 		for _, role := range protocol.Roles() {
 			allowed[role] = true
 		}
-		return allowed, true
+		return allowed, true, false, false
 	}
 	controller := s.supervision
 	// A replacement may hold this lock while spawning. Status must remain
 	// bounded and report unknown rather than wait behind that operation.
 	if !controller.mu.TryLock() {
-		return map[string]bool{}, false
+		return map[string]bool{}, false, true, false
 	}
 	defer controller.mu.Unlock()
-	allowed, complete := supervisedKernelRoles(snapshot, controller.group.Status(), controller.observed, controller.failed, controller.stopped, controller.config.Kernel.Scope, time.Now())
-	return allowed, complete && controller.failure == nil
+	allowed, complete = supervisedKernelRoles(snapshot, controller.group.Status(), controller.observed, controller.failed, controller.stopped, controller.config.Kernel.Scope, time.Now())
+	terminal = controller.failure != nil
+	for _, role := range protocol.Roles() {
+		terminal = terminal || controller.failed[role] || controller.stopped[role]
+	}
+	return allowed, complete && !terminal, false, terminal
 }
 
 func supervisedKernelRoles(snapshot protocol.Snapshot, states []protected.ProcessStatus, observed map[string]supervisedObservation, failed, stopped map[string]bool, scope protocol.Scope, now time.Time) (map[string]bool, bool) {

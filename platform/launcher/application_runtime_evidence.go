@@ -7,6 +7,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"sync"
 	"time"
@@ -16,6 +17,13 @@ import (
 )
 
 const applicationEvidenceLimit = 3 * time.Second
+
+const (
+	applicationRolesBusyAttempts = 20
+	applicationRolesBusyPause    = 5 * time.Millisecond
+	// Consecutive attestor ticks that may miss before the attestor ends.
+	applicationTransientMisses = 3
+)
 const applicationMaxGeneration = uint64(9007199254740991)
 
 // ApplicationRuntimeEvidence contains unsigned facts from an actual host-owned
@@ -197,13 +205,8 @@ func (p *applicationRuntimeProducer) observe(parent context.Context) (*Applicati
 	if err != nil {
 		return nil, err
 	}
-	if err := lockOwnerObservation(ctx, &p.session.mu); err != nil {
+	if err := awaitCurrentKernelRoles(ctx, p.session, snapshot); err != nil {
 		return nil, err
-	}
-	_, current := p.session.currentKernelRoles(snapshot)
-	p.session.mu.Unlock()
-	if !current {
-		return nil, applicationEvidenceError("generation_unavailable", nil)
 	}
 	if err := p.verify(ctx, p.roles); err != nil {
 		p.closed = true
@@ -273,5 +276,50 @@ func (p *applicationRuntimeProducer) close() {
 		p.mu.Lock()
 		p.closed = true
 		p.mu.Unlock()
+	}
+}
+
+// awaitCurrentKernelRoles checks that every kernel role is current. Supervision
+// takes its lock for every heartbeat, so a busy lock is retried briefly, outside
+// Session.mu. No miss issues evidence; only busy and stale misses may be skipped.
+func awaitCurrentKernelRoles(ctx context.Context, session *Session, snapshot protocol.Snapshot) error {
+	for attempt := 1; ; attempt++ {
+		if err := lockOwnerObservation(ctx, &session.mu); err != nil {
+			return err
+		}
+		_, current, busy, terminal := session.kernelRolesState(snapshot)
+		session.mu.Unlock()
+		switch {
+		case current:
+			return nil
+		case terminal:
+			return applicationEvidenceError("roles_failed", nil)
+		case !busy:
+			return applicationEvidenceError("roles_not_current", nil)
+		case attempt == applicationRolesBusyAttempts:
+			return applicationEvidenceError("roles_busy", nil)
+		case !sleepContext(ctx, applicationRolesBusyPause):
+			return applicationEvidenceError("deadline", ctx.Err())
+		}
+	}
+}
+
+// applicationMissSkippable reports whether the attestor may skip one more tick
+// after err, given the misses already skipped in a row.
+func applicationMissSkippable(err error, misses int) bool {
+	var miss *applicationEvidenceFailure
+	return errors.As(err, &miss) && (miss.code == "roles_busy" || miss.code == "roles_not_current") &&
+		misses < applicationTransientMisses
+}
+
+// sleepContext waits d and reports false if ctx ended first.
+func sleepContext(ctx context.Context, d time.Duration) bool {
+	timer := time.NewTimer(d)
+	defer timer.Stop()
+	select {
+	case <-ctx.Done():
+		return false
+	case <-timer.C:
+		return true
 	}
 }
