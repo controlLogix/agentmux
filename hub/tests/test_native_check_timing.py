@@ -110,5 +110,65 @@ class NativeCheckStages(unittest.TestCase):
         self.assertEqual(stages(value)[-2:], ['fresh-caller-return', 'identify-refused'])
 
 
+class OrdinaryWorkCheckTiming(unittest.IsolatedAsyncioTestCase):
+    """A refused ordinary authenticated Work check logs its private timing once."""
+    def hub(self, check):
+        import asyncio
+        import contextlib
+        from hub.server import Hub
+        hub = object.__new__(Hub)
+        proof = SimpleNamespace(expires_monotonic=time.monotonic() + 5)
+        task = asyncio.current_task()
+        hub._work_reply_identity = {task: (proof, False, (21, os.getuid()))}
+        hub._work_read_targets = {}
+
+        @contextlib.asynccontextmanager
+        async def turn(foreground=False):
+            yield
+        hub._native_work_check_turn = turn
+
+        async def owned(fn, *args):
+            return fn(*args)
+        hub._work_storage_commands = SimpleNamespace(_owned_db=owned)
+        hub._local_work_commands = SimpleNamespace(confirm_disclosure=Mock())
+        hub._check_work_request_current = check
+        return hub
+
+    async def test_refused_check_logs_fixed_stages_and_still_refuses(self):
+        from hub.server import HubError
+
+        def refused(targets, identity):
+            native_check_timing.sample('identify-start')
+            native_check_timing.sample('identify-refused')
+            raise HubError('authenticated work request changed or expired')
+        hub = self.hub(refused)
+        with patch('hub.server.log') as log:
+            with self.assertRaisesRegex(HubError, 'changed or expired'):
+                await hub._check_work_targets()
+        name, payload = log.call_args.args
+        import json
+        value = json.loads(payload)
+        self.assertEqual(name, 'native check timing')
+        self.assertEqual(set(value), {'refused', 'samples'})
+        self.assertEqual([item['stage'] for item in value['samples']],
+                         ['current-start', 'identify-start', 'identify-refused'])
+        hub._local_work_commands.confirm_disclosure.assert_not_called()
+
+    async def test_passing_check_logs_nothing_and_a_broken_log_cannot_change_a_refusal(self):
+        from hub.server import HubError
+        hub = self.hub(Mock(return_value=None))
+        with patch('hub.server.log') as log:
+            await hub._check_work_targets()
+        log.assert_not_called()
+        hub._local_work_commands.confirm_disclosure.assert_called_once()
+
+        def refused(targets, identity):
+            raise HubError('authenticated work request changed or expired')
+        hub = self.hub(refused)
+        with patch('hub.server.log', side_effect=OSError('log unavailable')):
+            with self.assertRaisesRegex(HubError, 'changed or expired'):
+                await hub._check_work_targets()
+
+
 if __name__ == '__main__':
     unittest.main()

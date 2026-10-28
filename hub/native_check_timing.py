@@ -11,7 +11,7 @@ import time
 
 LIMIT = 48
 STAGES = frozenset((
-    'identify-start', 'caller-return', 'agents-return', 'not-connectable-start',
+    'current-start', 'identify-start', 'caller-return', 'agents-return', 'not-connectable-start',
     'not-connectable-return', 'fresh-caller-return', 'identify-return', 'identify-refused',
     'recheck-start', 'recheck-installed-return', 'recheck-return',
     'probe-start', 'probe-return', 'tmux-run-start', 'tmux-run-return',
