@@ -9,6 +9,7 @@ import (
 	"net"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/nats-io/nats.go"
 )
@@ -91,5 +92,28 @@ func TestApplicationAttestorEndNeverFailsTheHost(t *testing.T) {
 		if !strings.Contains(records[i], want[i]) {
 			t.Fatalf("record %d = %q, want %q", i, records[i], want[i])
 		}
+	}
+}
+
+func TestAttestorTicksReportOncePerMinuteWithCountsOnly(t *testing.T) {
+	var records []string
+	writeApplicationAttestorRecord = func(record string) { records = append(records, record) }
+	defer func() { writeApplicationAttestorRecord = func(string) {} }()
+	clock := time.Unix(1000, 0)
+	ticks := newAttestorTicks(func() time.Time { return clock })
+	ticks.record(200*time.Millisecond, false)
+	ticks.record(1500*time.Millisecond, false)
+	clock = clock.Add(30 * time.Second)
+	ticks.record(300*time.Millisecond, true)
+	if len(records) != 0 {
+		t.Fatalf("reported before a minute: %q", records)
+	}
+	clock = clock.Add(31 * time.Second)
+	ticks.record(100*time.Millisecond, false)
+	clock = clock.Add(10 * time.Second)
+	ticks.record(100*time.Millisecond, false)
+	want := "application_attestor_ticks ticks=4 skipped=1 late=1 slowest_ms=1500"
+	if len(records) != 1 || records[0] != want {
+		t.Fatalf("records %q, want %q", records, want)
 	}
 }

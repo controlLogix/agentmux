@@ -239,7 +239,9 @@ func runApplicationAttestor(lifetime context.Context, operation *bootstrapOperat
 	}()
 	ticker := time.NewTicker(time.Second)
 	defer ticker.Stop()
+	ticks := newAttestorTicks(time.Now)
 	for {
+		tickStart := time.Now()
 		evidence, err := producer.observe(lifetime)
 		if err != nil {
 			var changed *applicationEvidenceFailure
@@ -269,6 +271,7 @@ func runApplicationAttestor(lifetime context.Context, operation *bootstrapOperat
 			// miss ends the attestor (and with it the owned services).
 			if applicationMissSkippable(err, misses) && lifetime.Err() == nil {
 				misses++
+				ticks.record(time.Since(tickStart), true)
 				select {
 				case <-lifetime.Done():
 					return nil
@@ -286,6 +289,7 @@ func runApplicationAttestor(lifetime context.Context, operation *bootstrapOperat
 		if err = transport.exchange(lifetime, evidence, false); err != nil {
 			return err
 		}
+		ticks.record(time.Since(tickStart), false)
 		select {
 		case <-lifetime.Done():
 			return nil

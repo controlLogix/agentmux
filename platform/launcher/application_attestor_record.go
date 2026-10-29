@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"slices"
 	"strings"
+	"time"
 
 	"github.com/nats-io/nats.go"
 )
@@ -125,4 +126,40 @@ func attestorTypeOf(err error) string {
 		return "unnamed"
 	}
 	return name
+}
+
+// attestorTicks counts how the attestor's ticks went and, once a minute, writes
+// one record of counts and the slowest tick in milliseconds. A Work reply can be
+// valid only while the attestor's latest evidence is, so a slow or skipped tick
+// shortens every request; this record shows whether that happened.
+type attestorTicks struct {
+	now                  func() time.Time
+	started              time.Time
+	ticks, skipped, late int
+	slowest              time.Duration
+}
+
+const attestorTickReport = time.Minute
+
+func newAttestorTicks(now func() time.Time) *attestorTicks {
+	return &attestorTicks{now: now, started: now()}
+}
+
+func (s *attestorTicks) record(took time.Duration, skipped bool) {
+	s.ticks++
+	if skipped {
+		s.skipped++
+	}
+	if took > time.Second {
+		s.late++
+	}
+	if took > s.slowest {
+		s.slowest = took
+	}
+	if s.now().Sub(s.started) < attestorTickReport {
+		return
+	}
+	writeApplicationAttestorRecord(fmt.Sprintf("application_attestor_ticks ticks=%d skipped=%d late=%d slowest_ms=%d",
+		s.ticks, s.skipped, s.late, s.slowest.Milliseconds()))
+	*s = attestorTicks{now: s.now, started: s.now()}
 }
