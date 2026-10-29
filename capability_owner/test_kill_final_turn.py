@@ -126,6 +126,21 @@ class KillFinalTurnTests(SelectedWorkSourceFixture, unittest.IsolatedAsyncioTest
             self.assertFalse(self.maintenance._lock.locked())
             self.assertFalse(self.hub._kill_reply_timings)
 
+    async def test_foreground_turn_inside_held_turn_does_not_wait_on_itself(self):
+        await self.prepare()
+        task = asyncio.current_task()
+        await self.maintenance._lock.acquire()
+        self.maintenance._turn_owner = task
+        try:
+            async with asyncio.timeout(2):
+                async with self.maintenance.native_check_turn(foreground=True):
+                    entered = True
+        finally:
+            self.maintenance._turn_owner = None
+            self.maintenance._lock.release()
+        self.assertTrue(entered)
+        self.assertFalse(self.maintenance._lock.locked())
+
     async def test_cancelled_final_wait_preserves_active_reader(self):
         await self.final_wait(True)
 

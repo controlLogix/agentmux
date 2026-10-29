@@ -974,6 +974,8 @@ class Hub:
             return
         # Never hold this interval across a signed Work call or process launch.
         # Finish whole maintenance reads before taking individual transports.
+        # foreground=True is only for a final check with no Work exchange,
+        # termination or callback inside (kill's final check, the status read).
         async with self._maintenance_for_work().native_check_turn(foreground=foreground):
             if foreground:
                 try:
@@ -1852,7 +1854,9 @@ class Hub:
                     'repos': [row['repo'] for row in s.q('SELECT repo FROM repos WHERE repo=?', (repository,))],
                     'teams': s.q('SELECT repo, team, lead_role FROM teams WHERE repo=? ORDER BY team', (repository,)),
                 }
-        async with self._native_work_check_turn():
+        # The read only rechecks, discloses and queries the local store, so it
+        # takes the short final-check turn instead of queueing behind maintenance.
+        async with self._native_work_check_turn(foreground=True):
             sample('status-turn')
             result = await self.db(read)
         return self._local_work_commands.confirm_disclosure(result)

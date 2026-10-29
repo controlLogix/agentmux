@@ -106,13 +106,17 @@ class HubWorkMaintenance:
             raise ContractError('work_maintenance_unavailable')
         self._client._current()
 
+    def _inside_turn(self, task):
+        """Report whether this task already runs inside a held maintenance turn."""
+        reserved = self._request_turn
+        spawn = self._spawn_request_turn
+        return (self._turn_owner is task or reserved is not None and reserved['child'] is task
+                or spawn is not None and spawn['child'] is task)
+
     @asynccontextmanager
     async def _serialized(self):
         task = asyncio.current_task()
-        reserved = self._request_turn
-        spawn = self._spawn_request_turn
-        if (self._turn_owner is task or reserved is not None and reserved['child'] is task
-                or spawn is not None and spawn['child'] is task):
+        if self._inside_turn(task):
             yield
         else:
             async with self._lock:
@@ -245,9 +249,10 @@ class HubWorkMaintenance:
             # This exact task may schedule a check; it gains no caller authority.
             self._current()
             yield
-        elif foreground:
-            # Only the final check uses this short turn; it performs no Work
-            # exchange, physical termination or callback while holding it.
+        elif foreground and not self._inside_turn(asyncio.current_task()):
+            # Kill's final check and the selected-repository status read use this
+            # short turn. A holder performs no Work exchange, physical termination
+            # or callback while holding it, and joins its DB job before release.
             await self._lock.acquire(foreground=True)
             try:
                 self._current()
