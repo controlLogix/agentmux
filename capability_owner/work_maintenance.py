@@ -250,8 +250,8 @@ class HubWorkMaintenance:
             self._current()
             yield
         elif foreground and not self._inside_turn(asyncio.current_task()):
-            # Kill's final check and the selected-repository status read use this
-            # short turn. A holder performs no Work exchange, physical termination
+            # Kill's final check and the selected-repository status precheck and
+            # read use this short turn. A holder performs no Work exchange, physical termination
             # or callback while holding it, and joins its DB job before release.
             await self._lock.acquire(foreground=True)
             try:

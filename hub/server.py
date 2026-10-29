@@ -29,6 +29,7 @@ import sys
 import time
 import tomllib
 import weakref
+from functools import partial
 from contextvars import ContextVar
 from contextlib import AsyncExitStack, asynccontextmanager, contextmanager, nullcontext
 from dataclasses import dataclass, field
@@ -977,7 +978,8 @@ class Hub:
         # Never hold this interval across a signed Work call or process launch.
         # Finish whole maintenance reads before taking individual transports.
         # foreground=True is only for a final check with no Work exchange,
-        # termination or callback inside (kill's final check, the status read).
+        # termination or callback inside (kill's final check, the status
+        # precheck before its exchanges and the status read).
         async with self._maintenance_for_work().native_check_turn(foreground=foreground):
             if foreground:
                 try:
@@ -1023,7 +1025,9 @@ class Hub:
         async with self._native_work_check_turn(foreground=foreground):
             _kill_reply_sample(timing, 'gate-acquired')
             if timing is None and completion is None:
-                await self._work_storage_commands._owned_db(self._check_work_request_current, targets, identity)
+                await self._work_storage_commands._owned_db(
+                    partial(self._check_work_request_current, native=self._needs_native_recheck(targets, identity)),
+                    targets, identity)
             else:
                 def checked():
                     _kill_reply_sample(timing, 'db-entry')
@@ -1049,8 +1053,15 @@ class Hub:
                 await self._work_storage_commands._owned_db(checked)
         self._local_work_commands.confirm_disclosure()
 
-    def _check_work_request_current(self, targets, identity):
+    def _needs_native_recheck(self, targets, identity):
+        """Only a target-free request whose exact proof the status precheck identified skips it."""
+        prechecked = getattr(self, '_status_prechecked', {}).get(asyncio.current_task())
+        return not (not targets and identity is not None and prechecked is not None and prechecked is identity[0])
+
+    def _check_work_request_current(self, targets, identity, *, native=True):
         """Check local request authority on the original Store worker."""
+        if not native:
+            return self._check_work_request_current_once(targets, identity, native=False)
         if identity is None or native_check_timing.active():
             return self._check_work_request_current_once(targets, identity)
         # Every caller without its own record (kill keeps one) logs a refused
@@ -1069,7 +1080,7 @@ class Hub:
                 pass
             raise
 
-    def _check_work_request_current_once(self, targets, identity):
+    def _check_work_request_current_once(self, targets, identity, *, native=True):
         if identity is not None:
             admitted, tcp, credential = identity
             if time.monotonic() >= admitted.expires_monotonic:
@@ -1086,12 +1097,19 @@ class Hub:
                 pid, uid = credential
                 if uid != os.getuid():
                     raise _work_request_refusal('unix-uid-changed', admitted)
-                session, in_pane = self.identify_qualified(pid)
-                authenticated = session or ('unregistered' if in_pane else 'operator')
-                caller = admitted.requested_attribution or authenticated
-                if ((authenticated, caller) != (admitted.authenticated_caller, admitted.caller)
-                        or in_pane and admitted.requested_attribution):
-                    raise _work_request_refusal('unix-identity-changed', admitted)
+                if not native and admitted.authenticated_caller not in ('operator', 'unregistered'):
+                    # The status precheck identified this agent; a revoked or
+                    # replaced registration still refuses the reply.
+                    row = self.store.agent(admitted.authenticated_caller)
+                    if row is None or row['state'] == 'dead':
+                        raise _work_request_refusal('unix-identity-changed', admitted)
+                if native:
+                    session, in_pane = self.identify_qualified(pid)
+                    authenticated = session or ('unregistered' if in_pane else 'operator')
+                    caller = admitted.requested_attribution or authenticated
+                    if ((authenticated, caller) != (admitted.authenticated_caller, admitted.caller)
+                            or in_pane and admitted.requested_attribution):
+                        raise _work_request_refusal('unix-identity-changed', admitted)
         for target, generation in targets:
             row = self.store.agent(target)
             if row is None or row['state'] == 'dead' or row['generation'] != generation:
@@ -1783,18 +1801,28 @@ class Hub:
     async def _selected_status_events(self, verb, arguments, caller, repository):
         """Project original Hub records and authorized Work into one repository."""
         admitted = self._admit_local_work(verb, arguments, caller)
+        identity = self._work_reply_identity[asyncio.current_task()]
+        sample = native_check_timing.request_sampler()
+        # Owner replies stay valid ~2 s (owner evidence is capped at 3 s), less
+        # than exchanges plus a native recheck. Run the native caller check once
+        # before the exchanges; the read and the reply recheck only the cheap
+        # facts (expiry, uid, TCP credentials) for this exact request.
+        if identity[0] is not admitted:
+            raise HubError('authenticated work request is required')
+        async with self._native_work_check_turn(foreground=True):
+            await self._work_storage_commands._owned_db(self._check_work_request_current, (), identity)
+        if not hasattr(self, '_status_prechecked'):
+            self._status_prechecked = weakref.WeakKeyDictionary()
+        self._status_prechecked[asyncio.current_task()] = identity[0]
+        sample('status-recheck-return')
         work = await self._local_work_commands.list(admitted.authenticated_caller, repository=repository)
         work_ids = {row['id'] for row in work}
         commands = self._work_storage_commands
         pending = commands._disclosures[asyncio.current_task()]
-        identity = self._work_reply_identity[asyncio.current_task()]
-
-        sample = native_check_timing.request_sampler()
 
         def read():
             sample('status-read-start')
-            self._check_work_request_current((), identity)
-            sample('status-recheck-return')
+            self._check_work_request_current((), identity, native=False)
             commands._disclose(None, *pending)
             s = self.store
             with s.tx():

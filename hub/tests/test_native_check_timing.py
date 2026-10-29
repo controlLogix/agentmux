@@ -220,6 +220,61 @@ class _both:
             manager.__exit__(*exc)
 
 
+class PrecheckedStatusRecheck(unittest.TestCase):
+    """A status reply skips only the native identification it already ran."""
+    def setUp(self):
+        from hub.server import Hub
+        self.hub = object.__new__(Hub)
+        self.hub.identify_qualified = Mock(return_value=('worker', True))
+        self.admitted = SimpleNamespace(expires_monotonic=time.monotonic() + 5, authenticated_caller='operator',
+            caller='operator', requested_attribution=None)
+
+    def test_cheap_recheck_skips_identification_but_keeps_other_refusals(self):
+        from hub.server import HubError
+        unix = (self.admitted, False, (21, os.getuid()))
+        self.hub._check_work_request_current((), unix, native=False)
+        self.hub.identify_qualified.assert_not_called()
+        with self.assertRaises(HubError):
+            self.hub._check_work_request_current((), unix)
+        with self.assertRaises(HubError):
+            self.hub._check_work_request_current((), (self.admitted, False, (21, os.getuid() + 1)), native=False)
+        self.admitted.expires_monotonic = time.monotonic() - 1
+        with self.assertRaises(HubError):
+            self.hub._check_work_request_current((), unix, native=False)
+
+    def test_cheap_recheck_refuses_a_dead_unix_agent_registration(self):
+        from hub.server import HubError
+        agent = SimpleNamespace(expires_monotonic=time.monotonic() + 5, authenticated_caller='worker',
+            caller='worker', requested_attribution=None)
+        rows = {'worker': {'state': 'idle'}}
+        self.hub.store = SimpleNamespace(agent=lambda name: rows.get(name))
+        self.hub._check_work_request_current((), (agent, False, (21, os.getuid())), native=False)
+        rows['worker'] = {'state': 'dead'}
+        with self.assertRaises(HubError):
+            self.hub._check_work_request_current((), (agent, False, (21, os.getuid())), native=False)
+        self.hub.identify_qualified.assert_not_called()
+
+    def test_only_the_exact_prechecked_target_free_request_skips_identification(self):
+        import asyncio, weakref
+        async def decide():
+            self.hub._status_prechecked = weakref.WeakKeyDictionary()
+            identity = (self.admitted, False, (21, os.getuid()))
+            other = (SimpleNamespace(), False, (21, os.getuid()))
+            before = self.hub._needs_native_recheck((), identity)
+            self.hub._status_prechecked[asyncio.current_task()] = self.admitted
+            return (before, self.hub._needs_native_recheck((), identity),
+                    self.hub._needs_native_recheck((('agent', 1),), identity),
+                    self.hub._needs_native_recheck((), other), self.hub._needs_native_recheck((), None))
+        self.assertEqual(asyncio.run(decide()), (True, False, True, True, True))
+
+    def test_cheap_recheck_still_checks_tcp_operator_token(self):
+        from hub.server import HubError
+        self.hub.operator_sha = 'current'
+        with self.assertRaises(HubError):
+            self.hub._check_work_request_current((), (self.admitted, True, 'rotated'), native=False)
+        self.hub._check_work_request_current((), (self.admitted, True, 'current'), native=False)
+
+
 class OrdinaryWorkCheckTiming(unittest.TestCase):
     """Every caller of the current check logs a refused check's private timing once."""
     def setUp(self):
