@@ -3448,6 +3448,11 @@ class Hub:
                 loop.add_signal_handler(sig, self.stop.set)
                 self._hub_signals.append(sig)
             log('hub up', SOCK, 'db', self.store.path)
+            try:
+                from hub import loop_profile
+                loop_profile.start(lambda report: log('event loop busy', json.dumps(report)))
+            except Exception:
+                pass
             loops = [self.bell_loop, self.live_loop, self.lease_loop, self.receipt_loop]
             if self._legacy_work_notices is not None:
                 loops.append(self.work_notice_loop)

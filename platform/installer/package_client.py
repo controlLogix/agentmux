@@ -21,7 +21,7 @@ PYTHON_VERSION = "3.14.4"
 REPOSITORY = Path(__file__).resolve().parents[2]
 MODULES = (
     "agentmux_windows.py", "hub/__init__.py", "hub/cli.py",
-    "hub/server.py", "hub/native_check_timing.py", "hub/enrolled_hub_bootstrap.py", "hub/legacy_identity_client.py",
+    "hub/server.py", "hub/native_check_timing.py", "hub/loop_profile.py", "hub/enrolled_hub_bootstrap.py", "hub/legacy_identity_client.py",
     "hub/bridge.py", "hub/deliver.py", "hub/profiles.py", "hub/receipts.py", "hub/transport.py",
     "hub/client_startup.py", "hub/client_launch_selection.py",
     "hub/client_launch_coordinator.py", "hub/client_launch_entrypoint.py",
