@@ -7,7 +7,15 @@ import (
 	"time"
 )
 
+// publishInterval is how often the status role exports a snapshot. Readers such
+// as the owner's attestor wait for the next one, so a shorter interval keeps
+// their evidence fresh; each snapshot's validity (StaleAfter) is unchanged.
+const publishInterval = 250 * time.Millisecond
+
 func Run(ctx context.Context, c protocol.Config, subjects protocol.SubjectSet) error {
+	if c.Interval == 0 {
+		c.Interval = publishInterval
+	}
 	actor, err := protocol.Open(ctx, c, "exported-status", subjects)
 	if err != nil {
 		return err

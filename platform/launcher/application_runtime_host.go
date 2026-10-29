@@ -237,7 +237,7 @@ func runApplicationAttestor(lifetime context.Context, operation *bootstrapOperat
 		}
 		failure = transport.close(failure)
 	}()
-	ticker := time.NewTicker(time.Second)
+	ticker := time.NewTicker(applicationAttestInterval)
 	defer ticker.Stop()
 	ticks := newAttestorTicks(time.Now)
 	for {

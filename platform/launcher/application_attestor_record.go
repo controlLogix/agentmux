@@ -150,7 +150,7 @@ func (s *attestorTicks) record(took time.Duration, skipped bool) {
 	if skipped {
 		s.skipped++
 	}
-	if took > time.Second {
+	if took > applicationAttestInterval {
 		s.late++
 	}
 	if took > s.slowest {

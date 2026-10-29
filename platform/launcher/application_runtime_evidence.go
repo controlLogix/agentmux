@@ -21,8 +21,11 @@ const applicationEvidenceLimit = 3 * time.Second
 const (
 	applicationRolesBusyAttempts = 20
 	applicationRolesBusyPause    = 5 * time.Millisecond
-	// Consecutive attestor ticks that may miss before the attestor ends.
-	applicationTransientMisses = 3
+	// The attestor refreshes evidence twice a second so that a services reply,
+	// bounded by the evidence's 3 s validity, is never issued from stale evidence.
+	applicationAttestInterval = 500 * time.Millisecond
+	// Consecutive attestor ticks that may miss (3 s) before the attestor ends.
+	applicationTransientMisses = 6
 )
 const applicationMaxGeneration = uint64(9007199254740991)
 
