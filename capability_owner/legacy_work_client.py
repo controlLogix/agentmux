@@ -344,6 +344,7 @@ class LegacyWorkCommandClient(LegacyMessageCommandClient):
     def _disclose(self, value, routes, expires):
         self.check(self._federation)
         if datetime.now(timezone.utc) >= expires:
+            _log_expiry('disclose', expires, None)
             raise ContractError('legacy_work_client_expired')
         for session, enrollment in routes:
             if session.work_enrollment() != enrollment:
