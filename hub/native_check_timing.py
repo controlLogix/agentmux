@@ -53,11 +53,13 @@ def sample(stage):
 
 # Request phases before the final check, so a refusal shows where the original
 # proof's validity went. Fixed phase names and remaining validity only.
-REQUEST_LIMIT = 24
+REQUEST_LIMIT = 40
 REQUEST_STAGES = frozenset((
     'admitted', 'dispatch-start', 'status-db-return', 'work-list-return', 'dispatch-return',
     'work-exchange-start', 'work-exchange-return', 'work-exchange-refused', 'work-source-return',
     'status-turn', 'status-read-start', 'status-recheck-return',
+    'rpc-on-behalf-return', 'rpc-lock', 'rpc-reserve-return', 'work-session-lock', 'work-pending-return',
+    'work-before-call-return', 'work-transport-lock', 'work-expectation-return',
 ))
 
 _request = ContextVar('native_check_request_phases', default=None)

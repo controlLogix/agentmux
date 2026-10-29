@@ -19,6 +19,18 @@ _LEGACY_MUTATIONS = _KNOWLEDGE_MUTATIONS | _CODE_MUTATIONS | _WORK_MUTATIONS | f
     'federation-message-deliver', 'federation-message-approve', 'federation-message-finding'))
 
 
+def _record_commit(contract, outcome, expected, revision):
+    """Log one work journal commit: closed contract and outcome names and two revisions only."""
+    try:
+        import re
+        import syslog
+        name = contract if type(contract) is str and re.fullmatch(r'federation-work-[a-z-]{1,40}', contract) else 'other'
+        syslog.syslog(syslog.LOG_NOTICE, 'application_services_work_commit contract=%s outcome=%s expected=%d revision=%d'
+                      % (name, outcome if outcome in ('applied', 'conflict') else 'other', int(expected), int(revision)))
+    except BaseException:
+        pass
+
+
 class MessageStorageJournal:
     """Private owner metadata in hub.db; no second store or state mutation API."""
     def __init__(self, store, binding, source, *, namespace='messages'):
@@ -130,6 +142,8 @@ class MessageStorageJournal:
             if outcome == 'applied':
                 self._set('resource', {**current, 'revision': revision, 'source': source})
             self._deadline(valid_until)
+            if self._namespace == 'work':
+                _record_commit(original['contractId'], outcome, expected_revision, current['revision'])
             return record
 
     def reject(self, original, valid_until):

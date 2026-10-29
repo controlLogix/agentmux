@@ -148,11 +148,14 @@ class LegacyWorkCommandClient(LegacyMessageCommandClient):
         source = getattr(self._hub, '_work_source_binding', None)
         if source is not None and not _source_binding:
             expires = await source.before_call(session, expires)
+            _request_sample('work-before-call-return')
         async with self._transport_locks[id(session)]:
+            _request_sample('work-transport-lock')
             expectation=None
             proof=None
             if source is not None:
                 expectation=await source.expectation(session)
+                _request_sample('work-expectation-return')
                 if contract=='federation-work-inspect' and not _source_binding:
                     proof=source.request(secrets.token_hex(32))
                     payload={**payload,'input':{**payload['input'],'sourceBinding':proof}}
@@ -466,9 +469,11 @@ class LegacyWorkCommandClient(LegacyMessageCommandClient):
         key = self._state_prefix + hashlib.sha256(canonical_bytes({
             'binding': binding, 'intentDigest': intent_digest, 'contractId': contract})).hexdigest()
         async with self._locks[id(session)]:
+            _request_sample('work-session-lock')
             self.check(self._federation)
             await self._owned_db(self._check_pending_binding, binding, intent_digest, contract)
             original = await self._owned_db(self._pending, key)
+            _request_sample('work-pending-return')
             if recover_only and (original is None or original['conflictReceipt'] is not None):
                 raise HubError('original work recovery is unavailable; no command was submitted')
             if original is not None and (original['binding'] != binding or original['intentDigest'] != intent_digest

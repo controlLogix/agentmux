@@ -12,6 +12,7 @@ import weakref
 
 from agentmux_contracts import ContractError, canonical_bytes, payload_digest, strict_loads
 from hub import names
+from hub.native_check_timing import request_sample as _request_sample
 from hub.store import HubError
 from .legacy_work_client import LegacyWorkCommandClient
 from .local_work_client import LocalWorkClient
@@ -94,6 +95,7 @@ class WorkRpc:
         # The Hub resolves this descriptor from the actual registered target;
         # request data and caller labels cannot supply a target generation.
         on_behalf_of = await self._hub._work_on_behalf(admitted)
+        _request_sample('rpc-on-behalf-return')
         if self._closed:
             raise ContractError('work_rpc_unavailable')
         identity = dict(operation_id=request.get('operationId'), request_digest=admitted.request_digest,
@@ -115,12 +117,14 @@ class WorkRpc:
         self._requests[asyncio.current_task()] = state
         try:
             await self._lock.acquire()
+            _request_sample('rpc-lock')
             state['locked'] = True
             self._expires(state)
             if command == 'offer':
                 self._hub.fed._work_commands._begin()
                 state['federated'] = True
             record = await self._commands._owned_db(self._completion.reserve, **identity, bindings=bindings)
+            _request_sample('rpc-reserve-return')
             state['record'] = record
             self._expires(state)
             if record['state'] == 'completed':

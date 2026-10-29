@@ -1387,6 +1387,12 @@ class Hub:
                 raise
             if isinstance(e, HubError):
                 resp = {"ok": False, "error": str(e)}
+                try:
+                    phases = native_check_timing.current_request_samples()
+                    if phases:
+                        log('request timing', json.dumps({'hubError': True, 'request': phases}))
+                except BaseException:
+                    pass
             else:
                 try:
                     from hub.client_launch_session import ApplicationSessionFailure
