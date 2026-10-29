@@ -29,7 +29,8 @@ func TestBootstrapFailedReadActualOwnedExecutor(t *testing.T) {
 	if failure == nil || failure.Error() != "docker_command_failed" || metric == nil || metric.Kind != "version" || !validBootstrapFailedRead(metric) || ctx.Err() != nil {
 		t.Fatal("actual_joined_read_failure_metric_missing")
 	}
-	if ProjectRequestDiagnostic(failure) != ProjectRequestDiagnostic(refusal("command_failed")) {
+	// A failed version read is an engine check whose cause is unconfirmed.
+	if got := ProjectRequestDiagnostic(failure); got.Code != "docker_engine_check_failed" || !ValidRequestDiagnostic(got) {
 		t.Fatal("public_diagnostic_changed")
 	}
 	for _, format := range []string{"%v", "%+v", "%#v"} {

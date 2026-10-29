@@ -216,6 +216,23 @@ class HubWorkMaintenanceTests(SelectedWorkSourceFixture, unittest.IsolatedAsynci
         self.assertEqual(len({r['operationId'] for r in requests}), 1)
         self.assertEqual(await self.hub.db(self.hub.store.q, 'SELECT * FROM claims'), [])
 
+    async def test_sweep_with_nothing_expired_submits_nothing(self):
+        agent = await self.registered()
+        await self.claim_both(agent)
+        before = len(self.submitted)
+        self.assertEqual(await self.hub._sweep_work_leases(), [])
+        self.assertEqual([r for r in self.submitted[before:] if r['contractId'] == 'federation-work-sweep-global'], [])
+
+    async def test_unfinished_sweep_is_recovered_even_when_nothing_expired(self):
+        maintenance = self.hub._maintenance_for_work()
+        identity = {'trigger': 'sweep', 'phase': 'sweep'}
+        prepare = maintenance._prepare
+        original = await maintenance._commands._owned_db(prepare, identity, 'sweep-global', {}, repeat=True)
+        self.assertFalse(original['completed'])
+        retained = await maintenance._commands._owned_db(prepare, identity, 'sweep-global', {}, repeat=True,
+            skip_unneeded=True)
+        self.assertEqual(retained, original)
+
     async def failed_spawn(self, *, missing_pane=False, replacement=False):
         checkout = str(self.database.parent / 'checkout')
         await self.hub.db(self.hub.store.db.execute,

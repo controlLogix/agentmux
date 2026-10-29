@@ -819,7 +819,7 @@ class HubWorkMaintenance:
             if 'operationId' in identity else identity)
         return self._prefix + hashlib.sha256(canonical_bytes(key)).hexdigest()
 
-    def _prepare(self, identity, command, intent, *, repeat):
+    def _prepare(self, identity, command, intent, *, repeat, skip_unneeded=False):
         self._current()
         key = self._slot(identity)
         with self._hub.store.tx():
@@ -837,6 +837,13 @@ class HubWorkMaintenance:
                         raise HubError('original lifecycle request is retained; changed input cannot recover it')
                 elif not repeat or 'operationId' in identity or not record['completed']:
                     return record
+            if skip_unneeded and command == 'sweep-global' and self._nothing_to_sweep():
+                # Nothing has expired, so a sweep would change no row. Submitting
+                # it would still advance every selected work revision and make a
+                # concurrent mutation fail with a no-effect conflict. An unfinished
+                # sweep above is still recovered; the owner's in-transaction
+                # coverage check stays authoritative for every sweep that runs.
+                return None
             arguments = dict(intent)
             if command == 'register':
                 session = names.session_name(intent['repo'], intent['role'], intent['agent'])
@@ -847,6 +854,11 @@ class HubWorkMaintenance:
             self._hub.store.db.execute('INSERT INTO fed_state(k,v) VALUES (?,?) ON CONFLICT(k) DO UPDATE SET v=excluded.v',
                 (key, canonical_bytes(record).decode()))
             return record
+
+    def _nothing_to_sweep(self):
+        cutoff = self._hub.store.q1("SELECT strftime('%Y-%m-%dT%H:%M:%fZ','now') AS value")['value']
+        return self._hub.store.q1("SELECT 1 FROM work_items WHERE state='claimed' AND lease_until < ? "
+            "UNION SELECT 1 FROM claims WHERE lease_until < ? LIMIT 1", (cutoff, cutoff)) is None
 
     def _complete(self, record, pending):
         self._current()
@@ -860,12 +872,15 @@ class HubWorkMaintenance:
                 (canonical_bytes({**record, 'completed': True}).decode(), key))
             self._commands._disclose(None, *pending)
 
-    async def _execute(self, command, intent, *, phase, trigger, repeat=False):
+    async def _execute(self, command, intent, *, phase, trigger, repeat=False, skip_unneeded=False):
         self._current()
         intent = strict_loads(canonical_bytes(intent))
         async with self._serialized():
             identity = self._identity(phase, trigger)
-            record = await self._commands._owned_db(self._prepare, identity, command, intent, repeat=repeat)
+            record = await self._commands._owned_db(self._prepare, identity, command, intent, repeat=repeat,
+                skip_unneeded=skip_unneeded)
+            if record is None:
+                return [], None
             expires = datetime.now(timezone.utc) + timedelta(seconds=5)
             request = self._requests.get(asyncio.current_task())
             # Registration precedes the physical launch. Its user request must
@@ -905,7 +920,8 @@ class HubWorkMaintenance:
         return result
 
     async def sweep(self):
-        result, _ = await self._execute('sweep-global', {}, phase='sweep', trigger='sweep', repeat=True)
+        result, _ = await self._execute('sweep-global', {}, phase='sweep', trigger='sweep', repeat=True,
+            skip_unneeded=True)
         return result
 
     async def close(self):

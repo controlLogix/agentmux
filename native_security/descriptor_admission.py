@@ -13,6 +13,7 @@ import os
 import platform
 import stat
 import sys
+import threading
 import time
 
 
@@ -64,6 +65,23 @@ def _deadline(deadline):
 def _supported():
     if sys.platform != "darwin" or platform.machine() != "arm64" or os.geteuid() == 0:
         raise AdmissionError("native_admission_unqualified")
+
+
+_backend = None
+_backend_lock = threading.Lock()
+
+
+def _darwin():
+    """One libSystem binding per process; every check still runs in full.
+
+    Building it loads the library and sets ~12 signatures, which cost more than
+    the check itself when ~4,000 files are admitted per caller classification.
+    """
+    global _backend
+    with _backend_lock:
+        if _backend is None or _backend[0] is not _Darwin:
+            _backend = (_Darwin, _Darwin())
+        return _backend[1]
 
 
 class _Darwin:
@@ -246,7 +264,7 @@ def check_retained_descriptor(fd, *, purpose, deadline):
     if type(fd) is not int or fd < 0 or type(purpose) is not DescriptorPurpose:
         raise AdmissionError('native_admission_invalid')
     try:
-        backend = _Darwin()
+        backend = _darwin()
         _stable_check(backend, fd, purpose, deadline, live=purpose is DescriptorPurpose.PRIVATE_FILE)
         _deadline(deadline)
     except (OSError, AttributeError):
@@ -273,7 +291,7 @@ def check_descriptor(fd, *, purpose, deadline):
         raise AdmissionError("native_admission_invalid")
     owned = None
     try:
-        backend = _Darwin()
+        backend = _darwin()
         _deadline(deadline)
         owned = os.dup(fd)
         _stable_check(backend, owned, purpose, deadline)

@@ -114,7 +114,7 @@ func TestBootstrapHistoryHostDiagnosticSchemaParity(t *testing.T) {
 	if len(enums) != 3 {
 		t.Fatal("diagnostic enum locations changed without coverage")
 	}
-	required := []string{"docker_environment_conflict", "docker_selection_mismatch", "docker_versions_unqualified", "docker_configuration_mismatch", "docker_resource_conflict", "docker_command_failed", "docker_command_timeout_outcome_unknown", "runtime_authority_rejected", "owned_cleanup_incomplete", "request_deadline", "request_failed", "selected_host_port_occupied", "host_policy_invalid", "host_profile_invalid", "host_enrollment_invalid", "host_executable_invalid"}
+	required := []string{"docker_environment_conflict", "docker_selection_mismatch", "docker_versions_unqualified", "docker_configuration_mismatch", "docker_resource_conflict", "docker_client_missing", "docker_client_permission_denied", "docker_compose_check_failed", "docker_engine_check_failed", "docker_cache_check_failed", "docker_compose_start_failed", "docker_command_failed", "docker_command_timeout_outcome_unknown", "runtime_authority_rejected", "owned_cleanup_incomplete", "request_deadline", "request_failed", "selected_host_port_occupied", "host_policy_invalid", "host_profile_invalid", "host_enrollment_invalid", "host_executable_invalid"}
 	for _, codes := range enums {
 		if len(codes) != len(required) {
 			t.Fatal("diagnostic enum lost or gained unreviewed codes")

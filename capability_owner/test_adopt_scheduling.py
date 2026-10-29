@@ -19,6 +19,9 @@ class AdoptSchedulingTests(SelectedWorkSourceFixture, unittest.IsolatedAsyncioTe
         await maintenance_fixture.HubWorkMaintenanceTests.asyncSetUp(self)
         self.enterContext(patch.object(self.hub, 'resolve_role', return_value={}))
         self.enterContext(patch.object(self.hub.tp, 'handle', return_value=('%81', 23801)))
+        # These tests use a background sweep only to hold the maintenance lock;
+        # a sweep with nothing expired is otherwise skipped before any exchange.
+        self.enterContext(patch.object(self.maintenance, '_nothing_to_sweep', return_value=False))
         self.arguments = {'legacy': 'scheduled-pane', 'repo': 'falcon',
             'role': 'worker', 'agent': 'scheduled', 'cli': 'shell'}
 

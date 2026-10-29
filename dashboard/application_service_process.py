@@ -6,6 +6,7 @@ already acquired OS lease. Neither a request label nor that descriptor supplies
 business authority. Every service still admits current enrolled authority.
 """
 import asyncio
+from collections import deque
 import os
 import re
 import signal
@@ -53,7 +54,8 @@ def _release_lease(fd):
 
 
 # The failure record holds only fixed names: the phase, the host's health stage,
-# exception types (which are code), and a code-shaped error code. Never a message,
+# exception types (which are code), a code-shaped error code, and the cause's last
+# source file names and line numbers. Never a message,
 # path, payload or credential. It goes to the system log because the native owner
 # keeps this process's stderr in memory only. Read it with:
 #   log show --last 1h --predicate 'eventMessage BEGINSWITH "application_services_"'
@@ -83,11 +85,28 @@ def _code(error):
     return 'none'
 
 
+_FILE = re.compile(r'[A-Za-z0-9_]{1,64}\.py')
+
+
+def _site(error):
+    """Name where the cause was raised: source file names and line numbers only."""
+    try:
+        frames, trace = deque(maxlen=4), getattr(error, '__traceback__', None)
+        while trace is not None:
+            name = os.path.basename(trace.tb_frame.f_code.co_filename)
+            frames.append(f'{name}:{trace.tb_lineno}' if _FILE.fullmatch(name) else 'unnamed')
+            trace = trace.tb_next
+        return '>'.join(frames) or 'none'
+    except Exception:
+        return 'none'
+
+
 def _failure_record(phase, stage, error):
     cause = error.__cause__ if error.__cause__ is not None else error.__context__
     return (f'application_services_failed phase={phase if phase in _PHASES else "unknown"}'
             f' stage={stage if stage in _STAGES else "none"} type={_type_name(error)}'
-            f' code={_code(error)} cause={_type_name(cause)} cause_code={_code(cause)}')
+            f' code={_code(error)} cause={_type_name(cause)} cause_code={_code(cause)}'
+            f' cause_site={_site(cause)}')
 
 
 _reported = False

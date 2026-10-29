@@ -60,6 +60,7 @@ class WorkBridgeFixture(support.BridgeOwnerFixture):
         self.hub = Hub.__new__(Hub)
         self.hub.store, self.hub.dbx = self.store, self.worker
         self.hub.cfg, self.hub.stop = {'node': 'mac'}, asyncio.Event()
+        self.hub._work_source_binding = None
         self.local = LocalWorkDomain(self.hub)
         self.addAsyncCleanup(self.local.close)
         self.owner.hub = self.hub
@@ -399,12 +400,12 @@ class WorkBridgeOwnerTests(WorkBridgeFixture, unittest.IsolatedAsyncioTestCase):
         self.store.work_create('operator', 'falcon', 'role:falcon/worker', 'Private row')
         raw = self._agent_request(caller, 'read', {'query': {'kind': 'list', 'state': None}})
         original, count = self.resource.authorize_legacy, 0
-        async def changed(*args):
+        async def changed(*args, **kwargs):
             nonlocal count
             count += 1
             if count == 2:
                 self.store.db.execute('UPDATE agents SET generation=generation+1 WHERE session=?', (caller,))
-            return await original(*args)
+            return await original(*args, **kwargs)
         with patch.object(self.resource, 'authorize_legacy', side_effect=changed):
             with self.assertRaises(ContractError):
                 await self.work_call(raw)
@@ -418,9 +419,9 @@ class WorkBridgeOwnerTests(WorkBridgeFixture, unittest.IsolatedAsyncioTestCase):
             @classmethod
             def now(cls, tz=None):
                 return NOW + timedelta(seconds=5) if clock['late'] else NOW
-        async def expired(*args):
+        async def expired(*args, **kwargs):
             nonlocal count
-            checked = await original(*args)
+            checked = await original(*args, **kwargs)
             count += 1
             if count == 2:
                 clock['late'] = True

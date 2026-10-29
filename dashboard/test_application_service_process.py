@@ -172,9 +172,12 @@ class ProcessProtocol(unittest.IsolatedAsyncioTestCase):
             await process.receive(self.reader, self.writer)
         level, record = self.record()
         self.assertEqual(level, self.log.LOG_ERR)
-        self.assertEqual(record, 'application_services_failed phase=health stage=storage'
-            ' type=agentmux_contracts.wire.ContractError code=storage_ledger_unavailable'
-            ' cause=builtins.ConnectionResetError cause_code=none')
+        self.assertRegex(record, r'^application_services_failed phase=health stage=storage'
+            r' type=agentmux_contracts\.wire\.ContractError code=storage_ledger_unavailable'
+            r' cause=builtins\.ConnectionResetError cause_code=none'
+            r' cause_site=test_application_service_process\.py:\d+$')
+        self.assertNotIn('secret', record)
+        self.assertNotIn('Users', record)
         self.assertEqual([line['state'] for line in self.lines], ['ready'])
 
     async def test_clean_stop_is_recorded_as_an_owner_stop(self):
@@ -204,7 +207,7 @@ class ProcessProtocol(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(OSError):
             await process.receive(self.reader, self.writer)
         self.assertEqual(self.record(), (self.log.LOG_ERR, 'application_services_failed phase=close stage=none'
-            ' type=builtins.OSError code=none cause=none cause_code=none'))
+            ' type=builtins.OSError code=none cause=none cause_code=none cause_site=none'))
 
 
     def test_failure_record_never_carries_messages_or_uncoded_text(self):
@@ -213,7 +216,7 @@ class ProcessProtocol(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(record('startup', 'storage', AdmissionError('native_admission_acl')),
             'application_services_failed phase=startup stage=storage'
             ' type=native_security.descriptor_admission.AdmissionError code=native_admission_acl'
-            ' cause=none cause_code=none')
+            ' cause=none cause_code=none cause_site=none')
         for error in (ContractError('Secret_Value'), ContractError('password'), ContractError('a_' * 30 + 'b'),
                       ContractError('code_with /path'), ContractError(('tuple_code',)),
                       ValueError('value_error_text'), OSError(2, 'no_such_file')):
@@ -253,6 +256,27 @@ class ProcessProtocol(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result.stderr, b'Application services could not finish startup or cleanup.\n')
 
 
+class FailureSite(unittest.TestCase):
+    def test_site_keeps_the_last_four_named_frames_and_hides_unnamed_sources(self):
+        def nested(depth):
+            if depth == 0:
+                raise ContractError('storage_ledger_unavailable')
+            nested(depth - 1)
+        try:
+            nested(6)
+        except ContractError as error:
+            frames = process._site(error).split('>')
+        self.assertEqual(len(frames), 4)
+        self.assertTrue(all(frame.startswith('test_application_service_process.py:') for frame in frames))
+        try:
+            exec(compile("raise ValueError('/Users/private secret')", '<generated>', 'exec'))
+        except ValueError as error:
+            site = process._site(error)
+        self.assertTrue(site.endswith('>unnamed'))
+        self.assertNotIn('private', site)
+        self.assertEqual(process._site(None), 'none')
+
+
 class ProcessOutsideTheBody(unittest.TestCase):
     def test_failure_outside_the_body_is_recorded_once_as_cleanup(self):
         async def failing():
@@ -262,7 +286,7 @@ class ProcessOutsideTheBody(unittest.TestCase):
                 patch('application_service_process.syslog') as log, patch('sys.stderr'):
             self.assertEqual(process.main(), 1)
         log.syslog.assert_called_once_with(log.LOG_ERR, 'application_services_failed phase=cleanup'
-            ' stage=none type=builtins.OSError code=none cause=none cause_code=none')
+            ' stage=none type=builtins.OSError code=none cause=none cause_code=none cause_site=none')
 
     def test_failure_already_recorded_in_the_body_is_not_recorded_again(self):
         async def failing():
