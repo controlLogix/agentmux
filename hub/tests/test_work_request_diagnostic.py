@@ -23,7 +23,7 @@ class WorkRequestDiagnosticTests(unittest.TestCase):
                 with patch('hub.server.time.monotonic', side_effect=times), \
                         patch('hub.server.log') as log:
                     with self.assertRaises(HubError) as caught:
-                        Hub._check_work_request_current(hub, (),
+                        Hub._check_work_request_current_once(hub, (),
                             (self.admitted(), False, (12345, os.getuid())))
                 self.assertEqual(str(caught.exception), 'authenticated work request changed or expired')
                 diagnostic = json.loads(log.call_args.args[1])

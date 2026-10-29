@@ -1014,22 +1014,7 @@ class Hub:
         async with self._native_work_check_turn(foreground=foreground):
             _kill_reply_sample(timing, 'gate-acquired')
             if timing is None and completion is None:
-                # A refused ordinary check logs its private native timing once.
-                native = None if identity is None else {'proof': identity[0], 'samples': []}
-
-                def current():
-                    try:
-                        with native_check_timing.recording(native):
-                            native_check_timing.sample('current-start')
-                            return self._check_work_request_current(targets, identity)
-                    except BaseException:
-                        try:
-                            if native is not None and native['samples']:
-                                log('native check timing', json.dumps({'refused': True, 'samples': native['samples']}))
-                        except BaseException:
-                            pass
-                        raise
-                await self._work_storage_commands._owned_db(current)
+                await self._work_storage_commands._owned_db(self._check_work_request_current, targets, identity)
             else:
                 def checked():
                     _kill_reply_sample(timing, 'db-entry')
@@ -1057,6 +1042,24 @@ class Hub:
 
     def _check_work_request_current(self, targets, identity):
         """Check local request authority on the original Store worker."""
+        if identity is None or native_check_timing.active():
+            return self._check_work_request_current_once(targets, identity)
+        # Every caller without its own record (kill keeps one) logs a refused
+        # check's private native timing once. The check itself is unchanged.
+        native = {'proof': identity[0], 'samples': []}
+        try:
+            with native_check_timing.recording(native):
+                native_check_timing.sample('current-start')
+                return self._check_work_request_current_once(targets, identity)
+        except BaseException:
+            try:
+                if native['samples']:
+                    log('native check timing', json.dumps({'refused': True, 'samples': native['samples']}))
+            except BaseException:
+                pass
+            raise
+
+    def _check_work_request_current_once(self, targets, identity):
         if identity is not None:
             admitted, tcp, credential = identity
             if time.monotonic() >= admitted.expires_monotonic:

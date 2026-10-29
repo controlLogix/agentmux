@@ -30,6 +30,14 @@ def recording(record):
         _record.reset(token)
 
 
+def active():
+    """Report whether a record is already installed for the current check."""
+    try:
+        return _record.get() is not None
+    except BaseException:
+        return False
+
+
 def sample(stage):
     try:
         record = _record.get()
