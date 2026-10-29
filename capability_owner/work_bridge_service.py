@@ -91,7 +91,22 @@ class WorkBridgeService:
             source_expectation=claims.get('workSource'))
         return request, resource, admitted.envelope, checked
 
-    def _sign(self, request, resource, result, checked, *, original_valid_until=None):
+    @staticmethod
+    def _record_bound(now, started, bounds):
+        """Log which bound set a reply's validity: closed names and milliseconds only."""
+        try:
+            import syslog
+            remaining = {name: int((value - now).total_seconds() * 1000) for name, value in bounds.items()
+                         if value is not None}
+            record = 'application_services_reply_bound bound=%s handle_ms=%d %s' % (
+                min(remaining, key=remaining.get),
+                -1 if started is None else int((now - started).total_seconds() * 1000),
+                ' '.join('%s_ms=%d' % item for item in sorted(remaining.items())))
+            syslog.syslog(syslog.LOG_NOTICE, record)
+        except BaseException:
+            pass
+
+    def _sign(self, request, resource, result, checked, *, original_valid_until=None, started=None):
         # Domain permission and reply signer come from the same final snapshot.
         # No await separates that checked admission from signing and disclosure.
         snapshot = checked.snapshot
@@ -108,6 +123,8 @@ class WorkBridgeService:
         end = min(checked.valid_until, _time(claims['expiresAt']), _time(signer['expiresAt']))
         if original_valid_until is not None:
             end = min(end, original_valid_until)
+        self._record_bound(now, started, {'checked': checked.valid_until, 'request': _time(claims['expiresAt']),
+            'signer': _time(signer['expiresAt']), 'original': original_valid_until})
         task = asyncio.current_task()
         if self._closed or task is None or task.cancelling() or not now < end:
             raise ContractError('legacy_work_service_unavailable')
@@ -133,6 +150,7 @@ class WorkBridgeService:
             raise ContractError('legacy_work_service_unavailable')
         task = asyncio.current_task()
         self._active.add(task)
+        started = datetime.now(timezone.utc)
         try:
             async with asyncio.timeout(5):
                 request, resource, inner, original = await self._admit(raw, received_reply_subject)
@@ -177,7 +195,7 @@ class WorkBridgeService:
                     await asyncio.shield(final_core)
                 check_disclosure(resource, original, checked)
                 response = self._sign(request, resource, result, checked,
-                    original_valid_until=original.valid_until)
+                    original_valid_until=original.valid_until, started=started)
                 _parse(response, 'federation-work-reply')
                 return response
         except asyncio.CancelledError:
