@@ -11,6 +11,19 @@ import weakref
 
 from agentmux_contracts import ContractError, canonical_bytes, payload_digest, strict_loads, validate
 from hub.native_check_timing import request_sample as _request_sample
+
+
+def _log_expiry(site, expires, valid_until):
+    """Log which expiry check refused an exchange: a fixed site and two numbers only."""
+    try:
+        import json
+        from hub.server import log
+        now = datetime.now(timezone.utc)
+        log('work exchange expired', json.dumps({'site': site,
+            'expiresIn': round((expires - now).total_seconds(), 3),
+            'validUntilIn': None if valid_until is None else round((valid_until - now).total_seconds(), 3)}))
+    except BaseException:
+        pass
 from hub.store import HubError
 from identity.work_client import WORK_COMMANDS, WORK_MUTATIONS
 from .legacy_messages_client import LegacyMessageCommandClient, LegacyStorageConflict
@@ -154,6 +167,8 @@ class LegacyWorkCommandClient(LegacyMessageCommandClient):
         source=getattr(self._hub,'_work_source_binding',None)
         remaining = (expires - datetime.now(timezone.utc)).total_seconds()
         if self._closed or remaining <= 0 or contract not in WORK_COMMANDS:
+            if not self._closed and contract in WORK_COMMANDS:
+                _log_expiry('before-send', expires, None)
             raise ContractError('legacy_work_client_expired')
         exchange = partial(session.work_command,
             contract_id=contract, operation_id=operation, payload=payload,
@@ -193,11 +208,13 @@ class LegacyWorkCommandClient(LegacyMessageCommandClient):
         if valid_until.utcoffset() is None or valid_until > expires:
             raise ContractError('legacy_work_reply_unconfirmed')
         if datetime.now(timezone.utc) >= valid_until:
+            _log_expiry('reply', expires, valid_until)
             raise ContractError('legacy_work_client_expired')
         if source is not None:
             source.check()
             await source._local()
             if datetime.now(timezone.utc) >= valid_until:
+                _log_expiry('after-source-check', expires, valid_until)
                 raise ContractError('legacy_work_client_expired')
         return reply
 

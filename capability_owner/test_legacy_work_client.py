@@ -305,3 +305,23 @@ class LegacyWorkClientTests(WorkBridgeFixture, unittest.IsolatedAsyncioTestCase)
         self.assertEqual(len(self.mutations()), 1)
         self.assertEqual(len(self.store.q('SELECT * FROM work_items')), 1)
         self.assertEqual(len(self.store.outbox_pending()), 1)
+
+
+class WorkExchangeExpiryLog(unittest.TestCase):
+    """An expired exchange logs only its fixed site and two numbers."""
+    def test_expiry_log_has_site_and_numbers_only(self):
+        import json
+        from datetime import datetime, timedelta, timezone
+        from unittest.mock import patch
+        from capability_owner import legacy_work_client
+        now = datetime.now(timezone.utc)
+        with patch('hub.server.log') as log:
+            legacy_work_client._log_expiry('reply', now + timedelta(seconds=2), now - timedelta(seconds=1))
+            legacy_work_client._log_expiry('before-send', now - timedelta(seconds=1), None)
+        first, second = (json.loads(call.args[1]) for call in log.call_args_list)
+        self.assertEqual(set(first), {'site', 'expiresIn', 'validUntilIn'})
+        self.assertEqual(first['site'], 'reply')
+        self.assertLess(first['validUntilIn'], 0)
+        self.assertEqual((second['site'], second['validUntilIn']), ('before-send', None))
+        with patch('hub.server.log', side_effect=OSError('log unavailable')):
+            legacy_work_client._log_expiry('reply', now, now)
