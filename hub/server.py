@@ -1779,8 +1779,12 @@ class Hub:
         pending = commands._disclosures[asyncio.current_task()]
         identity = self._work_reply_identity[asyncio.current_task()]
 
+        sample = native_check_timing.request_sampler()
+
         def read():
+            sample('status-read-start')
             self._check_work_request_current((), identity)
+            sample('status-recheck-return')
             commands._disclose(None, *pending)
             s = self.store
             with s.tx():
@@ -1849,6 +1853,7 @@ class Hub:
                     'teams': s.q('SELECT repo, team, lead_role FROM teams WHERE repo=? ORDER BY team', (repository,)),
                 }
         async with self._native_work_check_turn():
+            sample('status-turn')
             result = await self.db(read)
         return self._local_work_commands.confirm_disclosure(result)
 

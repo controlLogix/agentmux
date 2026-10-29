@@ -53,10 +53,11 @@ def sample(stage):
 
 # Request phases before the final check, so a refusal shows where the original
 # proof's validity went. Fixed phase names and remaining validity only.
-REQUEST_LIMIT = 16
+REQUEST_LIMIT = 24
 REQUEST_STAGES = frozenset((
     'admitted', 'dispatch-start', 'status-db-return', 'work-list-return', 'dispatch-return',
-    'work-exchange-start', 'work-exchange-return', 'work-exchange-refused',
+    'work-exchange-start', 'work-exchange-return', 'work-exchange-refused', 'work-source-return',
+    'status-turn', 'status-read-start', 'status-recheck-return',
 ))
 
 _request = ContextVar('native_check_request_phases', default=None)
@@ -79,8 +80,20 @@ def start_request(proof):
 
 
 def request_sample(stage):
+    _request_append(_request.get(), stage)
+
+
+def request_sampler():
+    """Bind the current request's record for a worker thread that lacks this context."""
     try:
         record = _request.get()
+    except BaseException:
+        record = None
+    return lambda stage: _request_append(record, stage)
+
+
+def _request_append(record, stage):
+    try:
         if record is None or len(record['samples']) >= REQUEST_LIMIT or stage not in REQUEST_STAGES:
             return
         remaining = record['expires'] - time.monotonic()

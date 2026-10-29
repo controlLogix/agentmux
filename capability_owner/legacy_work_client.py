@@ -213,6 +213,7 @@ class LegacyWorkCommandClient(LegacyMessageCommandClient):
         if source is not None:
             source.check()
             await source._local()
+            _request_sample('work-source-return')
             if datetime.now(timezone.utc) >= valid_until:
                 _log_expiry('after-source-check', expires, valid_until)
                 raise ContractError('legacy_work_client_expired')
