@@ -20,6 +20,11 @@ from dataclasses import dataclass
 from agentmux_contracts import canonical_bytes, strict_loads
 from hub.core_profile import CoreRoute, CoreSetupRequired, PrivateFile, digest
 
+
+# Longest lifetime of one selected-core request envelope. Source verification and
+# caller authentication spend ~3 s of it before a Work command's own 10 s proof.
+ENVELOPE_SECONDS = 15
+
 # Streaming and configuration administration are outside this explicit MVP route.
 CORE_VERBS = frozenset(('ping', 'status', 'whoami', 'agents', 'events', 'resolve',
     'spawn', 'kill', 'adopt', 'inbox', 'ack', 'post', 'claim', 'heartbeat', 'release',
@@ -114,7 +119,7 @@ class CoreConnection:
                 raise CoreSetupRequired()
             self.route.check(); self.record.check()
             payload = {'binding': digest(canonical_bytes(self.value)), 'nonce': secrets.token_hex(32),
-                'expires': time.monotonic() + min(timeout, 10), 'repository': self.route.repository, 'request': request}
+                'expires': time.monotonic() + min(timeout, ENVELOPE_SECONDS), 'repository': self.route.repository, 'request': request}
             remaining()
             sock.sendall(canonical_bytes({'core': payload, 'mac': _mac(self.value['key'], payload)}) + b'\n')
             result = bytearray()
@@ -261,7 +266,7 @@ class CoreEndpoint:
                     or set(body) != {'binding', 'nonce', 'expires', 'repository', 'request'}
                     or body['binding'] != digest(self.record.raw)
                     or type(body['nonce']) is not str or len(body['nonce']) != 64
-                    or type(body['expires']) not in (int, float) or not now < body['expires'] <= now + 10
+                    or type(body['expires']) not in (int, float) or not now < body['expires'] <= now + ENVELOPE_SECONDS
                     or type(envelope['mac']) is not str or not hmac.compare_digest(envelope['mac'], _mac(self.value['key'], body))
                     or _peer(writer.get_extra_info('socket'))[1] != os.getuid()):
                 raise CoreSetupRequired()

@@ -324,7 +324,13 @@ func (s *EnrolledApplicationObservationSigner) Refresh(ctx context.Context, e *A
 	if err != nil {
 		return nil, err
 	}
-	request, err := s.update(ctx, "refresh", generation, lifetime, observation, requestID, reply, expires)
+	// The observation keeps the evidence's validity; its update request, like
+	// every update, lives at most 5 s.
+	updateExpiry := expires
+	if bound := time.Now().Add(5 * time.Second); updateExpiry.After(bound) {
+		updateExpiry = bound
+	}
+	request, err := s.update(ctx, "refresh", generation, lifetime, observation, requestID, reply, updateExpiry)
 	if err != nil {
 		return nil, err
 	}

@@ -234,3 +234,20 @@ class ApplicationBindingTests(unittest.IsolatedAsyncioTestCase):
         self.make_provider()
         with self.assertRaisesRegex(ContractError, 'application_credential_unavailable'):
             await self.provider.handle(self.binding_request())
+
+
+class ObservationIntervalTests(unittest.TestCase):
+    """Only the owner's runtime observation may live OBSERVATION_SECONDS; requests keep 5 s."""
+    def claims(self, seconds):
+        stamp = lambda value: value.isoformat().replace('+00:00', 'Z')
+        return {'issuedAt': stamp(NOW), 'expiresAt': stamp(NOW + timedelta(seconds=seconds))}
+
+    def test_observation_limit_is_separate_from_the_request_limit(self):
+        from identity.application_binding import OBSERVATION_SECONDS, _interval
+        self.assertEqual(OBSERVATION_SECONDS, 8)
+        _interval(self.claims(7), NOW, OBSERVATION_SECONDS)
+        with self.assertRaisesRegex(ContractError, 'application_observation_expired'):
+            _interval(self.claims(9), NOW, OBSERVATION_SECONDS)
+        _interval(self.claims(5), NOW)
+        with self.assertRaisesRegex(ContractError, 'application_observation_expired'):
+            _interval(self.claims(6), NOW)

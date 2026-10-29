@@ -19,9 +19,16 @@ import (
 
 func applicationTransportTestFrame(t *testing.T) ([]byte, ApplicationAttestorNATSEnrollment, *ApplicationRuntimeEvidence, time.Time) {
 	t.Helper()
+	return applicationTransportTestFrameFor(t, 2*time.Second, 2*time.Second)
+}
+
+// applicationTransportTestFrameFor builds one refresh whose observation lives
+// evidenceLife and whose update request lives requestLife.
+func applicationTransportTestFrameFor(t *testing.T, evidenceLife, requestLife time.Duration) ([]byte, ApplicationAttestorNATSEnrollment, *ApplicationRuntimeEvidence, time.Time) {
+	t.Helper()
 	now := time.Now().UTC().Truncate(time.Microsecond)
 	scope := protocol.Scope{HubID: "fixture_hub", ProfileID: "fixture_profile", InstanceID: "fixture_instance", ReleaseManifestDigest: "sha256:" + strings.Repeat("a", 64)}
-	evidence := &ApplicationRuntimeEvidence{producer: &applicationRuntimeProducer{}, scope: scope, generation: 2, lifetimeID: strings.Repeat("d", 64), issuedAt: now, expiresAt: now.Add(2 * time.Second)}
+	evidence := &ApplicationRuntimeEvidence{producer: &applicationRuntimeProducer{}, scope: scope, generation: 2, lifetimeID: strings.Repeat("d", 64), issuedAt: now, expiresAt: now.Add(evidenceLife)}
 	enrollment := ApplicationAttestorNATSEnrollment{Scope: scope, AuthorityID: "fixture_authority", ReplyPrefix: "_INBOX.abcdefghijklmnop"}
 	reference := map[string]any{"id": "fixture_ref", "ownerHubId": scope.HubID, "revision": 1}
 	observation := map[string]any{"purpose": "agentmux-application-runtime-observation-v1", "hubId": scope.HubID, "profileId": scope.ProfileID, "instanceId": scope.InstanceID, "generation": uint64(2), "lifetimeId": evidence.lifetimeID, "releaseDigest": scope.ReleaseManifestDigest, "policyRef": reference, "workspaceRef": nil, "scope": map[string]any{"organizationId": "fixture_org", "projectId": nil, "workspaceId": nil}, "signingKeyRef": reference, "issuedAt": bridgeTime(now), "expiresAt": bridgeTime(evidence.expiresAt)}
@@ -32,8 +39,31 @@ func applicationTransportTestFrame(t *testing.T) ([]byte, ApplicationAttestorNAT
 		}
 		return raw
 	}
-	request := map[string]any{"purpose": "agentmux-application-observation-update-v1", "requestId": "fixture_request", "hubId": scope.HubID, "profileId": scope.ProfileID, "authorityId": enrollment.AuthorityID, "action": "refresh", "generation": uint64(2), "lifetimeId": evidence.lifetimeID, "transportRef": reference, "observationBytes": base64.StdEncoding.EncodeToString(wrap(observation)), "replySubject": "_INBOX.abcdefghijklmnop.fixture_reply", "issuedAt": bridgeTime(now), "expiresAt": bridgeTime(evidence.expiresAt)}
+	request := map[string]any{"purpose": "agentmux-application-observation-update-v1", "requestId": "fixture_request", "hubId": scope.HubID, "profileId": scope.ProfileID, "authorityId": enrollment.AuthorityID, "action": "refresh", "generation": uint64(2), "lifetimeId": evidence.lifetimeID, "transportRef": reference, "observationBytes": base64.StdEncoding.EncodeToString(wrap(observation)), "replySubject": "_INBOX.abcdefghijklmnop.fixture_reply", "issuedAt": bridgeTime(now), "expiresAt": bridgeTime(now.Add(requestLife))}
 	return wrap(request), enrollment, evidence, now
+}
+
+func TestApplicationObservationUpdateAdmitsEvidenceValidityButNotLonger(t *testing.T) {
+	admit := func(evidenceLife time.Duration, end bool) error {
+		raw, enrollment, evidence, now := applicationTransportTestFrameFor(t, evidenceLife, 2*time.Second)
+		if end {
+			var frame map[string]any
+			if json.Unmarshal(raw, &frame) != nil {
+				t.Fatal("fixture invalid")
+			}
+			frame["claims"].(map[string]any)["action"] = "end"
+			raw, _ = json.Marshal(frame)
+		}
+		return admitApplicationObservationUpdate(raw, enrollment, evidence, "fixture_request", "_INBOX.abcdefghijklmnop.fixture_reply", end, now)
+	}
+	for _, end := range []bool{false, true} {
+		if err := admit(applicationEvidenceValidity-500*time.Millisecond, end); err != nil {
+			t.Fatal("observation within evidence validity refused", end, err)
+		}
+		if err := admit(applicationEvidenceValidity+time.Second, end); err == nil {
+			t.Fatal("observation longer than evidence validity admitted", end)
+		}
+	}
 }
 
 func TestApplicationObservationUpdatePinsRuntimeAndDoesNotExtendEvidence(t *testing.T) {

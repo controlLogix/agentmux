@@ -70,9 +70,14 @@ def _time(value):
         raise ContractError('application_time_invalid') from None
 
 
-def _interval(claims, now):
+# Longest validity of the owner's signed runtime observation. The owner still
+# requires a kernel snapshot at most 3 s old for every refresh.
+OBSERVATION_SECONDS = 8
+
+
+def _interval(claims, now, limit=5):
     start, end = _time(claims['issuedAt']), _time(claims['expiresAt'])
-    if not start <= now < end or end - start > timedelta(seconds=5):
+    if not start <= now < end or end - start > timedelta(seconds=limit):
         raise ContractError('application_observation_expired')
     return end
 
@@ -132,7 +137,7 @@ class ApplicationBindingProvider:
         record = strict_loads(snapshot.record)
         state, observed = record['state'], observation['claims']
         index = _indexes(state, record['ownerHubId'])
-        end = _interval(observed, now)
+        end = _interval(observed, now, OBSERVATION_SECONDS)
         if (observed['hubId'] != record['ownerHubId']
                 or observed['profileId'] != state['profileId']
                 or observed['scope'] != scope):
@@ -183,7 +188,7 @@ class ApplicationBindingProvider:
         state = record['state']
         index = _indexes(state, record['ownerHubId'])
         claims, observed = request['claims'], observation['claims']
-        end = min(_interval(claims, now), _interval(observed, now))
+        end = min(_interval(claims, now), _interval(observed, now, OBSERVATION_SECONDS))
         if (claims['hubId'] != record['ownerHubId'] or claims['authorityId'] != record['entityId']
                 or claims['profileId'] != state['profileId']
                 or any(claims[k] != observed[k] for k in

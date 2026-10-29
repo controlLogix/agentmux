@@ -18,11 +18,17 @@ import (
 
 const applicationEvidenceLimit = 3 * time.Second
 
+// applicationEvidenceValidity is how long owner evidence stays valid after the
+// kernel snapshot it was built from was observed. Every refresh still requires a
+// snapshot at most applicationEvidenceLimit old; services replies inherit this
+// validity, and a Work command spans several replies plus a final caller check.
+const applicationEvidenceValidity = 8 * time.Second
+
 const (
 	applicationRolesBusyAttempts = 20
 	applicationRolesBusyPause    = 5 * time.Millisecond
-	// The attestor refreshes evidence twice a second so that a services reply,
-	// bounded by the evidence's 3 s validity, is never issued from stale evidence.
+	// The attestor refreshes evidence twice a second so that a services reply is
+	// always issued from a kernel snapshot well inside its 3 s freshness limit.
 	applicationAttestInterval = 500 * time.Millisecond
 	// Consecutive attestor ticks that may miss (3 s) before the attestor ends.
 	applicationTransientMisses = 6
@@ -264,11 +270,15 @@ func applicationSnapshotExpiry(snapshot protocol.Snapshot, scope protocol.Scope,
 	if err != nil || admitted.KernelReadiness != "ready" {
 		return time.Time{}, applicationEvidenceError("kernel_unavailable", err)
 	}
-	expiry, err := time.Parse(time.RFC3339Nano, admitted.ValidUntil)
-	if err != nil || !now.Before(expiry) {
+	observed, err := time.Parse(time.RFC3339Nano, admitted.ObservedAt)
+	if err != nil || observed.After(now) {
 		return time.Time{}, applicationEvidenceError("kernel_unavailable", err)
 	}
-	if bound := now.Add(applicationEvidenceLimit); expiry.After(bound) {
+	expiry := observed.Add(applicationEvidenceValidity)
+	if !now.Before(expiry) {
+		return time.Time{}, applicationEvidenceError("kernel_unavailable", nil)
+	}
+	if bound := now.Add(applicationEvidenceValidity); expiry.After(bound) {
 		expiry = bound
 	}
 	return expiry, nil

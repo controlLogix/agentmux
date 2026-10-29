@@ -97,7 +97,9 @@ func TestApplicationEvidenceRequiresRealOwnerAndCannotSerializeUnsignedAuthority
 	}
 }
 
-func TestApplicationEvidenceSnapshotFreshnessDoesNotExtendKernelValidity(t *testing.T) {
+// Evidence lives applicationEvidenceValidity from the snapshot's observation, never
+// longer, and only a snapshot within the kernel's 3 s freshness limit is admitted.
+func TestApplicationEvidenceValidityRunsFromSnapshotObservation(t *testing.T) {
 	scope := protocol.Scope{HubID: "fixture_hub", InstanceID: "fixture_instance", ProfileID: "fixture_profile", AssemblyDigest: "sha256:" + strings.Repeat("a", 64), ReleaseManifestDigest: "sha256:" + strings.Repeat("b", 64), ReleaseVersion: "1.0.0"}
 	now := time.Now().UTC()
 	snapshot := observerFrame(kernelObserverFixture{options: KernelStatusOptions{Scope: scope}})
@@ -111,8 +113,9 @@ func TestApplicationEvidenceSnapshotFreshnessDoesNotExtendKernelValidity(t *test
 		snapshot.Members[i].ObservedAt = snapshot.ObservedAt
 	}
 	expiry, err := applicationSnapshotExpiry(snapshot, scope, now)
-	if err != nil || !expiry.Equal(now.Add(time.Second)) {
-		t.Fatal("kernel validity changed", err)
+	observed, _ := time.Parse(time.RFC3339Nano, snapshot.ObservedAt)
+	if err != nil || !expiry.Equal(observed.Add(applicationEvidenceValidity)) {
+		t.Fatal("evidence validity changed", expiry, err)
 	}
 	for _, kind := range []string{"stale", "future", "wrong-scope", "not-ready"} {
 		t.Run(kind, func(t *testing.T) {

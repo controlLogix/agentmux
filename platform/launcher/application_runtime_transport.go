@@ -376,7 +376,7 @@ func admitApplicationRuntimeObservation(raw []byte, e *ApplicationRuntimeEvidenc
 	}
 	start, e1 := time.Parse(time.RFC3339Nano, issued)
 	expiry, e2 := time.Parse(time.RFC3339Nano, expires)
-	if e1 != nil || e2 != nil || !expiry.After(start) || expiry.Sub(start) > 5*time.Second {
+	if e1 != nil || e2 != nil || !expiry.After(start) || expiry.Sub(start) > applicationEvidenceValidity {
 		return applicationEvidenceError("observation_expired", nil)
 	}
 	// An end carries the prior signed observation so the owner can check its

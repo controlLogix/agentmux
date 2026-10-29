@@ -5,7 +5,7 @@ from datetime import datetime, timezone, timedelta
 
 from nacl.signing import SigningKey
 from agentmux_contracts import ContractError, canonical_bytes, payload_digest, sign_claims, strict_loads, validate
-from .application_binding import ApplicationObservationLease, _permission, _interval, _time, _stamp
+from .application_binding import OBSERVATION_SECONDS, ApplicationObservationLease, _permission, _interval, _time, _stamp
 from .authority import _indexes, _key, _active
 from .ingress import verify_possession
 
@@ -54,7 +54,7 @@ async def update_observation(service, raw):
         replacement = None
         expired_previous = False
         if claims['action'] == 'refresh':
-            end = min(end, _interval(observed, now))
+            end = min(end, _interval(observed, now, OBSERVATION_SECONDS))
             if previous is not None and previous.generation == observed['generation']:
                 previous.validate_refresh(encoded)
             else:
