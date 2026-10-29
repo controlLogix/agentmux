@@ -156,8 +156,32 @@ func ObserveKernel(parent context.Context, o KernelStatusOptions) (protocol.Snap
 	return observeKernelWithProof(parent, o, nil)
 }
 
+// kernelLapsKey carries an optional *kernelLaps through the caller's context so
+// the attestor can time the steps of its kernel observation (timing only).
+type kernelLapsKey struct{}
+
+// kernelLaps holds how long each step of one kernel observation took.
+type kernelLaps struct {
+	authority, connect, subscribe, wait, total time.Duration
+}
+
 func observeKernelWithProof(parent context.Context, o KernelStatusOptions, proof *kernelObservationProof) (result protocol.Snapshot, failureErr error) {
 	stage := "authority_inspection"
+	var laps *kernelLaps
+	if parent != nil {
+		laps, _ = parent.Value(kernelLapsKey{}).(*kernelLaps)
+	}
+	started, mark := time.Now(), time.Now()
+	lap := func(into *time.Duration) {
+		if laps != nil {
+			at := time.Now()
+			*into = at.Sub(mark)
+			mark = at
+		}
+	}
+	if laps != nil {
+		defer func() { laps.total = time.Since(started) }()
+	}
 	defer func() {
 		if failureErr != nil {
 			failureErr = &kernelStatusStageError{stage: stage, cause: failureErr}
@@ -210,6 +234,9 @@ func observeKernelWithProof(parent context.Context, o KernelStatusOptions, proof
 			return empty, kernelStatusError("authority_rejected")
 		}
 		trust = authority.trust
+	}
+	if laps != nil {
+		lap(&laps.authority)
 	}
 	stage = "tls_connect"
 	options := []nats.Option{nats.UserInfo(communication.OrdinaryPlugin, o.Password), nats.NoReconnect(), nats.IgnoreDiscoveredServers(), nats.NoEcho(), nats.Timeout(o.Timeout)}
@@ -277,6 +304,9 @@ func observeKernelWithProof(parent context.Context, o KernelStatusOptions, proof
 	if err != nil {
 		return empty, failure(err)
 	}
+	if laps != nil {
+		lap(&laps.connect)
+	}
 	if o.authority != nil && (nc.ConnectedServerName() != o.authority.config.Health.ServerName || nc.ConnectedServerVersion() != o.authority.config.Health.ServerVersion) {
 		return empty, kernelStatusError("authority_rejected")
 	}
@@ -291,6 +321,9 @@ func observeKernelWithProof(parent context.Context, o KernelStatusOptions, proof
 	if err = nc.FlushWithContext(ctx); err != nil {
 		return empty, failure(err)
 	}
+	if laps != nil {
+		lap(&laps.subscribe)
+	}
 	select {
 	case <-faults:
 		return empty, kernelStatusError("invalid")
@@ -302,6 +335,9 @@ func observeKernelWithProof(parent context.Context, o KernelStatusOptions, proof
 	case <-faults:
 		return empty, kernelStatusError("invalid")
 	case message := <-messages:
+		if laps != nil {
+			lap(&laps.wait)
+		}
 		if message == nil || message.Subject != wire.Snapshot || message.Reply != "" || len(message.Data) > protocol.MaxPayload {
 			return empty, kernelStatusError("invalid")
 		}

@@ -177,6 +177,10 @@ func (p *applicationRuntimeProducer) observe(parent context.Context) (*Applicati
 	}
 	ctx, cancel := context.WithTimeout(parent, applicationEvidenceLimit)
 	defer cancel()
+	// The broker inspection's proof is bound to this exact context, so the
+	// timing value is attached before it and the same context reaches both.
+	laps := &kernelLaps{}
+	ctx = context.WithValue(ctx, kernelLapsKey{}, laps)
 	if p == nil || !p.mu.TryLock() {
 		return nil, applicationEvidenceError("busy", nil)
 	}
@@ -216,6 +220,11 @@ func (p *applicationRuntimeProducer) observe(parent context.Context) (*Applicati
 		return nil, applicationEvidenceError("kernel_unavailable", err)
 	}
 	lap(attestorStageKernel)
+	p.stages[attestorStageKernelAuthority] = laps.authority
+	p.stages[attestorStageKernelConnect] = laps.connect
+	p.stages[attestorStageKernelSubscribe] = laps.subscribe
+	p.stages[attestorStageKernelWait] = laps.wait
+	p.stages[attestorStageKernelClose] = laps.total - laps.authority - laps.connect - laps.subscribe - laps.wait
 	now := time.Now().UTC().Truncate(time.Microsecond)
 	expiry, err := applicationSnapshotExpiry(snapshot, p.operation.scope, now)
 	if err != nil {

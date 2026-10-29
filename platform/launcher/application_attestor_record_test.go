@@ -101,9 +101,9 @@ func TestAttestorTicksReportOncePerMinuteWithCountsOnly(t *testing.T) {
 	defer func() { writeApplicationAttestorRecord = func(string) {} }()
 	clock := time.Unix(1000, 0)
 	ticks := newAttestorTicks(func() time.Time { return clock })
-	ticks.stages(attestorStages{10 * time.Millisecond, 0, 100 * time.Millisecond, 600 * time.Millisecond, 0, 40 * time.Millisecond})
+	ticks.stages(attestorStages{10 * time.Millisecond, 0, 100 * time.Millisecond, 600 * time.Millisecond, 0, 40 * time.Millisecond, 0, 0, 0, 500 * time.Millisecond, 0})
 	ticks.record(200*time.Millisecond, false)
-	ticks.stages(attestorStages{30 * time.Millisecond, 2 * time.Millisecond, 300 * time.Millisecond, 200 * time.Millisecond, 0, 60 * time.Millisecond})
+	ticks.stages(attestorStages{30 * time.Millisecond, 2 * time.Millisecond, 300 * time.Millisecond, 200 * time.Millisecond, 0, 60 * time.Millisecond, 0, 0, 0, 100 * time.Millisecond, 0})
 	ticks.record(1500*time.Millisecond, false)
 	clock = clock.Add(30 * time.Second)
 	ticks.record(300*time.Millisecond, true)
@@ -114,7 +114,7 @@ func TestAttestorTicksReportOncePerMinuteWithCountsOnly(t *testing.T) {
 	ticks.record(100*time.Millisecond, false)
 	clock = clock.Add(10 * time.Second)
 	ticks.record(100*time.Millisecond, false)
-	want := "application_attestor_ticks ticks=4 skipped=1 late=1 slowest_ms=1500 avg_ms verify=20 profile=1 broker=200 kernel=400 roles=0 exchange=50"
+	want := "application_attestor_ticks ticks=4 skipped=1 late=1 slowest_ms=1500 avg_ms verify=20 profile=1 broker=200 kernel=400 roles=0 exchange=50 kernel.authority=0 kernel.connect=0 kernel.subscribe=0 kernel.wait=300 kernel.close=0"
 	if len(records) != 1 || records[0] != want {
 		t.Fatalf("records %q, want %q", records, want)
 	}

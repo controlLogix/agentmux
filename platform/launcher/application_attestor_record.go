@@ -150,12 +150,19 @@ const (
 	attestorStageKernel
 	attestorStageRoles
 	attestorStageExchange
+	// Parts of the kernel step.
+	attestorStageKernelAuthority
+	attestorStageKernelConnect
+	attestorStageKernelSubscribe
+	attestorStageKernelWait
+	attestorStageKernelClose
 	attestorStageCount
 )
 
 type attestorStages [attestorStageCount]time.Duration
 
-var attestorStageNames = [attestorStageCount]string{"verify", "profile", "broker", "kernel", "roles", "exchange"}
+var attestorStageNames = [attestorStageCount]string{"verify", "profile", "broker", "kernel", "roles", "exchange",
+	"kernel.authority", "kernel.connect", "kernel.subscribe", "kernel.wait", "kernel.close"}
 
 // stages adds one issued tick's step durations.
 func (s *attestorTicks) stages(took attestorStages) {
