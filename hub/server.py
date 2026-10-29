@@ -735,41 +735,46 @@ class Hub:
         sample = native_check_timing.sample
         sample('identify-start')
         try:
-            proof = native_core.caller(pid, deadline=time.monotonic()+10)
-            sample('caller-return')
-            chain = {item.pid for item in proof.processes}
-            by_pid = {agent['pane_pid']: agent['session']
-                      for agent in self.store.agents(live_only=True) if agent['pane_pid']}
-            sample('agents-return')
-            for item in proof.processes:
-                if item.pid in by_pid:
-                    sample('identify-return')
-                    return by_pid[item.pid], True
-            if proof.in_pane:
-                sample('identify-return')
-                return None, True
-            result = native_core.tmux(self.tp.socket, ('list-panes', '-a', '-F', '#{pane_pid}'), timeout=5)
-            if result.returncode == 0:
-                pane_pids = {int(value) for value in result.stdout.split()}
-                if any(value <= 0 for value in pane_pids):
-                    raise ValueError()
-                sample('identify-return')
-                return None, bool(chain & pane_pids)
-            # Outside-pane authority comes from the admitted complete chain above.
-            # A non-connectable endpoint is not a dead server or empty inventory.
-            sample('not-connectable-start')
-            if not native_core.transport_not_connectable(self.tp.socket):
-                raise ValueError()
-            sample('not-connectable-return')
-            fresh = native_core.caller(pid, deadline=time.monotonic()+10)
-            sample('fresh-caller-return')
-            if fresh != proof or fresh.in_pane:
-                raise ValueError()
-            sample('identify-return')
-            return None, False
+            with native_core.classification(deadline=time.monotonic()+10):
+                return self._classify_native_caller(pid, native_core, sample)
         except Exception:
             sample('identify-refused')
             raise CallerClassificationUnavailable('caller pane classification unavailable') from None
+
+    def _classify_native_caller(self, pid, native_core, sample):
+        """Classify inside one bracketed native recheck; any failure refuses."""
+        proof = native_core.caller(pid, deadline=time.monotonic()+10)
+        sample('caller-return')
+        chain = {item.pid for item in proof.processes}
+        by_pid = {agent['pane_pid']: agent['session']
+                  for agent in self.store.agents(live_only=True) if agent['pane_pid']}
+        sample('agents-return')
+        for item in proof.processes:
+            if item.pid in by_pid:
+                sample('identify-return')
+                return by_pid[item.pid], True
+        if proof.in_pane:
+            sample('identify-return')
+            return None, True
+        result = native_core.tmux(self.tp.socket, ('list-panes', '-a', '-F', '#{pane_pid}'), timeout=5)
+        if result.returncode == 0:
+            pane_pids = {int(value) for value in result.stdout.split()}
+            if any(value <= 0 for value in pane_pids):
+                raise ValueError()
+            sample('identify-return')
+            return None, bool(chain & pane_pids)
+        # Outside-pane authority comes from the admitted complete chain above.
+        # A non-connectable endpoint is not a dead server or empty inventory.
+        sample('not-connectable-start')
+        if not native_core.transport_not_connectable(self.tp.socket):
+            raise ValueError()
+        sample('not-connectable-return')
+        fresh = native_core.caller(pid, deadline=time.monotonic()+10)
+        sample('fresh-caller-return')
+        if fresh != proof or fresh.in_pane:
+            raise ValueError()
+        sample('identify-return')
+        return None, False
 
     async def caller_of(self, req, writer, tcp):
         """Who is calling. Unix socket: the kernel vouches (process ancestry, R-ID-1).
@@ -1054,7 +1059,8 @@ class Hub:
         except BaseException:
             try:
                 if native['samples']:
-                    log('native check timing', json.dumps({'refused': True, 'samples': native['samples']}))
+                    log('native check timing', json.dumps({'refused': True, 'samples': native['samples'],
+                        'request': native_check_timing.request_samples(identity[0])}))
             except BaseException:
                 pass
             raise
@@ -1297,6 +1303,7 @@ class Hub:
             try:
                 proof = await self.authenticate_caller(req, writer, tcp)
                 authenticated_request = self._authenticated_callers[proof]
+                native_check_timing.start_request(authenticated_request)
                 caller = authenticated_request.caller
                 if native_kill:
                     try:
@@ -1336,7 +1343,9 @@ class Hub:
                 original_request = None
             if req.get("verb") == "subscribe":
                 return await self.subscribe(writer, caller, req.get("args", {}), request=req, tcp=tcp, reader=reader)
+            native_check_timing.request_sample('dispatch-start')
             res = await self.dispatch(req.get("verb", ""), req.get("args", {}), caller)
+            native_check_timing.request_sample('dispatch-return')
             try:
                 _kill_reply_sample(getattr(self, '_kill_reply_timings', {}).get(asyncio.current_task()),
                     'dispatch-return')
@@ -1930,7 +1939,9 @@ class Hub:
             if getattr(self, '_local_work_commands', None) is not None:
                 admitted = self._admit_local_work(verb, a, caller)
                 result = await self.db(s.status, include_work=False)
+                native_check_timing.request_sample('status-db-return')
                 rows = await self._local_work_commands.list(admitted.authenticated_caller, repository=repository)
+                native_check_timing.request_sample('work-list-return')
                 for row in rows:
                     result['work'][row['state']] = result['work'].get(row['state'], 0) + 1
                 return self._local_work_commands.confirm_disclosure(result)

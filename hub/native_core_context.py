@@ -3,6 +3,8 @@
 This owner supplies executable bytes and arguments, never caller authority.
 The installed package selects the closed roster; ambient paths select nothing.
 """
+from contextlib import contextmanager
+from contextvars import ContextVar
 from dataclasses import dataclass
 import errno
 import socket
@@ -13,6 +15,7 @@ import pwd
 import re
 import stat
 import subprocess
+import threading
 import time
 
 from agentmux_contracts import strict_loads
@@ -23,6 +26,10 @@ from hub.installed_client_admission import (
     _native_images, _native_text,
 )
 from native_security.descriptor_admission import DescriptorPurpose
+
+
+# The (context, thread) whose full recheck brackets the current classification.
+_classifying = ContextVar('native_core_classification', default=None)
 
 
 class NativeCoreError(ValueError):
@@ -270,15 +277,40 @@ class NativeCoreContext:
         if used != {item.path for item in libraries}:
             raise NativeCoreError()
 
+    @contextmanager
+    def classification(self, *, deadline):
+        """Bracket one caller classification with a full recheck before and after.
+
+        Inside, helper rechecks keep their cleanup, alias and deadline guards but
+        do not re-hash the package and tools again: the closing full recheck
+        still refuses any change made while the classification ran. Only the
+        current context and task are bracketed; other callers keep full rechecks.
+        """
+        if self._bracketed():
+            yield
+            return
+        self.recheck(deadline=deadline)
+        token = _classifying.set((self, threading.get_ident()))
+        try:
+            yield
+        finally:
+            _classifying.reset(token)
+        self.recheck(deadline=deadline)
+
+    def _bracketed(self):
+        current = _classifying.get()
+        return current is not None and current[0] is self and current[1] == threading.get_ident()
+
     def recheck(self, *, deadline):
         if self.closed or self.pending:
             raise NativeCoreError('native_core_cleanup_pending', owner=self)
-        _timing_sample('recheck-start')
-        self.installed.recheck(deadline=deadline)
-        _timing_sample('recheck-installed-return')
-        for item in self.files:
-            item.check(deadline)
-        _timing_sample('recheck-return')
+        if not self._bracketed():
+            _timing_sample('recheck-start')
+            self.installed.recheck(deadline=deadline)
+            _timing_sample('recheck-installed-return')
+            for item in self.files:
+                item.check(deadline)
+            _timing_sample('recheck-return')
         for path, expected in self.aliases.items():
             if (expected is None and os.path.lexists(path)
                     or expected is not None and os.path.realpath(path) != expected):

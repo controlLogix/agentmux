@@ -79,6 +79,8 @@ class NativeCoreHubCaller(unittest.TestCase):
         self.hub.tp = SimpleNamespace(socket='owned-test')
         self.hub.store = SimpleNamespace(agents=Mock(return_value=[]))
         self.context = object.__new__(NativeCoreContext)
+        # These cases test classification; the bracketing full recheck is tested separately.
+        self.context.recheck = Mock()
         self.hub._native_core = self.context
         self.proof = SimpleNamespace(processes=(ProcessObservation(21, 1, os.getuid(), (100, 1), '/selected/python'),), in_pane=False)
 
