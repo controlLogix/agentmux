@@ -10,6 +10,7 @@ import time
 import weakref
 
 from agentmux_contracts import ContractError, canonical_bytes, payload_digest, strict_loads, validate
+from hub.native_check_timing import request_sample as _request_sample
 from hub.store import HubError
 from identity.work_client import WORK_COMMANDS, WORK_MUTATIONS
 from .legacy_messages_client import LegacyMessageCommandClient, LegacyStorageConflict
@@ -159,6 +160,7 @@ class LegacyWorkCommandClient(LegacyMessageCommandClient):
             expires_at=expires.isoformat(timespec='microseconds').replace('+00:00', 'Z'),
             deadline=time.monotonic() + min(5, remaining), include_valid_until=True,
             **({'source_expectation':source_expectation} if source_expectation is not None else {}))
+        _request_sample('work-exchange-start')
         if _executor is None:
             worker = asyncio.create_task(asyncio.to_thread(exchange))
         else:
@@ -166,6 +168,7 @@ class LegacyWorkCommandClient(LegacyMessageCommandClient):
         self._workers.add(worker)
         try:
             reply = await asyncio.shield(worker)
+            _request_sample('work-exchange-return')
         except asyncio.CancelledError as cancelled:
             while not worker.done():
                 try:
@@ -175,6 +178,9 @@ class LegacyWorkCommandClient(LegacyMessageCommandClient):
             if not worker.cancelled():
                 worker.exception()
             raise cancelled
+        except Exception:
+            _request_sample('work-exchange-refused')
+            raise
         finally:
             if worker.done():
                 self._workers.discard(worker)

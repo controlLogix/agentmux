@@ -1395,6 +1395,12 @@ class Hub:
                 except BaseException:
                     pass
                 log("error", type(e).__name__, e)
+                try:
+                    phases = native_check_timing.current_request_samples()
+                    if phases:
+                        log('request timing', json.dumps({'refused': True, 'request': phases}))
+                except BaseException:
+                    pass
                 resp = {"ok": False, "error": f"{type(e).__name__}: {e}"}
         finally:
             if code_token is not None:

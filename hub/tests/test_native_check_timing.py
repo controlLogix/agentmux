@@ -313,6 +313,19 @@ class RequestPhases(unittest.TestCase):
         gc.collect()
         self.assertEqual(len(native_check_timing._requests), before)
 
+    def test_current_request_samples_are_task_local(self):
+        import contextvars
+        proof = self.admitted()
+
+        def request():
+            native_check_timing.start_request(proof)
+            native_check_timing.request_sample('work-exchange-start')
+            native_check_timing.request_sample('work-exchange-refused')
+            return native_check_timing.current_request_samples()
+        stages = [item['stage'] for item in contextvars.copy_context().run(request)]
+        self.assertEqual(stages, ['admitted', 'work-exchange-start', 'work-exchange-refused'])
+        self.assertEqual(contextvars.Context().run(native_check_timing.current_request_samples), [])
+
     def test_broken_proof_never_escapes(self):
         import contextvars
 

@@ -56,6 +56,7 @@ def sample(stage):
 REQUEST_LIMIT = 16
 REQUEST_STAGES = frozenset((
     'admitted', 'dispatch-start', 'status-db-return', 'work-list-return', 'dispatch-return',
+    'work-exchange-start', 'work-exchange-return', 'work-exchange-refused',
 ))
 
 _request = ContextVar('native_check_request_phases', default=None)
@@ -87,6 +88,15 @@ def request_sample(stage):
             record['samples'].append({'stage': stage, 'proofRemaining': remaining})
     except BaseException:
         pass
+
+
+def current_request_samples():
+    """Copy the phase samples of the request running in the current task, if any."""
+    try:
+        record = _request.get()
+        return [] if record is None else list(record['samples'])
+    except BaseException:
+        return []
 
 
 def request_samples(proof):
