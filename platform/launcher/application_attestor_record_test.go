@@ -114,7 +114,7 @@ func TestAttestorTicksReportOncePerMinuteWithCountsOnly(t *testing.T) {
 	ticks.record(100*time.Millisecond, false)
 	clock = clock.Add(10 * time.Second)
 	ticks.record(100*time.Millisecond, false)
-	want := "application_attestor_ticks ticks=4 skipped=1 late=1 slowest_ms=1500 avg_ms verify=20 profile=1 broker=200 kernel=400 roles=0 exchange=50 kernel.authority=0 kernel.connect=0 kernel.subscribe=0 kernel.wait=300 kernel.close=0"
+	want := "application_attestor_ticks ticks=4 skipped=1 late=1 slowest_ms=1500 avg_ms verify=20 profile=1 broker=200 kernel=400 roles=0 exchange=50 kernel.authority=0 kernel.connect=0 kernel.subscribe=0 kernel.wait=300 kernel.close=0 kernel.age=0 kernel.publish=0"
 	if len(records) != 1 || records[0] != want {
 		t.Fatalf("records %q, want %q", records, want)
 	}

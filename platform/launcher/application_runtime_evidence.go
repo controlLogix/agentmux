@@ -57,14 +57,17 @@ type applicationRoleGeneration struct {
 type applicationRuntimeProducer struct {
 	mu sync.Mutex
 	// stages holds how long each step of the latest observe took (timing only).
-	stages     attestorStages
-	operation  *bootstrapOperation
-	session    *Session
-	group      *protected.Group
-	generation uint64
-	lifetimeID string
-	roles      [4]applicationRoleGeneration
-	closed     bool
+	stages attestorStages
+	// lastRevision and lastSeen time the kernel's publish rate across ticks.
+	lastRevision uint64
+	lastSeen     time.Time
+	operation    *bootstrapOperation
+	session      *Session
+	group        *protected.Group
+	generation   uint64
+	lifetimeID   string
+	roles        [4]applicationRoleGeneration
+	closed       bool
 }
 
 type applicationEvidenceFailure struct {
@@ -226,6 +229,13 @@ func (p *applicationRuntimeProducer) observe(parent context.Context) (*Applicati
 	p.stages[attestorStageKernelWait] = laps.wait
 	p.stages[attestorStageKernelClose] = laps.total - laps.authority - laps.connect - laps.subscribe - laps.wait
 	now := time.Now().UTC().Truncate(time.Microsecond)
+	if observed, err := time.Parse(time.RFC3339Nano, snapshot.ObservedAt); err == nil {
+		p.stages[attestorStageKernelAge] = now.Sub(observed)
+	}
+	if p.lastRevision > 0 && snapshot.Revision > p.lastRevision {
+		p.stages[attestorStageKernelPublish] = now.Sub(p.lastSeen) / time.Duration(snapshot.Revision-p.lastRevision)
+	}
+	p.lastRevision, p.lastSeen = snapshot.Revision, now
 	expiry, err := applicationSnapshotExpiry(snapshot, p.operation.scope, now)
 	if err != nil {
 		return nil, err

@@ -156,13 +156,17 @@ const (
 	attestorStageKernelSubscribe
 	attestorStageKernelWait
 	attestorStageKernelClose
+	// The received snapshot's age, and the time between kernel publishes.
+	attestorStageKernelAge
+	attestorStageKernelPublish
 	attestorStageCount
 )
 
 type attestorStages [attestorStageCount]time.Duration
 
 var attestorStageNames = [attestorStageCount]string{"verify", "profile", "broker", "kernel", "roles", "exchange",
-	"kernel.authority", "kernel.connect", "kernel.subscribe", "kernel.wait", "kernel.close"}
+	"kernel.authority", "kernel.connect", "kernel.subscribe", "kernel.wait", "kernel.close",
+	"kernel.age", "kernel.publish"}
 
 // stages adds one issued tick's step durations.
 func (s *attestorTicks) stages(took attestorStages) {
