@@ -8,7 +8,7 @@ import re
 from nacl.signing import SigningKey
 from agentmux_contracts import ContractError, canonical_bytes, payload_digest, sign_claims, strict_loads, validate
 from identity.authority import LedgerAuthorityReader, _active, _indexes, _key
-from identity.work_client import WORK_COMMANDS
+from identity.work_client import WORK_COMMAND_SECONDS, WORK_COMMANDS
 from identity.ingress import EnrolledIngress, verify_possession
 from .work import WorkStorageResource
 
@@ -74,7 +74,7 @@ class WorkBridgeService:
         claims = request['claims']
         if (claims['contractId'] not in WORK_COMMANDS or claims.get('replySubject') != reply_subject
                 or type(reply_subject) is not str or not _INBOX.fullmatch(reply_subject)
-                or _time(claims['expiresAt']) - _time(claims['issuedAt']) > timedelta(seconds=5)):
+                or _time(claims['expiresAt']) - _time(claims['issuedAt']) > timedelta(seconds=WORK_COMMAND_SECONDS)):
             raise ContractError('legacy_work_request_refused')
         validate(claims['contractId'], claims['payload'])
         resource = self._resources.get(claims['payload']['resourceRef']['id'])

@@ -22,6 +22,7 @@ from .work import WorkStorageResource
 from .messages import MessageActor
 from state_owner.ledger import OwnerBinding
 from identity.test_authority import SEED
+from identity.work_client import WORK_COMMAND_SECONDS
 
 
 class LocalWorkClientTests(WorkBridgeFixture, unittest.IsolatedAsyncioTestCase):
@@ -338,7 +339,7 @@ class LocalWorkClientTests(WorkBridgeFixture, unittest.IsolatedAsyncioTestCase):
         class Later(_Clock):
             @classmethod
             def now(cls, tz=None):
-                return NOW + timedelta(seconds=6)
+                return NOW + timedelta(seconds=WORK_COMMAND_SECONDS + 1)
         with patch('capability_owner.legacy_work_client.datetime', Later):
             with self.assertRaisesRegex(ContractError, 'expired'):
                 await self.client.confirm_completion()

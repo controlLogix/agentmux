@@ -808,7 +808,9 @@ class Hub:
         if preflight is not None:
             preflight.check()
         selected = self._selected_core_context()
-        expires = time.monotonic() + 5
+        from identity.work_client import WORK_COMMAND_SECONDS, WORK_REQUEST_VERBS
+        # A Work command spans several signed exchanges and a final native check.
+        expires = time.monotonic() + (WORK_COMMAND_SECONDS if req.get('verb') in WORK_REQUEST_VERBS else 5)
         if selected is not None and selected.expires_monotonic is not None:
             expires = min(expires, selected.expires_monotonic)
         snapshot = {key:value for key,value in req.items() if key != 'token'}

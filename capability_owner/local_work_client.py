@@ -5,6 +5,7 @@ import weakref
 
 from agentmux_contracts import ContractError, canonical_bytes, payload_digest, strict_loads
 from hub.store import HubError
+from identity.work_client import WORK_COMMAND_SECONDS
 from .legacy_work_client import LegacyWorkCommandClient
 
 
@@ -46,7 +47,7 @@ class LocalWorkClient:
         self._completions.pop(task, None)
 
     def _expires(self):
-        expires = datetime.now(timezone.utc) + timedelta(seconds=5)
+        expires = datetime.now(timezone.utc) + timedelta(seconds=WORK_COMMAND_SECONDS)
         original = self._commands._disclosures.get(asyncio.current_task())
         return min(expires, original[1]) if original is not None else expires
 

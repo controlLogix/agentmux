@@ -15,6 +15,12 @@ WORK_OPERATOR_COMMANDS = frozenset('federation-work-' + name for name in (
 WORK_MUTATIONS = WORK_SERVICE_COMMANDS | WORK_OPERATOR_COMMANDS | frozenset(
     'federation-work-' + name for name in ('create', 'offer', 'claim', 'heartbeat', 'release', 'claim-path'))
 WORK_COMMANDS = WORK_MUTATIONS | frozenset('federation-work-' + name for name in ('read', 'inspect', 'outcome'))
+# Longest lifetime of one authenticated Work command: the Hub's caller proof for
+# WORK_REQUEST_VERBS and each signed exchange's issuedAt-to-expiresAt span, as
+# checked here and by the Work services. Every other Hub verb keeps 5 s.
+WORK_COMMAND_SECONDS = 10
+WORK_REQUEST_VERBS = frozenset(('work_add', 'claim', 'heartbeat', 'release', 'work_cancel', 'claim_path',
+    'fed_work_add', 'status', 'events', 'work_show', 'work_list'))
 
 
 def check_enrollment(material):
@@ -69,7 +75,7 @@ def check_command(material, claims, subject):
             or any(reference[k] != selected['resourceRef'][k] for k in ('id', 'ownerHubId'))
             or reference['revision'] < selected['resourceRef']['revision']
             or datetime.fromisoformat(claims['expiresAt']) - datetime.fromisoformat(claims['issuedAt'])
-                > timedelta(seconds=5)):
+                > timedelta(seconds=WORK_COMMAND_SECONDS)):
         raise ContractError('application_client_command_binding')
     if contract in WORK_MUTATIONS and payload['attribution'] != selected['authenticatedCaller']:
         raise ContractError('application_client_command_binding')

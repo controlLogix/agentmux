@@ -58,6 +58,16 @@ class AuthenticatedCallerTests(unittest.IsolatedAsyncioTestCase):
         self.hub.db.return_value=(None,True)
         self.assertEqual(await self.hub.caller_of({},self.writer,False),'unregistered')
 
+    async def test_only_work_verbs_get_the_longer_work_window(self):
+        from identity.work_client import WORK_COMMAND_SECONDS
+        lifetimes={}
+        for verb in ('work_cancel','work_add','status','ping','fed_kill','fed_board_dispatch'):
+            with patch('hub.server.time.monotonic',return_value=1000.0):
+                proof=await self.hub.authenticate_caller({'verb':verb,'token':'operator-secret'},self.writer,True)
+            lifetimes[verb]=self.hub._authenticated_callers[proof].expires_monotonic-1000.0
+        self.assertEqual(lifetimes,{'work_cancel':WORK_COMMAND_SECONDS,'work_add':WORK_COMMAND_SECONDS,
+            'status':WORK_COMMAND_SECONDS,'ping':5,'fed_kill':5,'fed_board_dispatch':5})
+
     async def test_wrong_hub_forged_and_expired_proofs_refuse(self):
         proof=await self.hub.authenticate_caller({'token':'operator-secret'},self.writer,True)
         other=object.__new__(Hub);other._authenticated_callers=weakref.WeakKeyDictionary()

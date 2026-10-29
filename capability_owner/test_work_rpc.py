@@ -19,6 +19,7 @@ from hub.server import Hub
 from .work_rpc import WorkRpc
 from .test_work_bridge_owner import WorkBridgeFixture
 from . import test_local_work_client as support
+from identity.work_client import WORK_COMMAND_SECONDS
 
 
 class WorkRpcTests(WorkBridgeFixture, unittest.IsolatedAsyncioTestCase):
@@ -268,7 +269,7 @@ class WorkRpcTests(WorkBridgeFixture, unittest.IsolatedAsyncioTestCase):
         class Expired(_Clock):
             @classmethod
             def now(cls, tz=None):
-                return NOW + timedelta(seconds=6)
+                return NOW + timedelta(seconds=WORK_COMMAND_SECONDS + 1)
         async def expire_after_notification_identity(*args, **kwargs):
             result = await original(*args, **kwargs)
             timer = patch('capability_owner.legacy_work_client.datetime', Expired)
