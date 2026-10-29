@@ -55,7 +55,9 @@ type applicationRoleGeneration struct {
 }
 
 type applicationRuntimeProducer struct {
-	mu         sync.Mutex
+	mu sync.Mutex
+	// stages holds how long each step of the latest observe took (timing only).
+	stages     attestorStages
 	operation  *bootstrapOperation
 	session    *Session
 	group      *protected.Group
@@ -182,10 +184,18 @@ func (p *applicationRuntimeProducer) observe(parent context.Context) (*Applicati
 	if p.closed {
 		return nil, applicationEvidenceError("lifetime_ended", nil)
 	}
+	p.stages = attestorStages{}
+	mark := time.Now()
+	lap := func(stage int) {
+		at := time.Now()
+		p.stages[stage] += at.Sub(mark)
+		mark = at
+	}
 	if err := p.verify(ctx, p.roles); err != nil {
 		p.closed = true
 		return nil, err
 	}
+	lap(attestorStageVerify)
 	c := p.operation.server.config
 	profile, err := LoadProfile(c.ProfilePolicy)
 	if err != nil {
@@ -195,14 +205,17 @@ func (p *applicationRuntimeProducer) observe(parent context.Context) (*Applicati
 	if declaration.ProfileID != p.operation.scope.ProfileID || declaration.InstanceID != p.operation.scope.InstanceID || declaration.ReleaseFingerprint != p.operation.scope.ReleaseManifestDigest || declaration.ConfigDigest != "sha256:"+hexDigest(c.Compose) || declaration.NATSEndpoint != c.Kernel.Endpoint {
 		return nil, applicationEvidenceError("profile_changed", nil)
 	}
+	lap(attestorStageProfile)
 	facts, proof, err := inspectLocalBrokerOperation(ctx, c)
 	if err != nil || facts.state != "running" {
 		return nil, applicationEvidenceError("broker_unavailable", err)
 	}
+	lap(attestorStageBroker)
 	snapshot, err := observeKernelWithProof(ctx, c.Kernel, proof)
 	if err != nil {
 		return nil, applicationEvidenceError("kernel_unavailable", err)
 	}
+	lap(attestorStageKernel)
 	now := time.Now().UTC().Truncate(time.Microsecond)
 	expiry, err := applicationSnapshotExpiry(snapshot, p.operation.scope, now)
 	if err != nil {
@@ -211,10 +224,12 @@ func (p *applicationRuntimeProducer) observe(parent context.Context) (*Applicati
 	if err := awaitCurrentKernelRoles(ctx, p.session, snapshot); err != nil {
 		return nil, err
 	}
+	lap(attestorStageRoles)
 	if err := p.verify(ctx, p.roles); err != nil {
 		p.closed = true
 		return nil, err
 	}
+	lap(attestorStageVerify)
 	if ctx.Err() != nil {
 		return nil, applicationEvidenceError("deadline", ctx.Err())
 	}

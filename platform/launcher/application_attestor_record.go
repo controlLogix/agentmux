@@ -137,6 +137,32 @@ type attestorTicks struct {
 	started              time.Time
 	ticks, skipped, late int
 	slowest              time.Duration
+	// timed counts issued ticks whose stage durations are summed in spent.
+	timed int
+	spent attestorStages
+}
+
+// Steps of one issued attestor tick, timed for the once-a-minute record.
+const (
+	attestorStageVerify = iota
+	attestorStageProfile
+	attestorStageBroker
+	attestorStageKernel
+	attestorStageRoles
+	attestorStageExchange
+	attestorStageCount
+)
+
+type attestorStages [attestorStageCount]time.Duration
+
+var attestorStageNames = [attestorStageCount]string{"verify", "profile", "broker", "kernel", "roles", "exchange"}
+
+// stages adds one issued tick's step durations.
+func (s *attestorTicks) stages(took attestorStages) {
+	s.timed++
+	for i, d := range took {
+		s.spent[i] += d
+	}
 }
 
 const attestorTickReport = time.Minute
@@ -159,7 +185,14 @@ func (s *attestorTicks) record(took time.Duration, skipped bool) {
 	if s.now().Sub(s.started) < attestorTickReport {
 		return
 	}
-	writeApplicationAttestorRecord(fmt.Sprintf("application_attestor_ticks ticks=%d skipped=%d late=%d slowest_ms=%d",
-		s.ticks, s.skipped, s.late, s.slowest.Milliseconds()))
+	record := fmt.Sprintf("application_attestor_ticks ticks=%d skipped=%d late=%d slowest_ms=%d",
+		s.ticks, s.skipped, s.late, s.slowest.Milliseconds())
+	if s.timed > 0 {
+		record += " avg_ms"
+		for i, d := range s.spent {
+			record += fmt.Sprintf(" %s=%d", attestorStageNames[i], (d / time.Duration(s.timed)).Milliseconds())
+		}
+	}
+	writeApplicationAttestorRecord(record)
 	*s = attestorTicks{now: s.now, started: s.now()}
 }

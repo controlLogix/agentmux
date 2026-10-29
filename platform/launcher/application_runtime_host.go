@@ -286,9 +286,13 @@ func runApplicationAttestor(lifetime context.Context, operation *bootstrapOperat
 		misses = 0
 		// Retain even an uncertain publication so cleanup can attempt its exact end.
 		last = evidence
+		exchangeStart := time.Now()
 		if err = transport.exchange(lifetime, evidence, false); err != nil {
 			return err
 		}
+		stages := producer.stages
+		stages[attestorStageExchange] = time.Since(exchangeStart)
+		ticks.stages(stages)
 		ticks.record(time.Since(tickStart), false)
 		select {
 		case <-lifetime.Done():
