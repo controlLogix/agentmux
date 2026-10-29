@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 )
 
 func validCredentials() Credentials {
@@ -79,5 +80,21 @@ func TestPrivateCredentialFileAndSupervisorBindings(t *testing.T) {
 	}
 	if _, err := LoadEnvironment(); err == nil {
 		t.Fatal("duplicate credential field accepted")
+	}
+}
+
+func TestExportedStatusPublishesFasterByDefault(t *testing.T) {
+	for role, want := range map[string]time.Duration{"boot": time.Second, "exported-status": exportInterval} {
+		c := validCredentials()
+		c.Role, c.Username = role, role
+		prepared, err := (Config{Credentials: c}).prepared(role)
+		if err != nil || prepared.Interval != want || prepared.StaleAfter != 3*time.Second {
+			t.Fatalf("%s: interval %v stale %v err %v", role, prepared.Interval, prepared.StaleAfter, err)
+		}
+	}
+	c := validCredentials()
+	c.Role, c.Username = "exported-status", "exported-status"
+	if prepared, err := (Config{Credentials: c, Interval: 500 * time.Millisecond}).prepared("exported-status"); err != nil || prepared.Interval != 500*time.Millisecond {
+		t.Fatalf("explicit interval not kept: %v %v", prepared.Interval, err)
 	}
 }

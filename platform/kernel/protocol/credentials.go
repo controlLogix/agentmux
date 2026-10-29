@@ -58,6 +58,12 @@ func (c Credentials) valid() bool {
 	n, err := strconv.Atoi(port)
 	return err == nil && n > 0 && n <= 65535 && c.SchemaVersion == Version && validRole(c.Role) && c.Username == c.Role && secret.MatchString(c.Password) && c.Scope.valid()
 }
+
+// exportInterval is how often the exported-status role publishes a snapshot.
+// Readers such as the owner's attestor wait for the next one, so a shorter
+// interval keeps their evidence fresh; each snapshot's validity is unchanged.
+const exportInterval = 250 * time.Millisecond
+
 func (c Config) prepared(role string) (Config, error) {
 	if !c.Credentials.valid() || c.Credentials.Role != role {
 		return Config{}, errors.New("kernel_credentials_invalid")
@@ -71,6 +77,9 @@ func (c Config) prepared(role string) (Config, error) {
 	}
 	if c.Interval == 0 {
 		c.Interval = time.Second
+		if role == "exported-status" {
+			c.Interval = exportInterval
+		}
 	}
 	if c.StaleAfter == 0 {
 		c.StaleAfter = 3 * time.Second
