@@ -192,7 +192,11 @@ def admit_request(path, expected):
     names = set()
     for repository in request['repositories']:
         _closed(repository, ('root', 'localName', 'normalizedRemote'))
-        if (repository['root'] not in roots or not _REPO.fullmatch(str(repository['localName']))
+        # The root becomes the Hub's checkout path, where spawn starts workers.
+        root = repository['root']
+        if (type(root) is not str or not os.path.isabs(root) or os.path.normpath(root) != root
+                or len(root) > 4096 or re.search(r'[\x00-\x1f\x7f]', root)
+                or root not in roots or not _REPO.fullmatch(str(repository['localName']))
                 or not _REMOTE.fullmatch(str(repository['normalizedRemote'])) or repository['localName'] in names):
             raise ContractError('local_enrollment_repository_invalid')
         names.add(repository['localName'])
@@ -657,7 +661,8 @@ class Ceremony:
         return hubdir
 
     def hub_database(self, database):
-        """Create or repair hub.db: private, current schema, repositories and plugin tables.
+        """Create or repair hub.db: private, current schema, repositories with their
+        approved roots as checkout paths, and plugin tables.
 
         Every step is idempotent, so a run interrupted half way, or a database
         left by an earlier release, is completed rather than kept as it is.
@@ -673,10 +678,12 @@ class Ceremony:
             os.close(fd)
         store = Store(str(database))
         try:
-            present = {row[0] for row in store.db.execute('SELECT repo FROM repos')}
+            # spawn starts workers in the repository's checkout path; the selected
+            # core has no repo_add verb, so the approved root is recorded here.
+            present = {(row[0], row[1]) for row in store.db.execute('SELECT repo, path FROM repo_paths')}
             for repository in self.request['repositories']:
-                if repository['localName'] not in present:
-                    store.repo_add(repository['localName'])
+                if (repository['localName'], repository['root']) not in present:
+                    store.repo_add(repository['localName'], paths=(repository['root'],))
             # A selected Work Hub never creates plugin schema; it refuses to
             # start unless every default federation plugin's tables exist.
             for name in DEFAULT_PLUGINS:

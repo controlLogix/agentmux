@@ -440,6 +440,19 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
                 install = Installation(self.runtime, **overrides)
                 with self.assertRaisesRegex(ContractError, code):
                     await install.run()
+        # The root becomes the checkout path, so it must be normalized even when
+        # the owner request approves the same string.
+        install = Installation(self.runtime)
+        odd = str(install.workspace) + '/.'
+        install.owner['approvedWorkspaceRoots'] = [odd]
+        owner_path = Path(install.request['ownerRequest']['path'])
+        owner_path.unlink()
+        install.request['ownerRequest']['sha256'] = _private_write(owner_path, json.dumps(install.owner).encode())
+        install.request['repositories'][0]['root'] = odd
+        install.request_path.unlink()
+        install.request_digest = _private_write(install.request_path, json.dumps(install.request).encode())
+        with self.assertRaisesRegex(ContractError, 'local_enrollment_repository_invalid'):
+            await install.run()
         install = Installation(self.runtime)
         with self.assertRaisesRegex(ContractError, 'local_enrollment_request_changed'):
             await local_enrollment.run(str(install.request_path), 'sha256:' + '0' * 64, root=install.base)
@@ -625,6 +638,39 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
         install = Installation(self.runtime)
         await install.run()
         self.assertHubDatabaseComplete(install.home / 'hub' / 'hub.db')
+
+    async def test_hub_database_records_each_repository_root_as_its_checkout(self):
+        # spawn refuses a repository without a checkout path, and the selected
+        # core cannot add one, so enrollment records the approved root. A
+        # database from an earlier release that lacks it is repaired on rerun.
+        import sqlite3
+        install = Installation(self.runtime)
+        first = await install.run()
+        path = install.home / 'hub' / 'hub.db'
+        expected = [('agentmux', str(install.workspace), 'checkout')]
+
+        def rows():
+            database = sqlite3.connect(path.as_uri() + '?mode=ro', uri=True)
+            try:
+                return sorted(database.execute('SELECT repo, path, kind FROM repo_paths').fetchall())
+            finally:
+                database.close()
+
+        def change(statement):
+            database = sqlite3.connect(path)
+            database.execute(statement)
+            database.commit()
+            database.close()
+        self.assertEqual(rows(), expected)
+        self.assertEqual(await install.run(), first)
+        self.assertEqual(rows(), expected)
+        change('DELETE FROM repo_paths')
+        self.assertEqual(await install.run(), first)
+        self.assertEqual(rows(), expected)
+        # A path recorded some other way stays; the approved root is added beside it.
+        change("UPDATE repo_paths SET path = '/elsewhere'")
+        self.assertEqual(await install.run(), first)
+        self.assertEqual(rows(), sorted(expected + [('agentmux', '/elsewhere', 'checkout')]))
 
     async def test_damaged_hub_database_is_repaired_on_rerun(self):
         # Review item 3: a finished enrollment whose hub.db lost its private mode
