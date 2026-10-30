@@ -1,0 +1,2728 @@
+{
+ "recorded": {
+  "commit": "89a3602",
+  "date": "2026-10-30",
+  "machine": "Darwin arm64, 18 CPUs",
+  "python": "Python 3.14.8"
+ },
+ "targets": {
+  "capability_owner.test_admitted_reads": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.5,
+   "status": "ok"
+  },
+  "capability_owner.test_adopt_preflight": {
+   "flaky": [],
+   "known": [],
+   "seconds": 12.6,
+   "status": "ok"
+  },
+  "capability_owner.test_adopt_publication": {
+   "flaky": [],
+   "known": [],
+   "seconds": 15.3,
+   "status": "ok"
+  },
+  "capability_owner.test_adopt_request_turn": {
+   "flaky": [],
+   "known": [],
+   "seconds": 37.2,
+   "status": "ok"
+  },
+  "capability_owner.test_adopt_scheduling": {
+   "flaky": [],
+   "known": [
+    "capability_owner.test_adopt_scheduling.AdoptSchedulingTests.test_background_cannot_split_registration_from_ready_and_confirmation",
+    "capability_owner.test_adopt_scheduling.AdoptSchedulingTests.test_cancellation_while_queued_joins_original_without_releasing_holder",
+    "capability_owner.test_adopt_scheduling.AdoptSchedulingTests.test_original_deadline_expires_while_queued_before_any_adoption_effect",
+    "capability_owner.test_adopt_scheduling.AdoptSchedulingTests.test_source_path_lost_while_queued_refuses_before_adoption_effect"
+   ],
+   "seconds": 17.4,
+   "status": "failed"
+  },
+  "capability_owner.test_adopt_transport_scheduling": {
+   "flaky": [],
+   "known": [
+    "capability_owner.test_adopt_transport_scheduling.AdoptTransportSchedulingTests.test_queued_read_preserves_original_expiry"
+   ],
+   "seconds": 17.9,
+   "status": "failed"
+  },
+  "capability_owner.test_artifact_composition": {
+   "flaky": [],
+   "known": [],
+   "seconds": 3.4,
+   "status": "ok"
+  },
+  "capability_owner.test_artifact_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_board_allocation": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.1,
+   "status": "ok"
+  },
+  "capability_owner.test_board_allocation_journal": {
+   "flaky": [],
+   "known": [],
+   "seconds": 5.7,
+   "status": "ok"
+  },
+  "capability_owner.test_board_allocation_owner": {
+   "flaky": [],
+   "known": [],
+   "seconds": 42.6,
+   "status": "ok"
+  },
+  "capability_owner.test_board_journal": {
+   "flaky": [],
+   "known": [],
+   "seconds": 4.8,
+   "status": "ok"
+  },
+  "capability_owner.test_board_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_board_native_journal": {
+   "flaky": [],
+   "known": [],
+   "seconds": 2.4,
+   "status": "ok"
+  },
+  "capability_owner.test_board_native_owner": {
+   "flaky": [],
+   "known": [],
+   "seconds": 22.8,
+   "status": "ok"
+  },
+  "capability_owner.test_board_owner": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.7,
+   "status": "ok"
+  },
+  "capability_owner.test_board_phase_signer": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.4,
+   "status": "ok"
+  },
+  "capability_owner.test_board_storage_route": {
+   "flaky": [],
+   "known": [],
+   "seconds": 23.1,
+   "status": "ok"
+  },
+  "capability_owner.test_boundary": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.0,
+   "status": "ok"
+  },
+  "capability_owner.test_code": {
+   "flaky": [],
+   "known": [],
+   "seconds": 11.8,
+   "status": "ok"
+  },
+  "capability_owner.test_code_bridge_owner": {
+   "flaky": [],
+   "known": [],
+   "seconds": 12.1,
+   "status": "ok"
+  },
+  "capability_owner.test_code_completion": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.7,
+   "status": "ok"
+  },
+  "capability_owner.test_code_completion_callers": {
+   "flaky": [],
+   "known": [
+    "capability_owner.test_code_completion_callers.CodeCompletionCallerTests.test_completed_fetch_replays_exact_result_without_another_fetch",
+    "capability_owner.test_code_completion_callers.CodeCompletionCallerTests.test_completed_handoff_replay_requires_current_original_message_grant",
+    "capability_owner.test_code_completion_callers.CodeCompletionCallerTests.test_completed_replay_requires_current_original_publish_grant",
+    "capability_owner.test_code_completion_callers.CodeCompletionCallerTests.test_concurrent_same_operation_id_joins_one_original_code_effect",
+    "capability_owner.test_code_completion_callers.CodeCompletionCallerTests.test_current_rotated_local_credential_does_not_change_original_intent",
+    "capability_owner.test_code_completion_callers.CodeCompletionCallerTests.test_explicit_completed_handoff_replays_after_client_replacement",
+    "capability_owner.test_code_completion_callers.CodeCompletionCallerTests.test_explicit_write_and_drain_loss_replay_exact_original_without_git",
+    "capability_owner.test_code_completion_callers.CodeCompletionCallerTests.test_legacy_detected_reply_loss_replays_then_allows_a_new_normal_call",
+    "capability_owner.test_code_completion_callers.CodeCompletionCallerTests.test_new_operation_id_resolves_a_deliberate_new_head",
+    "capability_owner.test_code_completion_callers.CodeCompletionCallerTests.test_same_id_refuses_changed_arguments_or_invalid_current_local_identity",
+    "capability_owner.test_code_completion_callers.CodeCompletionCallerTests.test_same_id_refuses_changed_selected_source",
+    "capability_owner.test_code_completion_callers.CodeCompletionCallerTests.test_unknown_original_git_effect_never_becomes_a_new_dispatch"
+   ],
+   "seconds": 13.6,
+   "status": "failed"
+  },
+  "capability_owner.test_code_completion_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_code_git": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.8,
+   "status": "ok"
+  },
+  "capability_owner.test_code_git_preparation": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "capability_owner.test_code_handoff_capture": {
+   "flaky": [],
+   "known": [
+    "capability_owner.test_code_handoff_capture.CodeHandoffCaptureTests.test_completed_capture_survives_group_failure_and_existing_recovery_retires_it",
+    "capability_owner.test_code_handoff_capture.CodeHandoffCaptureTests.test_lost_capture_reply_and_replacement_clients_recover_same_finding",
+    "capability_owner.test_code_handoff_capture.CodeHandoffCaptureTests.test_only_exact_original_message_source_keeps_capture_pending",
+    "capability_owner.test_code_handoff_capture.CodeHandoffCaptureTests.test_ordinary_handoff_capture_is_retired_without_a_code_group",
+    "capability_owner.test_code_handoff_capture.CodeHandoffCaptureTests.test_revoked_original_capture_grant_keeps_pending_without_new_finding"
+   ],
+   "seconds": 2.0,
+   "status": "failed"
+  },
+  "capability_owner.test_code_host": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.9,
+   "status": "ok"
+  },
+  "capability_owner.test_code_read_validity": {
+   "flaky": [],
+   "known": [
+    "capability_owner.test_code_read_validity.CodeReadValidityTests.test_completed_fetch_requires_current_read_grant_before_replay",
+    "capability_owner.test_code_read_validity.CodeReadValidityTests.test_current_list_panel_and_get_keep_original_values",
+    "capability_owner.test_code_read_validity.CodeReadValidityTests.test_earlier_read_expiry_survives_later_signed_read",
+    "capability_owner.test_code_read_validity.CodeReadValidityTests.test_final_group_await_cannot_disclose_after_verified_read_expiry",
+    "capability_owner.test_code_read_validity.CodeReadValidityTests.test_initial_get_expiry_refuses_before_physical_fetch",
+    "capability_owner.test_code_read_validity.CodeReadValidityTests.test_list_refuses_verified_read_after_owner_expiry",
+    "capability_owner.test_code_read_validity.CodeReadValidityTests.test_panel_composition_await_cannot_disclose_expired_code_rows",
+    "capability_owner.test_code_read_validity.CodeReadValidityTests.test_panel_does_not_disclose_expired_rows",
+    "capability_owner.test_code_read_validity.CodeReadValidityTests.test_post_git_read_expiry_refuses_disclosure_and_keeps_original_effect",
+    "capability_owner.test_code_read_validity.CodeReadValidityTests.test_read_metadata_is_signed_and_ordinary_shape_unchanged",
+    "capability_owner.test_code_read_validity.CodeReadValidityTests.test_revoked_read_after_git_refuses_final_row_disclosure"
+   ],
+   "seconds": 3.1,
+   "status": "failed"
+  },
+  "capability_owner.test_code_selection": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.2,
+   "status": "ok"
+  },
+  "capability_owner.test_completed_kill_query": {
+   "flaky": [
+    "capability_owner.test_kill_admission_turn.KillAdmissionTurnTests.test_queued_cancel_does_not_authenticate_or_release_holder"
+   ],
+   "known": [
+    "capability_owner.test_completed_kill_query.CompletedKillQueryTests.test_final_snapshot_read_cannot_outlive_original_proof"
+   ],
+   "seconds": 50.3,
+   "status": "failed"
+  },
+  "capability_owner.test_core_work_lifecycle_sync": {
+   "flaky": [
+    "capability_owner.test_core_work_lifecycle_sync.CoreWorkLifecycleSyncTests.test_final_batch_snapshot_revokes_earlier_core_route_before_effect",
+    "capability_owner.test_core_work_lifecycle_sync.CoreWorkLifecycleSyncTests.test_final_mode_fence_uses_no_work_database_off_original_worker"
+   ],
+   "known": [
+    "capability_owner.test_core_work_lifecycle_sync.CoreWorkLifecycleSyncTests.test_missing_declared_owner_or_result_subscription_cannot_be_local_only"
+   ],
+   "seconds": 51.6,
+   "status": "failed"
+  },
+  "capability_owner.test_core_work_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.4,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_core_work_outbox": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.8,
+   "status": "ok"
+  },
+  "capability_owner.test_core_work_outbox_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.4,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_core_work_owner": {
+   "flaky": [],
+   "known": [],
+   "seconds": 10.1,
+   "status": "ok"
+  },
+  "capability_owner.test_core_work_roles": {
+   "flaky": [],
+   "known": [],
+   "seconds": 11.4,
+   "status": "ok"
+  },
+  "capability_owner.test_core_work_roles_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.4,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_core_work_selection": {
+   "flaky": [],
+   "known": [
+    "capability_owner.test_core_work_selection.CoreWorkSuspendedSelectionTests.test_selected_projection_requires_live_exact_structural_permission",
+    "capability_owner.test_core_work_selection.CoreWorkSuspendedSelectionTests.test_unshare_structural_permission_cannot_authorize_live_work_or_substitution",
+    "capability_owner.test_core_work_selection.CoreWorkSuspendedSelectionTests.test_work_terminal_schema_is_checked_inside_original_startup_permission"
+   ],
+   "seconds": 17.3,
+   "status": "failed"
+  },
+  "capability_owner.test_federated_work_client": {
+   "flaky": [],
+   "known": [],
+   "seconds": 23.2,
+   "status": "ok"
+  },
+  "capability_owner.test_federation_board": {
+   "flaky": [],
+   "known": [],
+   "seconds": 3.3,
+   "status": "ok"
+  },
+  "capability_owner.test_federation_policy_transition": {
+   "flaky": [],
+   "known": [],
+   "seconds": 17.0,
+   "status": "ok"
+  },
+  "capability_owner.test_first_worker": {
+   "flaky": [
+    "capability_owner.test_first_worker.FirstWorkerSpawnTests.test_actual_spawn_registers_through_owner_on_original_hub_source",
+    "capability_owner.test_first_worker.FirstWorkerSpawnTests.test_sweep_with_nothing_expired_submits_nothing",
+    "capability_owner.test_hub_work_maintenance.HubWorkMaintenanceTests.test_failed_provider_returns_original_generation_leases_without_relaunch"
+   ],
+   "known": [
+    "capability_owner.test_first_worker.FirstWorkerTests.test_exact_shared_source_is_borrowed_with_message_and_code_owners"
+   ],
+   "seconds": 187.5,
+   "status": "failed"
+  },
+  "capability_owner.test_hub_kill_recovery": {
+   "flaky": [
+    "capability_owner.test_hub_kill_recovery.HubKillRecoveryTests.test_confirmed_original_recovers_after_hub_store_and_worker_reconstruction",
+    "capability_owner.test_hub_work_maintenance.HubWorkMaintenanceTests.test_missing_pane_returns_original_generation_leases_without_relaunch"
+   ],
+   "known": [],
+   "seconds": 135.7,
+   "status": "ok"
+  },
+  "capability_owner.test_hub_kill_recovery_native": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.4,
+   "status": "ok"
+  },
+  "capability_owner.test_hub_lifecycle_disclosure": {
+   "flaky": [],
+   "known": [],
+   "seconds": 134.7,
+   "status": "ok"
+  },
+  "capability_owner.test_hub_spawn_expiry": {
+   "flaky": [],
+   "known": [
+    "capability_owner.test_hub_spawn_expiry.HubSpawnExpiryTests.test_original_expiry_while_io_queued_refuses_and_retains_uncertainty"
+   ],
+   "seconds": 102.4,
+   "status": "failed"
+  },
+  "capability_owner.test_hub_work_maintenance": {
+   "flaky": [],
+   "known": [],
+   "seconds": 96.4,
+   "status": "ok"
+  },
+  "capability_owner.test_kill_admission_turn": {
+   "flaky": [],
+   "known": [],
+   "seconds": 44.8,
+   "status": "ok"
+  },
+  "capability_owner.test_kill_final_turn": {
+   "flaky": [],
+   "known": [
+    "capability_owner.test_kill_final_turn.KillFinalTurnTests.test_expiry_during_active_reader_still_refuses"
+   ],
+   "seconds": 29.0,
+   "status": "failed"
+  },
+  "capability_owner.test_kill_reply_timing": {
+   "flaky": [],
+   "known": [],
+   "seconds": 32.1,
+   "status": "ok"
+  },
+  "capability_owner.test_knowledge": {
+   "flaky": [],
+   "known": [],
+   "seconds": 9.6,
+   "status": "ok"
+  },
+  "capability_owner.test_knowledge_bridge_owner": {
+   "flaky": [],
+   "known": [],
+   "seconds": 8.8,
+   "status": "ok"
+  },
+  "capability_owner.test_knowledge_connection_recovery": {
+   "flaky": [],
+   "known": [],
+   "seconds": 3.2,
+   "status": "ok"
+  },
+  "capability_owner.test_knowledge_control": {
+   "flaky": [],
+   "known": [],
+   "seconds": 29.8,
+   "status": "ok"
+  },
+  "capability_owner.test_knowledge_control_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.4,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_knowledge_findings": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.7,
+   "status": "ok"
+  },
+  "capability_owner.test_knowledge_host": {
+   "flaky": [],
+   "known": [],
+   "seconds": 2.5,
+   "status": "ok"
+  },
+  "capability_owner.test_knowledge_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_legacy_board_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_legacy_board_service": {
+   "flaky": [],
+   "known": [],
+   "seconds": 30.8,
+   "status": "ok"
+  },
+  "capability_owner.test_legacy_code_client": {
+   "flaky": [],
+   "known": [
+    "capability_owner.test_legacy_code_client.LegacyCodeTests.test_actual_held_approval_requires_original_hub_proof_and_durable_decision",
+    "capability_owner.test_legacy_code_client.LegacyCodeTests.test_actual_share_fetch_list_panel_keep_owner_values",
+    "capability_owner.test_legacy_code_client.LegacyCodeTests.test_confirmed_handoff_survives_failed_group_completion",
+    "capability_owner.test_legacy_code_client.LegacyCodeTests.test_failed_owner_read_never_returns_local_code_row",
+    "capability_owner.test_legacy_code_client.LegacyCodeTests.test_fetched_grant_revoked_during_remote_lookup_refuses_before_fetch",
+    "capability_owner.test_legacy_code_client.LegacyCodeTests.test_group_completion_sql_failure_rolls_back_all_originals",
+    "capability_owner.test_legacy_code_client.LegacyCodeTests.test_lost_handoff_reply_survives_client_replacement",
+    "capability_owner.test_legacy_code_client.LegacyCodeTests.test_lost_publish_reply_recovers_original_without_second_git_effect",
+    "capability_owner.test_legacy_code_client.LegacyCodeTests.test_publish_grant_revoked_during_remote_lookup_refuses_before_push",
+    "capability_owner.test_legacy_code_client.LegacyCodeTests.test_repeated_cancel_and_close_join_original_git_before_cleanup",
+    "capability_owner.test_legacy_code_client.LegacyCodeTests.test_retained_success_after_lost_reply_still_requires_current_publish_grant",
+    "capability_owner.test_legacy_code_client.LegacyCodeTests.test_revoked_fetched_owner_grant_refuses_before_physical_git",
+    "capability_owner.test_legacy_code_client.LegacyCodeTests.test_signed_owner_expiry_stops_prepared_physical_submission",
+    "capability_owner.test_legacy_code_client.LegacyCodeTests.test_slow_git_uses_one_refresh_and_distinct_storage_handoff_proofs"
+   ],
+   "seconds": 7.4,
+   "status": "failed"
+  },
+  "capability_owner.test_legacy_code_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_legacy_knowledge_client": {
+   "flaky": [],
+   "known": [
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_actual_handoff_capture_uses_committed_message_without_another_human_proof",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_actual_hub_held_approval_indexes_before_approval_and_keeps_untrusted_note",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_actual_hub_search_recent_show_and_panel_preserve_public_values",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_actual_hub_share_lost_reply_recovers_original_id_before_new_write",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_automatic_capture_recovery_refuses_revoked_original_service_grant",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_automatic_capture_retains_source_before_first_inspect_exchange",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_cancelled_share_joins_original_exchange_then_recovers_its_outcome",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_confirmed_conflict_preserves_authorized_input_before_new_attempt",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_later_automatic_capture_retries_only_its_confirmed_initial_version_conflict",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_offline_recovery_cancellation_joins_original_exchange_and_keeps_pending_source",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_recovery_skips_a_busy_original_capture_without_waiting_for_its_lock",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_recovery_snapshot_cannot_repeat_a_capture_completed_by_the_original_caller",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_restart_tick_recovers_lost_capture_reply_without_reemitting_source_event",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_running_offline_hub_recovers_capture_without_a_restart_or_external_connection"
+   ],
+   "seconds": 33.1,
+   "status": "failed"
+  },
+  "capability_owner.test_legacy_knowledge_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_legacy_messages_client": {
+   "flaky": [],
+   "known": [
+    "capability_owner.test_legacy_messages_client.LegacyMessageClientTests.test_actual_code_share_keeps_its_derived_handoff_through_the_message_owner",
+    "capability_owner.test_legacy_messages_client.LegacyMessageClientTests.test_actual_fed_approve_delivers_before_held_state_changes",
+    "capability_owner.test_legacy_messages_client.LegacyMessageClientTests.test_actual_hub_send_preserves_original_id_outbox_and_authenticated_actor",
+    "capability_owner.test_legacy_messages_client.LegacyMessageClientTests.test_approval_conflict_can_retry_the_same_held_item_with_a_fresh_attempt",
+    "capability_owner.test_legacy_messages_client.LegacyMessageClientTests.test_cancelled_hub_call_retains_original_worker_and_pending_intent_until_joined",
+    "capability_owner.test_legacy_messages_client.LegacyMessageClientTests.test_changed_protected_reply_binding_cannot_replace_a_pending_send",
+    "capability_owner.test_legacy_messages_client.LegacyMessageClientTests.test_code_share_cancellation_disposes_private_connection_and_proofs",
+    "capability_owner.test_legacy_messages_client.LegacyMessageClientTests.test_code_share_changed_principal_refuses_and_original_invocation_is_single_use",
+    "capability_owner.test_legacy_messages_client.LegacyMessageClientTests.test_code_share_outlasting_initial_proof_reauthenticates_the_same_live_request",
+    "capability_owner.test_legacy_messages_client.LegacyMessageClientTests.test_confirmed_approval_recovery_cleanup_survives_restart",
+    "capability_owner.test_legacy_messages_client.LegacyMessageClientTests.test_confirmed_handoff_source_is_exact_current_task_and_single_use",
+    "capability_owner.test_legacy_messages_client.LegacyMessageClientTests.test_disconnected_peer_transport_preserves_local_queue_and_held_approval",
+    "capability_owner.test_legacy_messages_client.LegacyMessageClientTests.test_lost_reply_and_new_client_recover_original_intent_without_second_publication",
+    "capability_owner.test_legacy_messages_client.LegacyMessageClientTests.test_restart_after_approved_delivery_before_transition_recovers_original_attempt"
+   ],
+   "seconds": 13.5,
+   "status": "failed"
+  },
+  "capability_owner.test_legacy_messages_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_legacy_policy_client": {
+   "flaky": [],
+   "known": [
+    "capability_owner.test_legacy_policy_client.LegacyPolicyClientTests.test_committed_but_unprojected_original_waits_for_distinct_service_recovery",
+    "capability_owner.test_legacy_policy_client.LegacyPolicyClientTests.test_current_read_revocation_refuses_cached_result",
+    "capability_owner.test_legacy_policy_client.LegacyPolicyClientTests.test_fresh_read_metadata_reuses_current_effect_but_new_change_advances",
+    "capability_owner.test_legacy_policy_client.LegacyPolicyClientTests.test_identical_authenticated_request_recovers_locally_committed_result_after_lost_hub_reply",
+    "capability_owner.test_legacy_policy_client.LegacyPolicyClientTests.test_invalid_recovery_metadata_refuses_before_using_or_poisoning_session",
+    "capability_owner.test_legacy_policy_client.LegacyPolicyClientTests.test_legacy_completed_record_is_reconciled_without_discarding_original_pair",
+    "capability_owner.test_legacy_policy_client.LegacyPolicyClientTests.test_lost_final_reply_restart_recovers_original_pair_without_another_set",
+    "capability_owner.test_legacy_policy_client.LegacyPolicyClientTests.test_lost_preparation_restart_keeps_original_proposal_and_operation",
+    "capability_owner.test_legacy_policy_client.LegacyPolicyClientTests.test_new_explicit_intent_advances_but_reused_operation_cannot_change_payload",
+    "capability_owner.test_legacy_policy_client.LegacyPolicyClientTests.test_original_final_and_close_are_joined_after_hub_request_cancellation",
+    "capability_owner.test_legacy_policy_client.LegacyPolicyClientTests.test_restart_recovers_original_completed_request_using_current_read_only",
+    "capability_owner.test_legacy_policy_client.LegacyPolicyClientTests.test_review_required_proposal_and_final_use_their_exact_separate_approvals",
+    "capability_owner.test_legacy_policy_client.LegacyPolicyClientTests.test_substituted_local_final_payload_refuses_before_another_command",
+    "capability_owner.test_legacy_policy_client.LegacyPolicyClientTests.test_unknown_final_without_visible_outcome_stays_original_and_blocks_new_intent"
+   ],
+   "seconds": 6.7,
+   "status": "failed"
+  },
+  "capability_owner.test_legacy_work_client": {
+   "flaky": [],
+   "known": [],
+   "seconds": 15.5,
+   "status": "ok"
+  },
+  "capability_owner.test_legacy_work_notifications": {
+   "flaky": [],
+   "known": [],
+   "seconds": 25.6,
+   "status": "ok"
+  },
+  "capability_owner.test_lifecycle_aggregate": {
+   "flaky": [],
+   "known": [],
+   "seconds": 176.4,
+   "status": "ok"
+  },
+  "capability_owner.test_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_local_work_client": {
+   "flaky": [],
+   "known": [],
+   "seconds": 52.9,
+   "status": "ok"
+  },
+  "capability_owner.test_local_work_hub": {
+   "flaky": [],
+   "known": [
+    "capability_owner.test_local_work_hub.LocalWorkHubReadTests.test_original_owner_expiry_before_reply_never_writes_sensitive_work",
+    "capability_owner.test_local_work_hub.LocalWorkHubReadTests.test_target_generation_changed_during_final_authentication_is_not_disclosed"
+   ],
+   "seconds": 9.5,
+   "status": "failed"
+  },
+  "capability_owner.test_message_bridge_owner": {
+   "flaky": [],
+   "known": [],
+   "seconds": 11.4,
+   "status": "ok"
+  },
+  "capability_owner.test_messages": {
+   "flaky": [],
+   "known": [],
+   "seconds": 17.3,
+   "status": "ok"
+  },
+  "capability_owner.test_messages_host": {
+   "flaky": [],
+   "known": [],
+   "seconds": 5.5,
+   "status": "ok"
+  },
+  "capability_owner.test_messages_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_native_kill_preflight": {
+   "flaky": [],
+   "known": [],
+   "seconds": 152.0,
+   "status": "ok"
+  },
+  "capability_owner.test_native_work_scheduling": {
+   "flaky": [
+    "capability_owner.test_native_work_scheduling.SourceReadAdmissionTests.test_revoked_death_preserves_actual_agent_work_and_claims",
+    "capability_owner.test_native_work_scheduling.SourceReadAdmissionTests.test_spawn_expiry_during_preparation_refuses_physical_launch",
+    "capability_owner.test_native_work_scheduling.SpawnPredispatchRecoveryTests.test_cancelled_original_joins_refusal_save_before_replay"
+   ],
+   "known": [
+    "capability_owner.test_native_work_scheduling.NativeSpawnPreflightTests.test_cancellation_joins_original_child_before_releasing_turn",
+    "capability_owner.test_native_work_scheduling.NativeSpawnPreflightTests.test_cancelled_queued_connection_never_authenticates_or_releases_holder",
+    "capability_owner.test_native_work_scheduling.NativeSpawnPreflightTests.test_framed_adoption_and_replay_verify_once_after_queue_before_identity",
+    "capability_owner.test_native_work_scheduling.NativeSpawnPreflightTests.test_framed_queued_source_change_and_register_revocation_refuse_effect",
+    "capability_owner.test_native_work_scheduling.NativeSpawnPreflightTests.test_queue_precedes_proof_and_same_id_replay_preserves_registration",
+    "capability_owner.test_native_work_scheduling.NativeSpawnPreflightTests.test_selected_envelope_expired_in_queue_never_authenticates",
+    "capability_owner.test_native_work_scheduling.NativeSpawnPreflightTests.test_unrelated_inherited_task_waits_through_final_check_and_reply",
+    "capability_owner.test_native_work_scheduling.NativeSpawnPreparationTests.test_cancellation_joins_original_child_before_releasing_turn",
+    "capability_owner.test_native_work_scheduling.NativeSpawnPreparationTests.test_cancelled_queued_connection_never_authenticates_or_releases_holder",
+    "capability_owner.test_native_work_scheduling.NativeSpawnPreparationTests.test_framed_adoption_and_replay_verify_once_after_queue_before_identity",
+    "capability_owner.test_native_work_scheduling.NativeSpawnPreparationTests.test_framed_queued_source_change_and_register_revocation_refuse_effect",
+    "capability_owner.test_native_work_scheduling.NativeSpawnPreparationTests.test_queue_precedes_proof_and_same_id_replay_preserves_registration",
+    "capability_owner.test_native_work_scheduling.NativeSpawnPreparationTests.test_selected_envelope_expired_in_queue_never_authenticates",
+    "capability_owner.test_native_work_scheduling.NativeSpawnPreparationTests.test_unrelated_inherited_task_waits_through_final_check_and_reply",
+    "capability_owner.test_native_work_scheduling.SourceReadAdmissionTests.test_actual_global_sweep_keeps_one_batch_across_repositories",
+    "capability_owner.test_native_work_scheduling.SourceReadAdmissionTests.test_actual_spawn_registers_through_owner_on_original_hub_source",
+    "capability_owner.test_native_work_scheduling.SourceReadCallerTests.test_cancellation_joins_original_child_before_releasing_turn",
+    "capability_owner.test_native_work_scheduling.SourceReadCallerTests.test_cancelled_queued_connection_never_authenticates_or_releases_holder",
+    "capability_owner.test_native_work_scheduling.SourceReadCallerTests.test_changed_source_after_wait_refuses_without_authentication",
+    "capability_owner.test_native_work_scheduling.SourceReadCallerTests.test_framed_adoption_and_replay_verify_once_after_queue_before_identity",
+    "capability_owner.test_native_work_scheduling.SourceReadCallerTests.test_framed_kill_ingress_and_dispatch_keep_both_source_checks",
+    "capability_owner.test_native_work_scheduling.SourceReadCallerTests.test_framed_queued_source_change_and_register_revocation_refuse_effect",
+    "capability_owner.test_native_work_scheduling.SourceReadCallerTests.test_queue_precedes_proof_and_same_id_replay_preserves_registration",
+    "capability_owner.test_native_work_scheduling.SourceReadCallerTests.test_selected_envelope_expired_in_queue_never_authenticates",
+    "capability_owner.test_native_work_scheduling.SourceReadCallerTests.test_unrelated_inherited_task_waits_through_final_check_and_reply"
+   ],
+   "seconds": 799.6,
+   "status": "failed"
+  },
+  "capability_owner.test_optional_process_import": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.6,
+   "status": "ok"
+  },
+  "capability_owner.test_ordinary_secret": {
+   "flaky": [],
+   "known": [],
+   "seconds": 13.6,
+   "status": "ok"
+  },
+  "capability_owner.test_ordinary_secret_close": {
+   "flaky": [],
+   "known": [],
+   "seconds": 7.9,
+   "status": "ok"
+  },
+  "capability_owner.test_ordinary_secret_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_peer_control_command": {
+   "flaky": [],
+   "known": [],
+   "seconds": 5.3,
+   "status": "ok"
+  },
+  "capability_owner.test_peer_control_command_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 2.0,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_peer_control_retry": {
+   "flaky": [],
+   "known": [],
+   "seconds": 11.7,
+   "status": "ok"
+  },
+  "capability_owner.test_policy": {
+   "flaky": [],
+   "known": [],
+   "seconds": 6.3,
+   "status": "ok"
+  },
+  "capability_owner.test_policy_bootstrap": {
+   "flaky": [],
+   "known": [],
+   "seconds": 3.7,
+   "status": "ok"
+  },
+  "capability_owner.test_policy_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_policy_selected_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "ok"
+  },
+  "capability_owner.test_policy_selected_restart": {
+   "flaky": [],
+   "known": [],
+   "seconds": 9.4,
+   "status": "ok"
+  },
+  "capability_owner.test_private_reads": {
+   "flaky": [],
+   "known": [],
+   "seconds": 4.3,
+   "status": "ok"
+  },
+  "capability_owner.test_private_storage": {
+   "flaky": [],
+   "known": [],
+   "seconds": 20.8,
+   "status": "ok"
+  },
+  "capability_owner.test_private_storage_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_process_admission": {
+   "flaky": [],
+   "known": [],
+   "seconds": 86.6,
+   "status": "ok"
+  },
+  "capability_owner.test_process_inventory": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "capability_owner.test_process_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.2,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_process_native_delivery": {
+   "flaky": [],
+   "known": [],
+   "seconds": 248.8,
+   "status": "ok"
+  },
+  "capability_owner.test_process_observer_recovery": {
+   "flaky": [],
+   "known": [],
+   "seconds": 26.4,
+   "status": "ok"
+  },
+  "capability_owner.test_process_resource": {
+   "flaky": [],
+   "known": [],
+   "seconds": 68.8,
+   "status": "ok"
+  },
+  "capability_owner.test_process_resource_authority": {
+   "flaky": [],
+   "known": [],
+   "seconds": 27.0,
+   "status": "ok"
+  },
+  "capability_owner.test_receiver": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.0,
+   "status": "ok"
+  },
+  "capability_owner.test_reply_service": {
+   "flaky": [],
+   "known": [],
+   "seconds": 3.5,
+   "status": "ok"
+  },
+  "capability_owner.test_secret_consumer": {
+   "flaky": [],
+   "known": [],
+   "seconds": 5.8,
+   "status": "ok"
+  },
+  "capability_owner.test_secret_integration_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.8,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_secret_journal": {
+   "flaky": [],
+   "known": [],
+   "seconds": 13.5,
+   "status": "ok"
+  },
+  "capability_owner.test_secret_journal_admission": {
+   "flaky": [],
+   "known": [],
+   "seconds": 23.1,
+   "status": "ok"
+  },
+  "capability_owner.test_secret_journal_admission_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_secret_native_proof": {
+   "flaky": [],
+   "known": [],
+   "seconds": 61.9,
+   "status": "ok"
+  },
+  "capability_owner.test_secret_observation_save": {
+   "flaky": [],
+   "known": [],
+   "seconds": 3.2,
+   "status": "ok"
+  },
+  "capability_owner.test_selected_code": {
+   "flaky": [],
+   "known": [],
+   "seconds": 3.6,
+   "status": "ok"
+  },
+  "capability_owner.test_selected_code_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "ok"
+  },
+  "capability_owner.test_selected_knowledge_bridge": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.7,
+   "status": "ok"
+  },
+  "capability_owner.test_selected_storage": {
+   "flaky": [],
+   "known": [],
+   "seconds": 5.7,
+   "status": "ok"
+  },
+  "capability_owner.test_selected_work": {
+   "flaky": [],
+   "known": [],
+   "seconds": 5.9,
+   "status": "ok"
+  },
+  "capability_owner.test_selected_work_lifecycle": {
+   "flaky": [],
+   "known": [],
+   "seconds": 4.0,
+   "status": "ok"
+  },
+  "capability_owner.test_storage_contract": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "capability_owner.test_work": {
+   "flaky": [],
+   "known": [],
+   "seconds": 23.0,
+   "status": "ok"
+  },
+  "capability_owner.test_work_background": {
+   "flaky": [],
+   "known": [],
+   "seconds": 11.8,
+   "status": "ok"
+  },
+  "capability_owner.test_work_bridge_composition": {
+   "flaky": [
+    "capability_owner.test_work_bridge_composition.WorkBridgeCompositionTests.test_missing_declared_owner_or_result_subscription_cannot_be_local_only",
+    "capability_owner.test_work_bridge_composition.WorkBridgeCompositionTests.test_mode_generation_node_repository_and_local_config_substitution_refuse"
+   ],
+   "known": [],
+   "seconds": 35.6,
+   "status": "ok"
+  },
+  "capability_owner.test_work_bridge_composition_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.4,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_work_bridge_owner": {
+   "flaky": [],
+   "known": [],
+   "seconds": 16.8,
+   "status": "ok"
+  },
+  "capability_owner.test_work_bridge_preflight": {
+   "flaky": [],
+   "known": [],
+   "seconds": 3.2,
+   "status": "ok"
+  },
+  "capability_owner.test_work_capture_concurrency": {
+   "flaky": [],
+   "known": [
+    "capability_owner.test_work_capture_concurrency.WorkCaptureConcurrencyTests.test_final_target_replacement_refuses_disclosure",
+    "capability_owner.test_work_capture_concurrency.WorkCaptureConcurrencyTests.test_unix_operator_as_create_claim_heartbeat_path_release_keep_actual_authority",
+    "capability_owner.test_work_capture_hub.WorkCaptureHubTests.test_final_target_replacement_refuses_disclosure",
+    "capability_owner.test_work_capture_hub.WorkCaptureHubTests.test_unix_operator_as_create_claim_heartbeat_path_release_keep_actual_authority"
+   ],
+   "seconds": 64.5,
+   "status": "failed"
+  },
+  "capability_owner.test_work_capture_hub": {
+   "flaky": [],
+   "known": [
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_actual_handoff_capture_uses_committed_message_without_another_human_proof",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_actual_hub_held_approval_indexes_before_approval_and_keeps_untrusted_note",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_actual_hub_search_recent_show_and_panel_preserve_public_values",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_actual_hub_share_lost_reply_recovers_original_id_before_new_write",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_automatic_capture_recovery_refuses_revoked_original_service_grant",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_automatic_capture_retains_source_before_first_inspect_exchange",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_cancelled_share_joins_original_exchange_then_recovers_its_outcome",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_confirmed_conflict_preserves_authorized_input_before_new_attempt",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_later_automatic_capture_retries_only_its_confirmed_initial_version_conflict",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_offline_recovery_cancellation_joins_original_exchange_and_keeps_pending_source",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_recovery_skips_a_busy_original_capture_without_waiting_for_its_lock",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_recovery_snapshot_cannot_repeat_a_capture_completed_by_the_original_caller",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_restart_tick_recovers_lost_capture_reply_without_reemitting_source_event",
+    "capability_owner.test_legacy_knowledge_client.LegacyKnowledgeTests.test_running_offline_hub_recovers_capture_without_a_restart_or_external_connection",
+    "capability_owner.test_work_capture_hub.WorkCaptureHubTests.test_final_target_replacement_refuses_disclosure",
+    "capability_owner.test_work_capture_hub.WorkCaptureHubTests.test_unix_operator_as_create_claim_heartbeat_path_release_keep_actual_authority",
+    "capability_owner.test_work_on_behalf_hub.OperatorWorkHubTests.test_final_target_replacement_refuses_disclosure",
+    "capability_owner.test_work_on_behalf_hub.OperatorWorkHubTests.test_unix_operator_as_create_claim_heartbeat_path_release_keep_actual_authority"
+   ],
+   "seconds": 83.4,
+   "status": "failed"
+  },
+  "capability_owner.test_work_capture_pipeline": {
+   "flaky": [],
+   "known": [
+    "capability_owner.test_work_capture_hub.WorkCaptureHubTests.test_final_target_replacement_refuses_disclosure",
+    "capability_owner.test_work_capture_hub.WorkCaptureHubTests.test_unix_operator_as_create_claim_heartbeat_path_release_keep_actual_authority",
+    "capability_owner.test_work_capture_pipeline.WorkCapturePipelineTests.test_final_target_replacement_refuses_disclosure",
+    "capability_owner.test_work_capture_pipeline.WorkCapturePipelineTests.test_unix_operator_as_create_claim_heartbeat_path_release_keep_actual_authority"
+   ],
+   "seconds": 90.7,
+   "status": "failed"
+  },
+  "capability_owner.test_work_capture_receipt": {
+   "flaky": [],
+   "known": [],
+   "seconds": 11.0,
+   "status": "ok"
+  },
+  "capability_owner.test_work_capture_selection": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.6,
+   "status": "ok"
+  },
+  "capability_owner.test_work_completion": {
+   "flaky": [],
+   "known": [],
+   "seconds": 41.4,
+   "status": "ok"
+  },
+  "capability_owner.test_work_control": {
+   "flaky": [],
+   "known": [],
+   "seconds": 8.1,
+   "status": "ok"
+  },
+  "capability_owner.test_work_control_composition": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.3,
+   "status": "ok"
+  },
+  "capability_owner.test_work_control_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.4,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_work_control_publication": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.3,
+   "status": "ok"
+  },
+  "capability_owner.test_work_federated_callers": {
+   "flaky": [],
+   "known": [
+    "capability_owner.test_work_capture_pipeline.WorkCapturePipelineTests.test_final_target_replacement_refuses_disclosure",
+    "capability_owner.test_work_capture_pipeline.WorkCapturePipelineTests.test_unix_operator_as_create_claim_heartbeat_path_release_keep_actual_authority",
+    "capability_owner.test_work_federated_callers.FederatedCallerTests.test_actual_release_capture_lost_reply_and_retry_keep_one_original",
+    "capability_owner.test_work_federated_callers.FederatedCallerTests.test_final_target_replacement_refuses_disclosure",
+    "capability_owner.test_work_federated_callers.FederatedCallerTests.test_global_capacity_and_repository_scope_apply_to_operator_target",
+    "capability_owner.test_work_federated_callers.FederatedCallerTests.test_lost_target_claim_reply_recovers_original_without_agent_impersonation",
+    "capability_owner.test_work_federated_callers.FederatedCallerTests.test_remote_release_stages_return_before_exact_original_capture",
+    "capability_owner.test_work_federated_callers.FederatedCallerTests.test_unix_operator_as_create_claim_heartbeat_path_release_keep_actual_authority"
+   ],
+   "seconds": 89.4,
+   "status": "failed"
+  },
+  "capability_owner.test_work_host": {
+   "flaky": [],
+   "known": [],
+   "seconds": 6.6,
+   "status": "ok"
+  },
+  "capability_owner.test_work_lifecycle": {
+   "flaky": [],
+   "known": [],
+   "seconds": 26.2,
+   "status": "ok"
+  },
+  "capability_owner.test_work_lifecycle_client": {
+   "flaky": [],
+   "known": [],
+   "seconds": 40.1,
+   "status": "ok"
+  },
+  "capability_owner.test_work_maintenance": {
+   "flaky": [],
+   "known": [],
+   "seconds": 30.2,
+   "status": "ok"
+  },
+  "capability_owner.test_work_maintenance_hub": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.9,
+   "status": "ok"
+  },
+  "capability_owner.test_work_on_behalf": {
+   "flaky": [],
+   "known": [],
+   "seconds": 21.5,
+   "status": "ok"
+  },
+  "capability_owner.test_work_on_behalf_hub": {
+   "flaky": [],
+   "known": [
+    "capability_owner.test_work_on_behalf_hub.OperatorWorkHubTests.test_final_target_replacement_refuses_disclosure",
+    "capability_owner.test_work_on_behalf_hub.OperatorWorkHubTests.test_unix_operator_as_create_claim_heartbeat_path_release_keep_actual_authority"
+   ],
+   "seconds": 23.8,
+   "status": "failed"
+  },
+  "capability_owner.test_work_operator_control_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.4,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_work_operator_selection_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.4,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_work_peer_control_command": {
+   "flaky": [],
+   "known": [],
+   "seconds": 7.3,
+   "status": "ok"
+  },
+  "capability_owner.test_work_pending_route": {
+   "flaky": [],
+   "known": [],
+   "seconds": 12.6,
+   "status": "ok"
+  },
+  "capability_owner.test_work_readiness": {
+   "flaky": [],
+   "known": [],
+   "seconds": 11.0,
+   "status": "ok"
+  },
+  "capability_owner.test_work_reply_route": {
+   "flaky": [],
+   "known": [],
+   "seconds": 3.0,
+   "status": "ok"
+  },
+  "capability_owner.test_work_rpc": {
+   "flaky": [],
+   "known": [],
+   "seconds": 45.9,
+   "status": "ok"
+  },
+  "capability_owner.test_work_rpc_expired_completion": {
+   "flaky": [],
+   "known": [],
+   "seconds": 88.5,
+   "status": "ok"
+  },
+  "capability_owner.test_work_rpc_followons": {
+   "flaky": [],
+   "known": [],
+   "seconds": 9.3,
+   "status": "ok"
+  },
+  "capability_owner.test_work_runtime": {
+   "flaky": [],
+   "known": [],
+   "seconds": 17.5,
+   "status": "ok"
+  },
+  "capability_owner.test_work_source": {
+   "flaky": [
+    "capability_owner.test_work_source.SelectedWorkSourceTests.test_same_original_two_owned_connections_show_registration_in_actual_hub"
+   ],
+   "known": [],
+   "seconds": 19.8,
+   "status": "ok"
+  },
+  "capability_owner.test_work_source_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.4,
+   "status": "needs-slot"
+  },
+  "capability_owner.test_work_source_switch": {
+   "flaky": [],
+   "known": [],
+   "seconds": 25.4,
+   "status": "ok"
+  },
+  "capability_owner.test_workspace": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.0,
+   "status": "ok"
+  },
+  "capability_owner.test_workspace_composition": {
+   "flaky": [],
+   "known": [],
+   "seconds": 2.8,
+   "status": "ok"
+  },
+  "capability_owner.test_workspace_host": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.3,
+   "status": "ok"
+  },
+  "capability_owner.test_workspace_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "needs-slot"
+  },
+  "execution_owner.test_container": {
+   "flaky": [],
+   "known": [],
+   "seconds": 16.8,
+   "status": "ok"
+  },
+  "execution_owner.test_container_discovery": {
+   "flaky": [],
+   "known": [],
+   "seconds": 7.6,
+   "status": "ok"
+  },
+  "execution_owner.test_container_discovery_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "needs-slot"
+  },
+  "execution_owner.test_container_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "needs-slot"
+  },
+  "execution_owner.test_container_programs": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "execution_owner.test_docker_engine": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.0,
+   "status": "ok"
+  },
+  "execution_owner.test_native_delivery_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "needs-slot"
+  },
+  "execution_owner.test_network": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.0,
+   "status": "ok"
+  },
+  "execution_owner.test_plans": {
+   "flaky": [],
+   "known": [],
+   "seconds": 9.8,
+   "status": "ok"
+  },
+  "execution_owner.test_plans_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "execution_owner.test_retained": {
+   "flaky": [],
+   "known": [],
+   "seconds": 135.1,
+   "status": "ok"
+  },
+  "execution_owner.test_retained_journal": {
+   "flaky": [],
+   "known": [],
+   "seconds": 39.5,
+   "status": "ok"
+  },
+  "execution_owner.test_retained_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "needs-slot"
+  },
+  "execution_owner.test_task_credential_program_native": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "needs-slot"
+  },
+  "execution_owner.test_task_credential_rotation_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "execution_owner.test_task_credential_scope": {
+   "flaky": [],
+   "known": [],
+   "seconds": 20.2,
+   "status": "ok"
+  },
+  "execution_owner.test_task_credentials": {
+   "flaky": [],
+   "known": [],
+   "seconds": 100.2,
+   "status": "ok"
+  },
+  "execution_owner.test_task_credentials_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 77.6,
+   "status": "needs-slot"
+  },
+  "hub.tests.test_authenticated_caller": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "hub.tests.test_authority_switch_recovery_client": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.9,
+   "status": "ok"
+  },
+  "hub.tests.test_bridge_selection": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_client_launch_binding": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.9,
+   "status": "ok"
+  },
+  "hub.tests.test_client_launch_claude": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.5,
+   "status": "ok"
+  },
+  "hub.tests.test_client_launch_config": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "ok"
+  },
+  "hub.tests.test_client_launch_connection": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.0,
+   "status": "ok"
+  },
+  "hub.tests.test_client_launch_coordinator": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.8,
+   "status": "ok"
+  },
+  "hub.tests.test_client_launch_desktop": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_client_launch_desktop_signals": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.5,
+   "status": "ok"
+  },
+  "hub.tests.test_client_launch_enrollment": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.8,
+   "status": "ok"
+  },
+  "hub.tests.test_client_launch_entrypoint": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_client_launch_imports": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.4,
+   "status": "ok"
+  },
+  "hub.tests.test_client_launch_query_composition": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.1,
+   "status": "ok"
+  },
+  "hub.tests.test_client_launch_registered_context": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_client_launch_repository": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "hub.tests.test_client_launch_session": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.8,
+   "status": "ok"
+  },
+  "hub.tests.test_client_startup": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_client_storage_reply_limits": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.9,
+   "status": "ok"
+  },
+  "hub.tests.test_code_operation_cli": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_code_share_proofs": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "hub.tests.test_command_failure_diagnostic": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_compat_timeout": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.6,
+   "status": "ok"
+  },
+  "hub.tests.test_core_profile": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "hub.tests.test_core_reply_caller": {
+   "flaky": [],
+   "known": [],
+   "seconds": 70.5,
+   "status": "ok"
+  },
+  "hub.tests.test_enrolled_hub_bootstrap": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "hub.tests.test_fed_code_services": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_fed_conn": {
+   "flaky": [],
+   "known": [],
+   "seconds": 15.6,
+   "status": "ok"
+  },
+  "hub.tests.test_fed_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 24.3,
+   "status": "ok"
+  },
+  "hub.tests.test_fed_provision": {
+   "flaky": [],
+   "known": [],
+   "seconds": 12.9,
+   "status": "ok"
+  },
+  "hub.tests.test_fed_session": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1200.0,
+   "status": "timeout"
+  },
+  "hub.tests.test_fed_unit": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "hub.tests.test_governance": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.5,
+   "status": "ok"
+  },
+  "hub.tests.test_hub_offline": {
+   "flaky": [],
+   "known": [
+    "hub.tests.test_hub_offline.LegacyLifecycle.test_real_legacy_start_reuse_stop_preserves_selected_store"
+   ],
+   "seconds": 41.5,
+   "status": "failed"
+  },
+  "hub.tests.test_hub_profile_context": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "hub.tests.test_installed_client_admission": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "ok"
+  },
+  "hub.tests.test_knowledge_services": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "hub.tests.test_legacy_identity_client": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "hub.tests.test_local_runner": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_loop_profile": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "hub.tests.test_mcp_enrolled": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_mcp_integration_query": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_mcp_startup": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_message_bridge_intents": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "hub.tests.test_message_services": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "hub.tests.test_migration_fence": {
+   "flaky": [],
+   "known": [
+    "hub.tests.test_migration_fence.DurableWriterFenceTests.test_fenced_restart_reuses_existing_plugin_tables_without_creating_missing_ones",
+    "hub.tests.test_migration_fence.RetainedAuthorityRecoveryTests.test_restored_database_without_local_fence_stays_closed_after_target_open",
+    "hub.tests.test_migration_fence.SerializedCaptureTests.test_migration_control_verbs_require_operator"
+   ],
+   "seconds": 4.1,
+   "status": "failed"
+  },
+  "hub.tests.test_native_check_timing": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_native_core_caller": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_native_core_context": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_native_descriptor_admission": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_nats_federation": {
+   "flaky": [],
+   "known": [],
+   "seconds": 4.1,
+   "status": "ok"
+  },
+  "hub.tests.test_nats_transport": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_panel_callers": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_plugin_adapter": {
+   "flaky": [],
+   "known": [
+    "hub.tests.test_plugin_adapter.Contribution.test_every_builtin_keeps_every_command_parameter_hook_and_sql"
+   ],
+   "seconds": 0.1,
+   "status": "failed"
+  },
+  "hub.tests.test_policy_client_recovery": {
+   "flaky": [],
+   "known": [],
+   "seconds": 2.6,
+   "status": "ok"
+  },
+  "hub.tests.test_profile_context": {
+   "flaky": [],
+   "known": [
+    "hub.tests.test_profile_context.ProfileContextTests.test_every_builtin_receives_only_the_immutable_display_value"
+   ],
+   "seconds": 0.2,
+   "status": "failed"
+  },
+  "hub.tests.test_restricted_plugin_calls": {
+   "flaky": [],
+   "known": [
+    "hub.tests.test_restricted_plugin_calls.RestrictedPluginCalls.test_hub_peer_post_and_work_add_use_restricted_runtime_helpers"
+   ],
+   "seconds": 0.2,
+   "status": "failed"
+  },
+  "hub.tests.test_selected_checkpoint": {
+   "flaky": [],
+   "known": [],
+   "seconds": 11.6,
+   "status": "ok"
+  },
+  "hub.tests.test_selected_core_work": {
+   "flaky": [],
+   "known": [],
+   "seconds": 85.5,
+   "status": "ok"
+  },
+  "hub.tests.test_shutdown_reply": {
+   "flaky": [],
+   "known": [],
+   "seconds": 79.0,
+   "status": "ok"
+  },
+  "hub.tests.test_shutdown_reply_transport": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "hub.tests.test_store_existing": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "ok"
+  },
+  "hub.tests.test_windows_callbacks": {
+   "flaky": [],
+   "known": [
+    "hub.tests.test_windows_callbacks.SpawnContext.test_native_spawn_drops_stale_worker_but_preserves_explicit_native_context",
+    "hub.tests.test_windows_callbacks.SpawnContext.test_two_spawns_get_distinct_token_paths_without_inline_tokens"
+   ],
+   "seconds": 0.3,
+   "status": "failed"
+  },
+  "hub.tests.test_work_board_services": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "hub.tests.test_work_client_transport": {
+   "flaky": [],
+   "known": [],
+   "seconds": 3.2,
+   "status": "ok"
+  },
+  "hub.tests.test_work_hub_setup": {
+   "flaky": [],
+   "known": [
+    "hub.tests.test_work_hub_setup.WorkHubSetupTests.test_invalid_work_sessions_close_the_original_database",
+    "hub.tests.test_work_hub_setup.WorkHubSetupTests.test_local_only_hub_constructs_one_source_and_binds_both_adapters",
+    "hub.tests.test_work_hub_setup.WorkHubSetupTests.test_work_profile_must_match_other_selected_domains"
+   ],
+   "seconds": 0.2,
+   "status": "failed"
+  },
+  "hub.tests.test_work_operation_cli": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_work_request_diagnostic": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "hub.tests.test_work_scope": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "identity.test_application_account": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.8,
+   "status": "ok"
+  },
+  "identity.test_application_binding": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.1,
+   "status": "ok"
+  },
+  "identity.test_application_client": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.9,
+   "status": "ok"
+  },
+  "identity.test_application_client_command": {
+   "flaky": [],
+   "known": [],
+   "seconds": 3.6,
+   "status": "ok"
+  },
+  "identity.test_application_client_legacy_alias": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.1,
+   "status": "ok"
+  },
+  "identity.test_application_enrollment": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.7,
+   "status": "ok"
+  },
+  "identity.test_application_host_selection": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.8,
+   "status": "ok"
+  },
+  "identity.test_application_requests": {
+   "flaky": [],
+   "known": [],
+   "seconds": 2.3,
+   "status": "ok"
+  },
+  "identity.test_application_service_selection": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.4,
+   "status": "ok"
+  },
+  "identity.test_artifact_selection": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.5,
+   "status": "ok"
+  },
+  "identity.test_authority": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.3,
+   "status": "ok"
+  },
+  "identity.test_bootstrap": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.9,
+   "status": "ok"
+  },
+  "identity.test_capability_admission": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.3,
+   "status": "ok"
+  },
+  "identity.test_capacity": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.8,
+   "status": "ok"
+  },
+  "identity.test_code_authority": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.0,
+   "status": "ok"
+  },
+  "identity.test_commands": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.9,
+   "status": "ok"
+  },
+  "identity.test_configuration_authorization_parity": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.5,
+   "status": "ok"
+  },
+  "identity.test_configuration_events": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.0,
+   "status": "ok"
+  },
+  "identity.test_configuration_ingress": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.1,
+   "status": "ok"
+  },
+  "identity.test_configuration_selection": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.1,
+   "status": "ok"
+  },
+  "identity.test_configuration_subscription_control": {
+   "flaky": [],
+   "known": [],
+   "seconds": 2.0,
+   "status": "ok"
+  },
+  "identity.test_conversation_import_ingress": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.3,
+   "status": "ok"
+  },
+  "identity.test_core_work_transport": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.8,
+   "status": "ok"
+  },
+  "identity.test_definition_contracts": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.8,
+   "status": "ok"
+  },
+  "identity.test_definition_replay": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.1,
+   "status": "ok"
+  },
+  "identity.test_execution_evidence": {
+   "flaky": [],
+   "known": [],
+   "seconds": 87.1,
+   "status": "ok"
+  },
+  "identity.test_external_account_link_keycloak_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "identity.test_external_account_link_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "identity.test_external_account_link_service": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.2,
+   "status": "ok"
+  },
+  "identity.test_federation_import_ingress": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.3,
+   "status": "ok"
+  },
+  "identity.test_federation_policy_commands": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.8,
+   "status": "ok"
+  },
+  "identity.test_federation_policy_service_selection": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.3,
+   "status": "ok"
+  },
+  "identity.test_ingress": {
+   "flaky": [],
+   "known": [
+    "identity.test_ingress.IngressTests.test_unenrolled_signer_and_oversized_body_fail"
+   ],
+   "seconds": 1.0,
+   "status": "failed"
+  },
+  "identity.test_integration_lifecycle": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.8,
+   "status": "ok"
+  },
+  "identity.test_keycloak_node_secret_parity_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "identity.test_knowledge_client": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.8,
+   "status": "ok"
+  },
+  "identity.test_legacy_board_ingress": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.1,
+   "status": "ok"
+  },
+  "identity.test_legacy_identity": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.9,
+   "status": "ok"
+  },
+  "identity.test_local_browser_session": {
+   "flaky": [],
+   "known": [],
+   "seconds": 2.9,
+   "status": "ok"
+  },
+  "identity.test_local_enrollment": {
+   "flaky": [],
+   "known": [],
+   "seconds": 12.4,
+   "status": "ok"
+  },
+  "identity.test_native_activation": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.9,
+   "status": "ok"
+  },
+  "identity.test_native_bridge": {
+   "flaky": [],
+   "known": [],
+   "seconds": 2.6,
+   "status": "ok"
+  },
+  "identity.test_native_configuration": {
+   "flaky": [],
+   "known": [],
+   "seconds": 2.0,
+   "status": "ok"
+  },
+  "identity.test_native_host_selection": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.9,
+   "status": "ok"
+  },
+  "identity.test_native_parent": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.5,
+   "status": "ok"
+  },
+  "identity.test_native_revocation_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "identity.test_native_subscriptions": {
+   "flaky": [],
+   "known": [],
+   "seconds": 2.9,
+   "status": "ok"
+  },
+  "identity.test_native_transport_selection": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.9,
+   "status": "ok"
+  },
+  "identity.test_oidc_adapter": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.8,
+   "status": "ok"
+  },
+  "identity.test_oidc_authorization_code": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "identity.test_oidc_device_authorization": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "identity.test_oidc_terminal_login": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.8,
+   "status": "ok"
+  },
+  "identity.test_ordinary_secret": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.7,
+   "status": "ok"
+  },
+  "identity.test_ordinary_secret_contracts": {
+   "flaky": [],
+   "known": [
+    "identity.test_ordinary_secret_contracts.OrdinarySecretContractTests.test_two_clients_agree_on_public_shapes_and_private_field_refusals"
+   ],
+   "seconds": 1.5,
+   "status": "failed"
+  },
+  "identity.test_ordinary_secret_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "identity.test_ordinary_secret_phase": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.7,
+   "status": "ok"
+  },
+  "identity.test_ordinary_secret_query_approval": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.8,
+   "status": "ok"
+  },
+  "identity.test_ordinary_secret_service": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.3,
+   "status": "ok"
+  },
+  "identity.test_peer_control": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.6,
+   "status": "ok"
+  },
+  "identity.test_peer_control_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 2.0,
+   "status": "needs-slot"
+  },
+  "identity.test_policy_selection": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.8,
+   "status": "ok"
+  },
+  "identity.test_process_selection": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.2,
+   "status": "ok"
+  },
+  "identity.test_profile_context_contract": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "identity.test_scoped_domain_authority": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.3,
+   "status": "ok"
+  },
+  "identity.test_semantic_state": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.8,
+   "status": "ok"
+  },
+  "identity.test_service": {
+   "flaky": [],
+   "known": [],
+   "seconds": 2.4,
+   "status": "ok"
+  },
+  "identity.test_storage_selection": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.2,
+   "status": "ok"
+  },
+  "identity.test_task_artifact_authority": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.9,
+   "status": "ok"
+  },
+  "identity.test_task_artifact_selection": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.0,
+   "status": "ok"
+  },
+  "identity.test_task_import_ingress": {
+   "flaky": [],
+   "known": [
+    "identity.test_task_import_ingress.TaskImportIngressTests.test_current_exact_approval_and_hard_denial_follow_common_rules",
+    "identity.test_task_import_ingress.TaskImportIngressTests.test_exact_import_grant_preserves_capture_without_execution_lineage",
+    "identity.test_task_import_ingress.TaskImportIngressTests.test_inspect_reserve_other_task_and_legacy_evidence_grant_no_import_authority",
+    "identity.test_task_import_ingress.TaskImportIngressTests.test_nonzero_target_version_plugin_and_delegated_grant_refuse",
+    "identity.test_task_import_ingress.TaskImportIngressTests.test_replay_rechecks_revocation_and_rejects_reservation_context"
+   ],
+   "seconds": 0.9,
+   "status": "failed"
+  },
+  "identity.test_task_reserve_authority": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.0,
+   "status": "ok"
+  },
+  "identity.test_task_reserve_ingress": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.6,
+   "status": "ok"
+  },
+  "identity.test_task_selection": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.1,
+   "status": "ok"
+  },
+  "identity.test_transitions": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.9,
+   "status": "ok"
+  },
+  "identity.test_work_peer_control": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.4,
+   "status": "ok"
+  },
+  "identity.test_work_service_selection": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.3,
+   "status": "ok"
+  },
+  "identity.test_work_source_claims": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.9,
+   "status": "ok"
+  },
+  "identity.test_workspace_selection": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.3,
+   "status": "ok"
+  },
+  "integration_owner.test_admission": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.3,
+   "status": "ok"
+  },
+  "integration_owner.test_atlassian_requests": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "integration_owner.test_commands": {
+   "flaky": [],
+   "known": [],
+   "seconds": 3.3,
+   "status": "ok"
+  },
+  "integration_owner.test_credentials": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "integration_owner.test_enrollment": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "integration_owner.test_github_requests": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "integration_owner.test_github_worker": {
+   "flaky": [],
+   "known": [],
+   "seconds": 4.3,
+   "status": "ok"
+  },
+  "integration_owner.test_host": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.0,
+   "status": "ok"
+  },
+  "integration_owner.test_intent": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.8,
+   "status": "ok"
+  },
+  "integration_owner.test_lifecycle": {
+   "flaky": [],
+   "known": [],
+   "seconds": 4.2,
+   "status": "ok"
+  },
+  "integration_owner.test_operator_command": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "integration_owner.test_operator_provisioning": {
+   "flaky": [],
+   "known": [],
+   "seconds": 2.7,
+   "status": "ok"
+  },
+  "integration_owner.test_provisioning": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "integration_owner.test_receipts": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.8,
+   "status": "ok"
+  },
+  "integration_owner.test_service": {
+   "flaky": [],
+   "known": [],
+   "seconds": 3.6,
+   "status": "ok"
+  },
+  "integration_owner.test_worker_http": {
+   "flaky": [],
+   "known": [],
+   "seconds": 2.6,
+   "status": "ok"
+  },
+  "native_security.test_board_publisher_credentials": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "native_security.test_nats_credentials": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "native_security.test_nats_service_credentials": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "native_security.test_ordinary_secret_custody": {
+   "flaky": [],
+   "known": [],
+   "seconds": 6.9,
+   "status": "ok"
+  },
+  "native_security.test_secret_custody": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.2,
+   "status": "ok"
+  },
+  "native_security.test_storage_credentials": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "nettraffic.test_nettraffic": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.4,
+   "status": "ok"
+  },
+  "orchestration_owner.test_commands": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "orchestration_owner.test_domain_adapter": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "orchestration_owner.test_journal": {
+   "flaky": [],
+   "known": [],
+   "seconds": 6.1,
+   "status": "ok"
+  },
+  "orchestration_owner.test_shell_request_cleanup": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.6,
+   "status": "ok"
+  },
+  "orchestration_owner.test_worker": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "orchtest/test_cidr.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.0,
+   "status": "ok"
+  },
+  "orchtest/test_digest8.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.0,
+   "status": "ok"
+  },
+  "orchtest/test_durations.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.0,
+   "status": "ok"
+  },
+  "orchtest/test_ordinal.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.0,
+   "status": "ok"
+  },
+  "orchtest/test_shorten.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.0,
+   "status": "ok"
+  },
+  "orchtest/test_sizes.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.0,
+   "status": "ok"
+  },
+  "orchtest/test_slug.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.0,
+   "status": "ok"
+  },
+  "platform/installer/test_package_client.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 2.6,
+   "status": "ok"
+  },
+  "plugins/agentmux-orchestration/tests/test_hook_mcp.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 3.1,
+   "status": "ok"
+  },
+  "plugins/agentmux-orchestration/tests/test_packaging.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "ok"
+  },
+  "sdk/python/tests/test_contracts.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.7,
+   "status": "ok"
+  },
+  "sdk/python/tests/test_native_child.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.7,
+   "status": "ok"
+  },
+  "sdk/python/tests/test_state_models.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "state_owner.test_artifacts": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "state_owner.test_async_checkpoint": {
+   "flaky": [],
+   "known": [],
+   "seconds": 2.0,
+   "status": "ok"
+  },
+  "state_owner.test_authority_switch": {
+   "flaky": [],
+   "known": [],
+   "seconds": 4.9,
+   "status": "ok"
+  },
+  "state_owner.test_authority_switch_service": {
+   "flaky": [],
+   "known": [],
+   "seconds": 4.5,
+   "status": "ok"
+  },
+  "state_owner.test_backup": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.3,
+   "status": "ok"
+  },
+  "state_owner.test_backup_host": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "state_owner.test_backup_lifecycle": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.6,
+   "status": "ok"
+  },
+  "state_owner.test_checkpoint_host": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.2,
+   "status": "ok"
+  },
+  "state_owner.test_checkpoints": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.2,
+   "status": "ok"
+  },
+  "state_owner.test_completion_reserve": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.5,
+   "status": "ok"
+  },
+  "state_owner.test_configuration": {
+   "flaky": [],
+   "known": [],
+   "seconds": 9.5,
+   "status": "ok"
+  },
+  "state_owner.test_configuration_activation": {
+   "flaky": [],
+   "known": [],
+   "seconds": 7.6,
+   "status": "ok"
+  },
+  "state_owner.test_configuration_events": {
+   "flaky": [],
+   "known": [],
+   "seconds": 5.2,
+   "status": "ok"
+  },
+  "state_owner.test_configuration_host": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.7,
+   "status": "ok"
+  },
+  "state_owner.test_configuration_live": {
+   "flaky": [],
+   "known": [
+    "state_owner.test_configuration_live.AuthenticatedContextFixtureTests.test_scope_material_uses_current_enrolled_identity",
+    "state_owner.test_configuration_live.LiveAuthenticatedContextIsolationTests",
+    "state_owner.test_configuration_live.LiveConfigurationSubscriptionTests",
+    "state_owner.test_configuration_live.LiveRegisteredContextForegroundTests"
+   ],
+   "seconds": 1.1,
+   "status": "failed"
+  },
+  "state_owner.test_configuration_subscriptions": {
+   "flaky": [],
+   "known": [],
+   "seconds": 14.9,
+   "status": "ok"
+  },
+  "state_owner.test_configuration_watch_control": {
+   "flaky": [],
+   "known": [],
+   "seconds": 16.0,
+   "status": "ok"
+  },
+  "state_owner.test_conversation_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "state_owner.test_conversation_migration": {
+   "flaky": [],
+   "known": [],
+   "seconds": 5.1,
+   "status": "ok"
+  },
+  "state_owner.test_execution_target_version": {
+   "flaky": [],
+   "known": [],
+   "seconds": 7.7,
+   "status": "ok"
+  },
+  "state_owner.test_federation_archive": {
+   "flaky": [],
+   "known": [],
+   "seconds": 2.4,
+   "status": "ok"
+  },
+  "state_owner.test_federation_policy": {
+   "flaky": [],
+   "known": [],
+   "seconds": 7.1,
+   "status": "ok"
+  },
+  "state_owner.test_history": {
+   "flaky": [],
+   "known": [],
+   "seconds": 7.4,
+   "status": "ok"
+  },
+  "state_owner.test_indexed_ledger": {
+   "flaky": [],
+   "known": [],
+   "seconds": 5.9,
+   "status": "ok"
+  },
+  "state_owner.test_ledger": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.0,
+   "status": "ok"
+  },
+  "state_owner.test_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "needs-slot"
+  },
+  "state_owner.test_ordinary_secret_target_version": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.8,
+   "status": "ok"
+  },
+  "state_owner.test_recovery": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.9,
+   "status": "ok"
+  },
+  "state_owner.test_repository_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "state_owner.test_repository_migration": {
+   "flaky": [],
+   "known": [
+    "state_owner.test_repository_migration.RepositoryCatalogSourceTests.test_older_agent_rows_remain_exact_without_inventing_a_generation"
+   ],
+   "seconds": 1.7,
+   "status": "failed"
+  },
+  "state_owner.test_retention": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "state_owner.test_task": {
+   "flaky": [],
+   "known": [],
+   "seconds": 3.9,
+   "status": "ok"
+  },
+  "state_owner.test_task_artifact_custody": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.9,
+   "status": "ok"
+  },
+  "state_owner.test_task_host": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.7,
+   "status": "ok"
+  },
+  "state_owner.test_task_import": {
+   "flaky": [],
+   "known": [
+    "state_owner.test_task_import.TaskImportTests.test_actual_import_repeat_and_inspect_preserve_unresolved_source",
+    "state_owner.test_task_import.TaskImportTests.test_changed_capture_conflicts_under_same_logical_identity",
+    "state_owner.test_task_import.TaskImportTests.test_child_import_keeps_parent_identity_and_pending_return_obligation",
+    "state_owner.test_task_import.TaskImportTests.test_existing_protected_patterns_refuse_before_append_without_redacting_capture",
+    "state_owner.test_task_import.TaskImportTests.test_import_keeps_each_resource_claim_repository_without_granting_access",
+    "state_owner.test_task_import.TaskImportTests.test_imported_state_cannot_reserve_or_clear_unknown_claim",
+    "state_owner.test_task_import.TaskImportTests.test_json_numeric_key_and_depth_bypasses_refuse_without_append_or_source_change",
+    "state_owner.test_task_import.TaskImportTests.test_lost_ack_restart_recovers_same_record_without_duplicate_or_effect",
+    "state_owner.test_task_import.TaskImportTests.test_protected_work_audit_detail_refuses_without_importing_other_events",
+    "state_owner.test_task_import.TaskImportTests.test_revocation_after_ingress_refuses_import_before_source_read"
+   ],
+   "seconds": 1.5,
+   "status": "failed"
+  },
+  "state_owner.test_task_live": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.3,
+   "status": "needs-slot"
+  },
+  "state_owner.test_task_migration": {
+   "flaky": [],
+   "known": [
+    "state_owner.test_task_migration.TaskMigrationTests.test_actual_older_store_schema_is_read_without_running_migrations"
+   ],
+   "seconds": 0.2,
+   "status": "failed"
+  },
+  "state_owner.test_task_service": {
+   "flaky": [],
+   "known": [],
+   "seconds": 2.1,
+   "status": "ok"
+  },
+  "state_owner.test_views": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.8,
+   "status": "ok"
+  },
+  "taskmgmt/test_atlassian_safety.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "taskmgmt/test_provider_setup.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "taskmgmt/test_setup_atlassian.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "taskmgmt/test_setup_auth_safety.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "tests/platform/test_inventory.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.1,
+   "status": "ok"
+  },
+  "tests/platform/test_native_cohorts.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 0.2,
+   "status": "ok"
+  },
+  "tests/platform/test_source_surface.py": {
+   "flaky": [],
+   "known": [],
+   "seconds": 1.0,
+   "status": "ok"
+  }
+ }
+}
