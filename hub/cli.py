@@ -27,6 +27,9 @@ from agentmux_windows import validate_callback
 ROOT = os.environ.get("AGENTMUX_HOME") or os.path.expanduser("~/.agentmux")
 SOCK = os.path.join(ROOT, "hub", "hub.sock")
 ENROLLED_STARTUP_SECONDS = 30
+# hub.server._work_request_refusal: the authenticated request expired or its
+# caller changed before the reply. Its effect may already have applied.
+WORK_REQUEST_REFUSAL = 'authenticated work request changed or expired'
 
 USAGE = """usage: agentmux hub <verb> [args]
   daemon     start [--selection ABSOLUTE_PATH]... | stop | status | ping | token (where your TCP token file is)
@@ -178,7 +181,14 @@ def call(verb, args=None, as_=None, timeout=30):
             if s is not None:
                 s.close()
         if not resp.get('ok'):
-            recovery = f'; operation ID {operation_id}' if operation_id else ''
+            refused = resp.get('error') == WORK_REQUEST_REFUSAL
+            # The same frozen intent and operation ID return the Hub's recorded
+            # outcome; the Hub never applies a second effect for one ID.
+            if (refused and verb in ('spawn', 'kill') and qualified and attempt == 0
+                    and time.monotonic() < deadline):
+                continue
+            recovery = (f'; recover with --operation-id {operation_id}' if refused and operation_id
+                else f'; operation ID {operation_id}' if operation_id else '')
             raise Fail(f"agentmux hub {verb}: {resp.get('error', 'no response')}{recovery}")
         return resp
 
