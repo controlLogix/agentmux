@@ -3,6 +3,7 @@ import json
 import time
 import unittest
 from unittest.mock import Mock, patch
+from identity.work_client import WORK_COMMAND_SECONDS
 from .test_adopt_request_turn import AdoptRequestTurnTests
 from .test_hub_work_maintenance import HubWorkMaintenanceTests
 from .test_work_source import SelectedWorkSourceFixture
@@ -30,8 +31,9 @@ class NativeKillPreflightTests(SelectedWorkSourceFixture, unittest.IsolatedAsync
         async def verified():
             events.append('source')
             if proofs:
-                # Controlled queue cost crosses the unchanged five-second proof.
-                clock[0] += 6
+                # Controlled queue cost crosses the unchanged original proof while
+                # the selected envelope stays live, so the proof is what refuses.
+                clock[0] += WORK_COMMAND_SECONDS + 1
             return await verify()
         async def authenticated(*args, **kwargs):
             proof = await authenticate(*args, **kwargs)
@@ -44,7 +46,7 @@ class NativeKillPreflightTests(SelectedWorkSourceFixture, unittest.IsolatedAsync
                 patch.object(self.hub, 'harness', return_value=True) as physical, \
                 patch('hub.server.log') as log:
             try:
-                result = await self.framed_connection(request, expires=clock[0] + 10)
+                result = await self.framed_connection(request, expires=clock[0] + 15)
             finally:
                 records = await self.hub.db(self.hub.store.q,
                     "SELECT v FROM fed_state WHERE json_valid(v) AND json_extract(v,'$.identity.operationId')=?",
@@ -142,12 +144,13 @@ class NativeKillPreflightTests(SelectedWorkSourceFixture, unittest.IsolatedAsync
                 patch.object(self.hub, 'authenticate_caller', side_effect=authenticated), \
                 patch.object(self.hub, 'harness', side_effect=terminated) as physical, \
                 patch('hub.server.time', timer), patch('hub.core_endpoint.time', timer):
-            expires = clock[0]+5.5
+            start = clock[0]
+            expires = start+WORK_COMMAND_SECONDS+2
             result = await self.framed_connection(request, expires=expires)
             self.assertTrue(result['ok'], result)
             self.assertEqual(result['result'], {'killed':agent['session']})
             self.assertEqual(events, ['identity', 'source', 'physical'])
-            self.assertEqual(proofs[0].expires_monotonic, min(expires, clock[0] + 2))
+            self.assertEqual(proofs[0].expires_monotonic, min(expires, start + WORK_COMMAND_SECONDS))
             self.assertIsNone(proofs[0].work_source_preflight)
             rows = await self.hub.db(self.hub.store.q, "SELECT v FROM fed_state WHERE json_valid(v) AND json_extract(v,'$.identity.operationId')=?", (request['operationId'],))
             saved = [json.loads(r['v']) for r in rows]

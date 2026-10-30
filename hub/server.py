@@ -810,7 +810,7 @@ class Hub:
             preflight.check()
         selected = self._selected_core_context()
         from identity.work_client import WORK_COMMAND_SECONDS, WORK_REQUEST_VERBS
-        # A Work command spans several signed exchanges and a final native check.
+        # Work commands, spawn and kill span several signed exchanges and a final native check.
         expires = time.monotonic() + (WORK_COMMAND_SECONDS if req.get('verb') in WORK_REQUEST_VERBS else 5)
         if selected is not None and selected.expires_monotonic is not None:
             expires = min(expires, selected.expires_monotonic)

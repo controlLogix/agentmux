@@ -39,7 +39,7 @@ class HubSpawnExpiryTests(SelectedWorkSourceFixture, unittest.IsolatedAsyncioTes
 
         def hold(event):
             event.set()
-            if not release.wait(15):
+            if not release.wait(25):
                 raise AssertionError('original IO queue was not released')
 
         def observe_submit(fn, *args, **kwargs):

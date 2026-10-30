@@ -5,6 +5,7 @@ import unittest
 from unittest.mock import patch
 
 from hub import server
+from identity.work_client import WORK_COMMAND_SECONDS
 from .test_kill_admission_turn import KillAdmissionTurnTests
 from .test_work_source import SelectedWorkSourceFixture
 
@@ -53,7 +54,7 @@ class KillReplyTimingTests(SelectedWorkSourceFixture, unittest.IsolatedAsyncioTe
             for sample in record['samples']:
                 self.assertEqual(set(sample), {'stage', 'proofRemaining'})
                 self.assertGreater(sample['proofRemaining'], 0)
-                self.assertLessEqual(sample['proofRemaining'], 5)
+                self.assertLessEqual(sample['proofRemaining'], WORK_COMMAND_SECONDS)
             self.assertNotIn(request['operationId'], json.dumps(record))
             self.assertNotIn(request['args']['session'], json.dumps(record))
         self.assertFalse(self.hub._kill_reply_timings)

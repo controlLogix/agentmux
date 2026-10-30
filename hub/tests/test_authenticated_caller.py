@@ -61,12 +61,18 @@ class AuthenticatedCallerTests(unittest.IsolatedAsyncioTestCase):
     async def test_only_work_verbs_get_the_longer_work_window(self):
         from identity.work_client import WORK_COMMAND_SECONDS
         lifetimes={}
-        for verb in ('work_cancel','work_add','status','ping','fed_kill','fed_board_dispatch'):
+        for verb in ('work_cancel','work_add','status','spawn','kill','ping','adopt','fed_kill','fed_board_dispatch'):
             with patch('hub.server.time.monotonic',return_value=1000.0):
                 proof=await self.hub.authenticate_caller({'verb':verb,'token':'operator-secret'},self.writer,True)
             lifetimes[verb]=self.hub._authenticated_callers[proof].expires_monotonic-1000.0
         self.assertEqual(lifetimes,{'work_cancel':WORK_COMMAND_SECONDS,'work_add':WORK_COMMAND_SECONDS,
-            'status':WORK_COMMAND_SECONDS,'ping':5,'fed_kill':5,'fed_board_dispatch':5})
+            'status':WORK_COMMAND_SECONDS,'spawn':WORK_COMMAND_SECONDS,'kill':WORK_COMMAND_SECONDS,
+            'ping':5,'adopt':5,'fed_kill':5,'fed_board_dispatch':5})
+        # The selected core's envelope still caps the longer window.
+        self.hub._selected_core_context=lambda:SimpleNamespace(expires_monotonic=1007.0)
+        with patch('hub.server.time.monotonic',return_value=1000.0):
+            proof=await self.hub.authenticate_caller({'verb':'kill','token':'operator-secret'},self.writer,True)
+        self.assertEqual(self.hub._authenticated_callers[proof].expires_monotonic,1007.0)
 
     async def test_wrong_hub_forged_and_expired_proofs_refuse(self):
         proof=await self.hub.authenticate_caller({'token':'operator-secret'},self.writer,True)

@@ -17,10 +17,11 @@ WORK_MUTATIONS = WORK_SERVICE_COMMANDS | WORK_OPERATOR_COMMANDS | frozenset(
 WORK_COMMANDS = WORK_MUTATIONS | frozenset('federation-work-' + name for name in ('read', 'inspect', 'outcome'))
 # Longest lifetime of one authenticated Work command: the Hub's caller proof for
 # WORK_REQUEST_VERBS and each signed exchange's issuedAt-to-expiresAt span, as
-# checked here and by the Work services. Every other Hub verb keeps 5 s.
+# checked here and by the Work services. spawn and kill make several Work lifecycle
+# exchanges around the harness start or close-out. Every other Hub verb keeps 5 s.
 WORK_COMMAND_SECONDS = 10
 WORK_REQUEST_VERBS = frozenset(('work_add', 'claim', 'heartbeat', 'release', 'work_cancel', 'claim_path',
-    'fed_work_add', 'status', 'events', 'work_show', 'work_list'))
+    'fed_work_add', 'status', 'events', 'work_show', 'work_list', 'spawn', 'kill'))
 
 
 def check_enrollment(material):
