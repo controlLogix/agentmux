@@ -220,6 +220,8 @@ def run_job(name, logs, binaries):
             print('\n'.join('        ' + line for line in tail))
             print(f'  log: {log}\n  kept for inspection: {temp}')
             return False
+    # Go keeps its module cache read-only.
+    subprocess.run(['chmod', '-R', 'u+w', str(temp)], stderr=subprocess.DEVNULL)
     shutil.rmtree(temp, ignore_errors=True)
     return True
 
