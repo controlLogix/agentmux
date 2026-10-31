@@ -166,10 +166,12 @@ def hub_preservation(workspace, evidence, env, run, report):
     # Allow only host locale and executable search paths from the parent. A denylist
     # can miss future instance selectors, provider credentials or shell startup files.
     child = {key:env[key] for key in ('LANG','LC_ALL','LC_CTYPE','TZ') if key in env}
+    # The Hub imports agentmux_contracts from sdk/python (the documented PYTHONPATH=sdk/python:.).
+    # Those sources are pinned with the rest of the run in sourceHashes, not in the hub-only source map.
     child.update(HOME=str(home), XDG_CACHE_HOME=str(cache),
                  XDG_CONFIG_HOME=str(home/'config'), XDG_DATA_HOME=str(home/'data'),
                  CODEX_HOME=str(home/'codex'), CLAUDE_CONFIG_DIR=str(home/'claude'),
-                 PYTHONPATH=str(ROOT), PYTHONNOUSERSITE='1',
+                 PYTHONPATH=os.pathsep.join((str(ROOT/'sdk'/'python'), str(ROOT))), PYTHONNOUSERSITE='1',
                  GIT_CONFIG_NOSYSTEM='1', GIT_CONFIG_GLOBAL=str(home/'gitconfig'),
                  AGENTMUX_HOME=str(home/'agentmux'), AGENTMUX_FED_KIND='0',
                  PATH=str(workspace)+os.pathsep+str(Path(sys.executable).parent)+os.pathsep+env.get('PATH',''))
