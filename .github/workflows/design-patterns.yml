@@ -3,15 +3,24 @@ name: Design pattern governance
 on:
   pull_request:
   push:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+# A newer push supersedes a running check, except on main, where every commit keeps its result.
+concurrency:
+  group: design-patterns-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
-  # Automatic feature verification stays off. Enable manual verification only after
-  # all local P00-P14 gates are accepted; keep AGENTMUX_ALL_PHASES_COMPLETE unset/false until then.
+  # DELIVERY-LOCAL-01: feature-branch verification stays off until all local P00-P14 gates are
+  # accepted; keep the AGENTMUX_ALL_PHASES_COMPLETE variable unset/false until then. Set to 'true',
+  # it runs these jobs on this branch's own events. workflow_dispatch alone cannot be the switch:
+  # GitHub dispatches only workflows that exist on the default branch. tests/local/workflows.py
+  # runs the same steps on a developer machine meanwhile.
   design-patterns:
-    if: (github.ref != 'refs/heads/feat/agentmux-platform-rearchitecture' && github.head_ref != 'feat/agentmux-platform-rearchitecture') || (github.event_name == 'workflow_dispatch' && vars.AGENTMUX_ALL_PHASES_COMPLETE == 'true')
+    if: (github.ref != 'refs/heads/feat/agentmux-platform-rearchitecture' && github.head_ref != 'feat/agentmux-platform-rearchitecture') || vars.AGENTMUX_ALL_PHASES_COMPLETE == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5

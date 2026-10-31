@@ -14,10 +14,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Automatic feature verification stays off. Enable manual verification only after
-  # all local P00-P14 gates are accepted; keep AGENTMUX_ALL_PHASES_COMPLETE unset/false until then.
+  # DELIVERY-LOCAL-01: feature-branch verification stays off until all local P00-P14 gates are
+  # accepted; keep the AGENTMUX_ALL_PHASES_COMPLETE variable unset/false until then. Set to 'true',
+  # it runs these jobs on this branch's own events. workflow_dispatch alone cannot be the switch:
+  # GitHub dispatches only workflows that exist on the default branch. tests/local/workflows.py
+  # runs the same steps on a developer machine meanwhile.
   foundation:
-    if: (github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' || github.head_ref == 'feat/agentmux-platform-rearchitecture') && ((github.ref != 'refs/heads/feat/agentmux-platform-rearchitecture' && github.head_ref != 'feat/agentmux-platform-rearchitecture') || (github.event_name == 'workflow_dispatch' && vars.AGENTMUX_ALL_PHASES_COMPLETE == 'true'))
+    if: (github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' || github.head_ref == 'feat/agentmux-platform-rearchitecture') && ((github.ref != 'refs/heads/feat/agentmux-platform-rearchitecture' && github.head_ref != 'feat/agentmux-platform-rearchitecture') || vars.AGENTMUX_ALL_PHASES_COMPLETE == 'true')
     strategy:
       fail-fast: false
       matrix:
@@ -58,7 +61,7 @@ jobs:
           retention-days: 30
 
   darwin-research:
-    if: (github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' || github.head_ref == 'feat/agentmux-platform-rearchitecture') && ((github.ref != 'refs/heads/feat/agentmux-platform-rearchitecture' && github.head_ref != 'feat/agentmux-platform-rearchitecture') || (github.event_name == 'workflow_dispatch' && vars.AGENTMUX_ALL_PHASES_COMPLETE == 'true'))
+    if: (github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' || github.head_ref == 'feat/agentmux-platform-rearchitecture') && ((github.ref != 'refs/heads/feat/agentmux-platform-rearchitecture' && github.head_ref != 'feat/agentmux-platform-rearchitecture') || vars.AGENTMUX_ALL_PHASES_COMPLETE == 'true')
     strategy:
       fail-fast: false
       matrix:
@@ -85,7 +88,7 @@ jobs:
           retention-days: 30
 
   darwin-install:
-    if: (github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' || github.head_ref == 'feat/agentmux-platform-rearchitecture') && ((github.ref != 'refs/heads/feat/agentmux-platform-rearchitecture' && github.head_ref != 'feat/agentmux-platform-rearchitecture') || (github.event_name == 'workflow_dispatch' && vars.AGENTMUX_ALL_PHASES_COMPLETE == 'true'))
+    if: (github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' || github.head_ref == 'feat/agentmux-platform-rearchitecture') && ((github.ref != 'refs/heads/feat/agentmux-platform-rearchitecture' && github.head_ref != 'feat/agentmux-platform-rearchitecture') || vars.AGENTMUX_ALL_PHASES_COMPLETE == 'true')
     strategy:
       fail-fast: false
       matrix:
@@ -120,3 +123,11 @@ jobs:
 # Darwin actor/refusal tests never qualify native protected-process boot.
 # WSL, full supported-host boot and phase acceptance remain separate requirements.
 # No tracker updates or merge occur.
+#
+# Why past runs were red (October 14-15, 2026): darwin-research failed in all nine failed runs by
+# design. The unlinked-descriptor experiment stays recorded as a failure (tests/platform/README.md,
+# "Native P02 named cohorts"). macOS AMD64 and Linux are deferred by PLATFORM-SCOPE-03, not beta
+# blockers. Their foundation jobs failed intermittently; the beta target, foundation (macos-15,
+# arm64), passed in the six most recent runs. A red run here is not a beta regression by itself.
+# No dependency cache: the collector downloads its pinned Go into a fresh workspace and keeps
+# GOCACHE and GOPATH there, so evidence never rests on an earlier run's modules.

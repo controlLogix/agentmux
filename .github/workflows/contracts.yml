@@ -14,10 +14,13 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # Automatic feature verification stays off. Enable manual verification only after
-  # all local P00-P14 gates are accepted; keep AGENTMUX_ALL_PHASES_COMPLETE unset/false until then.
+  # DELIVERY-LOCAL-01: feature-branch verification stays off until all local P00-P14 gates are
+  # accepted; keep the AGENTMUX_ALL_PHASES_COMPLETE variable unset/false until then. Set to 'true',
+  # it runs these jobs on this branch's own events. workflow_dispatch alone cannot be the switch:
+  # GitHub dispatches only workflows that exist on the default branch. tests/local/workflows.py
+  # runs the same steps on a developer machine meanwhile.
   qualification:
-    if: (github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' || github.head_ref == 'feat/agentmux-platform-rearchitecture') && ((github.ref != 'refs/heads/feat/agentmux-platform-rearchitecture' && github.head_ref != 'feat/agentmux-platform-rearchitecture') || (github.event_name == 'workflow_dispatch' && vars.AGENTMUX_ALL_PHASES_COMPLETE == 'true'))
+    if: (github.ref == 'refs/heads/feat/agentmux-platform-rearchitecture' || github.head_ref == 'feat/agentmux-platform-rearchitecture') && ((github.ref != 'refs/heads/feat/agentmux-platform-rearchitecture' && github.head_ref != 'feat/agentmux-platform-rearchitecture') || vars.AGENTMUX_ALL_PHASES_COMPLETE == 'true')
     name: P01 native ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -33,9 +36,19 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.14.8'
+          # Download caches only: ci.py still installs the exact locked versions, and npm ci checks
+          # every package against its lockfile integrity hash.
+          cache: pip
+          cache-dependency-path: |
+            sdk/python/requirements.lock
+            hub/requirements.lock
       - uses: actions/setup-node@v5
         with:
           node-version: '22.21.1'
+          cache: npm
+          cache-dependency-path: |
+            sdk/typescript/package-lock.json
+            tests/storage/typescript/package-lock.json
       - name: Build locked SDKs and run required checks
         run: python tests/contracts/ci.py --workspace "${{ runner.temp }}/agentmux-p01" --evidence "${{ runner.temp }}/agentmux-evidence"
       - name: Preserve execution evidence, including failures
