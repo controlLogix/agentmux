@@ -204,12 +204,15 @@ def run_job(name, logs, binaries):
             except subprocess.TimeoutExpired:
                 code = 'timeout'
             finally:
-                # Brokers and helpers a step started go with it, as when a hosted job ends.
+                # Brokers and helpers a step started go with it, as when a hosted job ends. Some
+                # (ci.py's nats-server) start their own session, so anything still naming this
+                # job's temporary directory goes too.
                 try:
                     os.killpg(process.pid, signal.SIGKILL)
                 except ProcessLookupError:
                     pass
                 process.wait()
+                subprocess.run(['pkill', '-KILL', '-f', str(temp)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         status = 'ok' if code == 0 else 'TIMEOUT' if code == 'timeout' else 'FAIL'
         print(f"  {status:4}  {title}  ({time.monotonic() - started:.0f}s)", flush=True)
         if code != 0:
