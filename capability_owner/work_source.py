@@ -77,24 +77,26 @@ class WorkSourcePin:
         if len(matches) != 1:
             _refuse()
         path, _, _, held = matches[0]
-        databases = self.connection.execute('PRAGMA database_list').fetchall()
-        if (len(databases) != 1 or databases[0]['name'] != 'main'
-                or databases[0]['file'] != path or self.store.path != path
-                or os.path.realpath(path) != path):
-            _refuse()
-        if not hasattr(self,'identity') or full:
-            schema = [list(row) for row in self.connection.execute(
-                'SELECT type,name,tbl_name,sql FROM sqlite_schema ORDER BY type,name,tbl_name')]
-            value = {'formatVersion':1,
-                'sourceDigest':'sha256:'+hashlib.sha256(canonical_bytes({
-                    'path':path,'device':held.st_dev,'inode':held.st_ino,'owner':held.st_uid})).hexdigest(),
-                'schemaDigest':'sha256:'+hashlib.sha256(canonical_bytes(schema)).hexdigest()}
-        else:
-            value=dict(self.identity)
-        value.update({
-            'applicationId': self.connection.execute('PRAGMA application_id').fetchone()[0],
-            'userVersion': self.connection.execute('PRAGMA user_version').fetchone()[0],
-            'schemaVersion': self.connection.execute('PRAGMA schema_version').fetchone()[0]})
+        # The event loop's checks run the same PRAGMA texts on this connection (AMUX-740).
+        with self.store._sql_lock:
+            databases = self.connection.execute('PRAGMA database_list').fetchall()
+            if (len(databases) != 1 or databases[0]['name'] != 'main'
+                    or databases[0]['file'] != path or self.store.path != path
+                    or os.path.realpath(path) != path):
+                _refuse()
+            if not hasattr(self,'identity') or full:
+                schema = [list(row) for row in self.connection.execute(
+                    'SELECT type,name,tbl_name,sql FROM sqlite_schema ORDER BY type,name,tbl_name')]
+                value = {'formatVersion':1,
+                    'sourceDigest':'sha256:'+hashlib.sha256(canonical_bytes({
+                        'path':path,'device':held.st_dev,'inode':held.st_ino,'owner':held.st_uid})).hexdigest(),
+                    'schemaDigest':'sha256:'+hashlib.sha256(canonical_bytes(schema)).hexdigest()}
+            else:
+                value=dict(self.identity)
+            value.update({
+                'applicationId': self.connection.execute('PRAGMA application_id').fetchone()[0],
+                'userVersion': self.connection.execute('PRAGMA user_version').fetchone()[0],
+                'schemaVersion': self.connection.execute('PRAGMA schema_version').fetchone()[0]})
         self.check()
         if hasattr(self, 'identity') and value != self.identity:
             _refuse()

@@ -4,6 +4,13 @@ The hub uses one database writer thread. Admitted application owners can open an
 existing database for their owned audit/projection work, with one joined executor
 per connection. Write transactions use BEGIN IMMEDIATE so contention surfaces at
 BEGIN, never as a mid-transaction BUSY.
+
+The connection is shared: an owner's checks also query it from the event loop
+while its executor thread works (AMUX-740). Python caches one prepared statement
+per SQL text per connection, so two threads running the same query can reset each
+other's statement between execute and fetch, and a present row reads as missing.
+q, q1 and tx hold one lock per store from execute to the last fetch, and from
+BEGIN to COMMIT or ROLLBACK. SQL issued from another thread must use them.
 """
 from __future__ import annotations
 
@@ -364,6 +371,7 @@ class Store:
             custody.check()
             store = cls.__new__(cls)
             store.path, store.db = path, connection
+            store._sql_lock = threading.RLock()
             store._selected_custody = custody
             store._identity_source_hub = None
             store._identity_signed_expiry = False
@@ -402,6 +410,7 @@ class Store:
 
     def __init__(self, path: str, *, migration_recovery=None):
         self.path = path
+        self._sql_lock = threading.RLock()
         real = os.path.realpath(path)
         if real.startswith("/mnt/") or _is_9p(os.path.dirname(real)):
             raise HubError(f"hub.db must be on the Linux filesystem, not {real} (WAL needs shared memory; R-HOME-1)")
@@ -524,7 +533,8 @@ class Store:
         return _Tx(self, allow_fenced=allow_fenced, recovery_token=recovery_token)
 
     def _migration_fence(self):
-        row = self.db.execute("SELECT v FROM fed_state WHERE k=?", (_MIGRATION_FENCE_KEY,)).fetchone()
+        with self._sql_lock:
+            row = self.db.execute("SELECT v FROM fed_state WHERE k=?", (_MIGRATION_FENCE_KEY,)).fetchone()
         if row is None:
             return None
         try:
@@ -604,10 +614,12 @@ class Store:
         return value
 
     def q(self, sql, args=()):
-        return [dict(r) for r in self.db.execute(sql, args).fetchall()]
+        with self._sql_lock:
+            return [dict(r) for r in self.db.execute(sql, args).fetchall()]
 
     def q1(self, sql, args=()):
-        r = self.db.execute(sql, args).fetchone()
+        with self._sql_lock:
+            r = self.db.execute(sql, args).fetchone()
         return dict(r) if r else None
 
     def event(self, entity, entity_id, event, actor=None, detail=None):
@@ -1296,38 +1308,48 @@ class _Tx:
         self.nested = False
 
     def __enter__(self):
-        self.nested = self.db.in_transaction
-        guard = self.store._migration_recovery
-        if (guard is not None and not guard._allows_write(self.store,
-                self.recovery_token)):
-            raise HubError('legacy migration authority unavailable')
-        if not self.nested:
-            self.db.execute("BEGIN IMMEDIATE")
-            try:
-                fence = self.store._migration_fence()
-                if (not self.allow_fenced and fence is not None
-                        and fence['state'] == 'fenced'):
-                    raise HubError('legacy writer is fenced for migration')
-            except BaseException:
-                self.db.execute('ROLLBACK')
-                raise
+        # Taken before in_transaction is read: another thread's open transaction
+        # on this connection is waited for, never joined as if nested (AMUX-740).
+        self.store._sql_lock.acquire()
+        try:
+            self.nested = self.db.in_transaction
+            guard = self.store._migration_recovery
+            if (guard is not None and not guard._allows_write(self.store,
+                    self.recovery_token)):
+                raise HubError('legacy migration authority unavailable')
+            if not self.nested:
+                self.db.execute("BEGIN IMMEDIATE")
+                try:
+                    fence = self.store._migration_fence()
+                    if (not self.allow_fenced and fence is not None
+                            and fence['state'] == 'fenced'):
+                        raise HubError('legacy writer is fenced for migration')
+                except BaseException:
+                    self.db.execute('ROLLBACK')
+                    raise
+        except BaseException:
+            self.store._sql_lock.release()
+            raise
         return self.db
 
     def __exit__(self, et, ev, tb):
-        if self.nested:
+        try:
+            if self.nested:
+                return False
+            guard = self.store._migration_recovery
+            if et:
+                self.db.execute('ROLLBACK')
+                return False
+            if (self.recovery_token is not None and guard is not None
+                    and not guard._allows_recovery(self.store, self.recovery_token)):
+                self.db.execute('ROLLBACK')
+                raise HubError('legacy migration recovery refused')
+            self.db.execute('COMMIT')
+            if self.recovery_token is not None and guard is not None:
+                guard._commit(self.store, self.recovery_token)
             return False
-        guard = self.store._migration_recovery
-        if et:
-            self.db.execute('ROLLBACK')
-            return False
-        if (self.recovery_token is not None and guard is not None
-                and not guard._allows_recovery(self.store, self.recovery_token)):
-            self.db.execute('ROLLBACK')
-            raise HubError('legacy migration recovery refused')
-        self.db.execute('COMMIT')
-        if self.recovery_token is not None and guard is not None:
-            guard._commit(self.store, self.recovery_token)
-        return False
+        finally:
+            self.store._sql_lock.release()
 
 
 def _caps(agent_row):
