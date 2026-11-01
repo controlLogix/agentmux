@@ -29,6 +29,9 @@ if cmd == 'has-session':
 elif cmd == 'new-session':
     name = args[args.index('-s')+1]
     (root / name).write_text(args[-1])
+    (root / (name + '.dir')).write_text(args[args.index('-c')+1])
+elif cmd == 'list-sessions':
+    print('\\n'.join(sorted(p.name for p in root.iterdir() if not p.name.endswith('.dir'))))
 elif cmd == 'list-panes':
     print('%1')
 elif cmd == 'display-message':
@@ -134,5 +137,59 @@ case "$last" in */settings.json) printf '%s\\n' '{"permissions":{"defaultMode":"
     (src/'settings.json').write_text('{invalid')
     run('broken-source', '--cli', 'claude', '--posture', 'unrestricted', success=False, error='could not prove')
     check('published-settings corruption and broken source fail the spawn without permissive fallback')
+    # AMUX-745: a native Codex worker gets folder trust for its own checkout, for this
+    # launch only, and only inside a repository root the owner approved at enrollment.
+    import shlex
+    real = pathlib.Path(os.path.realpath(root))
+    approved = real / 'approved'; (approved / 'repo').mkdir(parents=True); (approved / 'other/deep').mkdir(parents=True)
+    (real / 'outside/deep').mkdir(parents=True); (real / 'approved-evil').mkdir(); (approved / 'a"b').mkdir()
+    (approved / 'escape').symlink_to(real / 'outside'); (real / 'via-link').symlink_to(approved / 'repo')
+    # "lnk/.." is lnk's target's parent to the kernel, but lnk's own parent to a logical cd.
+    (approved / 'repo/out-lnk').symlink_to(real / 'outside/deep'); (approved / 'repo/in-lnk').symlink_to(approved / 'other/deep')
+    (approved / 'withcfg/.codex').mkdir(parents=True)
+    cfgroot = real / 'cfgroot'; (cfgroot / 'repo').mkdir(parents=True); (cfgroot / '.codex').mkdir()
+    (real / '.codex').mkdir()   # above every approved root: Codex does not read it
+    homeroot = real / 'homeroot'; (homeroot / 'repo').mkdir(parents=True); (homeroot / '.codex').mkdir()
+    native = dict(AGENTMUX_NATIVE_CORE_ROOT=str(root / 'native'), AGENTMUX_SOCKET='agentmux-native-test',
+                  AGENTMUX_NATIVE_CORE_TRUST_ROOTS='\n'.join(map(str, (real / 'elsewhere', approved, cfgroot, homeroot))))
+    def launched(name):
+        return shlex.split((state / name).read_text().split(' exec ', 1)[1])
+    for name, cwd, granted, extra in (('native-trusted', approved / 'repo', approved / 'repo', {}),
+            ('native-via-link', real / 'via-link', approved / 'repo', {}),
+            ('native-in-dotdot', approved / 'repo/in-lnk/..', approved / 'other', {}),
+            ('native-home-codex', homeroot / 'repo', homeroot / 'repo', {'HOME': str(homeroot)})):
+        result = run(name, '--cli', 'codex', '--cwd', str(cwd), extra=dict(native, **extra))
+        grant = 'projects={"%s"={trust_level="trusted"}}' % granted
+        assert launched(name)[-4:] == ['-c', 'check_for_update_on_startup=false', '-c', grant], launched(name)
+        assert (root / 'home/run' / (name + '.trust')).read_text() == str(granted) + '\n'
+        assert (state / (name + '.dir')).read_text() == str(granted), 'the pane must start in the trusted folder'
+        assert (root / 'home/run' / (name + '.cwd')).read_text() == str(granted) + '\n'
+        pane_check = (state / name).read_text().split(' exec ', 1)[0]
+        assert '|| exit 97;' in pane_check and str(granted) in pane_check, pane_check
+        assert result.stdout.rstrip('\n').endswith(f'trust:   {granted}, this launch only (approved root '
+                                                   f'{homeroot if name == "native-home-codex" else approved})'), result.stdout
+    for name, cwd in (('native-escape', approved / 'escape'), ('native-prefix', real / 'approved-evil'),
+                      ('native-outside', real / 'outside'), ('native-out-dotdot', approved / 'repo/out-lnk/..')):
+        run(name, '--cli', 'codex', '--cwd', str(cwd), extra=native, success=False,
+            error='outside the repository roots approved at enrollment')
+    for name, cwd in (('native-own-codex', approved / 'withcfg'), ('native-root-codex', cfgroot / 'repo')):
+        run(name, '--cli', 'codex', '--cwd', str(cwd), extra=native, success=False,
+            error="would let the repository change this worker's Codex settings")
+    run('native-quote', '--cli', 'codex', '--cwd', str(approved / 'a"b'), extra=native, success=False,
+        error='cannot be named in a trust grant')
+    unapproved = {key: value for key, value in native.items() if key != 'AGENTMUX_NATIVE_CORE_TRUST_ROOTS'}
+    run('native-unapproved', '--cli', 'codex', '--cwd', str(approved / 'repo'), extra=unapproved, success=False,
+        error='outside the repository roots approved at enrollment')
+    (root / 'home/run/codex-plain.trust').write_text('/stale\n')
+    run('codex-plain', '--cli', 'codex', '--cwd', str(approved / 'repo'))
+    assert not any(word.startswith(('projects=', 'check_for_update')) for word in launched('codex-plain'))
+    assert not (root / 'home/run/codex-plain.trust').exists()
+    listed = subprocess.run(['bash', str(harness), 'list'], env=env, text=True, capture_output=True, timeout=15)
+    section = listed.stdout.split('Codex folder trust granted at launch (this launch only):', 1)
+    assert len(section) == 2, listed.stdout + listed.stderr
+    assert f'native-trusted {approved / "repo"}' in ' '.join(section[1].split()), section[1]
+    assert 'codex-plain' not in section[1]
+    check('native Codex trust: one launch, approved roots only, real paths, no repository .codex, pane starts '
+          'where checked, shown by list; no grant outside native spawns')
     print(f'passed {counter}, failed 0')
 PY

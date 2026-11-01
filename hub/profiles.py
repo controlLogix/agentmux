@@ -9,6 +9,7 @@ and clear-modals.sh, which are the record of what each CLI actually showed.
 """
 from __future__ import annotations
 
+import os
 import re
 from dataclasses import dataclass, field
 
@@ -91,8 +92,15 @@ GENERIC_MODAL = Modal("unknown", re.compile(
     None, "unrecognized prompt: needs a person")
 
 # codex: "Update available" preselects "1. Update now (runs npm install -g)". Enter on it
-# killed panes on 2026-09-20 and 2026-09-29. Skip = option 2 / "Skip". Trust dialog
-# preselects accept. (agentmux.sh modal_answer; clear-modals.sh header.)
+# killed panes on 2026-09-20 and 2026-09-29. Skip = option 2 / "Skip". (agentmux.sh
+# modal_answer; clear-modals.sh header.)
+#
+# TRUST AND CONSENT ARE DECISIONS, NOT NUISANCES (AMUX-745). Every trust dialog and
+# Claude's bypass consent block with answer=None, as agentmux.sh modal_decision does.
+# Codex's trust answer used to be Enter on "Trust and continue": the first doorbell to a
+# new worker would have saved trust for its checkout in the owner's ~/.codex/config.toml
+# with no decision from the owner. A native worker gets trust for an approved checkout
+# when it is launched (agentmux.sh, AGENTMUX_NATIVE_CORE_TRUST_ROOTS), so it never shows.
 CODEX = Profile(
     cli="codex",
     ready=re.compile(r"^\s*›\s?"),
@@ -107,7 +115,7 @@ CODEX = Profile(
         Modal("update", re.compile(r"Update now \(runs|[›>]\s*1\.\s*Update now", _I), ["2"],
               "never Enter: option 1 runs npm install -g and exits"),
         Modal("trust", re.compile(r"allow codex to work|trust (this|the) (directory|folder)|do you want to allow|Do you trust", _I),
-              ["Enter"], "accept is preselected"),
+              None, "folder trust is the owner's decision"),
         Modal("login", re.compile(r"Sign in with ChatGPT|Welcome to Codex.*sign in|Provide your own API key", _I | re.S),
               None, "needs a person"),
         GENERIC_MODAL,
@@ -117,7 +125,8 @@ CODEX = Profile(
 
 # claude: three startup modals in a row (folder trust, bypass consent - default
 # "No, exit", which killed an agent on 2026-09-22 - and an effort recommendation).
-# The bypass consent answer is Down Enter ("Yes, I accept"), per clear-modals.sh.
+# Trust and bypass consent block for a person (AMUX-745); a pane parked on either is
+# reported as blocked, never answered by position or by label.
 #
 # Claude 2.1.28x dropped "esc to interrupt" from its working line. Measured in the pane
 # logs (analysis/comms-2026-09, extract_panes): "✻ Sublimating… (12s)", a bare
@@ -132,13 +141,12 @@ CLAUDE = Profile(
     busy=CLAUDE_BUSY,
     placeholder=PLACEHOLDER,
     modals=[
-        # Both answered BY LABEL, never by position. Measured 2026-09-29 on claude 2.1.285:
-        # the folder-trust dialog now preselects "No, exit" too. A fixed ["Enter"] (the
-        # older build preselected "Yes, proceed") killed a team lead 9 s after spawn.
+        # Measured 2026-09-29 on claude 2.1.285: both preselect "No, exit", so Enter would
+        # also kill the agent. Neither is answered at all: a person decides (AMUX-745).
         Modal("bypass", re.compile(r"Bypass Permissions mode|dangerously-skip-permissions.*accept|Yes, I accept", _I | re.S),
-              {"select": r"^Yes, I accept"}, "default is 'No, exit'"),
+              None, "bypass-permissions consent is the owner's decision; default is 'No, exit'"),
         Modal("trust", re.compile(r"Do you trust the files in this folder|Is this a project you (created|trust)|trust this folder", _I),
-              {"select": r"^Yes, (I trust|proceed)"}, "default is 'No, exit' on 2.1.285"),
+              None, "folder trust is the owner's decision; default is 'No, exit' on 2.1.285"),
         Modal("effort", re.compile(r"(recommend|Recommended).*effort|Use .* effort", _I), ["Enter"], "keep default"),
         Modal("theme", re.compile(r"Choose the text style|Dark mode.*Light mode", _I | re.S), ["Enter"], "first-run theme"),
         Modal("login", re.compile(r"Not logged in|Select login method", _I), None, "needs a person"),
@@ -147,7 +155,8 @@ CLAUDE = Profile(
     boot_s=8.0,
 )
 
-# grok: trust prompt answered with the letter y; input drawn inside a │ ❯ │ box.
+# grok: its trust prompt takes the letter y, which only a person sends (AMUX-745);
+# input drawn inside a │ ❯ │ box.
 GROK = Profile(
     cli="grok",
     ready=re.compile(r"^\s*[│|]?\s*[❯>]\s?"),
@@ -156,7 +165,8 @@ GROK = Profile(
     busy=re.compile(BUSY_COMMON.pattern + r"|[⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏] \w", _I),
     placeholder=PLACEHOLDER,
     modals=[
-        Modal("trust", re.compile(r"do you trust the contents|trust this (folder|directory)", _I), ["y"], "letter y"),
+        Modal("trust", re.compile(r"do you trust the contents|trust this (folder|directory)", _I),
+              None, "folder trust is the owner's decision"),
         GENERIC_MODAL,
     ],
     boot_s=6.0,
@@ -185,4 +195,6 @@ PROFILES = {p.cli: p for p in (CODEX, CLAUDE, GROK, SHELL)}
 
 
 def get(cli: str) -> Profile:
-    return PROFILES.get(cli, SHELL)
+    # A path such as /opt/homebrew/bin/codex is still codex: the shell profile has no
+    # modal checks, so falling back to it would type the doorbell into a trust menu.
+    return PROFILES.get(cli) or PROFILES.get(os.path.basename(cli), SHELL)

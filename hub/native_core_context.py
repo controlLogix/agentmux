@@ -363,6 +363,15 @@ class NativeCoreContext:
         # executable paths or settings that could grant wider permissions.
         if os.environ.get('AGENTMUX_NO_BYPASS') == '1':
             environment['AGENTMUX_NO_BYPASS'] = '1'
+        if verb == 'spawn':
+            # AMUX-745: the repository roots the owner approved at enrollment are the only
+            # folders a worker's Codex may be given trust for (agentmux.sh grants one per
+            # launch). Resolved here because the harness compares the checkout's real path.
+            roots = tuple(os.path.realpath(root) for root in self.workspaces)
+            if not roots or any(not os.path.isabs(root) or root == '/' or re.search(r'[\x00-\x1f\x7f"\\]', root)
+                                for root in roots):
+                raise NativeCoreError('native_core_trust_roots_invalid')
+            environment['AGENTMUX_NATIVE_CORE_TRUST_ROOTS'] = '\n'.join(roots)
         return NativeCoreCommand((self.tools['bash'].path, self.root + '/app/agentmux.sh', verb, *arguments), environment)
 
     def tmux(self, socket_name, arguments, *, timeout=10, input_=None):

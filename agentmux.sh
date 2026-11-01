@@ -1025,7 +1025,7 @@ except Exception:
     [ -n "$auth_exports" ] && env_prefix="$env_prefix $auth_exports"
   fi
 
-  local quoted_model="" quoted_path="" ccd="" cli_help=""
+  local quoted_model="" quoted_path="" ccd="" cli_help="" trust_dir="" trust_root=""
   [ -z "$model" ] || printf -v quoted_model '%q' "$model"
   case "$cli" in
     codex)
@@ -1055,6 +1055,48 @@ except Exception:
         launch="$launch --dangerously-bypass-approvals-and-sandbox"
       else
         launch="$launch --sandbox $posture --ask-for-approval never"
+      fi
+      # FOLDER TRUST IS THE OWNER'S DECISION (AMUX-745). A native worker runs with the
+      # owner's HOME, so Codex reads the owner's ~/.codex/config.toml and stops at
+      # "Trust this folder?" for any checkout the owner has not trusted there. Nothing
+      # may answer that dialog for them. The owner's approval is the set of repository
+      # roots approved at enrollment, which the core passes in; a checkout inside one
+      # gets trust for this launch only. Codex does not save a -c override, and the
+      # table form replaces the projects table, so the worker trusts no other folder.
+      # (The dotted form projects."<path>".trust_level is ignored by codex 0.162.1.)
+      # The core pins its own Codex, so the npm update menu could only stall the pane.
+      if [ -n "${AGENTMUX_NATIVE_CORE_ROOT:-}" ]; then
+        local root walk trust_override quoted_trust
+        # cd -P resolves each symlink as it is reached, as the kernel does. A logical cd
+        # resolves "lnk/.." by text and would check a folder the pane never runs in.
+        trust_dir="$(cd -P -- "$cwd" 2>/dev/null && pwd -P)" || die "codex trust: cannot resolve $cwd"
+        case "$trust_dir" in
+          *[[:cntrl:]]*|*\"*|*\\*) die "codex trust: this checkout path cannot be named in a trust grant: $trust_dir" ;;
+        esac
+        while IFS= read -r root; do
+          [ -n "$root" ] || continue
+          case "$trust_dir/" in "${root%/}/"*) trust_root="$root"; break ;; esac
+        done <<< "${AGENTMUX_NATIVE_CORE_TRUST_ROOTS:-}"
+        [ -n "$trust_root" ] || die "codex worker checkout $trust_dir is outside the repository roots approved at enrollment"
+        # Trust also makes Codex load the folder's own .codex/config.toml (measured on
+        # 0.162.1), so the repository could change the worker's sandbox, network, MCP
+        # servers or notify command. Approving a root at enrollment does not approve that.
+        # The owner's ~/.codex is Codex's home, not a repository setting.
+        walk="$trust_dir"
+        while :; do
+          if [ "$walk" != "$HOME" ] && { [ -e "$walk/.codex" ] || [ -L "$walk/.codex" ]; }; then
+            die "codex trust refused: $walk/.codex would let the repository change this worker's Codex settings, which enrollment does not approve"
+          fi
+          if [ "$walk" = "${trust_root%/}" ] || [ "$walk" = / ]; then break; fi
+          walk="$(dirname -- "$walk")"
+        done
+        # The pane starts in exactly the folder that was checked, and checks it again
+        # before Codex runs, so a path swapped after this check cannot be the one trusted.
+        cwd="$trust_dir"
+        printf -v quoted_trust '%q' "$trust_dir"
+        env_prefix="$env_prefix cd -P -- $quoted_trust && [ \"\$(pwd -P)\" = $quoted_trust ] || exit 97;"
+        printf -v trust_override '%q' "projects={\"$trust_dir\"={trust_level=\"trusted\"}}"
+        launch="$launch -c check_for_update_on_startup=false -c $trust_override"
       fi
       ;;
     claude)
@@ -1163,10 +1205,14 @@ except Exception:
   printf '%s\n' "$cwd" > "$RUNDIR/$name.cwd"
   printf '%s\n' "$launch" > "$RUNDIR/$name.launch"
   iso_now > "$RUNDIR/$name.started"
+  # .trust names the one folder this worker's Codex was given trust for (AMUX-745),
+  # so the owner can see every grant; a spawn without one leaves no stale record.
   if ! { printf '%s\n' "$agentdef" > "$RUNDIR/$name.agentdef" &&
          printf '%s\n' "$posture" > "$RUNDIR/$name.posture" &&
          printf '%s\n' "$team" > "$RUNDIR/$name.team" &&
-         printf '%s\n' "$role" > "$RUNDIR/$name.role"; }; then
+         printf '%s\n' "$role" > "$RUNDIR/$name.role" &&
+         if [ -n "$trust_dir" ]; then printf '%s\n' "$trust_dir" > "$RUNDIR/$name.trust"
+         else rm -f "$RUNDIR/$name.trust"; fi; }; then
     tm kill-session -t "=$name" 2>/dev/null
     rm -f "$RUNDIR/$name".*
     die "could not record spawn metadata"
@@ -1277,6 +1323,8 @@ except Exception:
   fi
   case "$cli" in codex|claude|grok) printf '  posture: %s\n' "$posture" ;; esac
   printf "watch it:  %stmux -L %s attach -t %s\n" "$(attach_prefix)" "$SOCKET" "$name"
+  # Last, so it stays inside the tail of this output that the Hub returns (spawn_out).
+  [ -z "$trust_dir" ] || printf '  trust:   %s, this launch only (approved root %s)\n' "$trust_dir" "$trust_root"
 )
 
 # Does the pane currently show a blocking prompt that is NOT the agent's normal input?
@@ -2422,9 +2470,12 @@ cmd_list() {
   # Process substitution rather than a pipe: a piped `while read` runs in a subshell,
   # so $mismatch would be discarded the moment the loop ended and the note below would
   # never print.
-  local mismatch=""
+  local mismatch="" trusted="" trust
   while read -r n; do
     cli="$(cat "$RUNDIR/$n.cli" 2>/dev/null || echo '?')"
+    # The one folder this agent's Codex was given trust for at launch (AMUX-745).
+    trust="$(head -n 1 "$RUNDIR/$n.trust" 2>/dev/null)" && [ -n "$trust" ] \
+      && printf -v trusted '%s  %-14s %s\n' "$trusted" "$n" "$trust"
     cwd="$(cat "$RUNDIR/$n.cwd" 2>/dev/null || echo '?')"
     perms="$(cat "$RUNDIR/$n.perms" 2>/dev/null || echo '?')"
     task="$(cat "$RUNDIR/$n.task" 2>/dev/null || echo '-')"
@@ -2461,6 +2512,7 @@ cmd_list() {
     printf '\nPERMS differs from what spawn configured:%s\n' "$mismatch"
     printf '  the pane is the authority here; a startup dialog can change the mode.\n'
   fi
+  [ -z "$trusted" ] || printf '\nCodex folder trust granted at launch (this launch only):\n%s' "$trusted"
   printf '%s' "" # keep the function's output tidy when nothing follows
   report_stale
 }

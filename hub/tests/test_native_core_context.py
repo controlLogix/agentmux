@@ -32,6 +32,36 @@ class NativeHarnessCommands(unittest.TestCase):
         self.assertEqual(command.environment['HOME'], '/Users/selected')
         self.assertEqual(command.environment['AGENTMUX_NO_BYPASS'], '1')
 
+    def harness_context(self, workspaces):
+        context = object.__new__(NativeCoreContext)
+        context.root = '/selected/installed'; context.home = '/Users/selected'
+        context.codex_package_root = '/selected/codex'; context.workspaces = workspaces
+        context.tools = {role: SimpleNamespace(path='/selected/' + role)
+                         for role in ('bash', 'tmux', 'codexBinary')}
+        return context
+
+    def test_spawn_carries_only_the_enrolled_roots_for_codex_trust(self):  # AMUX-745
+        with tempfile.TemporaryDirectory() as directory:
+            real = os.path.realpath(directory)
+            os.mkdir(os.path.join(real, 'repo'))
+            link = os.path.join(real, 'link'); os.symlink(os.path.join(real, 'repo'), link)
+            context = self.harness_context(('/approved/repo', link))
+            with patch.object(context, 'recheck'):
+                spawn = context.harness_command('spawn', ['worker', '--cli', 'codex'],
+                                                hub_home='/owned/home', socket_name='owned')
+                kill = context.harness_command('kill', ['worker'], hub_home='/owned/home', socket_name='owned')
+            self.assertEqual(spawn.environment['AGENTMUX_NATIVE_CORE_TRUST_ROOTS'],
+                             '/approved/repo\n' + os.path.join(real, 'repo'))
+            self.assertNotIn('AGENTMUX_NATIVE_CORE_TRUST_ROOTS', kill.environment)
+
+    def test_spawn_refuses_roots_a_trust_grant_cannot_name(self):  # AMUX-745
+        for workspaces in ((), ('/',), ('/approved/"repo',), ('/approved/re\\po',), ('/approved/re\npo',)):
+            with self.subTest(workspaces=workspaces):
+                context = self.harness_context(workspaces)
+                with patch.object(context, 'recheck'), self.assertRaises(NativeCoreError):
+                    context.harness_command('spawn', ['worker', '--cli', 'codex'],
+                                            hub_home='/owned/home', socket_name='owned')
+
     def test_other_provider_cannot_use_native_core_harness(self):
         context = object.__new__(NativeCoreContext); context.workspaces = ()
         with self.assertRaises(NativeCoreError):

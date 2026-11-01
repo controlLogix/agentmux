@@ -100,9 +100,10 @@ NAME_PATTERN = re.compile(r"[A-Za-z0-9_.-]{1,64}")
 # Every entry here is read through read_field(), which is the hardened reader
 # (regular files only, st_nlink > 1 rejected, O_NOFOLLOW, 512-byte cap, control
 # characters rejected). Adding a field inherits all of that; "auth" holds a method
-# id from auth.json and never a credential.
+# id from auth.json and never a credential. "trust" is the one folder a native Codex
+# worker was given trust for at launch (AMUX-745).
 FIELDS = ("cli", "perms", "cwd", "launch", "started", "task", "auth",
-          "agentdef", "posture", "team", "role")
+          "agentdef", "posture", "team", "role", "trust")
 EXTENSIONS = set(FIELDS) | {"pane"}
 
 # --- Jira reaper -------------------------------------------------------------

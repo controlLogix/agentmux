@@ -314,6 +314,17 @@ def screen(prompt="› ", above="codex ready"):
     return f"{above}\n\n{prompt}"
 
 
+def label_menu_profile():
+    """Claude's profile plus one fixture menu answered by label. Since AMUX-745 no real
+    profile answers a menu by label (trust and consent need a person), so this keeps
+    select_option covered for prompts that are not decisions."""
+    from dataclasses import replace
+    menu = profiles.Modal("fixture-menu", re.compile(r"Pick a layout", re.I),
+                          {"select": r"^Yes, continue"}, "fixture")
+    claude = profiles.get("claude")
+    return replace(claude, modals=[menu, *claude.modals])
+
+
 class Deliver(unittest.TestCase):
     def setUp(self):
         self.t = FakeTransport()
@@ -550,8 +561,7 @@ class DeliveryOwnership(unittest.TestCase):
         self.assertEqual(receipt.stages["submitted"], "ok")
 
     def test_cancel_after_modal_navigation_preserves_incomplete_answer(self):
-        self.transport.sessions["target"]["screen"] = (
-            "Do you trust the files in this folder?\n> No, exit\n  Yes, I trust")
+        self.transport.sessions["target"]["screen"] = "Pick a layout\n> No, stop\n  Yes, continue"
         send = self.transport.send_key
 
         def navigated(handle, key):
@@ -559,11 +569,11 @@ class DeliveryOwnership(unittest.TestCase):
             self.cancel.set()
 
         self.transport.send_key = navigated
-        receipt = deliver.deliver_line(self.transport, profiles.get("claude"),
+        receipt = deliver.deliver_line(self.transport, label_menu_profile(),
                                        "target", "target", "notice", pane_pid=1000,
                                        cancel=self.cancel)
         self.assertEqual(receipt.outcome, "deferred")
-        self.assertEqual(receipt.modal_answers, [{"kind": "trust", "keys": ["Down"], "complete": False}])
+        self.assertEqual(receipt.modal_answers, [{"kind": "fixture-menu", "keys": ["Down"], "complete": False}])
         self.assertEqual(self.transport.sent, [("target", "key", "Down")])
 
     def test_cancel_or_replacement_during_buffer_load_prevents_paste_and_reclaims_buffer(self):
@@ -1850,26 +1860,27 @@ class Profiles(unittest.TestCase):
         self.assertIsNone(p.modal(idle))
         self.assertTrue(p.is_ready(idle))
 
-    def test_claude_bypass_consent_answer(self):
+    def test_claude_bypass_consent_needs_a_person(self):  # AMUX-745
         p = profiles.get("claude")
         m = p.modal("WARNING: Claude Code running in Bypass Permissions mode\n❯ 1. No, exit\n  2. Yes, I accept")
         self.assertEqual(m.kind, "bypass")
-        self.assertEqual(m.answer, {"select": r"^Yes, I accept"})
+        self.assertIsNone(m.answer)
 
 
 class MenuByLabel(unittest.TestCase):
-    """C2, measured 2026-09-29: claude 2.1.285's folder-trust dialog preselects 'No, exit'.
-    A positional Enter killed a team lead 9 s after spawn. Answers go by label."""
+    """C2, measured 2026-09-29: claude 2.1.285 menus can preselect 'No, exit', and a
+    positional Enter killed a team lead 9 s after spawn. A menu that is answered at all is
+    answered by label. Trust and consent menus are not answered (AMUX-745), so this uses
+    the fixture menu from label_menu_profile."""
 
     def menu(self, opts, sel):
-        head = ("Accessing workspace:\n /home/nick/hubdemo/calc\n Quick safety check: Is this a project you "
-                "created or one you trust?\n")
+        head = "Pick a layout\n"
         body = "\n".join((" ❯ " if i == sel else "   ") + o for i, o in enumerate(opts))
         return head + body + "\n Enter to confirm · Esc to cancel"
 
-    def test_trust_selects_yes_even_when_no_is_preselected(self):
+    def test_label_selects_yes_even_when_no_is_preselected(self):
         t = FakeTransport()
-        opts, state = ["No, exit", "Yes, I trust this folder"], {"sel": 0, "chosen": None}
+        opts, state = ["No, stop", "Yes, continue"], {"sel": 0, "chosen": None}
         t.add("c", self.menu(opts, 0))
         orig = t.send_key
 
@@ -1887,16 +1898,64 @@ class MenuByLabel(unittest.TestCase):
                 return orig(h, k)
             t.sessions[h]["screen"] = self.menu(opts, state["sel"])
         t.send_key = key
-        rc = deliver.deliver_line(t, profiles.get("claude"), "c", "c", "[hub] 1 new message(s). Run: agentmux hub inbox --ack", pane_pid=1000)
-        self.assertEqual(state["chosen"], "Yes, I trust this folder", t.sent)
+        rc = deliver.deliver_line(t, label_menu_profile(), "c", "c", "[hub] 1 new message(s). Run: agentmux hub inbox --ack", pane_pid=1000)
+        self.assertEqual(state["chosen"], "Yes, continue", t.sent)
         self.assertEqual(rc.modal_answers[0]["keys"], ["Down", "Enter"])
 
     def test_missing_safe_option_blocks(self):
         t = FakeTransport()
-        t.add("c", self.menu(["No, exit", "Maybe later"], 0))
-        rc = deliver.deliver_line(t, profiles.get("claude"), "c", "c", "x", pane_pid=1000)
+        t.add("c", self.menu(["No, stop", "Maybe later"], 0))
+        rc = deliver.deliver_line(t, label_menu_profile(), "c", "c", "x", pane_pid=1000)
         self.assertEqual(rc.outcome, "blocked")
         self.assertNotIn("Enter", [k for _, kind, k in t.sent if kind == "key"])
+
+
+class TrustAndConsentNeedAPerson(unittest.TestCase):
+    """AMUX-745: no Hub path answers a folder-trust dialog or a permission consent. The
+    first doorbell to a new worker used to accept Codex's trust dialog, saving trust in the
+    owner's ~/.codex/config.toml with no decision from the owner. Each screen, as the CLI
+    shows it, must block the delivery with no key sent."""
+    SCREENS = [
+        ("codex", "trust", "  Folder access\n  /Users/owner/repo\n\n  Trust this folder? Codex can read, edit, and "
+                           "run files here, subject to your permission settings.\n\n› 1. Trust and continue\n"
+                           "  2. Quit\n\n  enter continue · esc quit"),
+        ("codex", "trust", "Do you trust the files in this folder?\n› 1. Yes, allow Codex to work in this folder\n"
+                           "  2. No, quit"),
+        ("claude", "trust", "Accessing workspace:\n /home/owner/repo\n Quick safety check: Is this a project you "
+                            "created or one you trust?\n ❯ Yes, I trust this folder\n   No, exit\n"
+                            " Enter to confirm · Esc to cancel"),
+        ("claude", "trust", "Do you trust the files in this folder?\n❯ 1. No, exit\n  2. Yes, proceed"),
+        ("claude", "bypass", "WARNING: Claude Code running in Bypass Permissions mode\n❯ 1. No, exit\n  2. Yes, I accept"),
+        ("grok", "trust", "Do you trust the contents of this directory? (y/n)"),
+    ]
+
+    def test_trust_and_consent_block_without_keys(self):
+        for cli, kind, text in self.SCREENS:
+            with self.subTest(cli=cli, kind=kind, text=text[:40]):
+                t = FakeTransport()
+                t.add("w", text)
+                rc = deliver.deliver_line(t, profiles.get(cli), "w", "w", "[hub] 1 new message(s)", pane_pid=1000)
+                self.assertEqual(rc.outcome, "blocked", rc.as_dict())
+                self.assertEqual(rc.stages["modal"], kind)
+                self.assertEqual(rc.modal_answers, [])
+                self.assertEqual(t.sent, [])
+
+    def test_no_profile_answers_trust_or_consent(self):
+        for cli in ("codex", "claude", "grok"):
+            for modal in profiles.get(cli).modals:
+                if modal.kind in ("trust", "bypass"):
+                    self.assertIsNone(modal.answer, (cli, modal.kind))
+
+    def test_a_cli_path_keeps_its_profile_and_its_modal_checks(self):
+        # The shell profile has no modal checks; a codex launched by path must not fall back to it.
+        self.assertIs(profiles.get("/opt/homebrew/bin/codex"), profiles.get("codex"))
+        self.assertIs(profiles.get("/usr/local/bin/claude"), profiles.get("claude"))
+        self.assertIs(profiles.get("codex-preview"), profiles.get("shell"))
+        t = FakeTransport()
+        t.add("w", self.SCREENS[0][2])
+        rc = deliver.deliver_line(t, profiles.get("/opt/homebrew/bin/codex"), "w", "w", "[hub] 1 new message(s)",
+                                  pane_pid=1000)
+        self.assertEqual((rc.outcome, t.sent), ("blocked", []))
 
 
 class BridgeConnectBounded(unittest.TestCase):
