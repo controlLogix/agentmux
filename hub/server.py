@@ -262,15 +262,45 @@ class _WorkBellRead:
 
 
 class _WorkBellTransport(deliver._CheckedTransport):
-    """Preserve terminal fencing and check the original work read at each use."""
+    """Preserve terminal fencing and check the original work read at each use.
+
+    The read stays current for every key and for typing the bell. After the bell is
+    typed and first submitted, delivery's passive captures that confirm submission
+    disclose nothing new, so they keep the terminal fence alone. Any later key,
+    including a retried Enter that may be what actually submits it, needs the read.
+    """
     def __init__(self, transport, session, handle, pane_pid, cancel, work_read):
         super().__init__(transport, session, handle, pane_pid, cancel)
         self.work_read = work_read
+        self.typed = self.submitted = False
+
+    def _checked_read(self):
+        deliver._CheckedTransport.check(self)
+        self.work_read.check()
+        deliver._CheckedTransport.check(self)
 
     def check(self):
-        super().check()
-        self.work_read.check()
-        super().check()
+        if self.submitted:
+            super().check()
+            return
+        self._checked_read()
+
+    def send_text(self, handle, text):
+        result = super().send_text(handle, text)
+        self.typed = True
+        return result
+
+    def send_buffer(self, handle, text):
+        result = super().send_buffer(handle, text)
+        self.typed = True
+        return result
+
+    def send_key(self, handle, key):
+        self._checked_read()
+        result = super().send_key(handle, key)
+        if self.typed and key == 'Enter':
+            self.submitted = True
+        return result
 
 
 class Hub:

@@ -12,6 +12,8 @@ import unittest
 from unittest.mock import AsyncMock, Mock, patch
 
 from agentmux_contracts import ContractError, canonical_bytes, strict_loads
+from hub.deliver import _DeliveryStopped
+from hub.store import HubError
 from hub.server import _WorkBellTransport
 from hub.client_launch_session import ApplicationSessionFailure
 from hub.tests.test_hub_offline import reg
@@ -263,6 +265,56 @@ class WorkBackgroundTests(WorkBridgeFixture, unittest.IsolatedAsyncioTestCase):
         with patch.object(self.hub, '_start_ring') as ring:
             await self.hub._bell_pass()
         self.assertIsNotNone(ring.call_args.kwargs['work_read'])
+
+    async def test_bell_read_guards_every_key_and_typing_not_submission_captures(self):
+        # The bell's Work counts are disclosed by typing and submitting them; the
+        # confirmation polls afterwards disclose nothing new (AMUX-724 AC6).
+        target = self.terminal_agent()
+        self.store.work_create('operator', 'falcon', 'role:*/worker', 'Claimable bell')
+        await self.open_service()
+        with patch.object(self.hub, '_start_ring') as ring:
+            await self.hub._bell_pass()
+        guard = ring.call_args.kwargs['work_read']
+        self.assertIsNotNone(guard)
+        def transport():
+            return SimpleNamespace(handle=Mock(return_value=('%42', 4200)), send_text=Mock(),
+                                   send_key=Mock(), capture=Mock(return_value='screen'))
+        def changed():
+            self.store.db.execute('UPDATE agents SET generation=generation+1 WHERE session=?', (target,))
+        def restored():
+            self.store.db.execute('UPDATE agents SET generation=generation-1 WHERE session=?', (target,))
+        # Before typing, a changed read refuses even a key such as a modal answer.
+        early = transport()
+        checked = _WorkBellTransport(early, target, '%42', 4200, Event(), guard)
+        changed()
+        with self.assertRaises((ContractError, HubError)):
+            await asyncio.to_thread(checked.send_key, '%42', 'Enter')
+        early.send_key.assert_not_called()
+        restored()
+        # Typed but not yet submitted: the first Enter still needs the current read.
+        typed = transport()
+        checked = _WorkBellTransport(typed, target, '%42', 4200, Event(), guard)
+        await asyncio.to_thread(checked.send_text, '%42', 'Bell count')
+        changed()
+        with self.assertRaises((ContractError, HubError)):
+            await asyncio.to_thread(checked.send_key, '%42', 'Enter')
+        typed.send_key.assert_not_called()
+        restored()
+        # Typed and submitted: confirmation captures keep only the terminal fence,
+        # but a retried Enter, which may be what submits the bell, needs the read.
+        late = transport()
+        checked = _WorkBellTransport(late, target, '%42', 4200, Event(), guard)
+        await asyncio.to_thread(checked.send_text, '%42', 'Bell count')
+        await asyncio.to_thread(checked.send_key, '%42', 'Enter')
+        changed()
+        self.assertEqual(await asyncio.to_thread(checked.capture, '%42'), 'screen')
+        with self.assertRaises((ContractError, HubError)):
+            await asyncio.to_thread(checked.send_key, '%42', 'Enter')
+        self.assertEqual(late.send_key.call_count, 1)
+        late.handle.return_value = ('%43', 4200)
+        with self.assertRaises(_DeliveryStopped):
+            await asyncio.to_thread(checked.capture, '%42')
+        restored()
 
     async def test_bell_snapshot_refuses_generation_or_source_change_at_transport_use(self):
         target = self.terminal_agent()
