@@ -243,6 +243,27 @@ class WorkBackgroundTests(WorkBridgeFixture, unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(ring.call_args.kwargs['work_read'])
         self.assertEqual(self.submitted, [])
 
+    async def test_selected_mail_only_bell_reads_work_but_carries_no_work_read(self):
+        # A bell with nothing claimable discloses no Work rows, so it does not hold
+        # the signed read across slow terminal delivery (AMUX-724 AC6 doorbell).
+        target = self.terminal_agent()
+        self.store.post('virtual:operator', 'agent:' + target, 'note', 'Welcome')
+        await self.open_service()
+        with patch.object(self.hub, '_start_ring') as ring:
+            await self.hub._bell_pass()
+        ring.assert_called_once()
+        self.assertEqual(ring.call_args.args[1:3], (1, 0))
+        self.assertIsNone(ring.call_args.kwargs['work_read'])
+        self.assertTrue(any(c['contractId'] == 'federation-work-read' for c in self.submitted))
+        self.assertEqual(len(self.commands._disclosures), 0)
+        self.assertEqual(len(self.service_client._sessions), 0)
+        # With claimable work the bell still carries the checked read.
+        self.store.work_create('operator', 'falcon', 'role:*/worker', 'Claimable')
+        self.hub.bell.clear()
+        with patch.object(self.hub, '_start_ring') as ring:
+            await self.hub._bell_pass()
+        self.assertIsNotNone(ring.call_args.kwargs['work_read'])
+
     async def test_bell_snapshot_refuses_generation_or_source_change_at_transport_use(self):
         target = self.terminal_agent()
         self.store.work_create('operator', 'falcon', 'role:*/worker', 'Original bell')

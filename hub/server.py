@@ -2968,8 +2968,12 @@ class Hub:
                     claimable = []
                 claimable.sort(key=lambda row: (row['priority'], row['id']))
                 await self._check_work_targets()
-                work_read = _WorkBellRead(commands, commands._disclosures[asyncio.current_task()],
-                    tuple(targets.items()), service, service._federation.session)
+                # Only a bell that offers Work carries the read through each terminal
+                # step. A message-only bell discloses no Work rows; it keeps the
+                # checked terminal fence without holding a read across slow delivery.
+                if claimable:
+                    work_read = _WorkBellRead(commands, commands._disclosures[asyncio.current_task()],
+                        tuple(targets.items()), service, service._federation.session)
             unrung = [row for row in pending if row['state'] in ('queued', 'offered')]
             unacked = [row for row in pending if row['state'] != 'acked']
             if not unacked and not claimable:
@@ -2980,7 +2984,9 @@ class Hub:
             stale = time.time() - state['at'] > float(self.cfg['bell_every_s'])
             if not (fresh or stale):
                 return
-            if work_read is not None:
+            if agent['repo'] in repositories:
+                # The claim count, zero included, comes from the read: confirm it is
+                # still current when the ring starts.
                 await self._check_work_targets()
                 service.confirm_disclosure()
             self._start_ring(agent, len(unacked), len(claimable), signature,
