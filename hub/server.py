@@ -811,7 +811,12 @@ class Hub:
         selected = self._selected_core_context()
         from identity.work_client import WORK_COMMAND_SECONDS, WORK_REQUEST_VERBS
         # Work commands, spawn and kill span several signed exchanges and a final native check.
-        expires = time.monotonic() + (WORK_COMMAND_SECONDS if req.get('verb') in WORK_REQUEST_VERBS else 5)
+        # A worker's own post, inbox and ack carry a signed Work readiness read through the
+        # same exchanges (dispatch, AMUX-724), so they get the same window.
+        work_backed = (req.get('verb') in WORK_REQUEST_VERBS
+            or (selected is not None and req.get('verb') in ('post', 'inbox', 'ack')
+                and type(caller) is str and caller not in ('operator', 'federation', 'unregistered')))
+        expires = time.monotonic() + (WORK_COMMAND_SECONDS if work_backed else 5)
         if selected is not None and selected.expires_monotonic is not None:
             expires = min(expires, selected.expires_monotonic)
         snapshot = {key:value for key,value in req.items() if key != 'token'}

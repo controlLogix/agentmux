@@ -74,6 +74,22 @@ class AuthenticatedCallerTests(unittest.IsolatedAsyncioTestCase):
             proof=await self.hub.authenticate_caller({'verb':'kill','token':'operator-secret'},self.writer,True)
         self.assertEqual(self.hub._authenticated_callers[proof].expires_monotonic,1007.0)
 
+    async def test_worker_messages_get_the_work_window_and_operator_messages_do_not(self):
+        # AMUX-724: on the selected core a worker's own post/inbox/ack carry a signed Work read.
+        from identity.work_client import WORK_COMMAND_SECONDS
+        observed={}
+        for selected in (None,SimpleNamespace(expires_monotonic=None)):
+            self.hub._selected_core_context=lambda selected=selected:selected
+            for token in ('operator-secret','agent-secret'):
+                self.hub.db.return_value={'session':'agent-session'} if token=='agent-secret' else None
+                for verb in ('inbox','ack','post','ping'):
+                    with patch('hub.server.time.monotonic',return_value=1000.0):
+                        proof=await self.hub.authenticate_caller({'verb':verb,'token':token},self.writer,True)
+                    observed[selected is not None,token,verb]=self.hub._authenticated_callers[proof].expires_monotonic-1000.0
+        longer={(True,'agent-secret',verb) for verb in ('inbox','ack','post')}
+        self.assertEqual({key for key,value in observed.items() if value==WORK_COMMAND_SECONDS},longer)
+        self.assertTrue(all(value==5 for key,value in observed.items() if key not in longer))
+
     async def test_wrong_hub_forged_and_expired_proofs_refuse(self):
         proof=await self.hub.authenticate_caller({'token':'operator-secret'},self.writer,True)
         other=object.__new__(Hub);other._authenticated_callers=weakref.WeakKeyDictionary()
