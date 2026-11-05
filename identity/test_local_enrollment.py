@@ -252,6 +252,71 @@ class LocalEnrollmentTests(unittest.IsolatedAsyncioTestCase):
             if path.is_file():
                 self.assertEqual(path.stat().st_mode & 0o077, 0, path)
 
+    async def test_first_worker_gets_its_own_session_grants_and_alias(self):
+        # AMUX-724: one declared worker is enrolled under the owner's identity
+        # with its own key, Work session and worker-only grants, plus the
+        # generation-one alias its messages resolve through. It grants nothing
+        # before the original spawn activates it.
+        from hub.client_launch_selection import load_selection
+        from identity.application_service_selection import ApplicationServiceSelection
+        declared = {'caller': 'agentmux-worker-demo', 'spawnOperationId': 'first_spawn_' + secrets.token_hex(12)}
+        install = Installation(self.runtime, firstWorker=declared)
+        first = await install.run()
+        self.assertEqual(await install.run(), first)
+        core = _read_material(first['coreHub']['selection'], max_bytes=16384)
+        self.assertEqual({k: len(core[k]) for k in ('identity', 'messages', 'work')}, {'identity': 1, 'messages': 2, 'work': 3})
+        for pin in core['work']:
+            load_selection(pin['selection'])
+        materials = _read_material(install.enrollment / 'materials.json', max_bytes=1048576)
+        ref = lambda name: {'id': 'local_' + name, 'ownerHubId': install.owner['owner']['authenticatedIdentityRef']['ownerHubId'],
+                            'revision': 1}
+        channel = materials['service']['storage']['work']['channels'][0]
+        self.assertEqual(channel['firstWorker'], {**declared, 'generation': 1})
+        worker = [a for a in channel['legacyActors'] if a['caller'] == declared['caller']]
+        self.assertEqual(len(worker), 1)
+        self.assertEqual(worker[0]['identityRef'], ref('operator'))
+        self.assertEqual(set(worker[0]['grants']), {'federation-work-' + c for c in local_enrollment.WORK_WORKER})
+        self.assertNotIn(declared['caller'], [a['caller'] for a in channel['actors']])
+        # The product selection loader accepts the declaration.
+        written = _read_material(install.enrollment / 'service-selection.json', max_bytes=1048576)
+        selection = ApplicationServiceSelection(canonical_bytes(written))
+        self.assertEqual(selection.policy['storage']['work']['channels'][0]['firstWorker'], channel['firstWorker'])
+        state = materials['state']
+        transports = {canonical_bytes(t['ref']): t for t in state['transports']}
+        own, operator = (transports[canonical_bytes(ref(n))] for n in ('worker_work_transport', 'operator_work_transport'))
+        self.assertNotEqual(own['publicKey'], operator['publicKey'])
+        self.assertEqual(own['identityRef'], ref('operator'))
+        bind = [g for g in state['grants'] if g['ref'] == ref('work_worker_bind_grant')]
+        self.assertEqual([(g['contractId'], g['callerRef']) for g in bind], [('application-bind', ref('operator'))])
+        grants = [g for g in state['grants'] if g['ref']['id'].startswith('local_work_worker_') and g not in bind]
+        self.assertEqual(sorted(g['contractId'] for g in grants),
+                         sorted('federation-work-' + c for c in local_enrollment.WORK_WORKER))
+        self.assertTrue(all(g['callerRef'] == ref('operator') and g['resourceId'] == 'local_work_channel'
+                            and g['scope'] == {'organizationId': 'org_test', 'projectId': 'project_test', 'workspaceId': None}
+                            for g in grants))
+        self.assertEqual(state['legacyAliases'], [{'ref': ref('worker_alias'), 'status': 'active',
+            'identityRef': ref('operator'), 'sourceHubId': ref('x')['ownerHubId'],
+            'scope': {'organizationId': 'org_test', 'projectId': 'project_test', 'workspaceId': None},
+            'instanceOwner': None, 'registrationGeneration': 1, 'canonicalSession': declared['caller'],
+            'alias': declared['caller']}])
+        session = materials['families']['work-worker']
+        self.assertEqual(session['caller'], ref('operator'))
+        self.assertNotEqual(session['clientKey'], materials['families']['work-operator']['clientKey'])
+
+    async def test_first_worker_declaration_refusals(self):
+        cases = ({'caller': 'other-worker-demo', 'spawnOperationId': 'first_spawn_1'},
+                 {'caller': 'agentmux-worker', 'spawnOperationId': 'first_spawn_1'},
+                 {'caller': 'agentmux-worker-demo', 'spawnOperationId': 'has space'},
+                 {'caller': 'agentmux-worker-demo', 'spawnOperationId': 'first_spawn_1', 'generation': 1},
+                 {'caller': 'agentmux-worker-demo'},
+                 {'caller': 'agentmux-worker-demo', 'spawnOperationId': 123})
+        for declared in cases:
+            with self.subTest(declared=declared):
+                install = Installation(self.runtime, firstWorker=declared)
+                with self.assertRaisesRegex(ContractError, 'local_enrollment_(first_worker|request)_invalid'):
+                    await install.run()
+                self.assertFalse(install.enrollment.exists())
+
     async def test_core_owner_request_is_written_once_beside_the_owner_request(self):
         # AMUX-728 criterion 1: the ceremony writes owner-request-core.json, the
         # admitted owner request plus coreHub, so no step writes it by hand.

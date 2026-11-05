@@ -57,10 +57,19 @@ var applicationRequestsPeer = regexp.MustCompile(`^[a-z0-9_]{1,32}$`)
 // parseApplicationRequests admits application-requests' fixed flag order:
 // --client-installation ID --foundation-selection PATH
 // --foundation-selection-sha256 DIGEST --repository-root PATH --principal NAME
-// --local-node NAME --message-peer NAME --organization ID --output DIR.
+// --local-node NAME --message-peer NAME --organization ID --output DIR
+// [--first-worker ROLE/AGENT].
 func parseApplicationRequests(args []string) (string, protected.ApplicationRequests, bool) {
 	flags := []string{"--client-installation", "--foundation-selection", "--foundation-selection-sha256", "--repository-root",
 		"--principal", "--local-node", "--message-peer", "--organization", "--output"}
+	worker := ""
+	if len(args) == 3+2*len(flags) && args[len(args)-2] == "--first-worker" {
+		worker = args[len(args)-1]
+		if !protected.ValidFirstWorker(worker) {
+			return "", protected.ApplicationRequests{}, false
+		}
+		args = args[:len(args)-2]
+	}
 	if len(args) != 1+2*len(flags) {
 		return "", protected.ApplicationRequests{}, false
 	}
@@ -84,7 +93,7 @@ func parseApplicationRequests(args []string) (string, protected.ApplicationReque
 	return values["--client-installation"], protected.ApplicationRequests{FoundationSelection: values["--foundation-selection"],
 		FoundationSelectionDigest: values["--foundation-selection-sha256"], RepositoryRoot: values["--repository-root"],
 		Principal: values["--principal"], LocalNode: values["--local-node"], MessagePeer: values["--message-peer"],
-		Organization: values["--organization"], Output: values["--output"]}, true
+		Organization: values["--organization"], Output: values["--output"], FirstWorker: worker}, true
 }
 
 func runInstalledClient(ctx context.Context, args []string) (failure error) {

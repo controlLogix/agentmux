@@ -131,6 +131,28 @@ class ApplicationRequestsTests(unittest.TestCase):
         self.assertNotEqual((second['composeProject'], second['serverName'], second['domain']),
                             (owner['composeProject'], owner['serverName'], owner['domain']))
 
+    def test_first_worker_is_declared_only_when_asked(self):
+        # AMUX-724: the setup request names one worker of this repository and
+        # a fresh original spawn ID; without the option nothing is declared.
+        plain = self.write(output=str(self.agentmux / 'requests-plain'))
+        self.assertNotIn('firstWorker', plain)
+        request, _ = local_enrollment.admit_request(plain['setupRequest']['path'], plain['setupRequest']['sha256'])
+        self.assertNotIn('firstWorker', request)
+        result = self.write(worker='worker/demo')
+        declared = result['firstWorker']
+        self.assertEqual(declared['caller'], 'agentmux-worker-demo')
+        self.assertRegex(declared['spawnOperationId'], r'^first_spawn_[0-9a-f]{24}$')
+        request, _ = local_enrollment.admit_request(result['setupRequest']['path'], result['setupRequest']['sha256'])
+        self.assertEqual(request['firstWorker'], declared)
+        other = self.write(output=str(self.agentmux / 'requests-again'), worker='worker/demo')
+        self.assertNotEqual(other['firstWorker']['spawnOperationId'], declared['spawnOperationId'])
+        for wrong in ('demo', 'worker/demo/extra', 'Worker/demo', 'worker/', 'a-b/demo'):
+            output = self.agentmux / 'requests-wrong'
+            with self.subTest(worker=wrong):
+                with self.assertRaisesRegex(ContractError, 'application_requests_first_worker_invalid'):
+                    self.write(output=str(output), worker=wrong)
+                self.assertFalse(output.exists())
+
     def test_kept_ports_are_never_chosen(self):
         import socket
         from unittest import mock
@@ -186,7 +208,8 @@ class ApplicationRequestsTests(unittest.TestCase):
                      '--foundation-selection-sha256', self.selection_digest, '--repository-root', str(self.repository),
                      '--principal', 'tester', '--local-node', 'tester_mbp', '--message-peer', 'peer',
                      '--organization', 'org_test', '--output', str(self.agentmux / 'requests-cli')]
-        for wrong in ([], arguments[:-2], arguments + ['--apply'], ['--output'] + arguments[1:]):
+        for wrong in ([], arguments[:-2], arguments + ['--apply'], ['--output'] + arguments[1:],
+                      arguments + ['--first-worker'], ['--first-worker', 'worker/demo'] + arguments):
             with self.subTest(arguments=wrong):
                 err = io.StringIO()
                 with contextlib.redirect_stderr(err):

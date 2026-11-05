@@ -64,6 +64,9 @@ FAMILIES = ('identity', 'messages', 'work')
 SESSIONS = (('identity', 'identity', None), ('messages-operator', 'messages', 'operator'),
             ('messages-federation', 'messages', 'federation'), ('work-operator', 'work', 'operator'),
             ('work-federation', 'work', 'federation'))
+# A declared first worker (AMUX-724) adds its own Work session, under the
+# owner's identity with its own key, transport and worker-only grants.
+WORKER_SESSION = ('work-worker', 'work', 'worker')
 RETENTION = Retention(524288, 131072)
 ARTIFACT_BYTES = 1048576
 LEGACY_BROWSER_PORT = 8787
@@ -78,6 +81,8 @@ MESSAGE_OPERATOR = ('send', 'approve', 'inspect', 'outcome')
 MESSAGE_SERVICE = ('deliver', 'inspect', 'outcome')
 WORK_OPERATOR = ('create', 'claim', 'heartbeat', 'release', 'claim-path', 'read', 'inspect', 'outcome', 'cancel')
 WORK_SERVICE = ('ingest', 'revoke', 'inspect', 'outcome', 'register', 'state', 'sweep-global', 'read')
+WORK_WORKER = ('read', 'inspect', 'outcome', 'claim', 'heartbeat', 'release')
+_OPERATION = re.compile(r'[A-Za-z0-9_-]{1,128}')
 _ID = re.compile(r'[a-z][a-z0-9_-]{0,63}')
 # Matches application-message/work-commands localPeer, peer and localNode.
 _PEER = re.compile(r'[a-z0-9_]{1,32}')
@@ -175,7 +180,7 @@ def admit_request(path, expected):
         raise ContractError('local_enrollment_request_changed')
     request = strict_loads(raw)
     _closed(request, ('schemaVersion', 'ownerRequest', 'projectId', 'repositories', 'localPeer',
-                      'localNode', 'messagePeer', 'validityDays'), ('applicationRuntime',))
+                      'localNode', 'messagePeer', 'validityDays'), ('applicationRuntime', 'firstWorker'))
     _closed(request['ownerRequest'], ('path', 'sha256'))
     if (request['schemaVersion'] != SCHEMA_VERSION or not _ID.fullmatch(str(request['projectId']))
             or any(not _PEER.fullmatch(str(request[k])) for k in ('localPeer', 'messagePeer'))
@@ -202,6 +207,22 @@ def admit_request(path, expected):
         names.add(repository['localName'])
     if {r['root'] for r in request['repositories']} != set(roots):
         raise ContractError('local_enrollment_repository_coverage')
+    if 'firstWorker' in request:
+        # The declaration names one worker of the Work channel's repository; it
+        # grants nothing until that exact original spawn completes (AMUX-724).
+        from hub import names as session_names
+        first = request['firstWorker']
+        _closed(first, ('caller', 'spawnOperationId'))
+        caller = first['caller']
+        try:
+            parts = session_names.split_session(caller)
+            valid = session_names.session_name(*parts) == caller
+        except Exception:
+            valid = False
+        if (not valid or type(caller) is not str or type(first['spawnOperationId']) is not str
+                or parts[0] != request['repositories'][0]['localName']
+                or not _OPERATION.fullmatch(first['spawnOperationId'])):
+            raise ContractError('local_enrollment_first_worker_invalid')
     return request, owner
 
 
@@ -210,6 +231,7 @@ class Ceremony:
 
     def __init__(self, request, owner, *, root=None, runtime=None):
         self.request, self.owner = request, owner
+        self.first_worker = request.get('firstWorker')
         enrollment = owner['owner']
         self.hub = enrollment['authenticatedIdentityRef']['ownerHubId']
         self.profile, self.instance = enrollment['profileId'], enrollment['instanceId']
@@ -247,6 +269,9 @@ class Ceremony:
 
     def ref(self, name):
         return {'id': 'local_' + name, 'ownerHubId': self.hub, 'revision': 1}
+
+    def sessions(self):
+        return SESSIONS if self.first_worker is None else SESSIONS + (WORKER_SESSION,)
 
     def inbox(self, name):
         # Profiles share one runtime account; a per-profile reply prefix keeps
@@ -413,6 +438,8 @@ class Ceremony:
             'work': {
                 'operator': {'federation-work-' + c: ref('work_operator_' + c.replace('-', '_')) for c in WORK_OPERATOR},
                 'federation': {'federation-work-' + c: ref('work_federation_' + c.replace('-', '_')) for c in WORK_SERVICE}}}
+        if self.first_worker is not None:
+            grants['work']['worker'] = {'federation-work-' + c: ref('work_worker_' + c) for c in WORK_WORKER}
         self.grants = grants
         common = {'localPeer': self.request['localPeer'], 'localNode': self.request['localNode']}
         messages = {'source': source, 'repository': repo, **common, 'channels': [{
@@ -433,6 +460,12 @@ class Ceremony:
                  'grants': grants['work']['operator']},
                 {'identityRef': federation, 'transportRef': ref('federation_work_transport'), 'caller': 'federation',
                  'grants': grants['work']['federation']}]}]}
+        if self.first_worker is not None:
+            channel, caller = work['channels'][0], self.first_worker['caller']
+            channel['firstWorker'] = {'caller': caller, 'generation': 1,
+                                      'spawnOperationId': self.first_worker['spawnOperationId']}
+            channel['legacyActors'].append({'identityRef': operator, 'transportRef': ref('worker_work_transport'),
+                                            'caller': caller, 'grants': grants['work']['worker']})
         extra = [{'ref': operator, 'kind': 'human', 'status': 'active',
                   'principalId': self.owner['owner']['principalId'], 'externalIdentity': None},
                  {'ref': federation, 'kind': 'service', 'status': 'active', 'principalId': 'local_federation',
@@ -450,9 +483,9 @@ class Ceremony:
                             'w', '_', 'capability', 'storage-owner', 'command'))
         repository = self.request['repositories'][0]
         repo = {'localName': repository['localName'], 'repositoryId': rid_for_remote(repository['normalizedRemote'])}
-        callers = {'operator': extra_identities[0], 'federation': extra_identities[1]}
+        callers = {'operator': extra_identities[0], 'federation': extra_identities[1], 'worker': extra_identities[0]}
         sessions = {}
-        for name, family, route in SESSIONS:
+        for name, family, route in self.sessions():
             selected = _private_dir(staging / ('client-' + name))
             caller = callers[route or 'operator']
             key = name.replace('-', '_')
@@ -471,7 +504,8 @@ class Ceremony:
                 block = {'transportRef': ref(route + '_' + channel + '_transport'),
                     'replyIssuerRef': storage_issuer['issuerRef'], 'replyIssuerPublicKey': storage_issuer['publicKey'],
                     'serviceIdentityRef': ref('storage'), 'serviceInstanceId': self.instance,
-                    'resourceRef': ref(channel + '_channel'), 'authenticatedCaller': route, 'subject': subject,
+                    'resourceRef': ref(channel + '_channel'),
+                    'authenticatedCaller': self.first_worker['caller'] if route == 'worker' else route, 'subject': subject,
                     'localPeer': self.request['localPeer'], 'localNode': self.request['localNode'], 'repository': repo,
                     'grantRefs': self.grants[family][route]}
                 if family == 'messages':
@@ -517,10 +551,19 @@ class Ceremony:
         # client selection to share one scope; every client session is project-scoped.
         grant(ref('attest_grant'), observer, 'application-attest', self.instance, self.project_scope)
         grant(ref('alias_resolve_grant'), operator, 'identity-legacy-alias-resolve', self.authority, self.project_scope)
+        holders = {'operator': operator, 'federation': federation, 'worker': operator}
         for family, channel in (('messages', 'message_channel'), ('work', 'work_channel')):
-            for caller, identity in (('operator', operator), ('federation', federation)):
-                for contract, name in self.grants[family][caller].items():
-                    grant(name, identity, contract, 'local_' + channel, self.project_scope)
+            for caller, contracts in self.grants[family].items():
+                for contract, name in contracts.items():
+                    grant(name, holders[caller], contract, 'local_' + channel, self.project_scope)
+        if self.first_worker is not None:
+            # Message recipients resolve through this alias. It binds only a live
+            # generation-one registration of this session; Work and local message
+            # use still require the original spawn's activation (AMUX-724).
+            caller = self.first_worker['caller']
+            state.setdefault('legacyAliases', []).append({'ref': ref('worker_alias'), 'status': 'active', 'identityRef': operator,
+                'sourceHubId': self.hub, 'scope': self.project_scope, 'instanceOwner': None,
+                'registrationGeneration': 1, 'canonicalSession': caller, 'alias': caller})
         return state
 
     # Stage 2: bootstrap ----------------------------------------------------------
@@ -722,7 +765,7 @@ class Ceremony:
                     'applicationServices': {'installationId': self.owner['clientInstallationId'],
                                             'selection': str(service_path), 'sha256': digest(canonical_bytes(selection.policy))}}
         pins = {}
-        for name, family, _route in SESSIONS:
+        for name, family, _route in self.sessions():
             entry = materials['families'][name]
             creds = entry['credentials']
             session_connection = {'schemaVersion': SCHEMA_VERSION, **connection, 'credentialsFile': creds['path'],

@@ -169,11 +169,31 @@ func TestApplicationRequestsRouteRefusesMalformedArgumentsBeforeAdmission(t *tes
 		with(16, "Bad Org"),
 		with(18, "requests"),
 		with(9, "--owner"),
+		append(append([]string(nil), valid...), "--first-worker"),
+		append(append([]string(nil), valid...), "--first-worker", "Worker/demo"),
+		append(append([]string(nil), valid...), "--first-worker", "worker/demo/x"),
+		append(append([]string(nil), valid...), "--owner", "worker/demo"),
+		append(append([]string(nil), valid[:17]...), "--first-worker", "worker/demo"),
 	} {
 		var output bytes.Buffer
 		err := run(context.Background(), invalid, &output)
 		if err == nil || err.Error() != "installed_client_arguments_invalid" || output.Len() != 0 {
 			t.Fatalf("malformed requests route reached admission or emitted output: %v %v", invalid, err)
 		}
+	}
+}
+
+func TestApplicationRequestsRouteCarriesOnlyAValidTrailingFirstWorker(t *testing.T) {
+	// AMUX-724: the optional --first-worker ROLE/AGENT pair follows the fixed flags.
+	valid := []string{"application-requests", "--client-installation", strings.Repeat("a", 64),
+		"--foundation-selection", "/private/selection.json", "--foundation-selection-sha256", "sha256:" + strings.Repeat("b", 64),
+		"--repository-root", "/Users/owner/repo", "--principal", "nick", "--local-node", "nick_mbp",
+		"--message-peer", "ryan", "--organization", "adag", "--output", "/Users/owner/requests"}
+	if _, plain, ok := parseApplicationRequests(valid); !ok || plain.FirstWorker != "" {
+		t.Fatalf("plain request: %v %+v", ok, plain)
+	}
+	_, declared, ok := parseApplicationRequests(append(append([]string(nil), valid...), "--first-worker", "worker/demo"))
+	if !ok || declared.FirstWorker != "worker/demo" || declared.Output != "/Users/owner/requests" {
+		t.Fatalf("declared request: %v %+v", ok, declared)
 	}
 }

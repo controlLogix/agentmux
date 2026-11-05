@@ -275,7 +275,18 @@ var applicationRequestsPeer = regexp.MustCompile(`^[a-z0-9_]{1,32}$`)
 // installed Python owner.
 type ApplicationRequests struct {
 	FoundationSelection, FoundationSelectionDigest, RepositoryRoot string
-	Principal, LocalNode, MessagePeer, Organization, Output         string
+	Principal, LocalNode, MessagePeer, Organization, Output        string
+	// FirstWorker is an optional ROLE/AGENT: the profile's one declared first
+	// worker (AMUX-724). Empty declares none.
+	FirstWorker string
+}
+
+// firstWorker matches hub.names role and agent parts.
+var firstWorker = regexp.MustCompile(`^[a-z0-9_]{1,24}/[a-z0-9_]{1,32}$`)
+
+// ValidFirstWorker reports whether value is a ROLE/AGENT first-worker name.
+func ValidFirstWorker(value string) bool {
+	return firstWorker.MatchString(value)
 }
 
 // ExecApplicationRequests writes a new profile's private owner and setup
@@ -284,7 +295,8 @@ func (a *InstalledClientAdmission) ExecApplicationRequests(ctx context.Context, 
 	if !validClientSelection(r.FoundationSelection) || !localEnrollmentDigest.MatchString(r.FoundationSelectionDigest) ||
 		!validClientSelection(r.RepositoryRoot) || !validClientSelection(r.Output) ||
 		!applicationRequestsPeer.MatchString(r.Principal) || !applicationRequestsPeer.MatchString(r.LocalNode) ||
-		!applicationRequestsPeer.MatchString(r.MessagePeer) || !definitionsOwnerHub.MatchString(r.Organization) {
+		!applicationRequestsPeer.MatchString(r.MessagePeer) || !definitionsOwnerHub.MatchString(r.Organization) ||
+		r.FirstWorker != "" && !ValidFirstWorker(r.FirstWorker) {
 		return &clientFailure{code: "selection_invalid"}
 	}
 	home, err := installedClientAccountHome()
@@ -294,10 +306,14 @@ func (a *InstalledClientAdmission) ExecApplicationRequests(ctx context.Context, 
 	if a == nil {
 		return &clientFailure{code: "recheck_invalid"}
 	}
-	return a.exec(ctx, []string{"application-requests", "--client-installation", a.id,
+	args := []string{"application-requests", "--client-installation", a.id,
 		"--foundation-selection", r.FoundationSelection, "--foundation-selection-sha256", r.FoundationSelectionDigest,
 		"--repository-root", r.RepositoryRoot, "--principal", r.Principal, "--local-node", r.LocalNode,
-		"--message-peer", r.MessagePeer, "--organization", r.Organization, "--output", r.Output}, home)
+		"--message-peer", r.MessagePeer, "--organization", r.Organization, "--output", r.Output}
+	if r.FirstWorker != "" {
+		args = append(args, "--first-worker", r.FirstWorker)
+	}
+	return a.exec(ctx, args, home)
 }
 
 // ExecDefinitionsOwnerRetirement retires a stopped profile's repository

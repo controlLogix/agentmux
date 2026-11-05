@@ -3,7 +3,11 @@
 Installed entry: ``application-requests --client-installation ID
 --foundation-selection PATH --foundation-selection-sha256 DIGEST
 --repository-root PATH --principal NAME --local-node NAME --message-peer NAME
---organization ID --output DIR``.
+--organization ID --output DIR [--first-worker ROLE/AGENT]``.
+
+``--first-worker`` declares the profile's one first worker (AMUX-724): the
+enrollment gives it its own key, Work session and worker-only grants, and the
+result prints its session name and the original spawn operation ID to use.
 
 It replaces the hand-written step before ``prepare-owner-profile`` and
 ``application-enroll``. Everything else in the two requests is derived:
@@ -181,9 +185,26 @@ def repository(root):
     return {'root': root, 'localName': local, 'normalizedRemote': remote}
 
 
+def first_worker(value, repository_name):
+    """``ROLE/AGENT`` for the profile's one declared first worker (AMUX-724).
+
+    The caller is the session name the owner then spawns, and the spawn must
+    use the returned original operation ID. The declaration grants nothing.
+    """
+    from hub import names
+    parts = value.split('/') if type(value) is str else ()
+    if len(parts) != 2:
+        raise ContractError('application_requests_first_worker_invalid')
+    try:
+        caller = names.session_name(repository_name, *parts)
+    except Exception:
+        raise ContractError('application_requests_first_worker_invalid') from None
+    return {'caller': caller, 'spawnOperationId': 'first_spawn_' + secrets.token_hex(12)}
+
+
 def write_requests(*, client_installation, foundation_selection, foundation_sha256, repository_root, principal,
                    local_node, message_peer, organization, output, protected=PROTECTED, agentmux=AGENTMUX,
-                   docker_candidates=DOCKER_CANDIDATES):
+                   docker_candidates=DOCKER_CANDIDATES, worker=None):
     output = Path(output)
     if (not _INSTALLATION.fullmatch(client_installation) or not _DIGEST.fullmatch(foundation_sha256)
             or not all(_PEER.fullmatch(v) for v in (principal, local_node, message_peer)) or principal == message_peer
@@ -198,6 +219,7 @@ def write_requests(*, client_installation, foundation_selection, foundation_sha2
         raise ContractError('application_requests_selection_changed')
     release, runtime = installed_release(Path(protected), client_installation, strict_loads(raw))
     checkout = repository(repository_root)
+    declared = None if worker is None else first_worker(worker, checkout['localName'])
     docker = observe_docker(docker_candidates)
     port = broker_port(Path(agentmux))
     profile = 'profile_' + secrets.token_hex(16)
@@ -220,11 +242,16 @@ def write_requests(*, client_installation, foundation_selection, foundation_sha2
     setup = {'schemaVersion': SCHEMA_VERSION, 'ownerRequest': {'path': str(owner_path), 'sha256': digest(owner_raw)},
              'projectId': checkout['localName'], 'repositories': [checkout], 'localPeer': principal,
              'localNode': local_node, 'messagePeer': message_peer, 'validityDays': VALIDITY_DAYS}
+    if declared is not None:
+        setup['firstWorker'] = declared
     setup_path, setup_raw = output / 'setup-request.json', canonical_bytes(setup)
     _private_bytes(setup_path, setup_raw)
-    return {'profileId': profile, 'hubId': hub,
-            'ownerRequest': {'path': str(owner_path), 'sha256': digest(owner_raw)},
-            'setupRequest': {'path': str(setup_path), 'sha256': digest(setup_raw)}}
+    result = {'profileId': profile, 'hubId': hub,
+              'ownerRequest': {'path': str(owner_path), 'sha256': digest(owner_raw)},
+              'setupRequest': {'path': str(setup_path), 'sha256': digest(setup_raw)}}
+    if declared is not None:
+        result['firstWorker'] = declared
+    return result
 
 
 def _diagnostic(code):
@@ -237,7 +264,7 @@ def _diagnostic(code):
 def main(arguments):
     """Installed entry; see the module docstring. Only closed codes leave on failure."""
     import sys
-    if len(arguments) != 2 * len(_ARGUMENTS) or tuple(arguments[0::2]) != _ARGUMENTS:
+    if len(arguments) % 2 or tuple(arguments[0::2]) not in (_ARGUMENTS, _ARGUMENTS + ('--first-worker',)):
         return _diagnostic('application_requests_arguments_invalid')
     values = dict(zip(arguments[0::2], arguments[1::2]))
     try:
@@ -245,7 +272,8 @@ def main(arguments):
             foundation_selection=values['--foundation-selection'],
             foundation_sha256=values['--foundation-selection-sha256'], repository_root=values['--repository-root'],
             principal=values['--principal'], local_node=values['--local-node'],
-            message_peer=values['--message-peer'], organization=values['--organization'], output=values['--output'])
+            message_peer=values['--message-peer'], organization=values['--organization'], output=values['--output'],
+            worker=values.get('--first-worker'))
     except ContractError as error:
         code = str(error) if re.fullmatch(r'[a-z_]{1,96}', str(error)) else 'application_requests_failed'
         return _diagnostic(code)

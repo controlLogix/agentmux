@@ -138,6 +138,17 @@ For a new profile's first worker, the selected Work channel can include one expl
 
 The profile owner must also enroll that exact caller in the channel's `legacyActors` and prepare its own client transport and current Work grants before startup. The repository, profile, identity and transport must match the selected application. This declaration grants no authority and creates no agent row. Only one first worker can be declared across the selected Work channels; it cannot update an already retained selection.
 
+The supported enrollment does this when the setup request names the worker: `application-requests --first-worker <role>/<agent>` writes `"firstWorker": {"caller": "<repository>-<role>-<agent>", "spawnOperationId": "first_spawn_…"}` into `setup-request.json`, and `application-enroll` then creates, in the same ceremony:
+
+- the channel's `firstWorker` declaration (generation 1) and one `legacyActors` entry for that caller, under the owner's identity with its own transport;
+- that transport's own key, and only the worker grants `read`, `inspect`, `outcome`, `claim`, `heartbeat` and `release` on the local Work channel;
+- the Hub's `work-worker` client session, which the Hub uses only for the authenticated worker;
+- one generation-one legacy alias for the caller, so the operator's welcome and later messages can reach the worker once its first registration is live. A later generation does not resolve.
+
+Revoking the worker's transport or grants leaves the operator's untouched. Without `firstWorker` the enrollment output is unchanged.
+
+The declaration is one-shot. Use the printed `spawnOperationId` for the worker's first spawn. Once that worker is killed or replaced, its session name has no Work or message access in this profile; a new worker needs a new profile enrollment. Messages that leave this Hub for the worker are attributed to the owner's identity, because the worker acts under it with its own key.
+
 Start that worker with the declared original `--operation-id` and matching repository, role and agent arguments. Access becomes available only when the original operator spawn has completed registration and process startup for generation one, with the current matching handle and PID. Until then, its signed route permits only the authorized source inspection needed for startup. Ordinary Work and local `post`, `inbox` and `ack` remain unavailable. Existing native caller checks and current permissions still apply after activation.
 
 If the spawn reply is uncertain, retry the same supported command with the same operation ID and arguments. Keep its records and any uncertain process; do not replace the declaration, generate a new operation ID, or edit the database to force activation. Restarting the owner retains the original declaration and generation. A dead worker or later registration generation cannot inherit this route. General enrollment changes and worker replacement require their own supported preparation workflow.

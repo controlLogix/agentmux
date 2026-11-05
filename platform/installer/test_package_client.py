@@ -912,6 +912,17 @@ class ApplicationRequestsBootstrapRoute(unittest.TestCase):
             with self.subTest(arguments=changed), self.assertRaises(SystemExit):
                 bootstrap._arguments(self.root, changed)
 
+    def test_requests_route_admits_only_a_trailing_first_worker(self):
+        # AMUX-724: the one optional pair follows the fixed flags.
+        operation, selected = bootstrap._arguments(self.root, [*self.base, "--first-worker", "worker/demo"])
+        self.assertEqual((operation, selected[-2:]), ("application-requests", ["--first-worker", "worker/demo"]))
+        for changed in ([*self.base, "--first-worker", "Worker/demo"], [*self.base, "--first-worker", "demo"],
+                        [*self.base, "--first-worker", "worker/demo/x"], [*self.base, "--first-worker"],
+                        [*self.base[:1], "--first-worker", "worker/demo", *self.base[1:]],
+                        [*self.base[:17], "--first-worker", "worker/demo"]):
+            with self.subTest(arguments=changed), self.assertRaises(SystemExit):
+                bootstrap._arguments(self.root, changed)
+
     def test_package_roster_includes_the_requests_command(self):
         self.assertIn("identity/application_requests.py", package.MODULES)
 

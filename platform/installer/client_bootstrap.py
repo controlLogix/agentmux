@@ -58,6 +58,11 @@ def _arguments(root, arguments):
             and arguments[3] == "--request" and _absolute(arguments[4])
             and arguments[5] == "--request-sha256" and re.fullmatch(r"sha256:[0-9a-f]{64}", arguments[6])):
         return arguments[0], ["--request", arguments[4], "--request-sha256", arguments[6]]
+    # An optional trailing --first-worker ROLE/AGENT declares the first worker (AMUX-724).
+    if (len(arguments) == 21 and arguments[0] == "application-requests" and arguments[19] == "--first-worker"
+            and re.fullmatch(r"[a-z0-9_]{1,24}/[a-z0-9_]{1,32}", arguments[20])):
+        operation, selected = _arguments(root, arguments[:19])
+        return operation, [*selected, *arguments[19:]]
     if (len(arguments) == 19 and arguments[0] == "application-requests"
             and arguments[1::2] == ["--client-installation", "--foundation-selection", "--foundation-selection-sha256",
                                     "--repository-root", "--principal", "--local-node", "--message-peer",

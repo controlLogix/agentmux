@@ -322,6 +322,14 @@ AMUX_REQUESTS="$HOME/Library/Application Support/Agentmux/requests-<name>"
   reads the repository's origin remote from `.git/config`, records the Docker
   context, engine and versions as Docker reports them, and picks a free broker
   port from 20000–32767 that no other profile or runtime here keeps.
+* To spawn a worker that uses its own Work and messages, add
+  `--first-worker <role>/<agent>` (for example `worker/demo`). The result then
+  holds `firstWorker`: the worker's session name (`<repository>-<role>-<agent>`)
+  and the original `spawnOperationId`. Spawn that worker with exactly that role
+  and agent and `--operation-id <spawnOperationId>`. See
+  [first worker](PLATFORM_INSTALLATION.md) for what the declaration enrolls and
+  when it activates. A launcher older than this option refuses it with
+  `installed_client_arguments_invalid` before writing anything.
 
 The result (`$AMUX_REQUESTS.json`) holds `profileId`, `hubId` and each request's
 `path` and `sha256`. Record the digests as `AMUX_OWNER_SHA` and `AMUX_SETUP_SHA`.

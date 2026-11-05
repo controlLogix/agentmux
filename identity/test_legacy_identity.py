@@ -97,6 +97,27 @@ class LegacyIdentityCase(unittest.IsolatedAsyncioTestCase):
         with self.assertRaisesRegex(ContractError, 'legacy_identity_collision'):
             _indexes(self.record['state'], 'hub-one')
 
+    async def test_enrolled_first_worker_alias_binds_only_its_generation_one_registration(self):
+        # AMUX-724: the enrollment writes alias == canonical session at generation
+        # one before any registration exists. Only that live registration resolves.
+        session = 'alpha-worker-first'
+        self.record['state']['legacyAliases'].append(
+            alias_record(session=session, alias=session, scope=self.scope, name='worker-alias'))
+        self.reader.current.return_value = AuthoritySnapshot(canonical_bytes(self.record), 10)
+        registered =self.store.register('alpha', 'worker', 'first', 'codex', {})
+        self.store.set_state(registered, 'ready')
+        binding = (await self.adapter.bind((self.store.registration(session),)))[0]
+        self.assertEqual((binding.alias, binding.canonical_session, binding.registration_generation),
+                         (session, session, 1))
+        result = self.store.post('virtual:operator', f'agent:{session}', 'note', 'welcome',
+                                 identity_bindings=(binding,))
+        self.assertEqual(result['recipients'], [session])
+        self.store.set_state(session, 'dead')
+        self.store.register('alpha', 'worker', 'first', 'codex', {})
+        self.store.set_state(session, 'ready')
+        with self.assertRaisesRegex(ContractError, 'legacy_identity_unavailable'):
+            await self.adapter.bind((self.store.registration(session),))
+
     async def test_reregistration_fences_old_binding_and_does_not_inherit_alias(self):
         old = await self.binding()
         self.store.set_state(self.session, 'dead')
