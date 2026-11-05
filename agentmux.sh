@@ -3240,6 +3240,14 @@ case "${1:-}" in
   # The messaging protocol and work hub (docs/PROTOCOL.md). Everything past `hub` is
   # the Python client's; the hub itself decides who the caller is.
   hub)    shift
+          # A worker of the installed native core must use the protected client's
+          # callback, never this checkout's client: a login shell can put this
+          # development shim ahead of the worker's native-bin on PATH.
+          if [ -n "${AGENTMUX_NATIVE_CORE_ROOT:-}" ]; then
+            [ -x "$AGENTMUX_NATIVE_CORE_ROOT/app/native-bin/agentmux" ] \
+              || die "hub: the installed native callback is missing"
+            exec "$AGENTMUX_NATIVE_CORE_ROOT/app/native-bin/agentmux" hub "$@"
+          fi
           _self="$(agentmux_self)" || die "hub: cannot locate the agentmux checkout"
           exec python3 "$(dirname "$_self")/hub/cli.py" "$@" ;;
   # The build a peer is running: VERSION plus the checkout's commit, so two machines in
