@@ -254,7 +254,8 @@ def _deliver_line(t: Transport, prof: P.Profile, session: str, handle: str, text
         before_type()
         # That can take seconds: look at the pane again before touching its input,
         # so a modal or the user's own typing that appeared meanwhile is never typed into.
-        screen = settle(t, handle)
+        # One capture: the pane was already settled, and a fresh read's time is short.
+        screen = t.capture(handle)
         m = prof.modal(screen)
         if m:
             rc.stages["modal"] = f"appeared: {m.kind}"
