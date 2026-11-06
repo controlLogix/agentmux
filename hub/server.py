@@ -3018,18 +3018,33 @@ class Hub:
         """
         commands = self._work_storage_commands
         service = self.fed._work_commands
+        from agentmux_contracts import ContractError
+        # Closed stage names and elapsed seconds only, so a lapsed bell read shows
+        # where its time went (AMUX-675).
+        started, stages, outcome = time.monotonic(), [], 'error'
+        def stage(name):
+            stages.append([name, round(time.monotonic() - started, 3)])
         try:
             service.check()
             repositories = service.service_repositories()
             if agent['repo'] not in repositories:
+                outcome = 'route-changed'
                 raise deliver._DeliveryStopped('deferred', 'bell work route changed')
             claimable, work_read = await self._work_bell_claimable(agent, service, repositories)
+            stage('read-return')
             if work_read is None or tuple(row['id'] for row in claimable) != expected:
+                outcome = 'work-changed'
                 raise deliver._DeliveryStopped('deferred', 'bell work changed')
             await self._check_work_targets()
             service.confirm_disclosure()
+            stage('confirmed')
+            outcome = 'ok'
             return work_read
+        except ContractError as error:
+            outcome = 'contract:' + (str(error) if re.fullmatch(r'[a-z_]{1,64}', str(error)) else 'other')
+            raise
         finally:
+            log('work bell refresh timing', json.dumps({'outcome': outcome, 'stages': stages}))
             try:
                 if asyncio.current_task() in commands._disclosures:
                     service.finish_disclosure()
@@ -3123,9 +3138,12 @@ class Hub:
             before_type = None
             if work_read is not None:
                 loop = asyncio.get_running_loop()
+                ring_started = time.monotonic()
                 def before_type():
                     # Runs on the delivery worker once the pane is ready: take the read
                     # the bell is typed under now, on the event loop, and wait for it.
+                    log('work bell prepare timing', json.dumps(
+                        {'prepared': round(time.monotonic() - ring_started, 3)}))
                     future = asyncio.run_coroutine_threadsafe(
                         self._joined_work_poll(self._work_bell_refresh(ag, sig[1])), loop)
                     deadline = time.monotonic() + 20
