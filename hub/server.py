@@ -262,45 +262,43 @@ class _WorkBellRead:
 
 
 class _WorkBellTransport(deliver._CheckedTransport):
-    """Preserve terminal fencing and check the original work read at each use.
+    """Disclose a Work bell only under a current signed read taken just before typing.
 
-    The read stays current for every key and for typing the bell. After the bell is
-    typed and first submitted, delivery's passive captures that confirm submission
-    disclose nothing new, so they keep the terminal fence alone. Any later key,
-    including a retried Enter that may be what actually submits it, needs the read.
+    Preparing the pane (mode, modals, settling) and the captures that confirm a typed
+    bell was submitted disclose no Work, so they keep the terminal fence alone. Typing
+    the bell needs the fresh read that refresh() installs right before it; from then
+    on every key, including a retried Enter that may be what submits it, rechecks
+    that read.
     """
     def __init__(self, transport, session, handle, pane_pid, cancel, work_read):
         super().__init__(transport, session, handle, pane_pid, cancel)
         self.work_read = work_read
-        self.typed = self.submitted = False
+        self.armed = False
+
+    def refresh(self, work_read):
+        if type(work_read) is not _WorkBellRead:
+            raise deliver._DeliveryStopped('failed', 'work bell read unavailable')
+        self.work_read, self.armed = work_read, True
 
     def _checked_read(self):
+        if not self.armed:
+            raise deliver._DeliveryStopped('failed', 'work bell read not refreshed before typing')
         deliver._CheckedTransport.check(self)
         self.work_read.check()
         deliver._CheckedTransport.check(self)
 
-    def check(self):
-        if self.submitted:
-            super().check()
-            return
-        self._checked_read()
-
     def send_text(self, handle, text):
-        result = super().send_text(handle, text)
-        self.typed = True
-        return result
+        self._checked_read()
+        return super().send_text(handle, text)
 
     def send_buffer(self, handle, text):
-        result = super().send_buffer(handle, text)
-        self.typed = True
-        return result
+        self._checked_read()
+        return self.transport.send_buffer(handle, text, before_paste=self._checked_read)
 
     def send_key(self, handle, key):
-        self._checked_read()
-        result = super().send_key(handle, key)
-        if self.typed and key == 'Enter':
-            self.submitted = True
-        return result
+        if self.armed:
+            self._checked_read()
+        return super().send_key(handle, key)
 
 
 class Hub:
@@ -2983,32 +2981,69 @@ class Hub:
                 continue
             await self._joined_work_poll(self._work_bell_target(agent, state, service, repositories))
 
+    async def _work_bell_claimable(self, agent, service, repositories):
+        """Read the agent's claimable Work under the current task's signed disclosure.
+
+        The caller ends that disclosure. Only a bell that offers Work gets a read; a
+        message-only bell discloses no Work rows.
+        """
+        commands = self._work_storage_commands
+        if not hasattr(self, '_work_read_targets'):
+            self._work_read_targets = weakref.WeakKeyDictionary()
+        targets = self._work_read_targets.setdefault(asyncio.current_task(), {})
+        targets[agent['session']] = agent['generation']
+        claimable, capacities = [], []
+        if not repositories:
+            return [], None
+        for repository in sorted(repositories):
+            readiness = await service.service_readiness(agent['session'], repo=repository, local_bell=True)
+            service.confirm_disclosure()
+            capacities.append(readiness['capacity']['available'])
+            claimable.extend(readiness['claimable'])
+        if min(capacities) == 0:
+            claimable = []
+        claimable.sort(key=lambda row: (row['priority'], row['id']))
+        await self._check_work_targets()
+        work_read = None
+        if claimable:
+            work_read = _WorkBellRead(commands, commands._disclosures[asyncio.current_task()],
+                tuple(targets.items()), service, service._federation.session)
+        return claimable, work_read
+
+    async def _work_bell_refresh(self, agent, expected):
+        """Take the fresh read a Work bell is typed under, right before typing it.
+
+        The bell's claimable rows must be exactly the ones it was rung for; otherwise
+        it defers and the next pass rings the current ones.
+        """
+        commands = self._work_storage_commands
+        service = self.fed._work_commands
+        try:
+            service.check()
+            repositories = service.service_repositories()
+            if agent['repo'] not in repositories:
+                raise deliver._DeliveryStopped('deferred', 'bell work route changed')
+            claimable, work_read = await self._work_bell_claimable(agent, service, repositories)
+            if work_read is None or tuple(row['id'] for row in claimable) != expected:
+                raise deliver._DeliveryStopped('deferred', 'bell work changed')
+            await self._check_work_targets()
+            service.confirm_disclosure()
+            return work_read
+        finally:
+            try:
+                if asyncio.current_task() in commands._disclosures:
+                    service.finish_disclosure()
+            finally:
+                self._discard_work_read()
+                service._sessions.pop(asyncio.current_task(), None)
+
     async def _work_bell_target(self, agent, state, service, repositories):
         commands = self._work_storage_commands
         try:
             pending = await commands._owned_db(self.store.pending_for, agent['session'])
             claimable, work_read = [], None
             if agent['repo'] in repositories:
-                if not hasattr(self, '_work_read_targets'):
-                    self._work_read_targets = weakref.WeakKeyDictionary()
-                targets = self._work_read_targets.setdefault(asyncio.current_task(), {})
-                targets[agent['session']] = agent['generation']
-                capacities = []
-                for repository in sorted(repositories):
-                    readiness = await service.service_readiness(agent['session'], repo=repository, local_bell=True)
-                    service.confirm_disclosure()
-                    capacities.append(readiness['capacity']['available'])
-                    claimable.extend(readiness['claimable'])
-                if min(capacities) == 0:
-                    claimable = []
-                claimable.sort(key=lambda row: (row['priority'], row['id']))
-                await self._check_work_targets()
-                # Only a bell that offers Work carries the read through each terminal
-                # step. A message-only bell discloses no Work rows; it keeps the
-                # checked terminal fence without holding a read across slow delivery.
-                if claimable:
-                    work_read = _WorkBellRead(commands, commands._disclosures[asyncio.current_task()],
-                        tuple(targets.items()), service, service._federation.session)
+                claimable, work_read = await self._work_bell_claimable(agent, service, repositories)
             unrung = [row for row in pending if row['state'] in ('queued', 'offered')]
             unacked = [row for row in pending if row['state'] != 'acked']
             if not unacked and not claimable:
@@ -3085,10 +3120,30 @@ class Hub:
         try:
             transport = (self.tp if work_read is None else _WorkBellTransport(
                 self.tp, term(ag), ag['handle'], ag['pane_pid'], cancel, work_read))
+            before_type = None
+            if work_read is not None:
+                loop = asyncio.get_running_loop()
+                def before_type():
+                    # Runs on the delivery worker once the pane is ready: take the read
+                    # the bell is typed under now, on the event loop, and wait for it.
+                    future = asyncio.run_coroutine_threadsafe(
+                        self._joined_work_poll(self._work_bell_refresh(ag, sig[1])), loop)
+                    deadline = time.monotonic() + 20
+                    while True:
+                        try:
+                            transport.refresh(future.result(timeout=0.25))
+                            return
+                        except cf.TimeoutError:
+                            if future.done():
+                                raise
+                            if cancel.is_set() or time.monotonic() >= deadline:
+                                future.cancel()
+                                raise deliver._DeliveryStopped('deferred', 'work bell read unavailable')
             worker = asyncio.get_running_loop().run_in_executor(
                 self.io, lambda: deliver.deliver_line(transport, prof, term(ag), ag["handle"], text,
                                                        pane_pid=ag["pane_pid"], cancel=cancel,
-                                                       started_at=self.started.get(sess)))
+                                                       started_at=self.started.get(sess),
+                                                       before_type=before_type))
             cancelled = False
             while True:
                 try:

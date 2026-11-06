@@ -408,6 +408,24 @@ class Deliver(unittest.TestCase):
         self.assertEqual(rc.outcome, "blocked")
         self.assertEqual(self.t.sent, [])
 
+    def test_before_type_runs_once_ready_and_its_delay_is_rechecked(self):  # C2, AMUX-724
+        calls = []
+        self.t.add("a", screen())
+        rc = self.run_line("a", before_type=lambda: calls.append(list(self.t.sent)))
+        self.assertEqual((rc.outcome, calls), ("submitted", [[]]))
+        # A modal that appears while before_type runs is never typed into.
+        self.t.add("b", screen())
+        rc = self.run_line("b", before_type=lambda: self.t.sessions["b"].update(
+            screen="Welcome to Codex\nSign in with ChatGPT\n› 1. Sign in with ChatGPT\n"))
+        self.assertEqual(rc.outcome, "blocked", rc.as_dict())
+        self.assertEqual([x for x in self.t.sent if x[0] == "b"], [])
+        # Neither is text the user typed meanwhile: it is cleared, never joined to the bell.
+        self.t.add("c", screen())
+        rc = self.run_line("c", before_type=lambda: self.t.sessions["c"].update(screen=screen("› user words")))
+        self.assertIn(("c", "key", "C-u"), self.t.sent)
+        self.assertLess(self.t.sent.index(("c", "key", "C-u")),
+                        next(i for i, x in enumerate(self.t.sent) if x[:2] == ("c", "text")))
+
     def test_unknown_prompt_blocks(self):  # C2: generic guard
         self.t.add("a", "Something new?\nPress enter to continue\n")
         rc = self.run_line("a")

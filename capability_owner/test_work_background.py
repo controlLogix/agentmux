@@ -283,9 +283,9 @@ class WorkBackgroundTests(WorkBridgeFixture, unittest.IsolatedAsyncioTestCase):
             await self.hub._bell_pass()
         self.assertIsNotNone(ring.call_args.kwargs['work_read'])
 
-    async def test_bell_read_guards_every_key_and_typing_not_submission_captures(self):
-        # The bell's Work counts are disclosed by typing and submitting them; the
-        # confirmation polls afterwards disclose nothing new (AMUX-724 AC6).
+    async def test_bell_typing_needs_a_refreshed_read_and_preparation_keeps_the_fence(self):
+        # A Work bell is typed only under the fresh read installed right before typing;
+        # preparing the pane and confirming submission disclose no Work (AMUX-724 AC6).
         target = self.terminal_agent()
         self.store.work_create('operator', 'falcon', 'role:*/worker', 'Claimable bell')
         await self.open_service()
@@ -300,38 +300,52 @@ class WorkBackgroundTests(WorkBridgeFixture, unittest.IsolatedAsyncioTestCase):
             self.store.db.execute('UPDATE agents SET generation=generation+1 WHERE session=?', (target,))
         def restored():
             self.store.db.execute('UPDATE agents SET generation=generation-1 WHERE session=?', (target,))
-        # Before typing, a changed read refuses even a key such as a modal answer.
+        # Preparing: captures and a modal answer keep the terminal fence, even with a
+        # lapsed read, but typing is refused until a fresh read is installed.
         early = transport()
         checked = _WorkBellTransport(early, target, '%42', 4200, Event(), guard)
         changed()
-        with self.assertRaises((ContractError, HubError)):
-            await asyncio.to_thread(checked.send_key, '%42', 'Enter')
-        early.send_key.assert_not_called()
+        self.assertEqual(await asyncio.to_thread(checked.capture, '%42'), 'screen')
+        await asyncio.to_thread(checked.send_key, '%42', 'Enter')
+        with self.assertRaises(_DeliveryStopped):
+            await asyncio.to_thread(checked.send_text, '%42', 'Bell count')
+        early.send_text.assert_not_called()
+        with self.assertRaises(_DeliveryStopped):
+            checked.refresh(object())
         restored()
-        # Typed but not yet submitted: the first Enter still needs the current read.
-        typed = transport()
-        checked = _WorkBellTransport(typed, target, '%42', 4200, Event(), guard)
-        await asyncio.to_thread(checked.send_text, '%42', 'Bell count')
-        changed()
-        with self.assertRaises((ContractError, HubError)):
-            await asyncio.to_thread(checked.send_key, '%42', 'Enter')
-        typed.send_key.assert_not_called()
-        restored()
-        # Typed and submitted: confirmation captures keep only the terminal fence,
-        # but a retried Enter, which may be what submits the bell, needs the read.
+        # Refreshed: typing and every key, including a retried Enter, need that read;
+        # captures still keep only the terminal fence.
         late = transport()
         checked = _WorkBellTransport(late, target, '%42', 4200, Event(), guard)
+        checked.refresh(guard)
         await asyncio.to_thread(checked.send_text, '%42', 'Bell count')
         await asyncio.to_thread(checked.send_key, '%42', 'Enter')
         changed()
-        self.assertEqual(await asyncio.to_thread(checked.capture, '%42'), 'screen')
+        with self.assertRaises((ContractError, HubError)):
+            await asyncio.to_thread(checked.send_text, '%42', 'Bell count')
         with self.assertRaises((ContractError, HubError)):
             await asyncio.to_thread(checked.send_key, '%42', 'Enter')
-        self.assertEqual(late.send_key.call_count, 1)
+        self.assertEqual((late.send_text.call_count, late.send_key.call_count), (1, 1))
+        self.assertEqual(await asyncio.to_thread(checked.capture, '%42'), 'screen')
         late.handle.return_value = ('%43', 4200)
         with self.assertRaises(_DeliveryStopped):
             await asyncio.to_thread(checked.capture, '%42')
         restored()
+
+    async def test_bell_refresh_takes_a_new_read_and_defers_when_work_changed(self):
+        target = self.terminal_agent()
+        row = self.store.work_create('operator', 'falcon', 'role:*/worker', 'Refreshed bell')
+        await self.open_service()
+        agent = self.store.agent(target)
+        before = len(self.submitted)
+        fresh = await self.hub._joined_work_poll(self.hub._work_bell_refresh(agent, (row['id'],)))
+        self.assertIsNotNone(fresh)
+        self.assertGreater(len(self.submitted), before)
+        self.assertEqual(len(self.commands._disclosures), 0)
+        self.assertEqual(len(self.service_client._sessions), 0)
+        with self.assertRaises(_DeliveryStopped):
+            await self.hub._joined_work_poll(self.hub._work_bell_refresh(agent, ('W-OTHER',)))
+        self.assertEqual(len(self.commands._disclosures), 0)
 
     async def test_bell_snapshot_refuses_generation_or_source_change_at_transport_use(self):
         target = self.terminal_agent()
@@ -342,6 +356,7 @@ class WorkBackgroundTests(WorkBridgeFixture, unittest.IsolatedAsyncioTestCase):
         guard = ring.call_args.kwargs['work_read']
         transport = SimpleNamespace(handle=Mock(return_value=('%42', 4200)), send_text=Mock())
         checked = _WorkBellTransport(transport, target, '%42', 4200, Event(), guard)
+        checked.refresh(guard)
         await asyncio.to_thread(checked.send_text, '%42', 'Original count')
         transport.send_text.assert_called_once()
         self.store.db.execute('UPDATE agents SET generation=generation+1 WHERE session=?', (target,))
@@ -376,38 +391,55 @@ class WorkBackgroundTests(WorkBridgeFixture, unittest.IsolatedAsyncioTestCase):
                 await self.hub._bell_pass()
         ring.assert_not_called()
 
-    async def test_actual_ring_retains_expiry_before_delayed_terminal_input(self):
-        target = self.terminal_agent()
-        self.store.work_create('operator', 'falcon', 'role:*/worker', 'Original bell count')
-        await self.open_service()
+    async def run_actual_ring(self, *, during_preparation=None):
+        """Ring through the real _ring while the pane is still being prepared; the
+        bell is typed only under the read its before_type hook takes."""
+        from hub.deliver import Receipt, _DeliveryStopped as Stopped
         self.hub.io = ThreadPoolExecutor(max_workers=1)
         self.addCleanup(self.hub.io.shutdown, wait=True)
         self.hub.started, self.hub.awaiting = {}, {}
         self.hub.tp = SimpleNamespace(handle=Mock(return_value=('%42', 4200)), send_text=Mock())
         entered, released = Event(), Event()
         self.addCleanup(released.set)
-        original_now = _Clock.now()
-        class Later(_Clock):
-            @classmethod
-            def now(cls, tz=None):
-                return original_now + timedelta(seconds=10)
         def deliver(transport, profile, session, handle, text, **kwargs):
             entered.set()
             if not released.wait(5):
                 raise AssertionError('test did not release its original worker')
+            try:
+                kwargs['before_type']()
+            except Stopped as stopped:
+                return Receipt(outcome=stopped.outcome, reason=stopped.reason)
             transport.send_text(handle, text)
-            from hub.deliver import Receipt
             return Receipt(outcome='submitted')
         profile = SimpleNamespace(bell=lambda **kwargs: 'Private work count')
         with patch('hub.server.profiles.get', return_value=profile), patch('hub.server.deliver.deliver_line', side_effect=deliver):
             await self.hub._bell_pass()
             self.assertTrue(await asyncio.to_thread(entered.wait, 5))
-            with patch('capability_owner.legacy_work_client.datetime', Later):
-                released.set()
-                await asyncio.gather(*(task for task, _ in tuple(self.hub.rings.values())))
-        self.hub.tp.send_text.assert_not_called()
+            if during_preparation is not None:
+                during_preparation()
+            released.set()
+            await asyncio.gather(*(task for task, _ in tuple(self.hub.rings.values())))
         self.assertEqual(self.hub.inflight, set())
         self.assertEqual(self.hub.rings, {})
+
+    async def test_actual_ring_types_under_a_fresh_read_after_slow_preparation(self):
+        self.terminal_agent()
+        self.store.work_create('operator', 'falcon', 'role:*/worker', 'Original bell count')
+        await self.open_service()
+        before = len(self.submitted)
+        await self.run_actual_ring()
+        self.hub.tp.send_text.assert_called_once()
+        self.assertGreater(len(self.submitted), before)
+        self.assertEqual(len(self.commands._disclosures), 0)
+
+    async def test_actual_ring_defers_when_its_work_changed_before_typing(self):
+        self.terminal_agent()
+        row = self.store.work_create('operator', 'falcon', 'role:*/worker', 'Cancelled before typing')
+        await self.open_service()
+        await self.run_actual_ring(during_preparation=lambda: self.store.db.execute(
+            "UPDATE work_items SET state='cancelled' WHERE id=?", (row['id'],)))
+        self.hub.tp.send_text.assert_not_called()
+        self.assertEqual(len(self.commands._disclosures), 0)
 
     async def test_bell_snapshot_does_not_follow_a_replaced_service_session(self):
         target = self.terminal_agent()
@@ -418,6 +450,7 @@ class WorkBackgroundTests(WorkBridgeFixture, unittest.IsolatedAsyncioTestCase):
         guard = ring.call_args.kwargs['work_read']
         transport = SimpleNamespace(handle=Mock(return_value=('%42', 4200)), send_text=Mock())
         checked = _WorkBellTransport(transport, target, '%42', 4200, Event(), guard)
+        checked.refresh(guard)
         self.hub.fed.session = SimpleNamespace(check_open=Mock())
         with self.assertRaises(Exception):
             await asyncio.to_thread(checked.send_text, '%42', 'Must not be typed')

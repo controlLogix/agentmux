@@ -169,7 +169,10 @@ class _CheckedTransport:
 def deliver_line(t: Transport, prof: P.Profile, session: str, handle: str, text: str, *,
                  pane_pid: int, cancel: Event | None = None,
                  strategy: str = "type", auto_modals: bool = True, started_at: float | None = None,
-                 allow_busy: bool = False, submit_timeout_s: float = 6.0) -> Receipt:
+                 allow_busy: bool = False, submit_timeout_s: float = 6.0,
+                 before_type=None) -> Receipt:
+    """before_type, when given, runs once the pane is ready and before the line is typed
+    or a pending copy of it is submitted. It may raise _DeliveryStopped to stop delivery."""
     rc, started = Receipt(), time.time()
     if type(pane_pid) is not int or pane_pid <= 0:
         rc.outcome, rc.reason = "failed", "identity: registered pane PID unavailable"
@@ -179,7 +182,8 @@ def deliver_line(t: Transport, prof: P.Profile, session: str, handle: str, text:
     try:
         return _deliver_line(checked, prof, session, handle, text, receipt=rc,
                              strategy=strategy, auto_modals=auto_modals, started_at=started_at,
-                             allow_busy=allow_busy, submit_timeout_s=submit_timeout_s)
+                             allow_busy=allow_busy, submit_timeout_s=submit_timeout_s,
+                             before_type=before_type)
     except _DeliveryStopped as stopped:
         rc.outcome, rc.reason = stopped.outcome, stopped.reason
         rc.stages["resolved"] = stopped.reason
@@ -190,7 +194,7 @@ def deliver_line(t: Transport, prof: P.Profile, session: str, handle: str, text:
 def _deliver_line(t: Transport, prof: P.Profile, session: str, handle: str, text: str, *,
                  receipt: Receipt,
                  strategy: str = "type", auto_modals: bool = True, started_at: float | None = None,
-                 allow_busy: bool = False, submit_timeout_s: float = 6.0) -> Receipt:
+                 allow_busy: bool = False, submit_timeout_s: float = 6.0, before_type=None) -> Receipt:
     """Type ONE line into the agent's input and submit it, verifying every stage.
 
     strategy: 'type'   send-keys -l  (short text; the doorbell and pointer lines)
@@ -246,6 +250,22 @@ def _deliver_line(t: Transport, prof: P.Profile, session: str, handle: str, text
         rc.stages["ready"] = "no prompt"
         return done("deferred", "no input prompt visible")
     pending = prof.composer_text(screen)
+    if before_type is not None:
+        before_type()
+        # That can take seconds: look at the pane again before touching its input,
+        # so a modal or the user's own typing that appeared meanwhile is never typed into.
+        screen = settle(t, handle)
+        m = prof.modal(screen)
+        if m:
+            rc.stages["modal"] = f"appeared: {m.kind}"
+            return done("blocked", f"modal {m.kind} appeared before typing")
+        if prof.is_busy(screen) and not allow_busy:
+            rc.stages["ready"] = "busy"
+            return done("deferred", "busy")
+        if not prof.is_ready(screen):
+            rc.stages["ready"] = "no prompt"
+            return done("deferred", "no input prompt visible")
+        pending = prof.composer_text(screen)
     if prof.has_placeholder(screen) or (pending and _norm(pending) in _norm(text)):
         # A previous line of ours is sitting unsubmitted (C1). Submit it; do not retype.
         t.send_key(handle, "Enter")
