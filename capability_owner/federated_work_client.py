@@ -335,14 +335,20 @@ class FederatedWorkCommandClient:
                 f"from {r['origin_peer']}" if r['origin_peer'] else r['claimed_by'] or '',
                 r['task_key'] or '', (r['result'] or '')[:80]] for r in rows]}
 
-    async def service_read(self, query, *, repo=None):
+    async def service_read(self, query, *, repo=None, seconds=5):
         self._begin()
-        expires = datetime.now(timezone.utc) + timedelta(seconds=5)
+        expires = datetime.now(timezone.utc) + timedelta(seconds=seconds)
         return await self._client._read(self._client._select('federation', 'read', repo), query, expires)
 
-    async def service_readiness(self, target_session, *, repo):
-        """Read a target's bounded capacity using the enrolled service grant."""
-        value = await self.service_read({'kind': 'readiness', 'session': target_session}, repo=repo)
+    async def service_readiness(self, target_session, *, repo, local_bell=False):
+        """Read a target's bounded capacity using the enrolled service grant.
+
+        A local doorbell carries this read through terminal delivery to that worker, so
+        it gets the reviewed Work window (4cf1610). Peer offers keep 5 s.
+        """
+        from identity.work_client import WORK_COMMAND_SECONDS
+        value = await self.service_read({'kind': 'readiness', 'session': target_session}, repo=repo,
+            seconds=WORK_COMMAND_SECONDS if local_bell else 5)
         return self.confirm_disclosure(value)
 
     def service_repositories(self):

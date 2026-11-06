@@ -245,6 +245,23 @@ class WorkBackgroundTests(WorkBridgeFixture, unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(ring.call_args.kwargs['work_read'])
         self.assertEqual(self.submitted, [])
 
+    async def test_bell_service_read_uses_the_work_window(self):
+        # The doorbell's readiness read is a Work command and gets the reviewed Work window.
+        from datetime import datetime
+        from identity.work_client import WORK_COMMAND_SECONDS
+        self.terminal_agent()
+        self.store.work_create('operator', 'falcon', 'role:*/worker', 'Windowed bell')
+        await self.open_service()
+        with patch.object(self.hub, '_start_ring'):
+            await self.hub._bell_pass()
+        reads = [c for c in self.submitted if c['contractId'] == 'federation-work-read']
+        self.assertTrue(reads)
+        for claims in reads:
+            window = (datetime.fromisoformat(claims['expiresAt'])
+                      - datetime.fromisoformat(claims['issuedAt'])).total_seconds()
+            self.assertGreater(window, 5.5)
+            self.assertLessEqual(window, WORK_COMMAND_SECONDS)
+
     async def test_selected_mail_only_bell_reads_work_but_carries_no_work_read(self):
         # A bell with nothing claimable discloses no Work rows, so it does not hold
         # the signed read across slow terminal delivery (AMUX-724 AC6 doorbell).

@@ -2995,7 +2995,7 @@ class Hub:
                 targets[agent['session']] = agent['generation']
                 capacities = []
                 for repository in sorted(repositories):
-                    readiness = await service.service_readiness(agent['session'], repo=repository)
+                    readiness = await service.service_readiness(agent['session'], repo=repository, local_bell=True)
                     service.confirm_disclosure()
                     capacities.append(readiness['capacity']['available'])
                     claimable.extend(readiness['claimable'])
